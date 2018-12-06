@@ -63,6 +63,14 @@
                             <input id="nama_pic" name="nama_pic" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $this->session->userdata('realname');?>" type="text">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            KETERANGAN
+                        </div>
+                        <div class="col-md-8">
+                            <textarea id="keterangan" name="keterangan" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline"></textarea>
+                        </div>
+                    </div>
                 </div>
             </div>
         

@@ -96,6 +96,87 @@ class GudangWIP extends CI_Controller{
                 );
             $this->db->insert('t_hasil_wip', $data);
 
+            #Insert t_bpb_wip
+            $insert_id = $this->db->insert_id();
+            $this->load->model('Model_m_numberings');
+            $code = $this->Model_m_numberings->getNumbering('BPB-WIP', $tgl_input);
+            $data_t_bpb_wip = array(
+                'no_bpb' => $code,
+                'status' => '0',
+                'spb_wip_id' => 0,
+                'keterangan' => $this->input->post('keterangan'),
+                'hasil_wip_id' => $insert_id,
+                'created_by' => $user_id,
+                'created' => $tanggal
+            );
+            $this->db->insert('t_bpb_wip', $data_t_bpb_wip);
+
+            #Insert bpb_wip_detail
+            $insert_id_bpb_wip = $this->db->insert_id();
+            if ($this->input->post('jenis_masak') == 'CUCI') {
+                $data_bpb_wip_detail = array(
+                'bpb_wip_id' => $insert_id_bpb_wip,
+                'created' => $tgl_input,
+                'jenis_barang_id' => '5',
+                'spb_wip_detail_id' => 0,
+                'qty' => $this->input->post('qty_km'),
+                'uom' => 'ROLL',
+                'berat' => $this->input->post('berat_km'),
+                'keterangan' => $this->input->post('keterangan'),
+                'created_by' => $user_id
+                );
+                $this->db->insert('t_bpb_wip_detail', $data_bpb_wip_detail);
+            } else {
+                $data_bpb_wip_detail = array(
+                'bpb_wip_id' => $insert_id_bpb_wip,
+                'created' => $tgl_input,
+                'jenis_barang_id' => '6',
+                'spb_wip_detail_id' => 0,
+                'qty' => $this->input->post('qty_kh'),
+                'uom' => 'ROLL',
+                'berat' => $this->input->post('berat_kh'),
+                'keterangan' => $this->input->post('keterangan'),
+                'created_by' => $user_id
+                );
+                $this->db->insert('t_bpb_wip_detail', $data_bpb_wip_detail);
+            }
+
+            #Insert t_gudang_wip             
+            // if($this->input->post('jenis_masak')=='CUCI'){
+            //     $data_t_gudang_wip = array(
+            //         'tanggal' => $tgl_input,
+            //         'flag_taken' => 0,
+            //         'jenis_trx' => null,
+            //         't_hasil_wip_id' => $insert_id,
+            //         'jenis_barang_id'  => '5',
+            //         't_spb_wip_detail_id' => 0,
+            //         't_bpb_wip_detail_id' => 0,
+            //         'qty' => $this->input->post('qty_km'),
+            //         'uom' => 'ROLL',
+            //         'berat' => $this->input->post('berat_km'),
+            //         'keterangan' => $this->input->post('keterangan'),
+            //         'created_by' => $user_id,
+            //         'created_on' => $tanggal
+            //     );
+            //     $this->db->insert('t_gudang_wip', $data_t_gudang_wip);
+            // } else {
+            //     $data_t_gudang_wip = array(
+            //         'tanggal' => $tgl_input,
+            //         'flag_taken' => 0,
+            //         'jenis_trx' => null,
+            //         't_hasil_wip_id' => $insert_id,
+            //         'jenis_barang_id'  => '6',
+            //         't_spb_wip_detail_id' => 0,
+            //         't_bpb_wip_detail_id' => 0,
+            //         'qty' => $this->input->post('qty_kh'),
+            //         'uom' => 'ROLL',
+            //         'berat' => $this->input->post('berat_kh'),
+            //         'keterangan' => $this->input->post('keterangan'),
+            //         'created_by' => $user_id,
+            //         'created_on' => $tanggal
+            //     );
+            //     $this->db->insert('t_gudang_wip', $data_t_gudang_wip);
+            // }
             
             #Create DTR BS ke gudang rongsok
             if(((int)$this->input->post('bs'))!=0){    
