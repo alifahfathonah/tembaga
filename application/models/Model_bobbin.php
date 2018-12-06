@@ -5,6 +5,7 @@ class Model_bobbin extends CI_Model{
             From m_bobbin b
             left join m_bobbin_size mbs on (mbs.id = b.m_bobbin_size_id)
             left join owner o on (o.id = b.owner_id)
+            order by b.id desc
             ");
         return $data;
     }
@@ -43,6 +44,11 @@ class Model_bobbin extends CI_Model{
         $data = $this->db->query("select penomoran,bobbin_size
             from m_bobbin_size
             where id=".$id)->row_array();
+        return $data;
+    }
+
+    function spb_list(){
+        $data = $this->db->query("select mbs.*,(select count(mbsd.id) from m_bobbin_spb_detail mbsd where mbsd.id_spb_bobbin = mbs.id) from m_bobbin_spb mbs");
         return $data;
     }
 }

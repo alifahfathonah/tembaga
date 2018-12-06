@@ -773,7 +773,7 @@ class SalesOrder extends CI_Controller{
         if($id){        
             $this->load->model('Model_sales_order');
             $data['header']  = $this->Model_sales_order->show_header_sj($id)->row_array();
-            $data['details'] = $this->Model_sales_order->load_detail_surat_jalan($id)->result();
+            $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_fg($id)->result();
 
             $this->load->view('print_surat_jalan', $data);
         }else{

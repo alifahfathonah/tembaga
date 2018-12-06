@@ -34,6 +34,8 @@ t_sales_order ->
 
 PUSH KE BIT BUCKET
 https://confluence.atlassian.com/get-started-with-bitbucket/push-code-to-bitbucket-861185309.html
+PULL KE LOCAL
+https://confluence.atlassian.com/bitbucket/pull-changes-from-your-git-repository-on-bitbucket-cloud-750395754.html
 
 USELESS MENU
 - INGOT RENDAH
@@ -64,3 +66,19 @@ t_inventory = tambah kode_item untuk mencari item dengan lebih mudah
 Surat Jalan masih bermasalah jika barang selain Finish Good
 
 Tolling Bermasalah
+
+Kredit = Masuk
+Debit = Keluar
+
+FINANCE (Uang Masuk)
+Saat buat cek, status 0 karena belum cair,
+Ganti status ke 1 jika sudah cair. Secara Manual
+
+FINANCE (Pembayaran)
+Buat Slip Setoran pada saat matching voucher dan Uang masuk, Slip setoran id saja karenan nati buat tabel baru
+Approve -> Dijalanin tanggal berapa
+
+Dijalanin -> Jika cek mundur gabisa cair, semuanya di reject saat mau dijalanin (jika reject keterangan mandatory)
+
+FINANACE (Create Invoice)
+Buat invoice sesuai surat jalan ke customer

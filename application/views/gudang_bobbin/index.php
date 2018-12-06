@@ -105,7 +105,7 @@
         </div>
         <div id="form_add" class="collapse well">
         <form class="eventInsForm" method="post" target="_self" name="formbobbin" 
-              id="formbobbin" action="<?php echo base_url('index.php/Bobbin/save'); ?>">  
+              id="formbobbin" action="<?php echo base_url('index.php/GudangBobbin/save'); ?>">  
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -229,7 +229,7 @@
                                 }
                                 if( ($group_id==1)||($hak_akses['delete']==1) ){
                             ?>
-                            <a href="<?php echo base_url(); ?>index.php/Bobbin/delete/<?php echo $data->id; ?>" 
+                            <a href="<?php echo base_url(); ?>index.php/GudangBobbin/delete/<?php echo $data->id; ?>" 
                                class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus data ini?');">
                                 <i class="fa fa-trash-o"></i> Hapus </a>
                             <?php }?>
@@ -286,14 +286,14 @@ function newData(){
 }
 
 function simpandata(){
-    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Bobbin/update");
+    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/GudangBobbin/update");
     $('#formku').submit(); 
      
 };
 
 function get_packing(id){
      $.ajax({
-        url: "<?php echo base_url('index.php/Bobbin/get_packing'); ?>",
+        url: "<?php echo base_url('index.php/GudangBobbin/get_packing'); ?>",
         type: "POST",
         data : {id: id},
         success: function (result){
@@ -305,7 +305,7 @@ function get_packing(id){
 function editData(id){
     dsState = "Edit";
     $.ajax({
-        url: "<?php echo base_url('index.php/Bobbin/edit'); ?>",
+        url: "<?php echo base_url('index.php/GudangBobbin/edit'); ?>",
         type: "POST",
         data : {id: id},
         success: function (result){

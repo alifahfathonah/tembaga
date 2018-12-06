@@ -1,7 +1,7 @@
 <?php
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Bobbin extends CI_Controller{
+class GudangBobbin extends CI_Controller{   
     function __construct(){
         parent::__construct();
 
@@ -9,7 +9,7 @@ class Bobbin extends CI_Controller{
             redirect(base_url("index.php/Login"));
         }
     }
-    
+
     function index(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
@@ -20,7 +20,7 @@ class Bobbin extends CI_Controller{
         }
         $data['group_id']  = $group_id;
 
-        $data['content']= "bobbin/index";
+        $data['content']= "gudang_bobbin/index";
         $this->load->model('Model_bobbin');
 
         $data['size_list'] = $this->Model_bobbin->get_size_list()->result();
@@ -87,7 +87,7 @@ class Bobbin extends CI_Controller{
        
         $this->db->insert('m_bobbin', $data); 
         $this->session->set_flashdata('flash_msg', 'Data bobbin berhasil disimpan');
-        redirect('index.php/Bobbin');       
+        redirect('index.php/GudangBobbin');       
     }
     
     function delete(){
@@ -97,7 +97,7 @@ class Bobbin extends CI_Controller{
             $this->db->delete('m_bobbin');            
         }
         $this->session->set_flashdata('flash_msg', 'Data bobbin berhasil dihapus');
-        redirect('index.php/Bobbin');
+        redirect('index.php/GudangBobbin');
     }
     
     function edit(){
@@ -170,7 +170,79 @@ class Bobbin extends CI_Controller{
         $this->db->update('m_bobbin', $data);
         
         $this->session->set_flashdata('flash_msg', 'Data bobbin berhasil diperbaharui');
-        redirect('index.php/Bobbin');
+        redirect('index.php/GudangBobbin');
     }
-    
+        
+    function add(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Gudang bobbin Register";
+        $data['content']   = "gudang_bobbin/add";
+        
+        
+        $this->load->view('layout', $data);  
+    }
+   
+
+    function bobbin_request(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Gudang Bobbin Request";
+        $data['content']   = "gudang_bobbin/bobbin_request";
+        
+        $this->load->model('Model_ingot');
+        $data['jenis_barang_list'] = $this->Model_ingot->jenis_barang_list()->result();
+        
+        
+        $this->load->view('layout', $data);  
+    }
+
+
+    function bobbin_terima(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Gudang Bobbin Terima Barang";
+        $data['content']   = "gudang_bobbin/bobbin_terima";
+        
+        $this->load->model('Model_ingot');
+        $data['jenis_barang_list'] = $this->Model_ingot->jenis_barang_list()->result();
+        
+        
+        $this->load->view('layout', $data);  
+    }
+     
+    function spb_list(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "gudang_bobbin/spb_list";
+        $this->load->model('Model_bobbin');
+        $data['list_data'] = $this->Model_bobbin->spb_list()->result();
+
+        $this->load->view('layout', $data);
+    }   
 }

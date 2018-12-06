@@ -2,9 +2,9 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Gudang FG
+            <i class="fa fa-angle-right"></i> Gudang Bobbin
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/GudangFG/add_spb'); ?>"> Create SPB </a> 
+            <a href="<?php echo base_url('index.php/GudangBobbin/add_spb'); ?>"> Create SPB Bobbin </a> 
         </h5>          
     </div>
 </div>
@@ -23,7 +23,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/GudangFG/save_spb'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/GudangBobbin/save_spb'); ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
@@ -52,8 +52,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="nama_penimbang" name="nama_penimbang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $this->session->userdata('realname'); ?>">
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $this->session->userdata('realname'); ?>">
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>

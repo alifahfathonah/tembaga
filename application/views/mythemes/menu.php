@@ -454,7 +454,7 @@
                     </ul>
                 </li>
  
-                <li <?php if($module_name=="Bobbin") echo 'class="start active open"'; ?> >
+                <li <?php if($module_name=="GudangBobbin") echo 'class="start active open"'; ?> >
                     <a href="javascript:;">
                     <i class="fa fa-bullseye"></i>
                     <span class="title">GUDANG BOBBIN</span>
@@ -462,17 +462,22 @@
                     </a>
                     <ul class="sub-menu">
                         <li>
-                            <a href="<?php echo base_url(); ?>index.php/Bobbin">
+                            <a href="<?php echo base_url(); ?>index.php/GudangBobbin">
                             <i class="fa fa-bullseye"></i>
                             Bobbin Register </a>
                         </li>
                         <li>
-                            <a href="<?php echo base_url(); ?>index.php/Gudangbobbinrequest">
+                            <a href="<?php echo base_url(); ?>index.php/GudangBobbin/bobbin_request">
                             <i class="fa fa-file-word-o"></i>
                             Bobbin Request </a>
                         </li>
                         <li>
-                            <a href="<?php echo base_url(); ?>index.php/Gudangbobbinterimabarang">
+                            <a href="<?php echo base_url(); ?>index.php/GudangBobbin/spb_list">
+                            <i class="fa fa-file-word-o"></i>
+                            SPB Bobbin </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/GudangBobbin/bobbin_terima">
                             <i class="fa fa-file-word-o"></i>
                             Bobbin Terima Barang </a>
                         </li>
