@@ -153,6 +153,7 @@
                                 <th>No. Packing</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
+                                <th>Bobbin</th>
                                 <th>Keterangan</th>
                                 <th>Actions</th>
                             </thead>
@@ -238,6 +239,7 @@ function get_data(id){
             $('#no_packing').val(result['no_packing']);
             $('#bruto').val(result['bruto']);
             $('#netto').val(result['netto']);
+            $('#bobbin').val(result['nomor_bobbin']);
         }
     })
 }
@@ -280,7 +282,7 @@ function hapusDetail(id){
     if (r==true){
         $.ajax({
             type:"POST",
-            url:'<?php echo base_url('index.php/SalesOrder/delete_detail_surat_jalan'); ?>',
+            url:"<?php echo base_url('index.php/SalesOrder/delete_detail_surat_jalan'); ?>",
             data:"id="+ id,
             success:function(result){
                 if(result['message_type']=="sukses"){

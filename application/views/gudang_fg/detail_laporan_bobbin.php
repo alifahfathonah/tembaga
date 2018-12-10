@@ -231,7 +231,7 @@ function get_bobbin(id){
                 $('#id_bobbin').val(result['id']);
                 $('#netto').val(($('#bruto').val() - result['berat']));
             } else {
-                alert('Bobbin/Keranjang tidak ditemukan, coba lagi');
+                alert('Bobbin/Keranjang tidak ditemukan atau belum dipesan, coba lagi');
                 $('#no_bobbin').val('');
                 $('#id_bobbin').val('');
                 $('#berat_bobbin').val('');

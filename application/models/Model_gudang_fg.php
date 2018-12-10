@@ -197,7 +197,7 @@ class Model_gudang_fg extends CI_Model{
         $data = $this->db->query("select mb.berat, mb.id, o.nama_owner
                 from m_bobbin mb
                 left join owner o on (o.id = mb.owner_id)
-                where mb.nomor_bobbin = '".$id."'"
+                where mb.nomor_bobbin = '".$id."' and mb.status = 3"
                 );
         return $data;
     }

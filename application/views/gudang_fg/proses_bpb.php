@@ -41,6 +41,7 @@
                                         onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>
                                     
                                     <input type="hidden" id="header_id" name="header_id">
+                                    <input type="hidden" id="fg_id" name="fg_id">
                                 </div>
                             </div>                           
                         </form>
@@ -69,7 +70,7 @@
                             <input type="text" id="no_bpb" name="no_bpb" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_bpb_fg']; ?>">
-                            <input type="hidden" name="produksi_fg_id" value="<?=$header['produksi_fg_id'];?>">
+                            <input type="hidden" id="produksi_fg_id" name="produksi_fg_id" value="<?=$header['produksi_fg_id'];?>">
                             <input type="hidden" id="id" name="bpb_fg_id" value="<?=$header['id'];?>">
                             <input type="hidden" name="id_jenis_packing" value="<?=$header['jenis_packing_id']?>">
                         </div>
@@ -283,6 +284,7 @@ function showRejectBox(){
     var r=confirm("Anda yakin me-reject BPB FG ini?");
     if (r==true){
         $('#header_id').val($('#id').val());
+        $('#fg_id').val($('#produksi_fg_id').val());
         $('#message').html("");
         $('.alert-danger').hide();
         

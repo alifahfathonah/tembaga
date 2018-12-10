@@ -147,7 +147,7 @@ class SalesOrder extends CI_Controller{
                 . 'onkeydown="return myCurrency(event);" maxlength="10" value="1">';
         $tabel .= '<input type="hidden" id="bruto" name="bruto" class="form-control myline" maxlength="10" value="0">';
         $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="10" value="0"></td>'; 
+                . 'onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>'; 
         } else {
         $tabel .= '<td><input type="text" id="qty" name="qty" class="form-control myline" '
                 . 'onkeydown="return myCurrency(event);" maxlength="5" value="0" onkeyup="getComa(this.value, this.id);"></td>';
@@ -631,6 +631,7 @@ class SalesOrder extends CI_Controller{
             $tabel .= '<td>'.$row->no_packing.'</td>';
             $tabel .= '<td style="text-align:right">'.$row->bruto.'</td>';
             $tabel .= '<td style="text-align:right">'.$row->netto.'</td>';
+            $tabel .= '<td style="text-align:right">'.$row->nomor_bobbin.'</td>';
             $tabel .= '<td>'.$row->line_remarks.'</td>'; 
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
@@ -658,6 +659,7 @@ class SalesOrder extends CI_Controller{
         $tabel .= '<td><input type="text" id="no_packing" name="no_packing" class="form-control myline" readonly="readonly"></td>';
         $tabel .= '<td><input type="text" id="bruto" name="bruto" class="form-control myline" readonly="readonly"></td>';
         $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"></td>';
+        $tabel .= '<td><input type="text" id="bobbin" name="bobbin" class="form-control myline" readonly="readonly"></td>';
         $tabel .= '<td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';        
         $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                 . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
@@ -718,7 +720,6 @@ class SalesOrder extends CI_Controller{
         $this->db->insert('t_surat_jalan_detail', array(
             't_sj_id'=>$this->input->post('id'),
             'jenis_barang_id'=>$this->input->post('jenis_barang_id'),
-            't_gudang_fg_id'=>$this->input->post('barang_id'),
             'no_packing'=>$this->input->post('no_packing'),
             'qty'=>'1',
             'bruto'=>$this->input->post('bruto'),
@@ -749,6 +750,18 @@ class SalesOrder extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
+        #insert bobbin_peminjaman
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);
+
+        $this->db->insert('m_bobbin_peminjaman', array(
+            'no_surat_peminjaman' => $code,
+            'id_surat_jalan' => $this->input->post('id'),
+            'id_customer' => $this->input->post('m_customer_id'),
+            'created_by' => $user_id,
+            'created_at' => $tanggal
+        ));
+
         $data = array(
                 'tanggal'=> $tgl_input,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
@@ -760,9 +773,18 @@ class SalesOrder extends CI_Controller{
                 'modified'=> $tanggal,
                 'modified_by'=> $user_id
             );
-        
+
+        $query = $this->db->query('select *from t_surat_jalan_detail where t_sj_id = '.$this->input->post('id'))->result();
+        foreach ($query as $row) {
+            $this->db->where('nomor_bobbin', $row->nomor_bobbin);
+            $this->db->update('m_bobbin', array(
+                'status' => 2
+            ));
+        }
+
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('surat_jalan', $data);
+
         
         $this->session->set_flashdata('flash_msg', 'Data surat jalan berhasil disimpan');
         redirect('index.php/SalesOrder/surat_jalan');

@@ -485,6 +485,13 @@ class GudangFG extends CI_Controller{
             'bobbin_id'=>$this->input->post('id_bobbin'),
             'keterangan'=>$this->input->post('keterangan')
         ));
+
+       #update status bobbin
+       $this->db->where('id' ,$this->input->post('id_bobbin'));
+       $this->db->update('m_bobbin', array(
+            'status' => 1
+       ));
+
         if ($this->db->trans_complete()){
             $return_data['message_type']= "sukses";
         }else{
@@ -568,6 +575,15 @@ class GudangFG extends CI_Controller{
     function delete_detail(){
         $id = $this->input->post('id');
         $return_data = array();
+        $this->db->where('id', $id);
+        $key = $this->db->get('produksi_fg_detail')->result();
+            foreach ($key as $row) {
+                $id_bobbin = $row->bobbin_id;
+                $this->db->where('id', $id_bobbin);
+                $this->db->update('m_bobbin', array(
+                    'status' => 3
+                ));
+            }
         $this->db->where('id', $id);
         if($this->db->delete('produksi_fg_detail')){
             $return_data['message_type']= "sukses";
@@ -859,8 +875,17 @@ class GudangFG extends CI_Controller{
 
     function reject_bpb(){
         $user_id  = $this->session->userdata('user_id');
+        $fg_id = $this->input->post('fg_id');
         $tanggal  = date('Y-m-d h:m:s');
         
+        $query = $this->db->query('select *from produksi_fg_detail where produksi_fg_id = '.$fg_id)->result();
+        foreach ($query as $row) {
+            $this->db->where('id', $row->bobbin_id);
+            $this->db->update('m_bobbin', array(
+                'status' => 3
+            ));
+        }
+
         $data = array(
                 'status'=> 9,
                 'rejected_at'=> $tanggal,
