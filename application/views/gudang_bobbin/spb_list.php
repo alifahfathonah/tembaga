@@ -54,9 +54,9 @@
                     ?>
                     <tr>
                         <td style="text-align:center;"><?php echo $no; ?></td>
-                        <td style="background-color: "><?php echo $data->no_spb; ?></td>
-                        <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <td><?php echo $data->pic; ?></td>                            
+                        <td style="background-color: "><?php echo $data->no_spb_bobbin; ?></td>
+                        <td><?php echo date('d-m-Y', strtotime($data->created_at)); ?></td>
+                        <td><?php echo $data->pemohon; ?></td>                            
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td><?php echo $data->keterangan; ?></td>
                         <td style="text-align:center">

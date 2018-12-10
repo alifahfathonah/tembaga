@@ -236,6 +236,7 @@ function get_bobbin(id){
                 $('#id_bobbin').val('');
                 $('#berat_bobbin').val('');
                 $('#pemilik').val('');
+                $('#netto').val('');
             }
         }
     });

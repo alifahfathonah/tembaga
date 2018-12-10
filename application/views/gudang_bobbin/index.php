@@ -216,6 +216,8 @@
                                 echo '<div style="background-color:blue; color:white; padding:4px">Used</div>';
                             }else if($data->status==2){
                                 echo '<div style="background-color:yellow; color:white; padding:4px">Delivered</div>';
+                            }else if($data->status==3){
+                                echo '<div style="background-color:orange; color:white; padding:4px">Booked</div>';
                             }  
                         ?>
                         </td>

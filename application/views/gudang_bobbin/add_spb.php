@@ -28,7 +28,7 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            No. SPB <font color="#f00">*</font>
+                            No. SPB BB <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_spb" name="no_spb" readonly="readonly"
@@ -66,6 +66,30 @@
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-4">
+                            Pemohon
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_pemohon" name="nama_pemohon" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Packing
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis_packing" name="jenis_packing" placeholder="Silahkan pilih..."
+                                class="form-control myline select2me" style="margin-bottom:5px;" onchange="pilih_data(this.value)">
+                                <option value=""></option>
+                                <?php 
+                                foreach($jenis_packing as $row){
+                                ?>
+                                <option value="<?php echo $row->id; ?>"><?php echo $row->jenis_packing; ?> </option>
+                                <?php } ?>  
+                            </select>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Catatan

@@ -245,4 +245,269 @@ class GudangBobbin extends CI_Controller{
 
         $this->load->view('layout', $data);
     }   
+
+    function add_spb(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "gudang_bobbin/add_spb";
+        $data['jenis_packing'] = $this->db->get('m_jenis_packing')->result();
+        $this->load->view('layout', $data);
+    }
+
+    function save_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('SPB-BB', $tgl_input);
+        
+        #Insert spb bobbin
+        if($code){        
+            $data = array(
+            'no_spb_bobbin' => $code,
+            'jenis_packing' => $this->input->post('jenis_packing'),
+            'pemohon' => $this->input->post('nama_pemohon'),
+            'status' => 0,
+            'keterangan' => $this->input->post('remarks'),
+            'created_by' => $user_id,
+            'created_at' => $tanggal
+            );
+
+            if($this->db->insert('m_bobbin_spb', $data)){
+                redirect('index.php/GudangBobbin/edit_spb/'.$this->db->insert_id());  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data SPB Bobbin gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/GudangBobbin/add_spb');  
+            }            
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data SPB Bobbin gagal disimpan, penomoran belum disetup!');
+            redirect('index.php/GudangBobbin/spb_list');
+        }
+        #Insert spb bobbin detail
+        // $insert_id = $this->db->insert_id();
+        // $data_spb_bobbin_detail = array(
+        //     'id_spb_bobbin' => $insert_id,
+        //     'id_bobbin' => 
+        // );
+    }
+
+    function edit_spb(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "gudang_bobbin/edit_spb";
+            $this->load->model('Model_bobbin');
+            $data['header'] = $this->Model_bobbin->show_header_spb($id)->row_array();
+            $data['details'] =   $this->Model_bobbin->show_detail_spb($id)->result();
+    
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/GudangFG/spb_list');
+        }
+    }
+
+    function load_detail_edit_spb(){
+        $id = $this->input->post('id');
+        $id_jenis = $this->input->post('id_jenis');
+        $tabel = "";
+        $no    = 1;
+        $this->load->model('Model_bobbin');
+        $list_barang = $this->Model_bobbin->bobbin_list($id_jenis)->result();
+        
+        $myDetail = $this->Model_bobbin->load_spb_detail($id)->result(); 
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->nomor_bobbin.'</td>';
+            $tabel .= '<td>'.$row->berat.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a></td>';
+            $tabel .= '</tr>';            
+            $no++;
+        }
+            
+        $tabel .= '<tr>';
+        $tabel .= '<td style="text-align:center">'.$no.'</td>';
+        $tabel .= '<td>';
+        $tabel .= '<select id="id_bobbin" name="id_bobbin" class="form-control select2me myline" ';
+            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_berat(this.value);">';
+            $tabel .= '<option value=""></option>';
+            foreach ($list_barang as $value){
+                $tabel .= "<option value='".$value->id."'>".$value->nomor_bobbin."</option>";
+            }
+        $tabel .= '</select>';
+        $tabel .= '</td>';
+        $tabel .= '<td><input type="text" id="berat" name="berat" class="form-control myline" readonly="readonly"></td>';      
+        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
+                . '<i class="fa fa-plus"></i> Tambah </a></td>';
+        $tabel .= '</tr>';
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function get_berat(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_bobbin');
+        $berat= $this->Model_bobbin->get_berat($id)->row_array();
+        
+        header('Content-Type: application/json');
+        echo json_encode($berat);
+    }
+
+    function save_spb_bb_detail(){
+        $return_data = array();
+        $tgl_input = date("Y-m-d");
+        
+        if($this->db->insert('m_bobbin_spb_detail', array(
+            'id_spb_bobbin'=>$this->input->post('id_spb_bobbin'),
+            'id_bobbin'=>$this->input->post('id_bobbin')
+        ))){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan bobbin! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
+
+    function delete_detail(){
+        $id = $this->input->post('id');
+        $return_data = array();
+        $this->db->where('id', $id);
+        if($this->db->delete('m_bobbin_spb_detail')){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menghapus item barang! Silahkan coba kembali";
+        }           
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
+
+    function update_spb(){
+        // $user_id  = $this->session->userdata('user_id');
+        // $tanggal  = date('Y-m-d h:m:s');        
+        // $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $data = array(
+                'keterangan'=>$this->input->post('remarks'),
+            );
+        
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('m_bobbin_spb', $data);
+        
+        $this->session->set_flashdata('flash_msg', 'Data SPB BB berhasil disimpan');
+        redirect('index.php/GudangBobbin/spb_list');
+    }
+
+    function view_spb(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "gudang_bobbin/view_spb";
+
+            $this->load->model('Model_bobbin');
+            $data['list_barang'] = $this->Model_bobbin->jenis_barang_list_by_spb($id)->result();
+            $data['myData'] = $this->Model_bobbin->show_header_spb($id)->row_array();           
+            $data['myDetail'] = $this->Model_bobbin->show_detail_spb($id)->result(); 
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/GudangFG/spb_list');
+        }
+    }
+
+    function approve_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $spb_id = $this->input->post('id');
+        
+        $this->db->trans_start();
+        
+        #Update status SPB
+        $this->db->where('id', $spb_id);
+        $this->db->update('m_bobbin_spb', array(
+                        'status'=> 1,
+                        'keterangan' => $this->input->post('remarks'),
+                        'approved_at'=> $tanggal,
+                        'approved_by'=>$user_id
+        ));
+
+        $key = $this->db->query("select *from m_bobbin_spb_detail where id_spb_bobbin = ".$spb_id)->result();
+        foreach ($key as $row) {
+            $id_bobbin = $row->id_bobbin;
+            $this->db->where('id', $id_bobbin);
+            $this->db->update('m_bobbin', array(
+                'status' => 3,
+                'modified_at' => $tanggal,
+                'modified_by' => $user_id
+            ));
+        }
+            
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'SPB sudah di-approve. Detail SPB sudah disimpan');            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }             
+        
+       redirect('index.php/GudangBobbin/spb_list');
+    }
+
+    function reject_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $id_spb = $this->input->post('header_id');
+        
+        #Update status m_bobbin_spb
+        $data = array(
+                'status'=> 9,
+                'rejected_at'=> $tanggal,
+                'rejected_by'=>$user_id,
+                'reject_remarks'=>$this->input->post('reject_remarks')
+            );
+        
+        $this->db->where('id', $id_spb);
+        $this->db->update('m_bobbin_spb', $data);
+
+        // #Update NULL di t_gudang_fg
+        // $this->db->where('t_spb_fg_id', $id_spb);
+        // $this->db->update('t_gudang_fg', array(
+        //                 't_spb_fg_id'=> NULL,
+        //                 't_spb_fg_detail_id'=> NULL,
+        //                 'nomor_SPB'=> NULL,
+        //                 'keterangan'=> NULL,
+        //                 'modified_date'=> $tanggal,
+        //                 'modified_by'=>$user_id
+        // ));
+        
+        $this->session->set_flashdata('flash_msg', 'Data SPB BB berhasil direject');
+        redirect('index.php/GudangBobbin/spb_list');
+    }
 }

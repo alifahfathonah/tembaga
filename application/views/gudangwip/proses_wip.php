@@ -68,7 +68,7 @@
                             KETERANGAN
                         </div>
                         <div class="col-md-8">
-                            <textarea id="keterangan" name="keterangan" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline"></textarea>
+                            <textarea id="keterangan" name="keterangan" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px"></textarea>
                         </div>
                     </div>
                 </div>
