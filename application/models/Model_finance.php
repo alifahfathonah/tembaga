@@ -3,7 +3,17 @@ class Model_finance extends CI_Model{
     function list_data(){
         $data = $this->db->query("Select fum.*, mc.nama_customer From f_uang_masuk fum
             left join m_customers mc on mc.id = fum.m_customer_id
-            Order By tanggal");
+            Order By tanggal desc");
+        return $data;
+    }
+
+    function replace_list($id, $jenis){
+        $data = $this->db->query("Select * from f_uang_masuk where status = 9 and replace_id = 0 and m_customer_id =".$id." and jenis_pembayaran = '".$jenis."'");
+        return $data;
+    }
+
+    function replace_list_detail($id){
+        $data = $this->db->query("Select * from f_uang_masuk where id = ".$id);
         return $data;
     }
 
@@ -17,8 +27,22 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function get_bank_list($id){
+        $data = $this->db->query("Select * From bank where id =".$id);
+        return $data;
+    }
+
+    function view_um($id){
+        $data = $this->db->query("Select fum.*, mc.nama_customer, b.kode_bank, b.nama_bank, b.nomor_rekening, u.realname From f_uang_masuk fum
+            left join m_customers mc on mc.id = fum.m_customer_id
+            left join bank b on b.id = fum.rekening_tujuan
+            left join users u on u.id = fum.approved_by or u.id = fum.reject_by
+            where fum.id = ".$id);
+        return $data;
+    }
+
     function list_data_voucher(){
-        $data = $this->db->query("Select * from voucher");
+        $data = $this->db->query("Select * from voucher where pembayaran_id = 0");
         return $data;
     }
 
@@ -54,9 +78,7 @@ class Model_finance extends CI_Model{
     }
 
     function load_detail($id){
-        $data = $this->db->query("select fpd.*,v.no_voucher,v.jenis_voucher,v.jenis_barang,v.amount,v.keterangan from f_pembayaran_detail fpd
-                left join voucher v on v.id=fpd.voucher_id
-                where fpd.id_pembayaran =".$id);
+        $data = $this->db->query("select * from voucher where pembayaran_id = ".$id);
         return $data;
     }
 
@@ -66,17 +88,25 @@ class Model_finance extends CI_Model{
     }
 
     function load_detail_um($id){
-        $data = $this->db->query("Select * from f_uang_masuk where pembayaran_id =".$id);
+        $data = $this->db->query("select fpd.*, fum.bank_pembayaran, fum.jenis_pembayaran, fum.nominal, fum.keterangan, fum.currency, fum.rekening_pembayaran, mc.nama_customer
+            from f_pembayaran_detail fpd
+            left join f_uang_masuk fum on fum.id = fpd.um_id
+            left join m_customers mc on mc.id = fum.m_customer_id
+            where fpd.id_pembayaran = ".$id." and fpd.voucher_id = 0");
         return $data;
     }
 
     function list_data_um(){
-        $data = $this->db->query("Select * from f_uang_masuk where pembayaran_id = 0");
+        $data = $this->db->query("Select fum.* from f_uang_masuk fum
+                left join f_pembayaran_detail fpd on fpd.um_id = fum.id 
+                where fpd.um_id is null and (status = 1 or status = 0)");
         return $data;
     }
 
     function get_data_um($id){
-        $data = $this->db->query("Select * from f_uang_masuk where id = ".$id);
+        $data = $this->db->query("Select fum.*, mc.nama_customer from f_uang_masuk fum
+                left join m_customers mc on mc.id = fum.m_customer_id
+                where fum.id = ".$id);
         return $data;
     }
 }

@@ -45,34 +45,160 @@ class Finance extends CI_Controller{
         $this->load->view('layout', $data); 
     }
 
+    function get_replace(){
+        $id = $this->input->post('id');
+        $jenis = $this->input->post('jenis');
+        $tabel = "";
+
+        $this->load->model('Model_finance');
+        $replace_list = $this->Model_finance->replace_list($id, $jenis)->result();
+
+            $tabel .= '<option></option>';
+            $tabel .= '<option value="0">Cek Baru</option>';
+            foreach ($replace_list as $value){
+                $tabel .= "<option value='".$value->id."'>".$value->nomor_cek."</option>";
+            }
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function get_replace_detail(){
+        $id = $this->input->post('id');
+
+        $this->load->model('Model_finance');
+        $result = $this->Model_finance->replace_list_detail($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($result); 
+    }
+
     function save(){
         $user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
 
+        $this->db->trans_start();
         $data = array(
             'm_customer_id'=> $this->input->post('customer_id'),
             'tanggal'=> $this->input->post('tanggal'),
+            'status'=> 0,
             'jenis_pembayaran'=> $this->input->post('jenis_id'),
             'rekening_tujuan'=> $this->input->post('bank_id'),
-            'pembayaran_id'=> 0,
             'bank_pembayaran'=> $this->input->post('bank_pengirim'),
             'rekening_pembayaran'=> $this->input->post('rek_pengirim'),
             'nomor_cek'=> $this->input->post('no_cek_pengirim'),
             'currency'=> $this->input->post('currency'),
             'nominal'=> str_replace('.', '', $this->input->post('nominal')),
             'tgl_cair'=> $this->input->post('tanggal_cek'),
+            'keterangan'=> $this->input->post('remarks'),
             'created_at'=> $tanggal,
             'created_by'=> $user_id
         );
+        $this->db->insert('f_uang_masuk', $data);
+        $insert_id = $this->db->insert_id();
 
-        if($this->db->insert('f_uang_masuk', $data)){
+        if($this->input->post('id_replace') != 0){
+            $this->db->where('id', $this->input->post('id_replace'));
+            $this->db->update('f_uang_masuk', array(
+                            'replace_id'=>$insert_id,
+                            'status'=> 8,
+            ));
+        }
+
+        if($this->db->trans_complete()){
             redirect('index.php/Finance/');  
         }else{
             $this->session->set_flashdata('flash_msg', 'Uang Masuk gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/Finance');  
         }            
+    }
+
+    function view_um(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "finance/view_um";
+
+            $this->load->model('Model_finance');
+            $data['myData'] = $this->Model_finance->view_um($id)->row_array();
+            if($data['myData']['replace_id'] > 0){
+                $data['dataReplace'] = $this->Model_finance->replace_list_detail($data['myData']['replace_id'])->row_array();
+            }
+            //$data['list_bank'] = $this->Model_finance->bank_list()->result();
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/Finance');
+        }
+    }
+
+    function get_bank(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_finance');
+        $barang= $this->Model_finance->get_bank_list($id)->row_array();
+        
+        header('Content-Type: application/json');
+        echo json_encode($barang); 
+    }
+
+    function approve_um(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $id = $this->input->post('id');
+        
+        $this->db->trans_start();
+        
+        #Update status Uang Masuk
+        $this->db->where('id', $id);
+        $this->db->update('f_uang_masuk', array(
+                        'status'=> 1,
+                        'tgl_cair'=> $tgl_input,
+                        'approved_at'=> $tanggal,
+                        'approved_by'=> $user_id
+        ));
+            
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'Uang Masuk sudah di-approve');            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }             
+        
+       redirect('index.php/Finance');
+    }
+
+    function reject_um(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $id = $this->input->post('header_id');
+        
+        #Update status Uang Masuk
+        $data = array(
+            'status'=> 9,
+            'reject_at'=> $tanggal,
+            'reject_by'=> $user_id,
+            'reject_remarks'=> $this->input->post('reject_remarks')
+        );
+
+        $this->db->where('id', $id);
+            
+            if($this->db->update('f_uang_masuk', $data)){
+                $this->session->set_flashdata('warning_msg', 'Uang Masuk sudah di Reject');
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }             
+        
+       redirect('index.php/Finance');
     }
 
     function voucher_list(){
@@ -145,10 +271,6 @@ class Finance extends CI_Controller{
         );
         $this->db->insert('f_pembayaran', $data);
         $id_new=$this->db->insert_id();
-        $this->db->where('id', $this->input->post('um_id'));
-        $this->db->update('f_uang_masuk', array(
-            'pembayaran_id'=>$id_new
-        ));
 
         if($this->db->trans_complete()){
             redirect(base_url('index.php/Finance/add_detail_pembayaran/'.$id_new));
@@ -164,8 +286,21 @@ class Finance extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
 
-        if($this->input->post('id')){
-            redirect(base_url('index.php/Finance/add_detail_um/'.$this->input->post('id')));
+        $id = $this->input->post('id');
+        $this->db->trans_start();
+        $this->load->model('Model_finance');
+        $myDetail = $this->Model_finance->load_detail($id)->result();
+
+        foreach ($myDetail as $row) {
+            $data = array(
+            'id_pembayaran'=> $id,
+            'voucher_id'=> $row->id,
+            'um_id'=> 0
+            );
+        $this->db->insert('f_pembayaran_detail', $data);   
+        }
+        if($this->db->trans_complete()){
+            redirect(base_url('index.php/Finance/matching_pmb/'.$this->input->post('id')));
         }else{
             $this->session->set_flashdata('flash_msg', 'Uang Masuk gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/Finance');  
@@ -187,7 +322,7 @@ class Finance extends CI_Controller{
 
         $this->load->model('Model_finance');
         $data['header'] = $this->Model_finance->list_detail_pembayaran($id)->row_array();
-        $data['list_voucher'] = $this->Model_finance->list_data_voucher()->result();
+        //$data['voucher_list'] = $this->Model_finance->list_data_voucher()->result();
 
         $this->load->view('layout', $data); 
     }
@@ -199,7 +334,6 @@ class Finance extends CI_Controller{
         $no    = 1;
         $this->load->model('Model_finance');
         $myDetail = $this->Model_finance->load_detail($id)->result();
-        $voucher_list = $this->Model_finance->list_voucher_data()->result();
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
@@ -209,35 +343,24 @@ class Finance extends CI_Controller{
             $tabel .= '<td>'.number_format($row->amount,0,',','.').'</td>';
             $tabel .= '<td>'.$row->keterangan.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . 'red" onclick="hapusDetail_vc('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';            
             $no++;
         }
-            
-        $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:center">'.$no.'</td>';
-        $tabel .= '<td>';
-        $tabel .= '<select id="vc_id" name="vc_id" class="form-control select2me myline" ';
-            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_data(this.value);">';
-            $tabel .= '<option value=""></option>';
-            foreach ($voucher_list as $value){
-                $tabel .= "<option value='".$value->id."'>".$value->no_voucher."</option>";
-            }
-        $tabel .= '</select>';
-        $tabel .= '</td>';
-        $tabel .= '<td><input type="text" id="jenis_voucher" name="jenis_voucher" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td><input type="text" id="jenis_barang" name="jenis_barang" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td><input type="text" id="amount" name="amount" class="form-control myline" readonly="readonly"/></td>';
-        $tabel .= '<td><input type="text" id="keterangan" name="keterangan" class="form-control myline" readonly="readonly"'
-                . 'onkeyup="this.value = this.value.toUpperCase()"></td>';        
-        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
-                . '<i class="fa fa-plus"></i> Tambah </a></td>';
-        $tabel .= '</tr>';
 
         header('Content-Type: application/json');
         echo json_encode($tabel); 
+    }
+
+    function get_vc_list(){ 
+        $this->load->model('Model_finance');
+        $data = $this->Model_finance->list_data_voucher()->result();
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->no_voucher;
+        } 
+        print form_dropdown('vc_id', $arr_so);
     }
 
     function get_data_voucher(){
@@ -252,14 +375,18 @@ class Finance extends CI_Controller{
     }
 
     function save_detail_pembayaran(){
+        $user_id   = $this->session->userdata('user_id');
         $return_data = array();
         $tgl_input = date("Y-m-d");
+        $tanggal   = date('Y-m-d h:m:s');
         
-        if($this->db->insert('f_pembayaran_detail', array(
-            'id_pembayaran' => $this->input->post('id'),
-            'voucher_id'=>$this->input->post('vc_id'),
-            'amount'=>$this->input->post('amount')
-        ))){
+        $data = array(
+            'pembayaran_id'=>$this->input->post('id'),
+            'modified'=> $tanggal,
+            'modified_by'=> $user_id
+        );
+        $this->db->where('id', $this->input->post('vc_id'));
+        if($this->db->update('voucher', $data)){
             $return_data['message_type']= "sukses";
         }else{
             $return_data['message_type']= "error";
@@ -275,11 +402,13 @@ class Finance extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $return_data = array();
         $data = array(
-                'id'=>$id
+                'pembayaran_id'=>0,
+                'modified'=> $tanggal,
+                'modified_by'=> $user_id
             );
         
         $this->db->where('id', $id);
-        if($this->db->delete('f_pembayaran_detail', $data)){
+        if($this->db->update('voucher', $data)){
             $return_data['message_type']= "sukses";
         }else{
             $return_data['message_type']= "error";
@@ -321,12 +450,12 @@ class Finance extends CI_Controller{
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->currency.' '.number_format($row->nominal,0,',','.').'</td>';
             $tabel .= '<td>'.$row->jenis_pembayaran.'</td>';
             $tabel .= '<td>'.$row->bank_pembayaran.'</td>';
-            $tabel .= '<td>'.$row->nominal.'</td>';
             $tabel .= '<td>'.$row->keterangan.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . 'red" onclick="hapusDetail_um('.$row->id.');"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';            
             $no++;
@@ -336,20 +465,20 @@ class Finance extends CI_Controller{
         $tabel .= '<td style="text-align:center">'.$no.'</td>';
         $tabel .= '<td>';
         $tabel .= '<select id="um_id" name="um_id" class="form-control select2me myline" ';
-            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_data(this.value);">';
+            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_data_um(this.value);">';
             $tabel .= '<option value=""></option>';
             foreach ($um_list as $value){
-                $tabel .= "<option value='".$value->id."'>".number_format($value->nominal,0,',','.')."</option>";
+                $tabel .= "<option value='".$value->id."'>".$value->currency.' '.number_format($value->nominal,0,',','.')."</option>";
             }
         $tabel .= '</select>';
         $tabel .= '</td>';
         $tabel .= '<td><input type="text" id="jenis_pembayaran" name="jenis_voucher" class="form-control myline" readonly="readonly"></td>';
         $tabel .= '<td><input type="text" id="bank_pembayaran" name="bank_pembayaran" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<input type="hidden" id="amount" name="amount" class="form-control myline" readonly="readonly"/>';
-        $tabel .= '<td><input type="text" id="keterangan" name="keterangan" class="form-control myline" readonly="readonly"'
+        $tabel .= '<input type="hidden" id="amount_um" name="amount_um" class="form-control myline" readonly="readonly"/>';
+        $tabel .= '<td><input type="text" id="keterangan_um" name="keterangan_um" class="form-control myline" readonly="readonly"'
                 . 'onkeyup="this.value = this.value.toUpperCase()"></td>';        
         $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
+                . 'yellow-gold" onclick="saveDetail_um();" style="margin-top:7px" id="btnSaveDetail"> '
                 . '<i class="fa fa-plus"></i> Tambah </a></td>';
         $tabel .= '</tr>';
 
@@ -373,10 +502,10 @@ class Finance extends CI_Controller{
         $tgl_input = date("Y-m-d");
         
         $data = array(
-            'pembayaran_id'=>$this->input->post('id')
+            'id_pembayaran'=>$this->input->post('id'),
+            'um_id'=>$this->input->post('um_id')
         );
-        $this->db->where('id', $this->input->post('um_id'));
-        if($this->db->update('f_uang_masuk', $data)){
+        if($this->db->insert('f_pembayaran_detail', $data)){
             $return_data['message_type']= "sukses";
         }else{
             $return_data['message_type']= "error";
@@ -391,12 +520,9 @@ class Finance extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $return_data = array();
-        $data = array(
-                'pembayaran_id'=>0
-            );
-        
+
         $this->db->where('id', $id);
-        if($this->db->update('f_uang_masuk', $data)){
+        if($this->db->delete('f_pembayaran_detail')){
             $return_data['message_type']= "sukses";
         }else{
             $return_data['message_type']= "error";
@@ -404,6 +530,26 @@ class Finance extends CI_Controller{
         }           
         header('Content-Type: application/json');
         echo json_encode($return_data);
+    }
+
+    function save_pmb(){
+        $return_data = array();
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        
+        $data = array(
+            'modified_at'=>$tanggal,
+            'modified_by'=>$user_id
+        );
+        $this->db->where('id', $this->input->post('id'));
+        if($this->db->update('f_pembayaran', $data)){
+            redirect(base_url('index.php/Finance/pembayaran'));
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Uang Masuk gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/Finance');  
+        } 
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
     }
 
     function approve_pmb(){
@@ -424,4 +570,25 @@ class Finance extends CI_Controller{
         echo json_encode($return_data); 
     }
 
+    function matching_pmb(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Finance";
+            $data['content']   = "finance/matching_pmb";
+
+            $this->load->model('Model_finance');
+            $data['header'] = $this->Model_finance->list_detail_pembayaran($id)->row_array();
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/Finance');
+        }
+    }
 }

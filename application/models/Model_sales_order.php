@@ -246,7 +246,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function show_header_sj($id){
-        $data = $this->db->query("Select tsj.*, 
+        $data = $this->db->query("Select tsj.*, cust.id as id_customer,
                     cust.nama_customer, cust.alamat,
                     tso.no_spb, so.no_sales_order,
                     kdr.no_kendaraan,
@@ -288,7 +288,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function get_data_gudang_fg($id){
-        $data = $this->db->query("select t_gudang_fg_id from t_surat_jalan_detail where id =".$id);
+        $data = $this->db->query("select id_gudang from t_surat_jalan_detail where id =".$id);
         return $data;
     }
 }

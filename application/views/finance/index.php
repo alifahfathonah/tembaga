@@ -28,7 +28,7 @@
                     <i class="fa fa-file-word-o"></i>Data Uang Masuk
                 </div> 
                 <div class="tools">    
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Finance/add"> <i class="fa fa-plus"></i>Input Uang Masuk</a>              
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Finance/add"> <i class="fa fa-plus"></i> Input Uang Masuk</a>              
                 </div>               
             </div>
             <div class="portlet-body">
@@ -38,8 +38,11 @@
                     <th style="width:50px;">No</th>
                     <th>Nama Customer</th>   
                     <th>Tanggal</th>
-                    <th>Jenis Pembayaran</th>
+                    <th>Jenis<br>Pembayaran</th>
                     <th>Nominal</th>
+                    <th>Keterangan</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -54,6 +57,37 @@
                         <td><?php echo $data->tanggal; ?></td>
                         <td><?php echo $data->jenis_pembayaran; ?></td>
                         <td><?php echo $data->currency.' '.number_format($data->nominal,0,',','.');?></td>
+                        <td><?php echo $data->keterangan; ?></td>
+                        <td style="text-align:center">
+                            <?php
+                                if($data->status==0){
+                                    echo '<div style="background-color:darkkhaki; padding:3px">Belum Cair</div>';
+                                }else if($data->status==1){
+                                    echo '<div style="background-color:green; padding:3px; color:white">Sudah Cair</div>';
+                                }else if($data->status==2){
+                                    echo '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
+                                }else if($data->status==9){
+                                    echo '<div style="background-color:red; color:#fff; padding:3px">Gagal Cair</div>';
+                                }else if($data->status==8){
+                                    echo '<div style="background-color:orange; color:#fff; padding:3px">Sudah Diganti</div>';
+                                }
+                            ?>
+                        </td>
+                        <td style="text-align:center"> 
+                            <?php
+                                if($group_id==1 || $hak_akses['view_spb']==1){
+                            ?>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/view_um/<?php echo $data->id; ?>" 
+                               style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                               
+                            <?php
+                                }
+                                if($group_id==1 || $hak_akses['print_spb']==1){
+                                    echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Finance/print_um/'.$data->id.'" 
+                                        style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
+                                }
+                            ?>
+                        </td>
                     </tr>
                     <?php
                         }

@@ -694,7 +694,7 @@ class SalesOrder extends CI_Controller{
         $this->load->model('Model_sales_order');
         $get_id = $this->Model_sales_order->get_data_gudang_fg($id)->row_array();
 
-        $this->db->where('id', $get_id['t_gudang_fg_id']);
+        $this->db->where('id', $get_id['id_gudang']);
         $this->db->update('t_gudang_fg', array(
             'flag_taken'=>0
         ));
@@ -721,9 +721,11 @@ class SalesOrder extends CI_Controller{
             't_sj_id'=>$this->input->post('id'),
             'jenis_barang_id'=>$this->input->post('jenis_barang_id'),
             'no_packing'=>$this->input->post('no_packing'),
+            'id_gudang'=>$this->input->post('barang_id'),
             'qty'=>'1',
             'bruto'=>$this->input->post('bruto'),
             'netto'=>$this->input->post('netto'),
+            'nomor_bobbin'=>$this->input->post('bobbin'),
             'line_remarks'=>$this->input->post('line_remarks'),
             'created_by'=>$user_id,
             'created_at'=>$tanggal
@@ -757,7 +759,7 @@ class SalesOrder extends CI_Controller{
         $this->db->insert('m_bobbin_peminjaman', array(
             'no_surat_peminjaman' => $code,
             'id_surat_jalan' => $this->input->post('id'),
-            'id_customer' => $this->input->post('m_customer_id'),
+            'id_customer' => $this->input->post('id_customer'),
             'created_by' => $user_id,
             'created_at' => $tanggal
         ));
@@ -765,7 +767,7 @@ class SalesOrder extends CI_Controller{
         $data = array(
                 'tanggal'=> $tgl_input,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
-                'm_customer_id'=>$this->input->post('m_customer_id'),
+                'm_customer_id'=>$this->input->post('id_customer'),
                 'sales_order_id'=>$this->input->post('sales_order_id'),
                 'm_kendaraan_id'=>$this->input->post('m_kendaraan_id'),
                 'supir'=>$this->input->post('supir'),

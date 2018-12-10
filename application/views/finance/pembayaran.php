@@ -66,7 +66,7 @@
                             ?>
                         </td>
                         <td>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/add_detail_um/<?php echo $data->id; ?>" 
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/matching_pmb/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
                         </td>
                     </tr>

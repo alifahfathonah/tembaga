@@ -32,8 +32,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('Y-m-d'); ?>">
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" value="<?php echo date('Y-m-d'); ?>" readonly="readonly">
                         </div>
                     </div>  
                     <div class="row">
@@ -51,8 +50,7 @@
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="customer_id" name="customer_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
+                            <select id="customer_id" name="customer_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="resetAllValues();$('#show_replace').hide();$('#show_replace_detail').hide();$('#jenis_id').prop('selectedIndex',0);">
                                 <option value=""></option>
                                 <?php
                                     foreach ($customer_list as $row){
@@ -62,13 +60,13 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" id="show_jenis_pmb">
                         <div class="col-md-4">
                             Jenis Pembayaran <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="jenis_id" name="jenis_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." onclick="get_cek(this.value);" style="margin-bottom:5px">
+                            <select id="jenis_id" name="jenis_id" class="form-control myline" 
+                                placeholder="Silahkan pilih Jenis Pembayaran ..." onchange="get_cek(this.value);" style="margin-bottom:5px">
                                 <option value="0"></option>
                                 <option value="Cek">Cek</option>
                                 <option value="Cek Mundur">Cek Mundur</option>
@@ -100,7 +98,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal_cek" name="tanggal_cek" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                                value="<?php echo date('Y-m-d'); ?>">
                         </div>
                     </div> 
                     <div class="row" id="show_bank">
@@ -144,7 +142,7 @@
                                 <option value="YEN">YEN</option>
                             </select>
                             <input type="text" id="nominal" name="nominal" 
-                                class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id)";>
+                                class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id)";>
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
@@ -167,7 +165,55 @@
                                 class="form-control myline" style="margin-bottom:5px"></textarea>                           
                         </div>
                     </div>
-                </div>              
+                    <div class="row" id="show_replace">
+                        <div class="col-md-4">
+                            Nomor Cek Lama
+                        </div>
+                        <div class="col-md-8">
+                            <select id="replace_id" name="id_replace" class="form-control myline" 
+                                placeholder="Silahkan pilih ..." style="margin-bottom:5px" onchange="get_replace_detail(this.value);">
+                            </select>
+                        </div>
+                    </div>
+                <div id="show_replace_detail">
+                    <div class="row">
+                        <div class="col-md-4">
+                            Bank Pembayaran Cek Lama
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="bank_cek_lama" name="bank_cek_lama" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Currency Cek Lama
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="currency_lama" name="currency_lama" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nominal Cek Lama
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nominal_lama" name="nominal_lama" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tangga Cek Mundur Lama
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="cek_mundur_lama" name="cek_mundur_lama" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+                </div>
             </div>
             
         </form>
@@ -189,7 +235,32 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else{     
+    }else if($.trim($("#customer_id").val()) == ""){
+        $('#message').html("Customer harus dipilih, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#currency").val()) == ""){
+        $('#message').html("Currency harus dipilih, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#nominal").val()) == ""){
+        $('#message').html("Nominal harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#jenis_id").val()) == 0){
+        $('#message').html("Jenis Pembayaran harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else if($("#jenis_id").val() == "Cek" || $("#jenis_id").val() == "Cek Mundur"){
+        if($.trim($("#replace_id").val()) == ""){
+            $('#message').html("Cek Lama harus diisi, tidak boleh kosong!");
+            $('.alert-danger').show(); 
+        }else if($.trim($("#no_cek_pengirim").val()) == ""){
+            $('#message').html("Nomor Cek Baru harus diisi, tidak boleh kosong!");
+            $('.alert-danger').show();
+        }else if($.trim($("#bank_pengirim").val()) == ""){
+            $('#message').html("Bank Pengirim harus diisi, tidak boleh kosong!");
+            $('.alert-danger').show();
+        }else{
+            $('#formku').submit();
+        }
+    }else{
         $('#formku').submit(); 
     };
 };
@@ -207,24 +278,75 @@ function getComa(value, id){
     hitungSubTotal();
 }
 
+function get_replace(id){
+    id_cust = $("#customer_id").val();
+    $.ajax({
+        type:"POST",
+        url:"<?php echo base_url('index.php/Finance/get_replace'); ?>",
+        data: {
+            id : id_cust,
+            jenis : id
+        },
+        success:function(result){
+            $('#replace_id').html(result);    
+        }
+    });
+}
+
+function get_replace_detail(id){
+    if(id == 0){
+        $('#show_replace_detail').hide();
+        resetAllValues();
+        $('#replace_id').prop('selectedIndex',1);
+    }else{
+        $.ajax({
+            type:"POST",
+            url:"<?php echo base_url('index.php/Finance/get_replace_detail'); ?>",
+            data: {
+                id : id
+            },
+            success:function(result){
+                $('#show_replace_detail').show();
+                $('#bank_cek_lama').val(result['bank_pembayaran']);
+                $('#currency_lama').val(result['currency']);
+                $('#nominal_lama').val(result['nominal']);
+                $('#cek_mundur_lama').val(result['tgl_cair']);
+            }
+        });
+    }
+}
+
+//Custom Functions that reset
+function resetAllValues() {
+  $('#show_replace_detail').find('input:text').val('');
+  $('#replace_id').prop('selectedIndex',0);
+}
+
 function get_cek(id){
     if(id === "Cek") {
+        resetAllValues();
         $('#show_rek').hide();
         $("#show_rek_tuj").hide();
         $("#show_bank").hide();
         $("#show_cek_mu").hide();
         $("#show_nomor_cek").hide();
+        $("#show_replace").hide();
 
         $("#show_bank").show();
+        $("#show_replace").show();
         $("#show_nomor_cek").show();
+        get_replace('Cek');
     }else if(id === "Cek Mundur") {
+        resetAllValues();
         $('#show_rek').hide();
         $("#show_rek_tuj").hide();
         $("#show_bank").hide();
         $("#show_cek_mu").hide();
         $("#show_nomor_cek").hide();
+        $("#show_replace").hide();
 
         $("#show_bank").show();
+        $("#show_replace").show();
         $("#show_cek_mu").show();
         $("#show_nomor_cek").show();
         $("#tanggal_cek").datepicker({
@@ -236,7 +358,12 @@ function get_cek(id){
             changeYear: true,
             dateFormat: 'dd-mm-yy'
         });
+        get_replace('Cek Mundur');
     }else if(id === "Giro") {
+        resetAllValues();
+        $('#show_replace').hide();
+        $('#show_replace_detail').hide();
+        get_replace();
         $('#show_rek').hide();
         $("#show_rek_tuj").hide();
         $("#show_bank").hide();
@@ -247,6 +374,10 @@ function get_cek(id){
         $("#show_bank").show();
         $("#show_rek").show();
     }else if(id === "Cash") {
+        resetAllValues();
+        $('#show_replace').hide();
+        $('#show_replace_detail').hide();
+        get_replace();
         $('#show_rek').hide();
         $("#show_rek_tuj").hide();
         $("#show_bank").hide();
@@ -260,21 +391,14 @@ function get_cek(id){
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-$(function(){        
-    $("#tanggal").datepicker({
-        showOn: "button",
-        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
-        buttonImageOnly: true,
-        buttonText: "Select date",
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'dd-mm-yy'
-    });
+$(function(){
+        $('#show_replace_detail').hide();
         $('#show_rek').hide();
         $("#show_rek_tuj").hide();
         $("#show_bank").hide();
         $("#show_cek_mu").hide();
         $("#show_nomor_cek").hide();
+        $("#show_replace").hide();
 });
 </script>
       

@@ -187,8 +187,7 @@ class BeliRongsok extends CI_Controller{
         $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                 . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
                 . '<i class="fa fa-plus"></i> Tambah </a></td>';
-        $tabel .= '</tr>';
-        
+        $tabel .= '</tr>'; 
         $tabel .= '<tr>';
         $tabel .= '<td colspan="5" style="text-align:right"><strong>Total (Rp) </strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';

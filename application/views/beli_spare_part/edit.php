@@ -215,6 +215,8 @@ function saveDetail(){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
                     $("#sparepart_id").select2("val", "");
+                    $('#uom').val('');
+                    $('#qty').val('');
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{

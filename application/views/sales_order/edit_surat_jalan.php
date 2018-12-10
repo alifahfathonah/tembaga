@@ -80,6 +80,7 @@
                             <input type="text" id="nama_customer" name="nama_customer" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['nama_customer']; ?>">
+                            <input type="hidden" id="id_customer" name="id_customer" value="<?php echo $header['id_customer'];?>" readonly="readonly">
                         </div>
                     </div>                    
                     <div class="row">
@@ -260,6 +261,7 @@ function saveDetail(){
                 no_packing:$('#no_packing').val(),
                 bruto:$('#bruto').val(),
                 netto:$('#netto').val(),
+                bobbin:$('#bobbin').val(),
                 line_remarks:$('#line_remarks').val()
             },
             success:function(result){
