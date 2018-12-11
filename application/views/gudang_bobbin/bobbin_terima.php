@@ -4,14 +4,14 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Gudang
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/gudangbobbinterimabarang'); ?>">  Gudang Bobbin Terima Barang </a> 
+            <a href="<?php echo base_url('index.php/gudangbobbin/bobbin_terima'); ?>">  Gudang Bobbin Terima Barang </a> 
         </h5>          
     </div>
 </div>
 
    <div class="row">&nbsp;</div>
 
-        <form class="eventInsForm" method="post" target="_self" name="formku" 
+        <!-- <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku" action="<?php echo base_url('index.php/Finishgood/save_finishgood'); ?>">                            
              <div class="row">
                 <div class="col-md-12">
@@ -72,7 +72,7 @@
 
              
 
-   </form>
+   </form> -->
 
 
   
@@ -81,7 +81,10 @@
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-beer"></i> Bobbin Terima Barang 
-                </div>                
+                </div>
+                <div class="tools">    
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/GudangBobbin/add_penerimaan_bobbin"> <i class="fa fa-plus"></i> Ajukan Terima Bobbin</a>              
+                </div>             
             </div> 
    <div class="portlet-body"> 
    <table width="100%" class="table table-striped table-bordered table-hover" id="sample_6">
@@ -89,14 +92,14 @@
        <tr >
             <th>No</th>
           
-            <th>Jenis Packing</th>
+            <th>Nomor Bobbin</th>
             <th>Type/Ukuran</th>
             <th>Kode</th>
             <th>Qty</th>
        </tr>
      </thead>
      <tbody>
-
+      
 
 
 

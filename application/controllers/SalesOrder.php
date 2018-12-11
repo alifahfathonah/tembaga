@@ -760,6 +760,7 @@ class SalesOrder extends CI_Controller{
             'no_surat_peminjaman' => $code,
             'id_surat_jalan' => $this->input->post('id'),
             'id_customer' => $this->input->post('id_customer'),
+            'status' => 0,
             'created_by' => $user_id,
             'created_at' => $tanggal
         ));
@@ -780,6 +781,7 @@ class SalesOrder extends CI_Controller{
         foreach ($query as $row) {
             $this->db->where('nomor_bobbin', $row->nomor_bobbin);
             $this->db->update('m_bobbin', array(
+                'borrowed_by' => $this->input->post('id_customer'),
                 'status' => 2
             ));
         }

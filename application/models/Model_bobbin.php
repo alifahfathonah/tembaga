@@ -118,4 +118,82 @@ class Model_bobbin extends CI_Model{
                 );
         return $data;
     }
+
+    function list_peminjam(){
+        $data = $this->db->query("select mbp.*, tsj.no_surat_jalan, mc.nama_customer, (select count(tsjd.id) as jumlah_item from t_surat_jalan_detail tsjd where tsjd.t_sj_id = tsj.id) as jumlah_item
+            from m_bobbin_peminjaman mbp left join t_surat_jalan tsj on (mbp.id_surat_jalan = tsj.id)
+            left join m_customers mc on (mbp.id_customer = mc.id)
+            ");
+        return $data;
+
+        // $data = $this->db->query("select mbs.*, aprv.realname as approved_name, rjct.realname as rejected_name, (select count(mbsd.id) from m_bobbin_spb_detail mbsd where mbsd.id_spb_bobbin = mbs.id) as jumlah_item from m_bobbin_spb mbs
+        //     left join users aprv on (aprv.id = mbs.approved_by)
+        //     left join users rjct on (rjct.id = mbs.rejected_by)
+        //     ");
+        // return $data;
+    }
+
+    function show_header_peminjam($id){
+        $data = $this->db->query("select mbp.*, usr.realname, tsj.no_surat_jalan, mc.nama_customer
+            from m_bobbin_peminjaman mbp left join t_surat_jalan tsj on (mbp.id_surat_jalan = tsj.id)
+            left join m_customers mc on (mbp.id_customer = mc.id)
+            left join users usr on (mbp.created_by = usr.id)
+            where mbp.id = ".$id);
+
+        return $data;
+    }
+    function show_detail_peminjam($id){
+        $data = $this->db->query("select mbp.*, tsj.no_surat_jalan, tsjd.nomor_bobbin, mc.nama_customer, (select count(tsjd.id) as jumlah_item from t_surat_jalan_detail tsjd where tsjd.t_sj_id = tsj.id) as jumlah_item
+            from m_bobbin_peminjaman mbp left join t_surat_jalan tsj on (mbp.id_surat_jalan = tsj.id)
+            left join m_customers mc on (mbp.id_customer = mc.id)
+            left join t_surat_jalan_detail tsjd on (tsjd.t_sj_id = tsj.id)
+            where mbp.id = ".$id);
+        return $data;
+    }
+
+    function list_bobbin(){
+        // $data = $this->db->query("select mbpd.*, mb.nomor_bobbin, mb.");
+    }
+
+    function customer_list(){
+        $this->db->order_by('nama_customer', 'asc');
+        $data = $this->db->get('m_customers');
+        return $data;
+    }
+
+    function get_sj_list($id){
+        $data = $this->db->query("Select * From m_bobbin_peminjaman Where id_customer=".$id);
+        return $data;
+    }
+
+    function show_header_penerimaan($id){
+        $data = $this->db->query("select mbt.*, mbp.no_surat_peminjaman, mbp.id_customer, mc.nama_customer, u.realname
+            from m_bobbin_penerimaan mbt
+            left join m_bobbin_peminjaman mbp on (mbt.id_peminjaman = mbp.id)
+            left join m_customers mc on (mbp.id_customer = mc.id)
+            left join users u on (u.id = mbt.created_by)
+            where mbt.id_peminjaman = ".$id);
+        return $data;
+    }
+
+    function load_list_bobbin_penerimaan($id){
+        $data = $this->db->query("select mbt.*, mbp.id_surat_jalan, tsjd.nomor_bobbin, mb.id
+            from m_bobbin_penerimaan mbt
+            left join m_bobbin_peminjaman mbp on (mbt.id_peminjaman = mbp.id)
+            left join t_surat_jalan_detail tsjd on (mbp.id_surat_jalan = tsjd.t_sj_id)
+            left join m_bobbin mb on (tsjd.nomor_bobbin = mb.nomor_bobbin)
+            where mbt.id_peminjaman = ".$id);
+        return $data;    
+    }
+
+    function load_bobbin_penerimaan_detail($id){
+        $data = $this->db->query("select mbtd.*, mbt.id, mbt.id_peminjaman, mbp.id_surat_jalan, tsjd.nomor_bobbin 
+            from m_bobbin_penerimaan_detail mbtd 
+            left join m_bobbin_penerimaan mbt on (mbtd.id_bobbin_penerimaan = mbt.id) 
+            left join m_bobbin_peminjaman mbp on (mbt.id_peminjaman = mbp.id) 
+            left join t_surat_jalan_detail tsjd on (mbp.id_surat_jalan = tsjd.t_sj_id)
+            where mbtd.id_bobbin_penerimaan = 1".$id);
+        return $data;
+    }
+
 }

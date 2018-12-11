@@ -11,7 +11,7 @@
 
    <div class="row">&nbsp;</div>
 
-       <form class="eventInsForm" method="post" target="_self" name="formku" 
+       <!-- <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku" action="<?php echo base_url('index.php/Gudangbobbinrequest/save_bobbinrequest'); ?>">                            
              <div class="row">
                 <div class="col-md-12">
@@ -79,7 +79,7 @@
 
              
 
-   </form>
+   </form> -->
 
 
         <!--div class='row'>
@@ -102,16 +102,38 @@
     <thead>
        <tr >
             <th>No</th>
-            
-            <th>Jenis Packing</th>
-            <th>Type/ukuran</th>
-            <th>Qty Permintaan</th>
-            <th>Qty Dikirim</th>
-            
+            <th>No. Surat Peminjaman</th>
+            <th>No. Surat Jalan</th>
+            <th>Nama Customer</th>
+            <th>Jumlah Item</th>
+            <th>Actions</th>
        </tr>
      </thead>
      <tbody>
+        <?php 
+          $no = 0;
+          foreach ($list_peminjam as $row) {
+            $no++;
+        ?>
+          <tr>
+            <td style="text-align:center;"><?php echo $no; ?></td>
+            <td><?php echo $row->no_surat_peminjaman; ?></td>
+            <td><?php echo $row->no_surat_jalan; ?></td>
+            <td><?php echo $row->nama_customer; ?></td>
+            <td style="text-align: center"><?php echo $row->jumlah_item; ?></td>
+            <td style="text-align:center">
+              <?php
+                if($group_id==1 || $hak_akses['print_spb']==1){
+                    echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangBobbin/print_bobbin_request/'.$row->id.'" 
+                        style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
+                }
+              ?>
+            </td>
+          </tr>
+        <?php   
 
+          }
+        ?>
 
 
 

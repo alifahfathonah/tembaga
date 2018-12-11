@@ -202,8 +202,8 @@ class GudangBobbin extends CI_Controller{
         $data['judul']     = "Gudang Bobbin Request";
         $data['content']   = "gudang_bobbin/bobbin_request";
         
-        $this->load->model('Model_ingot');
-        $data['jenis_barang_list'] = $this->Model_ingot->jenis_barang_list()->result();
+        $this->load->model('Model_bobbin');
+        $data['list_peminjam'] = $this->Model_bobbin->list_peminjam()->result();
         
         
         $this->load->view('layout', $data);  
@@ -222,11 +222,137 @@ class GudangBobbin extends CI_Controller{
         $data['judul']     = "Gudang Bobbin Terima Barang";
         $data['content']   = "gudang_bobbin/bobbin_terima";
         
-        $this->load->model('Model_ingot');
-        $data['jenis_barang_list'] = $this->Model_ingot->jenis_barang_list()->result();
+        $this->load->model('Model_bobbin');
+        // $data['list_bobbin'] = $this->Model_bobbin->list_bobbin()->result();
         
         
         $this->load->view('layout', $data);  
+    }
+
+    function add_penerimaan_bobbin(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "gudang_bobbin/add_penerimaan_bobbin";
+        $this->load->model('Model_bobbin');
+        $data['customer_list'] = $this->Model_bobbin->customer_list()->result();
+        //$data['jenis_packing'] = $this->db->get('m_jenis_packing')->result();
+        $this->load->view('layout', $data);
+    }
+
+    function save_penerimaan_bobbin(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('BB-RC', $tgl_input);
+        
+        #Insert spb bobbin
+        if($code){        
+            $data = array(
+            'no_penerimaan' => $code,
+            'id_peminjaman' => $this->input->post('surat_peminjaman_id'),
+            'surat_jalan' => $this->input->post('surat_jalan'),
+            'remarks' => $this->input->post('remarks'),
+            'created_by' => $user_id,
+            'created_at' => $tanggal
+            );
+
+            if($this->db->insert('m_bobbin_penerimaan', $data)){
+                redirect('index.php/GudangBobbin/edit_penerimaan_bobbin/'.$this->db->insert_id());  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data Penerimaan Bobbin gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/GudangBobbin/add_penerimaan_bobbin');  
+            }            
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data Penomoran Bobbin gagal disimpan, penomoran belum disetup!');
+            redirect('index.php/GudangBobbin/bobbin_terima');
+        }
+        #Insert spb bobbin detail
+        // $insert_id = $this->db->insert_id();
+        // $data_spb_bobbin_detail = array(
+        //     'id_spb_bobbin' => $insert_id,
+        //     'id_bobbin' => 
+        // );
+    }
+
+    function edit_penerimaan_bobbin(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "gudang_bobbin/edit_penerimaan_bobbin";
+            $this->load->model('Model_bobbin');
+            $data['header'] = $this->Model_bobbin->show_header_penerimaan($id)->row_array();
+            $data['details'] =   $this->Model_bobbin->show_detail_peminjam($id)->result();
+    
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/GudangBobbin/spb_list');
+        }
+    }
+
+    function load_detail_penerimaan(){
+        $id = $this->input->post('id');
+        $tabel = "";
+        $no    = 1;
+        $this->load->model('Model_bobbin');
+        $list_barang = $this->Model_bobbin->load_list_bobbin_penerimaan($id)->result();
+        
+        $myDetail = $this->Model_bobbin->load_bobbin_penerimaan_detail($id)->result(); 
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->nomor_bobbin.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a></td>';
+            $tabel .= '</tr>';            
+            $no++;
+        }
+            
+        $tabel .= '<tr>';
+        $tabel .= '<td style="text-align:center">'.$no.'</td>';
+        $tabel .= '<td>';
+        $tabel .= '<select id="id_bobbin" name="id_bobbin" class="form-control select2me myline" ';
+            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px">';
+            $tabel .= '<option value=""></option>';
+            foreach ($list_barang as $value){
+                $tabel .= "<option value='".$value->id."'>".$value->nomor_bobbin."</option>";
+            }
+        $tabel .= '</select>';
+        $tabel .= '</td>';      
+        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
+                . '<i class="fa fa-plus"></i> Tambah </a></td>';
+        $tabel .= '</tr>';
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel);    
+    }
+
+    function get_sj_list(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_bobbin');
+        $data = $this->Model_bobbin->get_sj_list($id)->result();
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->no_surat_peminjaman;
+        } 
+        print form_dropdown('surat_peminjaman_id', $arr_so);
     }
      
     function spb_list(){
@@ -317,7 +443,7 @@ class GudangBobbin extends CI_Controller{
     
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/GudangFG/spb_list');
+            redirect('index.php/GudangBobbin/spb_list');
         }
     }
 
@@ -509,5 +635,31 @@ class GudangBobbin extends CI_Controller{
         
         $this->session->set_flashdata('flash_msg', 'Data SPB BB berhasil direject');
         redirect('index.php/GudangBobbin/spb_list');
+    }
+
+    function print_bobbin_request(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_bobbin');
+            $data['header']  = $this->Model_bobbin->show_header_peminjam($id)->row_array();
+            $data['details'] = $this->Model_bobbin->show_detail_peminjam($id)->result();
+
+            $this->load->view('gudang_bobbin/print_bobbin_request', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
+
+    function print_spb_bobbin(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_bobbin');
+            $data['header']  = $this->Model_bobbin->show_header_spb($id)->row_array();
+            $data['details'] = $this->Model_bobbin->jenis_barang_list_by_spb($id)->result();
+
+            $this->load->view('gudang_bobbin/print_spb_bobbin', $data);
+        }else{
+            redirect('index.php'); 
+        }
     }
 }
