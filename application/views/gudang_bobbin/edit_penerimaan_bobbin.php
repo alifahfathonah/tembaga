@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Gudang Bobbin
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/GudangFG'); ?>"> Create SPB Bobbin </a> 
+            <a href="<?php echo base_url('index.php/GudangBobbin'); ?>"> Create Bobbin Penerimaan</a> 
         </h5>          
     </div>
 </div>
@@ -23,7 +23,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/GudangBobbin/update_spb'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/GudangBobbin/update_penerimaan_bobbin'); ?>">                            
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -34,7 +34,7 @@
                             <input type="text" id="no_produksi" name="no_produksi" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_penerimaan']; ?>">
-                            
+                            <input type="hidden" id="id_peminjaman" name="id_peminjaman" value="<?php echo $header['id_peminjaman']; ?>">
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
                     </div>
@@ -124,7 +124,7 @@
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
                         
-                    <a href="<?php echo base_url('index.php/GudangBobbin/spb_list'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/GudangBobbin/bobbin_terima'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -154,31 +154,18 @@ function simpanData(){
 };
 
 function loadDetail(id){
+    id_penerimaan = $('#id').val();
     $.ajax({
         type:"POST",
         url:'<?php echo base_url('index.php/GudangBobbin/load_detail_penerimaan'); ?>',
         data:{
-            id: id
+            id: id,
+            id_penerimaan: id_penerimaan
         },
         success:function(result){
             $('#boxDetail').html(result);     
         }
     });
-}
-
-function get_berat(id){
-    if(''!=id){
-    $.ajax({
-        url: "<?php echo base_url('index.php/GudangBobbin/get_berat'); ?>",
-        async: false,
-        type: "POST",
-        data: "id="+id,
-        dataType: "json",
-        success: function(result) {
-            $('#berat').val(result['berat']);
-        }
-    });
-    }
 }
 
 function saveDetail(){
@@ -190,12 +177,12 @@ function saveDetail(){
             type:"POST",
             url:'<?php echo base_url('index.php/GudangBobbin/save_penerimaan_bobbin_detail'); ?>',
             data:{
-                id_spb_bobbin:$('#id').val(),
+                id_bobbin_penerimaan:$('#id').val(),
                 id_bobbin:$('#id_bobbin').val()
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
-                    loadDetail($('#id').val());
+                    loadDetail($('#id_peminjaman').val());
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{
@@ -212,7 +199,7 @@ function hapusDetail(id){
     if (r==true){
         $.ajax({
             type:"POST",
-            url:'<?php echo base_url('index.php/GudangBobbin/delete_detail'); ?>',
+            url:'<?php echo base_url('index.php/GudangBobbin/delete_penerimaan_bobbin_detail'); ?>',
             data:"id="+ id,
             success:function(result){
                 if(result['message_type']=="sukses"){
@@ -242,7 +229,7 @@ $(function(){
         dateFormat: 'dd-mm-yy'
     }); 
     
-    loadDetail(<?php echo $header['id']; ?>);
+    loadDetail(<?php echo $header['id_peminjaman']; ?>);
 });
 </script>
       
