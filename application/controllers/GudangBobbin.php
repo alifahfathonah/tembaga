@@ -307,13 +307,13 @@ class GudangBobbin extends CI_Controller{
 
     function load_detail_penerimaan(){
         $id = $this->input->post('id');
-        $id_penerimaan = $this->input->post('id_penerimaan');
+        $id_peminjaman = $this->input->post('id_peminjaman');
         $tabel = "";
         $no    = 1;
         $this->load->model('Model_bobbin');
-        $list_barang = $this->Model_bobbin->load_list_bobbin_penerimaan($id)->result();
+        $list_barang = $this->Model_bobbin->load_list_bobbin_penerimaan($id_peminjaman)->result();
         
-        $myDetail = $this->Model_bobbin->load_bobbin_penerimaan_detail($id_penerimaan)->result(); 
+        $myDetail = $this->Model_bobbin->load_bobbin_penerimaan_detail($id)->result(); 
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
@@ -328,11 +328,11 @@ class GudangBobbin extends CI_Controller{
         $tabel .= '<tr>';
         $tabel .= '<td style="text-align:center">'.$no.'</td>';
         $tabel .= '<td>';
-        $tabel .= '<select id="id_bobbin" name="id_bobbin" class="form-control select2me myline" ';
+        $tabel .= '<select id="nomor_bobbin" name="nomor_bobbin" class="form-control select2me myline" ';
             $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px">';
             $tabel .= '<option value=""></option>';
             foreach ($list_barang as $value){
-                $tabel .= "<option value='".$value->id."'>".$value->nomor_bobbin."</option>";
+                $tabel .= "<option value='".$value->nomor_bobbin."'>".$value->nomor_bobbin."</option>";
             }
         $tabel .= '</select>';
         $tabel .= '</td>';      
@@ -351,7 +351,7 @@ class GudangBobbin extends CI_Controller{
         
         if($this->db->insert('m_bobbin_penerimaan_detail', array(
             'id_bobbin_penerimaan'=>$this->input->post('id_bobbin_penerimaan'),
-            'id_bobbin'=>$this->input->post('id_bobbin')
+            'nomor_bobbin'=>$this->input->post('nomor_bobbin')
         ))){
             $return_data['message_type']= "sukses";
         }else{
@@ -393,12 +393,37 @@ class GudangBobbin extends CI_Controller{
         $id = $this->input->post('id');
         $key = $this->db->query("select *from m_bobbin_penerimaan_detail where id_bobbin_penerimaan = ". $id)->result();
         foreach ($key as $row) {
-            $this->db->where('id', $row->id_bobbin);
+            $this->db->where('nomor_bobbin', $row->nomor_bobbin);
             $this->db->update('m_bobbin', array(
                 'status' => 0,
                 'borrowed_by' => 0
             ));
+
+            $this->db->where('nomor_bobbin', $row->nomor_bobbin);
+            $this->db->update('m_bobbin_peminjaman_detail', array(
+                'id_penerimaan' => $this->input->post('id')
+            ));
         }
+        $id = $this->input->post('id');
+        $this->load->model('Model_bobbin');
+        $cek = $this->Model_bobbin->check_sisa_bobbin($id)->row_array();
+        if($cek['id'] == 0){
+            $this->db->where('id', $this->input->post('id_peminjaman'));
+            $this->db->update('m_bobbin_peminjaman', array(
+                'status' => 1
+            ));
+        }
+        // $jumlah_pinjam = $this->db->query("select count(id) from m_bobbin_peminjaman_detail where id_peminjaman = ".$this->input->post('id_peminjaman'))->num_rows();
+        // $jumlah_terima = $this->db->query("select count(id) from m_bobbin_penerimaan where id_peminjaman = ".$this->input->post('id_peminjaman'))->num_rows();
+        // if($jumlah_pinjam == $jumlah_terima){
+        //     $this->db->where('id', $this->input->post('id'));
+        //     $this->db->update('m_bobbin_peminjaman', array(
+        //         'status' => 1
+        //     ));
+        // }
+        // echo "id".$this->input->post('id_peminjaman');
+        // echo "pinjam".$jumlah_pinjam;
+        // echo "terima".$jumlah_terima;
         
         $this->session->set_flashdata('flash_msg', 'Data Penerimaan Bobbin berhasil disimpan');
         redirect('index.php/GudangBobbin/bobbin_terima');

@@ -178,18 +178,31 @@ class Model_bobbin extends CI_Model{
         return $data;
     }
 
-    function load_list_bobbin_penerimaan($id){
-        $data = $this->db->query("select mbt.*, mbp.id_surat_jalan, tsjd.nomor_bobbin, mb.id
-            from m_bobbin_penerimaan mbt
-            left join m_bobbin_peminjaman mbp on (mbt.id_peminjaman = mbp.id)
-            left join t_surat_jalan_detail tsjd on (mbp.id_surat_jalan = tsjd.t_sj_id)
-            left join m_bobbin mb on (tsjd.nomor_bobbin = mb.nomor_bobbin)
-            where mbt.id = ".$id);
+    function load_list_bobbin_penerimaan($id_peminjaman){
+        $data = $this->db->query("select mbp.*, mbpd.nomor_bobbin
+            from m_bobbin_peminjaman mbp
+            left join m_bobbin_peminjaman_detail mbpd on (mbpd.id_peminjaman = mbp.id)
+            where mbp.id = ".$id_peminjaman." and mbpd.id_penerimaan = 0");
+
+        // $data = $this->db->query("select mbt.*, mbp.id_surat_jalan, tsjd.nomor_bobbin, mb.id
+        //     from m_bobbin_penerimaan mbt
+        //     left join m_bobbin_peminjaman mbp on (mbt.id_peminjaman = mbp.id)
+        //     left join t_surat_jalan_detail tsjd on (mbp.id_surat_jalan = tsjd.t_sj_id)
+        //     left join m_bobbin mb on (tsjd.nomor_bobbin = mb.nomor_bobbin)
+        //     where mbt.id_peminjaman = ".$id_peminjaman);
         return $data;    
     }
 
-    function load_bobbin_penerimaan_detail($id_penerimaan){
-        $data = $this->db->query("select mbtd.*, mb.nomor_bobbin from m_bobbin_penerimaan_detail mbtd left join m_bobbin mb on (mb.id = mbtd.id_bobbin) where mbtd.id_bobbin_penerimaan = ".$id_penerimaan);
+    function check_sisa_bobbin($id){
+        $data = $this->db->query("select count(mbp.id) as id
+            from m_bobbin_peminjaman mbp
+            left join m_bobbin_peminjaman_detail mbpd on (mbpd.id_peminjaman = mbp.id)
+            where mbp.id = ".$id." and mbpd.id_penerimaan = 0");
+        return $data;
+    }
+
+    function load_bobbin_penerimaan_detail($id){
+        $data = $this->db->query("select mbtd.*, mb.nomor_bobbin from m_bobbin_penerimaan_detail mbtd left join m_bobbin mb on (mb.nomor_bobbin = mbtd.nomor_bobbin) where mbtd.id_bobbin_penerimaan = ".$id);
 
         // $data = $this->db->query("select mbtd.*, mbt.id, mbt.id_peminjaman, mbp.id_surat_jalan, tsjd.nomor_bobbin 
         //     from m_bobbin_penerimaan_detail mbtd 

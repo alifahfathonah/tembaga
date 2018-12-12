@@ -154,13 +154,13 @@ function simpanData(){
 };
 
 function loadDetail(id){
-    id_penerimaan = $('#id').val();
+    id_peminjaman = $('#id_peminjaman').val();
     $.ajax({
         type:"POST",
         url:'<?php echo base_url('index.php/GudangBobbin/load_detail_penerimaan'); ?>',
         data:{
             id: id,
-            id_penerimaan: id_penerimaan
+            id_peminjaman: id_peminjaman
         },
         success:function(result){
             $('#boxDetail').html(result);     
@@ -169,7 +169,7 @@ function loadDetail(id){
 }
 
 function saveDetail(){
-    if($.trim($("#id_bobbin").val()) == ""){
+    if($.trim($("#nomor_bobbin").val()) == ""){
         $('#message').html("Silahkan pilih nomor bobbin!");
         $('.alert-danger').show(); 
     }else{
@@ -178,7 +178,7 @@ function saveDetail(){
             url:'<?php echo base_url('index.php/GudangBobbin/save_penerimaan_bobbin_detail'); ?>',
             data:{
                 id_bobbin_penerimaan:$('#id').val(),
-                id_bobbin:$('#id_bobbin').val()
+                nomor_bobbin:$('#nomor_bobbin').val()
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
@@ -229,7 +229,7 @@ $(function(){
         dateFormat: 'dd-mm-yy'
     }); 
     
-    loadDetail(<?php echo $header['id_peminjaman']; ?>);
+    loadDetail(<?php echo $header['id']; ?>);
 });
 </script>
       
