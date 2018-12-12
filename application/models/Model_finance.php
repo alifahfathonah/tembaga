@@ -3,7 +3,7 @@ class Model_finance extends CI_Model{
     function list_data(){
         $data = $this->db->query("Select fum.*, mc.nama_customer From f_uang_masuk fum
             left join m_customers mc on mc.id = fum.m_customer_id
-            Order By tanggal desc");
+            Order By id desc");
         return $data;
     }
 
@@ -82,13 +82,20 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function load_detail_reject($id){
+        $data = $this->db->query("select fpd.*, v.no_voucher, v.jenis_voucher, v.jenis_barang, v.amount, v.keterangan from f_pembayaran_detail fpd
+            left join voucher v on v.id = fpd.voucher_id
+            where fpd.id_pembayaran =".$id." and um_id = 0");
+        return $data;
+    }
+
     function list_voucher_data(){
         $data = $this->db->query("Select * from voucher");
         return $data;
     }
 
     function load_detail_um($id){
-        $data = $this->db->query("select fpd.*, fum.bank_pembayaran, fum.jenis_pembayaran, fum.nominal, fum.keterangan, fum.currency, fum.rekening_pembayaran, mc.nama_customer
+        $data = $this->db->query("select fpd.*, fum.bank_pembayaran, fum.jenis_pembayaran, fum.nominal, fum.keterangan, fum.currency, fum.rekening_pembayaran, fum.nomor_cek, mc.nama_customer
             from f_pembayaran_detail fpd
             left join f_uang_masuk fum on fum.id = fpd.um_id
             left join m_customers mc on mc.id = fum.m_customer_id

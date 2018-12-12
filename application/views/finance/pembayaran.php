@@ -60,14 +60,22 @@
                                     echo '<div style="background-color:darkkhaki; padding:3px">Waiting Approval</div>';
                                 }else if($data->status==1){
                                     echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
+                                }else if($data->status==2){
+                                    echo '<div style="background-color:blue; padding:3px; color:white">Dijalankan</div>';
+                                }else if($data->status==3){
+                                    echo '<div style="background-color:orange; padding:3px; color:white">Butuh Revisi</div>';
                                 }else if($data->status==9){
                                     echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
                                 }
                             ?>
                         </td>
                         <td>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/matching_pmb/<?php echo $data->id; ?>" 
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/view_pmb/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                        <?php if($data->status==0 || $data->status==3){ ?>
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/Finance/matching_pmb/<?php echo $data->id; ?>"
+                               style="margin-bottom:4px"> &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
+                        <?php } ?>
                         </td>
                     </tr>
                     <?php

@@ -246,10 +246,6 @@
             <div class="row">
                 <div class="col-md-12">
                     <?php
-                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && $myData['status']=="0"){
-                            echo '<a href="javascript:;" class="btn green" onclick="approveData();"> '
-                                .'<i class="fa fa-check"></i> Sudah Cair </a> ';
-                        }
                         if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="0"){
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Gagal Cair </a>';
@@ -311,28 +307,6 @@
     </div>
 </div> 
 <script>
-// function get_bank(id){
-//     $.ajax({
-//         url: "<?php echo base_url('index.php/Finance/get_bank'); ?>",
-//         async: false,
-//         type: "POST",
-//         data: "id="+id,
-//         dataType: "json",
-//         success: function(result) {
-//             $('#nama_bank').val(result['nama_bank']);
-//             $('#no_rek').val(result['nomor_rekening']);
-//         }
-//     })
-// }
-
-function approveData(){
-    var r=confirm("Anda yakin meng-approve uang masuk ini?");
-    if (r==true){
-        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/approve_um");    
-        $('#formku').submit(); 
-    }
-};
-
 function showRejectBox(){
     var r=confirm("Anda yakin me-reject permintaan barang ini?");
     if (r==true){

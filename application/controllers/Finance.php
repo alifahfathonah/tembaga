@@ -273,34 +273,7 @@ class Finance extends CI_Controller{
         $id_new=$this->db->insert_id();
 
         if($this->db->trans_complete()){
-            redirect(base_url('index.php/Finance/add_detail_pembayaran/'.$id_new));
-        }else{
-            $this->session->set_flashdata('flash_msg', 'Uang Masuk gagal disimpan, silahkan dicoba kembali!');
-            redirect('index.php/Finance');  
-        }            
-    }
-
-    function save_redirect(){
-        $user_id   = $this->session->userdata('user_id');
-        $tanggal   = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $user_ppn  = $this->session->userdata('user_ppn');
-
-        $id = $this->input->post('id');
-        $this->db->trans_start();
-        $this->load->model('Model_finance');
-        $myDetail = $this->Model_finance->load_detail($id)->result();
-
-        foreach ($myDetail as $row) {
-            $data = array(
-            'id_pembayaran'=> $id,
-            'voucher_id'=> $row->id,
-            'um_id'=> 0
-            );
-        $this->db->insert('f_pembayaran_detail', $data);   
-        }
-        if($this->db->trans_complete()){
-            redirect(base_url('index.php/Finance/matching_pmb/'.$this->input->post('id')));
+            redirect(base_url('index.php/Finance/matching_pmb/'.$id_new));
         }else{
             $this->session->set_flashdata('flash_msg', 'Uang Masuk gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/Finance');  
@@ -331,6 +304,7 @@ class Finance extends CI_Controller{
         $id = $this->input->post('id');
         
         $tabel = "";
+        $total_vc = 0;
         $no    = 1;
         $this->load->model('Model_finance');
         $myDetail = $this->Model_finance->load_detail($id)->result();
@@ -347,7 +321,13 @@ class Finance extends CI_Controller{
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';            
             $no++;
+            $total_vc += $row->amount;
         }
+        $tabel .= '<tr>';
+        $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
+        $tabel .= '<td><input type="text" id="total_vc" name="total_vc" style="background-color: green; color: white;" class="form-control" data-myvalue="'.$total_vc.'" value="'.number_format($total_vc,0,',','.').'" readonly="readonly"></td>';
+        $tabel .= '<td colspan="2"></td>';
+        $tabel .= '<tr>';
 
         header('Content-Type: application/json');
         echo json_encode($tabel); 
@@ -443,6 +423,7 @@ class Finance extends CI_Controller{
         $id = $this->input->post('id');
         
         $tabel = "";
+        $total_um = 0;
         $no    = 1;
         $this->load->model('Model_finance');
         $myDetail = $this->Model_finance->load_detail_um($id)->result();
@@ -459,7 +440,13 @@ class Finance extends CI_Controller{
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';            
             $no++;
+            $total_um += $row->nominal;
         }
+        $tabel .= '<tr>';
+        $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
+        $tabel .= '<td><input type="text" id="total_um" name="total_um" style="background-color: green; color: white;" class="form-control" data-myvalue="'.$total_um.'" value="'.number_format($total_um,0,',','.').'" readonly="readonly"></td>';
+        $tabel .= '<td colspan="2"></td>';
+        $tabel .= '<tr>';
             
         $tabel .= '<tr>';
         $tabel .= '<td style="text-align:center">'.$no.'</td>';
@@ -532,12 +519,16 @@ class Finance extends CI_Controller{
         echo json_encode($return_data);
     }
 
-    function save_pmb(){
+    function approveagain(){
         $return_data = array();
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $data = array(
+            'tanggal'=>$tgl_input,
+            'status'=>0,
+            'keterangan'=>$this->input->post('remarks'),
             'modified_at'=>$tanggal,
             'modified_by'=>$user_id
         );
@@ -552,12 +543,17 @@ class Finance extends CI_Controller{
         echo json_encode($return_data); 
     }
 
-    function approve_pmb(){
+    function save_pmb(){
         $return_data = array();
-        $tgl_input = date("Y-m-d");
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $data = array(
-            'status'=>1
+            'tanggal'=>$tgl_input,
+            'keterangan'=>$this->input->post('remarks'),
+            'modified_at'=>$tanggal,
+            'modified_by'=>$user_id
         );
         $this->db->where('id', $this->input->post('id'));
         if($this->db->update('f_pembayaran', $data)){
@@ -590,5 +586,163 @@ class Finance extends CI_Controller{
         }else{
             redirect('index.php/Finance');
         }
+    }
+
+    function view_pmb(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Finance";
+            $data['content']   = "finance/view_pmb";
+
+            $this->load->model('Model_finance');
+            $data['header'] = $this->Model_finance->list_detail_pembayaran($id)->row_array();
+            if($data['header']['status']==9){
+            $data['detailVC'] = $this->Model_finance->load_detail_reject($id)->result();
+            }else{
+            $data['detailVC'] = $this->Model_finance->load_detail($id)->result();
+            }
+            $data['detailUM'] = $this->Model_finance->load_detail_um($id)->result();
+
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/Finance');
+        }
+    }
+
+    function jalankan_pmb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d');
+        $id = $this->input->post('id');
+        
+        $this->db->trans_start();
+
+        $this->db->where('id',$id);
+        $this->db->update('f_pembayaran', array(
+            'status'=>2,
+            'tanggal_jalan'=>$tanggal
+        ));
+        
+        if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'Pembayaran sudah di-approve. Detail Pembayaran sudah disimpan');            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat menjalankan pembayaran, silahkan coba kembali!');
+            }             
+        
+       redirect('index.php/Finance/pembayaran');
+    }
+
+    function approve_pmb(){
+        $user_id = $this->session->userdata('user_id');
+        $tanggal = date('Y-m-d');
+        $tanggal_input = date('Y-m-d h:m:s');
+
+        $this->db->trans_start();
+        
+        $id = $this->input->post('id');
+        $this->load->model('Model_finance');
+        $loop_vc = $this->Model_finance->load_detail($id)->result();
+        $loop_um = $this->Model_finance->load_detail_um($id)->result();
+
+        foreach ($loop_vc as $row) {
+            $data = array(
+            'id_pembayaran'=> $id,
+            'voucher_id'=> $row->id,
+            'um_id'=> 0
+            );
+            $this->db->insert('f_pembayaran_detail', $data);   
+        }
+
+        foreach ($loop_um as $row) {
+            $data = array(
+                'status'=>1,
+                'tgl_cair'=>$tanggal,
+                'approved_at'=>$tanggal_input,
+                'approved_by'=>$user_id
+            );
+            $this->db->where('id',$row->um_id);
+            $this->db->update('f_uang_masuk', $data);   
+        }
+
+        $this->db->where('id',$id);
+        $this->db->update('f_pembayaran', array(
+            'status'=>1,
+            'approved_at'=>$tanggal,
+            'approved_by'=>$user_id
+        ));
+
+        $this->db->insert('f_slip_setoran', array(
+            'id_pembayaran'=>$id,
+            'nominal'=>$this->input->post('nominal_slip'),
+            'created_at'=>$tanggal,
+            'created_by'=>$user_id
+        ));
+            
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'Pembayaran sudah di-approve. Detail Pembayaran sudah disimpan');            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }             
+        
+       redirect('index.php/Finance/pembayaran');
+    }
+
+    function reject_pmb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $id = $this->input->post('header_id');
+
+        $this->db->where('id',$id);
+        $this->db->update('f_pembayaran', array(
+            'status'=>3,
+            'tanggal_jalan'=>'0000-00-00',
+            'reject_remarks'=>$this->input->post('reject_remarks')
+        ));
+
+        $this->session->set_flashdata('flash_msg', 'Data Pembayaran berhasil direject');
+        redirect('index.php/Finance/pembayaran');
+    }
+
+    function reject_all_pmb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $id = $this->input->post('header_id');
+
+        $this->load->model('Model_finance');
+        $loop_vc = $this->Model_finance->load_detail($id)->result();
+
+        //INSERT VOUCHER
+        foreach ($loop_vc as $row) {
+            $data = array(
+            'id_pembayaran'=> $id,
+            'voucher_id'=> $row->id,
+            'um_id'=> 0
+            );
+            $this->db->insert('f_pembayaran_detail', $data);   
+        }
+
+        $this->db->where('id',$id);
+        $this->db->update('f_pembayaran', array(
+            'status'=>9,
+            'reject_at'=>$tanggal,
+            'reject_by'=>$user_id,
+            'reject_remarks'=>$this->input->post('reject_remarks')
+        ));
+
+        //MERUBAH VOUCHER MENJADI DEFAULT LAGI
+        $this->db->where('pembayaran_id', $id);
+        $this->db->update('voucher', array(
+            'pembayaran_id'=>0
+        ));
+        
+        $this->session->set_flashdata('flash_msg', 'Semua Data Pembayaran berhasil direject');
+        redirect('index.php/Finance/pembayaran');
     }
 }

@@ -73,13 +73,24 @@ Debit = Keluar
 FINANCE (Uang Masuk)
 Saat buat cek, status 0 karena belum cair dan Pilih apakah itu UM Replace atau Baru
 Ganti status ke 1 jika sudah cair. Secara Manual.
-Jika Reject, Buat Reject Marks
+Jika Reject, Buat Reject Marks(FINISHED)
 
 FINANCE (Pembayaran)
-Buat Slip Setoran pada saat matching voucher dan Uang masuk, Slip setoran id saja karenan nati buat tabel baru
-Approve -> Dijalanin tanggal berapa
+Buat Slip Setoran pada saat matching voucher dan Uang masuk, Slip setoran id saja karena nanti buat tabel baru
+Approve -> Dijalanin tanggal berapa (1)
+Konfirmasi Bisa Jalan atau Tidak (2) -> Kalau Bisa Uang Masuk otomatis ke approve
+				     -> Kalau Tidak, Manual reject uang masuk yang tidak bisa cair
 
 Dijalanin -> Jika cek mundur gabisa cair, semuanya di reject saat mau dijalanin (jika reject keterangan mandatory)
 
 FINANCE (Create Invoice)
 Buat invoice sesuai surat jalan ke customer
+
+BS apollo masuk ke tabel bs, milik apolo
+
+kalo apollo -> nomor apollo
+kalo wip -> nomor wip
+
+kirim gudang rongsok ->
+
+REJECT PMB ALL BELUM

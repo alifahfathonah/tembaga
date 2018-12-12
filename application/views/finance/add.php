@@ -97,8 +97,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal_cek" name="tanggal_cek" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('Y-m-d'); ?>">
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;">
                         </div>
                     </div> 
                     <div class="row" id="show_bank">
@@ -212,6 +211,16 @@
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Keterangan Rejec
+t                        </div>
+                        <div class="col-md-8">
+                            <textarea type="text" id="reject_remarks" name="reject_remarks" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                            </textarea>
+                        </div>
+                    </div>
                 </div>
                 </div>
             </div>
@@ -257,6 +266,13 @@ function simpanData(){
         }else if($.trim($("#bank_pengirim").val()) == ""){
             $('#message').html("Bank Pengirim harus diisi, tidak boleh kosong!");
             $('.alert-danger').show();
+        }else if($('#jenis_id').val() == "Cek Mundur"){
+            if($.trim($("#tanggal_cek").val()) == ""){
+            $('#message').html("Tanggal Cek Mundur harus diisi, tidak boleh kosong!");
+            $('.alert-danger').show();
+            }else{
+                $('#formku').submit();
+            }
         }else{
             $('#formku').submit();
         }
@@ -311,6 +327,7 @@ function get_replace_detail(id){
                 $('#currency_lama').val(result['currency']);
                 $('#nominal_lama').val(result['nominal']);
                 $('#cek_mundur_lama').val(result['tgl_cair']);
+                $('#reject_remarks').val(result['reject_remarks']);
             }
         });
     }
@@ -319,6 +336,7 @@ function get_replace_detail(id){
 //Custom Functions that reset
 function resetAllValues() {
   $('#show_replace_detail').find('input:text').val('');
+  $('#tanggal_cek').val('');
   $('#replace_id').prop('selectedIndex',0);
 }
 
@@ -356,7 +374,7 @@ function get_cek(id){
             buttonText: "Select date",
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-mm-yy'
+            dateFormat: 'yy-mm-dd'
         });
         get_replace('Cek Mundur');
     }else if(id === "Giro") {

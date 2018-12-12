@@ -54,7 +54,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku">
+              id="formku" action="<?php echo base_url('index.php/Finance/approve_pmb'); ?>">
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -74,7 +74,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
-                                class="form-control input-small myline" style="margin-bottom:5px; float:left;" value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
+                                class="form-control input-small myline" style="margin-bottom:5px; float:left;" value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>" readonly="readonly">
                         </div>
                     </div>
                     <div class="row">
@@ -96,8 +96,7 @@
                             Catatan
                         </div>
                         <div class="col-md-8">
-                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px"><?php echo $header['keterangan']; ?></textarea>                           
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px" readonly="readonly"><?php echo $header['keterangan'];?></textarea>
                         </div>
                     </div>
                 </div>
@@ -118,24 +117,11 @@
                                     echo '<div style="background-color:orange; padding:3px; color:white">Butuh Revisi</div>';
                                 }else if($header['status']==9){
                                     echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
+                                    echo '<textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px" readonly="readonly">'.$header['reject_remarks'].'</textarea>';
                                 }
                         ?>
                         </div>
-                    </div>
-                </div>
-                <?php if($header['status']==3){ ?>
-                <div class="col-md-2">&nbsp;</div>
-                <div class="col-md-5">
-                    <div class="row">
-                        <div class="col-md-4">
-                            Reject Remarks
-                        </div>
-                        <div class="col-md-8">
-                            <textarea id="reject_remarks" name="reject_remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px" readonly="readonly"><?php echo $header['reject_remarks']; ?></textarea>                           
-                        </div>
-                    </div>
-                </div>
-                <?php } ?>
+                    </div>           
             </div>
             <hr class="divider"/>
     <!-- VOUCHER -->
@@ -149,25 +135,31 @@
                                 <th style="width: 20%;">Voucher ID</th>
                                 <th>Jenis Voucher</th>
                                 <th>Jenis Barang</th>
-                                <th>Amount</th>
                                 <th>Keterangan</th>
-                                <th>Actions</th>
+                                <th>Amount</th>
                             </thead>
                             <tbody>
-                                <tbody id="boxDetailVoucher">
-
-                                </tbody>
+                            <?php 
+                                $no = 0;
+                                $total_vc = 0;
+                                foreach ($detailVC as $data){
+                                    $no++;
+                            ?>
                             <tr>
-                                <td style="text-align:center"><i class="fa fa-plus"></i></td>
-                                <td>
-                                    <select id="vc_id" name="vc_id" class="form-control select2me myline"  style="margin-bottom:5px;" onchange="get_data_vc(this.value);">
-                                    </select>
-                                </td>
-                                <td><input type="text" id="jenis_voucher" name="jenis_voucher" class="form-control myline" readonly="readonly"></td>
-                                <td><input type="text" id="jenis_barang" name="jenis_barang" class="form-control myline" readonly="readonly"></td>
-                                <td><input type="text" id="amount_vc" name="amount_vc" class="form-control myline" readonly="readonly"/></td>
-                                <td><input type="text" id="keterangan_vc" name="keterangan_vc" class="form-control myline" readonly="readonly" onkeyup="this.value = this.value.toUpperCase()"></td>      
-                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail_vc();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
+                                <td style="text-align:center"><?php echo $no; ?></td>
+                                <td><?php echo $data->no_voucher; ?></td>
+                                <td><?php echo $data->jenis_voucher; ?></td>
+                                <td><?php echo $data->jenis_barang; ?></td>
+                                <td><?php echo $data->keterangan; ?></td>
+                                <td style="text-align:right"><?php echo number_format($data->amount,0,',','.'); ?></td>
+                            </tr>
+                            <?php
+                                $total_vc += $data->amount;
+                                }
+                            ?>
+                            <tr>
+                                <td colspan="5" style="text-align: right; font-weight: bold;"> Total</td>
+                                <td style="background-color: green; color: white;"><?php echo number_format($total_vc,0,',','.');?></td>
                             </tr>
                             </tbody>
                         </table>
@@ -183,14 +175,35 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th>No</th>
-                                <th>Amount</th>
                                 <th>Jenis Pembayaran</th>
                                 <th>Bank Pembayaran</th>
+                                <th>Rekening Pembayaran / Nomor Cek</th>
                                 <th>Keterangan</th>
-                                <th>Actions</th>
+                                <th>Amount</th>
                             </thead>
-                            <tbody id="boxDetailUm">
-
+                            <tbody>
+                            <?php 
+                                $no = 0;
+                                $total_um = 0;
+                                foreach ($detailUM as $data){
+                                    $no++;
+                            ?>
+                            <tr>
+                                <td style="text-align:center"><?php echo $no; ?></td>
+                                <td><?php echo $data->jenis_pembayaran; ?></td>
+                                <td><?php echo $data->bank_pembayaran; ?></td>
+                                <td><?php echo $data->rekening_pembayaran.$data->nomor_cek;?></td>
+                                <td><?php echo $data->keterangan; ?></td>
+                                <td style="text-align:right"><?php echo $data->currency.' '.number_format($data->nominal,0,',','.'); ?></td>
+                            </tr>
+                            <?php
+                                $total_um += $data->nominal;
+                                }
+                            ?>
+                            <tr>
+                                <td colspan="5" style="text-align: right; font-weight: bold;"> Total</td>
+                                <td style="background-color: green; color: white;"><?php echo number_format($total_um,0,',','.');?></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -205,27 +218,43 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th><strong>Slip Setoran</strong></th>
-                                <th><input type="text" id="slip_setoran" name="slip_setoran" class="form-control" readonly="readonly"></th>
+                            <?php $slip_setoran = $total_um - $total_vc;?>
+                                <th><?php echo number_format($slip_setoran,0,',','.');?></th>
+                                <input type="hidden" id="nominal_slip" name="nominal_slip" value="<?php echo $slip_setoran;?>">
                             </thead>
                         </table>
                     </div>
                 </div>
             </div>
             <div class="row">&nbsp;</div>
+            <?php if($header['status'] == 0){ ?>
             <div class="row">
                 <div class="col-md-12">
-                    <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                        <i class="fa fa-floppy-o"></i> Simpan </a>
-                <?php if($header['status']==3){ ?>
-                    <a href="javascript:;" class="btn green" onclick="approveAgain();"> 
-                        <i class="fa fa-check"></i> Approve Again </a>
-                    <a href="javascript:;" class="btn red" onclick="showRejectBox();">
-                        <i class="fa fa-ban"></i> Reject All </a>
-                <?php } ?>
+                    <a href="javascript:;" class="btn green" onclick="jalankan();"> 
+                        <i class="fa fa-check"></i> Jalankan </a>
                     <a href="<?php echo base_url('index.php/Finance/pembayaran'); ?>" class="btn blue-hoki">
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
+            <?php } else if($header['status'] == 2) { ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="javascript:;" class="btn green" onclick="approveData();"> 
+                        <i class="fa fa-check"></i> Approve </a>
+                    <a href="javascript:;" class="btn red" onclick="showRejectBox();">
+                        <i class="fa fa-ban"></i> Reject </a>
+                    <a href="<?php echo base_url('index.php/Finance/pembayaran'); ?>" class="btn blue-hoki">
+                        <i class="fa fa-angle-left"></i> Kembali </a>
+                </div>    
+            </div>
+            <?php } else { ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="<?php echo base_url('index.php/Finance/pembayaran'); ?>" class="btn blue-hoki">
+                        <i class="fa fa-angle-left"></i> Kembali </a>
+                </div>    
+            </div>
+            <?php } ?>
         </form>
         
         <?php
@@ -241,210 +270,39 @@
     </div>
 </div> 
 <script>
-function approveAgain(){
-    var r=confirm("Anda yakin meng-approve kembali permintaan barang ini?");
-    if (r==true){
-        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/approveagain");    
-        $('#formku').submit(); 
-    }
-}
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else{
-        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/save_pmb");  
+    }else{     
         $('#formku').submit(); 
     };
-};
-function slipSetoran(){
-    var total_vc = $('#total_vc').data("myvalue");
-    var total_um = $('#total_um').data("myvalue");
-    var total = (total_um - total_vc);
-    console.log(total);
-    $('#slip_setoran').val(total);
 }
 
-function load_vc(){
-    $.ajax({
-        url: "<?php echo base_url('index.php/Finance/get_vc_list'); ?>",
-        async: false,
-        type: "POST",
-        dataType: "html",
-        success: function(result) {
-            $('#vc_id').html(result);
-        }
-    })
-}
-
-function get_data_vc(id){
-    if(''!=id){
-        $.ajax({
-            url: "<?php echo base_url('index.php/Finance/get_data_voucher'); ?>",
-            async: false,
-            type: "POST",
-            data: "id="+id,
-            dataType: "json",
-            success: function(result) {
-                $('#jenis_voucher').val(result['jenis_voucher']);
-                $('#jenis_barang').val(result['jenis_barang']);
-                $('#amount_vc').val(result['amount']);
-                $('#keterangan_vc').val(result['keterangan']);
-            }
-        });
-    }
-}
-
-function loadDetail_vc(id){
-    $.ajax({
-        type:"POST",
-        url:'<?php echo base_url('index.php/Finance/load_detail_pembayaran'); ?>',
-        data:"id="+ id,
-        success:function(result){
-            $('#boxDetailVoucher').html(result);
-            slipSetoran();
-        }
-    });
-}
-
-function saveDetail_vc(){
-    if($.trim($("#vc_id").val()) == ""){
-        $('#message').html("Silahkan pilih jenis barang!");
-        $('.alert-danger').show();
-    }else{
-        $.ajax({
-            type:"POST",
-            url:'<?php echo base_url('index.php/Finance/save_detail_pembayaran'); ?>',
-            data:{
-                id:$('#id').val(),
-                vc_id:$('#vc_id').val(),
-                amount:$('#amount').val()
-            },
-            success:function(result){
-                if(result['message_type']=="sukses"){
-                    loadDetail_vc(<?php echo $header['id'];?>);
-                    $("#vc_id").select2("val", "");
-                    $("#jenis_voucher").val('');
-                    $("#jenis_barang").val('');
-                    $("#amount_vc").val('');
-                    $("#keterangan").val('');
-                    $('#message').html("");
-                    $('.alert-danger').hide();
-                    load_vc();
-                }else{
-                    $('#message').html(result['message']);
-                    $('.alert-danger').show(); 
-                }            
-            }
-        });
-    }
-}
-
-function hapusDetail_vc(id){
-    var r=confirm("Anda yakin menghapus item barang ini?");
+function approveData(){
+    var r=confirm("Anda yakin meng-approve permintaan barang ini?");
     if (r==true){
-        $.ajax({
-            type:"POST",
-            url:'<?php echo base_url('index.php/Finance/delete_detail_pembayaran'); ?>',
-            data:"id="+ id,
-            success:function(result){
-                if(result['message_type']=="sukses"){
-                    loadDetail_vc(<?php echo $header['id'];?>);
-                }else{
-                    alert(result['message']);
-                }     
-            }
-        });
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/approve_pmb");    
+        $('#formku').submit(); 
     }
 }
 
-// DIBAWAH CODINGAN UANG MASUK
-function get_data_um(id){
-    if(''!=id){
-    $.ajax({
-        url: "<?php echo base_url('index.php/Finance/get_data_um'); ?>",
-        async: false,
-        type: "POST",
-        data: "id="+id,
-        dataType: "json",
-        success: function(result) {
-            $('#jenis_pembayaran').val(result['jenis_pembayaran']);
-            $('#bank_pembayaran').val(result['bank_pembayaran']);
-            $('#amount_um').val(result['amount']);
-            $('#keterangan_um').val(result['keterangan']);
-        }
-    });
-    }
-}
-
-function loadDetail_um(id){
-    $.ajax({
-        type:"POST",
-        url:'<?php echo base_url('index.php/Finance/load_detail_um'); ?>',
-        data:{
-                id:id,
-                um_id:$('#id').val()
-            },
-        success:function(result){
-            $('#boxDetailUm').html(result);
-            slipSetoran();
-        }
-    });
-}
-
-function saveDetail_um(){
-    if($.trim($("#um_id").val()) == ""){
-        $('#message').html("Silahkan pilih jenis barang!");
-        $('.alert-danger').show();
-    }else{
-        $.ajax({
-            type:"POST",
-            url:'<?php echo base_url('index.php/Finance/save_detail_um'); ?>',
-            data:{
-                id:$('#id').val(),
-                um_id:$('#um_id').val()
-            },
-            success:function(result){
-                if(result['message_type']=="sukses"){
-                    loadDetail_um(<?php echo $header['id'];?>);
-                    $('#message').html("");
-                    $('.alert-danger').hide(); 
-                }else{
-                    $('#message').html(result['message']);
-                    $('.alert-danger').show(); 
-                }            
-            }
-        });
-    }
-}
-
-function hapusDetail_um(id){
-    var r=confirm("Anda yakin menghapus item barang ini?");
+function jalankan(){
+    var r=confirm("Anda yakin ingin menjalankan permintaan pembayaran ini?");
     if (r==true){
-        $.ajax({
-            type:"POST",
-            url:'<?php echo base_url('index.php/Finance/delete_detail_um'); ?>',
-            data:"id="+ id,
-            success:function(result){
-                if(result['message_type']=="sukses"){
-                    loadDetail_um(<?php echo $header['id'];?>);
-                }else{
-                    alert(result['message']);
-                }     
-            }
-        });
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/jalankan_pmb");    
+        $('#formku').submit(); 
     }
 }
-
 //DIBAWAH CODINGAN FORM REJECT
 function showRejectBox(){
-    var r=confirm("Anda yakin me-reject semua permintaan pembayaran ini?");
+    var r=confirm("Anda yakin me-reject permintaan pembayaran ini?");
     if (r==true){
         $('#header_id').val($('#id').val());
         $('#message').html("");
         $('.alert-danger').hide();
         
-        $("#myModal").find('.modal-title').text('Reject Pembayaran Sepenuhnya');
+        $("#myModal").find('.modal-title').text('Reject Permintaan Pembayaran');
         $("#myModal").modal('show',{backdrop: 'true'}); 
     }
 }
@@ -456,7 +314,7 @@ function rejectData(){
     }else{
         $('#message').html("");
         $('.alert-danger').hide();
-        $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/Finance/reject_all_pmb");
+        $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/Finance/reject_pmb");
         $('#frmReject').submit(); 
     }
 }
@@ -465,20 +323,3 @@ function rejectData(){
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
-<script>
-$(function(){        
-    $("#tanggal").datepicker({
-        showOn: "button",
-        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
-        buttonImageOnly: true,
-        buttonText: "Select date",
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'dd-mm-yy'
-    });
-    loadDetail_vc(<?php echo $header['id']; ?>);
-    loadDetail_um(<?php echo $header['id']; ?>);
-    load_vc();
-});
-</script>
-      
