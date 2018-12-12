@@ -685,6 +685,22 @@ class SalesOrder extends CI_Controller{
             'created_by' => $user_id,
             'created_at' => $tanggal
         ));
+        $insert_id = $this->db->insert_id();
+
+        $query = $this->db->query('select *from t_surat_jalan_detail where t_sj_id = '.$this->input->post('id'))->result();
+        foreach ($query as $row) {
+            $this->db->where('nomor_bobbin', $row->nomor_bobbin);
+            $this->db->update('m_bobbin', array(
+                'borrowed_by' => $this->input->post('id_customer'),
+                'status' => 2
+            ));
+
+            $this->db->insert('m_bobbin_peminjaman_detail', array(
+                'id_peminjaman' => $insert_id,
+                'nomor_bobbin' => $row->nomor_bobbin
+            ));
+        }
+
 
         $data = array(
                 'tanggal'=> $tgl_input,
@@ -697,16 +713,7 @@ class SalesOrder extends CI_Controller{
                 'modified'=> $tanggal,
                 'modified_by'=> $user_id
             );
-
-        $query = $this->db->query('select *from t_surat_jalan_detail where t_sj_id = '.$this->input->post('id'))->result();
-        foreach ($query as $row) {
-            $this->db->where('nomor_bobbin', $row->nomor_bobbin);
-            $this->db->update('m_bobbin', array(
-                'borrowed_by' => $this->input->post('id_customer'),
-                'status' => 2
-            ));
-        }
-
+        
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('surat_jalan', $data);
 

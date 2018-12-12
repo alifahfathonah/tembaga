@@ -90,19 +90,46 @@
    <table width="100%" class="table table-striped table-bordered table-hover" id="sample_6">
     <thead>
        <tr >
-            <th>No</th>
+            <th style="text-align: center">No</th>
           
-            <th>Nomor Bobbin</th>
-            <th>Type/Ukuran</th>
-            <th>Kode</th>
-            <th>Qty</th>
+            <th>Nomor Penerimaan</th>
+            <th>Surat Jalan</th>
+            <th>Jumlah Item</th>
+            <th>Keterangan</th>
+            <th style="text-align: center">Actions</th>
        </tr>
      </thead>
      <tbody>
-      
-
-
-
+        <?php
+        $no = 0;
+        foreach ($list_bobbin as $row) {
+        $no++;
+        ?>
+        <tr>
+          <td style="text-align: center"><?php echo $no; ?></td>
+          <td><?php echo $row->no_penerimaan ?></td>
+          <td><?php echo $row->surat_jalan ?></td>
+          <td><?php echo $row->jumlah_item ?></td>
+          <td><?php echo $row->remarks ?></td>
+          <td style="text-align:center">
+            <?php
+                                if($group_id==1 || $hak_akses['view_spb']==1){
+                            ?>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangBobbin/view_penerimaan_bobbin/<?php echo $row->id; ?>" 
+                               style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                           
+                            <?php   
+                                }
+                                if($group_id==1 || $hak_akses['print_spb']==1){
+                                    echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangBobbin/print_spb/'.$row->id.'" 
+                                        style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
+                                }
+                            ?>
+          </td>
+        </tr>
+        <?php 
+        }
+         ?>
      </tbody>   
    </table>
 </div>
