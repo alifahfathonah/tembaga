@@ -189,9 +189,13 @@
                                                 echo '<td style="text-align:center">'.$no.'</td>';
                                                 echo '<td>'.$row->nomor_bobbin.'</td>';
                                                 echo '<td>'.$row->berat.' kg</td>';
-                                                if($row->status == 0){
+                                                if($row->status==0){
                                                     echo '<td style="background-color:green; color:white; padding:4px">Ready</td>';
-                                                }else if($row->status == 3){
+                                                }else if($row->status==1){
+                                                    echo '<td style="background-color:blue; color:white; padding:4px">Used</td>';
+                                                }else if($row->status==2){
+                                                    echo '<td style="background-color:yellow; color:white; padding:4px">Delivered</td>';
+                                                }else if($row->status==3){
                                                     echo '<td style="background-color:orange; color:white; padding:4px">Booked</td>';
                                                 }
                                                 echo '</tr>';

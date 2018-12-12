@@ -59,6 +59,22 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
+    function load_detail_view_sj($id){
+        $data = $this->db->query("select tsjd.*, jb.jenis_barang, jb.uom 
+                from t_surat_jalan_detail tsjd
+                left join t_surat_jalan tsj on tsj.id= tsjd.t_sj_id
+                left join t_sales_order tso on tso.so_id = tsj.sales_order_id
+                left join jenis_barang jb on jb.id = tsjd.jenis_barang_id
+                where tso.id =".$id);
+        return $data;
+    }
+    // function show_view_sj($id){
+    //     $data = $this->db->query("select tsj.* from t_surat_jalan tsj
+    //                 left join t_sales_order tso on tso.so_id = tsj.sales_order_id
+    //                 where tso.id = ".$id);
+    //     return $data;
+    // }
+
     function jenis_barang_list(){
         $data = $this->db->query("Select category From jenis_barang where category <> '' and category <> 'AMPAS' group by category");
         return $data;
@@ -209,7 +225,7 @@ class Model_sales_order extends CI_Model{
         coalesce(tgf.no_packing, 0) as no_packing,
         coalesce(tgf.bruto, 0) as bruto,
         coalesce(tgf.netto, tgw.berat) as berat,
-        coalesce(tgw.qty, 0) as qty,
+        coalesce(tgw.qty, 1) as qty,
         coalesce(tgw.uom, NULL) as uom,
         coalesce(tgf.keterangan, tgw.keterangan) as keterangan
         from t_sales_order_detail tsod

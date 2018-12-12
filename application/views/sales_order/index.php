@@ -85,7 +85,16 @@
                                 }*/
                             ?>
                         </td>-->
-                        <td style="text-align:center"> 
+                        <td style="text-align:center">
+                            <?php
+                                if($group_id==1 || $hak_akses['view_so']==1){
+                            ?>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/SalesOrder/view_so/<?php echo $data->id; ?>" 
+                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                                
+                            <?php
+                                }
+                            ?>
                             <?php
                                 if($group_id==1 || $hak_akses['print_so']==1){
                             ?>

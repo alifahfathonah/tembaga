@@ -44,6 +44,31 @@ class SalesOrder extends CI_Controller{
         $data['option_jenis_barang'] = $this->Model_sales_order->jenis_barang_list()->result();
         $this->load->view('layout', $data);
     }
+
+    function view_so(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "sales_order/view_so";
+        
+            $this->load->model('Model_sales_order');
+            $data['header']  = $this->Model_sales_order->show_header_so($id)->row_array();
+            if($data['header']['jenis_barang'] == 'RONGSOK'){
+            $data['detailSPB'] = $this->Model_sales_order->show_detail_spb_fulfilment_rsk($id)->result();
+            }else{
+            $data['detailSPB'] = $this->Model_sales_order->show_detail_spb_fulfilment($id)->result();
+            }
+            $data['details'] = $this->Model_sales_order->show_detail_so($id)->result();
+            $data['detailSJ'] = $this->Model_sales_order->load_detail_view_sj($id)->result();
+
+            $this->load->view('layout', $data);
+    }
     
     function get_contact_name(){
         $id = $this->input->post('id');
@@ -70,7 +95,7 @@ class SalesOrder extends CI_Controller{
             $data['header']  = $this->Model_sales_order->show_header_so($id)->row_array();
             $data['details'] = $this->Model_sales_order->show_detail_so($id)->result();
 
-            $this->load->view('print_so', $data);
+            $this->load->view('sales_order/print_so', $data);
         }else{
             redirect('index.php'); 
         }
@@ -595,87 +620,20 @@ class SalesOrder extends CI_Controller{
             $data['header'] = $this->Model_sales_order->show_header_sj($id)->row_array();  
             $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
             $data['kendaraan_list'] = $this->Model_sales_order->kendaraan_list()->result();
+
+            $jenis = $data['header']['jenis_barang'];
+            $soid = $data['header']['sales_order_id'];
+            if($jenis == 'FG'){
+                $data['list_produksi'] = $this->Model_sales_order->list_item_sj_fg($soid)->result();
+            }else if($jenis == 'WIP'){
+                $data['list_produksi'] = $this->Model_sales_order->list_item_sj_wip($soid)->result();
+            }else{
+                $data['list_produksi'] = $this->Model_sales_order->list_item_sj_rongsok($soid)->result();
+            }
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/SalesOrder/surat_jalan');
         }
-    }
-    
-    function load_detail_surat_jalan(){
-        $id = $this->input->post('id');
-        $jenis = $this->input->post('jenis');
-        $soid = $this->input->post('so_id');
-        
-        $tabel = "";
-        $no    = 1;
-        $bruto = 0;
-        $netto = 0;
-
-        $this->load->model('Model_sales_order');
-        if($jenis == 'FG'){
-            $list_produksi = $this->Model_sales_order->list_item_sj_fg($soid)->result();
-            $myDetail = $this->Model_sales_order->load_detail_surat_jalan_fg($id)->result();
-        }else if($jenis == 'WIP'){
-            $list_produksi = $this->Model_sales_order->list_item_sj_wip($soid)->result();
-            $myDetail = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
-        }else{
-            $list_produksi = $this->Model_sales_order->list_item_sj_rongsok($soid)->result();
-            $myDetail = $this->Model_sales_order->load_detail_surat_jalan_rongsok($id)->result();
-        }
-
-        foreach ($myDetail as $row){
-            $tabel .= '<tr>';
-            $tabel .= '<td style="text-align:center">'.$no.'</td>';
-            $tabel .= '<td>'.$row->jenis_barang.'</td>';
-            $tabel .= '<td>'.$row->uom.'</td>';
-            $tabel .= '<td>'.$row->no_packing.'</td>';
-            $tabel .= '<td style="text-align:right">'.$row->bruto.'</td>';
-            $tabel .= '<td style="text-align:right">'.$row->netto.'</td>';
-            $tabel .= '<td style="text-align:right">'.$row->nomor_bobbin.'</td>';
-            $tabel .= '<td>'.$row->line_remarks.'</td>'; 
-            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
-                    . '<i class="fa fa-trash"></i> Delete </a></td>';
-            $tabel .= '</tr>';
-            $bruto += $row->bruto;
-            $netto += $row->netto;
-            
-            $no++;
-        }
-            
-        $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:center">'.$no.'</td>';
-        $tabel .= '<td>';
-        $tabel .= '<select id="barang_id" name="barang_id" class="form-control select2me myline" ';
-            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_data(this.value);">';
-            $tabel .= '<option value=""></option>';
-            foreach ($list_produksi as $value){
-                $tabel .= "<option value='".$value->id."'>".$value->jenis_barang."</option>";
-            }
-        $tabel .= '</select>';
-        $tabel .= '</td>';
-        $tabel .= '<input type="hidden" id="jenis_barang_id" name="jenis_barang_id" class="form-control myline">';
-        $tabel .= '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td><input type="text" id="no_packing" name="no_packing" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td><input type="text" id="bruto" name="bruto" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td><input type="text" id="bobbin" name="bobbin" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';        
-        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
-                . '<i class="fa fa-plus"></i> Tambah </a></td>';
-        $tabel .= '</tr>';
-        
-        $tabel .= '<tr>';
-        $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($bruto,0,',','.').'</strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
-        $tabel .= '<td></td>';
-        $tabel .= '<td></td>';
-        $tabel .= '</tr>';
-        
-        header('Content-Type: application/json');
-        echo json_encode($tabel); 
     }
 
     function get_data_sj(){
@@ -687,71 +645,34 @@ class SalesOrder extends CI_Controller{
         echo json_encode($sj_detail); 
     }
     
-    function delete_detail_surat_jalan(){
-        $id = $this->input->post('id');
-        $return_data = array();
-
-        $this->load->model('Model_sales_order');
-        $get_id = $this->Model_sales_order->get_data_gudang_fg($id)->row_array();
-
-        $this->db->where('id', $get_id['id_gudang']);
-        $this->db->update('t_gudang_fg', array(
-            'flag_taken'=>0
-        ));
-
-        $this->db->where('id', $id);
-        if($this->db->delete('t_surat_jalan_detail')){
-            $return_data['message_type']= "sukses";
-        }else{
-            $return_data['message_type']= "error";
-            $return_data['message']= "Gagal menghapus item ampas! Silahkan coba kembali";
-        }           
-        header('Content-Type: application/json');
-        echo json_encode($return_data);
-    }
-    
-    function save_detail_surat_jalan(){
-        $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
-        
-        $return_data = array();
-        $this->db->trans_start();
-        
-        $this->db->insert('t_surat_jalan_detail', array(
-            't_sj_id'=>$this->input->post('id'),
-            'jenis_barang_id'=>$this->input->post('jenis_barang_id'),
-            'no_packing'=>$this->input->post('no_packing'),
-            'id_gudang'=>$this->input->post('barang_id'),
-            'qty'=>'1',
-            'bruto'=>$this->input->post('bruto'),
-            'netto'=>$this->input->post('netto'),
-            'nomor_bobbin'=>$this->input->post('bobbin'),
-            'line_remarks'=>$this->input->post('line_remarks'),
-            'created_by'=>$user_id,
-            'created_at'=>$tanggal
-        ));
-
-        $this->db->where('id',$this->input->post('barang_id'));
-        $this->db->update('t_gudang_fg',array(
-            'flag_taken'=>1,
-        ));
-        
-        if($this->db->trans_complete()){  
-            $return_data['message_type']= "sukses";               
-        }else{
-            $return_data['message_type']= "error";
-            $return_data['message']= "Gagal menambahkan item ampas! Silahkan coba kembali";
-        } 
-
-        header('Content-Type: application/json');
-        echo json_encode($return_data); 
-    }
-    
     function update_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
+        #Insert Surat Jalan
+        $details = $this->input->post('details');
+        foreach ($details as $v) {
+            if($v['id_barang']!=''){
+                $this->db->insert('t_surat_jalan_detail', array(
+                    't_sj_id'=>$this->input->post('id'),
+                    'jenis_barang_id'=>$v['jenis_barang_id'],
+                    'no_packing'=>$v['no_packing'],
+                    'qty'=>'1',
+                    'bruto'=>$v['bruto'],
+                    'netto'=>$v['netto'],
+                    'nomor_bobbin'=>$v['bobbin'],
+                    'line_remarks'=>$v['line_remarks'],
+                    'created_by'=>$user_id,
+                    'created_at'=>$tanggal
+                ));
+                $this->db->where('id',$v['barang_id']);
+                $this->db->update('t_gudang_fg',array(
+                    'flag_taken'=>1,
+                ));
+            }
+        }
+
         #insert bobbin_peminjaman
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);
@@ -801,7 +722,7 @@ class SalesOrder extends CI_Controller{
             $data['header']  = $this->Model_sales_order->show_header_sj($id)->row_array();
             $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_fg($id)->result();
 
-            $this->load->view('print_surat_jalan', $data);
+            $this->load->view('sales_order/print_sj', $data);
         }else{
             redirect('index.php'); 
         }
