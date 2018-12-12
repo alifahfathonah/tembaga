@@ -71,7 +71,7 @@
                             No. Surat Jalan
                         </div>
                         <div class="col-md-8">
-                            <input type="text" name="surat_jalan" id="surat_jalan" class="form-control myline" style="margin-bottom: 5px">
+                            <input type="text" name="surat_jalan" id="surat_jalan" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" style="margin-bottom: 5px">
                         </div>
                     </div>
                     <div class="row">

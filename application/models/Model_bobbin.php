@@ -194,15 +194,13 @@ class Model_bobbin extends CI_Model{
     }
 
     function check_sisa_bobbin($id){
-        $data = $this->db->query("select count(mbp.id) as id
-            from m_bobbin_peminjaman mbp
-            left join m_bobbin_peminjaman_detail mbpd on (mbpd.id_peminjaman = mbp.id)
-            where mbp.id = ".$id." and mbpd.id_penerimaan = 0");
+        $data = $this->db->query("select id from m_bobbin_peminjaman_detail 
+            where id_peminjaman =".$id." and id_penerimaan = 0");
         return $data;
     }
 
     function load_bobbin_penerimaan_detail($id){
-        $data = $this->db->query("select mbtd.*, mb.nomor_bobbin from m_bobbin_penerimaan_detail mbtd left join m_bobbin mb on (mb.nomor_bobbin = mbtd.nomor_bobbin) where mbtd.id_bobbin_penerimaan = ".$id);
+        $data = $this->db->query("select mbtd.*, mb.nomor_bobbin, mb.status from m_bobbin_penerimaan_detail mbtd left join m_bobbin mb on (mb.nomor_bobbin = mbtd.nomor_bobbin) where mbtd.id_bobbin_penerimaan = ".$id);
 
         // $data = $this->db->query("select mbtd.*, mbt.id, mbt.id_peminjaman, mbp.id_surat_jalan, tsjd.nomor_bobbin 
         //     from m_bobbin_penerimaan_detail mbtd 

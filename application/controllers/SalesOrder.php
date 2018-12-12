@@ -666,7 +666,7 @@ class SalesOrder extends CI_Controller{
                     'created_by'=>$user_id,
                     'created_at'=>$tanggal
                 ));
-                $this->db->where('id',$v['barang_id']);
+                $this->db->where('id',$v['id_barang']);
                 $this->db->update('t_gudang_fg',array(
                     'flag_taken'=>1,
                 ));

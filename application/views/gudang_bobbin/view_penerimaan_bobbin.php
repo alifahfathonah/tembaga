@@ -146,6 +146,7 @@
                                     <thead>
                                         <th style="text-align: center;">No</th>
                                         <th>Nomor Bobbin</th>
+                                        <th>Status</th>
                                     </thead>
                                     <tbody>
                                         <?php
@@ -156,6 +157,17 @@
                                         <tr>
                                             <td style="text-align: center;"><?php echo $no; ?></td>
                                             <td><?php echo $row->nomor_bobbin; ?></td>
+                                            <?php
+                                                if($row->status==0){
+                                                    echo '<td style="background-color:green; color:white; padding:4px">Ready</td>';
+                                                }else if($row->status==1){
+                                                    echo '<td style="background-color:blue; color:white; padding:4px">Used</td>';
+                                                }else if($row->status==2){
+                                                    echo '<td style="background-color:yellow; color:white; padding:4px">Delivered</td>';
+                                                }else if($row->status==3){
+                                                    echo '<td style="background-color:orange; color:white; padding:4px">Booked</td>';
+                                                }
+                                            ?>
                                         </tr>
                                         <?php
                                         }

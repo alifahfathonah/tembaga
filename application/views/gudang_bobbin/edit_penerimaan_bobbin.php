@@ -182,7 +182,7 @@ function saveDetail(){
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
-                    loadDetail($('#id_peminjaman').val());
+                    loadDetail($('#id').val());
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{

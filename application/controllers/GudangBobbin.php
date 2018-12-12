@@ -404,11 +404,11 @@ class GudangBobbin extends CI_Controller{
                 'id_penerimaan' => $this->input->post('id')
             ));
         }
-        $id = $this->input->post('id');
+        $id = $this->input->post('id_peminjaman');
         $this->load->model('Model_bobbin');
         $cek = $this->Model_bobbin->check_sisa_bobbin($id)->row_array();
-        if($cek['id'] == 0){
-            $this->db->where('id', $this->input->post('id_peminjaman'));
+        if(empty($cek['id'])){
+            $this->db->where('id', $id);
             $this->db->update('m_bobbin_peminjaman', array(
                 'status' => 1
             ));
