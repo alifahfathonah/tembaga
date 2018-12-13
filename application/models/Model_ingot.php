@@ -150,7 +150,7 @@ class Model_ingot extends CI_Model{
                     usr.realname As pic
                 From t_hasil_masak thm
                     Left Join users usr On (thm.created_by = usr.id)
-                    Left Join produksi_ingot pi On (pi.id = thm.no_masak) 
+                    Left Join produksi_ingot pi On (pi.id = thm.id_produksi) 
                 Order By thm.id Desc");
         return $data;
     }

@@ -770,4 +770,17 @@ class GudangBobbin extends CI_Controller{
             redirect('index.php'); 
         }
     }
+
+    function print_bobbin_terima(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_bobbin');
+            $data['header']  = $this->Model_bobbin->show_header_penerimaan($id)->row_array();
+            $data['details'] = $this->Model_bobbin->load_bobbin_penerimaan_detail($id)->result();
+
+            $this->load->view('gudang_bobbin/print_bobbin_terima', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
 }
