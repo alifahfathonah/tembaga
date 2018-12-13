@@ -335,6 +335,24 @@
                             DTR List </a>
                         </li>
                         <li>
+                            <a href="<?php echo base_url(); ?>index.php/PengirimanAmpas/bpb_list">
+                                <i class="fa fa-file-text-o"></i>
+                                BPB List
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url() ?>index.php/PengirimanAmpas/gudang_ampas">
+                                <i class="fa fa-cubes"></i>
+                                Gudang Ampas
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url() ?>index.php/PengirimanAmpas/gudang_bs">
+                                <i class="fa fa-cubes"></i>
+                                Gudang BS
+                            </a>
+                        </li>
+                        <li>
                             <a href="<?php echo base_url(); ?>index.php/PengirimanAmpas/surat_jalan">
                             <i class="fa fa-truck"></i>
                             Surat Jalan</a>

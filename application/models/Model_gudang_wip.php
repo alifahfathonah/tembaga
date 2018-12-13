@@ -44,7 +44,7 @@ class Model_gudang_wip extends CI_Model{
                         left join t_spb_wip tsw on (tsw.id = bpbwip.spb_wip_id)
                         left join t_hasil_wip hslwip on (hslwip.id = bpbwip.hasil_wip_id)
                         left join t_hasil_masak hslmsk on (hslmsk.id = hslwip.hasil_masak_id)
-                        left join produksi_ingot pi on (pi.no_produksi = hslmsk.no_masak)
+                        left join produksi_ingot pi on (pi.no_produksi = hslmsk.id_produksi)
                     Where bpbwip.id=".$id);
         return $data;
     }

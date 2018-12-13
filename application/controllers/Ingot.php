@@ -528,7 +528,7 @@ class Ingot extends CI_Controller{
                 'kayu'=>$this->input->post('kayu'),
                 'gas'=> $this->input->post('gas'),
                 'no_bpb_rongsok'=> $this->input->post('no_bpb_rongsok'),
-                'no_masak'=> $this->input->post('no_masak'),
+                'id_produksi'=> $this->input->post('no_masak'),
                 'ingot'=> $this->input->post('ingot'),
                 'berat_ingot'=> $this->input->post('berat_ingot'),
                 'bs'=> $this->input->post('bs'),
@@ -541,7 +541,30 @@ class Ingot extends CI_Controller{
         $this->db->insert('t_hasil_masak', $data);
 
         $id_masak = $this->db->insert_id();
-        
+
+
+        #insert gudang bs
+        $data_bs = array(
+            'id_produksi' => $id_masak,
+            'berat' => $this->input->post('bs'),
+            'tanggal' => $tgl_input,
+            'status' => 0,
+            'created_by' => $user_id,
+            'created_at' => $tanggal
+        );
+        $this->db->insert('t_gudang_bs', $data_bs);
+
+        // #insert gudang ampas
+        // $data_ampas = array(
+        //     'id_produksi' => $id_masak,
+        //     'tanggal' => $tgl_input,
+        //     'berat' => $this->input->post('ampas'),
+        //     'status' => 0,
+        //     'created_by' => $user_id,
+        //     'created_at' => $tanggal
+        // );
+        // $this->db->insert('t_gudang_ampas', $data_ampas);
+
         #update status produksi
         $this->db->where('id',$this->input->post('no_masak'));
         $this->db->update('produksi_ingot',array(
@@ -592,52 +615,54 @@ class Ingot extends CI_Controller{
         $this->db->insert('t_bpb_wip_detail',$data_bpb_detail);
 
         #Create DTR BS ke gudang rongsok
-        $code_dtr_wip = $this->Model_m_numberings->getNumbering('DTR', $tgl_input);
-        $data_dtr_bs = array(
-                'no_dtr'=> $code_dtr_wip,
-                'tanggal' => $tgl_input,
-                'status' =>0,
-                'jenis_barang' => 'RONGSOK',
-                'remarks'=> 'BS SISA PRODUKSI INGOT',
-                'created_by' => $user_id
-                );
-        $this->db->insert('dtr',$data_dtr_bs);
-        $dtr_id = $this->db->insert_id();
+        // $code_dtr_wip = $this->Model_m_numberings->getNumbering('DTR', $tgl_input);
+        // $data_dtr_bs = array(
+        //         'no_dtr'=> $code_dtr_wip,
+        //         'tanggal' => $tgl_input,
+        //         'status' =>0,
+        //         'jenis_barang' => 'RONGSOK',
+        //         'remarks'=> 'BS SISA PRODUKSI INGOT',
+        //         'created_by' => $user_id
+        //         );
+        // $this->db->insert('dtr',$data_dtr_bs);
+        // $dtr_id = $this->db->insert_id();
 
-        #Create DTR Detail BS ke gudang rongsok
-        $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
-        $data_dtr_detail_bs = array(
-                'dtr_id' => $dtr_id,
-                'rongsok_id' => 7,
-                'netto'=> $this->input->post('bs'),
-                'line_remarks' => 'SISA PRODUKSI INGOT',
-                'no_pallete' => date("dmyHis").$rand,
-                'flag_taken' => 0
-                );
-        $this->db->insert('dtr_detail',$data_dtr_detail_bs);
+        // #Create DTR Detail BS ke gudang rongsok
+        // $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
+        // $data_dtr_detail_bs = array(
+        //         'dtr_id' => $dtr_id,
+        //         'rongsok_id' => 7,
+        //         'netto'=> $this->input->post('bs'),
+        //         'line_remarks' => 'SISA PRODUKSI INGOT',
+        //         'no_pallete' => date("dmyHis").$rand,
+        //         'flag_taken' => 0
+        //         );
+        // $this->db->insert('dtr_detail',$data_dtr_detail_bs);
 
-        #Create BPB Ampas ke gudang ampas
-        $code_bpb_ampas = $this->Model_m_numberings->getNumbering('BPB-AMP', $tgl_input);    
-        $data_bpb_ampas = array(
-                'no_bpb' => $code_bpb_ampas,
-                'status' => 0,
-                'hasil_wip_id'=> $id_hasil_wip,
-                'created_by' => $user_id,
-                'created' => $tgl_input
-                );
-        $this->db->insert('t_bpb_ampas',$data_bpb_ampas);
+        if($this->input->post('ampas') != 0){
+            #Create BPB Ampas ke gudang ampas
+            $code_bpb_ampas = $this->Model_m_numberings->getNumbering('BPB-AMP', $tgl_input);    
+            $data_bpb_ampas = array(
+                    'no_bpb' => $code_bpb_ampas,
+                    'status' => 0,
+                    'hasil_wip_id'=> $id_masak,
+                    'created_by' => $user_id,
+                    'created' => $tgl_input
+                    );
+            $this->db->insert('t_bpb_ampas',$data_bpb_ampas);
 
-        #Create BPB Detail Ampas ke gudang ampas
-        $data_bpb_detail_ampas = array(
-                'bpb_ampas_id' => $this->db->insert_id(),
-                'created' => $tgl_input,
-                'jenis_barang_id' => 3,
-                'uom' => 'KG',
-                'berat' => $this->input->post('bs'),
-                'keterangan' => 'SISA PRODUKSI INGOT',
-                'created_by' => $user_id
-                );
-        $this->db->insert('t_bpb_ampas_detail',$data_bpb_detail_ampas);
+            #Create BPB Detail Ampas ke gudang ampas
+            $data_bpb_detail_ampas = array(
+                    'bpb_ampas_id' => $this->db->insert_id(),
+                    'created' => $tgl_input,
+                    'jenis_barang_id' => 3,
+                    'uom' => 'KG',
+                    'berat' => $this->input->post('bs'),
+                    'keterangan' => 'SISA PRODUKSI INGOT',
+                    'created_by' => $user_id
+                    );
+            $this->db->insert('t_bpb_ampas_detail',$data_bpb_detail_ampas);
+        }
 
         $this->db->trans_complete();
         redirect('index.php/Ingot/hasil_produksi/');  

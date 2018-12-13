@@ -121,6 +121,46 @@ class Model_pengiriman_ampas extends CI_Model{
         return $data;
     }
     
+    function bpb_list(){
+        $data = $this->db->query("select tba.*, pi.no_produksi, (select count(id) as jumlah_item from t_bpb_ampas_detail tbad where tbad.bpb_ampas_id = tba.id) as jumlah_item
+            from t_bpb_ampas tba
+            left join t_hasil_masak thm on (tba.hasil_wip_id = thm.id)
+            left join produksi_ingot pi on (thm.id_produksi = pi.id)");
+        return $data;
+    }
+
+    function show_header_bpb($id){
+        $data = $this->db->query("select tba.*, u.realname, pi.no_produksi
+            from t_bpb_ampas tba
+            left join users u on (tba.created_by = u.id)
+            left join t_hasil_masak thm on (tba.hasil_wip_id = thm.id)
+            left join produksi_ingot pi on (thm.id_produksi = pi.id)
+            where tba.id = ".$id);
+        return $data;
+    }
+
+    function show_detail_bpb($id){
+        $data = $this->db->query("select tbad.*, jb.jenis_barang
+            from t_bpb_ampas_detail tbad
+            left join jenis_barang jb on (tbad.jenis_barang_id = jb.id)
+            where tbad.bpb_ampas_id = ".$id);
+        return $data;
+    }
+
+    function gudang_ampas(){
+        $data = $this->db->query("select tga.*, pi.no_produksi
+            from t_gudang_ampas tga
+            left join produksi_ingot pi on (tga.id_produksi = pi.id)");
+        return $data;
+    }
+
+    function gudang_bs(){
+        $data = $this->db->query("select tgb.*, pi.no_produksi
+            from t_gudang_bs tgb
+            left join produksi_ingot pi on (tgb.id_produksi = pi.id)");
+        return $data;
+    }
+
     /*function get_dtr($po_id){
         $data = $this->db->query("Select dtr.*, 
                     po.no_po, 

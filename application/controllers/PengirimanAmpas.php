@@ -629,6 +629,155 @@ class PengirimanAmpas extends CI_Controller{
         }
     } 
     
+    function bpb_list(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "pengiriman_ampas/bpb_list";
+        $this->load->model('Model_pengiriman_ampas');
+        $data['list_data'] = $this->Model_pengiriman_ampas->bpb_list()->result();
+
+        $this->load->view('layout', $data);
+    }    
+
+    function view_bpb(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "pengiriman_ampas/view_bpb";
+            $this->load->model('Model_pengiriman_ampas');
+            $data['header'] = $this->Model_pengiriman_ampas->show_header_bpb($id)->row_array();
+            $data['myDetail'] = $this->Model_pengiriman_ampas->show_detail_bpb($id)->result(); 
+    
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/PengirimanAmpas/bpb_list');
+        }
+    }
+
+    function print_bpb(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_pengiriman_ampas');
+            $data['header'] = $this->Model_pengiriman_ampas->show_header_bpb($id)->row_array();
+            $data['myDetail'] = $this->Model_pengiriman_ampas->show_detail_bpb($id)->result();
+
+            $this->load->view('pengiriman_ampas/print_bpb', $data);
+        }else{
+            redirect('index.php/PengirimanAmpas/bpb_list');
+        }
+    }
+
+    function approve_bpb(){
+        $bpb_id = $this->input->post('id');
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $return_data = array();
+        
+        $this->db->trans_start();       
+         
+            #Update status BPB
+            $this->db->where('id', $bpb_id);
+            $this->db->update('t_bpb_ampas', array(
+                    'status'=>1,
+                    'keterangan' => $this->input->post('remarks'),
+                    'approved_date'=>$tanggal,
+                    'approved_by'=>$user_id));
+            
+            #Insert Gudang Ampas
+            $key = $this->db->query("select tbad.*, thm.id_produksi
+                from t_bpb_ampas_detail tbad
+                left join t_bpb_ampas tba on (tbad.bpb_ampas_id = tba.id)
+                left join t_hasil_masak thm on (tba.hasil_wip_id = thm.id)
+                where tbad.bpb_ampas_id = ".$bpb_id)->result();
+            foreach ($key as $row) {
+                $this->db->insert('t_gudang_ampas', array(
+                    'tanggal' => $tgl_input,
+                    'berat' => $row->berat,
+                    'id_produksi' => $row->id_produksi,
+                    'created_by' => $user_id,
+                    'created_at' => $tanggal
+                ));
+            }
+            
+        if($this->db->trans_complete()){  
+                
+                $this->session->set_flashdata("message", "Penerimaan Ampas sudah dibuat dan masuk gudang");
+            }else{
+                $this->session->set_flashdata("message","Penerimaan Ampas gagal, silahkan coba lagi!");
+            }                  
+        
+      redirect("index.php/PengirimanAmpas/bpb_list");
+    }
+
+    function reject_bpb(){
+        $bpb_id = $this->input->post('id');
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');      
+         
+            #Update status BPB
+            $this->db->where('id', $this->input->post('header_id'));
+            $this->db->update('t_bpb_ampas', array(
+                    'status'=>9,
+                    'keterangan' => $this->input->post('reject_remarks'),
+                    'rejected_at'=>$tanggal,
+                    'rejected_by'=>$user_id));
+            
+            $this->session->set_flashdata("message", "Reject Ampas sudah dibuat dan masuk gudang");
+      
+      redirect("index.php/PengirimanAmpas/bpb_list");   
+    }
+
+    function gudang_ampas(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "pengiriman_ampas/gudang_ampas";
+        $this->load->model('Model_pengiriman_ampas');
+        $data['list_data'] = $this->Model_pengiriman_ampas->gudang_ampas()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function gudang_bs(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "pengiriman_ampas/gudang_bs";
+        $this->load->model('Model_pengiriman_ampas');
+        $data['list_data'] = $this->Model_pengiriman_ampas->gudang_bs()->result();
+
+        $this->load->view('layout', $data);
+    }
+
     /*function matching(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        

@@ -10,13 +10,17 @@
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
-                            <td>No. SPB</td>
-                            <td>: <?php echo $header['no_spb_bobbin']; ?></td>
+                            <td>No. Surat Penerimaan</td>
+                            <td>: <?php echo $header['no_surat_peminjaman']; ?></td>
                         </tr>
                         <tr>
-                            <td>Tanggal</td>
-                            <td>: <?php echo date('d-m-Y', strtotime($header['created_at'])); ?></td>
-                        </tr>            
+                            <td>No. Surat Jalan</td>
+                            <td>: <?php echo $header['surat_jalan']; ?></td>
+                        </tr>       
+                        <tr>
+                            <td>Nama Customer</td>
+                            <td>: <?php echo $header['nama_customer']; ?></td>
+                        </tr>               
                     </table>
                 </td>
                 <td>&nbsp;</td>
@@ -24,9 +28,13 @@
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         
                         <tr>
-                            <td>Pemohon</td>
-                            <td>: <?php echo $header['pic']; ?></td>
-                        </tr> 
+                            <td>Pembuat</td>
+                            <td>: <?php echo $header['realname']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>Tanggal</td>
+                            <td>: <?php echo date('d-m-Y', strtotime($header['created_at'])); ?></td>
+                        </tr>  
                     </table>
                 </td>
             </tr>
@@ -60,10 +68,10 @@
                     <table width="30%" align="right" border="0">
                         <tr>
                             <td style="text-align:center">
-                                Yang Mengajukan,<br>
+                                Yang Membuat,<br>
                                 <p>&nbsp;</p>
                                 <p>&nbsp;</p>
-                                <?php echo $header['pic']; ?>
+                                <?php echo $header['realname']; ?>
                             </td>
                         </tr>
                     </table>
