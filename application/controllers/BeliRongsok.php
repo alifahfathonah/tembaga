@@ -984,7 +984,7 @@ class BeliRongsok extends CI_Controller{
     function review_ttr(){
         $id = $this->uri->segment(3);
         if($id){    
-            $group_id    = $this->session->userdata('group_id');        
+            $group_id = $this->session->userdata('group_id');        
             if($group_id != 1){
                 $this->load->model('Model_modules');
                 $roles = $this->Model_modules->get_akses($module_name, $group_id);

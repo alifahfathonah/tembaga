@@ -408,7 +408,6 @@ class GudangWIP extends CI_Controller{
             $data['content']= "gudangwip/kirim_rongsok";
             $this->load->view('layout', $data);
             
-
         }else{
              redirect('index.php/GudangWIP/');
         }
@@ -471,7 +470,7 @@ class GudangWIP extends CI_Controller{
                         //sisa WIP id 8
                         'rongsok_id' => 8,
                         'qty'=>$this->input->post('qty'),
-                        'netto'=>$this->input->post('netto'),
+                        'netto'=>$this->input->post('berat'),
                         'no_pallete'=>date("dmyHis").$rand,
                         'line_remarks'=>$this->input->post('keterangan')
                     ));

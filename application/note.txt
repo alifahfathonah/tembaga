@@ -87,6 +87,9 @@ FINANCE (Create Invoice)
 Buat invoice sesuai surat jalan ke customer
 
 BS apollo masuk ke tabel bs, milik apolo
+BS masuk ke tabel BS
+
+Form mindahin BS ke rongsok
 
 kalo apollo -> nomor apollo
 kalo wip -> nomor wip
@@ -94,3 +97,13 @@ kalo wip -> nomor wip
 kirim gudang rongsok ->
 
 REJECT PMB ALL BELUM
+
+Retur= Input Barang FG(asal customer) -> BPB FG (ditandain Retur) 'Tanpa Barcode' -> Jika udah masuk cek send to rongsok or ngga
+	Ganti barang sama atau barang beda -> Mengganti barang retur
+
+	Mengurangi utang -> D
+
+Finance = Create invoice dari surat jalan dan harga dari SO
+buat kayak uang masuk
+
+(Utang dan Invoice)

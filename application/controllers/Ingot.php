@@ -591,30 +591,30 @@ class Ingot extends CI_Controller{
                 );
         $this->db->insert('t_bpb_wip_detail',$data_bpb_detail);
 
-        #Create DTR BS ke gudang rongsok
-        $code_dtr_wip = $this->Model_m_numberings->getNumbering('DTR', $tgl_input);
-        $data_dtr_bs = array(
-                'no_dtr'=> $code_dtr_wip,
-                'tanggal' => $tgl_input,
-                'status' =>0,
-                'jenis_barang' => 'RONGSOK',
-                'remarks'=> 'BS SISA PRODUKSI INGOT',
-                'created_by' => $user_id
-                );
-        $this->db->insert('dtr',$data_dtr_bs);
-        $dtr_id = $this->db->insert_id();
+        // #Create DTR BS ke gudang rongsok
+        // $code_dtr_wip = $this->Model_m_numberings->getNumbering('DTR', $tgl_input);
+        // $data_dtr_bs = array(
+        //         'no_dtr'=> $code_dtr_wip,
+        //         'tanggal' => $tgl_input,
+        //         'status' =>0,
+        //         'jenis_barang' => 'RONGSOK',
+        //         'remarks'=> 'BS SISA PRODUKSI INGOT',
+        //         'created_by' => $user_id
+        //         );
+        // $this->db->insert('dtr',$data_dtr_bs);
+        // $dtr_id = $this->db->insert_id();
 
-        #Create DTR Detail BS ke gudang rongsok
-        $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
-        $data_dtr_detail_bs = array(
-                'dtr_id' => $dtr_id,
-                'rongsok_id' => 7,
-                'netto'=> $this->input->post('bs'),
-                'line_remarks' => 'SISA PRODUKSI INGOT',
-                'no_pallete' => date("dmyHis").$rand,
-                'flag_taken' => 0
-                );
-        $this->db->insert('dtr_detail',$data_dtr_detail_bs);
+        // #Create DTR Detail BS ke gudang rongsok
+        // $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
+        // $data_dtr_detail_bs = array(
+        //         'dtr_id' => $dtr_id,
+        //         'rongsok_id' => 7,
+        //         'netto'=> $this->input->post('bs'),
+        //         'line_remarks' => 'SISA PRODUKSI INGOT',
+        //         'no_pallete' => date("dmyHis").$rand,
+        //         'flag_taken' => 0
+        //         );
+        // $this->db->insert('dtr_detail',$data_dtr_detail_bs);
 
         #Create BPB Ampas ke gudang ampas
         $code_bpb_ampas = $this->Model_m_numberings->getNumbering('BPB-AMP', $tgl_input);    

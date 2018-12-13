@@ -116,4 +116,53 @@ class Model_finance extends CI_Model{
                 where fum.id = ".$id);
         return $data;
     }
+
+    function list_invoice(){
+        $data = $this->db->query("Select fi.*, mc.nama_customer, so.no_sales_order, tsj.no_surat_jalan,
+            (select count(fid.id) from f_invoice_detail fid where fid.id_invoice = fi.id) as jumlah 
+            From f_invoice fi
+            left join sales_order so on so.id = fi.id_sales_order
+            left join t_surat_jalan tsj on tsj.id = fi.id_surat_jalan
+            left join m_customers mc on mc.id = fi.id_customer
+            Order By id desc");
+        return $data;
+    }
+
+    function get_so_list($id){
+        $data = $this->db->query("Select * From sales_order Where m_customer_id=".$id." and jenis_barang_id = 0");
+        return $data;
+    }
+
+    function get_sj_list($id){
+        $data = $this->db->query("Select id, no_surat_jalan from t_surat_jalan where sales_order_id =".$id);
+        return $data;
+    }
+
+    function show_header_invoice($id){
+        $data = $this->db->query("select fi.*, mc.nama_customer,mc.alamat, so.no_sales_order, tsj.no_surat_jalan, tso.id as id_t_sales_order from f_invoice fi
+            left join m_customers mc on mc.id = fi.id_customer
+            left join sales_order so on so.id = fi.id_sales_order
+            left join t_sales_order tso on tso.so_id = fi.id_sales_order
+            left join t_surat_jalan tsj on tsj.id = fi.id_surat_jalan
+            where fi.id = ".$id);
+        return $data;
+    }
+
+    function load_detail_invoice($id){
+        $data = $this->db->query("select tsjd.*, jb.jenis_barang, jb.uom,
+            (select tsod.amount from t_sales_order_detail tsod left join t_sales_order tso on tso.id = tsod.t_so_id where tso.so_id = tsj.sales_order_id and tsod.jenis_barang_id = tsjd.jenis_barang_id)as amount 
+            from t_surat_jalan_detail tsjd 
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id 
+            left join jenis_barang jb on jb.id = tsjd.jenis_barang_id 
+            where tsjd.t_sj_id = ".$id);
+        return $data;
+    }
+
+    function show_detail_invoice($id){
+        $data = $this->db->query("select fid.*, jb.jenis_barang, jb.uom
+        from f_invoice_detail fid
+        left join jenis_barang jb on jb.id = fid.jenis_barang_id
+        where fid.id_invoice = ".$id);
+        return $data;
+    }
 }
