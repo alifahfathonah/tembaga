@@ -544,6 +544,11 @@
                             Pembayaran </a>
                         </li>
                         <li>
+                            <a href="<?php echo base_url(); ?>index.php/Finance/invoice">
+                            <i class="fa fa-file-word-o"></i>
+                            Invoice </a>
+                        </li>
+                        <li>
                             <a href="<?php echo base_url(); ?>index.php/Finance/voucher_list">
                             <i class="fa fa-file-word-o"></i>
                             Voucher List </a>

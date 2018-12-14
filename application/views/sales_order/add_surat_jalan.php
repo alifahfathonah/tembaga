@@ -25,7 +25,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/SalesOrder/save_surat_jalan'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/SalesOrder/save_surat_jalan'); ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">

@@ -639,6 +639,29 @@ class Ingot extends CI_Controller{
         //         );
         // $this->db->insert('dtr_detail',$data_dtr_detail_bs);
 
+        #Create BPB Ampas ke gudang ampas
+        $code_bpb_ampas = $this->Model_m_numberings->getNumbering('BPB-AMP', $tgl_input);    
+        $data_bpb_ampas = array(
+                'no_bpb' => $code_bpb_ampas,
+                'status' => 0,
+                'hasil_wip_id'=> $id_hasil_wip,
+                'created_by' => $user_id,
+                'created' => $tgl_input
+                );
+        $this->db->insert('t_bpb_ampas',$data_bpb_ampas);
+
+        #Create BPB Detail Ampas ke gudang ampas
+        $data_bpb_detail_ampas = array(
+                'bpb_ampas_id' => $this->db->insert_id(),
+                'created' => $tgl_input,
+                'jenis_barang_id' => 3,
+                'uom' => 'KG',
+                'berat' => $this->input->post('bs'),
+                'keterangan' => 'SISA PRODUKSI INGOT',
+                'created_by' => $user_id
+                );
+        $this->db->insert('t_bpb_ampas_detail',$data_bpb_detail_ampas);
+=======
         if($this->input->post('ampas') != 0){
             #Create BPB Ampas ke gudang ampas
             $code_bpb_ampas = $this->Model_m_numberings->getNumbering('BPB-AMP', $tgl_input);    
@@ -663,6 +686,7 @@ class Ingot extends CI_Controller{
                     );
             $this->db->insert('t_bpb_ampas_detail',$data_bpb_detail_ampas);
         }
+>>>>>>> bc336604e4ebb9542bdca3ae0cd8cfe020d5309c
 
         $this->db->trans_complete();
         redirect('index.php/Ingot/hasil_produksi/');  

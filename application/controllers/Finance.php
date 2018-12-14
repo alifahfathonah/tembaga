@@ -745,4 +745,163 @@ class Finance extends CI_Controller{
         $this->session->set_flashdata('flash_msg', 'Semua Data Pembayaran berhasil direject');
         redirect('index.php/Finance/pembayaran');
     }
+
+    function invoice(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "finance/invoice";
+        $this->load->model('Model_finance');
+        $data['list_data'] = $this->Model_finance->list_invoice()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function add_invoice(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Finance";
+        $data['content']   = "finance/add_invoice";
+        
+        $this->load->model('Model_finance');
+        $data['customer_list'] = $this->Model_finance->customer_list()->result();
+        $this->load->view('layout', $data); 
+    }
+
+    function get_so_list(){ 
+        $id = $this->input->post('id');
+        $this->load->model('Model_finance');
+        $data = $this->Model_finance->get_so_list($id)->result();
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->no_sales_order;
+        } 
+        print form_dropdown('sales_order_id', $arr_so);
+    }
+
+    function get_sj_list(){ 
+        $id = $this->input->post('id');
+        $this->load->model('Model_finance');
+        $data = $this->Model_finance->get_sj_list($id)->result();
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->no_surat_jalan;
+        } 
+        print form_dropdown('surat_jalan_id', $arr_so);
+    }
+
+    function save_invoice(){
+        $user_id   = $this->session->userdata('user_id');
+        $tanggal   = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+
+        $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('INVOICE', $tgl_input);
+
+        $data = array(
+            'no_invoice'=> $code,
+            'tanggal'=> $tgl_input,
+            'id_customer'=> $this->input->post('m_customer_id'),
+            'id_sales_order'=> $this->input->post('sales_order_id'),
+            'id_surat_jalan'=> $this->input->post('surat_jalan_id'),
+            'keterangan'=> $this->input->post('remarks'),
+            'created_at'=> $tanggal,
+            'created_by'=> $user_id
+        );
+        $this->db->insert('f_invoice', $data);
+        $id_new=$this->db->insert_id();
+
+        if($this->db->trans_complete()){
+            redirect(base_url('index.php/Finance/view_invoice/'.$id_new));
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Uang Masuk gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/Finance');  
+        }            
+    }
+
+    function view_invoice(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Finance";
+            $data['content']   = "finance/view_invoice";
+
+            $this->load->model('Model_finance');
+            $data['header'] = $this->Model_finance->show_header_invoice($id)->row_array();
+            $id_sj = $data['header']['id_surat_jalan'];
+            $data['details'] = $this->Model_finance->load_detail_invoice($id_sj)->result();
+            $data['detailInvoice'] = $this->Model_finance->show_detail_invoice($id)->result();
+
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/Finance');
+        }
+    }
+
+    function simpan_invoice(){
+        $user_id   = $this->session->userdata('user_id');
+        $return_data = array();
+        $tgl_input = date("Y-m-d");
+        $tanggal   = date('Y-m-d h:m:s');
+        
+        $this->db->trans_start();
+        $this->load->model('Model_finance');
+        $loop_detail = $this->Model_finance->load_detail_invoice($this->input->post('id_sj'))->result();
+        foreach($loop_detail as $row){
+            $total = $row->amount * $row->netto;
+            $this->db->insert('f_invoice_detail', array(
+                    'id_invoice'=>$this->input->post('id'),
+                    'jenis_barang_id'=>$row->jenis_barang_id,
+                    'qty'=>$row->qty,
+                    'netto'=>$row->netto,
+                    'harga'=>$row->amount,
+                    'total_harga'=>$total
+            ));
+        }
+        $data = array(
+            'modified_at'=> $tanggal,
+            'modified_by'=> $user_id
+        );
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('f_invoice', $data);
+        if($this->db->trans_complete()){
+            redirect(base_url('index.php/Finance/invoice'));
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Invoice gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/Finance');  
+        }
+    }
+
+    function print_invoice(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_finance');
+            $data['header'] = $this->Model_finance->show_header_invoice($id)->row_array();
+            $data['details'] = $this->Model_finance->show_detail_invoice($id)->result();
+
+            $this->load->view('finance/print_invoice', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
 }
