@@ -161,6 +161,23 @@ class Model_pengiriman_ampas extends CI_Model{
         return $data;
     }
 
+    function list_bs(){
+        $data = $this->db->query("select tgb.*, pi.no_produksi, jb.jenis_barang, jb.uom
+            from t_gudang_bs tgb 
+            left join produksi_ingot pi on (tgb.id_produksi = pi.id)
+            left join jenis_barang jb on (pi.jenis_barang_id = jb.id)");
+        return $data;
+    }
+
+    function get_data_bs($id){
+        $data = $this->db->query("select tgb.*, pi.no_produksi, jb.jenis_barang, jb.uom
+            from t_gudang_bs tgb 
+            left join produksi_ingot pi on (tgb.id_produksi = pi.id)
+            left join jenis_barang jb on (pi.jenis_barang_id = jb.id)
+            where tgb.id = ".$id);
+        return $data;
+    }
+
     /*function get_dtr($po_id){
         $data = $this->db->query("Select dtr.*, 
                     po.no_po, 

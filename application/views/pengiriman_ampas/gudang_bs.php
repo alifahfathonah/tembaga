@@ -26,7 +26,15 @@
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-beer"></i>Gudang BS
-                </div>                
+                </div> 
+                <div class="tools">    
+                <?php
+                    if( ($group_id==1)||($hak_akses['kirim_bs']==1) ){
+                        echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/PengirimanAmpas/create_dtr').'"> '
+                        .'<i class="fa fa-plus"></i> Kirim BS Ke Rongsok </a>';
+                    }
+                ?>                    
+                </div>               
             </div>
             <div class="portlet-body">
                 <table class="table table-striped table-bordered table-hover" id="sample_6">

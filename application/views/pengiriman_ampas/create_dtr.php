@@ -2,9 +2,7 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Pengiriman Ampas 
-            <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/PengirimanAmpas'); ?>"> PO List </a> 
+            <i class="fa fa-angle-right"></i> Pengiriman Ampas  
             <i class="fa fa-angle-right"></i> 
             <a href="<?php echo base_url('index.php/PengirimanAmpas/create_dtr'); ?>"> Create DTR Ampas </a> 
         </h5>          
@@ -36,6 +34,8 @@
                             <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="Auto Generate">
+                            <!-- <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['id']; ?>"> -->
+
                         </div>
                     </div>
                     <div class="row">
@@ -47,41 +47,10 @@
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
                                 value="<?php echo date('d-m-Y'); ?>">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            No. PO 
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="no_po" name="no_po" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['no_po']; ?>">
-                            
-                            <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['id']; ?>">
-                        </div>
-                    </div>                    
-                    <div class="row">
-                        <div class="col-md-4">
-                            Catatan
-                        </div>
-                        <div class="col-md-8">
-                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px"></textarea>                           
-                        </div>
-                    </div>
+                    </div>        
                 </div>
                 <div class="col-md-2">&nbsp;</div>
-                <div class="col-md-5"> 
-                    <div class="row">
-                        <div class="col-md-4">
-                            Supplier
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="supplier" name="supplier" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['nama_supplier']; ?>">
-                        </div>
-                    </div> 
+                <div class="col-md-5">  
                     <div class="row">
                         <div class="col-md-4">
                             Jenis Barang
@@ -101,6 +70,15 @@
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $this->session->userdata('realname'); ?>">
                         </div>
+                    </div>            
+                    <div class="row">
+                        <div class="col-md-4">
+                            Catatan
+                        </div>
+                        <div class="col-md-8">
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
+                                class="form-control myline" style="margin-bottom:5px"readonly>BARANG BS TRANSFER KE RONGSOK</textarea>                           
+                        </div>
                     </div>
                     
                 </div>              
@@ -108,58 +86,34 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
-                        <table class="table table-bordered table-striped table-hover">
+                        <table class="table table-bordered table-striped table-hover" id="tabel_barang">
                             <thead>
                                 <th style="width:40px">No</th>
-                                <th>
-                                    <input type="checkbox" id="check_all" name="check_all" onclick="checkAll()" class="form-control">
-                                </th>
-                                <th>Nama Item Ampas</th>
+                                <th>No. Produksi</th>
+                                <th>Berat</th>
                                 <th>UOM</th>
-                                <th>Jumlah</th>
-                                <th>Bruto (Kg)</th>
-                                <th>Netto (Kg)</th>
-                                <th></th>
-                                <th>Keterangan</th>
+                                <th>Action</th>
                             </thead>
-                            <tbody>
-                            <?php
-                                $no = 1;
-                                foreach ($details as $row){
-                                    echo '<tr>';
-                                    echo '<td style="text-align:center">'.$no.'</td>';
-                                    echo '<td>';
-                                    echo '<input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
-                                            onclick="check();" class="form-control">';
-                                    echo '<input type="hidden" name="myDetails['.$no.'][po_detail_id]" value="'.$row->id.'">';
-                                    echo '<input type="hidden" name="myDetails['.$no.'][ampas_id]" value="'.$row->ampas_id.'">';
-                                    echo '</td>';
-                                    echo '<td><input type="text" name="myDetails['.$no.'][nama_item]" '
-                                            . 'class="form-control myline" value="'.$row->nama_item.'" '
-                                            . 'readonly="readonly"></td>';
-                                    echo '<td><input type="text" name="myDetails['.$no.'][uom]" '
-                                            . 'class="form-control myline" value="'.$row->uom.'" '
-                                            . 'readonly="readonly"></td>';                                    
-                                    echo '<td><input type="text" name="myDetails['.$no.'][qty]" '
-                                            . 'class="form-control myline" value="'.$row->qty.'" '
-                                            . 'readonly="readonly"></td>';
-                                    
-                                    echo '<td><input type="text" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
-                                            . 'class="form-control myline" value="0" maxlength="10" '
-                                            . 'onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>';
-                                    
-                                    echo '<td><input type="text" id="netto_'.$no.'" name="myDetails['.$no.'][netto]" '
-                                            . 'class="form-control myline" value="0" maxlength="10" '
-                                            . 'onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>';
-                                    
-                                    echo '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="loadTimbangan('.$no.');"> <i class="fa fa-dashboard"></i> Timbang </a></td>';
-                                                                        
-                                    echo '<td><input type="text" name="myDetails['.$no.'][line_remarks]" '
-                                            . 'class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';
-                                    echo '</tr>';
-                                    $no++;
-                                }
-                            ?>
+                            <tbody id="boxDetail">
+                                <tr>
+                                    <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
+                                    <td>
+                                        <select id="id_produksi_1" name="details[1][id_produksi]" class="form-control myline" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="get_data(1);">
+                                            <option value=""></option>
+                                        <?php foreach ($list_bs as $value){ ?>
+                                            <option value='<?=$value->id;?>'>
+                                                <?=$value->no_produksi;?>
+                                            </option>
+                                        <?php } ?>
+                                        </select>
+                                    </td>
+                                    <input type="hidden" name="details[1][produksi_id]" id="produksi_id_1">
+                                    <td><input type="text" id="berat_1" name="details[1][berat]" class="form-control myline" readonly="readonly"></td>
+                                    <td><input type="text" id="uom_1" name="details[1][uom]" class="form-control myline" readonly="readonly"></td>
+                                    <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input(1);" style="margin-top:5px" id="save_1"><i class="fa fa-plus"></i> Tambah </a>
+                                    <td style="text-align:center"><a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -189,80 +143,81 @@
     </div>
 </div> 
 <script>
-function loadTimbangan(id){
-    $.ajax({
-        url: "<?php echo base_url('index.php/BeliRongsok/load_angka_timbangan'); ?>",
-        type: "POST",
-        data : {},
-        success: function (result){
-            //console.log(result);
-            if(result['type_message'][0]=="error"){
-                $("#bruto_"+id).val('0');
-                
-                $('#message').html(result['message'][0]);
-                $('.alert-danger').show(); 
-                
-            }else if(result['type_message'][0]=="success"){
-                $('#message').html("");
-                $('.alert-danger').hide(); 
-                
-                $("#bruto_"+id).val(result['berat'][0]);
+    function create_new_input(id){
+        $("#id_produksi_"+id).attr('disabled','disabled');
+        $("#save_"+id).attr('disabled','disabled');
+        $("#delete_"+id).removeClass('disabled');
+        var new_id = id+1; 
+        $("#tabel_barang>tbody").append(
+        '<tr>'+
+            '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
+            '<td>'+
+                '<select id="id_produksi_'+new_id+'" name="details['+new_id+'][id_produksi]" class="form-control myline" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="get_data('+new_id+');">'+
+                    '<option value=""></option>'+
+            '<?php foreach ($list_bs as $value){ print('<option value="'.$value->id.'";>'.$value->no_produksi.'</option>'); } ?>'+
+                '</select>'+
+            '</td>'+
+            '<input type="hidden" name="details['+new_id+'][produksi_id]" id="produksi_id_'+new_id+'">'+
+            '<td><input type="text" id="berat_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline" readonly="readonly"></td>'+
+            '<td><input type="text" id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
+            '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input('+new_id+');" style="margin-top:5px" id="save_'+new_id+'"><i class="fa fa-plus"></i> Tambah </a>'+
+            '<td style="text-align:center"><a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
+            '</td>'+
+        '</tr>');
+    }
+
+    function check_duplicate(){
+    var valid = true;
+        $.each($("select[name$='[id_produksi]']"), function (index1, item1) {
+            $.each($("select[name$='[id_produksi]']").not(this), function (index2, item2) {
+                if ($(item1).val() == $(item2).val()) {
+                    valid = false;
+                }
+            });
+        });
+        return valid;
+}
+
+function get_data(id){
+    $("#produksi_id_"+id).val($("#id_produksi_"+id).val());
+    var id_produksi = $("#id_produksi_"+id).val();
+    console.log(id_produksi);
+    if(id_produksi!=''){    
+        var check = check_duplicate();
+        if(check){
+        $.ajax({
+            url: "<?php echo base_url('index.php/PengirimanAmpas/get_data_bs'); ?>",
+            async: false,
+            type: "POST",
+            data: "id="+id_produksi,
+            dataType: "json",
+            success: function(result) {
+                console.log(id);
+                $('#berat_'+id).val(result['berat']);
+                $('#uom_'+id).val(result['uom']);
             }
+        });
+        } else {
+            alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
+            $("#id_produksi_"+id).val('');
+            $("#produksi_id_"+id).val('');
         }
-    });
+    }
 }
 
-function myCurrency(evt) {
-    var charCode = (evt.which) ? evt.which : event.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
-        return false;
-    return true;
-}
-
-function getComa(value, id){
-    angka = value.toString().replace(/\./g, "");
-    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-}
-
-function checkAll(){
-    if ($('#check_all').prop("checked")) {  
-        $('input').each(function(i){
-            $('#uniform-check_'+i+' span').attr('class', 'checked');
-            $('#check_'+i).attr('checked', true);
-        });
-    }else{
-        $('input').each(function(i){
-            $('#uniform-check_'+i+' span').attr('class', '');
-            $('#check_'+i).attr('checked', false);
-        });
-    }   
-}
-
-function check(){
-    $('#uniform-check_all span').attr('class', '');
-    $('#check_all').attr('checked', false);    
+function hapusDetail(id){
+    var r=confirm("Anda yakin menghapus item barang ini?");
+    if (r==true){
+        $('#no_tabel_'+id).closest('tr').remove();
+        }
 }
 
 function simpanData(){
-    var item_check = 0;
-    $('input').each(function(i){
-        if($('#check_'+i).prop("checked")){
-            item_check += 1;                    
-        }
-    });
-    
     if($.trim($("#tanggal").val()) == ""){
-        $('#message').html("Tanggal harus diisi, tidak boleh kososng!");
+        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else{    
-        if(item_check==0){
-            $('#message').html("Silahkan pilih item rongsok yang akan di-create DTR!"); 
-            $('.alert-danger').show(); 
-        }else{
-            $('#message').html("");
-            $('.alert-danger').hide(); 
-            $('#formku').submit(); 
-        }
+    }else{   
+        $('#formku').submit(); 
     };
 };
 </script>
