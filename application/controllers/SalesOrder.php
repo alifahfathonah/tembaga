@@ -113,11 +113,9 @@ class SalesOrder extends CI_Controller{
         
         $this->load->model('Model_sales_order');  
         if($jenis == 'RONGSOK'){
-        $list_barang = $this->Model_sales_order->list_barang_so_rongsok()->result();
         $myDetail = $this->Model_sales_order->load_detail_so_rongsok($id)->result();
         }else{
         $myDetail = $this->Model_sales_order->load_detail_so($id)->result();
-        $list_barang = $this->Model_sales_order->list_barang_so($jenis)->result();
         }
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
@@ -145,43 +143,6 @@ class SalesOrder extends CI_Controller{
             
             $no++;
         }
-            
-        $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:center">'.$no.'</td>';
-        $tabel .= '<td>';
-        $tabel .= '<select id="barang_id" name="barang_id" class="form-control select2me myline" ';
-            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">';
-            $tabel .= '<option value=""></option>';
-            foreach ($list_barang as $value){
-                $tabel .= "<option value='".$value->id."'>".$value->jenis_barang."</option>";
-            }
-        $tabel .= '</select>';
-        $tabel .= '</td>';
-        $tabel .= '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td><input type="text" id="harga" name="harga" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-        if($jenis == 'WIP'){
-        $tabel .= '<td><input type="text" id="qty" name="qty" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="5" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-        $tabel .= '<td><input type="text" id="bruto" name="bruto" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="10" value="0"></td>';
-        $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="10" value="0"></td>';  
-        } else if($jenis == 'FG') {
-        $tabel .= '<input type="hidden" id="qty" name="qty" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="10" value="1">';
-        $tabel .= '<input type="hidden" id="bruto" name="bruto" class="form-control myline" maxlength="10" value="0">';
-        $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>'; 
-        } else {
-        $tabel .= '<td><input type="text" id="qty" name="qty" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="5" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-        }
-        $tabel .= '<td><input type="text" id="total_harga" name="total_harga" class="form-control myline" '
-                . 'readonly="readonly" value="0"></td>'; 
-        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
-                . '<i class="fa fa-plus"></i> Tambah </a></td>'; 
         $tabel .= '<tr>';
         if($jenis == 'WIP'){
         $tabel .= '<td colspan="5" style="text-align:right"><strong>Total </strong></td>';
@@ -198,7 +159,6 @@ class SalesOrder extends CI_Controller{
         }
         $tabel .= '<td></td>';
         $tabel .= '</tr>';
-       
         
         header('Content-Type: application/json');
         echo json_encode($tabel); 
@@ -310,6 +270,12 @@ class SalesOrder extends CI_Controller{
             $data['header'] = $this->Model_sales_order->show_header_so($id)->row_array();  
             $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
             $data['marketing_list'] = $this->Model_sales_order->marketing_list()->result();
+            $jenis = $data['header']['jenis_barang'];
+            if($jenis == 'RONGSOK'){
+            $data['list_barang'] = $this->Model_sales_order->list_barang_so_rongsok()->result();
+            }else{
+            $data['list_barang'] = $this->Model_sales_order->list_barang_so($jenis)->result();
+            }
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/SalesOrder');
@@ -649,7 +615,9 @@ class SalesOrder extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        
+        $jenis = $this->input->post('jenis_barang');
+        $soid = $this->input->post('so_id');
+
         #Insert Surat Jalan
         $details = $this->input->post('details');
         foreach ($details as $v) {
@@ -673,6 +641,22 @@ class SalesOrder extends CI_Controller{
             }
         }
 
+        $this->load->model('Model_sales_order');
+        #cek jika surat jalan sudah di kirim semua atau belum
+        if($jenis == 'FG'){
+            $list_produksi = $this->Model_sales_order->list_item_sj_fg($soid)->result();
+        }else if($jenis == 'WIP'){
+            $list_produksi = $this->Model_sales_order->list_item_sj_wip($soid)->result();
+        }else{
+            $list_produksi = $this->Model_sales_order->list_item_sj_rongsok($soid)->result();
+        }
+
+        if(empty($list_produksi)){
+            $this->db->where('id',$soid);
+            $this->db->update('sales_order', array(
+                'flag_sj'=>1
+            ));
+        }
         #insert bobbin_peminjaman
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);

@@ -298,6 +298,7 @@ function get_data(id){
         } else {
             alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
             $("#barang_id_"+id).val('');
+            $("#id_barang_"+id).val('');
         }
     }
 }
@@ -353,30 +354,6 @@ function get_type_kendaraan(id){
         } 
     });
 }
-
-function get_alamat(id){
-    $.ajax({
-        type: "POST",
-        url: "<?php echo base_url('index.php/SalesOrder/get_alamat'); ?>",
-        data: {id: id},
-        cache: false,
-        success: function(result) {
-            $("#alamat").val(result['alamat']);           
-        } 
-    });
-    
-    $.ajax({
-        url: "<?php echo base_url('index.php/SalesOrder/get_so_list'); ?>",
-        async: false,
-        type: "POST",
-        data: "id="+id,
-        dataType: "html",
-        success: function(result) {
-            $('#sales_order_id').html(result);
-        }
-    })
-}
-
 </script>
 
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>

@@ -183,7 +183,7 @@ class Model_ingot extends CI_Model{
     }
 
     function jenis_barang_list(){
-        $data = $this->db->query("Select * From jenis_barang Order By jenis_barang");
+        $data = $this->db->query("Select * From jenis_barang Where category='WIP' Order By jenis_barang");
         return $data;
     }
     

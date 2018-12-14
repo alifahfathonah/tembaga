@@ -129,12 +129,12 @@ class Model_finance extends CI_Model{
     }
 
     function get_so_list($id){
-        $data = $this->db->query("Select * From sales_order Where m_customer_id=".$id." and jenis_barang_id = 0");
+        $data = $this->db->query("Select * From sales_order Where m_customer_id=".$id." and jenis_barang_id = 0 and flag_invoice = 0");
         return $data;
     }
 
     function get_sj_list($id){
-        $data = $this->db->query("Select id, no_surat_jalan from t_surat_jalan where sales_order_id =".$id);
+        $data = $this->db->query("Select tsj.id, tsj.no_surat_jalan from t_surat_jalan tsj where tsj.sales_order_id = ".$id." and not exists (select null from f_invoice fi where fi.id_surat_jalan = tsj.id)");
         return $data;
     }
 
