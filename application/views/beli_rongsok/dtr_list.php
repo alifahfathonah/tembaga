@@ -80,7 +80,7 @@
                                 if(($group_id==1 || $hak_akses['edit_dtr']==1) && $data->status==9){
                                     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliRongsok/edit_dtr/'.$data->id.'" 
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit &nbsp; </a> ';
-                                }else if ($data->status==0 && strpos($data->remarks, 'SISA PRODUKSI') !== false){
+                                }else if ($data->status==0 && (strpos($data->remarks, 'SISA PRODUKSI') || strpos($data->remarks, 'TRANSFER KE RONGSOK')) !== false){
                                     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliRongsok/proses_dtr/'.$data->id.'" 
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
                                 }
