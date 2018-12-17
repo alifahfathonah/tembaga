@@ -205,6 +205,7 @@
                     <th>PPN</th> 
                     <th>Jumlah <br>Items</th>
                     <th>Status</th>
+                    <th>Keterangan</th>
                     <th>Voucher <br>Pembayaran</th>
                     <th>Actions</th>
                 </tr>
@@ -254,6 +255,7 @@
                                 }
                             ?>
                         </td>
+                        <td><?php echo $data->remarks; ?></td>
                         <td style="text-align:center">
                             <?php
                                 if($data->flag_pelunasan==0){

@@ -516,20 +516,21 @@ class BeliSparePart extends CI_Controller{
     }
     
     function close_po(){
-        $id = $this->input->post('id');
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         
-        $return_data = array();
-        $this->db->where('id', $id);
-        if($this->db->update('po', array('status'=>1, 'modified'=>$tanggal, 'modified_by'=>$user_id))){
-            $return_data['message_type']= "sukses";
-        }else{
-            $return_data['message_type']= "error";
-            $return_data['message']= "Gagal close PO! Silahkan coba kembali";
-        }           
-        header('Content-Type: application/json');
-        echo json_encode($return_data);
+        $data = array(
+                'status'=> 1,
+                'modified'=> $tanggal,
+                'modified_by'=>$user_id,
+                'remarks'=>$this->input->post('reject_remarks')
+            );
+        
+        $this->db->where('id', $this->input->post('header_id'));
+        $this->db->update('po', $data);
+        
+        $this->session->set_flashdata('flash_msg', 'Close PO spare part berhasil direject');
+        redirect('index.php/BeliSparePart/po_list');
     }
     
     function show_cek_qty(){

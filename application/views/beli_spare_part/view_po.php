@@ -15,6 +15,39 @@
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12">
+        <h3 align="center"><b> Konfirmasi Close PO Sparepart</b></h3>
+        <hr class="divider" />
+        <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">&nbsp;</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="eventInsForm" method="post" target="_self" name="frmReject" 
+                              id="frmReject">                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Reject Remarks <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <textarea id="reject_remarks" name="reject_remarks" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>
+                                    
+                                    <input type="hidden" id="header_id" name="header_id">
+                                </div>
+                            </div>                           
+                        </form>
+                    </div>
+                    <div class="modal-footer">                        
+                        <button type="button" class="btn blue" onClick="rejectData();">Simpan</button>
+                        <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <?php
             if( ($group_id==1)||($hak_akses['view_po']==1) ){
         ?>
@@ -171,7 +204,7 @@
             <div class="col-md-12">
                 <?php
                     if( ($group_id==1 || $hak_akses['close_po']==1) && $header['status']!=1){
-                        echo '<a href="javascript:;" class="btn red-sunglo" onclick="closePO();"> 
+                        echo '<a href="javascript:;" class="btn red-sunglo" onclick="showRejectBox();"> 
                             <i class="fa fa-lock"></i> Close PO </a>';
                     }
                 ?>
@@ -193,21 +226,27 @@
     </div>
 </div> 
 <script>
-function closePO(){
-    var r=confirm("Anda yakin ingin close PO ini?");
+function showRejectBox(){
+    var r=confirm("Anda yakin me-close PO ini?");
     if (r==true){
-        $.ajax({
-            type:"POST",
-            url:'<?php echo base_url('index.php/BeliSparePart/close_po'); ?>',
-            data:"id="+ $('#id').val(),
-            success:function(result){
-                if(result['message_type']=="sukses"){
-                    window.location.href = "<?php echo base_url('index.php/BeliSparePart/po_list'); ?>";
-                }else{
-                    alert(result['message']);
-                }     
-            }
-        });
+        $('#header_id').val($('#id').val());
+        $('#message').html("");
+        $('.alert-danger').hide();
+        
+        $("#myModal").find('.modal-title').text('Close PO Sparepart');
+        $("#myModal").modal('show',{backdrop: 'true'}); 
+    }
+}
+
+function rejectData(){
+    if($.trim($("#reject_remarks").val()) == ""){
+        $('#message').html("Close remarks harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{
+        $('#message').html("");
+        $('.alert-danger').hide();
+        $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/BeliSparePart/close_po");
+        $('#frmReject').submit(); 
     }
 }
 </script>

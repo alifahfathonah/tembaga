@@ -165,7 +165,8 @@ class Model_pengiriman_ampas extends CI_Model{
         $data = $this->db->query("select tgb.*, pi.no_produksi, jb.jenis_barang, jb.uom
             from t_gudang_bs tgb 
             left join produksi_ingot pi on (tgb.id_produksi = pi.id)
-            left join jenis_barang jb on (pi.jenis_barang_id = jb.id)");
+            left join jenis_barang jb on (pi.jenis_barang_id = jb.id)
+            where tgb.status = 0");
         return $data;
     }
 

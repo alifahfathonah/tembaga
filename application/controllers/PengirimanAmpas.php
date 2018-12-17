@@ -304,7 +304,7 @@ class PengirimanAmpas extends CI_Controller{
             $this->db->insert('dtr', $data);
             $dtr_id = $this->db->insert_id();
 
-            #insert dtr details
+            #update status gudang bs
             $details = $this->input->post('details');
             $sum =0;
             foreach ($details as $row){
@@ -316,11 +316,16 @@ class PengirimanAmpas extends CI_Controller{
                     ));
                 }
             }
+
+            #insert dtr details
+            $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
             $this->db->insert('dtr_detail', array(
                 'dtr_id'=>$dtr_id,
+                'rongsok_id'=>7,
                 'qty'=>$sum,
                 'netto'=>$sum,
                 'line_remarks'=>'BARANG BS TRANSFER KE RONGSOK',
+                'no_pallete'=>date("dmyHis").$rand,
                 'created'=>$tanggal,
                 'created_by'=>$user_id,
                 'modified'=>$tanggal,
