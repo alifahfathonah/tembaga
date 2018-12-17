@@ -1,0 +1,3 @@
+update table 171218
+-t_gudang_bs jenis_barang_id int
+-t_hasil_masak serbuk int

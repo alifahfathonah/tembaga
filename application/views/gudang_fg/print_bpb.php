@@ -11,12 +11,16 @@
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>No. BPB</td>
-                            <td>: <?php echo $header['no_spb']; ?></td>
+                            <td>: <?php echo $header['no_bpb_fg']; ?></td>
                         </tr>
                         <tr>
                             <td>Tanggal</td>
                             <td>: <?php echo date('d-m-Y', strtotime($header['tanggal'])); ?></td>
-                        </tr>                 
+                        </tr>      
+                        <tr>
+                            <td>No. Produksi</td>
+                            <td>: <?php echo $header['no_laporan_produksi']; ?></td>
+                        </tr>           
                     </table>
                 </td>
                 <td>&nbsp;</td>
@@ -24,29 +28,12 @@
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>Jenis Barang</td>
-                            <td>: Finish Good</td>
-                        </tr>
-                    <?php
-                        if($header['status'] == '9'){
-                    ?>
-                        <tr>
-                            <td>Di tolak oleh</td>
-                            <td>: <?php echo $header['reject_name']; ?></td>
+                            <td>: <?php echo $header['jenis_barang']; ?></td>
                         </tr>
                         <tr>
-                            <td>Catatan</td>
-                            <td>: <?php echo $header['reject_remarks']; ?></td>
+                            <td>Pengirim</td>
+                            <td>: <?php echo $header['pengirim']; ?></td>
                         </tr>
-                    <?php
-                    } else if($header['status'] == '1'){
-                    ?>
-                        <tr>
-                            <td>Di terima oleh</td>
-                            <td>: <?php echo $header['approved_name']; ?></td>
-                        </tr>
-                    <?php
-                    }
-                    ?>
                     </table>
                 </td>
             </tr>
@@ -56,7 +43,9 @@
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nama Item</strong></td>
-                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>UOM</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Bobbin</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Packing</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Bruto</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Netto</strong></td>
                             <td style="text-align:center; border:1px solid #000"><strong>Keterangan</strong></td>
                         </tr>
@@ -66,15 +55,19 @@
                                 echo '<tr>';
                                 echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->jenis_barang.'</td>';
-                                echo '<td style="border-left:1px solid #000">'.$row->uom.'</td>';
+                                echo '<td style="border-left:1px solid #000">'.$row->nomor_bobbin.'</td>';
+                                echo '<td style="border-left:1px solid #000">'.$row->no_packing_barcode.'</td>';
+                                echo '<td style="border-left:1px solid #000">'.$row->bruto.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->netto.'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->keterangan.'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000"></td>';
                                 echo '</tr>';
                                 $no++;
                             }
                         ?>
                         <tr style="height:100px">
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
@@ -91,7 +84,7 @@
                                 Yang Mengajukan,<br>
                                 <p>&nbsp;</p>
                                 <p>&nbsp;</p>
-                                <?php echo $header['pic']; ?>
+                                <?php echo $header['pengirim']; ?>
                             </td>
                         </tr>
                     </table>

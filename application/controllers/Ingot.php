@@ -547,6 +547,7 @@ class Ingot extends CI_Controller{
         #insert gudang bs
         $data_bs = array(
             'id_produksi' => $id_masak,
+            'jenis_barang_id' => 14,
             'berat' => $this->input->post('bs'),
             'tanggal' => $tgl_input,
             'status' => 0,
@@ -680,13 +681,6 @@ class Ingot extends CI_Controller{
         redirect('index.php/Ingot/hasil_produksi/');  
          
     }
-
-
- 
-
-
-
-
     
     function edit_produksi(){
         $module_name = $this->uri->segment(1);
