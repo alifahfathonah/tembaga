@@ -50,7 +50,7 @@
                         <td style="text-align:center"><?php echo $no; ?></td>
                         <td><?php echo $data->no_voucher; ?></td>
                         <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <td><?php echo $data->nama_supplier ?></td>
+                        <td><?php echo $data->nama_supplier; ?></td>
                         <td><?php echo $data->jenis_voucher; ?></td>
                         <td><?php echo $data->no_po; ?></td>
                         <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal_po)); ?></td>

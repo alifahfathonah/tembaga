@@ -47,11 +47,22 @@ class Model_finance extends CI_Model{
     }
 
     function voucher_list(){
-        $data = $this->db->query("Select voucher.*, 
+        $data = $this->db->query("Select voucher.*, supplier.nama_supplier, 
                 po.no_po, po.tanggal As tanggal_po
                 From voucher 
                     Left Join po On (voucher.po_id = po.id)
+                    left join supplier on (supplier.id = po.supplier_id)
                 Order By voucher.no_voucher");
+        return $data;
+    }
+
+    function check_voucher(){
+        $data = $this->db->query("Select voucher.*, supplier.nama_supplier,
+                po.no_po, po.tanggal As tanggal_po
+                From voucher 
+                    Left Join po On (voucher.po_id = po.id)
+                    left join supplier on (supplier.id = po.supplier_id)
+                where pembayaran_id = 0 Order By voucher.no_voucher");
         return $data;
     }
 
@@ -164,6 +175,27 @@ class Model_finance extends CI_Model{
         from f_invoice_detail fid
         left join jenis_barang jb on jb.id = fid.jenis_barang_id
         where fid.id_invoice = ".$id);
+        return $data;
+    }
+
+    function show_header_voucher($id){
+        $data = $this->db->query("select v.*, s.nama_supplier, p.no_po, pmb.no_pembayaran, u.realname as pic 
+            from voucher v 
+            left join po p on (p.id = v.po_id)
+            left join supplier s on (s.id = p.supplier_id)
+            left join f_pembayaran pmb on (pmb.id = v.pembayaran_id)
+            left join users u on (u.id = v.created_by)
+            where v.id = ".$id);
+        return $data;
+    }
+
+    function show_detail_voucher($id){
+        $data = $this->db->query("Select voucher.*, supplier.nama_supplier, 
+                po.no_po, po.tanggal As tanggal_po
+                From voucher 
+                    Left Join po On (voucher.po_id = po.id)
+                    left join supplier on (supplier.id = po.supplier_id)
+                where voucher.id = ".$id);
         return $data;
     }
 }
