@@ -85,7 +85,7 @@
                                 <option value="0"></option>
                                 <?php
                                     foreach ($bank_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->kode_bank.'</option>';
+                                        echo '<option value="'.$row->id.'">('.$row->kode_bank.') '.$row->nomor_rekening.'</option>';
                                     }
                                 ?>
                             </select>
@@ -134,11 +134,8 @@
                         <div class="col-md-8">
                             <select id="currency" name="currency" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih Currency" style="margin-bottom:5px">
-                                <option value=""></option>
                                 <option value="IDR">IDR</option>
                                 <option value="USD">USD</option>
-                                <option value="EUR">EUR</option>
-                                <option value="YEN">YEN</option>
                             </select>
                             <input type="text" id="nominal" name="nominal" 
                                 class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id)";>

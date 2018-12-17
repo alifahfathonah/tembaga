@@ -79,6 +79,8 @@
                             <input type="text" id="no_so" name="no_so" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_sales_order']; ?>">
+
+                            <input type="hidden" id="so_id" name="so_id" value="<?php echo $header['id_sales_order'];?>">
                         </div>
                     </div>
                     <div class="row">

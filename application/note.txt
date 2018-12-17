@@ -1,14 +1,3 @@
-SPB_LIST
-
-Ingot -> spb
-WIP -> t_spb_wip dan t_gudang_wip
-	*Error di t_gudang_wip->t_spb_wip_detail_id
-Finish Good -> t_spb_fg
-
-PRODUKSI FG
-GudangFG/edit_laporan -> GudangFG/update_laporan -> produksi_fg dan t_bpb_fg
-GudangFG/proses_bpb -> GudangFG/approve_bpb -> t_bpb_fg dan insert t_gudang_fg
-
 CEK PALLETTE RONGSOK -->
 
 select dtr_detail.id,(ttr.id)as 'ttr_id' ,bruto, netto,no_pallete,line_remarks, (rongsok.nama_item)as rongsokname,rongsok.uom
@@ -17,15 +6,6 @@ select dtr_detail.id,(ttr.id)as 'ttr_id' ,bruto, netto,no_pallete,line_remarks, 
                 left join ttr on ttr.dtr_id = dtr_detail.dtr_id
                 where flag_taken=0
 
-PO SparePart -> 
-	- beli_sparepart (no_pengajuan)
-	- beli_sparepart_detail (detail dari no_pengajuan) -> 		*no_pengajuan SAMA, INTI DARI SEMUA.
-			- po -> merujuk ke (#beli_sparepart = no_pengajuan)
-			- po_detail -> merujuk ke (#po = id) ->      *NGAMBIL QTY DARI SINI
-					- lpb (no_bpb) -> merujuk ke (#po_detail = po_id) ->     *CREATE NO BPB UNTUK 1 lpb_detail, PO_ID tetep sama untuk Multiple
-					- lpb_detail -> merujuk ke (#lpb = lpb_id)     *QTY BOLEH KURANG DARI KEBUTUHAN DI po_detail
-							- t_inventory (id) -> update id barang, bertambah dan berkurang
-							- t_inventory_detail (t_inventory_id) -> detail yang ditambah dan kurang
 Sales_Order dan Sales Order Detail UNTUK TOLLING TITIPAN
 
 t_sales_order ->
@@ -45,13 +25,6 @@ SURAT JALAN SALES ORDER BIASA
 	t_spb_fg_detail
 	t_gudang_fg
 
-Tolling FG 
-	- Berat TTR masuk ke tabel 300(sama)
-	- Permintaan SPB masuk ke tabel 300(sama)
-
-		-Surat Jalan SPB - Berat TTR masuk ke tabel = Hutang
-	--> Create Tolling_FG_Detail ->
-	   --> Create SPB_FG (otomatis) ->
 
 Retur Rongsok -> Surat Jalan Rongsok -> (Jika Dibalikin) Apa saja yang dibalikin *input manual
 	-> Pilih dari SJ mana untuk retrieve harga -> Jika ada SJ nya otomatis retrieve SO
@@ -69,11 +42,6 @@ Tolling Bermasalah
 
 Kredit = Masuk
 Debit = Keluar
-
-FINANCE (Uang Masuk)
-Saat buat cek, status 0 karena belum cair dan Pilih apakah itu UM Replace atau Baru
-Ganti status ke 1 jika sudah cair. Secara Manual.
-Jika Reject, Buat Reject Marks(FINISHED)
 
 FINANCE (Pembayaran)
 Buat Slip Setoran pada saat matching voucher dan Uang masuk, Slip setoran id saja karena nanti buat tabel baru
@@ -107,3 +75,19 @@ Finance = Create invoice dari surat jalan dan harga dari SO
 buat kayak uang masuk
 
 (Utang dan Invoice)
+
+TABEL KE GANTI
+sales_order tambah flag_invoice dan flag_sj
+
+Update surat jalan belum fix
+
+SalesOrder/add_surat_jalan No.Sales Order belum ke flag jika sudah dikirim semua
+
+
+note baru
+JIKA CLOSE PO SPAREPART dan RONGSOK, DITAMBAH KETERANGAN
+PO PPN Spare Part by user login
+Finance/matching_pmb/ Buka tab baru 
+Ingot/hasil_produksi2 Ada serbuk (belum tau tipe serbuknya apa)
+GudangWIP/proses_wip Ada Serbuk -> Penjelasan Ditambah dikiri (Prosesnya Belum Ada)
+GudangFG/bpb_list -> Print belum

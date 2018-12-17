@@ -875,13 +875,22 @@ class Finance extends CI_Controller{
                     'qty'=>$row->qty,
                     'netto'=>$row->netto,
                     'harga'=>$row->amount,
-                    'total_harga'=>$total
+                    'total_harga'=>$total,
+                    'keterangan'=>$row->line_remarks
             ));
         }
         $data = array(
             'modified_at'=> $tanggal,
             'modified_by'=> $user_id
         );
+
+        $cek = $this->Model_finance->get_sj_list($this->input->post('so_id'))->result();
+        if(empty($cek)){
+            $this->db->where('id',$this->input->post('so_id'));
+            $this->db->update('sales_order', array(
+                'flag_invoice'=>1
+            ));
+        }
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('f_invoice', $data);
         if($this->db->trans_complete()){

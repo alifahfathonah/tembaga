@@ -90,6 +90,7 @@
                     <div class="col-md-6">
                         <div class="form-inline">
                             <div class="form-group">
+                                <label>Jumlah Kawat Hitam </label>
                                 <input type="text" id="qty_kh_in" name="qty_kh" 
                                 class="form-control myline" size="25" 
                                 value="" placeholder="Jumlah Kawat Hitam"/>
@@ -101,6 +102,7 @@
                     <div class="col-md-6">
                         <div class="form-inline">
                             <div class="form-group">
+                                <label>Berat Kawat Hitam </label>
                                 <input type="text" id="berat_kh_in" name="berat_kh" 
                                 class="form-control myline" size="25" 
                                 value="" placeholder="Berat Kawat Hitam"/>
@@ -114,6 +116,7 @@
                     <div class="col-md-6">
                         <div class="form-inline">
                             <div class="form-group">
+                                <label>Berat Keras </label>
                                 <input type="text" id="qty_keras_in" name="keras" 
                                 class="form-control myline" size="25" 
                                 value="" placeholder="Berat Keras"/>
@@ -124,10 +127,25 @@
                     <div class="col-md-6">
                         <div class="form-inline">
                             <div class="form-group">
+                                <label>Berat BS </label>
                                 <input type="text" id="berat_bs_in" name="bs" 
                                 class="form-control myline" size="25" 
                                 value="" placeholder="Berat BS"/>
                                 <label> Kg</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-inline">
+                            <div class="form-group">
+                            <label>Berat Serbuk</label>
+                            <input id="berat_serbuk_in" name="serbuk" 
+                                class="form-control myline" size="25" 
+                                value="" placeholder="Berat Serbuk"/>
+                                <label> Kg </label>
                             </div>
                         </div>
                     </div>
@@ -153,6 +171,7 @@
                     <div class="col-md-6">
                         <div class="form-inline">
                             <div class="form-group">
+                                <label>Jumlah Kawat Merah</label>
                                 <input type="text" id="qty_km_in" name="qty_km" 
                                 class="form-control myline" size="25" 
                                 value="" placeholder="Jumlah Kawat Merah"/>
@@ -164,6 +183,7 @@
                     <div class="col-md-6">
                         <div class="form-inline">
                             <div class="form-group">
+                                <label>Berat Kawat Merah</label>
                                 <input type="text" id="berat_km_in" name="berat_km" 
                                 class="form-control myline" size="25" 
                                 value="" placeholder="Berat Kawat Merah"/>
@@ -177,9 +197,21 @@
                     <div class="col-md-6">
                          <div class="form-inline">
                             <div class="form-group">
+                                <label>Berat Susut</label>
                                 <input type="text" id="berat_susut_in" name="susut" 
                                 class="form-control myline" size="25" 
                                 value="" placeholder="Berat Susut"/>
+                                <label> Kg</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label>Berat Serbuk</label>
+                                <input type="text" id="berat_serbuk_in" name="serbuk"
+                                class="form-control myline" size="25" 
+                                value="" placeholder="Berat Serbuk"/>
                                 <label> Kg</label>
                             </div>
                         </div>

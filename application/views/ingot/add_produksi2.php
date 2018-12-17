@@ -108,7 +108,6 @@
                                         <div class="col-md-4">
                                             <input type="text" id="ingot_balok" name="ingot"
                                                 class="form-control myline" placeholder="ingot/batang" style="margin-bottom:5px; width:120px;" required="required">
-                                                 
                                         </div>
                                         <div class="col-md-4">
                                             <input type="text" id="ingot_berat" name="berat_ingot"
@@ -140,14 +139,23 @@
                                         </div>
                                     </div>
 
-                                      <div class="row">
+                                    <div class="row">
                                         <div class="col-md-4">
                                             AMPAS <font color="#f00">*</font>
                                         </div>
                                         <div class="col-md-6">
                                             <input type="text" id="ampas" name="ampas"
-                                                class="form-control myline" placeholder="ampas/kg" style="margin-bottom:5px; width:100px;"  required="required">
-                                                
+                                                class="form-control myline" placeholder="ampas/kg" style="margin-bottom:5px; width:100px;"  required="required">     
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            Serbuk <font color="#f00">*</font>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" id="serbuk" name="serbuk"
+                                                class="form-control myline" placeholder="serbuk/kg" style="margin-bottom:5px; width:100px;"  required="required">     
                                         </div>
                                     </div>
                                 </div>
@@ -176,7 +184,7 @@
                                     </div>
 
 
-                                      <div class="row">
+                                    <div class="row">
                                         <div class="col-md-4">
                                             Kayu <font color="#f00">*</font>
                                         </div>
@@ -187,7 +195,7 @@
                                         </div>
                                     </div>
 
-                                      <div class="row">
+                                    <div class="row">
                                         <div class="col-md-4">
                                             GAS  <font color="#f00">*</font>
                                         </div>
