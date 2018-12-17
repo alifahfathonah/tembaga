@@ -1,3 +1,5 @@
 update table 171218
--t_gudang_bs jenis_barang_id int
--t_hasil_masak serbuk int
+-t_gudang_bs add jenis_barang_id int
+-t_hasil_masak add serbuk int
+-jenis_barang delete where category rongsok
+-po & rongksok add remarks text null sebelum created_by
