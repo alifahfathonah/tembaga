@@ -186,6 +186,11 @@ class Model_ingot extends CI_Model{
         $data = $this->db->query("Select * From jenis_barang Where category='WIP' Order By jenis_barang");
         return $data;
     }
+
+    function rongsok_list(){
+        $data = $this->db->query("Select * From rongsok where type_barang = 'Rongsok' Order By nama_item");
+        return $data;
+    }
     
     function show_header_pa($id){
         $data = $this->db->query("Select pa.*, 

@@ -90,9 +90,7 @@ class Ingot extends CI_Controller{
             $data['content']= "ingot/edit";
             $this->load->model('Model_ingot');
             $data['header'] = $this->Model_ingot->show_header_pi($id)->row_array();  
-            
-            $this->load->model('Model_tolling_titipan');
-            $data['jenis_barang_list'] = $this->Model_tolling_titipan->jenis_barang_list()->result();
+            $data['jenis_barang_list'] = $this->Model_ingot->jenis_barang_list()->result();
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/Ingot');

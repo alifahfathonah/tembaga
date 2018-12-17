@@ -100,3 +100,10 @@ Tracking Rongsok di DTR ditambah tanggal_masuk dan tanggal_keluar
 Inventory gausah tracking rongsok
 
 Stok rongsok update di tabel rongsok
+
+TRACKING FINISH GOOD ditambah tanggal_masuk dan tanggal_keluar
+TRACKING RONGSOK ditambah tanggal_masuk dan tanggal_keluar
+TRACKING WIP insert jenis trx 0 / 1 (masuk/keluar)
+
+DTR detail tambah = tanggal_masuk dan tanggal_keluar
+t_gudang_fg = tanggal_masuk dan tanggal_keluar
