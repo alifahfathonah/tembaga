@@ -40,7 +40,48 @@
                                     
                                     <input type="hidden" id="id" name="id">
                                 </div>
-                            </div>                             
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Unit Of Measures(UOM) <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="uom" name="uom" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeyup="this.value = this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Kode Barang
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="kode_barang" name="kode_barang" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeyup="this.value = this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Kategori <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <select id="kategori" class="form-control myline" placeholder="pilih kategori" name="kategori" style="margin-bottom:5px">
+                                        <option value="FG">Finish Good</option>
+                                        <option value="WIP">WIP</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Ukuran
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="ukuran" name="ukuran" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeyup="this.value = this.value.toUpperCase()">
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-5">
                                     Keterangan
@@ -168,7 +209,13 @@ function simpandata(){
     if($.trim($("#jenis_barang").val()) == ""){
         $('#message').html("Jenis barang harus diisi!");
         $('.alert-danger').show(); 
-    }else{      
+    }else if($.trim($("#uom").val()) == ""){
+        $('#message').html("UOM harus diisi!");
+        $('.alert-danger').show();
+    }else if($.trim($("#kategori").val()) == ""){
+        $('#message').html("Kategori harus diisi!");
+        $('.alert-danger').show();
+    }else{
         if(dsState=="Input"){
             $.ajax({
                 type:"POST",
@@ -201,7 +248,11 @@ function editData(id){
         data : {id: id},
         success: function (result){
             $('#jenis_barang').val(result['jenis_barang']);
+            $('#jenis_barang').attr('readonly', true);
             $('#keterangan').val(result['keterangan']);
+            $('#uom').val(result['uom']);
+            $('#ukuran').val(result['ukuran']);
+            $('#kode_barang').val(result['kode']);
             $('#id').val(result['id']);
             
             $("#myModal").find('.modal-title').text('Edit Jenis Barang');

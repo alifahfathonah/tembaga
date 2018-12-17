@@ -179,7 +179,13 @@
                                             <td><?php echo $row->bruto;?></td>
                                             <td><?php echo $row->berat;?></td>
                                             <td><?php echo $row->qty;?></td>
-                                            <td><?php echo $row->keterangan;?></td>
+                                            <?php
+                                            if($row->no_packing == 0){
+                                                echo '<td style="background-color: red; color: white;">SPB Belum Dipenuhi</td>';
+                                            }else{
+                                                echo '<td'.$row->keterangan.'</td>';
+                                            }
+                                            ?>
                                         </tr>
                                         <?php
                                         $no++;

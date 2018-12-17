@@ -29,7 +29,7 @@
                     </table>
                 </td>
                 <td>&nbsp;</td>
-                <td width="40%">
+                <td width="50%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>Customer</td>
@@ -62,7 +62,28 @@
                        
                                 <tr>
                                 </tr>
-                     
+                        <?php
+                            $no = 1;
+                            $total = 0;
+                            $total_netto = 0;
+                            foreach ($details as $row){
+                        ?>
+                        <tr>
+                            <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
+                            <td style="border-left:1px solid #000;"><?=$row->jenis_barang;?></td>
+                            <td style="border-left:1px solid #000;"><?=$row->uom;?></td>
+                            <td style="text-align:right; border-left:1px solid #000;"><?=$row->qty;?></td>
+                            <td style="text-align:right; border-left:1px solid #000;"><?=$row->netto;?></td>
+                            <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->harga,0,',', '.');?></td>
+                            <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->total_harga,0,',', '.');?></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000;<?=$row->keterangan;?>">&nbsp;</td>
+                        </tr>
+                        <?php
+                                $total_netto += $row->netto;
+                                $total += $row->total_harga;
+                                $no++;
+                            }
+                        ?>
                         <tr style="height:100px">
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
@@ -76,13 +97,13 @@
                         <tr>
                             <td style="text-align:right;" colspan="4"><strong>Total</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
-                                <strong></strong>
+                                <strong><?=$total_netto;?></strong>
                             </td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
                                 <strong></strong>
                             </td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
-                                <strong></strong>
+                                <strong><?=number_format($total,0,',', '.');?></strong>
                             </td>
                             <td style="border-left:1px solid #000;"></td>
                             <td style="text-align:right;"></td>
@@ -94,16 +115,18 @@
                     <p>&nbsp;</p>
                     <table border="0" width="100%">
                         <tr>
-                            <td style="text-align:center">Pembawa/Supir</td>
-                            <td style="text-align:center">Diperiksa</td>
-                            <td style="text-align:center">Mengetahui</td>
-                            <td style="text-align:center">Hormat Kami</td>
+                            <td style="text-align:center"></td>
+                            <td style="text-align:center"></td>
+                            <td style="text-align:center"></td>
+                            <td style="text-align:center"></td>
+                            <td style="text-align:center">Dibuat Oleh</td>
                         </tr>
                         <tr style="height:35">
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
+                            <td style="text-align:center"><?=$header['realname'];?></td>
                         </tr>
                         <tr>
                             <td style="text-align:center"></td>

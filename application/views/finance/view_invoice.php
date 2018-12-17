@@ -226,6 +226,7 @@
                                             <th>Netto (UOM)</th>
                                             <th>Amount</th>
                                             <th>Total</th>
+                                            <th>Keterangan</th>
                                         </thead>
                                         <tbody>
                                         <?php
@@ -239,6 +240,7 @@
                                                 echo '<td>'.$row->netto.' '.$row->uom.'</td>';
                                                 echo '<td>'.number_format($row->harga,0,',','.').'</td>';
                                                 echo '<td>'.number_format($row->total_harga,0,',','.').'</td>';
+                                                echo '<td>'.$row->keterangan.'</td>';
                                                 echo '</tr>';
                                                 $no++;
                                                 $total_all += $row->total_harga;
@@ -247,6 +249,7 @@
                                         <tr>
                                             <td colspan="5">Total</td>
                                             <td style="background-color: green; color: white;"><?php echo number_format($total_all,0,',','.');?></td>
+                                            <td></td>
                                         </tr>
                                         </tbody>
                                     </table>
