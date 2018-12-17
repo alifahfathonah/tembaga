@@ -87,8 +87,7 @@ SalesOrder/add_surat_jalan No.Sales Order belum ke flag jika sudah dikirim semua
 note baru
 JIKA CLOSE PO SPAREPART dan RONGSOK, DITAMBAH KETERANGAN
 PO PPN Spare Part by user login
-Finance/add Rekening Tujuan masukin Nomor Rekening (if Giro) -> Default Nominal IDR
 Finance/matching_pmb/ Buka tab baru 
-Ingot/hasil_produksi2 Ada serbuk
-GudangWIP/proses_wip Ada Serbuk -> Penjelasan Ditambah dikiri
+Ingot/hasil_produksi2 Ada serbuk (belum tau tipe serbuknya apa)
+GudangWIP/proses_wip Ada Serbuk -> Penjelasan Ditambah dikiri (Prosesnya Belum Ada)
 GudangFG/bpb_list -> Print belum

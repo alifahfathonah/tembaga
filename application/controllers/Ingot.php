@@ -534,6 +534,7 @@ class Ingot extends CI_Controller{
                 'bs'=> $this->input->post('bs'),
                 'susut'=> $this->input->post('susut'),
                 'ampas'=> $this->input->post('ampas'),
+                'serbuk'=> $this->input->post('serbuk'),
                 'created_by'=> $user_id,
             );
 
@@ -554,6 +555,17 @@ class Ingot extends CI_Controller{
         );
         $this->db->insert('t_gudang_bs', $data_bs);
 
+        // #insert serbuk ke gudang bs
+        // $data_bs = array(
+        //     'id_produksi' => $id_masak,
+        //     'berat' => $this->input->post('bs'),
+        //     'tanggal' => $tgl_input,
+        //     'status' => 0,
+        //     'created_by' => $user_id,
+        //     'created_at' => $tanggal
+        // );
+        // $this->db->insert('t_gudang_bs', $data_bs);
+        
         // #insert gudang ampas
         // $data_ampas = array(
         //     'id_produksi' => $id_masak,
