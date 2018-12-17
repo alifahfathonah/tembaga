@@ -1232,4 +1232,17 @@ class GudangFG extends CI_Controller{
             'GAGAL';
         }
     }
+
+    function print_bpb(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_gudang_fg');
+            $data['header']  = $this->Model_gudang_fg->show_header_bpb($id)->row_array();
+            $data['details'] = $this->Model_gudang_fg->show_detail_bpb($id)->result();
+
+            $this->load->view('gudang_fg/print_bpb', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
 }
