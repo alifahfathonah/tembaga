@@ -64,7 +64,6 @@ kalo wip -> nomor wip
 
 kirim gudang rongsok ->
 
-REJECT PMB ALL BELUM
 
 Retur= Input Barang FG(asal customer) -> BPB FG (ditandain Retur) 'Tanpa Barcode' -> Jika udah masuk cek send to rongsok or ngga
 	Ganti barang sama atau barang beda -> Mengganti barang retur
@@ -91,3 +90,13 @@ Finance/matching_pmb/ Buka tab baru
 Ingot/hasil_produksi2 Ada serbuk (belum tau tipe serbuknya apa)
 GudangWIP/proses_wip Ada Serbuk -> Penjelasan Ditambah dikiri (Prosesnya Belum Ada)
 GudangFG/bpb_list -> Print belum
+
+NOTE DATABASE
+
+Jenis barang hanya isi Finish Good dan WIP. Rongsok memiliki stok sendiri.
+
+Tracking Rongsok di DTR ditambah tanggal_masuk dan tanggal_keluar
+
+Inventory gausah tracking rongsok
+
+Stok rongsok update di tabel rongsok

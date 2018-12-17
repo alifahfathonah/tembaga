@@ -43,11 +43,13 @@ class JenisBarang extends CI_Controller{
         
         $data = array(
                     'jenis_barang'=> $this->input->post('jenis_barang'),
+                    'kode'=> $this->input->post('kode_barang'),
+                    'uom'=> $this->input->post('uom'),
+                    'category'=> $this->input->post('kategori'),
+                    'ukuran'=> $this->input->post('ukuran'),
                     'keterangan'=> $this->input->post('keterangan'),
                     'created'=> $tanggal,
-                    'created_by'=> $user_id,
-                    'modified'=> $tanggal,
-                    'modified_by'=> $user_id
+                    'created_by'=> $user_id
                 );
        
         $this->db->insert('jenis_barang', $data); 
@@ -80,6 +82,10 @@ class JenisBarang extends CI_Controller{
         
         $data = array(
                 'jenis_barang'=> $this->input->post('jenis_barang'),
+                'kode'=> $this->input->post('kode_barang'),
+                'uom'=> $this->input->post('uom'),
+                'category'=> $this->input->post('kategori'),
+                'ukuran'=> $this->input->post('ukuran'),
                 'keterangan'=> $this->input->post('keterangan'),
                 'modified'=> $tanggal,
                 'modified_by'=> $user_id

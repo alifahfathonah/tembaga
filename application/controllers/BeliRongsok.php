@@ -483,7 +483,8 @@ class BeliRongsok extends CI_Controller{
                         'berat_palette'=>str_replace('.', '', $row['berat_palette']),
                         'netto'=>str_replace('.', '', $row['netto']),
                         'no_pallete'=>$row['no_pallete'],
-                        'line_remarks'=>$row['line_remarks']
+                        'line_remarks'=>$row['line_remarks'],
+                        'tanggal_masuk'=>$tgl_input
                     ));
                    
                 }
