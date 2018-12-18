@@ -1,10 +1,13 @@
 <?php
 class Model_sales_order extends CI_Model{
     function so_list(){
-        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, so.flag_ppn, so.flag_sj, usr.realname As nama_marketing, cust.nama_customer, cust.pic, 
+        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, so.flag_ppn, so.flag_sj, usr.realname As nama_marketing, cust.nama_customer, cust.pic, COALESCE(tsf.status,tsw.status,spb.status) as status_spb,
             (Select count(tsod.id)As jumlah_item From t_sales_order_detail tsod Where tsod.t_so_id = tso.id)As jumlah_item From t_sales_order tso
             Left Join sales_order so on (so.id = tso.so_id)
             Left Join m_customers cust On (so.m_customer_id = cust.id) 
+            Left Join t_spb_fg tsf on (tso.jenis_barang='FG') and (tsf.id=tso.no_spb)
+            Left Join t_spb_wip tsw on (tso.jenis_barang='WIP') and (tsw.id=tso.no_spb)
+            Left Join spb on (tso.jenis_barang='RONGSOK') and (spb.id=tso.no_spb)
             Left Join users usr On (so.marketing_id = usr.id)
             Order by so.tanggal desc");
         return $data;
@@ -59,12 +62,30 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
+    function show_detail_so_rsk($id){
+        $data = $this->db->query("Select tsod.*, r.nama_item as jenis_barang, r.uom
+                    From t_sales_order_detail tsod 
+                        Left Join rongsok r On (tsod.jenis_barang_id = r.id) 
+                    Where tsod.t_so_id=".$id);
+        return $data;
+    }
+
     function load_detail_view_sj($id){
         $data = $this->db->query("select tsjd.*, jb.jenis_barang, jb.uom 
                 from t_surat_jalan_detail tsjd
                 left join t_surat_jalan tsj on tsj.id= tsjd.t_sj_id
                 left join t_sales_order tso on tso.so_id = tsj.sales_order_id
                 left join jenis_barang jb on jb.id = tsjd.jenis_barang_id
+                where tso.id =".$id);
+        return $data;
+    }
+
+    function load_detail_view_sj_rsk($id){
+        $data = $this->db->query("select tsjd.*, r.nama_item as jenis_barang, r.uom 
+                from t_surat_jalan_detail tsjd
+                left join t_surat_jalan tsj on tsj.id= tsjd.t_sj_id
+                left join t_sales_order tso on tso.so_id = tsj.sales_order_id
+                left join rongsok r on r.id = tsjd.jenis_barang_id
                 where tso.id =".$id);
         return $data;
     }
@@ -125,7 +146,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function list_item_sj_wip($soid){
-        $data = $this->db->query("select tswd.*,tgw.id as id_gudang, jb.jenis_barang, jb.kode, jb.uom  from sales_order so
+        $data = $this->db->query("select tgw.id as id, jb.jenis_barang, jb.kode, jb.uom  from sales_order so
                 left join t_sales_order tso on tso.so_id = so.id
                 left join t_spb_wip_detail tswd on tswd.t_spb_wip_id = tso.no_spb
                 left join t_gudang_wip tgw on tgw.t_spb_wip_detail_id = tswd.id
@@ -141,20 +162,21 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
-    function list_item_sj_rongsok($soid){
-        $data = $this->db->query("select tswd.*, jb.jenis_barang, jb.kode, jb.uom  from sales_order so
-                left join t_sales_order tso on tso.so_id = so.id
-                left join t_spb_wip_detail tswd on tswd.t_spb_wip_id = tso.no_spb
-                where so.id = ".$soid);
+    function list_item_sj_rsk($soid){
+        $data = $this->db->query("select dd.id, dd.no_pallete as jenis_barang
+            from sales_order so 
+            left join t_sales_order tso on tso.so_id = so.id 
+            left join spb_detail_fulfilment sdf on sdf.spb_id = tso.no_spb 
+            left join dtr_detail dd on dd.id = sdf.dtr_detail_id 
+            left join rongsok r on r.id = dd.rongsok_id 
+            where so.id =".$soid." and dd.so_id=0");
         return $data;
     }
     
-    function list_item_sj_rsk_detail($soid){
-        $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.kode, jb.uom from sales_order so
-                left join t_sales_order tso on tso.so_id = so.id
-                left join t_gudang_fg tgf on tgf.t_spb_fg_id = tso.no_spb
-                left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-                where tgf.id=".$soid);
+    function list_item_sj_rsk_detail($id){
+        $data = $this->db->query("select dd.*, r.nama_item as jenis_barang, r.uom
+            from dtr_detail dd left join rongsok r on r.id = dd.rongsok_id 
+            where dd.id =".$id);
         return $data;
     }
 
@@ -256,7 +278,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function show_detail_spb_fulfilment_rsk($id){
-        $data = $this->db->query("Select rsk.nama_item as nama_barang, rsk.uom, dtrd.no_pallete as no_packing,dtrd.netto as berat, dtrd.line_remarks as keterangan
+        $data = $this->db->query("Select rsk.nama_item as nama_barang, rsk.uom, dtrd.no_pallete as no_packing,dtrd.bruto, dtrd.netto as berat, dtrd.qty, dtrd.line_remarks as keterangan
             From spb_detail_fulfilment spdf 
             Left Join dtr_detail dtrd on (dtrd.id = spdf.dtr_detail_id) 
             Left Join rongsok rsk On (dtrd.rongsok_id = rsk.id)

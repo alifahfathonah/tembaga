@@ -855,6 +855,7 @@ class BeliRongsok extends CI_Controller{
     function update_dtr(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
         
         $this->db->trans_start();
         $this->db->where('id', $this->input->post('id'));
@@ -873,8 +874,7 @@ class BeliRongsok extends CI_Controller{
                 'netto'=>str_replace('.','', $row['netto']),
                 'line_remarks'=>$row['line_remarks'],
                 'no_pallete'=>$row['no_pallete'],
-                'modified'=>$tanggal,
-                'modified_by'=>$user_id
+                'tanggal_masuk'=>$tgl_input
             ));
         }
         

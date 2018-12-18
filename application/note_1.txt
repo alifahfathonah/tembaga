@@ -76,14 +76,6 @@ buat kayak uang masuk
 
 (Utang dan Invoice)
 
-TABEL KE GANTI
-sales_order tambah flag_invoice dan flag_sj
-
-Update surat jalan belum fix
-
-SalesOrder/add_surat_jalan No.Sales Order belum ke flag jika sudah dikirim semua
-
-
 note baru
 JIKA CLOSE PO SPAREPART (v) dan RONGSOK (v), DITAMBAH KETERANGAN
 PO PPN Spare Part by user login
