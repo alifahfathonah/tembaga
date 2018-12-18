@@ -211,12 +211,13 @@ class Model_ingot extends CI_Model{
     }
 
     function show_related_stok($id){
-
+        $data = $this->db->query("select stok from rongsok where id =".$id);
+        return $data;
     }
 
     function get_dtr_detail_by_no_pallete($no_pallete){
         $data = $this->db->query(
-                "select dtr_detail.id,(ttr.id)as 'ttr_id' ,bruto, netto,no_pallete,line_remarks, (rongsok.nama_item)as rongsokname,rongsok.uom
+                "select dtr_detail.id,(ttr.id)as 'ttr_id' ,bruto, netto,no_pallete,line_remarks,rongsok.id as id_rongsok, (rongsok.nama_item)as rongsokname,rongsok.uom
                 from dtr_detail
                 left join rongsok on rongsok.id = dtr_detail.rongsok_id
                 left join ttr on ttr.dtr_id = dtr_detail.dtr_id

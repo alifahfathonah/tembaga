@@ -7,7 +7,7 @@
         <p>&nbsp;</p>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
-                <td width="40%">
+                <td width="60%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>No. Surat Jalan</td>

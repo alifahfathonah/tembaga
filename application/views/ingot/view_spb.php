@@ -184,7 +184,7 @@
                                         <?php
                                             $no = 1;
                                             foreach ($myDetail as $row){
-                                            ($row->qty < $row->stok) ? $stat = '<div style="background:green;color:white;"><span class="fa fa-check"></span> OK </div>' : $stat = '<div style="background:red;color:white;"> <span class="fa fa-times"></span> NOK</div>';
+                                            ($row->qty <= $row->stok) ? $stat = '<div style="background:green;color:white;"><span class="fa fa-check"></span> OK </div>' : $stat = '<div style="background:red;color:white;"> <span class="fa fa-times"></span> NOK</div>';
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
                                                 echo '<td>'.$row->nama_item.'</td>';
@@ -220,7 +220,7 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td><div id="no_tabel_1">1</div><input type="hidden" id="ttr_id_1" name="details[1][ttr_id]"/><input type="hidden" id="dtr_id_1" name="details[1][dtr_id]"/></td>
+                                                <td><div id="no_tabel_1">1</div><input type="hidden" id="ttr_id_1" name="details[1][ttr_id]"/><input type="hidden" id="dtr_id_1" name="details[1][dtr_id]"/><input type="hidden" id="id_rongsok_1" name="details[1][id_rongsok]"></td>
                                                 <td><input type="text" id="no_pallete_1" name="details[1][no_pallete]" class="form-control myline" onchange="getRongsok(1)"></td>
                                                 <td><input type="text" id="nama_item_1" name="details[1][nama_item]" class="form-control myline" readonly="readonly" /></td>
                                                 <td><input type="text" id="netto_1" name="details[1][netto]" class="form-control myline" readonly="readonly" /></td>
@@ -360,6 +360,7 @@ function getRongsok(id){
                         $("#dtr_id_"+id).val(result['id']);
                         $("#ttr_id_"+id).val(result['ttr_id']);
                         $("#nama_item_"+id).val(result['rongsokname']);
+                        $("#id_rongsok_"+id).val(result['id_rongsok']);
                         $("#uom_"+id).val(result['uom']);
                         $("#netto_"+id).val(result['netto']);
                         $("#keterangan_"+id).val(result['line_remarks']);
@@ -382,7 +383,7 @@ function getRongsok(id){
 
 function create_new_input(id){
        var new_id = id+1;
-        $("#tabel_pallete>tbody").append('<tr><td><div id="no_tabel_'+new_id+'">'+new_id+'</div><input type="hidden" id="ttr_id_'+new_id+'" name="details['+new_id+'][ttr_id]"/><input type="hidden" id="dtr_id_'+new_id+'" name="details['+new_id+'][dtr_id]"/></td><td><input id="no_pallete_'+new_id+'" name="details['+new_id+'][no_pallete]" class="form-control myline" onchange="getRongsok('+new_id+')" type="text"></td><td><input type="text" id="nama_item_'+new_id+'" name="details['+new_id+'][nama_item]" class="form-control myline" readonly="readonly" /></td><td><input id="netto_'+new_id+'" name="details['+new_id+'][netto]" class="form-control myline" readonly="readonly" type="text"></td><td><input id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly" type="text"></td><td><input id="keterangan_'+new_id+'" name="details['+new_id+'][keterangan]" class="form-control myline" readonly="readonly" type="text"></td><td style="text-align:center"><a id="btn_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td></tr>');
+        $("#tabel_pallete>tbody").append('<tr><td><div id="no_tabel_'+new_id+'">'+new_id+'</div><input type="hidden" id="ttr_id_'+new_id+'" name="details['+new_id+'][ttr_id]"/><input type="hidden" id="dtr_id_'+new_id+'" name="details['+new_id+'][dtr_id]"/><input type="hidden" id="id_rongsok_"'+new_id+' name="details['+new_id+'][id_rongsok]"></td><td><input id="no_pallete_'+new_id+'" name="details['+new_id+'][no_pallete]" class="form-control myline" onchange="getRongsok('+new_id+')" type="text"></td><td><input type="text" id="nama_item_'+new_id+'" name="details['+new_id+'][nama_item]" class="form-control myline" readonly="readonly" /></td><td><input id="netto_'+new_id+'" name="details['+new_id+'][netto]" class="form-control myline" readonly="readonly" type="text"></td><td><input id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly" type="text"></td><td><input id="keterangan_'+new_id+'" name="details['+new_id+'][keterangan]" class="form-control myline" readonly="readonly" type="text"></td><td style="text-align:center"><a id="btn_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td></tr>');
 }
 
 function hapusDetail(id){

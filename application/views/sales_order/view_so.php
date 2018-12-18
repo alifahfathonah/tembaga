@@ -128,6 +128,7 @@
                                         <tbody>
                                         <?php
                                         $total = 0;
+                                        $jumlah = 0;
                                         $no=1; foreach ($details as $row) {
                                         ?>
                                         <tr>
@@ -140,12 +141,15 @@
                                         </tr>
                                         <?php
                                         $no++;
+                                        $jumlah += $row->netto;
                                         $total += $row->total_amount;
                                         }
                                         ?>
                                         </tbody>
                                         <tr>
-                                            <td colspan="5"></td>
+                                            <td colspan="3" style="text-align: right; font-weight: bold;">Total Jumlah</td>
+                                            <td style="background-color: green; color: white;"><?php echo number_format($jumlah,0,',','.');?></td>
+                                            <td style="text-align: right; font-weight: bold;">Total Harga</td>
                                             <td style="background-color: green; color: white;"><?php echo 'Rp '.number_format($total,0,',','.');?></td>
                                         </tr>
                                     </table>
@@ -175,15 +179,29 @@
                                         <tr>
                                             <td><?php echo $no;?></td>
                                             <td><?php echo $row->nama_barang;?></td>
-                                            <td><?php echo $row->no_packing;?></td>
-                                            <td><?php echo $row->bruto;?></td>
+                                            <td><?php 
+                                            if($row->no_packing == 0){
+                                            echo 'WIP tidak ada No Packing';
+                                            }else{
+                                            echo $row->no_packing;
+                                            }
+                                            ?>
+                                            </td>
+                                            <td><?php 
+                                            if($row->bruto == 0){
+                                            echo 'WIP tidak ada Bruto';
+                                            }else{
+                                            echo $row->bruto;
+                                            }
+                                            ?>
+                                            </td>
                                             <td><?php echo $row->berat;?></td>
                                             <td><?php echo $row->qty;?></td>
                                             <?php
-                                            if($row->no_packing == 0){
+                                            if($row->berat == 0){
                                                 echo '<td style="background-color: red; color: white;">SPB Belum Dipenuhi</td>';
                                             }else{
-                                                echo '<td'.$row->keterangan.'</td>';
+                                                echo '<td>'.$row->keterangan.'</td>';
                                             }
                                             ?>
                                         </tr>
@@ -209,6 +227,7 @@
                                             <th>UOM</th>
                                             <th>No Packing</th>
                                             <th>Bruto</th>
+                                            <th>Netto</th>
                                             <th>Jumlah</th>
                                             <th>Nomor Bobbin</th>
                                             <th>Keterangan</th>
@@ -221,10 +240,32 @@
                                             <td><?php echo $no;?></td>
                                             <td><?php echo $row->jenis_barang;?></td>
                                             <td><?php echo $row->uom;?></td>
-                                            <td><?php echo $row->no_packing;?></td>
-                                            <td><?php echo $row->bruto;?></td>
+                                            <td><?php 
+                                            if($row->no_packing == 0){
+                                            echo 'WIP tidak ada No Packing';
+                                            }else{
+                                            echo $row->no_packing;
+                                            }
+                                            ?>
+                                            </td>
+                                            <td><?php 
+                                            if($row->bruto == 0){
+                                            echo 'WIP tidak ada Bruto';
+                                            }else{
+                                            echo $row->bruto;
+                                            }
+                                            ?>
+                                            </td>
                                             <td><?php echo $row->netto;?></td>
-                                            <td><?php echo $row->nomor_bobbin;?></td>
+                                            <td><?php echo $row->qty;?></td>
+                                            <td><?php 
+                                            if($row->nomor_bobbin == 0){
+                                            echo 'WIP tidak ada Nomor Bobbin';
+                                            }else{
+                                            echo $row->bruto;
+                                            }
+                                            ?>
+                                            </td>
                                             <td><?php echo $row->line_remarks;?></td>
                                         </tr>
                                         <?php

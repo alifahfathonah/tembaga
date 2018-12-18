@@ -604,8 +604,15 @@ class SalesOrder extends CI_Controller{
 
     function get_data_sj(){
         $id = $this->input->post('id');
+        $jb = $this->input->post('jenis_barang');
         $this->load->model('Model_sales_order');
+        if($jb=='FG'){
         $sj_detail= $this->Model_sales_order->list_item_sj_fg_detail($id)->row_array();
+        }else if($jb=='WIP'){
+        $sj_detail= $this->Model_sales_order->list_item_sj_wip_detail($id)->row_array();
+        }else{
+        $sj_detail= $this->Model_sales_order->list_item_sj_rsk_detail($id)->row_array();
+        }
         
         header('Content-Type: application/json');
         echo json_encode($sj_detail); 
@@ -622,22 +629,41 @@ class SalesOrder extends CI_Controller{
         $details = $this->input->post('details');
         foreach ($details as $v) {
             if($v['id_barang']!=''){
-                $this->db->insert('t_surat_jalan_detail', array(
-                    't_sj_id'=>$this->input->post('id'),
-                    'jenis_barang_id'=>$v['jenis_barang_id'],
-                    'no_packing'=>$v['no_packing'],
-                    'qty'=>'1',
-                    'bruto'=>$v['bruto'],
-                    'netto'=>$v['netto'],
-                    'nomor_bobbin'=>$v['bobbin'],
-                    'line_remarks'=>$v['line_remarks'],
-                    'created_by'=>$user_id,
-                    'created_at'=>$tanggal
-                ));
-                $this->db->where('id',$v['id_barang']);
-                $this->db->update('t_gudang_fg',array(
-                    'flag_taken'=>1,
-                ));
+                if($jenis=='FG'){// BARANG FINISH GOOD
+                    $this->db->insert('t_surat_jalan_detail', array(
+                        't_sj_id'=>$this->input->post('id'),
+                        'jenis_barang_id'=>$v['jenis_barang_id'],
+                        'no_packing'=>$v['no_packing'],
+                        'qty'=>'1',
+                        'bruto'=>$v['bruto'],
+                        'netto'=>$v['netto'],
+                        'nomor_bobbin'=>$v['bobbin'],
+                        'line_remarks'=>$v['line_remarks'],
+                        'created_by'=>$user_id,
+                        'created_at'=>$tanggal
+                    ));
+                    $this->db->where('id',$v['id_barang']);
+                    $this->db->update('t_gudang_fg',array(
+                        'flag_taken'=>1,
+                    ));
+                }else if($jenis=='WIP'){//BARANG WIP
+                    $this->db->insert('t_surat_jalan_detail', array(
+                        't_sj_id'=>$this->input->post('id'),
+                        'jenis_barang_id'=>$v['jenis_barang_id'],
+                        'no_packing'=>0,
+                        'qty'=>$v['qty'],
+                        'bruto'=>0,
+                        'netto'=>$v['netto'],
+                        'nomor_bobbin'=>0,
+                        'line_remarks'=>$v['line_remarks'],
+                        'created_by'=>$user_id,
+                        'created_at'=>$tanggal
+                    ));
+                    $this->db->where('id',$v['id_barang']);
+                    $this->db->update('t_gudang_wip',array(
+                        'flag_taken'=>1,
+                    ));
+                }
             }
         }
 
@@ -657,34 +683,36 @@ class SalesOrder extends CI_Controller{
                 'flag_sj'=>1
             ));
         }
-        #insert bobbin_peminjaman
-        $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);
 
-        $this->db->insert('m_bobbin_peminjaman', array(
-            'no_surat_peminjaman' => $code,
-            'id_surat_jalan' => $this->input->post('id'),
-            'id_customer' => $this->input->post('id_customer'),
-            'status' => 0,
-            'created_by' => $user_id,
-            'created_at' => $tanggal
-        ));
-        $insert_id = $this->db->insert_id();
+        if($jenis=='FG'){
+            #insert bobbin_peminjaman
+            $this->load->model('Model_m_numberings');
+            $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);
 
-        $query = $this->db->query('select *from t_surat_jalan_detail where t_sj_id = '.$this->input->post('id'))->result();
-        foreach ($query as $row) {
-            $this->db->where('nomor_bobbin', $row->nomor_bobbin);
-            $this->db->update('m_bobbin', array(
-                'borrowed_by' => $this->input->post('id_customer'),
-                'status' => 2
+            $this->db->insert('m_bobbin_peminjaman', array(
+                'no_surat_peminjaman' => $code,
+                'id_surat_jalan' => $this->input->post('id'),
+                'id_customer' => $this->input->post('id_customer'),
+                'status' => 0,
+                'created_by' => $user_id,
+                'created_at' => $tanggal
             ));
+            $insert_id = $this->db->insert_id();
 
-            $this->db->insert('m_bobbin_peminjaman_detail', array(
-                'id_peminjaman' => $insert_id,
-                'nomor_bobbin' => $row->nomor_bobbin
-            ));
+            $query = $this->db->query('select *from t_surat_jalan_detail where t_sj_id = '.$this->input->post('id'))->result();
+            foreach ($query as $row) {
+                $this->db->where('nomor_bobbin', $row->nomor_bobbin);
+                $this->db->update('m_bobbin', array(
+                    'borrowed_by' => $this->input->post('id_customer'),
+                    'status' => 2
+                ));
+
+                $this->db->insert('m_bobbin_peminjaman_detail', array(
+                    'id_peminjaman' => $insert_id,
+                    'nomor_bobbin' => $row->nomor_bobbin
+                ));
+            }
         }
-
 
         $data = array(
                 'tanggal'=> $tgl_input,

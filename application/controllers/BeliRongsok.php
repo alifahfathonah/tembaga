@@ -638,7 +638,6 @@ class BeliRongsok extends CI_Controller{
                     'modified'=> $tanggal,
                     'modified_by'=> $user_id
                 ));
-                
             }
             
             if($this->db->trans_complete()){  

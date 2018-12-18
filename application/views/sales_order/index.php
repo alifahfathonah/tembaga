@@ -48,10 +48,9 @@
                     <th>Jenis<br>Barang</th>
                     <th>Tanggal</th>
                     <th>Customer</th> 
-                    <th>PIC</th>
                     <th>PPN</th> 
-                    <th>Marketing</th>
                     <th>Jumlah <br>Items</th>
+                    <th>Status Surat Jalan</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -69,14 +68,17 @@
                         <td><?php echo $data->jenis_barang; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->nama_customer; ?></td>
-                        <td><?php echo $data->pic; ?></td>
                         <td>
                         <?php 
                            echo (($data->flag_ppn==1)? '<i class="fa fa-check"></i> Yes': '<i class="fa fa-times"></i> No');
                         ?>
                         </td>
-                        <td><?php echo $data->nama_marketing; ?></td>
-                        <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>                       
+                        <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
+                        <td>
+                        <?php 
+                           echo (($data->flag_sj==1)? '<div style="background-color:green; padding:3px; color:white; text-align: center;">Sudah Dikirim Semua</div>':'<div style="background-color:darkkhaki; padding:3px; text-align: center;">Belum Dikirim Semua</div>');
+                        ?>
+                        </td>                       
                     <!--<td style="text-align:center">
                             <?php/*
                                 if( ($group_id==1 || $hak_akses['create_dtr']==1) && $data->ready_to_dtr>0){

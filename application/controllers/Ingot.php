@@ -923,16 +923,22 @@ class Ingot extends CI_Controller{
         	#update dtr_detail flag_taken
         	$this->db->where('id',$v['dtr_id']);
         	$this->db->update('dtr_detail',array(
-        					'flag_taken' => 1
+        					'flag_taken' => 1,
+                            'tanggal_keluar' => $tgl_input
         					));
 
+            #update stok di rongsok
+            $this->load->model('Model_ingot');
+            $get_stok = $this->Model_ingot->show_related_stok($v['id_rongsok'])->row_array();
+            $this->db->where('id',$v['id_rongsok']);
+            $this->db->update('rongsok', array(
+                            'stok'=>($get_stok['stok'] - $v['netto']),
+                            'modified'=>$tanggal,
+                            'modified_by'=>$user_id
+                            ));
         	}	
         }
             
-            $this->load->model('Model_ingot');
-            $this->load->model('Model_beli_rongsok');
-            
-           
             /*    
                 #Update Stok Rongsok
                 $get_stok = $this->Model_beli_rongsok->cek_stok($row->nama_item, 'RONGSOK')->row_array(); 

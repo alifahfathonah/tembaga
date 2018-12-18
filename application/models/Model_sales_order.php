@@ -1,7 +1,7 @@
 <?php
 class Model_sales_order extends CI_Model{
     function so_list(){
-        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, so.flag_ppn, usr.realname As nama_marketing, cust.nama_customer, cust.pic, 
+        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, so.flag_ppn, so.flag_sj, usr.realname As nama_marketing, cust.nama_customer, cust.pic, 
             (Select count(tsod.id)As jumlah_item From t_sales_order_detail tsod Where tsod.t_so_id = tso.id)As jumlah_item From t_sales_order tso
             Left Join sales_order so on (so.id = tso.so_id)
             Left Join m_customers cust On (so.m_customer_id = cust.id) 
@@ -98,7 +98,7 @@ class Model_sales_order extends CI_Model{
     }
     
     function get_so_list($id){
-        $data = $this->db->query("Select * From sales_order Where m_customer_id=".$id." and jenis_barang_id = 0");
+        $data = $this->db->query("Select * From sales_order Where m_customer_id=".$id." and jenis_barang_id = 0 and flag_sj = 0");
         return $data;
     }
 
@@ -115,20 +115,29 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
-    function list_item_sj_fg_detail($soid){
+    function list_item_sj_fg_detail($id){
         $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.kode, jb.uom from sales_order so
                 left join t_sales_order tso on tso.so_id = so.id
                 left join t_gudang_fg tgf on tgf.t_spb_fg_id = tso.no_spb
                 left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-                where tgf.id=".$soid);
+                where tgf.id=".$id);
         return $data;
     }
 
     function list_item_sj_wip($soid){
-        $data = $this->db->query("select tswd.*, jb.jenis_barang, jb.kode, jb.uom  from sales_order so
+        $data = $this->db->query("select tswd.*,tgw.id as id_gudang, jb.jenis_barang, jb.kode, jb.uom  from sales_order so
                 left join t_sales_order tso on tso.so_id = so.id
                 left join t_spb_wip_detail tswd on tswd.t_spb_wip_id = tso.no_spb
-                where so.id = ".$soid);
+                left join t_gudang_wip tgw on tgw.t_spb_wip_detail_id = tswd.id
+                left join jenis_barang jb on jb.id = tswd.jenis_barang_id
+                where so.id = ".$soid." and tgw.flag_taken = 0");
+        return $data;
+    }
+
+    function list_item_sj_wip_detail($id){
+        $data = $this->db->query("select tgw.*, jb.jenis_barang, jb.kode, jb.uom from t_gudang_wip tgw
+                left join jenis_barang jb on jb.id = tgw.jenis_barang_id
+                where tgw.id=".$id);
         return $data;
     }
 
@@ -140,6 +149,15 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
     
+    function list_item_sj_rsk_detail($soid){
+        $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.kode, jb.uom from sales_order so
+                left join t_sales_order tso on tso.so_id = so.id
+                left join t_gudang_fg tgf on tgf.t_spb_fg_id = tso.no_spb
+                left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tgf.id=".$soid);
+        return $data;
+    }
+
     function load_detail_so($id){
         $data = $this->db->query("Select tsod.*, jb.jenis_barang as nama_barang, jb.category, jb.uom From t_sales_order_detail tsod 
                 Left Join jenis_barang jb On(jb.id = tsod.jenis_barang_id) 

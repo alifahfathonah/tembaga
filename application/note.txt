@@ -78,11 +78,6 @@ buat kayak uang masuk
 TABEL KE GANTI
 sales_order tambah flag_invoice dan flag_sj
 
-Update surat jalan belum fix
-
-SalesOrder/add_surat_jalan No.Sales Order belum ke flag jika sudah dikirim semua
-
-
 note baru
 JIKA CLOSE PO SPAREPART dan RONGSOK, DITAMBAH KETERANGAN
 PO PPN Spare Part by user login
@@ -105,5 +100,7 @@ TRACKING FINISH GOOD ditambah tanggal_masuk dan tanggal_keluar
 TRACKING RONGSOK ditambah tanggal_masuk dan tanggal_keluar
 TRACKING WIP insert jenis trx 0 / 1 (masuk/keluar)
 
-DTR detail tambah = tanggal_masuk dan tanggal_keluar
-t_gudang_fg = tanggal_masuk dan tanggal_keluar
+Produksi WIP belum ada diubah Kawat Hitam
+
+No Packing retur ada indikasi retur
+User non PPN boleh milih
