@@ -22,7 +22,7 @@ class Retur extends CI_Controller{
 
         $data['content']= "retur/index";
         $this->load->model('Model_retur');
-        $data['list_data'] = $this->Model_retur->dtr_list()->result();
+        $data['list_data'] = $this->Model_retur->retur_list()->result();
 
         $this->load->view('layout', $data);
     }
@@ -41,6 +41,7 @@ class Retur extends CI_Controller{
         $this->load->model('Model_retur');
         $data['customer_list'] = $this->Model_retur->customer_list()->result();
         $data['jenis_barang_list'] = $this->Model_retur->jenis_barang_list()->result();
+        $data['jenis_packing_list'] = $this->Model_retur->jenis_packing_list()->result();
         $this->load->view('layout', $data);
     }
     
@@ -50,24 +51,39 @@ class Retur extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
+        $code = $this->Model_m_numberings->getNumbering('RTR', $tgl_input); 
+        // $code_bpb = $this->Model_m_numberings->getNumbering('BPB-RTR', $tgl_input);
         
         if($code){        
+            // #insert bpb fg
+            // $data_bpb = array(
+            //     'no_bpb_fg' => $code_bpb,
+            //     'tanggal' => $tgl_input,
+            //     'produksi_fg_id' => 0,
+            //     'jenis_barang_id' => $this->input->post('jenis_barang'),
+            //     'created_by' => $user_id,
+            //     'created_at' => $tanggal,
+            //     'status' => 0,
+            //     'keterangan' => $this->input->post('remarks')
+            // );
+            // $this->db->insert('t_bpb_fg', $data_bpb);
+            // $bpb_id = $this->db->insert_id();
+
+
+            #insert retur
             $data = array(
-                'no_dtr'=> $code,
-                'tanggal'=> $tgl_input,
-                'm_customer_id'=>$this->input->post('m_customer_id'),
-                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'no_retur'=> $code,
+                'customer_id'=>$this->input->post('m_customer_id'),
+                'jenis_retur'=>$this->input->post('type_retur'),
+                'jenis_packing_id' => $this->input->post('jenis_packing_id'),
                 'remarks'=>$this->input->post('remarks'),
-                'status_pembayaran'=>$this->input->post('status_pembayaran'),
-                'type_retur'=>$this->input->post('type_retur'),
-                'created'=> $tanggal,
-                'created_by'=> $user_id,
-                'modified'=> $tanggal,
-                'modified_by'=> $user_id
+                'jenis_retur'=>$this->input->post('type_retur'),
+                'status' => 0,
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id
             );
 
-            if($this->db->insert('dtr', $data)){
+            if($this->db->insert('retur', $data)){
                 redirect('index.php/Retur/edit/'.$this->db->insert_id());  
             }else{
                 $this->session->set_flashdata('flash_msg', 'Data retur gagal disimpan, silahkan dicoba kembali!');
@@ -93,7 +109,7 @@ class Retur extends CI_Controller{
 
             $data['content']= "retur/edit";
             $this->load->model('Model_retur');
-            $data['header'] = $this->Model_retur->show_header_dtr($id)->row_array();  
+            $data['header'] = $this->Model_retur->show_header_retur($id)->row_array();  
             
             $data['customer_list'] = $this->Model_retur->customer_list()->result();
             $data['jenis_barang_list'] = $this->Model_retur->jenis_barang_list()->result();
@@ -110,21 +126,17 @@ class Retur extends CI_Controller{
         
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
+        #update retur
         $data = array(
-                'tanggal'=> $tgl_input,
-                'm_customer_id'=>$this->input->post('m_customer_id'),
-                'jenis_barang'=>$this->input->post('jenis_barang'),
-                'remarks'=>$this->input->post('remarks'),
-                'status_pembayaran'=>$this->input->post('status_pembayaran'),
-                'type_retur'=>$this->input->post('type_retur'),
-                'modified'=> $tanggal,
-                'modified_by'=> $user_id
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id
             );
         
         $this->db->where('id', $this->input->post('id'));
-        $this->db->update('dtr', $data);
+        $this->db->update('retur', $data);
+
         
-        $this->session->set_flashdata('flash_msg', 'Data DTR berhasil disimpan');
+        $this->session->set_flashdata('flash_msg', 'Data Retur berhasil disimpan');
         redirect('index.php/Retur');
     }
     
@@ -135,20 +147,18 @@ class Retur extends CI_Controller{
         $no    = 1;
         $bruto = 0;
         $netto = 0;
-        $this->load->model('Model_ampas');
-        $list_ampas = $this->Model_ampas->list_data()->result();
-        
-        $this->load->model('Model_retur'); 
+        $this->load->model('Model_retur');
+        $jenis_barang_list = $this->Model_retur->jenis_barang_list()->result();
+         
         $myDetail = $this->Model_retur->load_detail($id)->result(); 
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
-            $tabel .= '<td>'.$row->nama_item.'</td>';
-            $tabel .= '<td>'.$row->uom.'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
+            $tabel .= '<td>'.$row->jenis_barang.'</td>';
+            $tabel .= '<td>'.$row->no_packing.'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->bruto,0,',','.').'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
-            $tabel .= '<td></td>';
+            $tabel .= '<td>'.$row->nomor_bobbin.'</td>';
             $tabel .= '<td>'.$row->line_remarks.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
@@ -162,25 +172,25 @@ class Retur extends CI_Controller{
         $tabel .= '<tr>';
         $tabel .= '<td style="text-align:center">'.$no.'</td>';
         $tabel .= '<td>';
-        $tabel .= '<select id="ampas_id" name="ampas_id" class="form-control select2me myline" ';
+        $tabel .= '<select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" ';
             $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">';
             $tabel .= '<option value=""></option>';
-            foreach ($list_ampas as $value){
-                $tabel .= "<option value='".$value->id."'>".$value->nama_item."</option>";
+            foreach ($jenis_barang_list as $value){
+                $tabel .= "<option value='".$value->id."'>".$value->jenis_barang."</option>";
             }
         $tabel .= '</select>';
         $tabel .= '</td>';
-        $tabel .= '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>';
-        
-        $tabel .= '<td><input type="text" id="qty" name="qty" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="5" value="0" onkeyup="getComa(this.value, this.id);"></td>';
+        $tabel .= '<td><input type="text" id="no_packing" name="no_packing" class="form-control myline" readonly="readonly" value="Auto"></td>';
         
         $tabel .= '<td><input type="text" id="bruto" name="bruto" class="form-control myline" '
                 . 'onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';
+
         $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';
+                . 'onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);" readonly></td>';
+
+        $tabel .= '<td><input type="text" id="no_bobbin" name="no_bobbin" class="form-control myline" onchange="get_bobbin(this.value)"/><input type="hidden" name="id_bobbin" id="id_bobbin"></td>';
         
-        $tabel .= '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen"> <i class="fa fa-dashboard"></i> Timbang </a></td>';
+        // $tabel .= '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen"> <i class="fa fa-dashboard"></i> Timbang </a></td>';
         $tabel .= '<td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'; 
         
         $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
@@ -188,18 +198,18 @@ class Retur extends CI_Controller{
                 . '<i class="fa fa-plus"></i> Tambah </a></td>';
         $tabel .= '</tr>';
         
-        $tabel .= '<tr>';
-        $tabel .= '<td colspan="4" style="text-align:right"><strong>Total</strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($bruto,0,',','.').'</strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
-        $tabel .= '<td colspan="3"></td>';
-        $tabel .= '</tr>';
+        // $tabel .= '<tr>';
+        // $tabel .= '<td colspan="4" style="text-align:right"><strong>Total</strong></td>';
+        // $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($bruto,0,',','.').'</strong></td>';
+        // $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
+        // $tabel .= '<td colspan="3"></td>';
+        // $tabel .= '</tr>';
        
         
         header('Content-Type: application/json');
         echo json_encode($tabel); 
     }
-    
+
     function get_uom(){
         $id = $this->input->post('id');
         $this->load->model('Model_ampas');
@@ -211,13 +221,19 @@ class Retur extends CI_Controller{
     
     function save_detail(){
         $return_data = array();
+        $no_bobbin = $this->input->post('no_bobbin');
+        $kode_bobbin = substr($no_bobbin, 0,1);
+        $urut_bobbin = substr($no_bobbin, 1,4);
+        $ukuran = $this->input->post('ukuran');
+        $no_packing = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin."RTR";
         
-        if($this->db->insert('dtr_detail', array(
-            'dtr_id'=>$this->input->post('id'),
-            'ampas_id'=>$this->input->post('ampas_id'),            
-            'qty'=>str_replace('.', '', $this->input->post('qty')),
+        if($this->db->insert('retur_detail', array(
+            'retur_id'=>$this->input->post('id'),
+            'jenis_barang_id'=>$this->input->post('jenis_barang_id'), 
             'bruto'=>str_replace('.', '', $this->input->post('bruto')),
             'netto'=>str_replace('.', '', $this->input->post('netto')),
+            'bobbin_id'=>$this->input->post('id_bobbin'),
+            'no_packing'=>$no_packing,
             'line_remarks'=>$this->input->post('line_remarks')
         ))){
             $return_data['message_type']= "sukses";
@@ -233,7 +249,7 @@ class Retur extends CI_Controller{
         $id = $this->input->post('id');
         $return_data = array();
         $this->db->where('id', $id);
-        if($this->db->delete('dtr_detail')){
+        if($this->db->delete('retur_detail')){
             $return_data['message_type']= "sukses";
         }else{
             $return_data['message_type']= "error";
@@ -572,30 +588,83 @@ class Retur extends CI_Controller{
             $this->load->model('Model_retur');
             $this->load->model('Model_pengiriman_sample'); 
 
-            $data['myData'] = $this->Model_retur->show_header_rs($id)->row_array();           
-            $data['myDetail'] = $this->Model_pengiriman_sample->load_detail($id)->result();  
+            $data['header'] = $this->Model_retur->show_header_retur($id)->row_array();           
+            $data['myDetail'] = $this->Model_retur->load_detail($id)->result();  
             
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/Retur/request_barang_list');
+            redirect('index.php/Retur/');
+        }
+    }
+
+
+    function print(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_retur');
+            $data['header']  = $this->Model_retur->show_header_retur($id)->row_array();
+            $data['details'] = $this->Model_retur->load_detail($id)->result();
+
+            $this->load->view('retur/print', $data);
+        }else{
+            redirect('index.php'); 
         }
     }
     
     function approve(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
+        $this->load->model('Model_m_numberings');
+        $code_bpb = $this->Model_m_numberings->getNumbering('BPB-RTR', $tgl_input);
+        
+        $loop1 = $this->db->query("select rd.retur_id, rd.jenis_barang_id, jb.jenis_barang
+            from retur_detail rd
+            left join jenis_barang jb on (rd.jenis_barang_id = jb.id)
+            where rd.retur_id = ".$this->input->post('id')."
+            group by jb.jenis_barang
+            ")->result();
+        foreach($loop1 as $row1){
+            #insert bpb
+            $this->db->insert('t_bpb_fg', array(
+                'no_bpb_fg' => $code_bpb,
+                'tanggal' => $tgl_input,
+                'produksi_fg_id' => 0,
+                'jenis_barang_id' => $row1->jenis_barang_id,
+                'created_at' => $tanggal,
+                'created_by' => $user_id,
+                'status' => 0,
+                'keterangan' => $this->input->post('remarks')
+            ));
+
+            $bpb_id = $this->db->insert_id();
+            #insert bpb detail
+            $loop2 = $this->db->query("select *from retur_detail where jenis_barang_id = ".$row1->jenis_barang_id." and retur_id = ".$this->input->post('id'))->result();
+            foreach ($loop2 as $row2) {
+                $this->db->insert('t_bpb_fg_detail', array(
+                    't_bpb_fg_id' => $bpb_id,
+                    'jenis_barang_id' => $row2->jenis_barang_id,
+                    'no_produksi' => 0,
+                    'bruto' => $row2->bruto,
+                    'netto' => $row2->netto,
+                    'no_packing_barcode' => $row2->no_packing,
+                    'bobbin_id' => $row2->bobbin_id
+                ));
+            }
+        }
+
         $data = array(
                 'status'=> 1,
-                'approved'=> $tanggal,
+                'approved_at'=> $tanggal,
                 'approved_by'=>$user_id
             );
         
         $this->db->where('id', $this->input->post('id'));
-        $this->db->update('request_sample', $data);
+        $this->db->update('retur', $data);
         
-        $this->session->set_flashdata('flash_msg', 'Data permintaan barang berhasil diapprove');
-        redirect('index.php/Retur/request_barang_list');
+        $this->session->set_flashdata('flash_msg', 'Data permintaan retur berhasil diapprove');
+        redirect('index.php/Retur/');
     }
     
     function reject(){
@@ -604,16 +673,16 @@ class Retur extends CI_Controller{
         
         $data = array(
                 'status'=> 9,
-                'rejected'=> $tanggal,
+                'rejected_at'=> $tanggal,
                 'rejected_by'=>$user_id,
-                'reject_remarks'=>$this->input->post('reject_remarks')
+                'remarks'=>$this->input->post('reject_remarks')
             );
         
         $this->db->where('id', $this->input->post('header_id'));
-        $this->db->update('request_sample', $data);
+        $this->db->update('retur', $data);
         
-        $this->session->set_flashdata('flash_msg', 'Data permintaan barang berhasil direject');
-        redirect('index.php/Retur/request_barang_list');
+        $this->session->set_flashdata('flash_msg', 'Data permintaan retur barang berhasil direject');
+        redirect('index.php/Retur');
     }
     
     /*function print_po(){

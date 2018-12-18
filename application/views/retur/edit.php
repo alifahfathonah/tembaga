@@ -2,8 +2,7 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Retur'); ?>"> Retur </a> 
+            <i class="fa fa-angle-right"></i> Retur 
             <i class="fa fa-angle-right"></i>  
             <a href="<?php echo base_url('index.php/Retur/edit'); ?>"> Edit Data Retur </a> 
         </h5>          
@@ -29,12 +28,12 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
-                            No. DTR <font color="#f00">*</font>
+                            No. Retur <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
+                            <input type="text" id="no_retur" name="no_retur" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['no_dtr']; ?>">
+                                value="<?php echo $header['no_retur']; ?>">
                             
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
@@ -46,32 +45,36 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
+                                value="<?php echo date('d-m-Y', strtotime($header['created_at'])); ?>">
                         </div>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-4">
                             Jenis Barang <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($jenis_barang_list as $row){
-                                        echo '<option value="'.$row->jenis_barang.'" '.(($row->jenis_barang==$header['jenis_barang'])? 'selected="selected"': '').'>'.$row->jenis_barang.'</option>';
-                                    }
-                                ?>
-                            </select>
+                            <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['jenis_barang']; ?>">
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">
                             <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px"><?php echo  $header['remarks']; ?></textarea>                           
+                                class="form-control myline" style="margin-bottom:5px" readonly><?php echo  $header['remarks']; ?></textarea>                           
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nama Penimbang
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $header['penimbang']; ?>">
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
@@ -84,15 +87,9 @@
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['m_customer_id'])? 'selected="selected"': '').'>'.$row->nama_customer.'</option>';
-                                    }
-                                ?>
-                            </select>
+                            <input type="text" id="m_customer_id" name="m_customer_id" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['nama_customer']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -106,15 +103,12 @@
                     </div>                    
                     <div class="row">
                         <div class="col-md-4">
-                            Status Pembayaran <font color="#f00">*</font>
+                            Jenis Packing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="status_pembayaran" name="status_pembayaran" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value=""></option>
-                                <option value="0" <?php echo (($header['status_pembayaran']==0)? 'selected="selected"': ''); ?>>Belum Bayar</option>
-                                <option value="1" <?php echo (($header['status_pembayaran']==1)? 'selected="selected"': ''); ?>>Sudah Bayar</option>
-                            </select>
+                            <input type="text" id="jenis_packing_id" name="jenis_packing_id" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['jenis_packing']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -122,22 +116,15 @@
                             Type Retur <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="type_retur" name="type_retur" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value=""></option>
-                                <option value="0" <?php echo (($header['type_retur']==0)? 'selected="selected"': ''); ?>>Ganti Barang</option>
-                                <option value="1" <?php echo (($header['type_retur']==0)? 'selected="selected"': ''); ?>>Ganti Voucher</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Nama Penimbang
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['penimbang']; ?>">
+                            <?php if ($header['jenis_retur'] == 0){ ?>
+                            <input type="text" id="type_retur" name="type_retur" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="Ganti Barang">
+                            <?php } else if ($header['jenis_retur'] == 1){ ?>
+                            <input type="text" id="type_retur" name="type_retur" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="Ganti Voucher">
+                            <?php } ?>
                         </div>
                     </div>
                 </div>              
@@ -149,11 +136,10 @@
                             <thead>
                                 <th style="width:35px">No</th>
                                 <th>Nama Item Retur</th>
-                                <th style="width:80px">UOM</th>
-                                <th style="width:80px">Jumlah</th>
-                                <th style="width:80px">Bruto (Kg)</th>
+                                <th>No. Packing</th>
+                                <th style="width: 80px">Bruto (Kg)</th>
                                 <th style="width:80px">Netto (Kg)</th>
-                                <th style="width:60px"></th>
+                                <th>ID Bobbin / Keranjang</th>
                                 <th>Keterangan</th>
                                 <th>Actions</th>
                             </thead>
@@ -190,6 +176,33 @@
     </div>
 </div> 
 <script>
+function get_bobbin(id){
+    if(''!=id){
+    $.ajax({
+        url: "<?php echo base_url('index.php/GudangFG/get_bobbin'); ?>",
+        async: false,
+        type: "POST",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result) {
+            if(result){
+                $('#berat_bobbin').val(result['berat']);
+                $('#pemilik').val(result['nama_owner']);
+                $('#id_bobbin').val(result['id']);
+                $('#netto').val(($('#bruto').val() - result['berat']));
+            } else {
+                alert('Bobbin/Keranjang tidak ditemukan atau belum dipesan, coba lagi');
+                $('#no_bobbin').val('');
+                $('#id_bobbin').val('');
+                $('#berat_bobbin').val('');
+                $('#pemilik').val('');
+                $('#netto').val('');
+            }
+        }
+    });
+    }
+}
+
 function myCurrency(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
@@ -216,12 +229,6 @@ function simpanData(){
         $('.alert-danger').show(); 
     }else if($.trim($("#m_customer_id").val()) == ""){
         $('#message').html("Silahkan pilih nama customer!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#jenis_barang").val()) == ""){
-        $('#message').html("Silahkan pilih jenis barang!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#status_pembayaran").val()) == ""){
-        $('#message').html("Silahkan pilih status pembayaran!");
         $('.alert-danger').show(); 
     }else if($.trim($("#type_retur").val()) == ""){
         $('#message').html("Silahkan pilih type retur!");
@@ -256,11 +263,8 @@ function get_uom(id){
 }
 
 function saveDetail(){
-    if($.trim($("#ampas_id").val()) == ""){
+    if($.trim($("#jenis_barang_id").val()) == ""){
         $('#message').html("Silahkan pilih detail item retur!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#qty").val()) == ""){
-        $('#message').html("Jumlah item rongsok tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#bruto").val()) == ""){
         $('#message').html("Bruto tidak boleh kosong!");
@@ -274,10 +278,12 @@ function saveDetail(){
             url:'<?php echo base_url('index.php/Retur/save_detail'); ?>',
             data:{
                 id:$('#id').val(),
-                ampas_id:$('#ampas_id').val(),
+                jenis_barang_id:$('#jenis_barang_id').val(),
                 qty:$('#qty').val(),
                 bruto:$('#bruto').val(),
                 netto:$('#netto').val(),
+                no_bobbin:$('#no_bobbin').val(),
+                id_bobbin:$('#id_bobbin').val(),
                 line_remarks:$('#line_remarks').val()
             },
             success:function(result){

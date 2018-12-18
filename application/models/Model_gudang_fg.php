@@ -43,12 +43,13 @@ class Model_gudang_fg extends CI_Model{
     }
     
     function show_header_bpb($id){
-        $data = $this->db->query("Select tbf.*, pf.no_laporan_produksi, pf.jenis_packing_id, jb.jenis_barang, jb.id as id_jenis_barang,
+        $data = $this->db->query("Select tbf.*, pf.no_laporan_produksi, COALESCE(pf.jenis_packing_id,r.jenis_packing_id) as jenis_packing_id, jb.jenis_barang, jb.id as id_jenis_barang,
                     usr.realname As pengirim
                     From t_bpb_fg tbf
                         Left Join users usr On (tbf.created_by = usr.id)
-                        left join produksi_fg pf on (pf.id = tbf.produksi_fg_id)
-                        left join m_jenis_packing mjp on (mjp.id = pf.jenis_packing_id)
+                        left join produksi_fg pf on (tbf.produksi_fg_id != 0) and (pf.id = tbf.produksi_fg_id)
+                        left join retur r on (tbf.produksi_fg_id = 0)
+                        left join m_jenis_packing mjp on (mjp.id = pf.jenis_packing_id) or (mjp.id = r.jenis_packing_id)
                         left join jenis_barang jb on (jb.id = tbf.jenis_barang_id)
                     Where tbf.id=".$id);
         return $data;

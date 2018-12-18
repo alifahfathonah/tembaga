@@ -2,8 +2,7 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Retur'); ?>"> Retur </a> 
+            <i class="fa fa-angle-right"></i> Retur 
             <i class="fa fa-angle-right"></i> 
             <a href="<?php echo base_url('index.php/Retur/add'); ?>"> Input Retur </a> 
         </h5>          
@@ -29,10 +28,10 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            No. DTR <font color="#f00">*</font>
+                            No. Retur <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
+                            <input type="text" id="no_retur" name="no_retur" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="Auto generate">
                         </div>
@@ -47,7 +46,7 @@
                                 value="<?php echo date('d-m-Y'); ?>">
                         </div>
                     </div>  
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-4">
                             Jenis Barang <font color="#f00">*</font>
                         </div>
@@ -57,19 +56,19 @@
                                 <option value=""></option>
                                 <?php
                                     foreach ($jenis_barang_list as $row){
-                                        echo '<option value="'.$row->jenis_barang.'">'.$row->jenis_barang.'</option>';
+                                        echo '<option value="'.$row->id.'">'.$row->jenis_barang.'</option>';
                                     }
                                 ?>
                             </select>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">
                             <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px"></textarea>                           
+                                class="form-control myline" style="margin-bottom:5px" readonly>BARANG RETUR</textarea>                           
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
@@ -110,14 +109,16 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Status Pembayaran <font color="#f00">*</font>
+                            Jenis Packing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="status_pembayaran" name="status_pembayaran" class="form-control myline select2me" 
+                            <select id="jenis_packing_id" name="jenis_packing_id" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                 <option value=""></option>
-                                <option value="0">Belum Bayar</option>
-                                <option value="1">Sudah Bayar</option>
+                                <?php foreach ($jenis_packing_list as $row) {
+                                ?>
+                                <option value="<?php echo $row->id; ?>"><?php echo $row->jenis_packing; ?></option>
+                            <?php } ?>
                             </select>
                         </div>
                     </div>
@@ -169,11 +170,8 @@ function simpanData(){
     }else if($.trim($("#m_customer_id").val()) == ""){
         $('#message').html("Silahkan pilih nama customer!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#jenis_barang").val()) == ""){
-        $('#message').html("Silahkan pilih jenis barang!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#status_pembayaran").val()) == ""){
-        $('#message').html("Silahkan pilih status pembayaran!");
+    }else if($.trim($("#jenis_packing_id").val()) == ""){
+        $('#message').html("Silahkan pilih jenis packing!");
         $('.alert-danger').show(); 
     }else if($.trim($("#type_retur").val()) == ""){
         $('#message').html("Silahkan pilih type retur!");
