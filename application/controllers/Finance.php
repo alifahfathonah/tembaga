@@ -920,7 +920,7 @@ class Finance extends CI_Controller{
                     'netto'=>$row->netto,
                     'harga'=>$row->amount,
                     'total_harga'=>$total,
-                    'keterangan'=>$row->line_remarks
+                    'keterangan'=>'BARANG RONGSOK'
             ));
         }
         $data = array(

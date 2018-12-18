@@ -159,7 +159,7 @@
                                             <th>Qty</th>
                                             <th>Bruto</th>
                                             <th>Netto (UOM)</th>
-                                            <th>Nomor Bobbin</th>
+                                            <th>Nomor<br>Bobbin</th>
                                             <th>Amount</th>
                                             <th>Keterangan</th>
                                             <th>Total</th>
@@ -187,7 +187,7 @@
                                             }
                                         ?>
                                         <tr>
-                                            <td colspan="9">Total</td>
+                                            <td colspan="9" style="text-align: right; font-weight: bold;">Total</td>
                                             <td style="background-color: green; color: white;"><?php echo number_format($total_all,0,',','.');?></td>
                                         </tr>
                                         </tbody>
@@ -247,7 +247,7 @@
                                             }
                                         ?>
                                         <tr>
-                                            <td colspan="5">Total</td>
+                                            <td colspan="5" style="text-align: right; font-weight: bold;">Total</td>
                                             <td style="background-color: green; color: white;"><?php echo number_format($total_all,0,',','.');?></td>
                                             <td></td>
                                         </tr>

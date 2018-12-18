@@ -163,19 +163,24 @@ class Model_finance extends CI_Model{
     }
 
     function load_detail_invoice($id){
-        $data = $this->db->query("select tsjd.*, jb.jenis_barang, jb.uom,
+        $data = $this->db->query("select tsjd.*, COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom) as uom,
             (select tsod.amount from t_sales_order_detail tsod left join t_sales_order tso on tso.id = tsod.t_so_id where tso.so_id = tsj.sales_order_id and tsod.jenis_barang_id = tsjd.jenis_barang_id)as amount 
             from t_surat_jalan_detail tsjd 
             left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id 
-            left join jenis_barang jb on jb.id = tsjd.jenis_barang_id 
+            left join t_sales_order tso on tso.so_id = tsj.sales_order_id
+            left join jenis_barang jb on tso.jenis_barang != 'RONGSOK' and jb.id=tsjd.jenis_barang_id
+            left join rongsok r on tso.jenis_barang = 'RONGSOK' and r.id=tsjd.jenis_barang_id
             where tsjd.t_sj_id = ".$id);
         return $data;
     }
 
     function show_detail_invoice($id){
-        $data = $this->db->query("select fid.*, jb.jenis_barang, jb.uom
+        $data = $this->db->query("select fid.*, COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom) as uom
         from f_invoice_detail fid
-        left join jenis_barang jb on jb.id = fid.jenis_barang_id
+        left join f_invoice fi on fi.id = fid.id_invoice
+        left join t_sales_order tso on tso.so_id=fi.id_sales_order
+        left join jenis_barang jb on tso.jenis_barang != 'RONGSOK' and jb.id = fid.jenis_barang_id
+        left join rongsok r on tso.jenis_barang = 'RONGSOK' and r.id = fid.jenis_barang_id
         where fid.id_invoice = ".$id);
         return $data;
     }

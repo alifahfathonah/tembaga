@@ -61,11 +61,13 @@ class SalesOrder extends CI_Controller{
             $data['header']  = $this->Model_sales_order->show_header_so($id)->row_array();
             if($data['header']['jenis_barang'] == 'RONGSOK'){
             $data['detailSPB'] = $this->Model_sales_order->show_detail_spb_fulfilment_rsk($id)->result();
+            $data['details'] = $this->Model_sales_order->show_detail_so_rsk($id)->result();
+            $data['detailSJ'] = $this->Model_sales_order->load_detail_view_sj_rsk($id)->result();
             }else{
             $data['detailSPB'] = $this->Model_sales_order->show_detail_spb_fulfilment($id)->result();
-            }
             $data['details'] = $this->Model_sales_order->show_detail_so($id)->result();
             $data['detailSJ'] = $this->Model_sales_order->load_detail_view_sj($id)->result();
+            }
 
             $this->load->view('layout', $data);
     }
@@ -594,7 +596,7 @@ class SalesOrder extends CI_Controller{
             }else if($jenis == 'WIP'){
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_wip($soid)->result();
             }else{
-                $data['list_produksi'] = $this->Model_sales_order->list_item_sj_rongsok($soid)->result();
+                $data['list_produksi'] = $this->Model_sales_order->list_item_sj_rsk($soid)->result();
             }
             $this->load->view('layout', $data);   
         }else{
@@ -663,6 +665,23 @@ class SalesOrder extends CI_Controller{
                     $this->db->update('t_gudang_wip',array(
                         'flag_taken'=>1,
                     ));
+                }else if($jenis=='RONGSOK'){
+                    $this->db->insert('t_surat_jalan_detail', array(
+                        't_sj_id'=>$this->input->post('id'),
+                        'jenis_barang_id'=>$v['jenis_barang_id'],
+                        'no_packing'=>$v['no_palette'],
+                        'qty'=>$v['qty'],
+                        'bruto'=>$v['bruto'],
+                        'netto'=>$v['netto'],
+                        'nomor_bobbin'=>0,
+                        'line_remarks'=>$v['line_remarks'],
+                        'created_by'=>$user_id,
+                        'created_at'=>$tanggal
+                    ));
+                    $this->db->where('id',$v['id_barang']);
+                    $this->db->update('dtr_detail',array(
+                        'so_id'=>$this->input->post('so_id')
+                    ));
                 }
             }
         }
@@ -674,7 +693,7 @@ class SalesOrder extends CI_Controller{
         }else if($jenis == 'WIP'){
             $list_produksi = $this->Model_sales_order->list_item_sj_wip($soid)->result();
         }else{
-            $list_produksi = $this->Model_sales_order->list_item_sj_rongsok($soid)->result();
+            $list_produksi = $this->Model_sales_order->list_item_sj_rsk($soid)->result();
         }
 
         if(empty($list_produksi)){

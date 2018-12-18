@@ -135,15 +135,27 @@
                                             <td><?php echo $no;?></td>
                                             <td><?php echo $row->jenis_barang;?></td>
                                             <td><?php echo $row->uom;?></td>
-                                            <td><?php echo $row->netto;?></td>
+                                            <td>
+                                                <?php 
+                                                    if($row->netto != 0){
+                                                        echo $row->netto;
+                                                    }else{
+                                                        echo $row->qty;
+                                                    }
+                                                ?>    
+                                            </td>
                                             <td><?php echo 'Rp '.number_format($row->amount,0,',','.');?></td>
                                             <td><?php echo 'Rp '.number_format($row->total_amount,0,',','.');?></td>
                                         </tr>
-                                        <?php
-                                        $no++;
-                                        $jumlah += $row->netto;
-                                        $total += $row->total_amount;
-                                        }
+                                            <?php
+                                                $no++;
+                                                    if($row->netto != 0){
+                                                    $jumlah += $row->netto;
+                                                    }else{
+                                                    $jumlah += $row->qty;
+                                                    }
+                                                $total += $row->total_amount;
+                                            }//END LOOP FOREACH
                                         ?>
                                         </tbody>
                                         <tr>
@@ -242,17 +254,17 @@
                                             <td><?php echo $row->uom;?></td>
                                             <td><?php 
                                             if($row->no_packing == 0){
-                                            echo 'WIP tidak ada No Packing';
+                                                echo 'WIP tidak ada No Packing';
                                             }else{
-                                            echo $row->no_packing;
+                                                echo $row->no_packing;
                                             }
                                             ?>
                                             </td>
                                             <td><?php 
                                             if($row->bruto == 0){
-                                            echo 'WIP tidak ada Bruto';
+                                                echo 'WIP tidak ada Bruto';
                                             }else{
-                                            echo $row->bruto;
+                                                echo $row->bruto;
                                             }
                                             ?>
                                             </td>
@@ -260,9 +272,9 @@
                                             <td><?php echo $row->qty;?></td>
                                             <td><?php 
                                             if($row->nomor_bobbin == 0){
-                                            echo 'WIP tidak ada Nomor Bobbin';
+                                                echo 'Tidak ada Nomor Bobbin';
                                             }else{
-                                            echo $row->bruto;
+                                                echo $row->bruto;
                                             }
                                             ?>
                                             </td>

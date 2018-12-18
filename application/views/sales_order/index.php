@@ -51,6 +51,7 @@
                     <th>PPN</th> 
                     <th>Jumlah <br>Items</th>
                     <th>Status Surat Jalan</th>
+                    <th>Status SPB</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -78,7 +79,20 @@
                         <?php 
                            echo (($data->flag_sj==1)? '<div style="background-color:green; padding:3px; color:white; text-align: center;">Sudah Dikirim Semua</div>':'<div style="background-color:darkkhaki; padding:3px; text-align: center;">Belum Dikirim Semua</div>');
                         ?>
-                        </td>                       
+                        </td>
+                        <td style="text-align:center">
+                            <?php
+                                if($data->status_spb==0){
+                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Approval</div>';
+                                }else if($data->status_spb==1){
+                                    echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
+                                }else if($data->status_spb==2){
+                                    echo '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
+                                }else if($data->status_spb==9){
+                                    echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
+                                }
+                            ?>
+                        </td>     
                     <!--<td style="text-align:center">
                             <?php/*
                                 if( ($group_id==1 || $hak_akses['create_dtr']==1) && $data->ready_to_dtr>0){

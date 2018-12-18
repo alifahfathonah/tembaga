@@ -81,6 +81,7 @@
 
 <h4 class="text-center">Hasil Masak WIP</h4>
 <!-- kolom isian hasil produksi wip-->
+<input type="hidden" id="id_jenis_barang" name="id_jenis_barang">
 <div class="row"> 
     <div id="div_kawat_hitam_masuk" class="hidden disabled">
     <div class="col-md-12">
@@ -94,7 +95,7 @@
                                 <input type="text" id="qty_kh_in" name="qty_kh" 
                                 class="form-control myline" size="25" 
                                 value="" placeholder="Jumlah Kawat Hitam"/>
-                                <input type="hidden" value="6" name="id_jenis_barang">
+                                <!-- <input type="hidden" id="id_jenis_barang" name="id_jenis_barang"> -->
                                 <label> Roll </label>
                             </div>
                         </div>
@@ -175,7 +176,7 @@
                                 <input type="text" id="qty_km_in" name="qty_km" 
                                 class="form-control myline" size="25" 
                                 value="" placeholder="Jumlah Kawat Merah"/>
-                                <input type="hidden" value="5" name="id_jenis_barang">
+                                <!-- <input type="hidden" id="id_jenis_barang" name="id_jenis_barang"> -->
                                 <label> Roll </label>
                             </div>
                         </div>
@@ -239,15 +240,18 @@ function pilih_data(id){
     if(id == 'CUCI'){
         $('#div_kawat_hitam_masuk').addClass('hidden disabled');
         $('#div_kawat_merah_masuk').removeClass('hidden disabled');
+        $('#id_jenis_barang').val('5');
     } else {
         $('#div_kawat_merah_masuk').addClass('hidden disabled');
         $('#div_kawat_hitam_masuk').removeClass('hidden disabled');
+        $('#id_jenis_barang').val('6');
     }
 }
 
 
 function simpanData(){
-        $('#formku').submit(); 
+        $('#formku').submit();
+        console.log($('#id_jenis_barang').val());
 };
 </script>
 

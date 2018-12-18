@@ -85,7 +85,7 @@ class GudangWIP extends CI_Controller{
                     'no_produksi_wip' => $code,
                     'jenis_masak' => $this->input->post('jenis_masak'),
                     'tanggal'=> $tgl_input,
-                    'jenis_barang_id'=>$this->input->post('id_jenis_barang'),
+                    'jenis_barang_id'=> $this->input->post('id_jenis_barang'),
                     'qty'=>(int)($this->input->post('qty_kh')!= null) ? $this->input->post('qty_kh'): $this->input->post('qty_km'),
                     'uom' => 'ROLL',
                     'berat' => (int)($this->input->post('berat_kh')!=null) ? $this->input->post('berat_kh') : $this->input->post('berat_km'),
