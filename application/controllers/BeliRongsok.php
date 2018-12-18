@@ -859,7 +859,7 @@ class BeliRongsok extends CI_Controller{
         $this->db->trans_start();
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('dtr', array(
-                    'status'=>0,
+                    'status'=>1,
                     'remarks'=>$this->input->post('remarks'),
                     'modified'=>$tanggal,
                     'modified_by'=>$user_id
@@ -883,6 +883,24 @@ class BeliRongsok extends CI_Controller{
         }else{
             $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat updates DTR, silahkan coba kembali!');
         }
+        redirect('index.php/BeliRongsok/dtr_list');
+    }
+
+    function reject_dtr(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        
+        $data = array(
+                'status'=> 9,
+                'rejected'=> $tanggal,
+                'rejected_by'=>$user_id,
+                'remarks'=>$this->input->post('reject_remarks')
+            );
+        
+        $this->db->where('id', $this->input->post('header_id'));
+        $this->db->update('dtr', $data);
+        
+        $this->session->set_flashdata('flash_msg', 'Reject DTR rongsok berhasil direject');
         redirect('index.php/BeliRongsok/dtr_list');
     }
     
@@ -1078,20 +1096,36 @@ class BeliRongsok extends CI_Controller{
     }
     
     function close_po(){
-        $id = $this->input->post('id');
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         
-        $return_data = array();
-        $this->db->where('id', $id);
-        if($this->db->update('po', array('status'=>1, 'modified'=>$tanggal, 'modified_by'=>$user_id))){
-            $return_data['message_type']= "sukses";
-        }else{
-            $return_data['message_type']= "error";
-            $return_data['message']= "Gagal close PO! Silahkan coba kembali";
-        }           
-        header('Content-Type: application/json');
-        echo json_encode($return_data);
+        $data = array(
+                'status'=> 1,
+                'modified'=> $tanggal,
+                'modified_by'=>$user_id,
+                'remarks'=>$this->input->post('reject_remarks')
+            );
+        
+        $this->db->where('id', $this->input->post('header_id'));
+        $this->db->update('po', $data);
+        
+        $this->session->set_flashdata('flash_msg', 'Close PO rongsok berhasil direject');
+        redirect('index.php/BeliRongsok');
+
+        // $id = $this->input->post('id');
+        // $user_id  = $this->session->userdata('user_id');
+        // $tanggal  = date('Y-m-d h:m:s');
+        
+        // $return_data = array();
+        // $this->db->where('id', $id);
+        // if($this->db->update('po', array('status'=>1, 'modified'=>$tanggal, 'modified_by'=>$user_id))){
+        //     $return_data['message_type']= "sukses";
+        // }else{
+        //     $return_data['message_type']= "error";
+        //     $return_data['message']= "Gagal close PO! Silahkan coba kembali";
+        // }           
+        // header('Content-Type: application/json');
+        // echo json_encode($return_data);
     }
     
     function voucher_list(){

@@ -201,6 +201,31 @@ class Finance extends CI_Controller{
        redirect('index.php/Finance');
     }
 
+
+    function view_voucher(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Finance";
+            $data['content']   = "finance/view_voucher";
+
+            $this->load->model('Model_finance');
+            $data['header'] = $this->Model_finance->show_header_voucher($id)->row_array();
+            $data['list_data'] = $this->Model_finance->show_detail_voucher($id)->result();
+
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/Finance');
+        }
+    }
+
     function voucher_list(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
@@ -214,6 +239,23 @@ class Finance extends CI_Controller{
         $data['content']= "finance/voucher_list";
         $this->load->model('Model_finance');
         $data['list_data'] = $this->Model_finance->voucher_list()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function check_voucher(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "finance/check_voucher";
+        $this->load->model('Model_finance');
+        $data['list_data'] = $this->Model_finance->check_voucher()->result();
 
         $this->load->view('layout', $data);
     }
@@ -324,6 +366,8 @@ class Finance extends CI_Controller{
             $total_vc += $row->amount;
         }
         $tabel .= '<tr>';
+        $tabel .= '<td></td>';
+        $tabel .= '<td><a href="'.base_url().'index.php/Finance/check_voucher" target="_blank" class="btn btn-primary" style="width:100%;">Lihat daftar voucher</a></td>';
         $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
         $tabel .= '<td><input type="text" id="total_vc" name="total_vc" style="background-color: green; color: white;" class="form-control" data-myvalue="'.$total_vc.'" value="'.number_format($total_vc,0,',','.').'" readonly="readonly"></td>';
         $tabel .= '<td colspan="2"></td>';
@@ -913,4 +957,5 @@ class Finance extends CI_Controller{
             redirect('index.php'); 
         }
     }
+
 }

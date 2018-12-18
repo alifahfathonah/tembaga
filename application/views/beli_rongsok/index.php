@@ -307,6 +307,7 @@
                     <th>PPN</th> 
                     <th>Jumlah <br>Items</th>
                     <th>Status</th>
+                    <th>Keterangan</th>
                     <th>Voucher DP</th>
                     <th>Voucher <br>Pelunasan</th>
                     <th>Actions</th>
@@ -355,6 +356,7 @@
                                 }
                             ?>
                         </td>
+                        <td><?php echo $data->remarks; ?></td>
                         <td style="text-align:center">
                             <?php
                                 if($data->tot_voucher>0){print('Ada <b>'.$data->tot_voucher.'</b> Voucher<br/>');}
