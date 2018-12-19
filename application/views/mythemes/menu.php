@@ -555,7 +555,7 @@
                             Invoice </a>
                         </li>
                         <li>
-                            <a href="<?php echo base_url(); ?>index.php/Finance/invoice">
+                            <a href="<?php echo base_url(); ?>index.php/Finance/matching">
                             <i class="fa fa-files-o"></i>
                             Matching Invoice </a>
                         </li>

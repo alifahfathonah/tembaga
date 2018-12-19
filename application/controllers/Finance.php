@@ -958,4 +958,120 @@ class Finance extends CI_Controller{
         }
     }
 
+    function matching(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "finance/matching";
+        $this->load->model('Model_finance');
+        $data['list_data'] = $this->Model_finance->list_matching()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function matching_invoice(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Finance";
+            $data['content']   = "finance/matching_invoice";
+
+            $this->load->model('Model_finance');
+            $data['header'] = $this->Model_finance->customer_detail($id)->row_array();
+            $data['details_invoice'] = $this->Model_finance->load_invoice_full($id)->result();
+            $data['details_um'] = $this->Model_finance->load_um_full($id)->result();
+            $this->load->view('layout', $data);
+        }else{
+            redirect('index.php/Finance');
+        }
+    }
+
+    function get_invoice_list(){ 
+        $this->load->model('Model_finance');
+        $data = $this->Model_finance->list_invoice_matching($this->input->post('id'))->result();
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->no_invoice;
+        } 
+        print form_dropdown('invoice_id', $arr_so);
+    }
+
+    function get_um_list(){ 
+        $this->load->model('Model_finance');
+        $data = $this->Model_finance->list_um_matching($this->input->post('id'))->result();
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->nomor;
+        } 
+        print form_dropdown('invoice_id', $arr_so);
+    }
+
+    function get_data_invoice(){
+        $id = $this->input->post('id');
+
+        $this->load->model('Model_finance');
+        $result= $this->Model_finance->get_data_invoice($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
+
+    function add_matching(){
+        $user_id = $this->session->userdata('user_id');
+        $tanggal = date('Y-m-d');
+        $tanggal_input = date('Y-m-d h:m:s');
+
+        $this->db->trans_start();
+        
+        $id = $this->input->post('id_modal');
+        $id_invoice = $this->input->post('invoice_id');
+        $id_um = $this->input->post('um_id');
+        $this->load->model('Model_finance');
+
+            $data = array(
+            'id_invoice'=> $id_invoice,
+            'id_um'=> $id_um,
+            'created_at'=> $tanggal_input,
+            'created_by'=> $user_id
+            );
+            $this->db->insert('f_matching_detail', $data);   
+            $insert_id = $this->db->insert_id();
+
+            // UPDATE MATCHING_ID DI TABEL F_INVOICE
+            $data = array(
+                'matching_id'=> $insert_id,
+                'modified_at'=> $tanggal_input,
+                'modified_by'=> $user_id
+            );
+            $this->db->where('id', $id_invoice);
+            $this->db->update('f_invoice', $data);
+
+            //UPDATE MATCHING_ID DI TABEL F_UANG_MASUK
+            $data = array(
+                'matching_id'=> $insert_id
+            );
+            $this->db->where('id', $id_um);
+            $this->db->update('f_uang_masuk', $data);
+
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'Matching sudah disimpan');            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat penginputan Data Matching, silahkan coba kembali!');
+            }             
+        
+       redirect('index.php/Finance/matching_invoice/'.$id);
+    }
 }
