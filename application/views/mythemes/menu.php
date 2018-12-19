@@ -402,6 +402,18 @@
                                 Terima Retur
                             </a>
                         </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/Retur/fulfilment_list">
+                                <i class="fa fa-cubes"></i>
+                                Retur Fulfilment
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/Retur/surat_jalan">
+                                <i class="fa fa-truck"></i>
+                                Surat Jalan
+                            </a>
+                        </li>
                         <!-- <li>
                             <a href="<?php echo base_url(); ?>index.php/Retur">
                             <i class="fa fa-file-excel-o"></i>

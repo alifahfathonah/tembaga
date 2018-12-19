@@ -56,7 +56,16 @@
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->no_produksi; ?></td>
                         <td><?php echo $data->jenis_barang; ?></td>
-                        <td><?php echo $data->jenis_packing; ?></td>
+                        <td>
+                            <?php if($data->jenis_packing_id == 1){ ?>
+                            BOBBIN
+                            <?php } else if($data->jenis_packing_id == 2){ ?>
+                            KERANJANG
+                            <?php } else if($data->jenis_packing_id == 3){ ?>
+                            KARDUS
+                            <?php } else if($data->jenis_packing_id == 4){ ?>
+                            ROLL
+                            <?php } ?>                     </td>
                         <td><?php echo $data->pengirim; ?></td>                       
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td style="text-align:center">

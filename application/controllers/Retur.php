@@ -156,8 +156,8 @@ class Retur extends CI_Controller{
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
             $tabel .= '<td>'.$row->jenis_barang.'</td>';
             $tabel .= '<td>'.$row->no_packing.'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->bruto,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.$row->bruto.'</td>';
+            $tabel .= '<td style="text-align:right">'.$row->netto.'</td>';
             $tabel .= '<td>'.$row->nomor_bobbin.'</td>';
             $tabel .= '<td>'.$row->line_remarks.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
@@ -182,11 +182,9 @@ class Retur extends CI_Controller{
         $tabel .= '</td>';
         $tabel .= '<td><input type="text" id="no_packing" name="no_packing" class="form-control myline" readonly="readonly" value="Auto"></td>';
         
-        $tabel .= '<td><input type="text" id="bruto" name="bruto" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';
+        $tabel .= '<td><input type="text" id="bruto" name="bruto" class="form-control myline"></td>';
 
-        $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);" readonly></td>';
+        $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"/></td>';
 
         $tabel .= '<td><input type="text" id="no_bobbin" name="no_bobbin" class="form-control myline" onchange="get_bobbin(this.value)"/><input type="hidden" name="id_bobbin" id="id_bobbin"></td>';
         
@@ -230,8 +228,8 @@ class Retur extends CI_Controller{
         if($this->db->insert('retur_detail', array(
             'retur_id'=>$this->input->post('id'),
             'jenis_barang_id'=>$this->input->post('jenis_barang_id'), 
-            'bruto'=>str_replace('.', '', $this->input->post('bruto')),
-            'netto'=>str_replace('.', '', $this->input->post('netto')),
+            'bruto'=>$this->input->post('bruto'),
+            'netto'=>$this->input->post('netto'),
             'bobbin_id'=>$this->input->post('id_bobbin'),
             'no_packing'=>$no_packing,
             'line_remarks'=>$this->input->post('line_remarks')
@@ -617,7 +615,6 @@ class Retur extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
-        $code_bpb = $this->Model_m_numberings->getNumbering('BPB-RTR', $tgl_input);
         
         $loop1 = $this->db->query("select rd.retur_id, rd.jenis_barang_id, jb.jenis_barang
             from retur_detail rd
@@ -626,11 +623,12 @@ class Retur extends CI_Controller{
             group by jb.jenis_barang
             ")->result();
         foreach($loop1 as $row1){
+            $code_bpb = $this->Model_m_numberings->getNumbering('BPB-RTR', $tgl_input);
             #insert bpb
             $this->db->insert('t_bpb_fg', array(
                 'no_bpb_fg' => $code_bpb,
                 'tanggal' => $tgl_input,
-                'produksi_fg_id' => 0,
+                'produksi_fg_id' => $this->input->post('id'),
                 'jenis_barang_id' => $row1->jenis_barang_id,
                 'created_at' => $tanggal,
                 'created_by' => $user_id,
@@ -684,7 +682,274 @@ class Retur extends CI_Controller{
         $this->session->set_flashdata('flash_msg', 'Data permintaan retur barang berhasil direject');
         redirect('index.php/Retur');
     }
+
+    function surat_jalan(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "retur/surat_jalan";
+        $this->load->model('Model_sales_order');
+        $data['list_data'] = $this->Model_sales_order->surat_jalan()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function add_surat_jalan(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "retur/add_surat_jalan";
+        
+        $this->load->model('Model_sales_order');
+        $this->load->model('Model_retur');
+        $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+        $data['jenis_barang_list'] = $this->Model_retur->jenis_barang_list()->result();
+        $data['kendaraan_list'] = $this->Model_retur->kendaraan_list()->result();
+        $this->load->view('layout', $data);
+    }
+
+    function fulfilment(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "retur/fulfilment";
+        
+        $this->load->model('Model_retur');
+        $data['customer_list'] = $this->Model_retur->customer_list()->result();
+        $data['jenis_barang_list'] = $this->Model_retur->jenis_barang_list()->result();
+        $data['jenis_packing_list'] = $this->Model_retur->jenis_packing_list()->result();
+        $this->load->view('layout', $data);
+    }
     
+    function get_retur(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_retur');
+        $data = $this->Model_retur->get_retur($id)->result();
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->no_retur;
+        } 
+        print form_dropdown('retur_id', $arr_so);
+    }
+
+    function fulfilment_list(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "retur/fulfilment_list";
+        $this->load->model('Model_retur');
+        $data['list_data'] = $this->Model_retur->fulfilment_list()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function save_fulfilment(){
+        $module_name = $this->uri->segment(1);
+        // $id = $this->uri->segment(3);
+        // if($id){
+        //     $group_id    = $this->session->userdata('group_id');        
+        //     if($group_id != 1){
+        //         $this->load->model('Model_modules');
+        //         $roles = $this->Model_modules->get_akses($module_name, $group_id);
+        //         $data['hak_akses'] = $roles;
+        //     }
+               
+        // }else{
+        //     redirect('index.php/Retur');
+        // }
+            $retur_id = $this->input->post('retur_id');
+            redirect('index.php/Retur/edit_fulfilment/'.$retur_id);
+    }
+
+    function edit_fulfilment(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "retur/edit_fulfilment";
+            $this->load->model('Model_retur');
+            $data['header'] = $this->Model_retur->show_header_retur($id)->row_array();  
+            
+            $data['myDetail'] = $this->Model_retur->load_detail($id)->result();
+            $data['jenis_barang_list'] = $this->Model_retur->jenis_barang_list()->result();
+
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/Retur');
+        }
+    }
+
+    function load_detail_fulfilment(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $no    = 1;
+        $netto = 0;
+        $this->load->model('Model_retur');
+        $jenis_barang_list = $this->Model_retur->jenis_barang_list()->result();
+         
+        $myDetail = $this->Model_retur->load_detail_fulfilment($id)->result(); 
+        foreach ($myDetail as $row){
+            $netto += $row->netto;
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<input type="hidden" id="id_jenis_barang" value="'.$row->jenis_barang_id.'" />';
+            $tabel .= '<td>'.$row->jenis_barang.'</td>';
+            $tabel .= '<td>'.$row->netto.'</td>';
+            $tabel .= '<td>'.$row->keterangan.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a></td>';
+            $tabel .= '</tr>';
+            $no++;
+        }
+        
+        // $tabel .= '<tr>';
+        // $tabel .= '<td style="text-align: right;" colspan="2">Total</td>';
+        // $tabel .= '<td name="sum_netto" id="sum_netto">'.$netto.'</td>';
+        // $tabel .= '<td></td>';
+        // $tabel .= '</tr>';
+
+        $tabel .= '<tr>';
+        $tabel .= '<td style="text-align:center">'.$no.'</td>';
+        $tabel .= '<td>';
+        $tabel .= '<select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" ';
+            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onchange="check(this.value);">';
+            $tabel .= '<option value=""></option>';
+            foreach ($jenis_barang_list as $value){
+                $tabel .= "<option value='".$value->id."'>".$value->jenis_barang."</option>";
+            }
+        $tabel .= '</select>';
+        $tabel .= '</td>';
+
+        $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline"/></td>';
+        
+        // $tabel .= '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen"> <i class="fa fa-dashboard"></i> Timbang </a></td>';
+        $tabel .= '<td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'; 
+        
+        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
+                . '<i class="fa fa-plus"></i> Tambah </a></td>';
+        $tabel .= '</tr>';
+       
+        
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function save_detail_fulfilment(){
+        $return_data = array();
+        $tgl_input = date("Y-m-d");
+        
+        if($this->db->insert('retur_fulfilment', array(
+            'retur_id'=>$this->input->post('id'),
+            'tanggal'=>$tgl_input,
+            'uom'=>'KG',
+            'jenis_barang_id'=>$this->input->post('jenis_barang_id'),
+            'netto'=>$this->input->post('netto'),
+            'keterangan'=>$this->input->post('line_remarks')
+        ))){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan detail item retur! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function delete_detail_fulfilment(){
+        $id = $this->input->post('id');
+        $return_data = array();
+        $this->db->where('id', $id);
+        if($this->db->delete('retur_fulfilment')){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menghapus detail item retur! Silahkan coba kembali";
+        }           
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
+
+    function update_fulfilment(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('SPB-FG', $tgl_input); 
+        
+        if($code){        
+            $data = array(
+                'no_spb'=> $code,
+                'tanggal'=> $tgl_input,
+                'keterangan'=>'RETUR FINISHGOOD',
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id
+            );
+
+            if($this->db->insert('t_spb_fg', $data)){
+                $spb_id = $this->db->insert_id();
+
+                $this->db->where('id', $this->input->post('id'));
+                $this->db->update('retur', array(
+                    'spb_id' => $spb_id
+                ));
+
+                $key = $this->db->query("select *from retur_fulfilment where retur_id = ".$this->input->post('id'))->result();
+
+                foreach ($key as $row) {
+                    $data_spb_detail = array(
+                        'tanggal' => date('Y-m-d'),
+                        't_spb_fg_id' => $spb_id,
+                        'jenis_barang_id' => $row->jenis_barang_id,
+                        'uom' => 'KG',
+                        'netto' => $row->netto,
+                        'keterangan' => $row->keterangan
+                    );
+                    $this->db->insert('t_spb_fg_detail', $data_spb_detail);
+                }
+
+                redirect('index.php/GudangFG/spb_list');  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data SPB FG gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/Retur/edit_fulfilment/'.$this->input->post('id'));  
+            }            
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data SPB FG gagal disimpan, penomoran belum disetup!');
+            redirect('index.phpRetur/edit_fulfilment/'.$this->input->post('id'));
+        }
+    }
     /*function print_po(){
         $id = $this->uri->segment(3);
         if($id){        

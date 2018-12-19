@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Retur 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Retur/add'); ?>"> Input Retur </a> 
+            <a href="<?php echo base_url('index.php/Retur/add_fulfilment'); ?>"> Input Retur Fulfilment </a> 
         </h5>          
     </div>
 </div>
@@ -23,17 +23,27 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/Retur/save'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/Retur/save_fulfilment'); ?>">                            
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            No. Retur <font color="#f00">*</font>
+                            Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_retur" name="no_retur" readonly="readonly"
+                            <select id="customer_id" name="customer_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." onchange="get_retur(this.value);" style="margin-bottom:5px">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($customer_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
+                                    }
+                                ?>
+                            </select>
+                            <!-- <input type="hidden" name="retur_id" id="retur_id"> -->
+                            <!-- <input type="text" id="no_retur" name="no_retur" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="Auto generate">
+                                value="Auto generate"> -->
                         </div>
                     </div>
                     <div class="row">
@@ -46,31 +56,6 @@
                                 value="<?php echo date('d-m-Y'); ?>">
                         </div>
                     </div>  
-                    <!-- <div class="row">
-                        <div class="col-md-4">
-                            Jenis Barang <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($jenis_barang_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->jenis_barang.'</option>';
-                                    }
-                                ?>
-                            </select>
-                        </div>
-                    </div> -->
-                    <div class="row">
-                        <div class="col-md-4">
-                            Catatan
-                        </div>
-                        <div class="col-md-8">
-                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px" readonly>BARANG RETUR</textarea>                           
-                        </div>
-                    </div>
                     <div class="row">&nbsp;</div>
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>
@@ -82,7 +67,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-4">
                             Customer <font color="#f00">*</font>
                         </div>
@@ -106,38 +91,21 @@
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px">
                         </div>
-                    </div>
+                    </div>-->
                     <div class="row">
                         <div class="col-md-4">
-                            Jenis Packing <font color="#f00">*</font>
+                            No. Retur
                         </div>
                         <div class="col-md-8">
-                            <select id="jenis_packing_id" name="jenis_packing_id" class="form-control myline select2me" 
+                            <select id="retur_id" name="retur_id" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                 <option value=""></option>
-                                <?php foreach ($jenis_packing_list as $row) {
-                                ?>
-                                <option value="<?php echo $row->id; ?>"><?php echo $row->jenis_packing; ?></option>
-                            <?php } ?>
                             </select>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Type Retur <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <select id="type_retur" name="type_retur" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value=""></option>
-                                <option value="0">Ganti Barang</option>
-                                <option value="1">Mengurangi Hutang</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Nama Penimbang
+                            PIC
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="nama_penimbang" name="nama_penimbang" 
@@ -167,29 +135,27 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#m_customer_id").val()) == ""){
+    }else if($.trim($("#customer_id").val()) == ""){
         $('#message').html("Silahkan pilih nama customer!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#jenis_packing_id").val()) == ""){
-        $('#message').html("Silahkan pilih jenis packing!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#type_retur").val()) == ""){
-        $('#message').html("Silahkan pilih type retur!");
+    }else if($.trim($("#retur_id").val()) == ""){
+        $('#message').html("Silahkan pilih nomor retur!");
         $('.alert-danger').show(); 
     }else{     
         $('#formku').submit(); 
     };
 };
 
-function get_contact(id){
+function get_retur(id){
     $.ajax({
         type: "POST",
-        url: "<?php echo base_url('index.php/Tolling/get_contact_name'); ?>",
-        data: {id: id},
-        cache: false,
+        url: "<?php echo base_url('index.php/Retur/get_retur'); ?>",
+        async: false,
+        data: "id="+id,
+        dataType: "html",
         success: function(result) {
-            $("#contact_person").val(result['pic']);
-        } 
+            $('#retur_id').html(result);
+        }
     });
 }
 </script>
