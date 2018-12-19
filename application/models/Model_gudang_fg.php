@@ -30,25 +30,26 @@ class Model_gudang_fg extends CI_Model{
     } 
 
     function bpb_list(){
-        $data = $this->db->query("Select bpbfg.*, jb.jenis_barang, pf.no_laporan_produksi as no_produksi, jenis_packing,
+        $data = $this->db->query("Select bpbfg.*, jb.jenis_barang, COALESCE(pf.no_laporan_produksi,r.no_retur) as no_produksi, COALESCE(pf.jenis_packing_id,r.jenis_packing_id) as jenis_packing_id,
                     (select count(id) from t_bpb_fg_detail tbfd where tbfd.t_bpb_fg_id = bpbfg.id)as jumlah_item,
                     usr.realname As pengirim
                 From t_bpb_fg bpbfg
                     Left join users usr On (bpbfg.created_by = usr.id)
                     Left join jenis_barang jb on (jb.id = bpbfg.jenis_barang_id)
-                    left join produksi_fg pf on (pf.id = bpbfg.produksi_fg_id)
-                    left join m_jenis_packing jp on (jp.id = pf.jenis_packing_id)
+                    left join produksi_fg pf on (substring(bpbfg.no_bpb_fg,1,7) = 'BPB-SDM') and (pf.id = bpbfg.produksi_fg_id)
+                    left join retur r on (substring(bpbfg.no_bpb_fg,1,7) = 'BPB-RTR') and (r.id = bpbfg.produksi_fg_id)
+                    left join m_jenis_packing jp on (jp.id = pf.jenis_packing_id) or (jp.id = pf.jenis_packing_id)
                 Order By bpbfg.id Desc");
         return $data;
     }
     
     function show_header_bpb($id){
-        $data = $this->db->query("Select tbf.*, pf.no_laporan_produksi, COALESCE(pf.jenis_packing_id,r.jenis_packing_id) as jenis_packing_id, jb.jenis_barang, jb.id as id_jenis_barang,
+        $data = $this->db->query("Select tbf.*, COALESCE(pf.no_laporan_produksi,r.no_retur) as no_laporan_produksi, COALESCE(pf.jenis_packing_id,r.jenis_packing_id) as jenis_packing_id, jb.jenis_barang, jb.id as id_jenis_barang,
                     usr.realname As pengirim
                     From t_bpb_fg tbf
                         Left Join users usr On (tbf.created_by = usr.id)
-                        left join produksi_fg pf on (tbf.produksi_fg_id != 0) and (pf.id = tbf.produksi_fg_id)
-                        left join retur r on (tbf.produksi_fg_id = 0)
+                        left join produksi_fg pf on (substring(tbf.no_bpb_fg,1,7) = 'BPB-SDM') and (pf.id = tbf.produksi_fg_id)
+                        left join retur r on (substring(tbf.no_bpb_fg,1,7) = 'BPB-RTR') and (r.id = tbf.produksi_fg_id)
                         left join m_jenis_packing mjp on (mjp.id = pf.jenis_packing_id) or (mjp.id = r.jenis_packing_id)
                         left join jenis_barang jb on (jb.id = tbf.jenis_barang_id)
                     Where tbf.id=".$id);

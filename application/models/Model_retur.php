@@ -14,6 +14,11 @@ class Model_retur extends CI_Model{
         return $data;
     }
 
+    function kendaraan_list(){
+        $data = $this->db->query("Select * From m_kendaraan Order By no_kendaraan");
+        return $data;
+    }
+
     function retur_list(){
         $data = $this->db->query("select r.*, c.nama_customer, c.pic, u.realname as penimbang, (select count(id) as jumlah_item from retur_detail rd where rd.retur_id = r.id) as jumlah_item
             from retur r
@@ -64,6 +69,14 @@ class Model_retur extends CI_Model{
                 Left Join jenis_barang jb On(rd.jenis_barang_id = jb.id) 
                 left join m_bobbin mb on (rd.bobbin_id = mb.id)
                 Where rd.retur_id=".$id);
+        return $data;
+    }
+
+    function load_detail_fulfilment($id){
+        $data = $this->db->query("select rf.*, jb.jenis_barang
+            from retur_fulfilment rf
+            left join jenis_barang jb on (rf.jenis_barang_id = jb.id)
+            where rf.retur_id = ".$id);
         return $data;
     }
     
@@ -133,7 +146,29 @@ class Model_retur extends CI_Model{
                 Order By rs.id Desc");
         return $data;
     }
+
+    function get_retur($id){
+        $data = $this->db->query("select *from retur where customer_id = ".$id." and status = 1 and jenis_retur = 0");
+        return $data;
+    }
+
+    function fulfilment_list(){
+        $data = $this->db->query("select r.*, tsf.no_spb, c.nama_customer, (select count(id) as jumlah_item from retur_fulfilment rf where rf.retur_id = r.id) as jumlah_item
+            from retur r
+            left join t_spb_fg tsf on (tsf.id = r.spb_id)
+            left join m_customers c on (c.id = r.customer_id)");
+        return $data;
+    }
     
+    function show_header_fulfilment($id){
+        $data = $this->db->query("select r.*, c.id as cust_id, c.nama_customer
+            from retur r
+            left join m_customers c on (r.customer_id = c.id)
+            where r.retur_id = ".$id);
+        return $data;
+    }
+
+
     /*function po_list(){
         $data = $this->db->query("Select po.*, 
                     spl.nama_supplier, spl.pic,
