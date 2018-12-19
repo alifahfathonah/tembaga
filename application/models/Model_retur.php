@@ -13,6 +13,15 @@ class Model_retur extends CI_Model{
                 Order By dtr.id Desc");
         return $data;
     }
+
+    function retur_list(){
+        $data = $this->db->query("select r.*, c.nama_customer, c.pic, u.realname as penimbang, (select count(id) as jumlah_item from retur_detail rd where rd.retur_id = r.id) as jumlah_item
+            from retur r
+            left join users u on (u.id = r.created_by)
+            left join m_jenis_packing jp on (jp.id = r.jenis_packing_id)
+            left join m_customers c on (c.id = r.customer_id)");
+        return $data;
+    }
     
     function customer_list(){
         $data = $this->db->query("Select * From m_customers Order By nama_customer");
@@ -20,10 +29,25 @@ class Model_retur extends CI_Model{
     }
     
     function jenis_barang_list(){
-        $data = $this->db->query("Select * From jenis_barang Order By jenis_barang");
+        $data = $this->db->query("Select * From jenis_barang where category = 'FG' Order By jenis_barang");
         return $data;
     }
     
+    function jenis_packing_list(){
+        $data = $this->db->query("select *from m_jenis_packing");
+        return $data;
+    }
+
+    function show_header_retur($id){
+        $data = $this->db->query("select r.*, u.realname as penimbang, jp.jenis_packing, c.nama_customer, c.pic
+            from retur r
+            left join users u on (u.id = r.created_by)
+            left join m_jenis_packing jp on (jp.id = r.jenis_packing_id)
+            left join m_customers c on (c.id = r.customer_id)
+            where r.id = ".$id);
+        return $data;
+    }
+
      function show_header_dtr($id){
         $data = $this->db->query("Select dtr.*, 
                     cust.nama_customer, cust.pic,
@@ -36,9 +60,10 @@ class Model_retur extends CI_Model{
     }
     
     function load_detail($id){
-        $data = $this->db->query("Select dtrd.*, ampas.nama_item, ampas.uom From dtr_detail dtrd 
-                Left Join ampas On(dtrd.ampas_id = ampas.id) 
-                Where dtrd.dtr_id=".$id);
+        $data = $this->db->query("Select rd.*, jb.jenis_barang, mb.nomor_bobbin From retur_detail rd 
+                Left Join jenis_barang jb On(rd.jenis_barang_id = jb.id) 
+                left join m_bobbin mb on (rd.bobbin_id = mb.id)
+                Where rd.retur_id=".$id);
         return $data;
     }
     

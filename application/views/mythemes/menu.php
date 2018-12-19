@@ -398,6 +398,12 @@
                     <ul class="sub-menu">
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/Retur">
+                                <i class="fa fa-file-text-o"></i>
+                                Terima Retur
+                            </a>
+                        </li>
+                        <!-- <li>
+                            <a href="<?php echo base_url(); ?>index.php/Retur">
                             <i class="fa fa-file-excel-o"></i>
                             DTR List </a>
                         </li>
@@ -410,7 +416,7 @@
                             <a href="<?php echo base_url(); ?>index.php/Retur/request_barang_list">
                             <i class="fa fa-file-text-o"></i>
                             Request Barang List </a>
-                        </li>
+                        </li> -->
                         <!--li>
                             <a href="<?php echo base_url(); ?>index.php/PengirimanAmpas/surat_jalan">
                             <i class="fa fa-truck"></i>
@@ -485,14 +491,14 @@
                             Bobbin Register </a>
                         </li>
                         <li>
-                            <a href="<?php echo base_url(); ?>index.php/GudangBobbin/bobbin_request">
-                            <i class="fa fa-file-word-o"></i>
-                            Bobbin Request </a>
-                        </li>
-                        <li>
                             <a href="<?php echo base_url(); ?>index.php/GudangBobbin/spb_list">
                             <i class="fa fa-file-word-o"></i>
                             SPB Bobbin </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/GudangBobbin/bobbin_request">
+                            <i class="fa fa-file-word-o"></i>
+                            Bobbin Request </a>
                         </li>
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/GudangBobbin/bobbin_terima">

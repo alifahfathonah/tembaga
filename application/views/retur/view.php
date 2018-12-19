@@ -2,12 +2,9 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
+            <i class="fa fa-angle-right"></i> Retur 
             <i class="fa fa-angle-right"></i>
-            <a href="<?php echo base_url('index.php/Retur'); ?>"> Retur </a> 
-            <i class="fa fa-angle-right"></i>
-            <a href="<?php echo base_url('index.php/Retur/request_barang_list'); ?>"> Request Barang Pengganti List </a> 
-            <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/PengirimanSample/view'); ?>"> View Request Barang Pengganti</a> 
+            <a href="<?php echo base_url('index.php/retur/view'); ?>"> View Retur</a> 
         </h5>          
     </div>
 </div>
@@ -60,17 +57,17 @@
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku">  
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
-                            No. Request <font color="#f00">*</font>
+                            No. Retur <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_request" name="no_request" readonly="readonly"
+                            <input type="text" id="no_retur" name="no_retur" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $myData['no_request']; ?>">
-
-                            <input type="hidden" id="id" name="id" value="<?php echo $myData['id']; ?>">
+                                value="<?php echo $header['no_retur']; ?>">
+                            
+                            <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -80,77 +77,88 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo date('d-m-Y', strtotime($myData['tanggal'])); ?>">
+                                value="<?php echo date('d-m-Y', strtotime($header['created_at'])); ?>">
                         </div>
                     </div>
+                    <!-- <div class="row">
+                        <div class="col-md-4">
+                            Jenis Barang <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['jenis_barang']; ?>">
+                        </div>
+                    </div> -->
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">
-                            <textarea id="remarks" name="remarks" rows="3" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px"><?php echo $myData['remarks']; ?></textarea>
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
+                                class="form-control myline" style="margin-bottom:5px" readonly><?php echo  $header['remarks']; ?></textarea>                           
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nama Penimbang
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $header['penimbang']; ?>">
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
-
+                    
                 </div>
                 <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-5">
+                <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            Customer
+                            Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="customer" name="customer" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $myData['nama_customer']; ?>">
+                            <input type="text" id="m_customer_id" name="m_customer_id" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['nama_customer']; ?>">
                         </div>
-                    </div> 
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Contact Person
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="pic" name="pic" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $myData['pic']; ?>">
+                            <input type="text" id="contact_person" name="contact_person" readonly="readonly"
+                                   class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['pic']; ?>">
                         </div>
-                    </div> 
+                    </div>                    
                     <div class="row">
                         <div class="col-md-4">
-                            Jenis Barang
+                            Jenis Packing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $myData['jenis_barang']; ?>">
-                        </div>
-                    </div>                     
-                    <?php
-                        if($myData['status']=="9"){
-                    ?>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Rejected By
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="rejected_by" name="rejected_by" readonly="readonly"
-                                   class="form-control myline" style="margin-bottom:5px" value="<?php echo $myData['reject_name']; ?>">
+                            <input type="text" id="jenis_packing_id" name="jenis_packing_id" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['jenis_packing']; ?>">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Reject Remarks
+                            Type Retur <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <textarea id="reject_remarks" name="reject_remarks" rows="3" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px"><?php echo $myData['reject_remarks']; ?></textarea>
+                            <?php if ($header['jenis_retur'] == 0){ ?>
+                            <input type="text" id="type_retur" name="type_retur" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="Ganti Barang">
+                            <?php } else if ($header['jenis_retur'] == 1){ ?>
+                            <input type="text" id="type_retur" name="type_retur" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="Ganti Voucher">
+                            <?php } ?>
                         </div>
                     </div>
-                    <?php
-                        }
-                    ?>
                 </div>              
             </div>
             <div class="row">
@@ -160,21 +168,27 @@
                             <thead>
                                 <th style="width:40px">No</th>
                                 <th>Nama Item</th>
-                                <th>Unit of Measure</th>
-                                <th>Jumlah</th>
+                                <th>Nomor Packing</th>
+                                <th>Bruto</th>
+                                <th>Netto</th>
+                                <th>No. Bobbin / Keranjang</th>
                                 <th>Keterangan</th>
                             </thead>
                             <tbody>
                             <?php
                                 $no = 1;
-                                foreach ($myDetail as $row){
-                                    echo '<tr>';
-                                    echo '<td style="text-align:center">'.$no.'</td>';
-                                    echo '<td>'.$row->nama_item.'</td>';
-                                    echo '<td>'.$row->uom.'</td>';
-                                    echo '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
-                                    echo '<td>'.$row->line_remarks.'</td>';
-                                    echo '</tr>';
+                                foreach ($myDetail as $row){ 
+                                    ?>
+                                <tr>
+                                    <td style="text-align:center"><?php echo $no; ?></td>
+                                    <td><?php echo $row->jenis_barang; ?></td>
+                                    <td><?php echo $row->no_packing; ?></td>
+                                    <td style="text-align:right"><?php echo number_format($row->bruto,0,',','.'); ?></td>
+                                    <td style="text-align:right"><?php echo number_format($row->netto,0,',','.'); ?></td>
+                                    <td><?php echo $row->nomor_bobbin; ?></td>
+                                    <td><?php echo $row->line_remarks; ?></td>
+                                </tr>
+            <?php
                                     $no++;
                                 }
                             ?>
@@ -187,17 +201,17 @@
             <div class="row">
                 <div class="col-md-12">
                     <?php
-                        if( ($group_id==1 || $hak_akses['approve']==1) && $myData['status']=="0"){
+                        if( ($group_id==1 || $hak_akses['approve']==1) && $header['status']=="0"){
                             echo '<a href="javascript:;" class="btn green" onclick="approveData();"> '
                                 .'<i class="fa fa-check"></i> Approve </a> ';
                         }
-                        if( ($group_id==1 || $hak_akses['reject']==1) && $myData['status']=="0"){
+                        if( ($group_id==1 || $hak_akses['reject']==1) && $header['status']=="0"){
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
                         }
                     ?>
 
-                    <a href="<?php echo base_url('index.php/Retur/request_barang_list'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/Retur/'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -216,7 +230,7 @@
 </div> 
 <script>
 function approveData(){
-    var r=confirm("Anda yakin meng-approve permintaan barang ini?");
+    var r=confirm("Anda yakin meng-approve permintaan retur barang ini?");
     if (r==true){
         $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Retur/approve");    
         $('#formku').submit(); 
@@ -224,13 +238,13 @@ function approveData(){
 };
 
 function showRejectBox(){
-    var r=confirm("Anda yakin me-reject permintaan barang ini?");
+    var r=confirm("Anda yakin me-reject permintaan retur barang ini?");
     if (r==true){
         $('#header_id').val($('#id').val());
         $('#message').html("");
         $('.alert-danger').hide();
         
-        $("#myModal").find('.modal-title').text('Reject Permintaan Barang');
+        $("#myModal").find('.modal-title').text('Reject Permintaan Retur Barang');
         $("#myModal").modal('show',{backdrop: 'true'}); 
     }
 }
