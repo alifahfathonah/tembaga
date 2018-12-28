@@ -1009,6 +1009,7 @@ class GudangFG extends CI_Controller{
             $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
             $this->db->insert('dtr_detail', array(
                         'dtr_id'=>$dtr_id,
+                        'spb_id'=>$id_spb,
                         //sisa WIP id 8
                         'rongsok_id' => 8,
                         'qty'=> 0,
@@ -1016,7 +1017,6 @@ class GudangFG extends CI_Controller{
                         'no_pallete'=>date("dmyHis").$rand,
                         'line_remarks'=>$this->input->post('keterangan')
                     ));
-                   
                
             if($this->db->trans_complete()){
                 redirect('index.php/GudangFG/');  

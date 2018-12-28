@@ -101,8 +101,9 @@ produksi ingot:
 create produksi, setelah scan nomor pallete ubah jadi save jangan langsung approve
 
 rongsok:
-create dtr, hapus jumlah po / qty
-matching berdasarkan berat / qty
+create dtr, hapus jumlah po / qty (finish)
+matching berdasarkan berat / qty (finish)
+#matching dtr update customer_id pada dtr
 
 bobbin:
 bobbin register edit, pemilik dan tipe disable
@@ -130,3 +131,6 @@ matching_pmb, lihat daftar voucher ditampilkan cust, dan tambahkan nama cust
 
 voucher cost:
 input voucher, grouping by cust, supp, dll. tambah bank / giro
+#create voucher mana aja update customer_id pada tabel voucher
+
+#spb rongsok/ingot benerin
