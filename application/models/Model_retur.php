@@ -27,6 +27,16 @@ class Model_retur extends CI_Model{
             left join m_customers c on (c.id = r.customer_id)");
         return $data;
     }
+
+    function get_retur_list($id){
+        $data = $this->db->query("select r.*, c.nama_customer, c.pic, u.realname as penimbang, (select count(id) as jumlah_item from retur_detail rd where rd.retur_id = r.id) as jumlah_item
+            from retur r
+            left join users u on (u.id = r.created_by)
+            left join m_jenis_packing jp on (jp.id = r.jenis_packing_id)
+            left join m_customers c on (c.id = r.customer_id)
+            where r.customer_id = ".$id." and status = 1");
+        return $data;
+    }
     
     function customer_list(){
         $data = $this->db->query("Select * From m_customers Order By nama_customer");

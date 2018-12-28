@@ -83,3 +83,50 @@ Finance/matching_pmb/ Buka tab baru (v)
 Ingot/hasil_produksi2 Ada serbuk (v sementara) (belum tau tipe serbuknya apa)
 GudangWIP/proses_wip Ada Serbuk -> Penjelasan Ditambah dikiri (Prosesnya Belum Ada) (v)
 GudangFG/bpb_list -> Print belum (v)
+
+
+note uat 21 desember 2018
+sparepart:
+bisa edit po sparepart
+voucher tambah bank apa / giro
+voucher bisa dibuat walaupun belum terima semua lpb
+
+voucher list:
+print
+mengetahui disetujui pembukuan kassa keuangan diterima oleh
+bisa edit voucher, giro, no. check, & bank. bila diedit harus diisi remarks
+tambah terbilang auto generate
+
+produksi ingot:
+create produksi, setelah scan nomor pallete ubah jadi save jangan langsung approve
+
+rongsok:
+create dtr, hapus jumlah po / qty
+matching berdasarkan berat / qty
+
+bobbin:
+bobbin register edit, pemilik dan tipe disable
+status bobbin 1: kosong, 2: siap isi (diproduksi), 3: customer, 4: udah isi siap kirim ke cs (cancel)
+add spb bobbin, nama pemohon direvisi sesuai form pemohon.
+tracking bobbin dari sisi bobbin
+no bobbin diganti dengan nomor saja
+
+gudang fg:
+proses bpb, no. produksi bukan no. produksi ingot
+proses bpb, tambah scan untuk pembanding dengan no. produksi yang datang sebelum diapprove seperti spb fg
+gudang fg list no packing tgl_ukuranbobbin_kdbarang_nourut, ex: bcw 0,10 mm hard menjadi  181221 M 0100 0001
+view_spb pemenuhan spb tampilkan seluruh nama barang yang stoknya ada
+nama item ditukar dengan nomor packing
+
+sales order list
+status disesuaikan dengan yang dikirim
+surat jalan tambahkan alias
+
+db:
+nambah field di jenis barang, kode barang
+
+finance:
+matching_pmb, lihat daftar voucher ditampilkan cust, dan tambahkan nama cust
+
+voucher cost:
+input voucher, grouping by cust, supp, dll. tambah bank / giro

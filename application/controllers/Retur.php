@@ -716,7 +716,19 @@ class Retur extends CI_Controller{
         $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
         $data['jenis_barang_list'] = $this->Model_retur->jenis_barang_list()->result();
         $data['kendaraan_list'] = $this->Model_retur->kendaraan_list()->result();
+        // $data['retur_list'] = $this->Model_retur->retur_list_2()->result();
         $this->load->view('layout', $data);
+    }
+
+    function get_retur_list(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_retur');
+        $data = $this->Model_retur->get_retur_list($id)->result();
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->no_retur;
+        } 
+        print form_dropdown('retur_id', $arr_so);
     }
 
     function fulfilment(){
