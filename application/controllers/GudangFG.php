@@ -949,7 +949,7 @@ class GudangFG extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('SPB-WIP', $tgl_input); 
+        $code = $this->Model_m_numberings->getNumbering('SPB-FG', $tgl_input); 
         
         if($code){     
             $this->db->trans_start();
@@ -969,11 +969,25 @@ class GudangFG extends CI_Controller{
                 't_spb_fg_id' => $id_spb,
                 'tanggal' => $tgl_input,
                 'jenis_barang_id'=>$this->input->post('id_jenis_barang'),
-                'no_packing'=>$this->input->post('no_packing'),
+                'uom'=>$this->input->post('uom'),
+                //'no_packing'=>$this->input->post('no_packing'),
                 'netto' => $this->input->post('netto'),
                 'keterangan'=>$this->input->post('keterangan')
                 );
             $this->db->insert('t_spb_fg_detail',$data_detail);
+            $id_spb_detail = $this->db->insert_id();
+
+            $data_gudang = array(
+                //'flag_result' => 1,
+                't_spb_fg_id'=> $id_spb,
+                't_spb_fg_detail_id'=> $id_spb_detail,
+                'nomor_SPB'=> $code,
+                'keterangan'=> $this->input->post('keterangan'),
+                'modified_date'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+            $this->db->where('id', $this->input->post('id_gudang'));
+            $this->db->update('t_gudang_fg', $data_gudang);
 
             #insert DTR ke gudang rongsok
             $code_DTR = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
@@ -995,14 +1009,14 @@ class GudangFG extends CI_Controller{
             $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
             $this->db->insert('dtr_detail', array(
                         'dtr_id'=>$dtr_id,
+                        'spb_id'=>$id_spb,
                         //sisa WIP id 8
                         'rongsok_id' => 8,
-                        'qty'=>$this->input->post('qty'),
+                        'qty'=> 0,
                         'netto'=>$this->input->post('netto'),
                         'no_pallete'=>date("dmyHis").$rand,
                         'line_remarks'=>$this->input->post('keterangan')
                     ));
-                   
                
             if($this->db->trans_complete()){
                 redirect('index.php/GudangFG/');  

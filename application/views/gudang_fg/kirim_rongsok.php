@@ -80,6 +80,7 @@
                             <thead>
                                 <th>No</th>
                                 <th>Nama Item FG</th>
+                                <th>UOM</th>
                                 <th>Bruto</th>
                                 <th>Netto</th>
                                 <th>No Packing</th>
@@ -90,11 +91,12 @@
                                 <tr>
                                     <td>1<input type="hidden" name="id_gudang" value="<?=$barang['id'];?>"></td>
                                     <td><?=$barang['jenis_barang'];?><input type="hidden" name="id_jenis_barang" value="<?=$barang['id_jenis_barang'];?>"></td>
+                                    <td><?=$barang['uom'];?><input type="hidden" name="uom" value="<?=$barang['uom'];?>"></td>
                                     <td><?=$barang['bruto'];?><input type="hidden" name="bruto" value="<?=$barang['bruto'];?>"></td>
                                     <td><?=$barang['netto'];?><input type="hidden" name="netto" value="<?=$barang['netto'];?>"></td>
                                     <td><?=$barang['no_packing'];?><input type="hidden" name="no_packing" value="<?=$barang['no_packing'];?>"></td>
                                     <td><?=$barang['nomor_bobbin'];?><input type="hidden" name="nomor_bobbin" value="<?=$barang['nomor_bobbin'];?>"></td>
-                                    <td><?=$barang['keterangan'];?><input type="hidden" name="keterangan" value="<?=$barang['id'];?>"></td>
+                                    <td><?=$barang['keterangan'];?><input type="hidden" name="keterangan"></td>
                                 </tr>
                             </tbody>
                         </table>

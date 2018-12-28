@@ -546,7 +546,7 @@
 
                 <li <?php if($module_name=="Finance") echo 'class="start active open"'; ?>>
                     <a href="javascript:;">
-                    <i class="fa fa-briefcase"></i>
+                    <i class="fa fa-money"></i>
                     <span class="title">FINANCE</span>
                     <span class="arrow "></span>
                     </a>
@@ -558,8 +558,8 @@
                         </li>
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/Finance/pembayaran">
-                            <i class="fa fa-file-word-o"></i>
-                            Pembayaran </a>
+                            <i class="fa fa-file-o"></i>
+                            Matching Pembayaran </a>
                         </li>
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/Finance/invoice">
@@ -567,8 +567,13 @@
                             Invoice </a>
                         </li>
                         <li>
+                            <a href="<?php echo base_url(); ?>index.php/Finance/matching">
+                            <i class="fa fa-files-o"></i>
+                            Matching Invoice </a>
+                        </li>
+                        <li>
                             <a href="<?php echo base_url(); ?>index.php/Finance/voucher_list">
-                            <i class="fa fa-file-word-o"></i>
+                            <i class="fa fa-file-excel-o"></i>
                             Voucher List </a>
                         </li>
                     </ul>

@@ -126,7 +126,6 @@
                                 </th>
                                 <th>Nama Item Rongsok</th>
                                 <th>UOM</th>
-                                <th>Jumlah PO</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Berat Palette</th>
                                 <th>Netto (Kg)</th>

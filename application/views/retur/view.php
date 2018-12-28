@@ -211,7 +211,7 @@
                         }
                     ?>
 
-                    <a href="<?php echo base_url('index.php/Retur/'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/Retur/fulfilment_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>

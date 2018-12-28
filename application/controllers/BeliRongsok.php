@@ -268,9 +268,7 @@ class BeliRongsok extends CI_Controller{
         $tabel .= '</select>';
         $tabel .= '</td>';
         $tabel .= '<td><input type="text" id="uom_'.$no.'" name="myDetails['.$no.'][uom]" class="form-control myline" '
-                    .' readonly="readonly"></td>';
-        $tabel .= '<td><input type="text" id="qty_'.$no.'" name="myDetails['.$no.'][qty]" class="form-control myline"></td>';
-        
+                    .' readonly="readonly"></td>';        
         $tabel .= '<td><input type="text" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
                     . 'class="form-control myline" value="0" maxlength="10" '
                     . 'onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>';

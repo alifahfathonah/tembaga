@@ -11,7 +11,7 @@
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>Kepada</td>
-                            <td>: <?php echo $header['nama_customer']; ?></td>
+                            <td>: <?php echo $header['alias']; ?></td>
                         </tr>
                         <tr>
                             <td>UP.</td>
