@@ -110,7 +110,7 @@
                             No. Retur <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="sales_order_id" name="sales_order_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_jenis_barang(this.value);">
+                            <select id="retur_id" name="retur_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                 <option value=""></option>
                             </select>
                         </div>
@@ -242,13 +242,13 @@ function get_alamat(id){
     });
     
     $.ajax({
-        url: "<?php echo base_url('index.php/SalesOrder/get_so_list'); ?>",
+        url: "<?php echo base_url('index.php/Retur/get_retur_list'); ?>",
         async: false,
         type: "POST",
         data: "id="+id,
         dataType: "html",
         success: function(result) {
-            $('#sales_order_id').html(result);
+            $('#retur_id').html(result);
         }
     })
 }
