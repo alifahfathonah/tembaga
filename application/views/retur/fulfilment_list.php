@@ -29,8 +29,8 @@
                 <div class="tools">    
                 <?php
                     if( ($group_id==1)||($hak_akses['add']==1) ){
-                        echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/Retur/add').'"> '
-                        .'<i class="fa fa-plus"></i> Input Retur </a>';
+                        echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/Retur/fulfilment').'"> '
+                        .'<i class="fa fa-plus"></i> Input Fulfilment </a>';
                     }
                 ?>                    
                 </div>

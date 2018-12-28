@@ -546,7 +546,7 @@
 
                 <li <?php if($module_name=="Finance") echo 'class="start active open"'; ?>>
                     <a href="javascript:;">
-                    <i class="fa fa-briefcase"></i>
+                    <i class="fa fa-money"></i>
                     <span class="title">FINANCE</span>
                     <span class="arrow "></span>
                     </a>

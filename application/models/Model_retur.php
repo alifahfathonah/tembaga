@@ -156,7 +156,8 @@ class Model_retur extends CI_Model{
         $data = $this->db->query("select r.*, tsf.no_spb, c.nama_customer, (select count(id) as jumlah_item from retur_fulfilment rf where rf.retur_id = r.id) as jumlah_item
             from retur r
             left join t_spb_fg tsf on (tsf.id = r.spb_id)
-            left join m_customers c on (c.id = r.customer_id)");
+            left join m_customers c on (c.id = r.customer_id)
+            where r.spb_id != 0");
         return $data;
     }
     

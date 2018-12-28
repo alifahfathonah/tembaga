@@ -11,7 +11,7 @@
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12">
-        <h3 align="center"><b> Konfirmasi Permintaan SPB FG</b></h3>
+        <h3 align="center"><b> Detail Invoice</b></h3>
         <hr class="divider" />
         <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog">
