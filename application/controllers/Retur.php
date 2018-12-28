@@ -1110,7 +1110,7 @@ class Retur extends CI_Controller{
         $data['jenis_barang_list'] = $this->Model_tolling_titipan->jenis_barang_list()->result();
         $data['kendaraan_list'] = $this->Model_tolling_titipan->kendaraan_list()->result();
         $this->load->view('layout', $data);
-    }
+    }*/
     
     function save_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
@@ -1124,27 +1124,25 @@ class Retur extends CI_Controller{
             $data = array(
                 'no_surat_jalan'=> $code,
                 'tanggal'=> $tgl_input,
+                'retur_id' => $this->input->post('retur_id'),
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'm_customer_id'=>$this->input->post('m_customer_id'),
-                'po_id'=>$this->input->post('po_id'),
                 'm_kendaraan_id'=>$this->input->post('m_kendaraan_id'),
                 'supir'=>$this->input->post('supir'),
                 'remarks'=>$this->input->post('remarks'),
-                'created'=> $tanggal,
-                'created_by'=> $user_id,
-                'modified'=> $tanggal,
-                'modified_by'=> $user_id
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id
             );
 
-            if($this->db->insert('surat_jalan', $data)){
-                redirect('index.php/PengirimanAmpas/edit_surat_jalan/'.$this->db->insert_id());  
+            if($this->db->insert('t_surat_jalan', $data)){
+                redirect('index.php/Retur/edit_surat_jalan/'.$this->db->insert_id());  
             }else{
                 $this->session->set_flashdata('flash_msg', 'Data surat jalan gagal disimpan, silahkan dicoba kembali!');
-                redirect('index.php/PengirimanAmpas/surat_jalan');  
+                redirect('index.php/Retur/add_surat_jalan');  
             }            
         }else{
             $this->session->set_flashdata('flash_msg', 'Data surat jalan gagal disimpan, penomoran belum disetup!');
-            redirect('index.php/PengirimanAmpas/surat_jalan');
+            redirect('index.php/Retur/add_surat_jalan');
         }
     }
     
@@ -1160,22 +1158,22 @@ class Retur extends CI_Controller{
             }
             $data['group_id']  = $group_id;
 
-            $data['content']= "pengiriman_ampas/edit_surat_jalan";
-            $this->load->model('Model_pengiriman_ampas');
-            $data['header'] = $this->Model_pengiriman_ampas->show_header_sj($id)->row_array();              
-            $data['po_list'] = $this->Model_pengiriman_ampas->get_po_list()->result();
+            $data['content']= "retur/edit_surat_jalan";
+            $this->load->model('Model_retur');
+            $data['header'] = $this->Model_retur->show_header_sj($id)->row_array();              
+            // $data['po_list'] = $this->Model_pengiriman_ampas->get_po_list()->result();
         
             $this->load->model('Model_tolling_titipan');            
             $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
 
-            $data['jenis_barang_list'] = $this->Model_tolling_titipan->jenis_barang_list()->result();
+            // $data['jenis_barang_list'] = $this->Model_tolling_titipan->jenis_barang_list()->result();
             $data['kendaraan_list'] = $this->Model_tolling_titipan->kendaraan_list()->result();
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/PengirimanAmpas/surat_jalan');
         }
     }
-    
+    /*
     function load_detail_surat_jalan(){
         $id = $this->input->post('id');
         

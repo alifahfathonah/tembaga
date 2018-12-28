@@ -25,7 +25,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/SalesOrder/save_surat_jalan'); ?>">
+              id="formku" action="<?php echo base_url('index.php/Retur/save_surat_jalan'); ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
@@ -64,7 +64,7 @@
                             </select>
                         </div>
                     </div> -->
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-4">
                             Jenis Barang <font color="#f00">*</font>
                         </div>
@@ -79,7 +79,7 @@
                                 ?>
                             </select>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row">
                         <div class="col-md-4">
                             Customer <font color="#f00">*</font>
@@ -132,7 +132,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" name="jenis_barang" id="jenis_barang" class="form-control myline" 
-                                   style="margin-bottom:5px" readonly="readonly">
+                                   style="margin-bottom:5px" readonly="readonly" value="RETUR">
                         </div>
                     </div>                   
                     <div class="row">
@@ -201,14 +201,8 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#jenis_barang").val()) == ""){
-        $('#message').html("Silahkan pilih jenis barang!");
-        $('.alert-danger').show(); 
     }else if($.trim($("#m_customer_id").val()) == ""){
         $('#message').html("Silahkan pilih customer");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#sales_order_id").val()) == ""){
-        $('#message').html("Silahkan pilih no. sales order");
         $('.alert-danger').show(); 
     }else if($.trim($("#m_kendaraan_id").val()) == ""){
         $('#message').html("Silahkan pilih kendaraan");

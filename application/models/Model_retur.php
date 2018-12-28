@@ -238,24 +238,24 @@ class Model_retur extends CI_Model{
                     Where po.jenis_po='Ampas'");
         return $data;
     }
-    
+    */
     function show_header_sj($id){
-        $data = $this->db->query("Select sj.*, 
+        $data = $this->db->query("Select tsj.*, 
                     cust.nama_customer, cust.alamat,
-                    po.no_po,
+                    r.no_retur,
                     kdr.no_kendaraan,
                     tkdr.type_kendaraan,
                     usr.realname
-                From surat_jalan sj
-                    Left Join m_customers cust On (sj.m_customer_id = cust.id)
-                    Left Join po On (sj.po_id = po.id) 
-                    Left Join m_kendaraan kdr On (sj.m_kendaraan_id = kdr.id) 
+                From t_surat_jalan tsj
+                    Left Join m_customers cust On (tsj.m_customer_id = cust.id)
+                    Left Join retur r On (tsj.retur_id = r.id) 
+                    Left Join m_kendaraan kdr On (tsj.m_kendaraan_id = kdr.id) 
                     Left Join m_type_kendaraan tkdr On (kdr.m_type_kendaraan_id = tkdr.id) 
-                    Left Join users usr On (sj.created_by = usr.id)
-                    Where sj.id=".$id);
+                    Left Join users usr On (tsj.created_by = usr.id)
+                    Where tsj.id=".$id);
         return $data;
     }
-    
+    /*
     function load_detail_surat_jalan($id){
         $data = $this->db->query("Select sjd.*, ampas.nama_item, ampas.uom,
                     pa.no_produksi                    
