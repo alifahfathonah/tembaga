@@ -129,7 +129,7 @@ class SalesOrder extends CI_Controller{
             $tabel .= '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->bruto,0,',','.').'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
-            }else if($jenis == 'FG'){
+            }else if($jenis == 'FG' || $jenis == 'AMPAS'){
             $tabel .= '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
             }else{
             $tabel .= '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
@@ -213,6 +213,17 @@ class SalesOrder extends CI_Controller{
                     'created_by'=> $user_id
                 );
                 $this->db->insert('spb', $dataC);
+                $insert_id = $this->db->insert_id();
+            }else if($category == 'AMPAS'){
+                $num = $this->Model_m_numberings->getNumbering('SPB-APS', $tgl_input);
+                $dataC = array(
+                    'no_spb_ampas' => $num,
+                    'tanggal' => $tgl_input,
+                    'keterangan' => 'SALES ORDER AMPAS',
+                    'created_by' => $user_id,
+                    'created_at' => $tanggal
+                );
+                $this->db->insert('t_spb_ampas', $dataC);
                 $insert_id = $this->db->insert_id();
             }
 
@@ -302,6 +313,17 @@ class SalesOrder extends CI_Controller{
             );
             $this->db->insert('t_spb_fg_detail', $dataC);
             $insert_id = $this->db->insert_id();
+        }else if($jenis == 'AMPAS'){
+            $dataC = array(
+                't_spb_ampas_id' => $spb,
+                'tanggal' => $tanggal,
+                'jenis_barang_id' => $this->input->post('barang_id'),
+                'uom' => $this->input->post('uom'),
+                'netto' => $this->input->post('qty'),
+                'keterangan' => 'SALES ORDER'
+            );
+            $this->db->insert('t_spb_ampas_detail', $dataC);
+            $insert_id = $this->db->insert_id();
         }else if($jenis == 'WIP'){
             $dataC = array(
                 't_spb_wip_id'=>$spb,
@@ -362,6 +384,9 @@ class SalesOrder extends CI_Controller{
         }else if($jenis == 'RONGSOK'){
             $this->db->where('id',$no_spb->no_spb_detail);
             $this->db->delete('spb_detail');
+        }else if($jenis == 'AMPAS'){
+            $this->db->where('id',$no_spb->no_spb_detail);
+            $this->db->delete('t_spb_ampas_detail');
         }
 
         $return_data = array();
@@ -735,18 +760,15 @@ class SalesOrder extends CI_Controller{
 
         $data = array(
                 'tanggal'=> $tgl_input,
-                'jenis_barang'=>$this->input->post('jenis_barang'),
-                'm_customer_id'=>$this->input->post('id_customer'),
-                'sales_order_id'=>$this->input->post('sales_order_id'),
                 'm_kendaraan_id'=>$this->input->post('m_kendaraan_id'),
                 'supir'=>$this->input->post('supir'),
                 'remarks'=>$this->input->post('remarks'),
-                'modified'=> $tanggal,
+                'modified_at'=> $tanggal,
                 'modified_by'=> $user_id
             );
         
         $this->db->where('id', $this->input->post('id'));
-        $this->db->update('surat_jalan', $data);
+        $this->db->update('t_surat_jalan', $data);
 
         
         $this->session->set_flashdata('flash_msg', 'Data surat jalan berhasil disimpan');

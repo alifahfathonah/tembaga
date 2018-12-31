@@ -829,7 +829,7 @@ class BeliSparePart extends CI_Controller{
 
             $this->load->view('beli_spare_part/print_voucher', $data);   
         }else{
-            redirect('index.php/Finance');
+            redirect('index.php/BeliSparePart');
         }
     }
 

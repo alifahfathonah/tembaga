@@ -47,7 +47,6 @@
                     <th>Jenis Barang</th>                     
                     <th>Customer</th> 
                     <th>Alamat</th> 
-                    <th>No. Sales Order</th>
                     <th>Jumlah<br>Item</th>
                     <th>Kendaraan</th>
                     <th>Supir</th>
@@ -67,7 +66,6 @@
                         <td><?php echo $data->jenis_barang; ?></td>
                         <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->alamat; ?></td>  
-                        <td><?php echo $data->no_sales_order; ?></td>  
                         <td><?php echo $data->jumlah_item; ?></td>
                         <td><?php echo $data->no_kendaraan; ?></td>                         
                         <td><?php echo $data->supir; ?></td>

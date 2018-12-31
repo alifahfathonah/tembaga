@@ -24,7 +24,7 @@
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-beer"></i>Retur List
+                    <i class="fa fa-beer"></i>Retur Fulfilment List
                 </div>  
                 <div class="tools">    
                 <?php
@@ -46,6 +46,8 @@
                     <th>No. SPB</th>
                     <th>Customer</th>
                     <th>Jumlah <br>Items</th>
+                    <th style="text-align:center">Status <br>Surat Jalan</th>
+                    <th style="text-align:center">Status <br>SPB</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -62,6 +64,24 @@
                         <td><?php echo $data->no_spb ?></td>
                         <td><?php echo $data->nama_customer; ?></td>                       
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
+                        <td style="text-align:center">
+                            <?php 
+                               echo (($data->flag_sj==1)? '<div style="background-color:green; padding:3px; color:white; text-align: center;">Sudah Dikirim Semua</div>':'<div style="background-color:darkkhaki; padding:3px; text-align: center;">Belum Dikirim Semua</div>');
+                            ?>
+                        </td>
+                        <td style="text-align:center">
+                            <?php
+                                if($data->status_spb==0){
+                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Approval</div>';
+                                }else if($data->status_spb==1){
+                                    echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
+                                }else if($data->status_spb==2){
+                                    echo '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
+                                }else if($data->status_spb==9){
+                                    echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
+                                }
+                            ?>
+                        </td>
                         <td style="text-align:center">
                             <?php
                                 if( ($group_id==1 || $hak_akses['view_retur']==1)/* && $data->ready_to_ttr>0*/){

@@ -154,7 +154,7 @@
                                 <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
                         <?php
-                        } else if($header['jenis_barang'] == 'FG'){
+                        } else if($header['jenis_barang'] == 'FG' || $header['jenis_barang'] == 'AMPAS'){
                         ?>
                                 <th>Netto (Kg)</th>
                         <?php
@@ -187,7 +187,7 @@
                     echo '<td><input type="text" id="qty" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="5" value="0" onkeyup="getComa(this.value, this.id);"></td>'.
                         '<td><input type="text" id="bruto" name="bruto" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0"></td>'.
                         '<td><input type="text" id="netto" name="netto" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0"></td>';  
-        } else if($header['jenis_barang'] == 'FG') {
+        } else if($header['jenis_barang'] == 'FG' || $header['jenis_barang'] == 'AMPAS') {
                     echo '<input type="hidden" id="qty" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="1">'.
                         '<input type="hidden" id="bruto" name="bruto" class="form-control myline" maxlength="10" value="0">'.
                         '<td><input type="text" id="netto" name="netto" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';
@@ -241,7 +241,7 @@ function getComa(value, id){
 }
 
 function hitungSubTotal(){
-    if($('#jenis_barang').val() == 'FG'){
+    if($('#jenis_barang').val() == 'FG' || $('#jenis_barang').val() == 'AMPAS'){
         harga = $('#harga').val().toString().replace(/\./g, "");
         netto = $('#netto').val().toString().replace(/\./g, "");
         total_harga = Number(harga)* Number(netto);
