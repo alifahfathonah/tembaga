@@ -169,7 +169,9 @@ class Model_beli_sparepart extends CI_Model{
     function get_data_pembayaran($id){
         $data = $this->db->query("Select po.*,
                     supplier.nama_supplier,
-                    (Select Sum(po_detail.total_amount) From po_detail Where po_detail.po_id = po.id)As nilai_po,
+                    (Select sum((select sum(pd.amount*ld.qty) from po_detail pd where ld.po_detail_id = pd.id)) From lpb
+                    inner join lpb_detail ld on ld.lpb_id = lpb.id
+                    Where lpb.po_id = po.id group by lpb.po_id)As nilai_po,
                     (Select Sum(voucher.amount) From voucher Where voucher.po_id = po.id And jenis_voucher='Parsial')As jumlah_dibayar
                 From po
                     Left Join supplier On (po.supplier_id = supplier.id)

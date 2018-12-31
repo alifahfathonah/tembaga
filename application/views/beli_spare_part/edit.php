@@ -104,7 +104,7 @@
                         <tr>
                             <td style="text-align:center">+</td>
                             <td>
-                            <select id="sparepart_id" name="sparepart_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
+                            <select id="sparepart_id" name="sparepart_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_a(this.value);">
                             <option value=""></option>
                                     <?php
                                     foreach ($list_sparepart as $value){
@@ -182,15 +182,26 @@ function loadDetail(id){
     });
 }
 
-function get_uom(id){
+function get_uom_a(id){
     $.ajax({
         url: "<?php echo base_url('index.php/BeliSparePart/get_uom'); ?>",
-        async: false,
         type: "POST",
         data: "id="+id,
         dataType: "json",
         success: function(result) {
             $('#uom').val(result['uom']);
+        }
+    })
+}
+
+function get_uom(id,i){
+    $.ajax({
+        url: "<?php echo base_url('index.php/BeliSparePart/get_uom'); ?>",
+        type: "POST",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result) {
+            $('#uom_'+i).val(result['uom']);
         }
     })
 }

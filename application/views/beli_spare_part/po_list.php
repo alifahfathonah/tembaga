@@ -259,16 +259,12 @@
                         <td style="text-align:center">
                             <?php
                                 if($data->flag_pelunasan==0){
-                                    if($data->status==3){
-                                        if( ($group_id==1 || $hak_akses['create_voucher']==1)){
-                                            echo '<a class="btn btn-circle btn-xs green" href="javascript:;" onclick="createVoucher('.$data->id.');"
+                                    if( ($group_id==1 || $hak_akses['create_voucher']==1)){
+                                        echo '<a class="btn btn-circle btn-xs green" href="javascript:;" onclick="createVoucher('.$data->id.');"
                                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Create &nbsp; </a>';
-                                            if($data->flag_dp > 0){
-                                            echo '<small style="color:green"><i>Sudah ada DP</i></small>';
-                                            }
+                                        if($data->flag_dp > 0){
+                                        echo '<small style="color:green"><i>Sudah ada DP</i></small>';
                                         }
-                                    }else{
-                                        echo '<small style="color:green"><i>LPB Belum Diterima Semua</i></small>';
                                     }
                                 }else{
                                     echo '<small style="color:green"><i>Sudah Lunas</i></small>';

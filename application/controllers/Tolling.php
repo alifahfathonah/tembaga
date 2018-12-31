@@ -65,6 +65,7 @@ class Tolling extends CI_Controller{
         if($code){        
             $data = array(
                 'no_sales_order'=> $code,
+                'no_po'=>$this->input->post('no_po'),
                 'tanggal'=> $tgl_input,
                 'flag_ppn'=>$user_ppn,
                 'm_customer_id'=>$this->input->post('m_customer_id'),

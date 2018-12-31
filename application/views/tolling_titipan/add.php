@@ -40,6 +40,14 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            No. PO <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_po" name="no_po" class="form-control myline" style="margin-bottom:5px">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Tanggal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">

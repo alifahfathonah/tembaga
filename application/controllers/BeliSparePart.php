@@ -602,7 +602,7 @@ class BeliSparePart extends CI_Controller{
                     ));
                     
                     $this->db->where('id', $row['po_detail_id']);
-                    if($row['qty'] == $row['qty_full']){
+                    if($row['qty'] >= $row['qty_full']){
                     $this->db->update('po_detail', array('flag_lpb'=>1));
                     } else {
                     $this->db->update('po_detail', array('flag_lpb'=>0));

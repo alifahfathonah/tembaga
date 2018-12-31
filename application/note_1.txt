@@ -87,9 +87,9 @@ GudangFG/bpb_list -> Print belum (v)
 
 note uat 21 desember 2018
 sparepart:
-bisa edit po sparepart
+bisa edit po sparepart(finish)
 voucher tambah bank apa / giro
-voucher bisa dibuat walaupun belum terima semua lpb
+voucher bisa dibuat walaupun belum terima semua lpb(finish)
 
 voucher list:
 print
