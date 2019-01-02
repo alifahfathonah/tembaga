@@ -43,13 +43,14 @@ class Model_sales_order extends CI_Model{
     }
 
     function show_header_so($id){
-        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, cust.nama_customer, cust.pic, cust.alamat, cust.telepon as telepon, COALESCE(tsf.no_spb, tsw.no_spb_wip, spb.no_spb) as no_spb_barang
+        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, cust.nama_customer, cust.pic, cust.alamat, cust.telepon as telepon, COALESCE(tsf.no_spb, tsw.no_spb_wip, spb.no_spb,tsa.no_spb_ampas) as no_spb_barang
                     From t_sales_order tso
                         Left join sales_order so on (so.id = tso.so_id)
                         Left join m_customers cust On (so.m_customer_id = cust.id)
                         Left join t_spb_fg tsf on tso.jenis_barang = 'FG' and tsf.id = tso.no_spb
                         Left join t_spb_wip tsw on tso.jenis_barang = 'WIP' and tsw.id = tso.no_spb
                         Left join spb on tso.jenis_barang = 'RONGSOK' and spb.id = tso.no_spb
+                        Left join t_spb_ampas tsa on tso.jenis_barang = 'AMPAS' and tso.no_spb
                     Where tso.id=".$id);
         return $data;
     }
@@ -97,7 +98,7 @@ class Model_sales_order extends CI_Model{
     // }
 
     function jenis_barang_list(){
-        $data = $this->db->query("Select category From jenis_barang where category <> '' and category <> 'AMPAS' group by category");
+        $data = $this->db->query("Select category From jenis_barang where category <> '' group by category");
         return $data;
     }
     

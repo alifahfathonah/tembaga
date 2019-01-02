@@ -6,3 +6,6 @@ update table 171218
 
 update table 181218
 -create table retur dan retur detail
+
+update table 311218
+-create table t_spb_ampas dan detail

@@ -25,7 +25,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/SalesOrder/update_surat_jalan'); ?>">
+              id="formku" action="<?php echo base_url('index.php/Retur/update_surat_jalan'); ?>">
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -49,6 +49,7 @@
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_retur']; ?>">
 
+                            <input type="hidden" id="spb_id" name="spb_id" value="<?php echo $header['spb_id']; ?>">
                             <input type="hidden" id="retur_id" name="retur_id" value="<?php echo $header['retur_id'];?>">
                         </div>
                     </div>
@@ -146,12 +147,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
-                    <?php if($header['jenis_barang']=='FG'){?>
                         <table class="table table-bordered table-striped table-hover" id="tabel_barang">
                             <thead>
                                 <th>No</th>
                                 <th>Nama Item</th>
-                                <th>UOM</th>
                                 <th>No. Packing</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
@@ -162,10 +161,10 @@
                             <tbody id="boxDetail">
                                 <tr>
                                     <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
-                                    <td>
+                                    <td style="width: 200px">
                                         <select id="barang_id_1" name="details[1][barang_id]" class="form-control myline" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="get_data(1);">
                                             <option value=""></option>
-                                        <?php foreach ($list_produksi as $value){ ?>
+                                        <?php foreach ($retur_list as $value){ ?>
                                             <option value='<?=$value->id;?>'>
                                                 <?=$value->jenis_barang;?>
                                             </option>
@@ -174,7 +173,6 @@
                                     </td>
                                     <input type="hidden" name="details[1][id_barang]" id="id_barang_1">
                                     <input type="hidden" id="jenis_barang_id_1" name="details[1][jenis_barang_id]" class="form-control myline">
-                                    <td><input type="text" id="uom_1" name="details[1][uom]" class="form-control myline" readonly="readonly"></td>
                                     <td><input type="text" id="no_packing_1" name="details[1][no_packing]" class="form-control myline" readonly="readonly"></td>
                                     <td><input type="text" id="bruto_1" name="details[1][bruto]" class="form-control myline" readonly="readonly"></td>
                                     <td><input type="text" id="netto_1" name="details[1][netto]" class="form-control myline" readonly="readonly"></td>
@@ -186,90 +184,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                    <?php } else if($header['jenis_barang']=='WIP'){ ?>
-                        <table class="table table-bordered table-striped table-hover" id="tabel_barang">
-                            <thead>
-                                <th>No</th>
-                                <th>Nama Item</th>
-                                <th>UOM</th>
-                                <th>Qty</th>
-                                <th>Netto (Kg)</th>
-                                <th>Keterangan</th>
-                                <th>Actions</th>
-                            </thead>
-                            <tbody id="boxDetail">
-                                <tr>
-                                    <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
-                                    <td>
-                                        <select id="barang_id_1" name="details[1][barang_id]" class="form-control myline" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="get_data(1);">
-                                            <option value=""></option>
-                                        <?php foreach ($list_produksi as $value){ ?>
-                                            <option value='<?=$value->id;?>'>
-                                                <?=$value->jenis_barang;?>
-                                            </option>
-                                        <?php } ?>
-                                        </select>
-                                    </td>
-                                    <input type="hidden" name="details[1][id_barang]" id="id_barang_1">
-                                    <input type="hidden" id="jenis_barang_id_1" name="details[1][jenis_barang_id]" class="form-control myline">
-                                    <td><input type="text" id="uom_1" name="details[1][uom]" class="form-control myline" readonly="readonly"></td>
-                                    <td><input type="text" id="qty_1" name="details[1][qty]" class="form-control myline" readonly="readonly"></td>
-                                    <td><input type="text" id="netto_1" name="details[1][netto]" class="form-control myline" readonly="readonly"></td>
-                                    <td><input type="text" id="line_remarks_1" name="details[1][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
-                                    <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input(1);" style="margin-top:5px" id="save_1"><i class="fa fa-plus"></i> Tambah </a>
-                                    <td style="text-align:center"><a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    <?php
-                    }else{
-                    ?>
-                        <table class="table table-bordered table-striped table-hover" id="tabel_barang">
-                            <thead>
-                                <th>No</th>
-                                <th>No Palette</th>
-                                <th>Nama Item</th>
-                                <th style="width: 6%;">UOM</th>
-                                <th style="width: 8%;">Qty</th>
-                                <th style="width: 8%;">Bruto</th>
-                                <th style="width: 8%;">Netto (Kg)</th>
-                                <th style="width: 6%;">Berat<br>Palette</th>
-                                <th>Keterangan</th>
-                                <th>Actions</th>
-                            </thead>
-                            <tbody id="boxDetail">
-                                <tr>
-                                    <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
-                                    <td><!-- INI NOMOR PALETTE BUKAN BARANG_ID-->
-                                        <select id="barang_id_1" name="details[1][barang_id]" class="form-control myline" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="get_data(1);">
-                                            <option value=""></option>
-                                        <?php foreach ($list_produksi as $value){ ?>
-                                            <option value='<?=$value->id;?>'>
-                                                <?=$value->jenis_barang;?>
-                                            </option>
-                                        <?php } ?>
-                                        </select>
-                                    </td>
-                                    <input type="hidden" name="details[1][id_barang]" id="id_barang_1">
-                                    <input type="hidden" id="jenis_barang_id_1" name="details[1][jenis_barang_id]" class="form-control myline">
-                                    <input type="hidden" id="no_palette_1" name="details[1][no_palette]" class="form-control myline">
-                                    <td><input type="text" id="nama_barang_1" name="details[1][nama_barang]" class="form-control myline" readonly="readonly"></td>
-                                    <td><input type="text" id="uom_1" name="details[1][uom]" class="form-control myline" readonly="readonly"></td>
-                                    <td><input type="text" id="qty_1" name="details[1][qty]" class="form-control myline" readonly="readonly"></td>
-                                    <td><input type="text" id="bruto_1" name="details[1][bruto]" class="form-control myline" readonly="readonly"></td>
-                                    <td><input type="text" id="netto_1" name="details[1][netto]" class="form-control myline" readonly="readonly"></td>
-                                    <td><input type="text" id="berat_palette_1" name="details[1][berat_palette]" class="form-control myline" readonly="readonly"></td>
-                                    <td><input type="text" id="line_remarks_1" name="details[1][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
-                                    <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input(1);" style="margin-top:5px" id="save_1"><i class="fa fa-plus"></i> Tambah </a>
-                                    <td style="text-align:center"><a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    <?php
-                    }
-                    ?>
                     </div>
                 </div>
             </div>
@@ -302,14 +216,8 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#jenis_barang").val()) == ""){
-        $('#message').html("Silahkan pilih jenis barang!");
-        $('.alert-danger').show(); 
     }else if($.trim($("#nama_customer").val()) == ""){
         $('#message').html("Silahkan pilih customer");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#no_sales_order").val()) == ""){
-        $('#message').html("Silahkan pilih no. sales order");
         $('.alert-danger').show(); 
     }else if($.trim($("#m_kendaraan_id").val()) == ""){
         $('#message').html("Silahkan pilih kendaraan");
@@ -327,19 +235,17 @@ function create_new_input(id){
         $("#save_"+id).attr('disabled','disabled');
         $("#delete_"+id).removeClass('disabled');
         var new_id = id+1; 
-        if($("#jenis_barang").val()=="FG"){
         $("#tabel_barang>tbody").append(
         '<tr>'+
             '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
             '<td>'+
                 '<select id="barang_id_'+new_id+'" name="details['+new_id+'][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_data('+new_id+');">'+
                     '<option value=""></option>'+
-                    '<?php if($header["jenis_barang"]=="FG"){foreach($list_produksi as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}}?>'+
+                    '<?php foreach($retur_list as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}?>'+
                 '</select>' +
             '</td>'+
             '<input type="hidden" name="details['+new_id+'][id_barang]" id="id_barang_'+new_id+'">'+
             '<input type="hidden" id="jenis_barang_id_'+new_id+'" name="details['+new_id+'][jenis_barang_id]" class="form-control myline">'+
-            '<td><input type="text" id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
             '<td><input type="text" id="no_packing_'+new_id+'" name="details['+new_id+'][no_packing]" class="form-control myline" readonly="readonly"></td>'+
             '<td><input type="text" id="bruto_'+new_id+'" name="details['+new_id+'][bruto]" class="form-control myline" readonly="readonly"></td>'+
             '<td><input type="text" id="netto_'+new_id+'" name="details['+new_id+'][netto]" class="form-control myline" readonly="readonly"></td>'+
@@ -348,49 +254,6 @@ function create_new_input(id){
             '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input('+new_id+');" style="margin-top:5px" id="save_'+new_id+'"><i class="fa fa-plus"></i> Tambah </a>'+
             '<td style="text-align:center"><a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
         '</tr>');
-        }else if($("#jenis_barang").val()=='WIP'){
-        $("#tabel_barang>tbody").append(
-        '<tr>'+
-            '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
-            '<td>'+
-                '<select id="barang_id_'+new_id+'" name="details['+new_id+'][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_data('+new_id+');">'+
-                    '<option value=""></option>'+
-                    '<?php if($header["jenis_barang"]=="WIP"){foreach($list_produksi as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}}?>'+
-                '</select>' +
-            '</td>'+
-            '<input type="hidden" name="details['+new_id+'][id_barang]" id="id_barang_'+new_id+'">'+
-            '<input type="hidden" id="jenis_barang_id_'+new_id+'" name="details['+new_id+'][jenis_barang_id]" class="form-control myline">'+
-            '<td><input type="text" id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
-            '<td><input type="text" id="qty_'+new_id+'" name="details['+new_id+'][qty]" class="form-control myline" readonly="readonly"></td>'+
-            '<td><input type="text" id="netto_'+new_id+'" name="details['+new_id+'][netto]" class="form-control myline" readonly="readonly"></td>'+
-            '<td><input type="text" id="line_remarks_'+new_id+'" name="details['+new_id+'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
-            '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input('+new_id+');" style="margin-top:5px" id="save_'+new_id+'"><i class="fa fa-plus"></i> Tambah </a>'+
-            '<td style="text-align:center"><a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
-        '</tr>');
-        }else if($('#jenis_barang').val()=="RONGSOK"){
-        $("#tabel_barang>tbody").append(
-        '<tr>'+
-            '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
-            '<td>'+
-                '<select id="barang_id_'+new_id+'" name="details['+new_id+'][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_data('+new_id+');">'+
-                    '<option value=""></option>'+
-                    '<?php if($header["jenis_barang"]=="RONGSOK"){foreach($list_produksi as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}}?>'+
-                '</select>' +
-            '<input type="hidden" name="details['+new_id+'][id_barang]" id="id_barang_'+new_id+'">'+
-            '<input type="hidden" id="jenis_barang_id_'+new_id+'" name="details['+new_id+'][jenis_barang_id]" class="form-control myline">'+
-            '<input type="hidden" id="no_palette_'+new_id+'" name="details['+new_id+'][no_palette]" class="form-control myline">'+
-            '<td><input type="text" id="nama_barang_'+new_id+'" name="details['+new_id+'][nama_barang]" class="form-control myline" readonly="readonly"></td>'+
-            '<td><input type="text" id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
-            '<td><input type="text" id="qty_'+new_id+'" name="details['+new_id+'][qty]" class="form-control myline" readonly="readonly"></td>'+
-            '<td><input type="text" id="bruto_'+new_id+'" name="details['+new_id+'][bruto]" class="form-control myline" readonly="readonly"></td>'+
-            '<td><input type="text" id="netto_'+new_id+'" name="details['+new_id+'][netto]" class="form-control myline" readonly="readonly"></td>'+
-            '<td><input type="text" id="berat_palette_'+new_id+'" name="details['+new_id+'][berat_palette]" class="form-control myline" readonly="readonly"></td>'+
-            '<td><input type="text" id="line_remarks_'+new_id+'" name="details['+new_id+'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
-            '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input('+new_id+');" style="margin-top:5px" id="save_'+new_id+'"><i class="fa fa-plus"></i> Tambah </a>'+
-            '<td style="text-align:center"><a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
-            '</td>'+
-        '</tr>');
-        }
     }
 }
 
@@ -412,40 +275,24 @@ function get_data(id){
     if(id_barang!=''){    
         var check = check_duplicate();
         if(check){
-        $.ajax({
-            url: "<?php echo base_url('index.php/SalesOrder/get_data_sj'); ?>",
-            type: "POST",
-            data: {
-                id:id_barang,
-                jenis_barang:$("#jenis_barang").val()
-            },
-            dataType: "json",
-            success: function(result) {
-                if ($("#jenis_barang").val()=="FG"){
-                    $('#jenis_barang_id_'+id).val(result['jenis_barang_id']);
-                    $('#uom_'+id).val(result['uom']);
-                    $('#no_packing_'+id).val(result['no_packing']);
-                    $('#bruto_'+id).val(result['bruto']);
-                    $('#netto_'+id).val(result['netto']);
-                    $('#qty_'+id).val(result['qty']);
-                    $('#bobbin_'+id).val(result['nomor_bobbin']);
-                }else if ($("#jenis_barang").val()=="WIP"){
-                    $('#jenis_barang_id_'+id).val(result['jenis_barang_id']);
-                    $('#uom_'+id).val(result['uom']);
-                    $('#qty_'+id).val(result['qty']);
-                    $('#netto_'+id).val(result['berat']);
-                }else{
-                    $('#nama_barang_'+id).val(result['jenis_barang']);
-                    $('#jenis_barang_id_'+id).val(result['rongsok_id']);
-                    $('#no_palette_'+id).val(result['no_pallete']);
-                    $('#uom_'+id).val(result['uom']);
-                    $('#qty_'+id).val(result['qty']);
-                    $('#bruto_'+id).val(result['bruto']);
-                    $('#netto_'+id).val(result['netto']);
-                    $('#berat_palette_'+id).val(result['berat_palette']);
+            console.log(id_barang);
+            $.ajax({
+                url: "<?php echo base_url('index.php/Retur/get_data_sj'); ?>",
+                type: "POST",
+                data: {
+                    id:id_barang,
+                    jenis_barang:$("#jenis_barang").val()
+                },
+                dataType: "json",
+                success: function(result) {
+                        $('#jenis_barang_id_'+id).val(result['jenis_barang_id']);
+                        $('#no_packing_'+id).val(result['no_packing']);
+                        $('#bruto_'+id).val(result['bruto']);
+                        $('#netto_'+id).val(result['netto']);
+                        $('#qty_'+id).val(result['qty']);
+                        $('#bobbin_'+id).val(result['nomor_bobbin']);
                 }
-            }
-        });
+            });
         } else {
             alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
             $("#barang_id_"+id).val('');

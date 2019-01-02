@@ -34,10 +34,26 @@ class Model_retur extends CI_Model{
             left join users u on (u.id = r.created_by)
             left join m_jenis_packing jp on (jp.id = r.jenis_packing_id)
             left join m_customers c on (c.id = r.customer_id)
-            where r.customer_id = ".$id." and status = 1");
+            where r.customer_id = ".$id." and status = 1 and flag_sj = 0");
         return $data;
     }
     
+    function get_retur_fulfilment($spbid){
+        $data = $this->db->query("select tgf.*, jb.jenis_barang
+            from t_gudang_fg tgf
+            left join jenis_barang jb on (jb.id = tgf.jenis_barang_id)
+            where tgf.t_spb_fg_id = ".$spbid. " and flag_taken = 0");
+        return $data;
+    }
+
+    function list_item_sj_retur_detail($id){
+        $data = $this->db->query("select tgf.*, jb.jenis_barang
+            from t_gudang_fg tgf
+            left join jenis_barang jb on (jb.id = tgf.jenis_barang_id)
+            where tgf.id =".$id);
+        return $data;
+    }
+
     function customer_list(){
         $data = $this->db->query("Select * From m_customers Order By nama_customer");
         return $data;
@@ -158,12 +174,12 @@ class Model_retur extends CI_Model{
     }
 
     function get_retur($id){
-        $data = $this->db->query("select *from retur where customer_id = ".$id." and status = 1 and jenis_retur = 0");
+        $data = $this->db->query("select *from retur where customer_id = ".$id." and status = 1 and jenis_retur = 0 and flag_sj = 0");
         return $data;
     }
 
     function fulfilment_list(){
-        $data = $this->db->query("select r.*, tsf.no_spb, c.nama_customer, (select count(id) as jumlah_item from retur_fulfilment rf where rf.retur_id = r.id) as jumlah_item
+        $data = $this->db->query("select r.*, tsf.no_spb, tsf.status as status_spb, c.nama_customer, (select count(id) as jumlah_item from retur_fulfilment rf where rf.retur_id = r.id) as jumlah_item
             from retur r
             left join t_spb_fg tsf on (tsf.id = r.spb_id)
             left join m_customers c on (c.id = r.customer_id)
@@ -179,6 +195,19 @@ class Model_retur extends CI_Model{
         return $data;
     }
 
+    function surat_jalan(){
+        $data = $this->db->query("Select tsj.*, (select count(tsjd.id) from t_surat_jalan_detail tsjd where tsjd.t_sj_id = tsj.id) as jumlah_item,
+                    cust.nama_customer, cust.alamat,
+                    so.no_sales_order,
+                    kdr.no_kendaraan
+                From t_surat_jalan tsj
+                    Left Join m_customers cust On (tsj.m_customer_id = cust.id)
+                    Left Join sales_order so On (tsj.sales_order_id = so.id) 
+                    Left Join m_kendaraan kdr On (tsj.m_kendaraan_id = kdr.id) 
+                Where tsj.jenis_barang = 'RETUR' 
+                Order By tsj.id Desc");
+        return $data;
+    }
 
     /*function po_list(){
         $data = $this->db->query("Select po.*, 
@@ -242,7 +271,7 @@ class Model_retur extends CI_Model{
     function show_header_sj($id){
         $data = $this->db->query("Select tsj.*, 
                     cust.nama_customer, cust.alamat,
-                    r.no_retur,
+                    r.no_retur, r.spb_id,
                     kdr.no_kendaraan,
                     tkdr.type_kendaraan,
                     usr.realname

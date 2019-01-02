@@ -694,8 +694,8 @@ class Retur extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "retur/surat_jalan";
-        $this->load->model('Model_sales_order');
-        $data['list_data'] = $this->Model_sales_order->surat_jalan()->result();
+        $this->load->model('Model_retur');
+        $data['list_data'] = $this->Model_retur->surat_jalan()->result();
 
         $this->load->view('layout', $data);
     }
@@ -1160,8 +1160,9 @@ class Retur extends CI_Controller{
 
             $data['content']= "retur/edit_surat_jalan";
             $this->load->model('Model_retur');
-            $data['header'] = $this->Model_retur->show_header_sj($id)->row_array();              
-            // $data['po_list'] = $this->Model_pengiriman_ampas->get_po_list()->result();
+            $data['header'] = $this->Model_retur->show_header_sj($id)->row_array();
+            $spid = $data['header']['spb_id'];              
+            $data['retur_list'] = $this->Model_retur->get_retur_fulfilment($spid)->result();
         
             $this->load->model('Model_tolling_titipan');            
             $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
@@ -1173,6 +1174,17 @@ class Retur extends CI_Controller{
             redirect('index.php/PengirimanAmpas/surat_jalan');
         }
     }
+
+    function get_data_sj(){
+        $id = $this->input->post('id');
+        $jb = $this->input->post('jenis_barang');
+        $this->load->model('Model_retur');
+        $sj_detail= $this->Model_retur->list_item_sj_retur_detail($id)->row_array();
+        
+        header('Content-Type: application/json');
+        echo json_encode($sj_detail); 
+    }
+
     /*
     function load_detail_surat_jalan(){
         $id = $this->input->post('id');
@@ -1298,30 +1310,93 @@ class Retur extends CI_Controller{
         }
         header('Content-Type: application/json');
         echo json_encode($return_data); 
-    }
+    }*/
     
     function update_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        
+        $jenis = $this->input->post('jenis_barang');
+        $retur_id = $this->input->post('retur_id');
+        $spbid = $this->input->post('spb_id');
+
+        #Insert Surat Jalan
+        $details = $this->input->post('details');
+        foreach ($details as $v) {
+            if($v['id_barang']!=''){
+                $this->db->insert('t_surat_jalan_detail', array(
+                        't_sj_id'=>$this->input->post('id'),
+                        'jenis_barang_id'=>$v['jenis_barang_id'],
+                        'no_packing'=>$v['no_packing'],
+                        'qty'=>'1',
+                        'bruto'=>$v['bruto'],
+                        'netto'=>$v['netto'],
+                        'nomor_bobbin'=>$v['bobbin'],
+                        'line_remarks'=>$v['line_remarks'],
+                        'created_by'=>$user_id,
+                        'created_at'=>$tanggal
+                    ));
+                    $this->db->where('id',$v['id_barang']);
+                    $this->db->update('t_gudang_fg',array(
+                        'flag_taken'=>1,
+                    )); 
+            }
+        }
+
+        $this->load->model('Model_retur');
+        #cek jika surat jalan sudah di kirim semua atau belum
+            $list_produksi = $this->Model_retur->get_retur_fulfilment($spbid)->result();
+
+        if(empty($list_produksi)){
+            $this->db->where('id',$retur_id);
+            $this->db->update('retur', array(
+                'flag_sj'=>1
+            ));
+        }
+
+            #insert bobbin_peminjaman
+            $this->load->model('Model_m_numberings');
+            $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);
+
+            $this->db->insert('m_bobbin_peminjaman', array(
+                'no_surat_peminjaman' => $code,
+                'id_surat_jalan' => $this->input->post('id'),
+                'id_customer' => $this->input->post('id_customer'),
+                'status' => 0,
+                'created_by' => $user_id,
+                'created_at' => $tanggal
+            ));
+            $insert_id = $this->db->insert_id();
+
+            $query = $this->db->query('select *from t_surat_jalan_detail where t_sj_id = '.$this->input->post('id'))->result();
+            foreach ($query as $row) {
+                $this->db->where('nomor_bobbin', $row->nomor_bobbin);
+                $this->db->update('m_bobbin', array(
+                    'borrowed_by' => $this->input->post('id_customer'),
+                    'status' => 2
+                ));
+
+                $this->db->insert('m_bobbin_peminjaman_detail', array(
+                    'id_peminjaman' => $insert_id,
+                    'nomor_bobbin' => $row->nomor_bobbin
+                ));
+            }
+
         $data = array(
                 'tanggal'=> $tgl_input,
-                'jenis_barang'=>$this->input->post('jenis_barang'),
-                'm_customer_id'=>$this->input->post('m_customer_id'),
-                'po_id'=>$this->input->post('po_id'),
                 'm_kendaraan_id'=>$this->input->post('m_kendaraan_id'),
                 'supir'=>$this->input->post('supir'),
                 'remarks'=>$this->input->post('remarks'),
-                'modified'=> $tanggal,
+                'modified_at'=> $tanggal,
                 'modified_by'=> $user_id
             );
         
         $this->db->where('id', $this->input->post('id'));
-        $this->db->update('surat_jalan', $data);
+        $this->db->update('t_surat_jalan', $data);
+
         
         $this->session->set_flashdata('flash_msg', 'Data surat jalan berhasil disimpan');
-        redirect('index.php/PengirimanAmpas/surat_jalan');
+        redirect('index.php/Retur/surat_jalan');
     }
     
     function print_surat_jalan(){
@@ -1335,7 +1410,7 @@ class Retur extends CI_Controller{
         }else{
             redirect('index.php'); 
         }
-    } */
+    } 
     
     
 }
