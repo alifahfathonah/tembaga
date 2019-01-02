@@ -22,7 +22,7 @@
             <div class="col-md-12">
                 <div class="alert alert-danger display-hide">
                     <button class="close" data-close="alert"></button>
-                    <span id="c">&nbsp;</span>
+                    <span id="message">&nbsp;</span>
                 </div>
             </div>
         </div>
@@ -121,10 +121,7 @@
                         <table class="table table-bordered table-striped table-hover" id="tabel_dtr">
                             <thead>
                                 <th style="width:40px">No</th>
-                                <th>
-                                    <input type="checkbox" id="check_all" name="check_all" onclick="checkAll()" class="form-control">
-                                </th>
-                                <th>Nama Item Rongsok</th>
+                                <th style="width:20%">Nama Item Rongsok</th>
                                 <th>UOM</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Berat Palette</th>
@@ -134,7 +131,29 @@
                                 <th>Keterangan</th>
                             </thead>
                             <tbody id="boxDetail">
-                            
+                            <tr>
+                                <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
+                                <input type="hidden" id="po_id_1" name="myDetails[1][po_detail_id]" value="">
+                                <input type="hidden" id="rongsok_id_1" name="myDetails[1][rongsok_id]" value="">
+                                <td><select id="name_rongsok_1" name="myDetails[1][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,1);">
+                                    <option value=""></option>
+                                    <?php foreach ($list_rongsok_on_po as $value){ ?>
+                                            <option value='<?=$value->id;?>'>
+                                                <?=$value->nama_item;?>
+                                            </option>
+                                    <?php } ?>
+                                </select>
+                                </td>
+                                <td><input type="text" id="uom_1" name="myDetails[1][uom]" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="bruto_1" name="myDetails[1][bruto]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
+                                <td><input type="text" id="berat_palette_1" name="myDetails[1][berat_palette]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
+                                <td><input type="text" id="netto_1" name="myDetails[1][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
+                                <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(1);"> <i class="fa fa-dashboard"></i> Timbang </a></td>                          
+                                <td><input type="text" name="myDetails[1][no_pallete]" id="no_pallete_1"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
+                                <td><input type="text" name="myDetails[1][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
+                                <td style="text-align:center"><a id="save_1" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(1);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
+                                    <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -180,7 +199,6 @@ function loadTimbangan(id){
             //console.log(result);
             if(result['type_message'][0]=="error"){
                 $("#bruto_"+id).val('0');
-                
                 $('#message').html(result['message'][0]);
                 $('.alert-danger').show(); 
                 
@@ -190,17 +208,6 @@ function loadTimbangan(id){
                 
                 $("#bruto_"+id).val(result['berat'][0]);
             }
-        }
-    });
-}
-
-function loadDetail(id){
-    $.ajax({
-        type:"POST",
-        url:'<?php echo base_url('index.php/BeliRongsok/load_detail_dtr'); ?>',
-        data:"id="+ id,
-        success:function(result){
-            $('#boxDetail').html(result);     
         }
     });
 }
@@ -217,26 +224,6 @@ function getComa(value, id){
     $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
 
-function checkAll(){
-    if ($('#check_all').prop("checked")) {  
-        $('input').each(function(i){
-            $('#uniform-check_'+i+' span').attr('class', 'checked');
-            $('#check_'+i).attr('checked', true);
-        });
-    }else{
-        $('input').each(function(i){
-            $('#uniform-check_'+i+' span').attr('class', '');
-            $('#check_'+i).attr('checked', false);
-        });
-    }   
-}
-
-function check(){
-    $('#uniform-check_all span').attr('class', '');
-    $('#check_all').attr('checked', false);    
-}
-
-
 function makepallete_id() {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -250,74 +237,94 @@ function makepallete_id() {
 }
 
 function simpanData(){
-    var item_check = 0;
-    $('input').each(function(i){
-        if($('#check_'+i).prop("checked")){
-            item_check += 1;                    
-        }
-    });
-    
     if($.trim($("#tanggal").val()) == ""){
-        $('#c').html("Tanggal harus diisi, tidak boleh kososng!");
+        $('#message').html("Tanggal harus diisi, tidak boleh kososng!");
         $('.alert-danger').show(); 
     }else if($.trim($("#supplier_id").val()) == ""){
-        $('#c').html("Supplier harus diisi, tidak boleh kososng!");
+        $('#message').html("Supplier harus diisi, tidak boleh kososng!");
         $('.alert-danger').show(); 
     }else{   
-        if(item_check==0){
-            $('#message').html("Silahkan pilih item rongsok yang akan di-create DTR!"); 
-            $('.alert-danger').show(); 
-        }else{
-            $('#message').html("");
-            $('.alert-danger').hide(); 
-            $('#formku').submit(); 
-        }
+        $('#message').html("");
+        $('.alert-danger').hide(); 
+        $('#formku').submit();
     };
 };
 
+function check_duplicate(){
+    var valid = true;
+        $.each($("select[name$='[nama_item]']"), function (index1, item1) {
+            $.each($("select[name$='[nama_item]']").not(this), function (index2, item2) {
+                if ($(item1).val() == $(item2).val()) {
+                    valid = false;
+                }
+            });
+        });
+    return valid;
+}
+
 function get_uom_po(id, nmr){
     // var idpo = $('#po_id').val();
-    if($.trim($('#name_rongsok').val())!=''){
-    $.ajax({
-        url: "<?php echo base_url('index.php/BeliRongsok/get_uom_po'); ?>",
-        async: false,
-        type: "POST",
-        data: {iditem: id},
-        dataType: "json",
-        success: function(result) {
-            $('#uom_'+nmr).val(result['uom']);
-            $('#rongsok_id_'+nmr).val(result['id']);
-            $('#no_pallete_'+nmr).val(makepallete_id());
+    if($.trim($('#name_rongsok_'+nmr).val())!=''){    
+    var check = check_duplicate();
+        if(check){
+            $.ajax({
+                url: "<?php echo base_url('index.php/BeliRongsok/get_uom_po'); ?>",
+                type: "POST",
+                data: {iditem: id},
+                dataType: "json",
+                success: function(result) {
+                    $('#uom_'+nmr).val(result['uom']);
+                    $('#rongsok_id_'+nmr).val(result['id']);
+                    $('#no_pallete_'+nmr).val(makepallete_id());
+                }
+            });
         }
-    });
     }
 }
 
 function saveDetail(id){
-    if($.trim($("#name_rongsok").val()) == ""){
+    if($.trim($("#name_rongsok_"+id).val()) == ""){
         $('#message').html("Silahkan pilih nama item rongsok!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#bruto_"+id).val()) == ""){
+    }else if($.trim($("#bruto_"+id).val()) == "" || 0){
         $('#message').html("Jumlah bruto tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#netto_"+id).val()) == ""){
         $('#message').html("Jumlah netto tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else{
-        var tr_selected = $("#netto_"+id).closest("tr").find(".yellow-gold");
-        tr_selected.parent().append('<a href="javascript:;" class="btn btn-xs btn-circle red" onclick="deleteDetail('+(id+1)+')" style="margin-top:5px" id="btndeleteDetail"> <i class="fa fa-trash"></i> Hapus </a>');
-        tr_selected.remove();
+        $("#name_rongsok_"+id).attr('disabled','disabled');
+        $("#save_"+id).attr('disabled','disabled');
+        $("#delete_"+id).removeClass('disabled');
+        var new_id = id+1; 
         $("#tabel_dtr>tbody").append(
-            '<tr><td style="text-align:center">'+(id+1)+'</td><td><input value="1" id="check_'+(id+1)+'" name="myDetails['+(id+1)+'][check]" onclick="check();" class="form-control" type="checkbox"><input type="hidden" id="po_id_'+(id+1)+'" name="myDetails['+(id+1)+'][po_detail_id]" value=""><input type="hidden" id="rongsok_id_'+(id+1)+'" name="myDetails['+(id+1)+'][rongsok_id]" value=""></td><td><select id="name_rongsok_'+(id+1)+'" name="myDetails['+(id+1)+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,'+(id+1)+');">'+"<?=$option_rongsok;?>"+'</select></td><td><input id="uom_'+(id+1)+'" name="myDetails['+(id+1)+'][uom]" class="form-control myline" readonly="readonly" type="text"></td><td><input id="qty_'+(id+1)+'" name="myDetails['+(id+1)+'][qty]" class="form-control myline" type="text"></td><td><input id="bruto_'+(id+1)+'" name="myDetails['+(id+1)+'][bruto]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);" type="text"></td><td><input type="text" id="berat_palette_'+(id+1)+'" name="myDetails['+(id+1)+'][berat_palette]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td><td><input id="netto_'+(id+1)+'" name="myDetails['+(id+1)+'][netto]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);" type="text" readonly="readonly"></td><td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('+(id+1)+');"> <i class="fa fa-dashboard"></i> Timbang </a></td><td><input name="myDetails['+(id+1)+'][no_pallete]" id="no_pallete_'+(id+1)+'" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" type="text"></td><td><input name="myDetails['+(id+1)+'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" type="text"></td><td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail('+(id+1)+');" style="margin-top:5px" id="btnSaveDetail"> <i class="fa fa-plus"></i> Tambah </a></td></tr>'
+            '<tr>'+
+                '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
+                '<input type="hidden" id="po_id_'+new_id+'" name="myDetails['+new_id+'][po_detail_id]" value="">'+
+                '<input type="hidden" id="rongsok_id_'+new_id+'" name="myDetails['+new_id+'][rongsok_id]" value="">'+
+                '<td><select id="name_rongsok_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,'+new_id+');">'+
+                    '<option value=""></option>'+
+                    '<?php foreach($list_rongsok_on_po as $v){ print('<option value="'.$v->id.'">'.$v->nama_item.'</option>');}?>'+
+                '</select>'+
+                '</td>'+
+                '<td><input type="text" id="uom_'+new_id+'" name="myDetails['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
+                '<td><input type="text" id="bruto_'+new_id+'" name="myDetails['+new_id+'][bruto]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
+                '<td><input type="text" id="berat_palette_'+new_id+'" name="myDetails['+new_id+'][berat_palette]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
+                '<td><input type="text" id="netto_'+new_id+'" name="myDetails['+new_id+'][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
+                '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('+new_id+');"> <i class="fa fa-dashboard"></i> Timbang </a></td>'+
+                '<td><input type="text" name="myDetails['+new_id+'][no_pallete]" id="no_pallete_'+new_id+'"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
+                '<td><input type="text" name="myDetails['+new_id+'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
+                '<td style="text-align:center"><a id="save_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail('+new_id+');" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>'+
+                    '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
+            '</tr>'
         );
     }
-    get_uom_po(1,(id+1));
 }
 
 function deleteDetail(id){
     var r=confirm("Anda yakin menghapus item rongsok ini?");
     if (r==true){
-        $('#uom_'+id).closest('tr').remove();
+        $('#no_tabel_'+id).closest('tr').remove();
         }
 }
 </script>
@@ -336,11 +343,6 @@ $(function(){
         changeYear: true,
         dateFormat: 'yy-mm-dd'
     });
-
-    loadDetail();
 });
-
-
-
 </script>
       

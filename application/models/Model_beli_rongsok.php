@@ -64,11 +64,11 @@ class Model_beli_rongsok extends CI_Model{
 
     function check_po_dtr($id){
         $data = $this->db->query(
-                "select pdtl.id, pdtl.po_id,pdtl.rongsok_id, pdtl.qty,
+                "select pdtl.id, pdtl.po_id, sum(pdtl.qty) tot_qty,
                 (select sum(ddtl.netto) from dtr_detail ddtl
                 left join dtr on ddtl.dtr_id = dtr.id 
-                where dtr.po_id = pdtl.po_id and dtr.status=1 and ddtl.rongsok_id = pdtl.rongsok_id)as tot_netto from po_detail pdtl
-                where pdtl.po_id =".$id);
+                where dtr.po_id = pdtl.po_id and dtr.status=1)as tot_netto from po_detail pdtl
+                where pdtl.po_id =".$id." group by pdtl.po_id");
         return $data;
     }
 
@@ -81,9 +81,8 @@ class Model_beli_rongsok extends CI_Model{
     //     return $data;
     // }
 
-    function update_flag_dtr_po_detail($po_id,$rongsok_id){
+    function update_flag_dtr_po_detail($po_id){
         $this->db->where('po_id',$po_id);
-        $this->db->where('rongsok_id',$rongsok_id);
         $this->db->update('po_detail',array(
                         'flag_dtr'=>'0'));
     }   
@@ -99,6 +98,18 @@ class Model_beli_rongsok extends CI_Model{
                         Left Join supplier spl On (po.supplier_id = spl.id) 
                         left join po_detail on po_detail.po_id = po.id
                     Where po.id=".$id);
+        return $data;
+    }
+
+    function voucher_po_rsk($id){
+        $data = $this->db->query("Select po.*,s.nama_supplier, dtr.po_id, sum(dd.netto*pd.amount) as nilai_po, 
+            (Select Sum(voucher.amount) From voucher Where voucher.po_id = po.id)As nilai_dp
+            From po
+            inner join dtr on dtr.po_id = po.id
+            inner join dtr_detail dd on dd.dtr_id = dtr.id
+            inner join po_detail pd on pd.id = dd.po_detail_id
+            inner join supplier s on s.id = po.supplier_id
+            Where dtr.po_id =".$id);
         return $data;
     }
    
@@ -356,7 +367,7 @@ class Model_beli_rongsok extends CI_Model{
     }
 
     function show_data_rongsok_detail($iditem){
-        $data = $this->db->query("Select * From rongsok Where id=".$iditem);        
+        $data = $this->db->query("Select id, uom From rongsok Where id=".$iditem);        
         return $data;
     }
 
