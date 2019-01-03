@@ -109,7 +109,7 @@ class Model_beli_rongsok extends CI_Model{
             inner join dtr_detail dd on dd.dtr_id = dtr.id
             inner join po_detail pd on pd.id = dd.po_detail_id
             inner join supplier s on s.id = po.supplier_id
-            Where dtr.po_id =".$id);
+            Where dtr.po_id =".$id." and dtr.status=1");
         return $data;
     }
    
@@ -311,18 +311,6 @@ class Model_beli_rongsok extends CI_Model{
                 From po
                     Left Join supplier On (po.supplier_id = supplier.id)
                 Where po.id=".$id);
-        return $data;
-    }
-    
-    function update_status_dp($id){
-        $result = $this->db->query("select sum(vc.amount)as tot_dp, count(vc.id)as jml_vc,
-                    (select sum(po_detail.total_amount) from po_detail where po_detail.po_id = vc.po_id) as tot_po
-                    from voucher vc
-                    where vc.po_id = ".$id)->row_array();
-        if($result['tot_po'] <= $result['tot_dp']){
-            $this->db->where('id', $id);
-            $this->db->update('po', array('flag_dp'=>1,'status'=>4));
-        }
         return $data;
     }
 

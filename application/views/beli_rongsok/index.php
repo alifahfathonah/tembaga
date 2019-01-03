@@ -297,7 +297,8 @@ function createVoucher(id){
             $('#nama_supplier').val(result['nama_supplier']);
             $('#amount').val('0');
             $('#nilai_po').val(result['nilai_po']);
-            $('#nilai_dp').val(Number(result['nilai_dp']));  
+            $('#nilai_dp').val(result['nilai_dp']);
+            $('#amount').val(result['sisa']);
             $('#keterangan').val('');
             $('#id').val(result['id']);
             

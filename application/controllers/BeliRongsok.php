@@ -327,6 +327,7 @@ class BeliRongsok extends CI_Controller{
         $nilai_po  = str_replace('.', '', $this->input->post('nilai_po'));
         $nilai_dp  = str_replace('.', '', $this->input->post('nilai_dp'));
         $amount  = str_replace('.', '', $this->input->post('amount'));
+        $id = $this->input->post('id');
         
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
@@ -335,6 +336,8 @@ class BeliRongsok extends CI_Controller{
             $jenis_voucher = 'DP';
         }else{
             $jenis_voucher = 'Pelunasan';
+            $this->db->where('id', $id);
+            $this->db->update('po', array('flag_pelunasan'=>1,'status'=>4));
         } 
 
         if($code){ 
@@ -351,10 +354,6 @@ class BeliRongsok extends CI_Controller{
                 'modified'=> $tanggal,
                 'modified_by'=> $user_id
             ));
-            
-            $this->load->model('Model_beli_rongsok');
-            #update status DP jika sudah lunas
-            $this->Model_beli_rongsok->update_status_dp($this->input->post('id'));
             
             if($this->db->trans_complete()){    
                 $this->session->set_flashdata('flash_msg', 'Voucher rongsok berhasil di-create dengan nomor : '.$code);                 
