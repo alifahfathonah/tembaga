@@ -99,7 +99,7 @@
                                     Total Nilai PO (Rp) <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-7">
-                                    <input id="nilai_po_dp" name="nilai_po" class="form-control myline" style="margin-bottom:5px" readonly="readonly" type="text">                                                                       
+                                    <input id="nilai_po" name="nilai_po" class="form-control myline" style="margin-bottom:5px" readonly="readonly" type="text">                                                                       
                                 </div>
                             </div>
                             <div class="row">
@@ -107,7 +107,7 @@
                                     Total Voucher DP (Rp) <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-7">
-                                    <input id="nilai_tot_vc_dp" name="nilai_po" class="form-control myline" style="margin-bottom:5px" readonly="readonly" type="text">                                                                       
+                                    <input id="nilai_dp" name="nilai_dp" class="form-control myline" style="margin-bottom:5px" readonly="readonly" type="text"> 
                                 </div>
                             </div> 
                             <div class="row">
@@ -117,7 +117,7 @@
                                 <div class="col-md-7">
                                     <input type="text" id="amount" name="amount" 
                                         class="form-control myline" style="margin-bottom:5px" 
-                                        onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);">                                                                       
+                                        onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);">           
                                 </div>
                             </div>
                             <div class="row">
@@ -127,150 +127,18 @@
                                 <div class="col-md-7">
                                     <textarea id="keterangan" name="keterangan" 
                                         class="form-control myline" style="margin-bottom:5px" 
-                                        onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>                                                                       
+                                        onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">                        
-                        <button type="button" class="btn blue" onClick="simpanData();">Simpan</button>
+                        <button type="button" class="btn blue" onClick="saveVoucher();">Simpan</button>
                         <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Voucher Pelunasan -->
-        <div class="modal fade" id="myModalPelunasan" tabindex="-1" role="basic" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                        <h4 class="modal-title">&nbsp;</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="alert alert-danger display-hide" id="box_error_pelunasan">
-                                    <button class="close" data-close="alert"></button>
-                                    <span id="msg_pelunasan">&nbsp;</span>
-                                </div>
-                            </div>
-                        </div>
-                        <form class="eventInsForm" method="post" target="_self" name="frm_pelunasan" 
-                              id="frm_pelunasan">                            
-                            <div class="row">
-                                <div class="col-md-5">
-                                    No. Voucher <font color="#f00">*</font>
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="no_voucher_pelunasan" name="no_voucher" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        readonly="readonly" value="Auto Generate">
-                                    
-                                    <input type="hidden" id="id_pelunasan" name="id">
-                                </div>
-                            </div>                             
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Tanggal <font color="#f00">*</font>
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="tanggal_pelunasan" name="tanggal" 
-                                        class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                        value="<?php echo date('d-m-Y'); ?>">
-                                </div>
-                            </div> 
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Jenis Barang
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="jenis_barang_pelunasan" name="jenis_barang" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        readonly="readonly" value="RONGSOK">                                                                       
-                                </div>
-                            </div> 
-                            <div class="row">
-                                <div class="col-md-5">
-                                    No. PO
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="no_po_pelunasan" name="no_po" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        readonly="readonly">                                                                       
-                                </div>
-                            </div> 
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Tanggal PO
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="tanggal_po_pelunasan" name="tanggal_po" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        readonly="readonly">                                                                       
-                                </div>
-                            </div> 
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Supplier
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="nama_supplier_pelunasan" name="nama_supplier" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        readonly="readonly">                                                                       
-                                </div>
-                            </div> 
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Total Nilai PO (Rp) <font color="#f00">*</font>
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="nilai_po_pelunasan" name="nilai_po" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        readonly="readonly">                                                                       
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Down Payment/ DP (Rp) <font color="#f00">*</font>
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="nilai_dp_pelunasan" name="nilai_dp" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        readonly="readonly">                                                                       
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Sisa Pembayaran (Rp) <font color="#f00">*</font>
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="amount_pelunasan" name="amount" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);">                                                                       
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Keterangan
-                                </div>
-                                <div class="col-md-7">
-                                    <textarea id="keterangan_pelunasan" name="keterangan" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>                                                                       
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">                        
-                        <button type="button" class="btn blue" onClick="prosesPelunasan();">Simpan</button>
-                        <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
+        </div>       
         
         <div class="row">
             <div class="col-md-12">
@@ -308,8 +176,7 @@
                     <th>Jumlah <br>Items</th>
                     <th>Status</th>
                     <th>Keterangan</th>
-                    <th>Voucher DP</th>
-                    <th>Voucher <br>Pelunasan</th>
+                    <th>Voucher<br>Pembayaran</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -363,16 +230,6 @@
                                 if( ($group_id==1 || $hak_akses['create_voucher_dp']==1) && $data->flag_pelunasan==0 && $data->status==3){
                                     echo '<a class="btn btn-circle btn-xs green" href="javascript:;" onclick="createVoucher('.$data->id.');"
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Create &nbsp; </a>';
-                                }
-                            ?>
-                        </td>
-                        <td style="text-align:center">
-                            <?php
-                                if($data->flag_pelunasan==0){
-                                    if( ($group_id==1 || $hak_akses['create_voucher_pelunasan']==1) && $data->status==3){
-                                        echo '<a class="btn btn-circle btn-xs green" href="javascript:;" onclick="createVoucherPelunasan('.$data->id.');"
-                                            style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Create &nbsp; </a>';
-                                    }
                                 }
                                 if($data->status==4 || $data->status==1){
                                     echo '<small style="color:green"><i>Sudah Lunas</i></small>';
@@ -430,7 +287,7 @@ function getComa(value, id){
 
 function createVoucher(id){
     $.ajax({
-        url: "<?php echo base_url('index.php/BeliRongsok/show_po'); ?>",
+        url: "<?php echo base_url('index.php/BeliRongsok/create_voucher'); ?>",
         type: "POST",
         data : {id: id},
         success: function (result){
@@ -439,21 +296,22 @@ function createVoucher(id){
             $('#tanggal_po').val(result['tanggal']);
             $('#nama_supplier').val(result['nama_supplier']);
             $('#amount').val('0');
-            $('#nilai_po_dp').val(result['tot_nilai_po']);
-            $('#nilai_tot_vc_dp').val(Number(result['tot_nilai_dp']));  
+            $('#nilai_po').val(result['nilai_po']);
+            $('#nilai_dp').val(result['nilai_dp']);
+            $('#amount').val(result['sisa']);
             $('#keterangan').val('');
             $('#id').val(result['id']);
             
             $('#message').html("");
             $('.alert-danger').hide(); 
             
-            $("#myModal").find('.modal-title').text('Create Voucher DP');
-            $("#myModal").modal('show',{backdrop: 'true'});           
+            $("#myModal").find('.modal-title').text('Create Voucher');
+            $("#myModal").modal('show',{backdrop: 'true'});
         }
     });
 }
 
-function simpanData(){
+function saveVoucher(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
@@ -468,46 +326,46 @@ function simpanData(){
     };
 };
 
-function createVoucherPelunasan(id){
-    $.ajax({
-        url: "<?php echo base_url('index.php/BeliRongsok/create_voucher_pelunasan'); ?>",
-        type: "POST",
-        data : {id: id},
-        success: function (result){
-            //console.log(result);
-            $('#no_po_pelunasan').val(result['no_po']);
-            $('#tanggal_po_pelunasan').val(result['tanggal']);
-            $('#nama_supplier_pelunasan').val(result['nama_supplier']);
-            $('#nilai_po_pelunasan').val(result['nilai_po']);
-            $('#nilai_dp_pelunasan').val(result['nilai_dp']);
+// function createVoucherPelunasan(id){
+//     $.ajax({
+//         url: "<?php echo base_url('index.php/BeliRongsok/create_voucher_pelunasan'); ?>",
+//         type: "POST",
+//         data : {id: id},
+//         success: function (result){
+//             //console.log(result);
+//             $('#no_po_pelunasan').val(result['no_po']);
+//             $('#tanggal_po_pelunasan').val(result['tanggal']);
+//             $('#nama_supplier_pelunasan').val(result['nama_supplier']);
+//             $('#nilai_po_pelunasan').val(result['nilai_po']);
+//             $('#nilai_dp_pelunasan').val(result['nilai_dp']);
             
-            $('#amount_pelunasan').val(result['sisa']);
-            $('#keterangan_pelunasan').val('');
-            $('#id_pelunasan').val(result['id']);
+//             $('#amount_pelunasan').val(result['sisa']);
+//             $('#keterangan_pelunasan').val('');
+//             $('#id_pelunasan').val(result['id']);
             
-            $('#msg_pelunasan').html("");
-            $('#box_error_pelunasan').hide(); 
+//             $('#msg_pelunasan').html("");
+//             $('#box_error_pelunasan').hide(); 
             
-            $("#myModalPelunasan").find('.modal-title').text('Create Voucher Pelunasan');
-            $("#myModalPelunasan").modal('show',{backdrop: 'true'});           
-        }
-    });
-}
+//             $("#myModalPelunasan").find('.modal-title').text('Create Voucher Pelunasan');
+//             $("#myModalPelunasan").modal('show',{backdrop: 'true'});           
+//         }
+//     });
+// }
 
-function prosesPelunasan(){
-    if($.trim($("#tanggal_pelunasan").val()) == ""){
-        $('#msg_pelunasan').html("Tanggal harus diisi, tidak boleh kosong!");
-        $('#box_error_pelunasan').show(); 
-    }else if($.trim($("#amount_pelunasan").val()) == "" || $("#amount_pelunasan").val()=="0"){
-        $('#msg_pelunasan').html("Amount harus diisi, tidak boleh kosong!");
-        $('#box_error_pelunasan').show();
-    }else{    
-        $('#msg_pelunasan').html("");
-        $('#box_error_pelunasan').hide();
-        $('#frm_pelunasan').attr("action", "<?php echo base_url(); ?>index.php/BeliRongsok/save_voucher_pelunasan");
-        $('#frm_pelunasan').submit(); 
-    };
-};
+// function prosesPelunasan(){
+//     if($.trim($("#tanggal_pelunasan").val()) == ""){
+//         $('#msg_pelunasan').html("Tanggal harus diisi, tidak boleh kosong!");
+//         $('#box_error_pelunasan').show(); 
+//     }else if($.trim($("#amount_pelunasan").val()) == "" || $("#amount_pelunasan").val()=="0"){
+//         $('#msg_pelunasan').html("Amount harus diisi, tidak boleh kosong!");
+//         $('#box_error_pelunasan').show();
+//     }else{    
+//         $('#msg_pelunasan').html("");
+//         $('#box_error_pelunasan').hide();
+//         $('#frm_pelunasan').attr("action", "<?php echo base_url(); ?>index.php/BeliRongsok/save_voucher_pelunasan");
+//         $('#frm_pelunasan').submit(); 
+//     };
+// };
 </script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>

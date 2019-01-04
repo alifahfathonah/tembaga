@@ -109,6 +109,8 @@ class BeliRongsok extends CI_Controller{
             $data['header'] = $this->Model_beli_rongsok->show_header_po($id)->row_array();  
             $data['list_data'] = $this->Model_beli_rongsok->load_detail($id)->result();
             $data['list_detail'] = $this->Model_beli_rongsok->show_data_po($id)->result();
+            $this->load->model('Model_rongsok');
+            $data['list_rongsok'] = $this->Model_rongsok->list_data()->result();
 
             $this->load->model('Model_beli_sparepart');
             $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
@@ -145,8 +147,6 @@ class BeliRongsok extends CI_Controller{
         $tabel = "";
         $no    = 1;
         $total = 0;
-        $this->load->model('Model_rongsok');
-        $list_rongsok = $this->Model_rongsok->list_data()->result();
         
         $this->load->model('Model_beli_rongsok'); 
         $myDetail = $this->Model_beli_rongsok->load_detail($id)->result(); 
@@ -165,34 +165,11 @@ class BeliRongsok extends CI_Controller{
             $total += $row->total_amount;
             $no++;
         }
-            
-        $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:center">'.$no.'</td>';
-        $tabel .= '<td>';
-        $tabel .= '<select id="rongsok_id" name="rongsok_id" class="form-control select2me myline" ';
-            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">';
-            $tabel .= '<option value=""></option>';
-            foreach ($list_rongsok as $value){
-                $tabel .= "<option value='".$value->id."'>".$value->kode_rongsok.' - '.$value->nama_item."</option>";
-            }
-        $tabel .= '</select>';
-        $tabel .= '</td>';
-        $tabel .= '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td><input type="text" id="harga" name="harga" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-        $tabel .= '<td><input type="text" id="qty" name="qty" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="15" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-        $tabel .= '<td><input type="text" id="total_harga" name="total_harga" class="form-control myline" '
-                . 'readonly="readonly" value="0"></td>';
-        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
-                . '<i class="fa fa-plus"></i> Tambah </a></td>';
-        $tabel .= '</tr>'; 
+
         $tabel .= '<tr>';
         $tabel .= '<td colspan="5" style="text-align:right"><strong>Total (Rp) </strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
         $tabel .= '</tr>';
-       
         
         header('Content-Type: application/json');
         echo json_encode($tabel); 
@@ -206,93 +183,48 @@ class BeliRongsok extends CI_Controller{
         
         $this->load->model('Model_beli_rongsok'); 
         $list_rongsok_on_po = $this->Model_beli_rongsok->show_data_rongsok()->result();
-        /*
-        $myDetail = $this->Model_beli_rongsok->load_detail($id)->result(); 
-        foreach ($myDetail as $row){
-            $tabel .= '<tr>';
-            $tabel .= '<td style="text-align:center">'.$no.'</td>';
-            $tabel .= '<td>';
-            $tabel .= '<input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
-                                            onclick="check();" class="form-control">';
-            $tabel .= '<input type="hidden" name="myDetails['.$no.'][po_detail_id]" value="'.$row->id.'">';
-            $tabel .= '<input type="hidden" name="myDetails['.$no.'][rongsok_id]" value="'.$row->rongsok_id.'">';
-            $tabel .= '</td>';
-            
-            $tabel .= '<td><input type="text" name="myDetails['.$no.'][nama_item]" '
-                        . 'class="form-control myline" value="'.$row->nama_item.'" '
-                        . 'readonly="readonly"></td>';
-            $tabel .= '<td><input type="text" name="myDetails['.$no.'][uom]" '
-                        . 'class="form-control myline" value="'.$row->uom.'" '
-                        . 'readonly="readonly"></td>';                                    
-            $tabel .=  '<td><input type="text" name="myDetails['.$no.'][qty]" '
-                        . 'class="form-control myline" value="'.$row->qty.'" '
-                        . 'readonly="readonly"></td>';
 
-            $tabel .= '<td><input type="text" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
-                        . 'class="form-control myline" value="0" maxlength="10" '
-                        . 'onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>';
-                                    
-            $tabel .= '<td><input type="text" id="netto_'.$no.'" name="myDetails['.$no.'][netto]" '
-                       . 'class="form-control myline" value="0" maxlength="10" '
-                       . 'onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>';
-                                    
-            $tabel .= '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="loadTimbangan('
-                        .$no.');"> <i class="fa fa-dashboard"></i> Timbang </a></td>';
-                                    
-            $tabel .= '<td><input type="text" id="pallete_'.$no.'"" name="myDetails['.$no.'][no_pallete]" '
-                        . 'class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';
-            $tabel .= '<td><input type="text" id="ket_'.$no.'"" name="myDetails['.$no.'][line_remarks]" '
-                        . 'class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';
-                                   
-            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
-                    . '<i class="fa fa-trash"></i> Delete </a></td>';
-            $tabel .= '</tr>';
-            $no++;
-        }
-        */
+//         $tabel .= '<tr>';
+//         $tabel .= '<td style="text-align:center">'.$no.'</td>';
+//         $tabel .= '<td>';
+//         $tabel .= '<input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" onclick="check();" class="form-control">';
+//         $tabel .= '<input type="hidden" id="po_id_'.$no.'" name="myDetails['.$no.'][po_detail_id]" value="">';
+//         $tabel .= '<input type="hidden" id="rongsok_id_'.$no.'" name="myDetails['.$no.'][rongsok_id]" value="">';
+//         $tabel .= '</td>';
+//         $tabel .= '<td><select id="name_rongsok" name="myDetails['.$no.'][nama_item]" class="form-control select2me myline" ';
+//             $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,'.$no.');">';
+//             $tabel .= '<option value=""></option>';
+//             foreach ($list_rongsok_on_po as $value){
+//                 $tabel .= "<option value='".$value->id."'>".$value->nama_item."</option>";
+//             }
+//         $tabel .= '</select>';
+//         $tabel .= '</td>';
+//         $tabel .= '<td><input type="text" id="uom_'.$no.'" name="myDetails['.$no.'][uom]" class="form-control myline" '
+//                     .' readonly="readonly"></td>';        
+//         $tabel .= '<td><input type="text" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
+//                     . 'class="form-control myline" value="0" maxlength="10" '
+//                     . 'onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>';
 
-        $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:center">'.$no.'</td>';
-        $tabel .= '<td>';
-        $tabel .= '<input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" onclick="check();" class="form-control">';
-        $tabel .= '<input type="hidden" id="po_id_'.$no.'" name="myDetails['.$no.'][po_detail_id]" value="">';
-        $tabel .= '<input type="hidden" id="rongsok_id_'.$no.'" name="myDetails['.$no.'][rongsok_id]" value="">';
-        $tabel .= '</td>';
-        $tabel .= '<td><select id="name_rongsok" name="myDetails['.$no.'][nama_item]" class="form-control select2me myline" ';
-            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,'.$no.');">';
-            $tabel .= '<option value=""></option>';
-            foreach ($list_rongsok_on_po as $value){
-                $tabel .= "<option value='".$value->id."'>".$value->nama_item."</option>";
-            }
-        $tabel .= '</select>';
-        $tabel .= '</td>';
-        $tabel .= '<td><input type="text" id="uom_'.$no.'" name="myDetails['.$no.'][uom]" class="form-control myline" '
-                    .' readonly="readonly"></td>';        
-        $tabel .= '<td><input type="text" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
-                    . 'class="form-control myline" value="0" maxlength="10" '
-                    . 'onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>';
-
-        $tabel .= '<td><input type="text" id="berat_palette_'.$no.'" name="myDetails['.$no.'][berat_palette]" '
-                    . 'class="form-control myline" value="0" maxlength="10" '
-                    . 'onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>';
+//         $tabel .= '<td><input type="text" id="berat_palette_'.$no.'" name="myDetails['.$no.'][berat_palette]" '
+//                     . 'class="form-control myline" value="0" maxlength="10" '
+//                     . 'onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>';
                                     
-        $tabel .= '<td><input type="text" id="netto_'.$no.'" name="myDetails['.$no.'][netto]" '
-                    . 'class="form-control myline" value="0" maxlength="10" readonly="readonly"'
-                    . 'onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>';
+//         $tabel .= '<td><input type="text" id="netto_'.$no.'" name="myDetails['.$no.'][netto]" '
+//                     . 'class="form-control myline" value="0" maxlength="10" readonly="readonly"'
+//                     . 'onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>';
                                     
-/*        $tabel .= '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="loadTimbangan('
-                    .$no.');"> <i class="fa fa-dashboard"></i> Timbang </a></td>'; */
-        $tabel .= '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('.$no.');"> <i class="fa fa-dashboard"></i> Timbang </a></td>';                            
-        $tabel .= '<td><input type="text" name="myDetails['.$no.'][no_pallete]" id="no_pallete_'.$no
-                    .'" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';
-        $tabel .= '<td><input type="text" name="myDetails['.$no.'][line_remarks]" '
-                    . 'class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';
+// /*        $tabel .= '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="loadTimbangan('
+//                     .$no.');"> <i class="fa fa-dashboard"></i> Timbang </a></td>'; */
+//         $tabel .= '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('.$no.');"> <i class="fa fa-dashboard"></i> Timbang </a></td>';                            
+//         $tabel .= '<td><input type="text" name="myDetails['.$no.'][no_pallete]" id="no_pallete_'.$no
+//                     .'" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';
+//         $tabel .= '<td><input type="text" name="myDetails['.$no.'][line_remarks]" '
+//                     . 'class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';
         
-       $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail('.$no.');" style="margin-top:5px" id="btnSaveDetail"> '
-                . '<i class="fa fa-plus"></i> Tambah </a></td>';
-        $tabel .= '</tr>';
+//        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+//                 . 'yellow-gold" onclick="saveDetail('.$no.');" style="margin-top:5px" id="btnSaveDetail"> '
+//                 . '<i class="fa fa-plus"></i> Tambah </a></td>';
+//         $tabel .= '</tr>';
         
         header('Content-Type: application/json');
         echo json_encode($tabel); 
@@ -369,25 +301,50 @@ class BeliRongsok extends CI_Controller{
     function show_po(){
         $id = $this->input->post('id');
         $this->load->model('Model_beli_rongsok');
-        $data = $this->Model_beli_rongsok->show_header_po($id)->row_array(); 
+        $data = $this->Model_beli_rongsok->show_header_po($id)->row_array();
         
         header('Content-Type: application/json');
         echo json_encode($data);       
+    }
+
+    function create_voucher(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_beli_rongsok');
+        $data = $this->Model_beli_rongsok->voucher_po_rsk($id)->row_array();
+        $sisa = $data['nilai_po'] - $data['nilai_dp'];
+        $data['nilai_po'] = number_format($data['nilai_po'],0,',','.');
+        $data['nilai_dp'] = number_format($data['nilai_dp'],0,',','.');
+        $data['sisa']     = number_format($sisa,0,',','.');
+        
+        header('Content-Type: application/json');
+        echo json_encode($data);    
     }
     
     function save_voucher(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $nilai_po  = str_replace('.', '', $this->input->post('nilai_po'));
+        $nilai_dp  = str_replace('.', '', $this->input->post('nilai_dp'));
+        $amount  = str_replace('.', '', $this->input->post('amount'));
+        $id = $this->input->post('id');
         
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('VRSK', $tgl_input); 
+        $code = $this->Model_m_numberings->getNumbering('VRSK', $tgl_input);
+        if($nilai_po-($nilai_dp+$amount)>0){
+            $jenis_voucher = 'DP';
+        }else{
+            $jenis_voucher = 'Pelunasan';
+            $this->db->where('id', $id);
+            $this->db->update('po', array('flag_pelunasan'=>1,'status'=>4));
+        } 
+
         if($code){ 
             $this->db->insert('voucher', array(
                 'no_voucher'=>$code,
                 'tanggal'=>$tgl_input,
-                'jenis_voucher'=>'DP',
+                'jenis_voucher'=>$jenis_voucher,
                 'po_id'=>$this->input->post('id'),
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'amount'=>str_replace('.', '', $this->input->post('amount')),
@@ -398,14 +355,10 @@ class BeliRongsok extends CI_Controller{
                 'modified_by'=> $user_id
             ));
             
-            $this->load->model('Model_beli_rongsok');
-            #update status DP jika sudah lunas
-            $this->Model_beli_rongsok->update_status_dp($this->input->post('id'));
-            
             if($this->db->trans_complete()){    
-                $this->session->set_flashdata('flash_msg', 'Voucher DP rongsok berhasil di-create dengan nomor : '.$code);                 
+                $this->session->set_flashdata('flash_msg', 'Voucher rongsok berhasil di-create dengan nomor : '.$code);                 
             }else{
-                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create voucher DP rongsok, silahkan coba kembali!');
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create voucher  rongsok, silahkan coba kembali!');
             }
             redirect('index.php/BeliRongsok');  
         }else{
@@ -428,17 +381,17 @@ class BeliRongsok extends CI_Controller{
 
             $data['content']= "beli_rongsok/create_dtr";
             $this->load->model('Model_beli_rongsok');
-            $list_rongsok_on_po = $this->Model_beli_rongsok->show_data_rongsok()->result();
+            $data['list_rongsok_on_po'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
             $data['supplier_list'] = $this->Model_beli_rongsok->supplier_list()->result();
             // $data['header'] = $this->Model_beli_rongsok->show_header_po($id)->row_array();           
             // $data['po_id'] = $id;
             // $this->load->model('Model_rongsok');
             // $list_rongsok_on_po = $this->Model_rongsok->list_data_on_po($id)->result();
-            $opt_rongsok = '';
-            foreach ($list_rongsok_on_po as $value){
-                $opt_rongsok .= "<option value='".$value->id."'>".$value->nama_item."</option>";
-            }
-            $data['option_rongsok'] = $opt_rongsok;
+            // $opt_rongsok = '';
+            // foreach ($list_rongsok_on_po as $value){
+            //     $opt_rongsok .= "<option value='".$value->id."'>".$value->nama_item."</option>";
+            // }
+            // $data['option_rongsok'] = $opt_rongsok;
             $this->load->view('layout', $data);   
         // }else{
         //     redirect('index.php/BeliRongsok');
@@ -470,21 +423,21 @@ class BeliRongsok extends CI_Controller{
             $dtr_id = $this->db->insert_id();
             $details = $this->input->post('myDetails');
             foreach ($details as $row){
-                if(isset($row['check']) && $row['check']==1 && $row['rongsok_id']!=null){
-
+                if($row['rongsok_id']!=''){
                     $this->db->insert('dtr_detail', array(
                         'dtr_id'=>$dtr_id,
                         //'po_detail_id'=>$row['po_detail_id'],
                         'rongsok_id'=>$row['rongsok_id'],
-                        'qty'=>str_replace('.', '', $row['qty']),
+                        // 'qty'=>str_replace('.', '', $row['qty']),
                         'bruto'=>str_replace('.', '', $row['bruto']),
                         'berat_palette'=>str_replace('.', '', $row['berat_palette']),
                         'netto'=>str_replace('.', '', $row['netto']),
                         'no_pallete'=>$row['no_pallete'],
                         'line_remarks'=>$row['line_remarks'],
+                        'created'=>$tanggal,
+                        'created_by'=>$user_id,
                         'tanggal_masuk'=>$tgl_input
                     ));
-                   
                 }
             }
             
@@ -597,7 +550,7 @@ class BeliRongsok extends CI_Controller{
         $tgl_input = date('Y-m-d');
         $return_data = array();
         
-        $this->db->trans_start();       
+            $this->db->trans_start();       
 
             #Update status DTR
             $this->db->where('id', $dtr_id);
@@ -650,32 +603,27 @@ class BeliRongsok extends CI_Controller{
                 }
 
                 #update status PO, jika DTR sudah mencukupi
-                $total_qty = 0;
-                $total_netto_dtr = 0;
                 $po_dtr_list = $this->Model_beli_rongsok->check_po_dtr($po_id)->result();
                 foreach ($po_dtr_list as $v) {
                     #penghitungan +- 10 % PO ke DTR
-                    if(((int)$v->tot_netto) >= (0.9*((int)$v->qty))){
-                        #update po_detail flag_dtr
-                        $this->Model_beli_rongsok->update_flag_dtr_po_detail($po_id,$v->rongsok_id);
-                    }
-                    $total_qty += $v->qty;
-                    $total_netto_dtr += $v->tot_netto;
+                    // if(((int)$v->tot_netto) >= (0.9*((int)$v->qty))){
+                    //     #update po_detail flag_dtr
+                    //     $this->Model_beli_rongsok->update_flag_dtr_po_detail($po_id);
+                    // }
+                    // $total_qty += $v->qty;
+                        if(((int)$v->tot_netto) >= (0.9*((int)$v->tot_qty))){
+                            $this->db->where('id',$po_id);
+                            $this->db->update('po',array(
+                                            'status'=>3));
+                        }else {
+                            $this->db->where('id',$po_id);
+                            $this->db->update('po',array(
+                                            'status'=>2));
+                        }
                 }
 
-               if(((int)$total_netto_dtr) >= (0.9*((int)$total_qty))){
-                    $this->db->where('id',$po_id);
-                    $this->db->update('po',array(
-                                    'status'=>3));
-               }else {
-                    $this->db->where('id',$po_id);
-                    $this->db->update('po',array(
-                                    'status'=>2));
-               }
-
-                  
-                $return_data['type_message']= "sukses";
-                $return_data['message'] = "TTR sudah diberikan ke bagian gudang";
+            $return_data['type_message']= "sukses";
+            $return_data['message'] = "TTR sudah diberikan ke bagian gudang";
                 //$return_data['message']= "TTR berhasil di-create dengan nomor : ".$code;                 
         }else{
             $return_data['type_message']= "error";
@@ -1029,19 +977,6 @@ class BeliRongsok extends CI_Controller{
         }else{
             redirect('index.php'); 
         }
-    }
-    
-    function create_voucher_pelunasan(){
-        $id = $this->input->post('id');
-        $this->load->model('Model_beli_rongsok');
-        $data = $this->Model_beli_rongsok->get_data_pelunasan($id)->row_array(); 
-        $sisa = $data['nilai_po']- $data['nilai_dp'];
-        $data['nilai_po'] = number_format($data['nilai_po'],0,',','.');
-        $data['nilai_dp'] = number_format($data['nilai_dp'],0,',','.');
-        $data['sisa']     = number_format($sisa,0,',','.');
-        
-        header('Content-Type: application/json');
-        echo json_encode($data);       
     }
     
     function save_voucher_pelunasan(){

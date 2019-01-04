@@ -112,7 +112,7 @@
                                     <th>Nama Item</th>
                                     <th>UOM</th>
                                     <th>Harga (Rp)</th>
-                                    <th>Qty</th> 
+                                    <th>Netto</th> 
                                     <th>Sub Total (Rp)</th>                      
                                 </tr>
                                 </thead>

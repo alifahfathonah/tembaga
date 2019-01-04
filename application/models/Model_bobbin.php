@@ -90,10 +90,13 @@ class Model_bobbin extends CI_Model{
         return $data;
     }
 
-    function bobbin_list($id_jenis){
-        $data = $this->db->query("select *
-                from m_bobbin where m_jenis_packing_id = ".$id_jenis);
-
+    function bobbin_list($id_jenis, $id){
+        $data = $this->db->query("select * from m_bobbin mb
+            where not exists 
+            (SELECT id_bobbin 
+            FROM m_bobbin_spb_detail mbsd
+            WHERE mbsd.id_spb_bobbin =".$id." and mbsd.id_bobbin = mb.id) 
+            and m_jenis_packing_id =".$id_jenis." and status = 0");
         return $data;
     }
 

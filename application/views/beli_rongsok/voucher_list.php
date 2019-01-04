@@ -34,8 +34,8 @@
                     <th>No. PO</th>  
                     <th>Tanggal PO</th>                    
                     <th>Amount (Rp)</th> 
-                    <th>Katerangan</th>
-                    <!--th>Actions</th-->
+                    <th>Keterangan</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>

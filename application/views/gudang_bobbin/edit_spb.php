@@ -105,6 +105,16 @@
                             <tbody id="boxDetail">
 
                             </tbody>
+                            <tr>
+                                <td style="text-align:center">+</td>
+                                <td>
+                                <select id="id_bobbin" name="id_bobbin" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_berat(this.value);">
+                                    <option value=""></option>
+                                </select>
+                                </td>
+                                <td><input type="text" id="berat" name="berat" class="form-control myline" readonly="readonly"></td>
+                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -145,18 +155,32 @@ function simpanData(){
 };
 
 function loadDetail(id){
-    id_jenis = $('#id_jenis').val();
     $.ajax({
         type:"POST",
         url:'<?php echo base_url('index.php/GudangBobbin/load_detail_edit_spb'); ?>',
         data:{
-            id: id,
-            id_jenis:id_jenis
+            id: id
         },
         success:function(result){
             $('#boxDetail').html(result);     
         }
     });
+}
+
+function load_vc(id_jenis){
+    var id = $("#id").val();
+    $.ajax({
+        url: "<?php echo base_url('index.php/GudangBobbin/get_bobbin'); ?>",
+        type: "POST",
+        data: {
+            id:id,
+            id_jenis:id_jenis
+        },
+        dataType: "html",
+        success: function(result) {
+            $('#id_bobbin').html(result);
+        }
+    })
 }
 
 function get_berat(id){
@@ -189,6 +213,9 @@ function saveDetail(){
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
+                    $("#id_bobbin").select2("val", "");
+                    $("#berat").val('');
+                    load_vc(<?php echo $header['jenis_packing'];?>);
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{
@@ -210,6 +237,7 @@ function hapusDetail(id){
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
+                    load_vc(<?php echo $header['jenis_packing'];?>);
                 }else{
                     alert(result['message']);
                 }     
@@ -234,8 +262,8 @@ $(function(){
         changeYear: true,
         dateFormat: 'dd-mm-yy'
     }); 
-    
-    loadDetail(<?php echo $header['id']; ?>);
+    loadDetail(<?php echo $header['id'];?>);
+    load_vc(<?php echo $header['jenis_packing'];?>);
 });
 </script>
       

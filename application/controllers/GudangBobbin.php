@@ -547,7 +547,7 @@ class GudangBobbin extends CI_Controller{
             $data['content']= "gudang_bobbin/edit_spb";
             $this->load->model('Model_bobbin');
             $data['header'] = $this->Model_bobbin->show_header_spb($id)->row_array();
-            $data['details'] =   $this->Model_bobbin->show_detail_spb($id)->result();
+            $data['details'] = $this->Model_bobbin->show_detail_spb($id)->result();
     
             $this->load->view('layout', $data);   
         }else{
@@ -555,14 +555,24 @@ class GudangBobbin extends CI_Controller{
         }
     }
 
+    function get_bobbin(){ 
+        $this->load->model('Model_bobbin');
+        $id = $this->input->post('id');
+        $id_jenis = $this->input->post('id_jenis');
+        $data = $this->Model_bobbin->bobbin_list($id_jenis, $id)->result();
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->nomor_bobbin;
+        } 
+        print form_dropdown('id_bobbin', $arr_so);
+    }
+
     function load_detail_edit_spb(){
         $id = $this->input->post('id');
         $id_jenis = $this->input->post('id_jenis');
         $tabel = "";
         $no    = 1;
-        $this->load->model('Model_bobbin');
-        $list_barang = $this->Model_bobbin->bobbin_list($id_jenis)->result();
-        
+        $this->load->model('Model_bobbin');        
         $myDetail = $this->Model_bobbin->load_spb_detail($id)->result(); 
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
@@ -575,23 +585,6 @@ class GudangBobbin extends CI_Controller{
             $tabel .= '</tr>';            
             $no++;
         }
-            
-        $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:center">'.$no.'</td>';
-        $tabel .= '<td>';
-        $tabel .= '<select id="id_bobbin" name="id_bobbin" class="form-control select2me myline" ';
-            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_berat(this.value);">';
-            $tabel .= '<option value=""></option>';
-            foreach ($list_barang as $value){
-                $tabel .= "<option value='".$value->id."'>".$value->nomor_bobbin."</option>";
-            }
-        $tabel .= '</select>';
-        $tabel .= '</td>';
-        $tabel .= '<td><input type="text" id="berat" name="berat" class="form-control myline" readonly="readonly"></td>';      
-        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
-                . '<i class="fa fa-plus"></i> Tambah </a></td>';
-        $tabel .= '</tr>';
 
         header('Content-Type: application/json');
         echo json_encode($tabel); 

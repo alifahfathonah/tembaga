@@ -103,7 +103,7 @@ create produksi, setelah scan nomor pallete ubah jadi save jangan langsung appro
 rongsok:
 create dtr, hapus jumlah po / qty (finish)
 matching berdasarkan berat / qty (finish)
-#matching dtr update customer_id pada dtr
+#matching dtr update supplier_id pada dtr (tinggal matching netto dtr sama qty po)
 
 bobbin:
 bobbin register edit, pemilik dan tipe disable

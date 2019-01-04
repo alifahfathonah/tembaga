@@ -173,8 +173,8 @@
                     <div class="table-scrollable">
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
-                                <th style="width:40px">No</th>
-                                <th>Nama Item Rongsok</th>
+                                <th style="width: 40px">No</th>
+                                <th style="width: 20%">Nama Item Rongsok</th>
                                 <th>Unit of Measure</th>
                                 <th>Harga (Rp)</th>
                                 <th>Jumlah</th>
@@ -184,6 +184,22 @@
                             <tbody id="boxDetail">
 
                             </tbody>
+                            <tr>
+                                <td style="text-align:center"><i class="fa fa-plus"></i></td>
+                                <td>
+                                <select id="rongsok_id" name="rongsok_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
+                                    <option value=""></option><?php
+                                    foreach ($list_rongsok as $value){
+                                        echo "<option value='".$value->id."'>".$value->kode_rongsok.' - '.$value->nama_item."</option>";
+                                    }?>
+                                </select>
+                                </td>
+                                <td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="harga" name="harga" class="form-control myline" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);"></td>
+                                <td><input type="text" id="qty" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="15" value="0" onkeyup="getComa(this.value, this.id);"></td>
+                                <td><input type="text" id="total_harga" name="total_harga" class="form-control myline" readonly="readonly" value="0"></td>
+                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -226,15 +242,15 @@
                                 $total = 0;
                                 foreach ($list_data as $row){
                                 $no++;
-                            echo '<tr>';
-                            echo '<td style="text-align:center">'.$no.'</td>';
-                            echo '<td>'.$row->nama_item.'</td>';
-                            echo '<td>'.$row->uom.'</td>';
-                            echo '<td style="text-align:right">'.number_format($row->amount,0,',','.').'</td>';
-                            echo '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
-                            echo '<td style="text-align:right">'.number_format($row->total_amount,0,',','.').'</td>';
-                            echo '</tr>';
-                            $total += $row->total_amount;                                
+                                echo '<tr>';
+                                echo '<td style="text-align:center">'.$no.'</td>';
+                                echo '<td>'.$row->nama_item.'</td>';
+                                echo '<td>'.$row->uom.'</td>';
+                                echo '<td style="text-align:right">'.number_format($row->amount,0,',','.').'</td>';
+                                echo '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
+                                echo '<td style="text-align:right">'.number_format($row->total_amount,0,',','.').'</td>';
+                                echo '</tr>';
+                                $total += $row->total_amount;
                             }
                             ?>
                             </tbody>
@@ -384,10 +400,7 @@ function get_uom(id){
 function saveDetail(){
     if($.trim($("#rongsok_id").val()) == ""){
         $('#message').html("Silahkan pilih item rongsok!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#qty").val()) == ""){
-        $('#message').html("Jumlah item rongsok tidak boleh kosong!");
-        $('.alert-danger').show(); 
+        $('.alert-danger').show();
     }else if($.trim($("#harga").val()) == ""){
         $('#message').html("Harga item rongsok tidak boleh kosong!");
         $('.alert-danger').show(); 
@@ -405,6 +418,11 @@ function saveDetail(){
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
+                    $("#rongsok_id").select2("val", "");
+                    $('#rongsok_id').val('');
+                    $('#harga').val('');
+                    $('#qty').val('');
+                    $('#total_harga').val('');
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{
