@@ -107,6 +107,8 @@ class Tolling extends CI_Controller{
             
             $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
             $data['marketing_list'] = $this->Model_tolling_titipan->marketing_list()->result();
+            $this->load->model('Model_rongsok');
+            $data['list_rongsok'] = $this->Model_rongsok->list_data()->result();
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/Tolling');
@@ -141,8 +143,6 @@ class Tolling extends CI_Controller{
         $total = 0;
         $bruto = 0;
         $netto = 0;
-        $this->load->model('Model_rongsok');
-        $list_rongsok = $this->Model_rongsok->list_data()->result();
         
         $this->load->model('Model_tolling_titipan'); 
         $myDetail = $this->Model_tolling_titipan->load_detail_edit($id)->result(); 
@@ -152,10 +152,9 @@ class Tolling extends CI_Controller{
             $tabel .= '<td>'.$row->nama_item.'</td>';
             $tabel .= '<td>'.$row->uom.'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->amount,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->total_amount,0,',','.').'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->bruto,0,',','.').'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->total_amount,0,',','.').'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
@@ -165,40 +164,13 @@ class Tolling extends CI_Controller{
             $netto += $row->netto;
             
             $no++;
-        }
-            
-        $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:center">'.$no.'</td>';
-        $tabel .= '<td>';
-        $tabel .= '<select id="rongsok_id" name="rongsok_id" class="form-control select2me myline" ';
-            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">';
-            $tabel .= '<option value=""></option>';
-            foreach ($list_rongsok as $value){
-                $tabel .= "<option value='".$value->id."'>".$value->nama_item."</option>";
-            }
-        $tabel .= '</select>';
-        $tabel .= '</td>';
-        $tabel .= '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td><input type="text" id="harga" name="harga" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-        $tabel .= '<td><input type="text" id="qty" name="qty" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="5" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-        $tabel .= '<td><input type="text" id="total_harga" name="total_harga" class="form-control myline" '
-                . 'readonly="readonly" value="0"></td>';
-        $tabel .= '<td><input type="text" id="bruto" name="bruto" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-        $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
-                . '<i class="fa fa-plus"></i> Tambah </a></td>';
-        $tabel .= '</tr>';
+        }    
         
         $tabel .= '<tr>';
-        $tabel .= '<td colspan="5" style="text-align:right"><strong>Total </strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
+        $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($bruto,0,',','.').'</strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
         $tabel .= '<td></td>';
         $tabel .= '</tr>';
        
@@ -287,7 +259,6 @@ class Tolling extends CI_Controller{
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
             $tabel .= '<td>'.$row->nama_item.'</td>';
             $tabel .= '<td>'.$row->uom.'</td>';
-            $tabel .= '<td>'.$row->qty.'</td>';
             $tabel .= '<td>'.$row->bruto.'</td>';
             $tabel .= '<td>'.$row->berat_palette.'</td>';
             $tabel .= '<td>'.$row->netto.'</td>';
@@ -310,10 +281,9 @@ class Tolling extends CI_Controller{
                 $tabel .= "<option value='".$value->id."'>".$value->nama_item."</option>";
             }
         $tabel .= '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly></td>';
-        $tabel .= '<td><input type="text" id="qty" name="qty" class="form-control myline"/></td>';
         $tabel .= '<td><input type="text" id="bruto" name="bruto" class="form-control myline"/></td>';
         $tabel .= '<td><input type="text" id="berat_palette" name="berat_palette" class="form-control myline"/></td>';
-        $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline"/></td>';
+        $tabel .= '<td><input type="text" id="netto" name="netto" readonly="readonly" class="form-control myline"/></td>';
         $tabel .= '<td><input type="text" id="no_pallete" name="no_pallete" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"/></td>';
         $tabel .= '<td><input type="text" id="keterangan" name="keterangan" class="form-control myline" '
                 . 'onkeyup="this.value = this.value.toUpperCase()"></td>';        

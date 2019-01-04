@@ -42,6 +42,16 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            No. PO <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_po" name="no_po" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['no_po']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Tanggal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -114,18 +124,34 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th>No</th>
-                                <th>Nama Item Rongsok</th>
+                                <th style="width: 20%">Nama Item Rongsok</th>
                                 <th>Unit of Measure</th>
                                 <th>Harga (Rp)</th>
-                                <th>Jumlah</th>
-                                <th>Sub Total (Rp)</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
+                                <th>Sub Total (Rp)</th>
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
 
                             </tbody>
+                            <tr>
+                                <td style="text-align:center">+</td>
+                                <td>
+                                <select id="rongsok_id" name="rongsok_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
+                                <option value=""></option><?php
+                                    foreach ($list_rongsok as $value){
+                                        echo "<option value='".$value->id."'>".$value->nama_item."</option>";
+                                    }?>
+                                </select>
+                                </td>
+                                <td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="harga" name="harga" class="form-control myline" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);"></td>
+                                <td><input type="text" id="bruto" name="bruto" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>
+                                <td><input type="text" id="netto" name="netto" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>
+                                <td><input type="text" id="total_harga" name="total_harga" class="form-control myline" readonly="readonly" value="0"></td>
+                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -171,7 +197,7 @@ function getComa(value, id){
 
 function hitungSubTotal(){
     harga = $('#harga').val().toString().replace(/\./g, "");
-    qty   = $('#qty').val().toString().replace(/\./g, "");
+    qty   = $('#netto').val().toString().replace(/\./g, "");
     total_harga = Number(harga)* Number(qty);
     $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
@@ -205,7 +231,6 @@ function loadDetail(id){
 function get_uom(id){
     $.ajax({
         url: "<?php echo base_url('index.php/Tolling/get_uom'); ?>",
-        async: false,
         type: "POST",
         data: "id="+id,
         dataType: "json",
@@ -219,8 +244,8 @@ function saveDetail(){
     if($.trim($("#rongsok_id").val()) == ""){
         $('#message').html("Silahkan pilih item rongsok!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#qty").val()) == ""){
-        $('#message').html("Jumlah item rongsok tidak boleh kosong!");
+    }else if($.trim($("#netto").val()) == ""){
+        $('#message').html("Jumlah Netto tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#harga").val()) == ""){
         $('#message').html("Harga item rongsok tidak boleh kosong!");
@@ -241,6 +266,12 @@ function saveDetail(){
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
+                    $("#rongsok_id").select2("val", "");
+                    $("#uom").val('');
+                    $("#harga").val('');
+                    $("#bruto").val('');
+                    $("#netto").val('');
+                    $("#total_harga").val('');
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{

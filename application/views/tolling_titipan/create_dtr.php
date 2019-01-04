@@ -113,19 +113,17 @@
                                 <th style="width:40px">No</th>
                                 <th>Nama Item Rongsok</th>
                                 <th>UOM</th>
-                                <th>Jumlah</th>
                                 <th>Bruto</th>
                                 <th>Netto</th>
                             </thead>
                             <tbody>
-<?php
+                            <?php
                                 $no = 1;
                                 foreach ($details as $row){
                                     echo '<tr>';
                                     echo '<td style="text-align:center">'.$no.'</td>';
                                     echo '<td>'.$row->nama_item.'</td>';
-                                    echo '<td>'.$row->uom.'</td>';                                    
-                                    echo '<td>'.$row->qty.'</td>';
+                                    echo '<td>'.$row->uom.'</td>';
                                     echo '<td>'.$row->bruto.'</td>';
                                     echo '<td>'.$row->netto.'</td>';
                                     $no++;
@@ -145,7 +143,6 @@
                                 <th style="width:40px">No</th>
                                 <th>Nama Item Rongsok</th>
                                 <th>UOM</th>
-                                <th>Jumlah</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Berat Palette</th>
                                 <th>Netto (Kg)</th>
