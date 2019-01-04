@@ -9,3 +9,6 @@ update table 181218
 
 update table 311218
 -create table t_spb_ampas dan detail
+
+update table 040119
+-t_gudang_ampas add jenis_barang_id tinyint

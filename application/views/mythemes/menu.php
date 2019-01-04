@@ -335,6 +335,12 @@
                             DTR List </a>
                         </li>
                         <li>
+                            <a href="<?php echo base_url(); ?>index.php/PengirimanAmpas/spb_list">
+                                <i class="fa fa-file-text-o"></i>
+                                SPB List
+                            </a>
+                        </li>
+                        <li>
                             <a href="<?php echo base_url(); ?>index.php/PengirimanAmpas/bpb_list">
                                 <i class="fa fa-file-text-o"></i>
                                 BPB List

@@ -640,6 +640,52 @@ class PengirimanAmpas extends CI_Controller{
         }
     } 
     
+    function spb_list(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "pengiriman_ampas/spb_list";
+        $this->load->model('Model_pengiriman_ampas');
+        $data['list_data'] = $this->Model_pengiriman_ampas->spb_list()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function view_spb(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "pengiriman_ampas/view_spb";
+
+            // $this->load->model('Model_gudang_fg');
+            // $data['list_barang'] = $this->Model_gudang_fg->jenis_barang_list_by_spb($id)->result();
+            // $data['myData'] = $this->Model_gudang_fg->show_header_spb($id)->row_array();           
+            // $data['myDetail'] = $this->Model_gudang_fg->show_detail_spb($id)->result(); 
+            // $data['detailSPB'] = $this->Model_gudang_fg->show_detail_spb_fulfilment($id)->result();
+            $this->load->model('Model_pengiriman_ampas');
+            $data['list_barang'] = $this->Model_ampas->jenis_barang_list_by_spb($id)->result();
+            $data['myData'] = $this->Model_pengiriman_ampas->show_header_spb($id)->row_array();
+            $data['myDetail'] = $this->Model_pengiriman_ampas->show_detail_spb($id)->result();
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/PengirimanAmpas/spb_list');
+        }
+    }
+
     function bpb_list(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
@@ -719,6 +765,7 @@ class PengirimanAmpas extends CI_Controller{
             foreach ($key as $row) {
                 $this->db->insert('t_gudang_ampas', array(
                     'tanggal' => $tgl_input,
+                    'jenis_barang_id' => 3,
                     'berat' => $row->berat,
                     'id_produksi' => $row->id_produksi,
                     'created_by' => $user_id,

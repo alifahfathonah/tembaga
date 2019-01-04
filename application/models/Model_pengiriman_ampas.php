@@ -121,6 +121,51 @@ class Model_pengiriman_ampas extends CI_Model{
         return $data;
     }
     
+    function spb_list(){
+        $data = $this->db->query("select tsa.*, usr.realname As pic, aprv.realname As approved_name, rjt.realname As rejected_name, rcv.realname As receiver_name, (select count(tsa.id) as jumlah_item from t_spb_ampas_detail tsad where tsad.t_spb_ampas_id = tsa.id) as jumlah_item
+            from t_spb_ampas tsa
+            left join users usr on (usr.id = tsa.created_by)
+            left join users aprv on (aprv.id = tsa.approved_by)
+            left join users rjt on (rjt.id = tsa.rejected_by)
+            left join users rcv on (rcv.id = tsa.received_by)
+            order by tsa.id Desc");
+        return $data;
+    }
+
+    function show_header_spb($id){
+        $data = $this->db->query("select tsa.*, 
+                usr.realname As pic,
+                aprv.realname As approved_name,
+                rjt.realname As rejected_name,
+                rcv.realname As receiver_name
+            from t_spb_ampas tsa
+                left join users usr on (tsa.created_by = usr.id)
+                left join users aprv on (tsa.approved_by = aprv.id)
+                left join users rjt on (tsa.rejected_by = rjt.id)
+                left join users rcv on (tsa.received_by = rcv.id)
+            where tsa.id = ".$id);
+        return $data;
+    }
+
+    function show_detail_spb($id){
+        $data = $this->db->query("Select tsad.*, jb.jenis_barang,
+                    (select jenis_barang from stok_fg sf where sf.jenis_barang_id= tsad.jenis_barang_id)as jenis_barang_stok,
+                    (select total_qty from stok_fg sf where sf.jenis_barang_id = tsad.jenis_barang_id)as total_qty,
+                    (select total_netto from stok_fg sf where sf.jenis_barang_id = tsad.jenis_barang_id)as total_netto
+                    From t_spb_ampas_detail tsad 
+                        Left Join jenis_barang jb On (jb.id = tsad.jenis_barang_id)
+                    Where tsad.t_spb_ampas_id=".$id);
+        return $data;
+    }
+
+    function jenis_barang_list_by_spb($id){
+        $data = $this->db->query("select jb.id, jb.jenis_barang
+            from t_spb_ampas_detail tsad
+            left join jenis_barang jb on (jb.id = tsad.jenis_barang_id)
+            where tsad.t_spb_ampas_id = ".$id);
+        return $data;
+    }
+
     function bpb_list(){
         $data = $this->db->query("select tba.*, pi.no_produksi, (select count(id) as jumlah_item from t_bpb_ampas_detail tbad where tbad.bpb_ampas_id = tba.id) as jumlah_item
             from t_bpb_ampas tba
