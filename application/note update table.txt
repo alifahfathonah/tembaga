@@ -12,3 +12,7 @@ update table 311218
 
 update table 040119
 -t_gudang_ampas add jenis_barang_id tinyint
+-po_detail add fg_id int
+
+update table 060119
+-create table dtbj dan detail
