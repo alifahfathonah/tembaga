@@ -274,18 +274,21 @@ class BeliFinishGood extends CI_Controller{
             $kode_bobbin = substr($no_bobbin, 0,1);
             $urut_bobbin = substr($no_bobbin, 1,4);
             $ukuran = substr($no_bobbin, 0,1);
-            $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin;
+            $barang['no_packing'] = date("ymd").$ukuran.$urut_bobbin;
         } else if ($barang['m_jenis_packing_id'] == 2){
             #keranjang
-            
+            $no_bobbin = $barang['nomor_bobbin'];
+            $kode_bobbin = substr($no_bobbin, 0,1);
+            $urut_bobbin = substr($no_bobbin, 2,4);
+            $ukuran = substr($no_bobbin, 0,1);
+            $barang['no_packing'] = date("ymd").$ukuran.$urut_bobbin.rand(1,20);
         } else if ($barang['m_jenis_packing_id'] == 4){
             #roll
-            $no_produksi = $this->input->post('nomor_produksi');
-            $urut_packing = sprintf("%'.04d",(int)$no_produksi);
-            $tmp_packing = $this->input->post('no_packing');
-            $kode_packing = substr($tmp_packing, 0,1);
-            $ukuran = $this->input->post('ukuran');
-            $no_packing = date("ymd").$kode_packing.$ukuran.$urut_packing;
+            $no_bobbin = $barang['nomor_bobbin'];
+            $kode_bobbin = substr($no_bobbin, 0,1);
+            $urut_bobbin = substr($no_bobbin, 1,4);
+            $ukuran = substr($no_bobbin, 0,1);
+            $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin;
         } else {
 
         }
@@ -324,6 +327,7 @@ class BeliFinishGood extends CI_Controller{
                         'berat_bobbin'=>$row['berat_bobbin'],
                         'netto'=>$row['netto'],
                         'no_bobbin'=>$row['no_bobbin'],
+                        'no_packing'=>$row['no_packing'],
                         'line_remarks'=>$row['line_remarks'],
                         'created'=>$tanggal,
                         'created_by'=>$user_id,
