@@ -58,13 +58,22 @@ class Ingot extends CI_Controller{
                 'jenis_barang_id'=>$this->input->post('jenis_barang'),
                 'remarks'=>$this->input->post('remarks'),
                 'created'=> $tanggal,
-                'created_by'=> $user_id,
-                'modified'=> $tanggal,
-                'modified_by'=> $user_id
+                'created_by'=> $user_id
+            );
+            $this->db->insert('produksi_ingot', $data);
+            $insert_id = $this->db->insert_id();
+
+            $detail = array(
+                'produksi_ingot_id'=> $insert_id,
+                'rongsok_id'=>0,
+                'qty'=>$this->input->post('qty'),
+                'created'=>$user_id,
+                'created_by'=>$tanggal
             );
 
-            if($this->db->insert('produksi_ingot', $data)){
-                redirect('index.php/Ingot/edit/'.$this->db->insert_id());  
+            if($this->db->insert('produksi_ingot_detail', $detail)){
+                $this->session->set_flashdata('flash_msg', 'Data produksi berhasil di simpan dengan nomor '.$code);
+                redirect('index.php/Ingot');  
             }else{
                 $this->session->set_flashdata('flash_msg', 'Data produksi gagal disimpan, silahkan dicoba kembali!');
                 redirect('index.php/Ingot');  
@@ -221,9 +230,10 @@ class Ingot extends CI_Controller{
 
             $data['content']= "ingot/create_spb";
             $this->load->model('Model_ingot');
-            $data['header'] = $this->Model_ingot->show_header_pi($id)->row_array();           
-            $data['details'] = $this->Model_ingot->show_detail_pi($id)->result(); 
+            $data['header'] = $this->Model_ingot->show_header_pi($id)->row_array();
             $data['apolo'] = $this->Model_ingot->show_apolo()->result();
+            $this->load->model('Model_rongsok');
+            $data['list_rongsok'] = $this->Model_rongsok->list_data()->result();
             
             $this->load->view('layout', $data);   
         }else{
@@ -253,23 +263,23 @@ class Ingot extends CI_Controller{
                         'modified'=> $tanggal,
                         'modified_by'=> $user_id
                     );
+
             $this->db->insert('spb', $data);
-            $dtr_id = $this->db->insert_id();
+            $spb_id = $this->db->insert_id();
             $details = $this->input->post('myDetails');
             foreach ($details as $row){
-                if(isset($row['check']) && $row['check']==1){
+                if($row['rongsok_id']!=0 && $row['netto']!=0){
                     $this->db->insert('spb_detail', array(
-                        'spb_id'=>$dtr_id,
-                        'produksi_ingot_detail_id'=>$row['produksi_ingot_detail_id'],
+                        'spb_id'=>$spb_id,
                         'rongsok_id'=>$row['rongsok_id'],
-                        'qty' => $row['qty'],
+                        'qty'=>$row['netto'],
                         'line_remarks'=>$row['line_remarks']
                     ));
-                    
-                    $this->db->where('id', $row['produksi_ingot_detail_id']);
-                    $this->db->update('produksi_ingot_detail', array('flag_spb'=>1));
                 }
             }
+
+            $this->db->where('produksi_ingot_id',$this->input->post('produksi_ingot_id'));
+            $this->db->update('produksi_ingot_detail', array('flag_spb'=>1));
             
             if($this->db->trans_complete()){    
                 $this->session->set_flashdata('flash_msg', 'SPB berhasil di-create dengan nomor : '.$code);                 

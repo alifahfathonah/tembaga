@@ -301,8 +301,8 @@ function saveDetail(){
     if($.trim($("#barang_id").val()) == ""){
         $('#message').html("Silahkan pilih item rongsok!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#qty").val()) == ""){
-        $('#message').html("Jumlah item rongsok tidak boleh kosong!");
+    }else if($.trim($("#netto").val()) == ""){
+        $('#message').html("Jumlah item/netto rongsok tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#harga").val()) == ""){
         $('#message').html("Harga item rongsok tidak boleh kosong!");

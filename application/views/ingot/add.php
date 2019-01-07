@@ -62,6 +62,15 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jumlah Rongsok yang Dibutuhkan (KG)<font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="number" id="qty" name="qty" 
+                                class="form-control myline" style="margin-bottom:5px"  placeholder="per KG ...">
+                        </div>
+                    </div>
                     <div class="row">&nbsp;</div>
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>

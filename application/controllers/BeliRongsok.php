@@ -752,6 +752,31 @@ class BeliRongsok extends CI_Controller{
         
     }
 
+    function revisi_dtr(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "beli_rongsok/revisi_dtr";
+            $this->load->model('Model_beli_rongsok');
+            $data['header']  = $this->Model_beli_rongsok->show_header_dtr($id)->row_array(); 
+            $data['details'] = $this->Model_beli_rongsok->show_detail_dtr($id)->result();
+            $this->load->model('Model_rongsok');
+            $data['list_rongsok'] = $this->Model_rongsok->list_data()->result();
+            
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/BeliRongsok');
+        }
+    }
+
     function edit_dtr(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
@@ -1042,7 +1067,7 @@ class BeliRongsok extends CI_Controller{
         $this->db->where('id', $this->input->post('header_id'));
         $this->db->update('po', $data);
         
-        $this->session->set_flashdata('flash_msg', 'Close PO rongsok berhasil direject');
+        $this->session->set_flashdata('flash_msg', 'PO Rongsok Berhasil di Close');
         redirect('index.php/BeliRongsok');
 
         // $id = $this->input->post('id');

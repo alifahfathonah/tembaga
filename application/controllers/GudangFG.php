@@ -1133,7 +1133,7 @@ class GudangFG extends CI_Controller{
             $data['content']= "gudang_fg/view_spb";
 
             $this->load->model('Model_gudang_fg');
-            $data['list_barang'] = $this->Model_gudang_fg->jenis_barang_list_by_spb($id)->result();
+            $data['list_barang'] = $this->Model_gudang_fg->barang_fg_list()->result();
             $data['myData'] = $this->Model_gudang_fg->show_header_spb($id)->row_array();           
             $data['myDetail'] = $this->Model_gudang_fg->show_detail_spb($id)->result(); 
             $data['detailSPB'] = $this->Model_gudang_fg->show_detail_spb_fulfilment($id)->result();

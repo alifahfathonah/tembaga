@@ -205,7 +205,7 @@
                                         <tbody>
                                             <tr>
                                                 <td><div id="no_tabel_1">+</div><input type="hidden" id="tsfd_id" name="details[1][spb_detail_id]"/></td>
-                                                <td><select id="barang_1" class="form-control" placeholder="pilih jenis barang" name="details[1][jenis_barang]" onchange="get_no_packing(1); get_tsfd_id(this.value);">
+                                                <td><select id="barang_1" class="form-control select2me myline" placeholder="pilih jenis barang" name="details[1][jenis_barang]" onchange="get_no_packing(1); get_tsfd_id(this.value);">
                                                     <option value=""></option>
                                                     <?php foreach($list_barang as $v){
                                                         echo '<option value="'.$v->id.'">'.$v->jenis_barang.'</option>';
