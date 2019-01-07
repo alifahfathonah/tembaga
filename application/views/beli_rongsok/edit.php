@@ -27,7 +27,7 @@
                               id="frmReject">                            
                             <div class="row">
                                 <div class="col-md-4">
-                                    Reject Remarks <font color="#f00">*</font>
+                                    Keterang Close PO <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-8">
                                     <textarea id="reject_remarks" name="reject_remarks" 

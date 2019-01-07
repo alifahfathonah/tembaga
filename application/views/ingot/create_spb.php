@@ -86,6 +86,15 @@
                                 value="<?php echo $header['jenis_barang']; ?>">
                             <input type="hidden" value="<?=$header['jenis_barang_id'];?>" name="jenis_barang_id">
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jumlah Rongsok yang Dibutuhkan
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jumlah" name="jumlah" 
+                                class="form-control myline" style="margin-bottom:5px; background: green; color: white;" readonly="readonly" value="<?php echo $header['qty']; ?> KG">
+                        </div>
                     </div> 
                     <div class="row">
                         <div class="col-md-4">
@@ -111,45 +120,34 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
-                        <table class="table table-bordered table-striped table-hover">
+                        <table class="table table-bordered table-striped table-hover" id="tabel_dtr">
                             <thead>
                                 <th style="width:40px">No</th>
-                                <th>
-                                    <input type="checkbox" id="check_all" name="check_all" onclick="checkAll()" class="form-control">
-                                </th>
-                                <th>Nama Item Rongsok</th>
+                                <th style="width:20%;">Nama Item Rongsok</th>
                                 <th>UOM</th>
-                                <th>Quantity</th>
+                                <th>Netto</th>
                                 <th>Keterangan</th>
+                                <th>Action</th>
                             </thead>
-                            <tbody>
-                            <?php
-                                $no = 1;
-                                foreach ($details as $row){
-                                    echo '<tr>';
-                                    echo '<td style="text-align:center">'.$no.'</td>';
-                                    echo '<td>';
-                                    echo '<input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
-                                            onclick="check();" class="form-control">';
-                                    echo '<input type="hidden" name="myDetails['.$no.'][produksi_ingot_detail_id]" value="'.$row->id.'">';
-                                    echo '<input type="hidden" name="myDetails['.$no.'][rongsok_id]" value="'.$row->rongsok_id.'">';
-                                    echo '</td>';
-                                    echo '<td><input type="text" name="myDetails['.$no.'][nama_item]" '
-                                            . 'class="form-control myline" value="'.$row->nama_item.'" '
-                                            . 'readonly="readonly"></td>';
-                                    echo '<td><input type="text" name="myDetails['.$no.'][uom]" '
-                                            . 'class="form-control myline" value="'.$row->uom.'" '
-                                            . 'readonly="readonly"></td>';                                    
-                                    echo '<td><input type="text" name="myDetails['.$no.'][qty]" '
-                                            . 'class="form-control myline" value="'.$row->qty.'" '
-                                            . 'readonly="readonly"></td>';                                    
-                                    
-                                    echo '<td><input type="text" name="myDetails['.$no.'][line_remarks]" '
-                                            . 'class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';
-                                    echo '</tr>';
-                                    $no++;
-                                }
-                            ?>
+                            <tbody id="boxDetail">
+                            <tr>
+                                <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
+                                <input type="hidden" id="rongsok_id_1" name="myDetails[1][rongsok_id]" value="">
+                                <td><select id="name_rongsok_1" name="myDetails[1][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value,1);">
+                                    <option value=""></option>
+                                    <?php foreach ($list_rongsok as $value){ ?>
+                                            <option value='<?=$value->id;?>'>
+                                                <?=$value->nama_item;?>
+                                            </option>
+                                    <?php } ?>
+                                </select>
+                                </td>
+                                <td><input type="text" id="uom_1" name="myDetails[1][uom]" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="netto_1" name="myDetails[1][netto]" class="form-control myline" maxlength="10"></td>
+                                <td><input type="text" name="myDetails[1][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
+                                <td style="text-align:center"><a id="save_1" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(1);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
+                                    <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -179,33 +177,23 @@
     </div>
 </div> 
 <script>
-function checkAll(){
-    if ($('#check_all').prop("checked")) {  
-        $('input').each(function(i){
-            $('#uniform-check_'+i+' span').attr('class', 'checked');
-            $('#check_'+i).attr('checked', true);
+function get_uom(id, nmr){
+    if(''!=id){
+        $.ajax({
+            url: "<?php echo base_url('index.php/Ingot/get_uom'); ?>",
+            type: "POST",
+            data: "id="+id,
+            dataType: "json",
+            success: function(result) {
+                $('#rongsok_id_'+nmr).val(id);
+                $('#uom_'+nmr).val(result['uom']);
+                console.log($('#rongsok_id_'+nmr).val());
+            }
         });
-    }else{
-        $('input').each(function(i){
-            $('#uniform-check_'+i+' span').attr('class', '');
-            $('#check_'+i).attr('checked', false);
-        });
-    }   
-}
-
-function check(){
-    $('#uniform-check_all span').attr('class', '');
-    $('#check_all').attr('checked', false);    
+    }
 }
 
 function simpanData(){
-    var item_check = 0;
-    $('input').each(function(i){
-        if($('#check_'+i).prop("checked")){
-            item_check += 1;                    
-        }
-    });
-    
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kososng!");
         $('.alert-danger').show(); 
@@ -216,16 +204,49 @@ function simpanData(){
         $('#message').html("Apolo harus diisi, tidak boleh kososng!");
         $('.alert-danger').show(); 
     }else{
-        if(item_check==0){
-            $('#message').html("Silahkan pilih item rongsok yang akan di-create SPB!"); 
-            $('.alert-danger').show(); 
-        }else{
-            $('#message').html("");
-            $('.alert-danger').hide(); 
-            $('#formku').submit(); 
-        }
+        $('#message').html("");
+        $('.alert-danger').hide(); 
+        $('#formku').submit(); 
     };
 };
+
+function saveDetail(id){
+    if($.trim($("#name_rongsok_"+id).val()) == ""){
+        $('#message').html("Silahkan pilih nama item rongsok!");
+        $('.alert-danger').show();
+    }else if($.trim($("#netto_"+id).val()) == ""){
+        $('#message').html("Jumlah netto tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{
+        $("#name_rongsok_"+id).attr('disabled','disabled');
+        $("#save_"+id).attr('disabled','disabled');
+        $("#delete_"+id).removeClass('disabled');
+        var new_id = id+1; 
+        $("#tabel_dtr>tbody").append(
+            '<tr>'+
+                '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
+                '<input type="hidden" id="rongsok_id_'+new_id+'" name="myDetails['+new_id+'][rongsok_id]" value="">'+
+                '<td><select id="name_rongsok_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value,'+new_id+');">'+
+                    '<option value=""></option>'+
+                    '<?php foreach($list_rongsok as $v){ print('<option value="'.$v->id.'">'.$v->nama_item.'</option>');}?>'+
+                '</select>'+
+                '</td>'+
+                '<td><input type="text" id="uom_'+new_id+'" name="myDetails['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
+                '<td><input type="text" id="netto_'+new_id+'" name="myDetails['+new_id+'][netto]" class="form-control myline" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
+                '<td><input type="text" name="myDetails['+new_id+'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
+                '<td style="text-align:center"><a id="save_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail('+new_id+');" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>'+
+                    '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
+            '</tr>'
+        );
+    }
+}
+
+function deleteDetail(id){
+    var r=confirm("Anda yakin menghapus item rongsok ini?");
+    if (r==true){
+        $('#no_tabel_'+id).closest('tr').remove();
+        }
+}
 </script>
 
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
@@ -241,7 +262,7 @@ $(function(){
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd-mm-yy'
-    }); 
+    });
 });
 </script>
       

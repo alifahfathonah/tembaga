@@ -303,7 +303,7 @@ class GudangFG extends CI_Controller{
         $tabel .= '<td><a href="javascript:;" onclick="timbang(this)" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>';
         $tabel .= '<td><input type="text" id="bruto" name="bruto" class="form-control myline"/></td>';
         $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"/></td>';
-        $tabel .= '<td><input type="text" id="no_bobbin" name="no_bobbin" class="form-control myline" onchange="get_bobbin(this.value)"/><input type="hidden" name="id_bobbin" id="id_bobbin"></td>';
+        $tabel .= '<td><input type="text" id="no_bobbin" name="no_bobbin" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" onchange="get_bobbin(this.value)"/><input type="hidden" name="id_bobbin" id="id_bobbin"></td>';
         $tabel .= '<td><input type="text" id="berat_bobbin" name="berat_bobbin" class="form-control myline" readonly="readonly"/></td>';
         $tabel .= '<td><input type="text" id="pemilik" name="pemilik" class="form-control myline" readonly="readonly"/></td>';
         
@@ -781,7 +781,8 @@ class GudangFG extends CI_Controller{
                             'nomor_BPB' =>$this->input->post('no_bpb'),
                             'no_packing' => $v['no_packing'],
                             'netto' =>$v['netto'],
-                            'keterangan' =>null,
+                            'keterangan' => $this->input->post('remarks'),
+                            'tanggal_masuk' => $tgl_input,
                             'created_by'=> $user_id,
                             'created_at' => $tanggal
                     );
@@ -801,7 +802,8 @@ class GudangFG extends CI_Controller{
                             'no_packing' => $v['no_packing'],
                             'no_produksi' => $v['no_produksi'],
                             'netto' =>$v['netto'],
-                            'keterangan' =>null,
+                            'keterangan' => $this->input->post('remarks'),
+                            'tanggal_masuk' => $tgl_input,
                             'created_by'=> $user_id,
                             'created_at' => $tanggal
                     );
@@ -824,7 +826,8 @@ class GudangFG extends CI_Controller{
                             'bruto' =>(int)$v['bruto'],
                             'bobbin_id' => $v['id_bobbin'],
                             'nomor_bobbin'=> $v['no_bobbin'],
-                            'keterangan' =>null,
+                            'keterangan' => $this->input->post('remarks'),
+                            'tanggal_masuk' => $tgl_input,
                             'created_by'=> $user_id,
                             'created_at' => $tanggal
                         );
@@ -1130,7 +1133,7 @@ class GudangFG extends CI_Controller{
             $data['content']= "gudang_fg/view_spb";
 
             $this->load->model('Model_gudang_fg');
-            $data['list_barang'] = $this->Model_gudang_fg->jenis_barang_list_by_spb($id)->result();
+            $data['list_barang'] = $this->Model_gudang_fg->barang_fg_list()->result();
             $data['myData'] = $this->Model_gudang_fg->show_header_spb($id)->row_array();           
             $data['myDetail'] = $this->Model_gudang_fg->show_detail_spb($id)->result(); 
             $data['detailSPB'] = $this->Model_gudang_fg->show_detail_spb_fulfilment($id)->result();

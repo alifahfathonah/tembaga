@@ -243,4 +243,3 @@ $(function(){
     loadDetail(<?php echo $header['id']; ?>);
 });
 </script>
-      

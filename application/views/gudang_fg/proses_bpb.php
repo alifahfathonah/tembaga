@@ -120,7 +120,6 @@
                             <input type="hidden" name="id_jenis_barang" value="<?=$header['id_jenis_barang']; ?>">
                         </div>
                     </div>
-                    
                     <div class="row">
                         <div class="col-md-4">
                             Keterangan

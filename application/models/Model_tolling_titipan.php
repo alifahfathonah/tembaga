@@ -57,8 +57,9 @@ class Model_tolling_titipan extends CI_Model{
 
     function load_detail_saved($id){
         $data = $this->db->query("Select dd.*, rsk.nama_item, rsk.uom From dtr_detail dd
+                Left Join dtr on dtr.id=dd.dtr_id
                 Left Join rongsok rsk On(dd.rongsok_id = rsk.id) 
-                Where dd.so_id=".$id);
+                Where dtr.so_id =".$id);
         return $data;
     }
     

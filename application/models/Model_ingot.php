@@ -14,11 +14,11 @@ class Model_ingot extends CI_Model{
     }
     
     function show_header_pi($id){
-        $data = $this->db->query("Select pi.*, jb.jenis_barang,
-                    usr.realname As pic
+        $data = $this->db->query("Select pi.*, jb.jenis_barang, usr.realname As pic, pid.qty
                 From produksi_ingot pi
                     Left Join users usr On (pi.created_by = usr.id) 
                     left join jenis_barang jb on (jb.id = pi.jenis_barang_id)
+                    Left join produksi_ingot_detail pid on (pid.produksi_ingot_id = pi.id)
                 Where pi.id=".$id);
         return $data;
     }
@@ -32,6 +32,11 @@ class Model_ingot extends CI_Model{
         $data = $this->db->query("Select pid.*, rsk.nama_item, rsk.uom From produksi_ingot_detail pid 
                 Left Join rongsok rsk On(pid.rongsok_id = rsk.id) 
                 Where pid.produksi_ingot_id=".$id);
+        return $data;
+    }
+
+    function load_detail_spb($id){
+        $data = $this->db->query("Select * from spb_detail where spb_id =".$id);
         return $data;
     }
     
