@@ -16,3 +16,8 @@ update table 040119
 
 update table 060119
 -create table dtbj dan detail
+
+update table 080119
+-table po_detail add fg_id
+-table po_detail add flag_dtbj
+-create table dtwip dan detail

@@ -135,6 +135,33 @@
                                 </li>
                             </ul>
                         </li>
+                        <li <?php if($module_name=="BeliFinishGood") echo 'class="start active open"'; ?>>
+                            <a href="javascript:;">
+                                <i class="fa fa-cubes"></i>
+                                <span class="title">FINISH GOOD</span>
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/BeliFinishGood">
+                                        <i class="fa fa-file-word-o"></i>
+                                        PO List
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/BeliFinishGood/dtbj_list">
+                                        <i class="fa fa-file-text-o"></i>
+                                        DTBJ List
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/BeliFinishGood/matching">
+                                        <i class="fa fa-chain"></i>
+                                        Matching PO - DTBJ
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
                 <li <?php if($module_name=="Tolling") echo 'class="start active open"'; ?>>

@@ -26,6 +26,23 @@ class BeliFinishGood extends CI_Controller{
 
         $this->load->view('layout', $data);
     }
+
+    function po_list_outdated(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        //GANTI INTERVAL DI MODEL
+        $data['content']= "beli_fg/po_outdated";
+        $this->load->model('Model_beli_fg');
+        $data['list_data'] = $this->Model_beli_fg->po_list_outdated()->result();
+
+        $this->load->view('layout', $data);
+    }
     
    function add(){
         $module_name = $this->uri->segment(1);
@@ -119,6 +136,7 @@ class BeliFinishGood extends CI_Controller{
             'fg_id'=>$this->input->post('fg_id'),
             'amount'=>str_replace('.', '', $this->input->post('harga')),
             'qty'=>str_replace('.', '', $this->input->post('qty')),
+            'flag_dtbj' => 0,
             'total_amount'=>str_replace('.', '', $this->input->post('total_harga'))
         ))){
             $return_data['message_type']= "sukses";
@@ -290,7 +308,12 @@ class BeliFinishGood extends CI_Controller{
             $ukuran = substr($no_bobbin, 0,1);
             $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin;
         } else {
-
+            #kardus
+            $no_bobbin = $barang['nomor_bobbin'];
+            $kode_bobbin = substr($no_bobbin, 0,1);
+            $urut_bobbin = substr($no_bobbin, 1,4);
+            $ukuran = substr($no_bobbin, 0,1);
+            $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin;
         }
         header('Content-Type: application/json');
         echo json_encode($barang); 
@@ -333,6 +356,10 @@ class BeliFinishGood extends CI_Controller{
                         'created_by'=>$user_id,
                         'tanggal_masuk'=>$tgl_input
                     ));
+
+                    $updatebobbin = array('status'=>1);
+                    $this->db->where('nomor_bobbin', $row['no_bobbin']);
+                    $this->db->update('m_bobbin', $updatebobbin);
                 }
             }
             
@@ -349,6 +376,291 @@ class BeliFinishGood extends CI_Controller{
         }else{
             $this->session->set_flashdata('flash_msg', 'Pembuatan DTBJ gagal, penomoran belum disetup!');
             redirect('index.php/BeliFinishGood/dtbj_list');
+        }
+    }
+
+    function matching(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "beli_fg/matching";
+        $this->load->model('Model_beli_fg');
+        $data['po_list'] = $this->Model_beli_fg->get_po_list()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function proses_matching(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $po_id = $this->uri->segment(3);
+        
+        $data['content']= "beli_fg/proses_matching";
+        $this->load->model('Model_beli_fg');
+        $data['header_po'] = $this->Model_beli_fg->show_header_po($po_id)->row_array();
+        $data['details_po'] = $this->Model_beli_fg->show_detail_po($po_id)->result();
+
+        $dtbj_app = $this->Model_beli_fg->get_dtbj_approve($po_id)->result();
+        foreach ($dtbj_app as $index=>$row){
+            $dtbj_app[$index]->details = $this->Model_beli_fg->show_detail_dtbj($row->id)->result();
+        }
+        $data['dtbj_app'] = $dtbj_app;
+        $sp_id = $data['header_po']['supplier_id'];
+        $dtbj = $this->Model_beli_fg->get_dtbj($sp_id)->result();
+        foreach ($dtbj as $index=>$row){
+            $dtbj[$index]->details = $this->Model_beli_fg->show_detail_dtbj($row->id)->result();
+        }
+        $data['dtbj'] = $dtbj;
+        $this->load->view('layout', $data);
+    }
+
+    function approve(){
+        $dtbj_id = $this->input->post('dtbj_id');
+        $po_id = $this->input->post('po_id');
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $return_data = array();
+        $this->load->model('Model_beli_fg');
+        
+            $this->db->trans_start();       
+
+            #Update status DTBJ
+            $this->db->where('id', $dtbj_id);
+            $this->db->update('dtbj', array(
+                    'po_id'=>$po_id,
+                    'status'=>1,
+                    'approved'=>$tanggal,
+                    'approved_by'=>$user_id));
+            
+            if($this->db->trans_complete()){  
+                
+                #update po_detail_id di dtbj_detail
+
+                $po_dtbj_check_update = $this->Model_beli_fg->check_to_update($po_id)->result();
+                foreach ($po_dtbj_check_update as $u) {
+                    $this->db->where('id',$u->dtbj_detail_id );
+                    $this->db->update('dtbj_detail',array(
+                                    'po_detail_id'=>$u->id));
+                }
+
+                $total_qty = 0;
+                $total_netto_dtbj = 0;
+                $po_dtbj_list = $this->Model_beli_fg->check_po_dtbj($po_id)->result();
+                foreach ($po_dtbj_list as $v) {
+                    #penghitungan +- 10 % PO ke DTR
+                    if(((int)$v->tot_netto) >= (0.9*((int)$v->qty))){
+                        #update po_detail flag_dtr
+                        $this->Model_beli_fg->update_flag_dtbj_po_detail($po_id,$v->fg_id);
+                    }
+                    $total_qty += $v->qty;
+                    $total_netto_dtbj += $v->tot_netto;
+                }
+
+               if(((int)$total_netto_dtbj) >= (0.9*((int)$total_qty))){
+                    $this->db->where('id',$po_id);
+                    $this->db->update('po',array(
+                                    'status'=>3));
+               }else {
+                    $this->db->where('id',$po_id);
+                    $this->db->update('po',array(
+                                    'status'=>2));
+               }
+
+                #Create BPB FG
+                $this->load->model('Model_m_numberings');
+                $loop1 = $this->db->query("select dtbjd.dtbj_id, dtbjd.jenis_barang_id, jb.jenis_barang
+                    from dtbj_detail dtbjd
+                    left join jenis_barang jb on (jb.id = dtbjd.jenis_barang_id)
+                    where dtbjd.dtbj_id = ".$dtbj_id." group by jb.jenis_barang")->result();
+                foreach ($loop1 as $k1) {
+                    #insert t_bpb_fg
+                    $code = $this->Model_m_numberings->getNumbering('BPB-PO',$tgl_input);
+                    $data_bpb = array(
+                            'no_bpb_fg' => $code,
+                            'tanggal' => $tgl_input,
+                            // 'produksi_fg_id' => $id_produksi,
+                            'jenis_barang_id' => $k1->jenis_barang_id,
+                            'created_at' => $tanggal,
+                            'created_by' => $user_id,
+                            'keterangan' => 'BARANG PO FG',
+                            'status' => 0
+                        );
+                    $this->db->insert('t_bpb_fg',$data_bpb);
+                    $id_bpb = $this->db->insert_id();
+
+                    #insert t_bpb_detail
+                    $loop2 = $this->db->query("select dtbj_detail.*, m_bobbin.id as bobbin_id from dtbj_detail left join m_bobbin on (m_bobbin.nomor_bobbin = dtbj_detail.no_bobbin) where jenis_barang_id = ".$k1->jenis_barang_id." and dtbj_id = ".$dtbj_id)->result();
+                    foreach ($loop2 as $k2) {
+                        $this->db->insert('t_bpb_fg_detail', array(
+                            't_bpb_fg_id' => $id_bpb,
+                            'jenis_barang_id' => $k2->jenis_barang_id,
+                            'no_produksi' => 0,
+                            'bruto' => $k2->bruto,
+                            'netto' => $k2->netto,
+                            'no_packing_barcode' => $k2->no_packing,
+                            'bobbin_id' => $k2->bobbin_id
+                        ));
+                    }
+                }
+
+            $return_data['type_message']= "sukses";
+            $return_data['message'] = "DTBJ sudah diberikan ke bagian gudang";           
+        }else{
+            $return_data['type_message']= "error";
+            $return_data['message']= "Pembuatan DTBJ gagal, penomoran belum disetup!";
+        }                  
+        
+       header('Content-Type: application/json');
+       echo json_encode($return_data);
+    }
+
+    function reject(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        
+        $data = array(
+                'status'=> 9,
+                'rejected'=> $tanggal,
+                'rejected_by'=>$user_id,
+                'reject_remarks'=>$this->input->post('reject_remarks')
+            );
+        
+        $this->db->where('id', $this->input->post('dtbj_id'));
+        $this->db->update('dtbj', $data);
+
+        $query = $this->db->query('select *from dtbj_detail where dtbj_id = '.$this->input->post('dtbj_id'))->result();
+        foreach ($query as $row) {
+            $this->db->where('nomor_bobbin', $row->no_bobbin);
+            $this->db->update('m_bobbin', array(
+                'status' => 3
+            ));
+        }
+
+        redirect('index.php/BeliFinishGood/proses_matching/'.$this->input->post('po_id'));
+    }
+
+    function create_voucher(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_beli_fg');
+        $data = $this->Model_beli_fg->voucher_po_fg($id)->row_array();
+        $sisa = $data['nilai_po'] - $data['nilai_dp'];
+        $data['nilai_po'] = number_format($data['nilai_po'],0,',','.');
+        $data['nilai_dp'] = number_format($data['nilai_dp'],0,',','.');
+        $data['sisa']     = number_format($sisa,0,',','.');
+        
+        header('Content-Type: application/json');
+        echo json_encode($data);  
+    }
+
+    function save_voucher(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $nilai_po  = str_replace('.', '', $this->input->post('nilai_po'));
+        $nilai_dp  = str_replace('.', '', $this->input->post('nilai_dp'));
+        $amount  = str_replace('.', '', $this->input->post('amount'));
+        $id = $this->input->post('id');
+        
+        $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('VFG', $tgl_input);
+        if($nilai_po-($nilai_dp+$amount)>0){
+            $jenis_voucher = 'DP';
+        }else{
+            $jenis_voucher = 'Pelunasan';
+            $this->db->where('id', $id);
+            $this->db->update('po', array('flag_pelunasan'=>1,'status'=>4));
+        } 
+
+        if($code){ 
+            $this->db->insert('voucher', array(
+                'no_voucher'=>$code,
+                'tanggal'=>$tgl_input,
+                'jenis_voucher'=>$jenis_voucher,
+                'po_id'=>$this->input->post('id'),
+                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'amount'=>str_replace('.', '', $this->input->post('amount')),
+                'keterangan'=>$this->input->post('keterangan'),
+                'created'=> $tanggal,
+                'created_by'=> $user_id,
+                'modified'=> $tanggal,
+                'modified_by'=> $user_id
+            ));
+            
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'Voucher finish good berhasil di-create dengan nomor : '.$code);                 
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create voucher finish good, silahkan coba kembali!');
+            }
+            redirect('index.php/BeliFinishGood');  
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Pembuatan voucher finish good gagal, penomoran belum disetup!');
+            redirect('index.php/BeliFinishGood');
+        }
+    }
+
+    function voucher_list(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "beli_fg/voucher_list";
+        $this->load->model('Model_beli_fg');
+        $data['list_data'] = $this->Model_beli_fg->voucher_list()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function print_dtbj(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_beli_fg');
+            $data['header']  = $this->Model_beli_fg->show_header_dtbj($id)->row_array();
+            $data['details'] = $this->Model_beli_fg->show_detail_dtbj($id)->result();
+
+            $this->load->view('beli_fg/print_dtbj', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
+
+    function print_voucher(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+
+            $this->load->model('Model_finance');
+            $data['header'] = $this->Model_finance->show_header_voucher($id)->row_array();
+            $data['list_data'] = $this->Model_finance->show_detail_voucher($id)->result();
+
+            $this->load->view('beli_fg/print_voucher', $data);   
+        }else{
+            redirect('index.php/BeliFinishGood');
         }
     }
 }

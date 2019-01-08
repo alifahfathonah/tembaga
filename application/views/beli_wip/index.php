@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Pembelian 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>"> Pembelian Finish Good </a> 
+            <a href="<?php echo base_url('index.php/BeliWIP'); ?>"> Pembelian WIP </a> 
         </h5>          
     </div>
 </div>
@@ -154,10 +154,10 @@
                     <i class="fa fa-beer"></i>Purchase Order List
                 </div>
                 <div class="tools">
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliFinishGood/po_list_outdated"> <i class="fa fa-minus"></i> PO LIST OUTDATED</a>
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliWIP/po_list_outdated"> <i class="fa fa-minus"></i> PO LIST OUTDATED</a>
                 <?php
                     if( ($group_id==1)||($hak_akses['add']==1) ){
-                        echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/BeliFinishGood/add').'"> '
+                        echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/BeliWIP/add').'"> '
                         .'<i class="fa fa-plus"></i> Input PO </a>';
                     }
                 ?>                    
