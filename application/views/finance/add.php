@@ -323,6 +323,8 @@ function get_replace_detail(id){
                 $('#bank_cek_lama').val(result['bank_pembayaran']);
                 $('#currency_lama').val(result['currency']);
                 $('#nominal_lama').val(result['nominal']);
+                $('#nominal').val(result['nominal']);
+                $('#nominal').attr('readonly', true);
                 $('#cek_mundur_lama').val(result['tgl_cair']);
                 $('#reject_remarks').val(result['reject_remarks']);
             }
@@ -333,7 +335,7 @@ function get_replace_detail(id){
 //Custom Functions that reset
 function resetAllValues() {
   $('#show_replace_detail').find('input:text').val('');
-  $('#tanggal_cek').val('');
+  //$('#tanggal_cek').val('');
   $('#replace_id').prop('selectedIndex',0);
 }
 

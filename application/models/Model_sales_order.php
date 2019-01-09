@@ -269,11 +269,11 @@ class Model_sales_order extends CI_Model{
         coalesce(tgw.qty, 1) as qty,
         coalesce(tgw.uom, NULL) as uom,
         coalesce(tgf.keterangan, tgw.keterangan) as keterangan
-        from t_sales_order_detail tsod
-        left join t_sales_order tso on tso.id = tsod.t_so_id
-        left join t_gudang_fg tgf on tso.jenis_barang = 'FG' and tgf.t_spb_fg_detail_id = tsod.no_spb_detail
-        left join t_gudang_wip tgw on tso.jenis_barang = 'WIP' and tgw.t_spb_wip_detail_id = tsod.no_spb_detail
-        left join jenis_barang jb on jb.id = tsod.jenis_barang_id
+        from t_sales_order tso
+        left join t_gudang_fg tgf on tso.jenis_barang = 'FG' and tgf.t_spb_fg_id = tso.no_spb
+        left join jenis_barang jb on tso.jenis_barang = 'FG' and tgf.jenis_barang_id = jb.id
+        left join t_gudang_wip tgw on tso.jenis_barang = 'WIP' and tgw.t_spb_wip_id = tso.no_spb
+        left join jenis_barang jba on tso.jenis_barang = 'WIP' and tgw.jenis_barang_id = jba.id
         where tso.id =".$id);
         return $data;
     }

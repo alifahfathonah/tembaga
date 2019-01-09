@@ -176,6 +176,27 @@ class Finance extends CI_Controller{
        redirect('index.php/Finance');
     }
 
+    function update_um(){
+        $user_id = $this->session->userdata('user_id');
+        $id = $this->input->post('header_id');
+        $tanggal  = date('Y-m-d h:m:s');
+
+        $data = array(
+            'status'=>0,
+            'tgl_cair'=>$this->input->post('tanggal_cek_baru'),
+            'modified_at'=>$tanggal,
+            'modified_by'=>$user_id,
+            'update_remarks'=>$this->input->post('update_remarks')
+        );
+        $this->db->where('id', $id);
+        if($this->db->update('f_uang_masuk', $data)){
+            $this->session->set_flashdata('flash_msg', 'Uang Masuk berhasil di update');
+            redirect('index.php/Finance');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+        }             
+    }
+
     function reject_um(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
@@ -256,6 +277,40 @@ class Finance extends CI_Controller{
         $data['content']= "finance/check_voucher";
         $this->load->model('Model_finance');
         $data['list_data'] = $this->Model_finance->check_voucher()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function check_um(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "finance/check_um";
+        $this->load->model('Model_finance');
+        $data['list_data'] = $this->Model_finance->check_um()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function slip_setoran(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "finance/slip_setoran";
+        $this->load->model('Model_finance');
+        $data['list_data'] = $this->Model_finance->list_data_slip_setoran()->result();
 
         $this->load->view('layout', $data);
     }
@@ -367,10 +422,9 @@ class Finance extends CI_Controller{
         }
         $tabel .= '<tr>';
         $tabel .= '<td></td>';
-        $tabel .= '<td><a href="'.base_url().'index.php/Finance/check_voucher" target="_blank" class="btn btn-primary" style="width:100%;">Lihat daftar voucher</a></td>';
+        $tabel .= '<td><a <a href="'.base_url().'index.php/Finance/check_voucher" onclick="window.open(\''.base_url().'index.php/Finance/check_voucher\',\'newwindow\',\'width=1200,height=550\'); return false;" class="btn btn-primary" style="width:100%;">Lihat daftar voucher</a></td>';
         $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
         $tabel .= '<td><input type="text" id="total_vc" name="total_vc" style="background-color: green; color: white;" class="form-control" data-myvalue="'.$total_vc.'" value="'.number_format($total_vc,0,',','.').'" readonly="readonly"></td>';
-        $tabel .= '<td colspan="2"></td>';
         $tabel .= '<tr>';
 
         header('Content-Type: application/json');
@@ -478,6 +532,7 @@ class Finance extends CI_Controller{
             $tabel .= '<td>'.$row->currency.' '.number_format($row->nominal,0,',','.').'</td>';
             $tabel .= '<td>'.$row->jenis_pembayaran.'</td>';
             $tabel .= '<td>'.$row->bank_pembayaran.'</td>';
+            $tabel .= '<td>'.$row->rekening_pembayaran.$row->nomor_cek.'</td>';
             $tabel .= '<td>'.$row->keterangan.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail_um('.$row->id.');"> '
@@ -487,9 +542,10 @@ class Finance extends CI_Controller{
             $total_um += $row->nominal;
         }
         $tabel .= '<tr>';
+        $tabel .= '<td></td>';
+        $tabel .= '<td><a <a href="'.base_url().'index.php/Finance/check_um" onclick="window.open(\''.base_url().'index.php/Finance/check_um\',\'newwindow\',\'width=1200,height=550\'); return false;" class="btn btn-primary" style="width:100%;">Lihat daftar Uang Masuk</a></td>';
         $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
         $tabel .= '<td><input type="text" id="total_um" name="total_um" style="background-color: green; color: white;" class="form-control" data-myvalue="'.$total_um.'" value="'.number_format($total_um,0,',','.').'" readonly="readonly"></td>';
-        $tabel .= '<td colspan="2"></td>';
         $tabel .= '<tr>';
             
         $tabel .= '<tr>';
@@ -505,6 +561,7 @@ class Finance extends CI_Controller{
         $tabel .= '</td>';
         $tabel .= '<td><input type="text" id="jenis_pembayaran" name="jenis_voucher" class="form-control myline" readonly="readonly"></td>';
         $tabel .= '<td><input type="text" id="bank_pembayaran" name="bank_pembayaran" class="form-control myline" readonly="readonly"></td>';
+        $tabel .= '<td><input type="text" id="nomor" name="nomor" class="form-control myline" readonly="readonly"></td>';
         $tabel .= '<input type="hidden" id="amount_um" name="amount_um" class="form-control myline" readonly="readonly"/>';
         $tabel .= '<td><input type="text" id="keterangan_um" name="keterangan_um" class="form-control myline" readonly="readonly"'
                 . 'onkeyup="this.value = this.value.toUpperCase()"></td>';        

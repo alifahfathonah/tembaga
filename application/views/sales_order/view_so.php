@@ -193,7 +193,7 @@
                                             <td><?php echo $row->nama_barang;?></td>
                                             <td><?php 
                                             if($row->no_packing == 0){
-                                            echo 'WIP tidak ada No Packing';
+                                            echo ' - ';
                                             }else{
                                             echo $row->no_packing;
                                             }
@@ -201,7 +201,7 @@
                                             </td>
                                             <td><?php 
                                             if($row->bruto == 0){
-                                            echo 'WIP tidak ada Bruto';
+                                            echo ' -  ';
                                             }else{
                                             echo $row->bruto;
                                             }
@@ -254,7 +254,7 @@
                                             <td><?php echo $row->uom;?></td>
                                             <td><?php 
                                             if($row->no_packing == 0){
-                                                echo 'WIP tidak ada No Packing';
+                                                echo ' - ';
                                             }else{
                                                 echo $row->no_packing;
                                             }
@@ -262,7 +262,7 @@
                                             </td>
                                             <td><?php 
                                             if($row->bruto == 0){
-                                                echo 'WIP tidak ada Bruto';
+                                                echo ' - ';
                                             }else{
                                                 echo $row->bruto;
                                             }
@@ -308,4 +308,3 @@
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
-      

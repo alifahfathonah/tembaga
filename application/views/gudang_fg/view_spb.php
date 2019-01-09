@@ -192,8 +192,8 @@
                                     <table class="table table-bordered table-striped table-hover" id="tabel_barang">
                                         <thead>
                                             <th style="width:40px">No</th>
-                                            <th>Nama Barang</th>
-                                            <th>UOM</th>
+                                            <th style="width:25%">Nama Barang</th>
+                                            <th style="width:10%">UOM</th>
                                             <th>No Packing</th>
                                             <th>NETTO (kg)</th>
                                             <th>Keterangan</th>
@@ -530,9 +530,8 @@ function saveDetail(){
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
-                    console.log('SUKSES TAMBAH');
+                    $("#barang_1").select2("val", "");
                     loadDetail(<?php echo $myData['id'];?>);
-                    $('#barang_1').val(''); // set the value to blank with empty quotes
                     $('#uom_1').val('');
                     $('#packing_1').val('').hide();
                     $('#netto_1').val('');

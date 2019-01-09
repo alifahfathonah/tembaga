@@ -37,6 +37,12 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function list_data_slip_setoran(){
+        $data = $this->db->query("Select fss.*, fp.no_pembayaran, fp.tanggal From f_slip_setoran fss
+                    left join f_pembayaran fp on fp.id = fss.id_pembayaran");
+        return $data;
+    }
+
     function view_um($id){
         $data = $this->db->query("Select fum.*, mc.nama_customer, b.kode_bank, b.nama_bank, b.nomor_rekening, u.realname From f_uang_masuk fum
             left join m_customers mc on mc.id = fum.m_customer_id
@@ -68,6 +74,14 @@ class Model_finance extends CI_Model{
                     Left Join po On (voucher.po_id = po.id)
                     left join supplier on (supplier.id = po.supplier_id)
                 where pembayaran_id = 0 Order By voucher.no_voucher");
+        return $data;
+    }
+
+    function check_um(){
+        $data = $this->db->query("Select fum.*, mc.nama_customer
+                From f_uang_masuk fum
+                    left join m_customers mc on (mc.id = fum.m_customer_id)
+                where status = 0 Order By tanggal desc");
         return $data;
     }
 

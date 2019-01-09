@@ -186,6 +186,7 @@
                                 <th>Amount</th>
                                 <th>Jenis Pembayaran</th>
                                 <th>Bank Pembayaran</th>
+                                <th>Nomor Cek/Rekening</th> 
                                 <th>Keterangan</th>
                                 <th>Actions</th>
                             </thead>
@@ -363,13 +364,13 @@ function get_data_um(id){
     if(''!=id){
     $.ajax({
         url: "<?php echo base_url('index.php/Finance/get_data_um'); ?>",
-        async: false,
         type: "POST",
         data: "id="+id,
         dataType: "json",
         success: function(result) {
             $('#jenis_pembayaran').val(result['jenis_pembayaran']);
             $('#bank_pembayaran').val(result['bank_pembayaran']);
+            $('#nomor').val(result['nomor_cek']+result['rekening_pembayaran']);
             $('#amount_um').val(result['amount']);
             $('#keterangan_um').val(result['keterangan']);
         }

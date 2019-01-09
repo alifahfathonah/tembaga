@@ -150,9 +150,9 @@
                         <table class="table table-bordered table-striped table-hover" id="tabel_barang">
                             <thead>
                                 <th>No</th>
-                                <th>Nama Item</th>
+                                <th style="width: 20%">Nama Item</th>
                                 <th>UOM</th>
-                                <th>No. Packing</th>
+                                <th style="width: 15%">No. Packing</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
                                 <th>Bobbin</th>

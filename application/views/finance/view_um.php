@@ -13,6 +13,38 @@
     <div class="col-md-12">
         <h3 align="center"><b> Konfirmasi Uang Masuk</b></h3>
         <hr class="divider" />
+        <div class="modal fade" id="updateModal" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">&nbsp;</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="eventInsForm" method="post" target="_self" name="frmUpdate" 
+                              id="frmUpdate">                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Update Remarks <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <textarea id="update_remarks" name="update_remarks" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>
+                                    
+                                    <input type="hidden" id="headers_id" name="header_id">
+                                    <input type="hidden" id="tanggal_cek_baru" name="tanggal_cek_baru">
+                                </div>
+                            </div>                           
+                        </form>
+                    </div>
+                    <div class="modal-footer">                        
+                        <button type="button" class="btn blue" onClick="updateData();">Update</button>
+                        <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -214,7 +246,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal_cek" name="tanggal_cek" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $myData['tgl_cair']; ?>">
+                                class="form-control myline input-small" style="margin-bottom:5px" value="<?php echo $myData['tgl_cair']; ?>">
                         </div>
                     </div>
                     <?php
@@ -246,14 +278,19 @@
             <div class="row">
                 <div class="col-md-12">
                     <?php
-                        if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="0"){
+                        if( ($group_id==1 || $hak_akses['reject_um']==1) && $myData['status']=="0"){
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Gagal Cair </a>';
                         }
                     ?>
-
                     <a href="<?php echo base_url('index.php/Finance'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
+                    <?php if( ($group_id==1 || $hak_akses['edit_um']==1) && $myData['jenis_pembayaran']=='Cek Mundur' && $myData['status']==9){
+                            echo '<a href="javascript:;" class="btn green" id="editData" onclick="editData();"> 
+                        <i class="fa fa-pencil"></i> Edit Cek Mundur </a>';
+                        }
+                    ?>
+                    <a href="javascript:;" onclick="showUpdateBox();" class="btn blue" id="saveData" style="display: none;"><i class="fa fa-check"></i> Update </a>
                 </div>    
             </div>
         </form>
@@ -307,6 +344,45 @@
     </div>
 </div> 
 <script>
+function editData(){
+    $("#editData").hide();
+    $("#tanggal_cek").attr("readonly", false);
+    $("#tanggal_cek").datepicker({
+            showOn: "button",
+            buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+            buttonImageOnly: true,
+            buttonText: "Select date",
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'yy-mm-dd'
+        });
+    $("#saveData").show();
+}
+
+function showUpdateBox(){
+    var r=confirm("Anda yakin untuk merevisi Cek ini?");
+    if (r==true){
+        $('#headers_id').val($('#id').val());
+        $('#tanggal_cek_baru').val($('#tanggal_cek').val());
+        $('#message').html("");
+        $('.alert-danger').hide();
+        
+        $("#updateModal").find('.modal-title').text('Update Cek Mundur');
+        $("#updateModal").modal('show',{backdrop: 'true'}); 
+    }
+}
+
+function updateData(){
+    if($.trim($("#tanggal_cek").val()) == ""){
+        $('#message').html("Reject remarks harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{
+        $('#message').html("");
+        $('.alert-danger').hide();
+        $('#frmUpdate').attr("action", "<?php echo base_url(); ?>index.php/Finance/update_um");
+        $('#frmUpdate').submit(); 
+    }
+}
 function showRejectBox(){
     var r=confirm("Anda yakin me-reject permintaan barang ini?");
     if (r==true){

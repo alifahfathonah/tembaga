@@ -582,6 +582,11 @@
                             <i class="fa fa-file-excel-o"></i>
                             Voucher List </a>
                         </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/Finance/slip_setoran">
+                            <i class="fa fa-chain-broken"></i>
+                            Slip Setoran </a>
+                        </li>
                     </ul>
                 </li>
  
