@@ -677,7 +677,8 @@ class PengirimanAmpas extends CI_Controller{
             // $data['myDetail'] = $this->Model_gudang_fg->show_detail_spb($id)->result(); 
             // $data['detailSPB'] = $this->Model_gudang_fg->show_detail_spb_fulfilment($id)->result();
             $this->load->model('Model_pengiriman_ampas');
-            $data['list_barang'] = $this->Model_ampas->jenis_barang_list_by_spb($id)->result();
+            $data['list_barang'] = $this->Model_pengiriman_ampas->jenis_barang_list_by_spb($id)->result();
+
             $data['myData'] = $this->Model_pengiriman_ampas->show_header_spb($id)->row_array();
             $data['myDetail'] = $this->Model_pengiriman_ampas->show_detail_spb($id)->result();
             $this->load->view('layout', $data);   

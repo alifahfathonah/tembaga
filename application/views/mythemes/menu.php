@@ -28,7 +28,7 @@
                     </form>
                 </li>
                 
-                <li <?php if($module_name=="BeliSparePart" || $module_name=="BeliRongsok" || $module_name=="IngotRendah") echo 'class="start active open"'; ?>>
+                <li <?php if($module_name=="BeliSparePart" || $module_name=="BeliRongsok" || $module_name=="IngotRendah" || $module_name=="BeliFinishGood" || $module_name=="BeliWIP") echo 'class="start active open"'; ?>>
                     <a href="javascript:;">
                     <i class="icon-folder"></i>
                     <span class="title">PEMBELIAN</span>
@@ -145,6 +145,73 @@
                                     <a href="<?php echo base_url(); ?>index.php/IngotRendah/ttr_list">
                                     <i class="fa fa-file-powerpoint-o"></i>
                                     TTR List </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li <?php if($module_name=="BeliFinishGood") echo 'class="start active open"'; ?>>
+                            <a href="javascript:;">
+                                <i class="fa fa-cubes"></i>
+                                <span class="title">FINISH GOOD</span>
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/BeliFinishGood">
+                                        <i class="fa fa-file-word-o"></i>
+                                        PO List
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/BeliFinishGood/dtbj_list">
+                                        <i class="fa fa-file-text-o"></i>
+                                        DTBJ List
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/BeliFinishGood/matching">
+                                        <i class="fa fa-chain"></i>
+                                        Matching PO - DTBJ
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/BeliFinishGood/voucher_list">
+                                        <i class="fa fa-usd"></i>
+                                        Voucher List
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li <?php if($module_name=="BeliWIP") echo 'class="start active open"'; ?>>
+                            <a href="javascript:;">
+                                <i class="fa fa-life-ring"></i>
+                                <span class="title">WIP</span>
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/BeliWIP">
+                                        <i class="fa fa-file-word-o"></i>
+                                        PO List
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/BeliWIP/dtbj_list">
+                                        <i class="fa fa-file-text-o"></i>
+                                        DTWIP List
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/BeliWIP/matching">
+                                        <i class="fa fa-chain"></i>
+                                        Matching PO - DTWIP
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/BeliWIP/voucher_list">
+                                        <i class="fa fa-usd"></i>
+                                        Voucher List
+                                    </a>
                                 </li>
                             </ul>
                         </li>
