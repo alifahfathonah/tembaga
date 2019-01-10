@@ -186,7 +186,9 @@
                                 <th>Amount</th>
                                 <th>Jenis Pembayaran</th>
                                 <th>Bank Pembayaran</th>
+                                <th>Nomor Cek/Rekening</th> 
                                 <th>Keterangan</th>
+                                <th>Status UM</th>
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetailUm">
@@ -244,14 +246,20 @@
 function approveAgain(){
     var r=confirm("Anda yakin meng-approve kembali permintaan barang ini?");
     if (r==true){
-        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/approveagain");    
-        $('#formku').submit(); 
+        if($("#tag").length){
+            $('#message').html("Masih ada uang masuk yang harus di ganti !");
+            $('.alert-danger').show();
+        }else{
+            $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/approveagain");
+            $('#formku').submit();
+        };
     }
 }
+
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show(); 
+        $('.alert-danger').show();
     }else{
         $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/save_pmb");  
         $('#formku').submit(); 
@@ -363,13 +371,13 @@ function get_data_um(id){
     if(''!=id){
     $.ajax({
         url: "<?php echo base_url('index.php/Finance/get_data_um'); ?>",
-        async: false,
         type: "POST",
         data: "id="+id,
         dataType: "json",
         success: function(result) {
             $('#jenis_pembayaran').val(result['jenis_pembayaran']);
             $('#bank_pembayaran').val(result['bank_pembayaran']);
+            $('#nomor').val(result['nomor_cek']+result['rekening_pembayaran']);
             $('#amount_um').val(result['amount']);
             $('#keterangan_um').val(result['keterangan']);
         }

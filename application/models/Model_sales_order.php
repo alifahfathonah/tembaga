@@ -146,6 +146,12 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
+    function jenis_barang_fg(){
+        $data = $this->db->query("select id, jenis_barang, kode from jenis_barang 
+                where category ='FG'");
+        return $data;
+    }
+
     function list_item_sj_wip($soid){
         $data = $this->db->query("select tgw.id as id, jb.jenis_barang, jb.kode, jb.uom  from sales_order so
                 left join t_sales_order tso on tso.so_id = so.id
@@ -160,6 +166,12 @@ class Model_sales_order extends CI_Model{
         $data = $this->db->query("select tgw.*, jb.jenis_barang, jb.kode, jb.uom from t_gudang_wip tgw
                 left join jenis_barang jb on jb.id = tgw.jenis_barang_id
                 where tgw.id=".$id);
+        return $data;
+    }
+
+    function jenis_barang_wip(){
+        $data = $this->db->query("select id, jenis_barang, kode from jenis_barang 
+                where category ='WIP'");
         return $data;
     }
 
@@ -178,6 +190,12 @@ class Model_sales_order extends CI_Model{
         $data = $this->db->query("select dd.*, r.nama_item as jenis_barang, r.uom
             from dtr_detail dd left join rongsok r on r.id = dd.rongsok_id 
             where dd.id =".$id);
+        return $data;
+    }
+
+    function jenis_barang_rsk(){
+        $data = $this->db->query("select id, kode_rongsok, nama_item from rongsok 
+                where type_barang ='Rongsok'");
         return $data;
     }
 
@@ -262,18 +280,17 @@ class Model_sales_order extends CI_Model{
     }
 
     function show_detail_spb_fulfilment($id){
-        $data = $this->db->query("select  jb.jenis_barang as nama_barang,
+        $data = $this->db->query("select  jb.jenis_barang as nama_barang,jb.uom,
         coalesce(tgf.no_packing, 0) as no_packing,
         coalesce(tgf.bruto, 0) as bruto,
         coalesce(tgf.netto, tgw.berat) as berat,
         coalesce(tgw.qty, 1) as qty,
         coalesce(tgw.uom, NULL) as uom,
         coalesce(tgf.keterangan, tgw.keterangan) as keterangan
-        from t_sales_order_detail tsod
-        left join t_sales_order tso on tso.id = tsod.t_so_id
-        left join t_gudang_fg tgf on tso.jenis_barang = 'FG' and tgf.t_spb_fg_detail_id = tsod.no_spb_detail
-        left join t_gudang_wip tgw on tso.jenis_barang = 'WIP' and tgw.t_spb_wip_detail_id = tsod.no_spb_detail
-        left join jenis_barang jb on jb.id = tsod.jenis_barang_id
+        from t_sales_order tso
+        left join t_gudang_fg tgf on tso.jenis_barang = 'FG' and tgf.t_spb_fg_id = tso.no_spb
+        left join t_gudang_wip tgw on tso.jenis_barang = 'WIP' and tgw.t_spb_wip_id = tso.no_spb
+        left join jenis_barang jb on jb.id = (case when tso.jenis_barang='FG' then tgf.jenis_barang_id else tgw.jenis_barang_id end)
         where tso.id =".$id);
         return $data;
     }
@@ -321,9 +338,9 @@ class Model_sales_order extends CI_Model{
     }
 
     function load_detail_surat_jalan_fg($id){
-        $data = $this->db->query("select tsjd.*, jb.jenis_barang, jb.uom 
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jb.uom 
                 from t_surat_jalan_detail tsjd
-                left join jenis_barang jb on jb.id = tsjd.jenis_barang_id
+                left join jenis_barang jb on jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
                 where tsjd.t_sj_id =".$id);
         return $data;
     }
@@ -336,7 +353,7 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
-    function load_detail_surat_jalan_rongsok($id){
+    function load_detail_surat_jalan_rsk($id){
         $data = $this->db->query("select tsjd.*, rsk.nama_item as jenis_barang, rsk.uom 
                 from t_surat_jalan_detail tsjd
                 left join rongsok rsk on rsk.id = tsjd.jenis_barang_id

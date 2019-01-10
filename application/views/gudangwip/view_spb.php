@@ -156,7 +156,7 @@
                                             foreach ($myDetail as $row){
                                             $qty = ($row->total_qty_in - $row->total_qty_out);
                                             $berat = ($row->total_berat_in - $row->total_berat_out);
-                                            $status = (($qty>0) && ($berat>0)) ? 1 : 0;
+                                            $status = (($qty>=$row->qty) && ($berat>=$row->berat)) ? 1 : 0;
                                             ($status) ? $stat = '<div style="background:green;color:white;"><span class="fa fa-check"></span> OK </div>' : $stat = '<div style="background:red;color:white;"> <span class="fa fa-times"></span> NOK</div>';
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
@@ -209,7 +209,6 @@
                                                 <td><input type="text" id="keterangan_1" name="details[1][keterangan]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
                                                 <td style="text-align:center"><a id="btn_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
                                             </tr>
-
                                         </tbody>
                                     </table>
                                 </div>

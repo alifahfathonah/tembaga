@@ -150,8 +150,7 @@
                         <?php
                         if($header['jenis_barang'] == 'WIP'){
                         ?>
-                                <th>Jumlah</th>
-                                <th>Bruto (Kg)</th>
+                                <th>Qty</th>
                                 <th>Netto (Kg)</th>
                         <?php
                         } else if($header['jenis_barang'] == 'FG' || $header['jenis_barang'] == 'AMPAS'){
@@ -184,9 +183,8 @@
                         '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>'.
                         '<td><input type="text" id="harga" name="harga" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';
         if($header['jenis_barang'] == 'WIP'){
-                    echo '<td><input type="text" id="qty" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="5" value="0" onkeyup="getComa(this.value, this.id);"></td>'.
-                        '<td><input type="text" id="bruto" name="bruto" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0"></td>'.
-                        '<td><input type="text" id="netto" name="netto" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0"></td>';  
+                    echo '<td><input type="text" id="qty" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="5" value="0"></td>'.
+                        '<td><input type="text" id="netto" name="netto" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';  
         } else if($header['jenis_barang'] == 'FG' || $header['jenis_barang'] == 'AMPAS') {
                     echo '<input type="hidden" id="qty" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="1">'.
                         '<input type="hidden" id="bruto" name="bruto" class="form-control myline" maxlength="10" value="0">'.
@@ -241,7 +239,7 @@ function getComa(value, id){
 }
 
 function hitungSubTotal(){
-    if($('#jenis_barang').val() == 'FG' || $('#jenis_barang').val() == 'AMPAS'){
+    if($('#jenis_barang').val() == 'FG' || $('#jenis_barang').val() == 'AMPAS' || $('#jenis_barang').val() == 'WIP'){
         harga = $('#harga').val().toString().replace(/\./g, "");
         netto = $('#netto').val().toString().replace(/\./g, "");
         total_harga = Number(harga)* Number(netto);

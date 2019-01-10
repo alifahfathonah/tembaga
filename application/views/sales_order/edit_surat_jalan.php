@@ -150,9 +150,10 @@
                         <table class="table table-bordered table-striped table-hover" id="tabel_barang">
                             <thead>
                                 <th>No</th>
-                                <th>Nama Item</th>
+                                <th style="width: 19%">Nama Item</th>
+                                <th style="width: 19%">Nama Item Alias</th>
                                 <th>UOM</th>
-                                <th>No. Packing</th>
+                                <th style="width: 15%">No. Packing</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
                                 <th>Bobbin</th>
@@ -163,7 +164,7 @@
                                 <tr>
                                     <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
                                     <td>
-                                        <select id="barang_id_1" name="details[1][barang_id]" class="form-control myline" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="get_data(1);">
+                                        <select id="barang_id_1" name="details[1][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="get_data(1);">
                                             <option value=""></option>
                                         <?php foreach ($list_produksi as $value){ ?>
                                             <option value='<?=$value->id;?>'>
@@ -174,14 +175,24 @@
                                     </td>
                                     <input type="hidden" name="details[1][id_barang]" id="id_barang_1">
                                     <input type="hidden" id="jenis_barang_id_1" name="details[1][jenis_barang_id]" class="form-control myline">
+                                    <td>
+                                        <select id="barang_alias_id_1" name="details[1][barang_alias_id]" class="form-control select2me myline" disabled data-placeholder="Pilih..." style="margin-bottom:5px">
+                                            <option></option>
+                                            <option value="0">TIDAK ADA ALIAS</option>
+                                        <?php foreach ($jenis_barang as $value){ ?>
+                                            <option value='<?=$value->id;?>'>
+                                                <?=$value->jenis_barang;?>
+                                            </option>
+                                        <?php } ?>
+                                        </select>
+                                    </td>
                                     <td><input type="text" id="uom_1" name="details[1][uom]" class="form-control myline" readonly="readonly"></td>
                                     <td><input type="text" id="no_packing_1" name="details[1][no_packing]" class="form-control myline" readonly="readonly"></td>
                                     <td><input type="text" id="bruto_1" name="details[1][bruto]" class="form-control myline" readonly="readonly"></td>
                                     <td><input type="text" id="netto_1" name="details[1][netto]" class="form-control myline" readonly="readonly"></td>
                                     <td><input type="text" id="bobbin_1" name="details[1][bobbin]" class="form-control myline" readonly="readonly"></td>
                                     <td><input type="text" id="line_remarks_1" name="details[1][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
-                                    <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input(1);" style="margin-top:5px" id="save_1"><i class="fa fa-plus"></i> Tambah </a>
-                                    <td style="text-align:center"><a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
+                                    <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input(1);" style="margin-top:5px" id="save_1"><i class="fa fa-plus"></i> Tambah </a><a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail(1);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Delete </a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -217,7 +228,7 @@
                                     <td><input type="text" id="netto_1" name="details[1][netto]" class="form-control myline" readonly="readonly"></td>
                                     <td><input type="text" id="line_remarks_1" name="details[1][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
                                     <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input(1);" style="margin-top:5px" id="save_1"><i class="fa fa-plus"></i> Tambah </a>
-                                    <td style="text-align:center"><a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
+                                    <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail(1);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Delete </a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -323,9 +334,10 @@ function create_new_input(id){
     if($.trim($("#barang_id_"+id).val()) == ""){
         alert('Barang Belum Di Input !');
     }else{
+        $("#barang_alias_id_"+id).attr('readonly','readonly');
         $("#barang_id_"+id).attr('disabled','disabled');
-        $("#save_"+id).attr('disabled','disabled');
-        $("#delete_"+id).removeClass('disabled');
+        $("#save_"+id).attr('disabled','disabled').hide();
+        $("#delete_"+id).show();
         var new_id = id+1; 
         if($("#jenis_barang").val()=="FG"){
         $("#tabel_barang>tbody").append(
@@ -339,6 +351,13 @@ function create_new_input(id){
             '</td>'+
             '<input type="hidden" name="details['+new_id+'][id_barang]" id="id_barang_'+new_id+'">'+
             '<input type="hidden" id="jenis_barang_id_'+new_id+'" name="details['+new_id+'][jenis_barang_id]" class="form-control myline">'+
+            '<td>'+
+                '<select id="barang_alias_id_'+new_id+'" name="details['+new_id+'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">'+
+                    '<option value=""></option>'+
+                    '<option value="0">TIDAK ADA ALIAS</option>'+
+                    '<?php if($header["jenis_barang"]=="FG"){foreach($jenis_barang as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}}?>'+
+                '</select>'+
+            '</td>'+
             '<td><input type="text" id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
             '<td><input type="text" id="no_packing_'+new_id+'" name="details['+new_id+'][no_packing]" class="form-control myline" readonly="readonly"></td>'+
             '<td><input type="text" id="bruto_'+new_id+'" name="details['+new_id+'][bruto]" class="form-control myline" readonly="readonly"></td>'+
@@ -346,8 +365,10 @@ function create_new_input(id){
             '<td><input type="text" id="bobbin_'+new_id+'" name="details['+new_id+'][bobbin]" class="form-control myline" readonly="readonly"></td>'+
             '<td><input type="text" id="line_remarks_'+new_id+'" name="details['+new_id+'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
             '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input('+new_id+');" style="margin-top:5px" id="save_'+new_id+'"><i class="fa fa-plus"></i> Tambah </a>'+
-            '<td style="text-align:center"><a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
+            '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail('+new_id+');" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Delete </a></td>'+
         '</tr>');
+        $('#barang_id_'+new_id).select2();
+        $('#barang_alias_id_'+new_id).select2();
         }else if($("#jenis_barang").val()=='WIP'){
         $("#tabel_barang>tbody").append(
         '<tr>'+
@@ -365,7 +386,7 @@ function create_new_input(id){
             '<td><input type="text" id="netto_'+new_id+'" name="details['+new_id+'][netto]" class="form-control myline" readonly="readonly"></td>'+
             '<td><input type="text" id="line_remarks_'+new_id+'" name="details['+new_id+'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
             '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input('+new_id+');" style="margin-top:5px" id="save_'+new_id+'"><i class="fa fa-plus"></i> Tambah </a>'+
-            '<td style="text-align:center"><a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
+            '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail('+new_id+');" style="margin-top:5px;display: none"><i class="fa fa-trash"></i> Delete </a></td>'+
         '</tr>');
         }else if($('#jenis_barang').val()=="RONGSOK"){
         $("#tabel_barang>tbody").append(
@@ -422,6 +443,7 @@ function get_data(id){
             dataType: "json",
             success: function(result) {
                 if ($("#jenis_barang").val()=="FG"){
+                    $('#barang_alias_id_'+id).prop("disabled", false);
                     $('#jenis_barang_id_'+id).val(result['jenis_barang_id']);
                     $('#uom_'+id).val(result['uom']);
                     $('#no_packing_'+id).val(result['no_packing']);
@@ -448,7 +470,7 @@ function get_data(id){
         });
         } else {
             alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
-            $("#barang_id_"+id).val('');
+            $("#barang_id_"+id).select2("val", "");
             $("#id_barang_"+id).val('');
         }
     }

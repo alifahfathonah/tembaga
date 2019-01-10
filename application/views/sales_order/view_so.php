@@ -186,6 +186,7 @@
                                         </thead>
                                         <tbody>
                                         <?php
+                                        $total_berat=0;
                                         $no=1; foreach ($detailSPB as $row) {
                                         ?>
                                         <tr>
@@ -193,7 +194,7 @@
                                             <td><?php echo $row->nama_barang;?></td>
                                             <td><?php 
                                             if($row->no_packing == 0){
-                                            echo 'WIP tidak ada No Packing';
+                                            echo ' - ';
                                             }else{
                                             echo $row->no_packing;
                                             }
@@ -201,14 +202,14 @@
                                             </td>
                                             <td><?php 
                                             if($row->bruto == 0){
-                                            echo 'WIP tidak ada Bruto';
+                                            echo ' -  ';
                                             }else{
                                             echo $row->bruto;
                                             }
                                             ?>
                                             </td>
                                             <td><?php echo $row->berat;?></td>
-                                            <td><?php echo $row->qty;?></td>
+                                            <td><?php echo $row->qty?></td>
                                             <?php
                                             if($row->berat == 0){
                                                 echo '<td style="background-color: red; color: white;">SPB Belum Dipenuhi</td>';
@@ -218,10 +219,17 @@
                                             ?>
                                         </tr>
                                         <?php
+                                        $total_berat += $row->berat;
                                         $no++;
                                         }
                                         ?>
                                         </tbody>
+                                        <tr>
+                                            <td colspan="4" style="text-align: right; font-weight: bold;">Total Jumlah</td>
+                                            <td style="background-color: green; color: white;"><?php echo number_format($total_berat,0,',','.');?></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
                                     </table>
                                 </div>
                         </div>
@@ -254,7 +262,7 @@
                                             <td><?php echo $row->uom;?></td>
                                             <td><?php 
                                             if($row->no_packing == 0){
-                                                echo 'WIP tidak ada No Packing';
+                                                echo ' - ';
                                             }else{
                                                 echo $row->no_packing;
                                             }
@@ -262,7 +270,7 @@
                                             </td>
                                             <td><?php 
                                             if($row->bruto == 0){
-                                                echo 'WIP tidak ada Bruto';
+                                                echo ' - ';
                                             }else{
                                                 echo $row->bruto;
                                             }
@@ -308,4 +316,3 @@
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
-      

@@ -37,6 +37,12 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function list_data_slip_setoran(){
+        $data = $this->db->query("Select fss.*, fp.no_pembayaran, fp.tanggal From f_slip_setoran fss
+                    left join f_pembayaran fp on fp.id = fss.id_pembayaran");
+        return $data;
+    }
+
     function view_um($id){
         $data = $this->db->query("Select fum.*, mc.nama_customer, b.kode_bank, b.nama_bank, b.nomor_rekening, u.realname From f_uang_masuk fum
             left join m_customers mc on mc.id = fum.m_customer_id
@@ -68,6 +74,14 @@ class Model_finance extends CI_Model{
                     Left Join po On (voucher.po_id = po.id)
                     left join supplier on (supplier.id = po.supplier_id)
                 where pembayaran_id = 0 Order By voucher.no_voucher");
+        return $data;
+    }
+
+    function check_um(){
+        $data = $this->db->query("Select fum.*, mc.nama_customer
+                From f_uang_masuk fum
+                    left join m_customers mc on (mc.id = fum.m_customer_id)
+                where status = 0 Order By tanggal desc");
         return $data;
     }
 
@@ -111,11 +125,11 @@ class Model_finance extends CI_Model{
     }
 
     function load_detail_um($id){
-        $data = $this->db->query("select fpd.*, fum.bank_pembayaran, fum.jenis_pembayaran, fum.nominal, fum.keterangan, fum.currency, fum.rekening_pembayaran, fum.nomor_cek, mc.nama_customer
+        $data = $this->db->query("select fpd.*, fum.bank_pembayaran, fum.jenis_pembayaran, fum.nominal, fum.keterangan, fum.currency, fum.rekening_pembayaran, fum.nomor_cek, mc.nama_customer, fum.status
             from f_pembayaran_detail fpd
             left join f_uang_masuk fum on fum.id = fpd.um_id
             left join m_customers mc on mc.id = fum.m_customer_id
-            where fpd.id_pembayaran = ".$id." and fpd.voucher_id = 0");
+            where fpd.id_pembayaran =".$id." and fpd.voucher_id = 0");
         return $data;
     }
 
@@ -168,14 +182,17 @@ class Model_finance extends CI_Model{
     }
 
     function load_detail_invoice($id){
-        $data = $this->db->query("select tsjd.*, COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom) as uom,
-            (select tsod.amount from t_sales_order_detail tsod left join t_sales_order tso on tso.id = tsod.t_so_id where tso.so_id = tsj.sales_order_id and tsod.jenis_barang_id = tsjd.jenis_barang_id)as amount 
+        $data = $this->db->query("select tsjd.id,tsjd.t_sj_id,tsjd.no_packing,tsjd.qty,tsjd.bruto, tsjd.jenis_barang_id, tsjd.jenis_barang_alias,
+            (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto,
+            tsjd.nomor_bobbin, tsjd.line_remarks, 
+            COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom) as uom,
+            (select tsod.amount from t_sales_order_detail tsod left join t_sales_order tso on tso.id = tsod.t_so_id where tso.so_id = tsj.sales_order_id and tsod.jenis_barang_id = case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)as amount 
             from t_surat_jalan_detail tsjd 
             left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id 
             left join t_sales_order tso on tso.so_id = tsj.sales_order_id
-            left join jenis_barang jb on tso.jenis_barang != 'RONGSOK' and jb.id=tsjd.jenis_barang_id
+            left join jenis_barang jb on tso.jenis_barang != 'RONGSOK' and jb.id = (case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
             left join rongsok r on tso.jenis_barang = 'RONGSOK' and r.id=tsjd.jenis_barang_id
-            where tsjd.t_sj_id = ".$id);
+            where tsjd.t_sj_id =".$id);
         return $data;
     }
 

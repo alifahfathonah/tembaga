@@ -4,9 +4,9 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Finance
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Finance'); ?>"> Voucher </a> 
+            <a href="<?php echo base_url('index.php/Finance'); ?>"> Uang Masuk </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Finance/voucher_list'); ?>"> Voucher List </a> 
+            <a href="<?php echo base_url('index.php/Finance/voucher_list'); ?>"> List Uang Masuk</a> 
         </h4>          
     </div>
 </div>
@@ -21,7 +21,7 @@
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-beer"></i>Voucher List
+                    <i class="fa fa-beer"></i>List Uang Masuk
                 </div>                
             </div>
             <div class="portlet-body">
@@ -29,15 +29,15 @@
                 <thead>
                 <tr>
                     <th style="width:50px;">No</th>
-                    <th>No. Voucher</th> 
+                    <th>Nomor Cek/Rekening</th> 
                     <th>Tanggal</th> 
-                    <th>Nama Supplier</th>
-                    <th>Jenis Voucher</th>  
-                    <th>No. PO</th>  
-                    <th>Tanggal PO</th>                    
-                    <th>Amount (Rp)</th> 
-                    <th>Keterangan</th>
-                    <th>Actions</th>
+                    <th>Nama Customer</th>
+                    <th>Jenis Pembayaran</th>  
+                    <th>Bank Pembayaran</th>  
+                    <th>Nominal</th>                    
+                    <th>Tgl Cair</th> 
+                    <th>Keterangan</th><!-- 
+                    <th>Actions</th> -->
                 </tr>
                 </thead>
                 <tbody>
@@ -48,18 +48,18 @@
                     ?>
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
-                        <td><?php echo $data->no_voucher; ?></td>
+                        <td><?php echo $data->rekening_pembayaran.$data->nomor_cek; ?></td>
                         <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <td><?php echo $data->nama_supplier; ?></td>
-                        <td><?php echo $data->jenis_voucher; ?></td>
-                        <td><?php echo $data->no_po; ?></td>
-                        <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal_po)); ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->amount,0,',','.'); ?></td>
-                        <td><?php echo $data->keterangan; ?></td>                        
+                        <td><?php echo $data->nama_customer; ?></td>
+                        <td><?php echo $data->jenis_pembayaran; ?></td>
+                        <td><?php echo $data->bank_pembayaran; ?></td>
+                        <td style="text-align:right"><?php echo number_format($data->nominal,0,',','.'); ?></td>
+                        <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tgl_cair)); ?></td>
+                        <td><?php echo $data->keterangan; ?></td>             <!--            
                         <td style="text-align:center">                             
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/view_voucher/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
-                        </td>
+                        </td> -->
                     </tr>
                     <?php
                         }
