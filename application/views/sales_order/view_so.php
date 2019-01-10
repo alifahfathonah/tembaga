@@ -186,6 +186,7 @@
                                         </thead>
                                         <tbody>
                                         <?php
+                                        $total_berat=0;
                                         $no=1; foreach ($detailSPB as $row) {
                                         ?>
                                         <tr>
@@ -208,7 +209,7 @@
                                             ?>
                                             </td>
                                             <td><?php echo $row->berat;?></td>
-                                            <td><?php echo $row->qty;?></td>
+                                            <td><?php echo $row->qty?></td>
                                             <?php
                                             if($row->berat == 0){
                                                 echo '<td style="background-color: red; color: white;">SPB Belum Dipenuhi</td>';
@@ -218,10 +219,17 @@
                                             ?>
                                         </tr>
                                         <?php
+                                        $total_berat += $row->berat;
                                         $no++;
                                         }
                                         ?>
                                         </tbody>
+                                        <tr>
+                                            <td colspan="4" style="text-align: right; font-weight: bold;">Total Jumlah</td>
+                                            <td style="background-color: green; color: white;"><?php echo number_format($total_berat,0,',','.');?></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
                                     </table>
                                 </div>
                         </div>

@@ -188,6 +188,7 @@
                                 <th>Bank Pembayaran</th>
                                 <th>Nomor Cek/Rekening</th> 
                                 <th>Keterangan</th>
+                                <th>Status UM</th>
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetailUm">
@@ -245,14 +246,20 @@
 function approveAgain(){
     var r=confirm("Anda yakin meng-approve kembali permintaan barang ini?");
     if (r==true){
-        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/approveagain");    
-        $('#formku').submit(); 
+        if($("#tag").length){
+            $('#message').html("Masih ada uang masuk yang harus di ganti !");
+            $('.alert-danger').show();
+        }else{
+            $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/approveagain");
+            $('#formku').submit();
+        };
     }
 }
+
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show(); 
+        $('.alert-danger').show();
     }else{
         $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/save_pmb");  
         $('#formku').submit(); 

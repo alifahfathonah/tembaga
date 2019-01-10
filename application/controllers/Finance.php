@@ -534,6 +534,20 @@ class Finance extends CI_Controller{
             $tabel .= '<td>'.$row->bank_pembayaran.'</td>';
             $tabel .= '<td>'.$row->rekening_pembayaran.$row->nomor_cek.'</td>';
             $tabel .= '<td>'.$row->keterangan.'</td>';
+            $tabel .= '<td>';
+                    if($row->status==0){
+                        $tabel .= '<div style="background-color:darkkhaki; padding:3px">Belum Cair</div>';
+                    }else if($row->status==1){
+                        $tabel .= '<div style="background-color:green; padding:3px; color:white">Sudah Cair</div>';
+                    }else if($row->status==2){
+                        $tabel .= '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
+                    }else if($row->status==9){
+                        $tabel .= '<div style="background-color:red; color:#fff; padding:3px">Gagal Cair</div>';
+                    }else if($row->status==8){
+                        $tabel .= '<div style="background-color:orange; color:#fff; padding:3px">Sudah Diganti</div>';
+                        $tabel .= '<input type="hidden" id="tag" value="1">';
+                    }
+            $tabel .= '</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail_um('.$row->id.');"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
@@ -546,6 +560,7 @@ class Finance extends CI_Controller{
         $tabel .= '<td><a <a href="'.base_url().'index.php/Finance/check_um" onclick="window.open(\''.base_url().'index.php/Finance/check_um\',\'newwindow\',\'width=1200,height=550\'); return false;" class="btn btn-primary" style="width:100%;">Lihat daftar Uang Masuk</a></td>';
         $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
         $tabel .= '<td><input type="text" id="total_um" name="total_um" style="background-color: green; color: white;" class="form-control" data-myvalue="'.$total_um.'" value="'.number_format($total_um,0,',','.').'" readonly="readonly"></td>';
+        $tabel .= '<td></td>';
         $tabel .= '<tr>';
             
         $tabel .= '<tr>';
@@ -563,11 +578,10 @@ class Finance extends CI_Controller{
         $tabel .= '<td><input type="text" id="bank_pembayaran" name="bank_pembayaran" class="form-control myline" readonly="readonly"></td>';
         $tabel .= '<td><input type="text" id="nomor" name="nomor" class="form-control myline" readonly="readonly"></td>';
         $tabel .= '<input type="hidden" id="amount_um" name="amount_um" class="form-control myline" readonly="readonly"/>';
-        $tabel .= '<td><input type="text" id="keterangan_um" name="keterangan_um" class="form-control myline" readonly="readonly"'
+        $tabel .= '<td colspan="2"><input type="text" id="keterangan_um" name="keterangan_um" class="form-control myline" readonly="readonly"'
                 . 'onkeyup="this.value = this.value.toUpperCase()"></td>';        
         $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail_um();" style="margin-top:7px" id="btnSaveDetail"> '
-                . '<i class="fa fa-plus"></i> Tambah </a></td>';
+                . 'yellow-gold" onclick="saveDetail_um();" style="margin-top:7px" id="btnSaveDetail"> <i class="fa fa-plus"></i> Tambah </a></td>';
         $tabel .= '</tr>';
 
         header('Content-Type: application/json');
@@ -970,9 +984,14 @@ class Finance extends CI_Controller{
         $loop_detail = $this->Model_finance->load_detail_invoice($this->input->post('id_sj'))->result();
         foreach($loop_detail as $row){
             $total = $row->amount * $row->netto;
+                if($row->jenis_barang_alias>0){
+                    $jenis_barang = $row->jenis_barang_alias;
+                }else{
+                    $jenis_barang = $row->jenis_barang_id;
+                }
             $this->db->insert('f_invoice_detail', array(
                     'id_invoice'=>$this->input->post('id'),
-                    'jenis_barang_id'=>$row->jenis_barang_id,
+                    'jenis_barang_id'=>$jenis_barang,
                     'qty'=>$row->qty,
                     'netto'=>$row->netto,
                     'harga'=>$row->amount,

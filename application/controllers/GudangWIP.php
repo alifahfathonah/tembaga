@@ -747,6 +747,7 @@ class GudangWIP extends CI_Controller{
                             'flag_taken' => 0,
                             'tanggal' => $tgl_input,
                             'jenis_barang_id' => $v['id_barang'],
+                            't_spb_wip_id'=> $spb_id,
                             't_spb_wip_detail_id'=> $v['spb_detail_id'],
                             'qty' => $v['qty'],
                             'uom' => $v['uom'],

@@ -109,6 +109,7 @@ class SalesOrder extends CI_Controller{
         
         $tabel = "";
         $no    = 1;
+        $total_qty = 0;
         $total = 0;
         $bruto = 0;
         $netto = 0;
@@ -127,7 +128,6 @@ class SalesOrder extends CI_Controller{
             $tabel .= '<td style="text-align:right">'.number_format($row->amount,0,',','.').'</td>';
             if($jenis == 'WIP'){
             $tabel .= '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->bruto,0,',','.').'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
             }else if($jenis == 'FG' || $jenis == 'AMPAS'){
             $tabel .= '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
@@ -139,6 +139,7 @@ class SalesOrder extends CI_Controller{
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';
+            $total_qty += $row->qty;
             $total += $row->total_amount;
             $bruto += $row->bruto;
             $netto += $row->netto;
@@ -147,8 +148,8 @@ class SalesOrder extends CI_Controller{
         }
         $tabel .= '<tr>';
         if($jenis == 'WIP'){
-        $tabel .= '<td colspan="5" style="text-align:right"><strong>Total </strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($bruto,0,',','.').'</strong></td>';
+        $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total_qty,0,',','.').'</strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
         }else if($jenis == 'FG'){
@@ -618,10 +619,13 @@ class SalesOrder extends CI_Controller{
             $soid = $data['header']['sales_order_id'];
             if($jenis == 'FG'){
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_fg($soid)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_fg()->result();
             }else if($jenis == 'WIP'){
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_wip($soid)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_wip()->result();
             }else{
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_rsk($soid)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_rsk()->result();
             }
             $this->load->view('layout', $data);   
         }else{
@@ -660,6 +664,7 @@ class SalesOrder extends CI_Controller{
                     $this->db->insert('t_surat_jalan_detail', array(
                         't_sj_id'=>$this->input->post('id'),
                         'jenis_barang_id'=>$v['jenis_barang_id'],
+                        'jenis_barang_alias'=>$v['barang_alias_id'],
                         'no_packing'=>$v['no_packing'],
                         'qty'=>'1',
                         'bruto'=>$v['bruto'],
@@ -721,6 +726,11 @@ class SalesOrder extends CI_Controller{
             $list_produksi = $this->Model_sales_order->list_item_sj_rsk($soid)->result();
         }
 
+        $this->db->where('id',$soid);
+        $this->db->update('sales_order', array(
+            'flag_invoice'=>0
+        ));
+
         if(empty($list_produksi)){
             $this->db->where('id',$soid);
             $this->db->update('sales_order', array(
@@ -780,11 +790,69 @@ class SalesOrder extends CI_Controller{
         if($id){        
             $this->load->model('Model_sales_order');
             $data['header']  = $this->Model_sales_order->show_header_sj($id)->row_array();
-            $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_fg($id)->result();
-
+            $jenis = $data['header']['jenis_barang'];
+            if($jenis=='FG'){
+                $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_fg($id)->result();
+            }else if($jenis=='WIP'){
+                $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
+            }else{
+                $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id)->result();
+            }
             $this->load->view('sales_order/print_sj', $data);
         }else{
             redirect('index.php'); 
         }
+    }
+
+    function revisi_surat_jalan(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "sales_order/revisi_surat_jalan";
+            $this->load->model('Model_sales_order');
+            $data['header'] = $this->Model_sales_order->show_header_sj($id)->row_array();
+
+            $jenis = $data['header']['jenis_barang'];
+            if($jenis == 'FG'){
+                $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_fg($id)->result();
+            }else if($jenis == 'WIP'){
+                $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
+            }else{
+                $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id)->result();
+            }
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/SalesOrder/surat_jalan');
+        }
+    }
+
+    function save_revisi_sj(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');        
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $details = $this->input->post('details');
+        foreach ($details as $v) {
+            if($v['netto_r']>0){
+                $data = array(
+                        'netto_r'=> $v['netto_r'],
+                        'modified_at'=> $tanggal,
+                        'modified_by'=> $user_id
+                    );
+                $this->db->where('id', $v['id']);
+                $this->db->update('t_surat_jalan_detail', $data);
+            }
+        }
+        
+        $this->session->set_flashdata('flash_msg', 'Data sales order berhasil disimpan');
+        redirect('index.php/SalesOrder/surat_jalan');
     }
 }
