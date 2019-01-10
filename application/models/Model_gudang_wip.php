@@ -25,7 +25,7 @@ class Model_gudang_wip extends CI_Model{
 
     function bpb_list(){
         $data = $this->db->query("Select bpbwip.*, tsw.no_spb_wip,
-                    (select count(id) from t_hasil_wip twip where twip.id = bpbwip.hasil_wip_id)as jumlah_item,
+                    (select count(id) from t_bpb_wip_detail bpbwipd where bpbwip.id = bpbwipd.bpb_wip_id)as jumlah_item,
                     usr.realname As pengirim
                 From t_bpb_wip bpbwip
                     Left join users usr On (bpbwip.created_by = usr.id)

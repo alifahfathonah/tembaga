@@ -196,7 +196,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/BeliWIP/dtbj_list">
+                                    <a href="<?php echo base_url(); ?>index.php/BeliWIP/dtwip_list">
                                         <i class="fa fa-file-text-o"></i>
                                         DTWIP List
                                     </a>

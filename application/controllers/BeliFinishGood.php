@@ -115,7 +115,7 @@ class BeliFinishGood extends CI_Controller{
             $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/BeliRongsok');
+            redirect('index.php/BeliFinishGood');
         }
     }
 
@@ -217,6 +217,24 @@ class BeliFinishGood extends CI_Controller{
         redirect('index.php/BeliFinishGood');
     }
 
+    function close_po(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        
+        $data = array(
+                'status'=> 1,
+                'modified'=> $tanggal,
+                'modified_by'=>$user_id,
+                'remarks'=>$this->input->post('reject_remarks')
+            );
+        
+        $this->db->where('id', $this->input->post('header_id'));
+        $this->db->update('po', $data);
+        
+        $this->session->set_flashdata('flash_msg', 'PO Finish Good Berhasil di Close');
+        redirect('index.php/BeliFinishGood');
+    }
+
     function print_po(){
         $id = $this->uri->segment(3);
         if($id){        
@@ -259,7 +277,7 @@ class BeliFinishGood extends CI_Controller{
             }
             $data['group_id']  = $group_id;
 
-            $data['content']= "beli_fg/create_dtbj";
+            $data['content']= "beli_fg/_dtbj";
             $this->load->model('Model_beli_fg');
             $data['list_fg_on_po'] = $this->Model_beli_fg->list_fg()->result();
             
@@ -285,7 +303,7 @@ class BeliFinishGood extends CI_Controller{
         $id = $this->input->post('id');
         $this->load->model('Model_beli_fg');
         $barang= $this->Model_beli_fg->show_data_bobbin($id)->row_array();
-        $barang['berat_bobbin']=number_format($barang['berat'],2);
+        // $barang['berat_bobbin']=number_format($barang['berat'],2);
         if ($barang['m_jenis_packing_id'] == 1) {
             #bobbin
             $no_bobbin = $barang['nomor_bobbin'];
@@ -639,7 +657,7 @@ class BeliFinishGood extends CI_Controller{
 
             $this->load->view('beli_fg/print_dtbj', $data);
         }else{
-            redirect('index.php'); 
+            redirect('BeliFinishGood/index.php'); 
         }
     }
 

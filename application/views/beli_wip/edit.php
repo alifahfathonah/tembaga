@@ -58,7 +58,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/BeliFinishGood/update'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/BeliWIP/update'); ?>">                            
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -69,7 +69,7 @@
                             <input type="text" id="no_po" name="no_po" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_po']; ?>">
-                            
+                            <!-- po id -->
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
                     </div>
@@ -174,10 +174,10 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th style="width: 40px">No</th>
-                                <th style="width: 20%">Nama Item Finish Good</th>
+                                <th style="width: 20%">Nama Item WIP</th>
                                 <th>Unit of Measure</th>
                                 <th>Harga (Rp)</th>
-                                <th>Jumlah</th>
+                                <th>Berat</th>
                                 <th>Sub Total (Rp)</th>
                                 <th>Actions</th>
                             </thead>
@@ -189,7 +189,7 @@
                                 <td>
                                 <select id="wip_id" name="wip_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
                                     <option value=""></option><?php
-                                    foreach ($list_fg as $value){
+                                    foreach ($list_wip as $value){
                                         echo "<option value='".$value->id."'>".$value->kode.' - '.$value->jenis_barang."</option>";
                                     }?>
                                 </select>
@@ -217,7 +217,7 @@
                         }
                     ?>
                         
-                    <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/BeliWIP'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -230,7 +230,7 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th style="width:40px">No</th>
-                                <th>Nama Item Finish Good</th>
+                                <th>Nama Item WIP</th>
                                 <th>Unit of Measure</th>
                                 <th>Harga (Rp)</th>
                                 <th>Jumlah</th>
@@ -264,7 +264,7 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th style="width:40px">No</th>
-                                <th>Nama Item Finish Good</th>
+                                <th>Nama Item WIP</th>
                                 <th>Unit of Measure</th>
                                 <th>Jumlah</th>
                                 <th>Bruto</th>
@@ -316,7 +316,7 @@
                                 <i class="fa fa-lock"></i> Close PO </a>';
                         }
                     ?>
-                    <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/BeliWIP'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -376,9 +376,10 @@ function simpanData(){
 function loadDetail(id){
     $.ajax({
         type:"POST",
-        url:'<?php echo base_url('index.php/BeliFinishGood/load_detail'); ?>',
+        url:'<?php echo base_url('index.php/BeliWIP/load_detail'); ?>',
         data:"id="+ id,
         success:function(result){
+            console.log(result);
             $('#boxDetail').html(result);   
         }
     });
@@ -386,7 +387,7 @@ function loadDetail(id){
 
 function get_uom(id){
     $.ajax({
-        url: "<?php echo base_url('index.php/BeliFinishGood/get_uom'); ?>",
+        url: "<?php echo base_url('index.php/BeliWIP/get_uom'); ?>",
         async: false,
         type: "POST",
         data: "id="+id,
@@ -398,19 +399,19 @@ function get_uom(id){
 }
 
 function saveDetail(){
-    if($.trim($("#fg_id").val()) == ""){
-        $('#message').html("Silahkan pilih item finish good!");
+    if($.trim($("#wip_id").val()) == ""){
+        $('#message').html("Silahkan pilih item WIP!");
         $('.alert-danger').show();
     }else if($.trim($("#harga").val()) == ""){
-        $('#message').html("Harga item finish good tidak boleh kosong!");
+        $('#message').html("Harga item WIP tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else{
         $.ajax({
             type:"POST",
-            url:'<?php echo base_url('index.php/BeliFinishGood/save_detail'); ?>',
+            url:'<?php echo base_url('index.php/BeliWIP/save_detail'); ?>',
             data:{
                 id:$('#id').val(),
-                fg_id:$('#fg_id').val(),
+                wip_id:$('#wip_id').val(),
                 harga:$('#harga').val(),
                 qty:$('#qty').val(),
                 total_harga:$('#total_harga').val()
@@ -435,11 +436,11 @@ function saveDetail(){
 }
 
 function hapusDetail(id){
-    var r=confirm("Anda yakin menghapus item rongsok ini?");
+    var r=confirm("Anda yakin menghapus item WIP ini?");
     if (r==true){
         $.ajax({
             type:"POST",
-            url:'<?php echo base_url('index.php/BeliFinishGood/delete_detail'); ?>',
+            url:'<?php echo base_url('index.php/BeliWIP/delete_detail'); ?>',
             data:"id="+ id,
             success:function(result){
                 if(result['message_type']=="sukses"){
@@ -459,7 +460,7 @@ function showRejectBox(){
         $('#message').html("");
         $('.alert-danger').hide();
         
-        $("#myModal").find('.modal-title').text('Close PO Rongsok');
+        $("#myModal").find('.modal-title').text('Close PO WIP');
         $("#myModal").modal('show',{backdrop: 'true'}); 
     }
 }
@@ -471,28 +472,10 @@ function rejectData(){
     }else{
         $('#message').html("");
         $('.alert-danger').hide();
-        $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/BeliRongsok/close_po");
+        $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/BeliWIP/close_po");
         $('#frmReject').submit(); 
     }
 }
-
-// function closePO(){
-//     var r=confirm("Anda yakin ingin close PO ini?");
-//     if (r==true){
-//         $.ajax({
-//             type:"POST",
-//             url:'<?php echo base_url('index.php/BeliRongsok/close_po'); ?>',
-//             data:"id="+ $('#id').val(),
-//             success:function(result){
-//                 if(result['message_type']=="sukses"){
-//                     window.location.href = "<?php echo base_url('index.php/BeliRongsok'); ?>";
-//                 }else{
-//                     alert(result['message']);
-//                 }     
-//             }
-//         });
-//     }
-// }
 
 </script>
 

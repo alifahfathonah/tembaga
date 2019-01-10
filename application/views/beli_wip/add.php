@@ -4,9 +4,9 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Pembelian 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>"> Pembelian Finish Good </a> 
+            <a href="<?php echo base_url('index.php/BeliWIP'); ?>"> Pembelian WIP </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood/add'); ?>"> Input PO </a> 
+            <a href="<?php echo base_url('index.php/BeliWIP/add'); ?>"> Input PO </a> 
         </h5>          
     </div>
 </div>

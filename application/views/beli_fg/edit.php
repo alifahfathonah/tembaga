@@ -4,9 +4,9 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Pembelian 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliRongsok'); ?>"> Pembelian Finish Good </a> 
+            <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>"> Pembelian Finish Good </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliRongsok/edit'); ?>"> Edit PO Finish Good </a> 
+            <a href="<?php echo base_url('index.php/BeliFinishGood/edit'); ?>"> Edit PO Finish Good </a> 
         </h5>          
     </div>
 </div>
@@ -435,7 +435,7 @@ function saveDetail(){
 }
 
 function hapusDetail(id){
-    var r=confirm("Anda yakin menghapus item rongsok ini?");
+    var r=confirm("Anda yakin menghapus item Finish Good ini?");
     if (r==true){
         $.ajax({
             type:"POST",
@@ -459,7 +459,7 @@ function showRejectBox(){
         $('#message').html("");
         $('.alert-danger').hide();
         
-        $("#myModal").find('.modal-title').text('Close PO Rongsok');
+        $("#myModal").find('.modal-title').text('Close PO Finish Good');
         $("#myModal").modal('show',{backdrop: 'true'}); 
     }
 }
@@ -471,28 +471,10 @@ function rejectData(){
     }else{
         $('#message').html("");
         $('.alert-danger').hide();
-        $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/BeliRongsok/close_po");
+        $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/BeliFinishGood/close_po");
         $('#frmReject').submit(); 
     }
 }
-
-// function closePO(){
-//     var r=confirm("Anda yakin ingin close PO ini?");
-//     if (r==true){
-//         $.ajax({
-//             type:"POST",
-//             url:'<?php echo base_url('index.php/BeliRongsok/close_po'); ?>',
-//             data:"id="+ $('#id').val(),
-//             success:function(result){
-//                 if(result['message_type']=="sukses"){
-//                     window.location.href = "<?php echo base_url('index.php/BeliRongsok'); ?>";
-//                 }else{
-//                     alert(result['message']);
-//                 }     
-//             }
-//         });
-//     }
-// }
 
 </script>
 

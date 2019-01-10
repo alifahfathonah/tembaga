@@ -4,9 +4,9 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Pembelian 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>"> Pembelian Finish Good</a> 
+            <a href="<?php echo base_url('index.php/BeliWIP'); ?>"> Pembelian WIP</a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood/create_dtbj'); ?>"> Create Data Timbang Barang Jadi (DTBJ) </a> 
+            <a href="<?php echo base_url('index.php/BeliWIP/create_dtwip'); ?>"> Create Data Timbang WIP (DTWIP) </a> 
         </h5>          
     </div>
 </div>
@@ -16,7 +16,7 @@
 <div class="row">                            
     <div class="col-md-12">
         <?php
-            if( ($group_id==1)||($hak_akses['create_dtbj']==1) ){
+            if( ($group_id==1)||($hak_akses['create_dtwip']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -27,15 +27,15 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/BeliFinishGood/save_dtbj'); ?>">  
+              id="formku" action="<?php echo base_url('index.php/BeliWIP/save_dtwip'); ?>">  
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
-                            No. DTBJ <font color="#f00">*</font>
+                            No. DTWIP <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
+                            <input type="text" id="no_dtwip" name="no_dtwip" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="Auto Generate">
                         </div>
@@ -97,7 +97,7 @@
                         <div class="col-md-8">
                             <input type="text" id="jenis_barang" name="jenis_barang" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="FG">
+                                value="WIP">
                         </div>
                     </div> 
                     <div class="row">
@@ -118,27 +118,24 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
-                        <table class="table table-bordered table-striped table-hover" id="tabel_dtr">
+                        <table class="table table-bordered table-striped table-hover" id="tabel_dtwip">
                             <thead>
                                 <th style="width:40px">No</th>
-                                <th style="width:20%">Nama Item Finish Good</th>
+                                <th style="width:20%">Nama Item WIP</th>
                                 <th>UOM</th>
-                                <th>Bruto (Kg)</th>
-                                <th>Berat Bobbin</th>
-                                <th>Netto (Kg)</th>
+                                <th>Qty</th>
+                                <th>Berat (Kg)</th>
                                 <th></th>
-                                <th>No. Bobbin</th>
-                                <th>No. Packing</th>
                                 <th>Keterangan</th>
                             </thead>
                             <tbody id="boxDetail">
                             <tr>
                                 <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
                                 <input type="hidden" id="po_id_1" name="myDetails[1][po_detail_id]" value="">
-                                <input type="hidden" id="fg_id_1" name="myDetails[1][fg_id]" value="">
-                                <td><select id="name_rongsok_1" name="myDetails[1][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom_po(this.value,1);">
+                                <input type="hidden" id="wip_id_1" name="myDetails[1][wip_id]" value="">
+                                <td><select id="name_wip_1" name="myDetails[1][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom_po(this.value,1);">
                                     <option value=""></option>
-                                    <?php foreach ($list_fg_on_po as $value){ ?>
+                                    <?php foreach ($list_wip_on_po as $value){ ?>
                                             <option value='<?=$value->id;?>'>
                                                 <?=$value->jenis_barang;?>
                                             </option>
@@ -146,14 +143,10 @@
                                 </select>
                                 </td>
                                 <td><input type="text" id="uom_1" name="myDetails[1][uom]" class="form-control myline" readonly="readonly"></td>
-                                <td><input type="text" id="bruto_1" name="myDetails[1][bruto]" class="form-control myline" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
-                                <td><input type="text" id="berat_bobbin_1" name="myDetails[1][berat_bobbin]" class="form-control myline" value="0" readonly maxlength="10"></td>
-                                <td><input type="text" id="netto_v_1" name="myDetails[1][netto_v]" class="form-control myline" value="0" maxlength="10" readonly="readonly">
-                                    <input type="hidden" name="myDetails[1][netto]" id="netto_1">
+                                <td><input type="text" id="qty_1" name="myDetails[1][qty]" class="form-control myline" value="0" maxlength="10"></td>
+                                <td><input type="text" id="berat_1" name="myDetails[1][berat]" class="form-control myline" value="0" maxlength="10">
                                 </td>
-                                <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(1);" id="timbang_1"> <i class="fa fa-dashboard"></i> Timbang </a></td>                          
-                                <td><input type="text" name="myDetails[1][no_bobbin]" id="no_bobbin_1"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" onchange="get_bobbin(this.value,1)"></td>
-                                <td><input type="text" name="myDetails[1][no_packing]" id="no_packing_1" class="form-control myline" readonly placeholder="Auto"></td>
+                                <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(1);" id="timbang_1"> <i class="fa fa-dashboard"></i> Timbang </a></td>       
                                 <td><input type="text" name="myDetails[1][line_remarks]" id="line_remarks_1" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
                                 <td style="text-align:center"><a id="save_1" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(1);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
                                     <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
@@ -167,9 +160,9 @@
             <div class="row">
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                        <i class="fa fa-floppy-o"></i> Create DTBJ </a>
+                        <i class="fa fa-floppy-o"></i> Create DTWIP </a>
 
-                    <a href="<?php echo base_url('index.php/BeliFinishGood/dtbj_list'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/BeliWIP/dtwip_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -187,31 +180,6 @@
     </div>
 </div> 
 <script>
-function get_bobbin(id, nmr){
-    if(''!=id){
-        $.ajax({
-            url: "<?php echo base_url('index.php/BeliFinishGood/get_bobbin'); ?>",
-            async: false,
-            type: "POST",
-            data: "id="+id,
-            dataType: "json",
-            success: function(result) {
-                console.log(result);
-                if(result['id'] != null){
-                    $('#berat_bobbin_'+nmr).val(result['berat']);
-                    $('#id_bobbin_'+nmr).val(result['id']);
-                    $('#no_packing_'+nmr).val(result['no_packing']);
-                } else {
-                    alert('Bobbin/Keranjang tidak ditemukan atau belum dipesan, coba lagi');
-                    $('#no_bobbin_'+nmr).val('');
-                    $('#id_bobbin_'+nmr).val('');
-                    $('#berat_bobbin_'+nmr).val('');
-                    $('#no_packing_'+nmr).val('');
-                }
-            }
-        });
-    }
-}
 function timbang_netto(id){
     var bruto = $("#bruto_"+id).val();
     var berat_palette = $("#berat_bobbin_"+id).val();
@@ -262,18 +230,17 @@ function check_duplicate(){
 }
 
 function get_uom_po(id, nmr){
-    // var idpo = $('#po_id').val();
-    if($.trim($('#name_rongsok_'+nmr).val())!=''){    
+    if($.trim($('#name_wip_'+nmr).val())!=''){    
     var check = check_duplicate();
         if(check){
             $.ajax({
-                url: "<?php echo base_url('index.php/BeliFinishGood/get_uom'); ?>",
+                url: "<?php echo base_url('index.php/BeliWIP/get_uom'); ?>",
                 type: "POST",
                 data: {id: id},
                 dataType: "json",
                 success: function(result) {
                     $('#uom_'+nmr).val(result['uom']);
-                    $('#fg_id_'+nmr).val(id);
+                    $('#wip_id_'+nmr).val(id);
                 }
             });
         }else{
@@ -284,46 +251,35 @@ function get_uom_po(id, nmr){
 }
 
 function saveDetail(id){
-    if($.trim($("#name_rongsok_"+id).val()) == ""){
-        $('#message').html("Silahkan pilih nama item finish good!");
+    if($.trim($("#name_wip_"+id).val()) == ""){
+        $('#message').html("Silahkan pilih nama item WIP!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#bruto_"+id).val()) == "" || 0){
-        $('#message').html("Jumlah bruto tidak boleh kosong!");
+    }else if($.trim($("#berat_"+id).val()) == "" || 0){
+        $('#message').html("Jumlah berat tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#netto_"+id).val()) == "" || 0){
-        $('#message').html("Jumlah netto tidak boleh kosong!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#no_bobbin_"+id).val()) == ""){
-        $('#message').html("nomor bobbin tidak boleh kosong!");
-        $('.alert-danger').show();
     }else{
-        $("#name_rongsok_"+id).attr('readonly','readonly');
-        $("#bruto_"+id).attr('readonly','readonly');
-        $("#berat_bobbin_"+id).attr('readonly','readonly');
-        $("#no_bobbin_"+id).attr('readonly','readonly');
+        $("#name_wip_"+id).attr('readonly','readonly');
+        $("#berat_"+id).attr('readonly','readonly');
+        $("#qty_"+id).attr('readonly','readonly');
         $("#timbang_"+id).attr('disabled','disabled');
         $("#line_remarks_"+id).attr('readonly','readonly');
         $("#save_"+id).attr('disabled','disabled');
         $("#delete_"+id).removeClass('disabled');
         var new_id = id+1; 
-        $("#tabel_dtr>tbody").append(
+        $("#tabel_dtwip>tbody").append(
             '<tr>'+
                 '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
                 '<input type="hidden" id="po_id_'+new_id+'" name="myDetails['+new_id+'][po_detail_id]" value="">'+
-                '<input type="hidden" id="fg_id_'+new_id+'" name="myDetails['+new_id+'][fg_id]" value="">'+
-                '<td><select id="name_rongsok_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom_po(this.value,'+new_id+');">'+
+                '<input type="hidden" id="wip_id_'+new_id+'" name="myDetails['+new_id+'][wip_id]" value="">'+
+                '<td><select id="name_wip_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom_po(this.value,'+new_id+');">'+
                     '<option value=""></option>'+
-                    '<?php foreach($list_fg_on_po as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}?>'+
+                    '<?php foreach($list_wip_on_po as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}?>'+
                 '</select>'+
                 '</td>'+
                 '<td><input type="text" id="uom_'+new_id+'" name="myDetails['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
-                '<td><input type="text" id="bruto_'+new_id+'" name="myDetails['+new_id+'][bruto]" class="form-control myline" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
-                '<td><input type="text" id="berat_bobbin_'+new_id+'" name="myDetails['+new_id+'][berat_bobbin]" class="form-control myline" value="0" maxlength="10"></td>'+
-                '<td><input type="text" id="netto_v_'+new_id+'" name="myDetails['+new_id+'][netto_v]" class="form-control myline" value="0" maxlength="10" readonly="readonly"></td>'+
-                '<input type="hidden" name="myDetails['+new_id+'][netto]" id="netto_'+new_id+'">'+
+                '<td><input type="text" id="qty_'+new_id+'" name="myDetails['+new_id+'][qty]" class="form-control myline" value="0" maxlength="10"></td>'+
+                '<td><input type="text" id="berat_'+new_id+'" name="myDetails['+new_id+'][berat]" class="form-control myline" value="0" maxlength="10"></td>'+
                 '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('+new_id+');" id="timbang_'+new_id+'"> <i class="fa fa-dashboard"></i> Timbang </a></td>'+
-                '<td><input type="text" name="myDetails['+new_id+'][no_bobbin]" id="no_bobbin_'+new_id+'"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" onchange="get_bobbin(this.value,'+new_id+');"></td>'+
-                '<td><input type="text" name="myDetails['+new_id+'][no_packing]" id="no_packing_'+new_id+'" class="form-control myline" readonly placeholder="Auto"></td>'+
                 '<td><input type="text" name="myDetails['+new_id+'][line_remarks]" id="line_remarks_'+new_id+'" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
                 '<td style="text-align:center"><a id="save_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail('+new_id+');" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>'+
                     '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
@@ -333,7 +289,7 @@ function saveDetail(id){
 }
 
 function deleteDetail(id){
-    var r=confirm("Anda yakin menghapus item rongsok ini?");
+    var r=confirm("Anda yakin menghapus item WIP ini?");
     if (r==true){
         $('#no_tabel_'+id).closest('tr').remove();
         }

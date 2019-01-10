@@ -21,3 +21,7 @@ update table 080119
 -table po_detail add fg_id
 -table po_detail add flag_dtbj
 -create table dtwip dan detail
+
+update table 090119
+-table po_detail add po_id
+-table po_detail add flag_dtwip

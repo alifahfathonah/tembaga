@@ -4,9 +4,9 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Pembelian 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>"> Pembelian Finish Good </a> 
+            <a href="<?php echo base_url('index.php/BeliWIP'); ?>"> Pembelian WIP </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood/dtbj_list'); ?>"> DTBJ List </a> 
+            <a href="<?php echo base_url('index.php/BeliWIP/dtwip_list'); ?>"> DTWIP List </a> 
         </h5>          
     </div>
 </div>
@@ -14,7 +14,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['dtbj_list']==1) ){
+            if( ($group_id==1)||($hak_akses['dtwip_list']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -27,10 +27,10 @@
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-beer"></i>Data Timbang Barang Jadi (DTBJ) List
+                    <i class="fa fa-beer"></i>Data Timbang WIP (DTWIP) List
                 </div>
                 <div class="tools">    
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliFinishGood/create_dtbj"> <i class="fa fa-plus"></i> Create DTBJ</a>
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliWIP/create_dtwip"> <i class="fa fa-plus"></i> Create DTWIP</a>
                 </div>           
             </div>
             <div class="portlet-body">
@@ -38,7 +38,7 @@
                 <thead>
                 <tr>
                     <th style="width:50px;">No</th>
-                    <th>No. DTBJ</th>
+                    <th>No. DTWIP</th>
                     <th>Tanggal</th>
                     <th>No. PO</th>
                     <th>Supplier</th>
@@ -57,7 +57,7 @@
                     ?>
                     <tr>
                         <td style="text-align:center;"><?php echo $no; ?></td>
-                        <td style="background-color: "><?php echo $data->no_dtbj; ?></td>
+                        <td style="background-color: "><?php echo $data->no_dtwip; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->no_po; ?></td>
                         <td><?php echo $data->nama_supplier; ?></td>
@@ -77,15 +77,15 @@
                         </td>                        
                         <td style="text-align:center"> 
                             <?php
-                                if(($group_id==1 || $hak_akses['edit_dtbj']==1) && $data->status==9){
-                                    echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliFinishGood/edit_dtbj/'.$data->id.'" 
+                                if(($group_id==1 || $hak_akses['edit_dtwip']==1) && $data->status==9){
+                                    echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliWIP/edit_dtbj/'.$data->id.'" 
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit &nbsp; </a> ';
                                 }else if ($data->status==0 && (strpos($data->remarks, 'SISA PRODUKSI') || strpos($data->remarks, 'TRANSFER KE RONGSOK')) !== false){
-                                    echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliFinishGood/proses_dtbj/'.$data->id.'" 
+                                    echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliWIP/proses_dtwip/'.$data->id.'" 
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
                                 }
-                                if($group_id==1 || $hak_akses['print_dtbj']==1){
-                                    echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliFinishGood/print_dtbj/'.$data->id.'" 
+                                if($group_id==1 || $hak_akses['print_dtwip']==1){
+                                    echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliWIP/print_dtwip/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }
                             ?>

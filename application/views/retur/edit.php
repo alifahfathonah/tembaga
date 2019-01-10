@@ -185,6 +185,7 @@ function get_bobbin(id){
         data: "id="+id,
         dataType: "json",
         success: function(result) {
+            console.log(result);
             if(result){
                 $('#berat_bobbin').val(result['berat']);
                 $('#pemilik').val(result['nama_owner']);

@@ -4,9 +4,9 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Pembelian 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>"> Pembelian Finish Good </a> 
+            <a href="<?php echo base_url('index.php/BeliWIP'); ?>"> Pembelian WIP </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood/matching'); ?>"> Matching PO - DTBJ </a> 
+            <a href="<?php echo base_url('index.php/BeliWIP/matching'); ?>"> Matching PO - DTWIP </a> 
         </h5>          
     </div>
 </div>
@@ -44,7 +44,7 @@
                                         onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>
                                     
                                     <input type="hidden" id="po_id" name="po_id" value="<?php echo $header_po['id']; ?>">
-                                    <input type="hidden" id="dtbj_id" name="dtbj_id">
+                                    <input type="hidden" id="dtwip_id" name="dtwip_id">
                                 </div>
                             </div>                           
                         </form>
@@ -112,7 +112,7 @@
                                     <th>Nama Item</th>
                                     <th>UOM</th>
                                     <th>Harga (Rp)</th>
-                                    <th>Netto</th> 
+                                    <th>Berat (Kg)</th> 
                                     <th>Sub Total (Rp)</th>                      
                                 </tr>
                                 </thead>
@@ -150,21 +150,21 @@
                 <div class="portlet box green-seagreen">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-file-word-o"></i><span style="color: green; font-weight: bold;">Approved</span> Data Timbang Barang Jadi (DTBJ)
+                            <i class="fa fa-file-word-o"></i><span style="color: green; font-weight: bold;">Approved</span> Data Timbang WIP (DTWIP)
                         </div>                 
                     </div>
                     <div class="portlet-body">
                         <?php 
-                            foreach ($dtbj_app as $index=>$row){
+                            foreach ($dtwip_app as $index=>$row){
                         ?>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        No. DTBJ
+                                        No. DTWIP
                                     </div>
                                     <div class="col-md-8">
-                                        : <div style="color:red; display: inline"><?php echo $row->no_dtbj; ?></div>
+                                        : <div style="color:red; display: inline"><?php echo $row->no_dtwip; ?></div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -210,41 +210,31 @@
                                     <th>No</th>
                                     <th>Nama Item</th>
                                     <th>UOM</th>
-                                    <th>Bruto (Kg)</th>
-                                    <th>Netto (Kg)</th>
-                                    <th>No. Bobbin</th>
-                                    <th>No. Packing</th>                    
+                                    <th>Qty</th>
+                                    <th>Berat (Kg)</th>               
                                 </tr>
                                 </thead>
                                 <tbody>
                                     <?php
                                     $no = 1;
-                                    $bruto = 0;
-                                    $netto = 0;
+                                    $berat = 0;
                                     foreach ($row->details as $value){
                                         echo '<tr>';
                                         echo '<td style="text-align:center;">'.$no.'</td>';
                                         echo '<td>'.$value->jenis_barang.'</td>';
                                         echo '<td>'.$value->uom.'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($value->bruto,0,',', '.').'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($value->netto,0,',', '.').'</td>';
-                                        echo '<td>'.$value->no_bobbin.'</td>';
-                                        echo '<td>'.$value->no_packing.'</td>';
+                                        echo '<td>'.$value->qty.'</td>';
+                                        echo '<td style="text-align:right;">'.number_format($value->berat,0,',', '.').'</td>';
                                         echo '</tr>';
-                                        $bruto += $value->bruto;
-                                        $netto += $value->netto;
+                                        $berat += $value->berat;
                                         $no++;
                                     }
                                     ?>
                                     <tr>
                                         <td style="text-align:right;" colspan="4"><strong>Total (Kg) </strong></td>
                                         <td style="text-align:right;">
-                                            <strong><?php echo number_format($bruto,0,',','.'); ?></strong>
+                                            <strong><?php echo number_format($berat,0,',','.'); ?></strong>
                                         </td>
-                                        <td style="text-align:right;">
-                                            <strong><?php echo number_format($netto,0,',','.'); ?></strong>
-                                        </td>
-                                        <td>&nbsp;</td>
                                     </tr>
                                 </tbody>
                             </table>                            
@@ -277,21 +267,21 @@
                 <div class="portlet box green-seagreen">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-file-word-o"></i>Data Timbang Barang Jadi (DTBJ)
+                            <i class="fa fa-file-word-o"></i>Data Timbang WIP (DTWIP)
                         </div>                 
                     </div>
                     <div class="portlet-body">
                         <?php 
-                            foreach ($dtbj as $index=>$row){
+                            foreach ($dtwip as $index=>$row){
                         ?>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        No. DTBJ
+                                        No. DTWIP
                                     </div>
                                     <div class="col-md-8">
-                                        : <div style="color:red; display: inline"><?php echo $row->no_dtbj; ?></div>
+                                        : <div style="color:red; display: inline"><?php echo $row->no_dtwip; ?></div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -337,41 +327,31 @@
                                     <th>No</th>
                                     <th>Nama Item</th>
                                     <th>UOM</th>
-                                    <th>Bruto (Kg)</th>
-                                    <th>Netto (Kg)</th>
-                                    <th>No. Bobbin</th>
-                                    <th>No. Packing</th>                    
+                                    <th>Qty</th>
+                                    <th>Berat (Kg)</th>                    
                                 </tr>
                                 </thead>
                                 <tbody>
                                     <?php
                                     $no = 1;
-                                    $bruto = 0;
-                                    $netto = 0;
+                                    $berat = 0;
                                     foreach ($row->details as $value){
                                         echo '<tr>';
                                         echo '<td style="text-align:center;">'.$no.'</td>';
                                         echo '<td>'.$value->jenis_barang.'</td>';
                                         echo '<td>'.$value->uom.'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($value->bruto,0,',', '.').'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($value->netto,0,',', '.').'</td>';
-                                        echo '<td>'.$value->no_bobbin.'</td>';
-                                        echo '<td>'.$value->no_packing.'</td>';
+                                        echo '<td>'.$value->qty.'</td>';
+                                        echo '<td style="text-align:right;">'.number_format($value->berat,0,',', '.').'</td>';
                                         echo '</tr>';
-                                        $bruto += $value->bruto;
-                                        $netto += $value->netto;
+                                        $berat += $value->berat;
                                         $no++;
                                     }
                                     ?>
                                     <tr>
-                                        <td style="text-align:right;" colspan="3"><strong>Total (Kg) </strong></td>
+                                        <td style="text-align:right;" colspan="4"><strong>Total (Kg) </strong></td>
                                         <td style="text-align:right;">
-                                            <strong><?php echo number_format($bruto,0,',','.'); ?></strong>
+                                            <strong><?php echo number_format($berat,0,',','.'); ?></strong>
                                         </td>
-                                        <td style="text-align:right;">
-                                            <strong><?php echo number_format($netto,0,',','.'); ?></strong>
-                                        </td>
-                                        <td colspan="2">&nbsp;</td>
                                     </tr>
                                 </tbody>
                             </table>                            
@@ -420,10 +400,11 @@
 
 function approve(id){
     $.ajax({
-        url: "<?php echo base_url('index.php/BeliFinishGood/approve'); ?>",
+        url: "<?php echo base_url('index.php/BeliWIP/approve'); ?>",
         type: "POST",
-        data : {dtbj_id: id,po_id: $('#po_id').val()},
-        success: function (result){            
+        data : {dtwip_id: id,po_id: $('#po_id').val()},
+        success: function(result){    
+        console.log(result);        
             if(result['type_message']=="sukses"){
                 alert(result['message']);
                 location.reload();
@@ -432,16 +413,16 @@ function approve(id){
             }
         }
     });
-};
+}
 
 function reject(id){
-    var r=confirm("Anda yakin me-reject DTBJ ini?");
+    var r=confirm("Anda yakin me-reject DTWIP ini?");
     if (r==true){
-        $('#dtbj_id').val(id);
+        $('#dtwip_id').val(id);
         $('#message').html("");
         $('.alert-danger').hide();
         
-        $("#myModal").find('.modal-title').text('Reject DTBJ');
+        $("#myModal").find('.modal-title').text('Reject DTWIP');
         $("#myModal").modal('show',{backdrop: 'true'}); 
     }
 }
@@ -453,7 +434,7 @@ function rejectData(){
     }else{
         $('#message').html("");
         $('.alert-danger').hide();
-        $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/BeliFinishGood/reject");
+        $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/BeliWIP/reject");
         $('#frmReject').submit(); 
     }
 }

@@ -61,7 +61,7 @@
                                 <div class="col-md-7">
                                     <input type="text" id="jenis_barang" name="jenis_barang" 
                                         class="form-control myline" style="margin-bottom:5px" 
-                                        readonly="readonly" value="FG">                                                                       
+                                        readonly="readonly" value="WIP">                                                                       
                                 </div>
                             </div> 
                             <div class="row">
@@ -240,13 +240,13 @@
                             <?php
                                 if( ($group_id==1 || $hak_akses['edit']==1) && $data->status != 1 ){
                             ?>
-                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/BeliFinishGood/edit/<?php echo $data->id; ?>" style="margin-bottom:4px">
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/BeliWIP/edit/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                             <?php
                                 }
                                 if($group_id==1 || $hak_akses['print_po']==1){
                             ?>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/BeliFinishGood/print_po/<?php echo $data->id; ?>" 
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/BeliWIP/print_po/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
                                 }
@@ -288,7 +288,7 @@ function getComa(value, id){
 function createVoucher(id){
     console.log(id);
     $.ajax({
-        url: "<?php echo base_url('index.php/BeliFinishGood/create_voucher'); ?>",
+        url: "<?php echo base_url('index.php/BeliWIP/create_voucher'); ?>",
         type: "POST",
         data : {id: id},
         success: function (result){
@@ -322,7 +322,7 @@ function saveVoucher(){
     }else{    
         $('#message').html("");
         $('.alert-danger').hide();
-        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/BeliFinishGood/save_voucher");
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/BeliWIP/save_voucher");
         $('#formku').submit(); 
     };
 };
