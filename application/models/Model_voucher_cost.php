@@ -26,4 +26,14 @@ class Model_voucher_cost extends CI_Model{
         $data = $this->db->query("Select * From group_cost Order By nama_group_cost");
         return $data;
     }
+
+    function get_customer(){
+        $data = $this->db->query("select id, nama_customer as nama_cost from m_customers order by nama_customer");
+        return $data;
+    }
+
+    function get_supplier(){
+        $data = $this->db->query("select id, nama_supplier as nama_cost from supplier order by nama_supplier");
+        return $data;
+    }
 }

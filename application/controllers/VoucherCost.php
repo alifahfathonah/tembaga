@@ -31,7 +31,13 @@ class VoucherCost extends CI_Controller{
     function get_cost_list(){ 
         $id = $this->input->post('id');
         $this->load->model('Model_voucher_cost');
-        $data = $this->Model_voucher_cost->get_cost_list($id)->result();
+        if($id == 1){
+            $data = $this->Model_voucher_cost->get_customer()->result();
+        } else if ($id == 2){
+            $data = $this->Model_voucher_cost->get_supplier()->result();
+        } else {
+            $data = $this->Model_voucher_cost->get_cost_list($id)->result();
+        }
         $arr_cost[] = "Silahkan pilih....";
         foreach ($data as $row) {
             $arr_cost[$row->id] = $row->nama_cost;
@@ -44,6 +50,11 @@ class VoucherCost extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
+        if ($this->input->post('cost_id') == 0) {
+            $cost_id = 0;
+        } else {
+            $cost_id = $this->input->post('cost_id');
+        }
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('VCOST', $tgl_input);
         if($code){
@@ -52,7 +63,7 @@ class VoucherCost extends CI_Controller{
                         'tanggal'=> $tgl_input,
                         'jenis_voucher'=>'Manual',
                         'group_cost_id'=> $this->input->post('group_cost_id'),
-                        'cost_id'=> $this->input->post('cost_id'),
+                        'cost_id'=> $cost_id,
                         'keterangan'=> $this->input->post('remarks'),
                         'amount'=> str_replace('.', '', $this->input->post('amount')),
                         'created'=> $tanggal,

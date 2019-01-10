@@ -54,13 +54,14 @@
                                 </div>
                                 <div class="col-md-7">
                                     <select id="group_cost_id" name="group_cost_id" class="form-control myline select2me" 
-                                        data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onclick="get_cost(this.value);">
+                                        data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cost(this.value);">
                                         <option value=""></option>
                                         <?php
                                             foreach ($list_group_cost as $row){
                                                 echo '<option value="'.$row->id.'">'.$row->nama_group_cost.'</option>';
                                             }
                                         ?>
+                                        <option value="0">LAINNYA</option>
                                     </select>
                                 </div>
                             </div>
@@ -72,7 +73,6 @@
                                     <select id="cost_id" name="cost_id" class="form-control myline select2me" 
                                         data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                         <option value=""></option>
-
                                     </select>
                                 </div>
                             </div>
@@ -224,7 +224,7 @@ function simpandata(){
     }else if($.trim($("#group_cost_id").val()) == ""){
         $('#message').html("Silahkan pilih group cost!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#cost_id").val()) == ""){
+    }else if(($.trim($("#cost_id").val()) == "") && ($.trim($("#group_cost_id").val()) == "")){
         $('#message').html("Silahkan pilih nama cost!");
         $('.alert-danger').show();
     }else{     
@@ -235,17 +235,23 @@ function simpandata(){
     };
 };
 
-function get_cost(id){    
-    $.ajax({
-        url: "<?php echo base_url('index.php/VoucherCost/get_cost_list'); ?>",
-        async: false,
-        type: "POST",
-        data: "id="+id,
-        dataType: "html",
-        success: function(result) {
-            $('#cost_id').html(result);
-        }
-    })
+function get_cost(id){   
+    if (id == 0) {
+        $('#cost_id').attr('disabled','disabled');
+    } else {
+        $('#cost_id').val('');
+        $('#cost_id').removeAttr('disabled');
+        $.ajax({
+            url: "<?php echo base_url('index.php/VoucherCost/get_cost_list'); ?>",
+            async: false,
+            type: "POST",
+            data: "id="+id,
+            dataType: "html",
+            success: function(result) {
+                $('#cost_id').html(result);
+            }
+        });
+    }
 }
 
 $(function(){ 
