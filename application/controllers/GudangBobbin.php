@@ -112,10 +112,12 @@ class GudangBobbin extends CI_Controller{
     function get_packing(){
         $id = $this->input->post('id');
         $this->load->model('Model_bobbin');
-        $packing= $this->Model_bobbin->show_detail_packing($id)->row_array();
-        
-        header('Content-Type: application/json');
-        echo json_encode($packing); 
+        $data = $this->Model_bobbin->get_spb($id)->result();
+        $arr_cost[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_cost[$row->id] = $row->nama_cost;
+        } 
+        print form_dropdown('cost_id', $arr_cost);
     }
 
     function update(){
@@ -204,11 +206,92 @@ class GudangBobbin extends CI_Controller{
         
         $this->load->model('Model_bobbin');
         $data['list_peminjam'] = $this->Model_bobbin->list_peminjam()->result();
-        
+        $data['list_supplier'] = $this->Model_bobbin->list_supplier()->result();
+        $data['list_spb'] = $this->Model_bobbin->list_spb()->result();
         
         $this->load->view('layout', $data);  
     }
 
+    function get_spb(){
+        $spb_id = $this->input->post('id');
+        $this->load->model('Model_beli_bobbin');
+        $wip = $this->Model_beli_wip->get_spb($id)->result();
+        
+        header('Content-Type: application/json');
+        echo json_encode($wip);
+    }
+
+    function save_surat_peminjaman(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+
+        $this->db->where('id', $this->input->post('spb_id'));
+        $this->db->update('m_bobbin_spb', array('keperluan' => 2));
+
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);
+        $data = array(
+                'no_surat_peminjaman' => $code,
+                'supplier_id' => $this->input->post('supplier_id'),
+                'status' => 0,
+                'created_by' => $user_id,
+                'created_at' => $tanggal
+                );
+
+
+        $this->db->insert('m_bobbin_peminjaman', $data);
+        $peminjaman_id = $this->db->insert_id();
+
+        $loop = $this->db->query("
+            select msbd.*, b.nomor_bobbin
+            from m_bobbin_spb_detail msbd
+            left join m_bobbin b on (msbd.id_bobbin = b.id)
+            where id_spb_bobbin = ".$this->input->post('spb_id'))->result();
+        foreach ($loop as $row) {
+            $detail = array(
+                'id_peminjaman' => $peminjaman_id,
+                'id_penerimaan' => 0,
+                'nomor_bobbin' => $row->nomor_bobbin
+            );
+
+            $this->db->insert('m_bobbin_peminjaman_detail', $detail);
+
+            $updatemb = array(
+                'status' => 2
+            );
+
+            // $this->db->query("update m_bobbin set status = 2 where nomor_bobbin = ".$row->nomor_bobbin);
+            $this->db->where('nomor_bobbin', $row->nomor_bobbin);
+            $this->db->update('m_bobbin', $updatemb);
+        }
+
+        redirect('index.php/GudangBobbin/bobbin_request');
+    }
+
+    function edit_surat_peminjaman(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "gudang_bobbin/edit_surat_peminjaman";
+            $this->load->model('Model_bobbin');
+            $data['header'] = $this->Model_bobbin->show_header_peminjam($id)->row_array();
+            $data['details'] =   $this->Model_bobbin->show_detail_peminjam($id)->result();
+            $data['bobbin_booked'] = $this->Model_bobbin->get_bobbin_booked()->result();
+    
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/GudangBobbin/bobbin_terima');
+        }
+    }
 
     function bobbin_terima(){
         $module_name = $this->uri->segment(1);

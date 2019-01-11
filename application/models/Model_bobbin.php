@@ -137,10 +137,11 @@ class Model_bobbin extends CI_Model{
     }
 
     function show_header_peminjam($id){
-        $data = $this->db->query("select mbp.*, usr.realname, tsj.no_surat_jalan, mc.nama_customer
+        $data = $this->db->query("select mbp.*, usr.realname, tsj.no_surat_jalan, mc.nama_customer, supp.nama_supplier
             from m_bobbin_peminjaman mbp left join t_surat_jalan tsj on (mbp.id_surat_jalan = tsj.id)
             left join m_customers mc on (mbp.id_customer = mc.id)
             left join users usr on (mbp.created_by = usr.id)
+            left join supplier supp on (mbp.supplier_id = supp.id)
             where mbp.id = ".$id);
 
         return $data;
@@ -214,4 +215,18 @@ class Model_bobbin extends CI_Model{
         return $data;
     }
 
+    function list_supplier(){
+        $data = $this->db->query("select *from supplier order by nama_supplier");
+        return $data;
+    }
+
+    function get_bobbin_booked(){
+        $data = $this->db->query("select *from m_bobbin where status = 3");
+        return $data;
+    }
+
+    function list_spb(){
+        $data = $this->db->query("select *from m_bobbin_spb where keperluan = 1");
+        return $data;
+    }
 }
