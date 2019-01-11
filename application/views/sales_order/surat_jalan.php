@@ -44,13 +44,14 @@
                     <th style="width:50px;">No</th>
                     <th>No. Surat Jalan</th>
                     <th>Tanggal</th>
-                    <th>Jenis Barang</th>                     
+                    <th>Jenis<br>Barang</th>                     
                     <th>Customer</th> 
                     <th>Alamat</th> 
                     <th>No. Sales Order</th>
                     <th>Jumlah<br>Item</th>
                     <th>Kendaraan</th>
                     <th>Supir</th>
+                    <th>Status<br>Invoice</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -71,6 +72,12 @@
                         <td><?php echo $data->jumlah_item; ?></td>
                         <td><?php echo $data->no_kendaraan; ?></td>                         
                         <td><?php echo $data->supir; ?></td>
+                        <td><?php if($data->inv != NULL){
+                                echo '<div style="background-color:green; padding:3px; color:white">Sudah ada Invoice</div>';
+                                }else{
+                                echo '<div style="background-color:darkkhaki; padding:3px; color:white">Belum ada Invoice</div>';
+                                }
+                                ?></td>
                         <td style="text-align:center"> 
                             <?php
                                 if($group_id==1 || $hak_akses['print_surat_jalan']==1){
@@ -79,7 +86,7 @@
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
                                 }
-                                if($group_id==1 || $hak_akses['revisi_surat_jalan']==1){
+                                if(($group_id==1 || $hak_akses['revisi_surat_jalan']==1) && $data->jenis_barang=='FG'){
                             ?>
                             <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/SalesOrder/revisi_surat_jalan/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Revisi &nbsp; </a>
@@ -90,7 +97,7 @@
                     </tr>
                     <?php
                         }
-                    ?>                                                                                    
+                    ?>
                 </tbody>
                 </table>
             </div>

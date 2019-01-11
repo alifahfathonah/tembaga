@@ -239,7 +239,7 @@
                         <table class="table table-bordered table-striped table-hover" id="tabel_barang">
                             <thead>
                                 <th>No</th>
-                                <th>No Palette</th>
+                                <th style="width: 20%;">No Palette</th>
                                 <th>Nama Item</th>
                                 <th style="width: 6%;">UOM</th>
                                 <th style="width: 8%;">Qty</th>
@@ -273,7 +273,7 @@
                                     <td><input type="text" id="berat_palette_1" name="details[1][berat_palette]" class="form-control myline" readonly="readonly"></td>
                                     <td><input type="text" id="line_remarks_1" name="details[1][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
                                     <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input(1);" style="margin-top:5px" id="save_1"><i class="fa fa-plus"></i> Tambah </a>
-                                    <td style="text-align:center"><a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
+                                    <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail(1);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Delete </a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -374,7 +374,7 @@ function create_new_input(id){
         '<tr>'+
             '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
             '<td>'+
-                '<select id="barang_id_'+new_id+'" name="details['+new_id+'][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_data('+new_id+');">'+
+                '<select id="barang_id_'+new_id+'" name="details['+new_id+'][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="get_data('+new_id+');">'+
                     '<option value=""></option>'+
                     '<?php if($header["jenis_barang"]=="WIP"){foreach($list_produksi as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}}?>'+
                 '</select>' +
@@ -408,7 +408,7 @@ function create_new_input(id){
             '<td><input type="text" id="berat_palette_'+new_id+'" name="details['+new_id+'][berat_palette]" class="form-control myline" readonly="readonly"></td>'+
             '<td><input type="text" id="line_remarks_'+new_id+'" name="details['+new_id+'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
             '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input('+new_id+');" style="margin-top:5px" id="save_'+new_id+'"><i class="fa fa-plus"></i> Tambah </a>'+
-            '<td style="text-align:center"><a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
+            '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail('+new_id+');" style="margin-top:5px; display:none;"><i class="fa fa-trash"></i> Delete </a>'+
             '</td>'+
         '</tr>');
         }

@@ -51,7 +51,6 @@
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
-                    
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-5">

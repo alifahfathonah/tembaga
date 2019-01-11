@@ -11,17 +11,17 @@ update table 311218
 -create table t_spb_ampas dan detail
 
 update table 040119
--t_gudang_ampas add jenis_barang_id tinyint
+-t_gudang_ampas add jenis_barang_id tinyint(udah)
 -po_detail add fg_id int
 
 update table 060119
--create table dtbj dan detail
+-create table dtbj dan detail(udah)
 
 update table 080119
--table po_detail add fg_id
--table po_detail add flag_dtbj
+-table po_detail add fg_id(udah)
+-table po_detail add flag_dtbj(udah)
 -create table dtwip dan detail
 
 update table 090119
--table po_detail add po_id
--table po_detail add flag_dtwip
+-table po_detail add po_id (udah)
+-table po_detail add flag_dtwip(udah)

@@ -240,6 +240,7 @@
                             <?php 
                                 $no = 0;
                                 $total = 0;
+                                $total_qty = 0;
                                 foreach ($list_data as $row){
                                 $no++;
                                 echo '<tr>';
@@ -250,10 +251,16 @@
                                 echo '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
                                 echo '<td style="text-align:right">'.number_format($row->total_amount,0,',','.').'</td>';
                                 echo '</tr>';
+                                $total_qty += $row->qty;
                                 $total += $row->total_amount;
                             }
                             ?>
                             </tbody>
+                            <tr>
+                                <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
+                                <td><?=$total_qty;?></td>
+                                <td><?=number_format($total,0,',','.');?></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -297,7 +304,7 @@
                             ?>
                             </tbody>
                             <tr>
-                                <td colspan="3"></td>
+                                <td colspan="3" style="text-align: right; font-weight: bold;">Total</td>
                                 <td><?=$qty;?></td>
                                 <td><?=$bruto;?></td>
                                 <td><?=$netto;?></td>

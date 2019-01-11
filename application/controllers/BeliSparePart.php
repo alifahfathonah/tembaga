@@ -529,7 +529,7 @@ class BeliSparePart extends CI_Controller{
         $this->db->where('id', $this->input->post('header_id'));
         $this->db->update('po', $data);
         
-        $this->session->set_flashdata('flash_msg', 'Close PO spare part berhasil direject');
+        $this->session->set_flashdata('flash_msg', 'PO Sparepart berhasil di Close');
         redirect('index.php/BeliSparePart/po_list');
     }
     

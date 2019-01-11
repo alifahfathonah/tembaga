@@ -200,6 +200,7 @@ class GudangWIP extends CI_Controller{
                         'netto'=> $this->input->post('bs'),
                         'line_remarks' => 'SISA PRODUKSI WIP',
                         'no_pallete' => date("dmyHis").$rand,
+                        'tanggal_masuk' => $tanggal,
                         'flag_taken' => 0
                         );
                 $this->db->insert('dtr_detail',$data_dtr_detail_bs);

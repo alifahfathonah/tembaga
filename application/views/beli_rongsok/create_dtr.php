@@ -278,6 +278,9 @@ function get_uom_po(id, nmr){
                     $('#no_pallete_'+nmr).val(makepallete_id());
                 }
             });
+        }else{
+            alert('Barang tidak Boleh Sama');
+            $('#name_rongsok_'+nmr).select2("val", "");
         }
     }
 }
@@ -318,6 +321,7 @@ function saveDetail(id){
                     '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
             '</tr>'
         );
+        $('#name_rongsok_'+new_id).select2();
     }
 }
 

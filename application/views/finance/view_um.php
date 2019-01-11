@@ -216,7 +216,7 @@
                         </div>
                     </div>
                     <?php }// END IF GIRO 
-                    if($myData['jenis_pembayaran'] == 'Cek' || $myData['jenis_pembayaran'] == 'Cek MUNDUR'){
+                    if($myData['jenis_pembayaran'] == 'Cek' || $myData['jenis_pembayaran'] == 'Cek Mundur'){
                     ?>
                     <div class="row">
                         <div class="col-md-4">
