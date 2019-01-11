@@ -28,6 +28,7 @@
                             <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_dtr']; ?>">
+                            <input type="hidden" name="id" value="<?php echo $header['id'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -104,8 +105,8 @@
                                 <th>No</th>
                                 <th>Nama Item Rongsok</th>
                                 <th>UOM</th>
-                                <th>Jumlah</th>
                                 <th>Bruto (Kg)</th>
+                                <th>Berat Palette</th>
                                 <th>Netto (Kg)</th>
                                 <th>No. Pallete</th>
                                 <th>Keterangan</th>
@@ -114,29 +115,30 @@
                             <?php
                                 $no = 1;
                                 foreach ($details as $row){
+                                    echo '<input type="hidden" name="myDetails['.$no.'][id_dtr]" value="'.$row->id.'">';
                                     echo '<tr>';
                                     echo '<td style="text-align:center">'.$no.'</td>';
-                                    echo '<td><select id="supplier_id" name="supplier_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
+                                    if($row->flag_taken==0){
+                                    echo '<td><select id="rongsok_id" name="myDetails['.$no.'][rongsok_id]" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                         <option value=""></option>';
                                             foreach ($list_rongsok as $v){
                                                 echo '<option value="'.$v->id.'" '.(($v->id==$row->rongsok_id)? 'selected="selected"': '').'>'.$v->nama_item.'</option>';
                                             }
-                                    echo '</select>';                                    
+                                    echo '</select>';
+                                    }else{
+                                    echo '<td><input type="text" name="myDetails['.$no.'][nama_item]" class="form-control myline" value="'.$row->nama_item.'" readonly></td>';
+                                    echo '<input type="hidden" name="myDetails['.$no.'[rongsok_id]">';
+                                    }                                  
                                     echo '</td>';
                                     echo '<td><input type="text" name="myDetails['.$no.'][uom]" '
                                             . 'class="form-control myline" value="'.$row->uom.'" '
-                                            . 'readonly="readonly"></td>';                  
-                                    echo '<td><input type="text" name="myDetails['.$no.'][qty]" '
-                                            . 'class="form-control myline" value="'.$row->qty.'" '
                                             . 'readonly="readonly"></td>';
-                                    
                                     echo '<td><input type="text" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
                                             . 'class="form-control myline" maxlength="10" value="'.number_format($row->bruto,0,',','.').'" '
-                                            . 'readonly="readonly"></td>';
-                                    
-                                    echo '<td><input type="text" id="netto_'.$no.'" name="myDetails['.$no.'][netto]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->netto,0,',','.').'" '
-                                            . 'readonly="readonly"></td>';
+                                            . 'readonly="readonly"></td>';               
+                                    echo '<td><input type="text" name="myDetails['.$no.'][berat_palette]" '
+                                            . 'class="form-control myline" value="'.$row->berat_palette.'" readonly="readonly"></td>';
+                                    echo '<td><input type="text" id="netto_'.$no.'" name="myDetails['.$no.'][netto]" class="form-control myline" maxlength="10" value="'.number_format($row->netto,0,',','.').'" readonly="readonly"></td>';
                                     echo '<td><input type="text" name="myDetails['.$no.'][no_pallete]" value="'.$row->no_pallete.'" '
                                             . 'class="form-control myline" readonly="readonly"></td>';
                                     echo '<td><input type="text" name="myDetails['.$no.'][line_remarks]" value="'.$row->line_remarks.'"'

@@ -937,15 +937,15 @@ class Ingot extends CI_Controller{
                             'tanggal_keluar' => $tgl_input
         					));
 
-            #update stok di rongsok
-            $this->load->model('Model_ingot');
-            $get_stok = $this->Model_ingot->show_related_stok($v['id_rongsok'])->row_array();
-            $this->db->where('id',$v['id_rongsok']);
-            $this->db->update('rongsok', array(
-                            'stok'=>($get_stok['stok'] - $v['netto']),
-                            'modified'=>$tanggal,
-                            'modified_by'=>$user_id
-                            ));
+         //    #update stok di rongsok
+         //    $this->load->model('Model_ingot');
+         //    $get_stok = $this->Model_ingot->show_related_stok($v['id_rongsok'])->row_array();
+         //    $this->db->where('id',$v['id_rongsok']);
+         //    $this->db->update('rongsok', array(
+         //                    'stok'=>($get_stok['stok'] - $v['netto']),
+         //                    'modified'=>$tanggal,
+         //                    'modified_by'=>$user_id
+         //                    ));
         	}	
         }
             

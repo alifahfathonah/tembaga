@@ -24,8 +24,10 @@
        <tr >
             <th>No</th>
             <th>Item Rongsok</th>
-            <th>Stok Bruto</th>
-            <th>Stok Netto</th>
+            <th>Jumlah Packing</th>
+            <th>Stok Masuk</th>
+            <th>Stok Keluar</th>
+            <th>Stok Sekarang</th>
        </tr>
      </thead>
      <tbody>
@@ -33,12 +35,13 @@
         foreach($list_data as $data) { ?>
         <tr>
             <td><?= $no; ?></td>
-            <td><?= $data->nama_produk; ?></td>
-            <td><?= $data->stok_bruto; ?></td>
-            <td><?= $data->stok_netto; ?></td>
+            <td><?= $data->kode_rongsok.' | '.$data->nama_item; ?></td>
+            <td><?= $data->jumlah_packing ;?></td>
+            <td><?= $data->stok_masuk; ?></td>
+            <td><?= 0+$data->stok_keluar; ?></td>
+            <td><?= $data->stok_rsk; ?></td>
         </tr>    
-    <?php } ?>
-    
+    <?php $no++; } ?>
      </tbody>   
    </table>
 </div>

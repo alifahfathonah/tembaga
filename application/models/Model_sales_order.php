@@ -308,11 +308,12 @@ class Model_sales_order extends CI_Model{
     function surat_jalan(){
         $data = $this->db->query("Select tsj.*, (select count(tsjd.id) from t_surat_jalan_detail tsjd where tsjd.t_sj_id = tsj.id) as jumlah_item,
                     cust.nama_customer, cust.alamat,
-                    so.no_sales_order,
+                    so.no_sales_order, fi.id as inv,
                     kdr.no_kendaraan
                 From t_surat_jalan tsj
                     Left Join m_customers cust On (tsj.m_customer_id = cust.id)
                     Left Join sales_order so On (tsj.sales_order_id = so.id) 
+                    Left Join f_invoice fi on (fi.id_surat_jalan = tsj.id)
                     Left Join m_kendaraan kdr On (tsj.m_kendaraan_id = kdr.id) 
                 Where tsj.jenis_barang <>'TOLLING' 
                 Order By tsj.id Desc");
@@ -338,7 +339,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function load_detail_surat_jalan_fg($id){
-        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jb.uom 
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jb.uom 
                 from t_surat_jalan_detail tsjd
                 left join jenis_barang jb on jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
                 where tsjd.t_sj_id =".$id);

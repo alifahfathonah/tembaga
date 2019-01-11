@@ -285,7 +285,6 @@ function loadDetail(id){
 function get_uom(id){
     $.ajax({
         url: "<?php echo base_url('index.php/SalesOrder/get_uom'); ?>",
-        async: false,
         type: "POST",
         data: "id="+id,
         dataType: "json",
@@ -299,7 +298,7 @@ function saveDetail(){
     if($.trim($("#barang_id").val()) == ""){
         $('#message').html("Silahkan pilih item rongsok!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#netto").val()) == ""){
+    }else if(($.trim($("#netto").val()) || $.trim($("#qty").val())) == ""){
         $('#message').html("Jumlah item/netto rongsok tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#harga").val()) == ""){

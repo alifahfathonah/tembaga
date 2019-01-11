@@ -1069,10 +1069,22 @@ class Finance extends CI_Controller{
             $data['header'] = $this->Model_finance->customer_detail($id)->row_array();
             $data['details_invoice'] = $this->Model_finance->load_invoice_full($id)->result();
             $data['details_um'] = $this->Model_finance->load_um_full($id)->result();
+            $data['details_matching'] = $this->Model_finance->load_matching_invoice($id)->result();
             $this->load->view('layout', $data);
         }else{
             redirect('index.php/Finance');
         }
+    }
+
+    function get_um(){
+        $id = $this->input->post('id');
+        $tabel = "";
+
+        $this->load->model('Model_finance');
+        $um= $this->Model_finance->get_um($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($um);
     }
 
     function get_invoice_list(){ 
@@ -1115,39 +1127,48 @@ class Finance extends CI_Controller{
         $id = $this->input->post('id_modal');
         $id_invoice = $this->input->post('invoice_id');
         $id_um = $this->input->post('um_id');
+        $sisa_invoice =  str_replace('.', '', $this->input->post('sisa_invoice'));
+        $sisa_um = str_replace('.', '', $this->input->post('sisa_um'));
         $this->load->model('Model_finance');
 
             $data = array(
-            'id_invoice'=> $id_invoice,
-            'id_um'=> $id_um,
-            'created_at'=> $tanggal_input,
-            'created_by'=> $user_id
+                'customer_id'=>$id,
+                'id_invoice'=> $id_invoice,
+                'id_um'=> $id_um,
+                'sisa_invoice'=>$sisa_invoice,
+                'sisa_um'=>$sisa_um,
+                'created_at'=> $tanggal_input,
+                'created_by'=> $user_id
             );
             $this->db->insert('f_matching_detail', $data);   
-            $insert_id = $this->db->insert_id();
 
-            // UPDATE MATCHING_ID DI TABEL F_INVOICE
-            $data = array(
-                'matching_id'=> $insert_id,
-                'modified_at'=> $tanggal_input,
-                'modified_by'=> $user_id
-            );
-            $this->db->where('id', $id_invoice);
-            $this->db->update('f_invoice', $data);
+            // UPDATE MATCHING_ID DI TABEL F_INVOICE JIKA SISA_INVOICE = 0
+            if($sisa_invoice == 0){
+                $data = array(
+                    'flag_matching'=> 1,
+                    'modified_at'=> $tanggal_input,
+                    'modified_by'=> $user_id
+                );
+                $this->db->where('id', $id_invoice);
+                $this->db->update('f_invoice', $data);
+            }
 
-            //UPDATE MATCHING_ID DI TABEL F_UANG_MASUK
-            $data = array(
-                'matching_id'=> $insert_id
-            );
-            $this->db->where('id', $id_um);
-            $this->db->update('f_uang_masuk', $data);
+            //UPDATE MATCHING_ID DI TABEL F_UANG_MASUK JIKA SISA_UM = 0
+            if($sisa_um == 0){
+                $data = array(
+                    'flag_matching'=> 1,
+                    'modified_at'=> $tanggal_input,
+                    'modified_by'=> $user_id
+                );
+                $this->db->where('id', $id_um);
+                $this->db->update('f_uang_masuk', $data);
+            }
 
             if($this->db->trans_complete()){    
-                $this->session->set_flashdata('flash_msg', 'Matching sudah disimpan');            
+                $this->session->set_flashdata('flash_msg', 'Matching sudah diupdate');            
             }else{
                 $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat penginputan Data Matching, silahkan coba kembali!');
-            }             
-        
+            }
        redirect('index.php/Finance/matching_invoice/'.$id);
     }
 }

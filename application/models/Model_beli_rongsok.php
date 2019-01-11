@@ -428,7 +428,17 @@ class Model_beli_rongsok extends CI_Model{
     }
 
     function gudang_rongsok_list(){
-        $data = $this->db->query("select * from t_inventory where jenis_item = 'Rongsok'");
+        $data = $this->db->query("select rsk.*, sr.jumlah_packing, sr.stok as stok_rsk, (select sum(dd.netto) from dtr_detail dd where dd.rongsok_id = rsk.id and dd.tanggal_masuk != 0) as stok_masuk, (select sum(dd.netto) from dtr_detail dd where dd.rongsok_id = rsk.id and dd.tanggal_keluar != 0) as stok_keluar from rongsok rsk
+            left join stok_rsk sr on sr.rongsok_id = rsk.id
+            where type_barang = 'Rongsok' and sr.jumlah_packing > 0");
         return $data;
     }
 }
+
+/** CREATE VIEW STOK_RONGSOK 
+CREATE OR REPLACE VIEW stok_rsk(rongsok_id, nama_item, jumlah_packing, stok)
+    AS SELECT dd.rongsok_id, rsk.nama_item, count(dd.id), (select sum(netto) from dtr_detail dd where dd.tanggal_masuk != 0 and dd.rongsok_id=rsk.id) - COALESCE((select sum(netto) from dtr_detail dd where dd.tanggal_keluar != 0 and dd.rongsok_id=rsk.id),0)
+    from dtr_detail dd
+        left join rongsok rsk on rsk.id = dd.rongsok_id
+            where rsk.type_barang = 'Rongsok'
+            group by dd.rongsok_id**/

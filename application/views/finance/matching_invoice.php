@@ -6,7 +6,7 @@
             <i class="fa fa-angle-right"></i> 
             <a href="<?php echo base_url('index.php/BeliRongsok'); ?>"> Pembelian Rongsok </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliRongsok/matching'); ?>"> Matching PO - DTR </a> 
+            <a href="<?php echo base_url('index.php/BeliRongsok/matching'); ?>"> Matching PO - DTR </a>
         </h5>          
     </div>
 </div>
@@ -16,6 +16,14 @@
         <?php
             if( ($group_id==1)||($hak_akses['matching']==1) ){
         ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
+                    <button class="close" data-close="alert"></button>
+                    <span id="msg_sukses"><?php echo $this->session->flashdata('flash_msg'); ?></span>
+                </div>
+            </div>
+        </div>
         <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -67,7 +75,25 @@
                                     Nominal<font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" id="nominal" name="nominal" 
+                                    <input type="text" id="harga_um" name="harga_um" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Sisa Invoice
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="sisa_invoice" name="sisa_invoice" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Sisa Uang Masuk
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="sisa_um" name="sisa_um" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly">
                                 </div>
                             </div>
@@ -144,23 +170,26 @@
                                 <tbody>
                                     <?php
                                     $no = 1;
-                                    $total = 0;
+                                    $total_invoice = 0;
+                                    $total_sisa = 0;
                                     foreach ($details_invoice as $row){
                                         echo '<tr>';
                                         echo '<td style="text-align:center;">'.$no.'</td>';
                                         echo '<td>'.$row->no_invoice.'</td>';
                                         echo '<td style="text-align:right;">'.number_format($row->total,0,',','.').'</td>';
-                                        echo '<td></td>';
-                                        $total += $row->total;
+                                        $sisa = $row->total - $row->sisa_invoice;
+                                        echo '<td>'.number_format($sisa,0,',','.').'</td>';
+                                        $total_invoice += $row->total;
+                                        $total_sisa += $sisa;
                                         $no++;
                                     }
                                     ?>
                                     <tr>
                                         <td style="text-align:right;" colspan="2"><strong>Total Harga </strong></td>
                                         <td style="text-align:right;">
-                                            <strong><?php echo number_format($total,0,',','.'); ?></strong>
+                                            <strong><?php echo number_format($total_invoice,0,',','.'); ?></strong>
                                         </td>
-                                        <td></td>
+                                        <td><strong><?php echo number_format($total_sisa,0,',','.'); ?></strong></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -192,7 +221,7 @@
                                 <tbody>
                                     <?php
                                     $no = 1;
-                                    $total = 0;
+                                    $total_nominal = 0;
                                     foreach ($details_um as $row){
                                         echo '<tr>';
                                         echo '<td style="text-align:center;">'.$no.'</td>';
@@ -202,14 +231,14 @@
                                         echo '<td>'.$row->currency.'</td>';
                                         echo '<td style="text-align:right;">'.number_format($row->nominal,0,',', '.').'</td>';
                                         echo '</tr>';
-                                        $total += $row->nominal;
+                                        $total_nominal += $row->nominal;
                                         $no++;
                                     }
                                     ?>
                                     <tr>
                                         <td style="text-align:right;" colspan="5"><strong>Total Harga </strong></td>
                                         <td style="text-align:right;">
-                                            <strong><?php echo number_format($total,0,',','.'); ?></strong>
+                                            <strong><?php echo number_format($total_nominal,0,',','.'); ?></strong>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -219,7 +248,53 @@
                 </div>
             </div>
         </div>                          
-        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet box green">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-file-word-o"></i>Detail Matching Invoice
+                        </div>                 
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-scrollable">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <th>No</th>
+                                    <th>No. Invoice</th>
+                                    <th style="border-right:2px solid #000;">Total Invoice</th>
+                                    <th>Jenis Pembayaran</th>
+                                    <th>Nomor Cek/Rekening</th>
+                                    <th>Total Nominal</th>
+                                    <th>Sisa Invoice</th>
+                                    <th>Sisa UM</th>
+                                </thead>
+                                <tbody id="boxDetailUm">
+                                    <?php
+                                        $no = 1;
+                                        foreach ($details_matching as $row){
+                                            echo '<tr>';
+                                            echo '<td style="text-align:center;">'.$no.'</td>';
+                                            echo '<td>'.$row->no_invoice.'</td>';
+                                            echo '<td style="border-right:2px solid #000;">'.number_format($row->total,0,',', '.').'</td>';
+                                            echo '<td>'.$row->jenis_pembayaran.'</td>';
+                                            echo '<td>'.$row->nomor.'</td>';
+                                            echo '<td style="text-align:right;">'.number_format($row->nominal,0,',', '.').'</td>';
+                                            echo '<td style="text-align:right;">'.number_format($row->sisa_invoice,0,',', '.').'</td>';
+                                            echo '<td style="text-align:right;">'.number_format($row->sisa_um,0,',', '.').'</td>';
+                                            echo '</tr>';
+                                            $no++;
+                                        }
+                                        ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            <a href="<?php echo base_url('index.php/Finance/matching'); ?>" class="btn blue-hoki"> 
+                        <i class="fa fa-angle-left"></i> Kembali </a>
+            </div>
+        </div>
         <?php
             }else{
         ?>
@@ -234,13 +309,12 @@
 </div> 
 <script>
 function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 function load_invoice(id){
     $.ajax({
         url: "<?php echo base_url('index.php/Finance/get_invoice_list'); ?>",
-        async: false,
         type: "POST",
         data: "id="+id,
         dataType: "html",
@@ -258,7 +332,20 @@ function get_data_invoice(id){
             data: "id="+id,
             dataType: "json",
             success: function(result) {
-                $('#harga_invoice').val(numberWithCommas(result['total']));
+                $('#harga_invoice').val(numberWithCommas(result['total']-result['sisa_invoice']));
+                var myInv = $('#harga_invoice').val();
+                var newInv = myInv.replace(/\./g, '');
+                var myUm = $('#harga_um').val();
+                var newUm = myUm.replace(/\./g, '');
+                var sisa  = (newInv-newUm);
+                if(sisa>0){
+                    $('#sisa_invoice').val(numberWithCommas(sisa));
+                    $('#sisa_um').val(0);
+                }else{
+                    var sisa1 = (newUm-newInv);
+                    $('#sisa_um').val(numberWithCommas(sisa1));
+                    $('#sisa_invoice').val(0);
+                }
             }
         });
     }
@@ -280,12 +367,25 @@ function load_um(id){
 function get_data_um(id){
     if(''!=id){
         $.ajax({
-            url: "<?php echo base_url('index.php/Finance/get_data_um'); ?>",
+            url: "<?php echo base_url('index.php/Finance/get_um'); ?>",
             type: "POST",
             data: "id="+id,
             dataType: "json",
             success: function(result) {
-                $('#nominal').val(numberWithCommas(result['nominal']));
+                $('#harga_um').val(numberWithCommas(result['nominal']-result['sisa_um']));
+                var myInv = $('#harga_invoice').val();
+                var newInv = myInv.replace(/\./g, '');
+                var myUm = $('#harga_um').val();
+                var newUm = myUm.replace(/\./g, '');
+                var sisa  = (newInv-newUm);
+                if(sisa>0){
+                    $('#sisa_invoice').val(numberWithCommas(sisa));
+                    $('#sisa_um').val(0);
+                }else{
+                    var sisa1 = (newUm-newInv);
+                    $('#sisa_um').val(numberWithCommas(sisa1));
+                    $('#sisa_invoice').val(0);
+                }
             }
         });
     }
@@ -319,7 +419,7 @@ function saveDetail(){
     if($.trim($("#harga_invoice").val()) == ""){
         $('#message').html("Invoice harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#nominal").val()) == ""){
+    }else if($.trim($("#harga_um").val()) == ""){
         $('#message').html("Uang Masuk harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else{
