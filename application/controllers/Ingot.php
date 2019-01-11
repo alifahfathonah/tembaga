@@ -901,6 +901,44 @@ class Ingot extends CI_Controller{
         }
     }
     
+    function save_fulfilment(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $spb_id = $this->input->post('id');
+        
+        $this->db->trans_start();
+
+        #Update status SPB
+        $this->db->where('id', $spb_id);
+        $this->db->update('spb', array(
+                        'status'=> 3,
+                        'modified'=> $tanggal,
+                        'modified_by'=>$user_id
+        ));
+
+        #Create SPB fulfilment
+        $details = $this->input->post('details');
+        $spb_id = $this->input->post('id');
+        foreach ($details as $v) {
+            if($v['no_pallete']!=''){   
+                $this->db->insert('spb_detail_fulfilment', array(
+                                'ttr_id'=> $v['ttr_id'],
+                                'dtr_detail_id'=> $v['dtr_id'],
+                                'spb_id'=> $spb_id
+                            ));
+            }   
+        }
+
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'SPB sudah di-save. Detail Pemenuhan SPB sudah disimpan');                 
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+        }                 
+
+       redirect('index.php/Ingot/spb_list');
+    }
+
     function approve_spb(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
@@ -909,26 +947,19 @@ class Ingot extends CI_Controller{
         
         $this->db->trans_start();
         
-        
         #Update status SPB
         $this->db->where('id', $spb_id);
         $this->db->update('spb', array(
-        				'status'=> 1,
+                        'status'=> 1,
                         'approved'=> $tanggal,
                         'approved_by'=>$user_id
         ));
-            
-        #Create SPB fulfilment
+
+        #loop SPB fulfilment
         $details = $this->input->post('details');
         $spb_id = $this->input->post('id');
         foreach ($details as $v) {
-        	if($v['no_pallete']!=''){	
-	        $this->db->insert('spb_detail_fulfilment', array(
-	                        'ttr_id'=> $v['ttr_id'],
-	                        'dtr_detail_id'=> $v['dtr_id'],
-	                        'spb_id'=> $spb_id
-	                    ));
-        	
+        	if($v['no_pallete']!=''){	        	
 
         	#update dtr_detail flag_taken
         	$this->db->where('id',$v['dtr_id']);
@@ -936,16 +967,6 @@ class Ingot extends CI_Controller{
         					'flag_taken' => 1,
                             'tanggal_keluar' => $tgl_input
         					));
-
-         //    #update stok di rongsok
-         //    $this->load->model('Model_ingot');
-         //    $get_stok = $this->Model_ingot->show_related_stok($v['id_rongsok'])->row_array();
-         //    $this->db->where('id',$v['id_rongsok']);
-         //    $this->db->update('rongsok', array(
-         //                    'stok'=>($get_stok['stok'] - $v['netto']),
-         //                    'modified'=>$tanggal,
-         //                    'modified_by'=>$user_id
-         //                    ));
         	}	
         }
             

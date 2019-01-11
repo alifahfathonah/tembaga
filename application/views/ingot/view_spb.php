@@ -274,11 +274,15 @@
             <div class="row">
                 <div class="col-md-12">
                     <?php
-                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && $myData['status']=="0"){
+                        if( ($group_id==1 || $hak_akses['save_spb']==1) && $myData['status']=="0"){
+                            echo '<a href="javascript:;" class="btn green" onclick="saveFulfilment();"> '
+                                .'<i class="fa fa-check"></i> Save </a> ';
+                        }
+                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && $myData['status']=="3"){
                             echo '<a href="javascript:;" class="btn green" onclick="approveData();"> '
                                 .'<i class="fa fa-check"></i> Approve </a> ';
                         }
-                        if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="0"){
+                        if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="3"){
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
                         }
@@ -302,6 +306,14 @@
     </div>
 </div> 
 <script>
+function saveFulfilment(){
+    var r=confirm("Anda yakin meng-save permintaan barang ini?");
+    if (r==true){
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Ingot/save_fulfilment");    
+        $('#formku').submit(); 
+    }
+};
+
 function approveData(){
     var r=confirm("Anda yakin meng-approve permintaan barang ini?");
     if (r==true){
