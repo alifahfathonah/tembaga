@@ -331,6 +331,62 @@ class BeliWIP extends CI_Controller{
         }
     }
 
+    function edit_dtwip(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "beli_wip/edit_dtwip";
+            $this->load->model('Model_beli_wip');
+            $data['header']  = $this->Model_beli_wip->show_header_dtwip($id)->row_array(); 
+            $data['details'] = $this->Model_beli_wip->show_detail_dtwip($id)->result();
+            
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/BeliWIP');
+        }
+    }
+
+    function update_dtwip(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        
+        $this->db->trans_start();
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('dtwip', array(
+                    'status'=>0,
+                    'remarks'=>$this->input->post('remarks'),
+                    'modified'=>$tanggal,
+                    'modified_by'=>$user_id
+        ));
+        
+        $details = $this->input->post('myDetails');
+        foreach($details as $row){
+            $this->db->where('id', $row['id']);
+            $this->db->update('dtwip_detail', array(
+                'qty'=>str_replace('.','', $row['qty']),
+                'berat'=>str_replace('.','', $row['berat']),
+                'line_remarks'=>$row['line_remarks'],
+                'tanggal_masuk'=>$tgl_input
+            ));
+        }
+        
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'DTWIP dengan nomor : '.$this->input->post('no_dtwip').' berhasil diupdate...');                 
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat updates DTWIP, silahkan coba kembali!');
+        }
+        redirect('index.php/BeliWIP/dtwip_list');
+    }
+
     function print_dtwip(){
         $id = $this->uri->segment(3);
         if($id){        
@@ -547,6 +603,7 @@ class BeliWIP extends CI_Controller{
                 'tanggal'=>$tgl_input,
                 'jenis_voucher'=>$jenis_voucher,
                 'po_id'=>$this->input->post('id'),
+                'supplier_id'=>$this->input->post('supplier_id'),
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'amount'=>str_replace('.', '', $this->input->post('amount')),
                 'keterangan'=>$this->input->post('keterangan'),

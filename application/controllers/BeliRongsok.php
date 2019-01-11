@@ -346,6 +346,7 @@ class BeliRongsok extends CI_Controller{
                 'tanggal'=>$tgl_input,
                 'jenis_voucher'=>$jenis_voucher,
                 'po_id'=>$this->input->post('id'),
+                'supplier_id'=>$this->input->post('supplier_id'),
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'amount'=>str_replace('.', '', $this->input->post('amount')),
                 'keterangan'=>$this->input->post('keterangan'),
@@ -831,7 +832,7 @@ class BeliRongsok extends CI_Controller{
         $this->db->trans_start();
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('dtr', array(
-                    'status'=>1,
+                    'status'=>0,
                     'remarks'=>$this->input->post('remarks'),
                     'modified'=>$tanggal,
                     'modified_by'=>$user_id

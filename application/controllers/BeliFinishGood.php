@@ -277,7 +277,7 @@ class BeliFinishGood extends CI_Controller{
             }
             $data['group_id']  = $group_id;
 
-            $data['content']= "beli_fg/_dtbj";
+            $data['content']= "beli_fg/create_dtbj";
             $this->load->model('Model_beli_fg');
             $data['list_fg_on_po'] = $this->Model_beli_fg->list_fg()->result();
             
@@ -304,35 +304,72 @@ class BeliFinishGood extends CI_Controller{
         $this->load->model('Model_beli_fg');
         $barang= $this->Model_beli_fg->show_data_bobbin($id)->row_array();
         // $barang['berat_bobbin']=number_format($barang['berat'],2);
-        if ($barang['m_jenis_packing_id'] == 1) {
-            #bobbin
-            $no_bobbin = $barang['nomor_bobbin'];
-            $kode_bobbin = substr($no_bobbin, 0,1);
-            $urut_bobbin = substr($no_bobbin, 1,4);
-            $ukuran = substr($no_bobbin, 0,1);
-            $barang['no_packing'] = date("ymd").$ukuran.$urut_bobbin;
-        } else if ($barang['m_jenis_packing_id'] == 2){
-            #keranjang
-            $no_bobbin = $barang['nomor_bobbin'];
-            $kode_bobbin = substr($no_bobbin, 0,1);
-            $urut_bobbin = substr($no_bobbin, 2,4);
-            $ukuran = substr($no_bobbin, 0,1);
-            $barang['no_packing'] = date("ymd").$ukuran.$urut_bobbin.rand(1,20);
-        } else if ($barang['m_jenis_packing_id'] == 4){
-            #roll
-            $no_bobbin = $barang['nomor_bobbin'];
-            $kode_bobbin = substr($no_bobbin, 0,1);
-            $urut_bobbin = substr($no_bobbin, 1,4);
-            $ukuran = substr($no_bobbin, 0,1);
-            $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin;
-        } else {
-            #kardus
-            $no_bobbin = $barang['nomor_bobbin'];
-            $kode_bobbin = substr($no_bobbin, 0,1);
-            $urut_bobbin = substr($no_bobbin, 1,4);
-            $ukuran = substr($no_bobbin, 0,1);
-            $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin;
+        // if ($barang['m_jenis_packing_id'] == 1) {
+        //     #bobbin
+        //     $check = $this->Model_beli_fg->check_urut()->row_array();
+        //     $no_urut = $check['no_urut'];
+        //     $no_urut = $no_urut + 1;
+        //     switch (strlen($no_urut)) {
+        //         case 1 : $urutan = "000".$no_urut;
+        //             break;
+        //         case 2 : $urutan = "00".$no_urut;
+        //             break;
+        //         case 3 : $urutan = "0".$no_urut;
+        //             break;
+                
+        //         default:
+        //             $urutan = $no_urut;
+        //             break;
+        //     }
+
+        //     $no_bobbin = $barang['nomor_bobbin'];
+        //     $kode_bobbin = substr($no_bobbin, 0,1);
+        //     $urut_bobbin = substr($no_bobbin, 1,4);
+        //     $ukuran = substr($no_bobbin, 0,1);
+        //     $barang['no_packing'] = date("ymd").$ukuran.$urut_bobbin.$urutan;
+        // } else if ($barang['m_jenis_packing_id'] == 2){
+        //     #keranjang
+        //     $no_bobbin = $barang['nomor_bobbin'];
+        //     $kode_bobbin = substr($no_bobbin, 0,1);
+        //     $urut_bobbin = substr($no_bobbin, 2,4);
+        //     $ukuran = substr($no_bobbin, 0,1);
+        //     $barang['no_packing'] = date("ymd").$ukuran.$urut_bobbin.rand(1,20);
+        // } else if ($barang['m_jenis_packing_id'] == 4){
+        //     #roll
+        //     $no_bobbin = $barang['nomor_bobbin'];
+        //     $kode_bobbin = substr($no_bobbin, 0,1);
+        //     $urut_bobbin = substr($no_bobbin, 1,4);
+        //     $ukuran = substr($no_bobbin, 0,1);
+        //     $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin;
+        // } else {
+        //     #kardus
+        //     $no_bobbin = $barang['nomor_bobbin'];
+        //     $kode_bobbin = substr($no_bobbin, 0,1);
+        //     $urut_bobbin = substr($no_bobbin, 1,4);
+        //     $ukuran = substr($no_bobbin, 0,1);
+        //     $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin;
+        // }
+        $check = $this->Model_beli_fg->check_urut()->row_array();
+        $no_urut = $check['no_urut'];
+        $no_urut = $no_urut + 1;
+        switch (strlen($no_urut)) {
+            case 1 : $urutan = "000".$no_urut;
+                break;
+            case 2 : $urutan = "00".$no_urut;
+                break;
+            case 3 : $urutan = "0".$no_urut;
+                break;
+            
+            default:
+                $urutan = $no_urut;
+                break;
         }
+
+        $no_bobbin = $barang['nomor_bobbin'];
+        $kode_bobbin = substr($no_bobbin, 0,1);
+        $urut_bobbin = substr($no_bobbin, 1,4);
+        $ukuran = substr($no_bobbin, 0,1);
+        $barang['no_packing'] = date("ymd").$ukuran.$urut_bobbin.$urutan;
         header('Content-Type: application/json');
         echo json_encode($barang); 
     }
@@ -396,6 +433,29 @@ class BeliFinishGood extends CI_Controller{
             redirect('index.php/BeliFinishGood/dtbj_list');
         }
     }
+
+    // function edit_dtbj(){
+    //     $module_name = $this->uri->segment(1);
+    //     $id = $this->uri->segment(3);
+    //     if($id){
+    //         $group_id    = $this->session->userdata('group_id');        
+    //         if($group_id != 1){
+    //             $this->load->model('Model_modules');
+    //             $roles = $this->Model_modules->get_akses($module_name, $group_id);
+    //             $data['hak_akses'] = $roles;
+    //         }
+    //         $data['group_id']  = $group_id;
+
+    //         $data['content']= "beli_fg/edit_dtbj";
+    //         $this->load->model('Model_beli_fg');
+    //         $data['header']  = $this->Model_beli_fg->show_header_dtbj($id)->row_array(); 
+    //         $data['details'] = $this->Model_beli_fg->show_detail_dtbj($id)->result();
+            
+    //         $this->load->view('layout', $data);   
+    //     }else{
+    //         redirect('index.php/BeliFinishGood');
+    //     }
+    // }
 
     function matching(){
         $module_name = $this->uri->segment(1);
@@ -610,6 +670,7 @@ class BeliFinishGood extends CI_Controller{
                 'tanggal'=>$tgl_input,
                 'jenis_voucher'=>$jenis_voucher,
                 'po_id'=>$this->input->post('id'),
+                'supplier_id'=>$this->input->post('supplier_id'),
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'amount'=>str_replace('.', '', $this->input->post('amount')),
                 'keterangan'=>$this->input->post('keterangan'),

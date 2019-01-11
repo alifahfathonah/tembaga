@@ -6,6 +6,7 @@ class Model_beli_wip extends CI_Model
                     bsp.no_pengajuan, bsp.tgl_pengajuan,
                     usr.realname As created_name,
                     spl.nama_supplier, spl.pic,
+                    spl.id as supplier_id,
                 (Select count(id)As jumlah_item From po_detail pd Where pd.po_id = po.id)As jumlah_item,
                 (Select count(id)As tot_voucher From voucher vc Where vc.po_id = po.id)As tot_voucher,
                 (Select count(pd.id)As ready_to_dtr From po_detail pd Where 
@@ -128,7 +129,7 @@ class Model_beli_wip extends CI_Model
                     rjct.realname As rejected_name
                     From dtwip
                         Left Join po On (dtwip.po_id = po.id)
-                        Left Join supplier spl On (po.supplier_id = spl.id) 
+                        Left Join supplier spl On (dtwip.supplier_id = spl.id) 
                         Left Join users usr On (dtwip.created_by = usr.id) 
                         Left Join users rjct On (dtwip.rejected_by = rjct.id) 
                     Where dtwip.id=".$id);

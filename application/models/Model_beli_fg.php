@@ -6,6 +6,7 @@ class Model_beli_fg extends CI_Model
                     bsp.no_pengajuan, bsp.tgl_pengajuan,
                     usr.realname As created_name,
                     spl.nama_supplier, spl.pic,
+                    spl.id as supplier_id,
                 (Select count(id)As jumlah_item From po_detail pd Where pd.po_id = po.id)As jumlah_item,
                 (Select count(id)As tot_voucher From voucher vc Where vc.po_id = po.id)As tot_voucher,
                 (Select count(pd.id)As ready_to_dtr From po_detail pd Where 
@@ -129,7 +130,7 @@ class Model_beli_fg extends CI_Model
                     rjct.realname As rejected_name
                     From dtbj
                         Left Join po On (dtbj.po_id = po.id)
-                        Left Join supplier spl On (po.supplier_id = spl.id) 
+                        Left Join supplier spl On (dtbj.supplier_id = spl.id) 
                         Left Join users usr On (dtbj.created_by = usr.id) 
                         Left Join users rjct On (dtbj.rejected_by = rjct.id) 
                     Where dtbj.id=".$id);
@@ -219,4 +220,10 @@ class Model_beli_fg extends CI_Model
         return $data;
     }
 
+    function check_urut(){
+        $data = $this->db->query("
+                select count(id) as no_urut from dtbj_detail;
+            ");
+        return $data;
+    }
 }

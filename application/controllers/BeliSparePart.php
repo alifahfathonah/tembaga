@@ -767,6 +767,7 @@ class BeliSparePart extends CI_Controller{
                 'tanggal'=>$tgl_input,
                 'jenis_voucher'=>$jenis_voucher,
                 'po_id'=>$this->input->post('id'),
+                'supplier_id'=>$this->input->post('supplier_id'),
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'amount'=>$amount,
                 'keterangan'=>$this->input->post('keterangan'),

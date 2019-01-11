@@ -3,10 +3,15 @@ class Model_voucher_cost extends CI_Model{
     function list_data(){
         $data = $this->db->query("Select voucher.*, 
                 gc.nama_group_cost,
-                cost.nama_cost
+                cost.nama_cost,
+                mc.nama_customer,
+                supp.nama_supplier,
+                COALESCE(cost.nama_cost, mc.nama_customer, supp.nama_supplier) as nama_trx
                 From voucher 
                     Left Join group_cost gc On (voucher.group_cost_id = gc.id) 
-                    Left Join cost On (voucher.cost_id = cost.id) 
+                    Left Join cost On (voucher.cost_id = cost.id)
+                    LEFT JOIN m_customers mc ON (voucher.customer_id = mc.id)
+                    left join supplier supp on (voucher.supplier_id = supp.id)
                 Where voucher.jenis_voucher='Manual'
                 Order By voucher.no_voucher");
         return $data;
@@ -34,6 +39,18 @@ class Model_voucher_cost extends CI_Model{
 
     function get_supplier(){
         $data = $this->db->query("select id, nama_supplier as nama_cost from supplier order by nama_supplier");
+        return $data;
+    }
+
+    function customer_list(){
+        $data = $this->db->query("Select voucher.*, 
+                gc.nama_group_cost,
+                mc.nama_customer as nama_cost
+                From voucher 
+                    Left Join group_cost gc On (voucher.group_cost_id = gc.id)
+                    Left Join m_customers mc on (voucher.cost_id = mc.id) 
+                Where voucher.jenis_voucher='Manual'
+                Order By voucher.no_voucher");
         return $data;
     }
 }

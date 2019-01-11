@@ -151,7 +151,7 @@
                         <td style="text-align:center"><?php echo $no; ?></td>
                         <td><?php echo $data->no_voucher; ?></td>
                         <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <td><?php echo $data->nama_cost; ?></td>
+                        <td><?php echo $data->nama_trx; ?></td>
                         <td><?php echo $data->nama_group_cost; ?></td>
                         <td><?php echo $data->keterangan; ?></td>
                         <td style="text-align:right"><?php echo number_format($data->amount,0,',','.'); ?></td>

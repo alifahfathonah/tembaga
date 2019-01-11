@@ -58,7 +58,36 @@ class VoucherCost extends CI_Controller{
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('VCOST', $tgl_input);
         if($code){
-            $data = array(
+            if($this->input->post('group_cost_id') == 1){
+                $data = array(
+                        'no_voucher'=> $code,
+                        'tanggal'=> $tgl_input,
+                        'jenis_voucher'=>'Manual',
+                        'group_cost_id'=> $this->input->post('group_cost_id'),
+                        'customer_id'=> $cost_id,
+                        'keterangan'=> $this->input->post('remarks'),
+                        'amount'=> str_replace('.', '', $this->input->post('amount')),
+                        'created'=> $tanggal,
+                        'created_by'=> $user_id,
+                        'modified'=> $tanggal,
+                        'modified_by'=> $user_id
+                    );
+            } else if ($this->input->post('group_cost_id') == 2){
+                $data = array(
+                        'no_voucher'=> $code,
+                        'tanggal'=> $tgl_input,
+                        'jenis_voucher'=>'Manual',
+                        'group_cost_id'=> $this->input->post('group_cost_id'),
+                        'supplier_id'=> $cost_id,
+                        'keterangan'=> $this->input->post('remarks'),
+                        'amount'=> str_replace('.', '', $this->input->post('amount')),
+                        'created'=> $tanggal,
+                        'created_by'=> $user_id,
+                        'modified'=> $tanggal,
+                        'modified_by'=> $user_id
+                    );
+            } else {
+               $data = array(
                         'no_voucher'=> $code,
                         'tanggal'=> $tgl_input,
                         'jenis_voucher'=>'Manual',
@@ -70,7 +99,9 @@ class VoucherCost extends CI_Controller{
                         'created_by'=> $user_id,
                         'modified'=> $tanggal,
                         'modified_by'=> $user_id
-                    );
+                    ); 
+            }
+            
 
             $this->db->insert('voucher', $data); 
             $this->session->set_flashdata('flash_msg', 'Voucher cost berhasil di-create dengan nomor : '.$code);

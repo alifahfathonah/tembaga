@@ -77,13 +77,13 @@
                         </td>                        
                         <td style="text-align:center"> 
                             <?php
-                                if(($group_id==1 || $hak_akses['edit_dtbj']==1) && $data->status==9){
-                                    echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliFinishGood/edit_dtbj/'.$data->id.'" 
-                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit &nbsp; </a> ';
-                                }else if ($data->status==0 && (strpos($data->remarks, 'SISA PRODUKSI') || strpos($data->remarks, 'TRANSFER KE RONGSOK')) !== false){
-                                    echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliFinishGood/proses_dtbj/'.$data->id.'" 
-                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
-                                }
+                                // if(($group_id==1 || $hak_akses['edit_dtbj']==1) && $data->status==9){
+                                //     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliFinishGood/edit_dtbj/'.$data->id.'" 
+                                //         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit &nbsp; </a> ';
+                                // }else if ($data->status==0 && (strpos($data->remarks, 'SISA PRODUKSI') || strpos($data->remarks, 'TRANSFER KE RONGSOK')) !== false){
+                                //     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliFinishGood/proses_dtbj/'.$data->id.'" 
+                                //         style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
+                                // }
                                 if($group_id==1 || $hak_akses['print_dtbj']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliFinishGood/print_dtbj/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';

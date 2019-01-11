@@ -90,7 +90,8 @@
                                 <div class="col-md-7">
                                     <input type="text" id="nama_supplier" name="nama_supplier" 
                                         class="form-control myline" style="margin-bottom:5px" 
-                                        readonly="readonly">                                                                       
+                                        readonly="readonly">         
+                                    <input type="hidden" name="supplier_id" id="supplier_id">                                                 
                                 </div>
                             </div>
                             <div class="row">
@@ -323,6 +324,7 @@ function createVoucher(id){
             $('#no_po').val(result['no_po']);
             $('#tanggal_po').val(result['tanggal']);
             $('#nama_supplier').val(result['nama_supplier']);
+            $('#supplier_id').val(result['supplier_id']);
             $('#diskon').val(result['diskon']);
             $('#materai').val(result['materai']);
             $('#ppn').val(result['after_ppn']);
