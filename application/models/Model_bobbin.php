@@ -33,8 +33,15 @@ class Model_bobbin extends CI_Model{
         return $data;
     }
 
+    function get_packing($id){
+        $data = $this->db->query("select mbs.id,bobbin_size, mbs.keterangan, mjp.jenis_packing, mjp.id as id_packing
+            from m_bobbin_size mbs
+            left join m_jenis_packing mjp on(mjp.id = mbs.jenis_packing_id) where mbs.id = ".$id);
+        return $data;
+    }
+
     function get_size_list(){
-        $data = $this->db->query("select mbs.id,bobbin_size, mbs.keterangan, mjp.jenis_packing
+        $data = $this->db->query("select mbs.id,bobbin_size, mbs.keterangan, mjp.jenis_packing, mjp.id as id_packing
             from m_bobbin_size mbs
             left join m_jenis_packing mjp on(mjp.id = mbs.jenis_packing_id)");
         return $data;
@@ -123,9 +130,10 @@ class Model_bobbin extends CI_Model{
     }
 
     function list_peminjam(){
-        $data = $this->db->query("select mbp.*, tsj.no_surat_jalan, mc.nama_customer, (select count(tsjd.id) as jumlah_item from t_surat_jalan_detail tsjd where tsjd.t_sj_id = tsj.id) as jumlah_item
+        $data = $this->db->query("select mbp.*, tsj.no_surat_jalan, mc.nama_customer, supp.nama_supplier, (select count(tsjd.id) as jumlah_item from t_surat_jalan_detail tsjd where tsjd.t_sj_id = tsj.id) as jumlah_item
             from m_bobbin_peminjaman mbp left join t_surat_jalan tsj on (mbp.id_surat_jalan = tsj.id)
             left join m_customers mc on (mbp.id_customer = mc.id)
+            left join supplier supp on (mbp.supplier_id = supp.id)
             ");
         return $data;
 
@@ -137,7 +145,7 @@ class Model_bobbin extends CI_Model{
     }
 
     function show_header_peminjam($id){
-        $data = $this->db->query("select mbp.*, usr.realname, tsj.no_surat_jalan, mc.nama_customer, supp.nama_supplier
+        $data = $this->db->query("select mbp.*, usr.realname, tsj.no_surat_jalan, mc.nama_customer, supp.nama_supplier, coalesce(mc.nama_customer, supp.nama_supplier) as nama_peminjam
             from m_bobbin_peminjaman mbp left join t_surat_jalan tsj on (mbp.id_surat_jalan = tsj.id)
             left join m_customers mc on (mbp.id_customer = mc.id)
             left join users usr on (mbp.created_by = usr.id)
@@ -147,11 +155,7 @@ class Model_bobbin extends CI_Model{
         return $data;
     }
     function show_detail_peminjam($id){
-        $data = $this->db->query("select mbp.*, tsj.no_surat_jalan, tsjd.nomor_bobbin, mc.nama_customer, (select count(tsjd.id) as jumlah_item from t_surat_jalan_detail tsjd where tsjd.t_sj_id = tsj.id) as jumlah_item
-            from m_bobbin_peminjaman mbp left join t_surat_jalan tsj on (mbp.id_surat_jalan = tsj.id)
-            left join m_customers mc on (mbp.id_customer = mc.id)
-            left join t_surat_jalan_detail tsjd on (tsjd.t_sj_id = tsj.id)
-            where mbp.id = ".$id);
+        $data = $this->db->query("select *from m_bobbin_peminjaman_detail left join m_bobbin_peminjaman on (m_bobbin_peminjaman_detail.id_peminjaman = m_bobbin_peminjaman.id) where m_bobbin_peminjaman.id = ".$id);
         return $data;
     }
 
@@ -227,6 +231,27 @@ class Model_bobbin extends CI_Model{
 
     function list_spb(){
         $data = $this->db->query("select *from m_bobbin_spb where keperluan = 1");
+        return $data;
+    }
+
+    function load_bobbin_spb($id){
+        $data = $this->db->query("select mbsd.*, mb.nomor_bobbin 
+            from m_bobbin_spb_detail mbsd 
+            left join m_bobbin mb on (mbsd.id_bobbin = mb.id) 
+            where mbsd.id_spb_bobbin = ".$id);
+        return $data;
+    }
+
+    function get_supplier_peminjaman($id){
+        $data = $this->db->query("select *from supplier where id = ".$id);
+        return $data;
+    }
+
+    function header_peminjaman_eks($id){
+        $data = $this->db->query("select mbs.*, u.realname
+            from m_bobbin_spb mbs
+            left join users u on (mbs.created_by = u.id)
+            where mbs.id = ".$id);
         return $data;
     }
 }

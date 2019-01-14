@@ -92,6 +92,18 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Keperluan
+                        </div>
+                        <div class="col-md-8">
+                            <select id="keperluan" name="keperluan" placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom: 5px;">
+                                <option value=""></option>
+                                <option value="1">EKSTERNAL</option>
+                                <option value="0">INTERNAL</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">

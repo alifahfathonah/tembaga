@@ -90,6 +90,7 @@
             <th>No. Surat Peminjaman</th>
             <th>No. Surat Jalan</th>
             <th>Nama Customer</th>
+            <th>Nama Supplier</th>
             <th>Jumlah Item</th>
             <th>Actions</th>
        </tr>
@@ -105,6 +106,7 @@
             <td><?php echo $row->no_surat_peminjaman; ?></td>
             <td><?php echo $row->no_surat_jalan; ?></td>
             <td><?php echo $row->nama_customer; ?></td>
+            <td><?php echo $row->nama_supplier; ?></td>
             <td style="text-align: center"><?php echo $row->jumlah_item; ?></td>
             <td style="text-align:center">
               <?php

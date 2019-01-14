@@ -18,8 +18,12 @@
                             <td>: <?php echo $header['no_surat_jalan']; ?></td>
                         </tr>       
                         <tr>
+                            <?php if ($header['nama_customer'] != null){ ?>
                             <td>Nama Customer</td>
-                            <td>: <?php echo $header['nama_customer']; ?></td>
+                        <?php } else { ?>
+                            <td>Nama Supplier</td>
+                        <?php } ?>
+                            <td>: <?php echo $header['nama_peminjam']; ?></td>
                         </tr>               
                     </table>
                 </td>

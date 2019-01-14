@@ -66,7 +66,7 @@
                                             echo '<option value="'.$v->id.'">'.$v->kode_owner.' ('.$v->nama_owner.')</option>';
                                         }?>
                                     </select>
-                                    <input type="hidden" name="id_packing" class="id_packing" value="">
+                                    <input type="hidden" name="id_packing" id="id_packing">
                                 </div>
                             </div> 
                             <div class="row">
@@ -123,14 +123,14 @@
                             Tipe <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select required="required" class="form-control myline select2me" name="tipe" onchange="get_packing(this.value)" placeholder="Silahkan pilih">
+                            <select required="required" class="form-control myline select2me" name="tipe" onchange="get_packing_2(this.value)" placeholder="Silahkan pilih">
                                 <option value=""></option>
                                 <?php foreach ($size_list as $v) {
                                     echo '<option value="'.$v->id.'">'.$v->bobbin_size.' ('.$v->jenis_packing.')</option>';
                                 }?>
                             </select>
-                            <input type="hidden" name="id_packing" class="id_packing" value="">
                         </div>
+                            <input type="hidden" name="id_packing_2" id="id_packing_2">
                     </div>
                                        
                     
@@ -293,15 +293,32 @@ function simpandata(){
      
 };
 
+function get_packing_2(id){
+    $.ajax({
+            url: "<?php echo base_url('index.php/GudangBobbin/get_packing'); ?>",
+            async: false,
+            type: "POST",
+            data: "id="+id,
+            dataType: "json",
+            success: function(result) {
+                console.log(result);
+                    $('#id_packing_2').val(result['id_packing']);
+            }
+        });
+}
+
 function get_packing(id){
-     $.ajax({
-        url: "<?php echo base_url('index.php/GudangBobbin/get_packing'); ?>",
-        type: "POST",
-        data : {id: id},
-        success: function (result){
-            $('.id_packing').val(result['id_packing']);    
-        }
-    });
+    $.ajax({
+            url: "<?php echo base_url('index.php/GudangBobbin/get_packing'); ?>",
+            async: false,
+            type: "POST",
+            data: "id="+id,
+            dataType: "json",
+            success: function(result) {
+                console.log(result);
+                    $('#id_packing').val(result['id_packing']);
+            }
+        });
 }
 
 function editData(id){
@@ -313,6 +330,7 @@ function editData(id){
         success: function (result){
             $('#nomor_bobin').val(result['nomor_bobbin']);
             $('#tipe_edit').val(result['m_bobbin_size_id']);
+            $('#id_packing').val(result['m_jenis_packing_id']);
             $('#milik_edit').val(result['owner_id']);
             $('#berat_edit').val(result['berat']);
             $('#id').val(result['id']);

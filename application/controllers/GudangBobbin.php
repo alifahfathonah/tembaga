@@ -76,7 +76,7 @@ class GudangBobbin extends CI_Controller{
         $data = array(
                     'tanggal' => $tgl_input,
                     'nomor_bobbin' => $code_bobbin,
-                    'm_jenis_packing_id' => $this->input->post('id_packing'),
+                    'm_jenis_packing_id' => $this->input->post('id_packing_2'),
                     'm_bobbin_size_id'=> $this->input->post('tipe'),
                     'owner_id'=> $this->input->post('owner'),
                     'berat'=> $this->input->post('berat'),
@@ -112,12 +112,10 @@ class GudangBobbin extends CI_Controller{
     function get_packing(){
         $id = $this->input->post('id');
         $this->load->model('Model_bobbin');
-        $data = $this->Model_bobbin->get_spb($id)->result();
-        $arr_cost[] = "Silahkan pilih....";
-        foreach ($data as $row) {
-            $arr_cost[$row->id] = $row->nama_cost;
-        } 
-        print form_dropdown('cost_id', $arr_cost);
+        $data = $this->Model_bobbin->get_packing($id)->row_array();
+        
+        header('Content-Type: application/json');
+        echo json_encode($data);    
     }
 
     function update(){
@@ -222,56 +220,65 @@ class GudangBobbin extends CI_Controller{
     }
 
     function save_surat_peminjaman(){
-        $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
-        $this->db->where('id', $this->input->post('spb_id'));
-        $this->db->update('m_bobbin_spb', array('keperluan' => 2));
+        $spb_id = $this->input->post('spb_id');        
 
-        $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);
-        $data = array(
-                'no_surat_peminjaman' => $code,
-                'supplier_id' => $this->input->post('supplier_id'),
-                'status' => 0,
-                'created_by' => $user_id,
-                'created_at' => $tanggal
-                );
+        $supplier_id = $this->input->post('supplier_id');        
+
+        redirect('index.php/GudangBobbin/edit_surat_peminjaman/'.$spb_id.'/'.$supplier_id);
+
+        //#CODE DIBAWAH UNTUK SAVE TANPA VIEW
+        // $this->db->where('id', $this->input->post('spb_id'));
+        // $this->db->update('m_bobbin_spb', array('keperluan' => 2));
+
+        // $this->load->model('Model_m_numberings');
+        // $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);
+        // $data = array(
+        //         'no_surat_peminjaman' => $code,
+        //         'supplier_id' => $this->input->post('supplier_id'),
+        //         'status' => 0,
+        //         'created_by' => $user_id,
+        //         'created_at' => $tanggal
+        //         );
 
 
-        $this->db->insert('m_bobbin_peminjaman', $data);
-        $peminjaman_id = $this->db->insert_id();
+        // $this->db->insert('m_bobbin_peminjaman', $data);
+        // $peminjaman_id = $this->db->insert_id();
 
-        $loop = $this->db->query("
-            select msbd.*, b.nomor_bobbin
-            from m_bobbin_spb_detail msbd
-            left join m_bobbin b on (msbd.id_bobbin = b.id)
-            where id_spb_bobbin = ".$this->input->post('spb_id'))->result();
-        foreach ($loop as $row) {
-            $detail = array(
-                'id_peminjaman' => $peminjaman_id,
-                'id_penerimaan' => 0,
-                'nomor_bobbin' => $row->nomor_bobbin
-            );
+        // $loop = $this->db->query("
+        //     select msbd.*, b.nomor_bobbin
+        //     from m_bobbin_spb_detail msbd
+        //     left join m_bobbin b on (msbd.id_bobbin = b.id)
+        //     where id_spb_bobbin = ".$this->input->post('spb_id'))->result();
+        // foreach ($loop as $row) {
+        //     $detail = array(
+        //         'id_peminjaman' => $peminjaman_id,
+        //         'id_penerimaan' => 0,
+        //         'nomor_bobbin' => $row->nomor_bobbin
+        //     );
 
-            $this->db->insert('m_bobbin_peminjaman_detail', $detail);
+        //     $this->db->insert('m_bobbin_peminjaman_detail', $detail);
 
-            $updatemb = array(
-                'status' => 2
-            );
+        //     $updatemb = array(
+        //         'status' => 2
+        //     );
 
-            // $this->db->query("update m_bobbin set status = 2 where nomor_bobbin = ".$row->nomor_bobbin);
-            $this->db->where('nomor_bobbin', $row->nomor_bobbin);
-            $this->db->update('m_bobbin', $updatemb);
-        }
+        //     // $this->db->query("update m_bobbin set status = 2 where nomor_bobbin = ".$row->nomor_bobbin);
+        //     $this->db->where('nomor_bobbin', $row->nomor_bobbin);
+        //     $this->db->update('m_bobbin', $updatemb);
+        // }
 
         redirect('index.php/GudangBobbin/bobbin_request');
     }
 
     function edit_surat_peminjaman(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
+        $supplier_id = $this->uri->segment(4);
         if($id){
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -282,14 +289,68 @@ class GudangBobbin extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $data['content']= "gudang_bobbin/edit_surat_peminjaman";
+
             $this->load->model('Model_bobbin');
-            $data['header'] = $this->Model_bobbin->show_header_peminjam($id)->row_array();
-            $data['details'] =   $this->Model_bobbin->show_detail_peminjam($id)->result();
-            $data['bobbin_booked'] = $this->Model_bobbin->get_bobbin_booked()->result();
+            $data['spb'] = $this->Model_bobbin->load_bobbin_spb($id)->result();
+            $data['supplier'] = $this->Model_bobbin->get_supplier_peminjaman($supplier_id)->row_array();
+            $data['header'] = $this->Model_bobbin->header_peminjaman_eks($id)->row_array();
+            // $data['header'] = $this->Model_bobbin->show_header_peminjam($id)->row_array();
+            // $data['details'] =   $this->Model_bobbin->show_detail_peminjam($id)->result();
+            // $data['bobbin_booked'] = $this->Model_bobbin->get_bobbin_booked()->result();
     
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/GudangBobbin/bobbin_terima');
+            redirect('index.php/GudangBobbin/bobbin_request');
+        }
+    }
+
+    function update_surat_peminjaman(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $spb_id = $this->input->post('spb_id');
+
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);
+        
+        #Insert surat peminjaman bobbin
+        if($code){        
+            $this->db->where('id', $spb_id);
+            $this->db->update('m_bobbin_spb', array(
+                'keperluan' => 2
+            ));
+
+            $data = array(
+            'no_surat_peminjaman' => $code,
+            'supplier_id' => $this->input->post('supplier_id'),
+            'status' => 0,
+            'remarks' => $this->input->post('remarks'),
+            'created_by' => $user_id,
+            'created_at' => $tanggal
+            );
+
+            if($this->db->insert('m_bobbin_peminjaman', $data)){
+                $peminjaman_id = $this->db->insert_id();
+                $loop = $this->db->query("select mb.nomor_bobbin from m_bobbin_spb_detail mbsd left join m_bobbin mb on (mbsd.id_bobbin = mb.id) where mbsd.id_spb_bobbin = ".$spb_id)->result();
+
+                foreach ($loop as $row) {
+                    $data_detail = array(
+                        'id_peminjaman' => $peminjaman_id,
+                        'nomor_bobbin' => $row->nomor_bobbin
+                    );
+
+                    $this->db->insert('m_bobbin_peminjaman_detail', $data_detail);
+                }
+
+                $this->session->set_flashdata('flash_msg', 'Data peminjaman Bobbin berhasil dibuat!');
+                redirect('index.php/GudangBobbin/bobbin_request/');  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data Penerimaan Bobbin gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/GudangBobbin/bobbin_request');  
+            }            
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data Penomoran Peminjaman Bobbin gagal disimpan, penomoran belum disetup!');
+            redirect('index.php/GudangBobbin/bobbin_request');
         }
     }
 
@@ -592,6 +653,7 @@ class GudangBobbin extends CI_Controller{
             'jenis_packing' => $this->input->post('jenis_packing'),
             'pemohon' => $this->input->post('nama_pemohon'),
             'status' => 0,
+            'keperluan' => $this->input->post('keperluan'),
             'keterangan' => $this->input->post('remarks'),
             'created_by' => $user_id,
             'created_at' => $tanggal
