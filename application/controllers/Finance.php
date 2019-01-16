@@ -23,6 +23,7 @@ class Finance extends CI_Controller{
         $data['content']= "finance/index";
         $this->load->model('Model_finance');
         $data['list_data'] = $this->Model_finance->list_data()->result();
+        $data['list_customer'] = $this->Model_finance->customer_list()->result();
 
         $this->load->view('layout', $data);
     }
@@ -180,14 +181,32 @@ class Finance extends CI_Controller{
         $user_id = $this->session->userdata('user_id');
         $id = $this->input->post('header_id');
         $tanggal  = date('Y-m-d h:m:s');
-
-        $data = array(
-            'status'=>0,
-            'tgl_cair'=>$this->input->post('tanggal_cek_baru'),
-            'modified_at'=>$tanggal,
-            'modified_by'=>$user_id,
-            'update_remarks'=>$this->input->post('update_remarks')
-        );
+        $jenis = $this->input->post('jenis1');
+        if($jenis=="Cek Mundur"){
+            $data = array(
+                'status'=>0,
+                'tgl_cair'=>$this->input->post('tanggal_cek_baru'),
+                'modified_at'=>$tanggal,
+                'modified_by'=>$user_id,
+                'update_remarks'=>$this->input->post('update_remarks')
+            );
+        }else if($jenis=="Cek"){
+            $data = array(
+                'status'=>0,
+                'nomor_cek'=>$this->input->post('nomor'),
+                'modified_at'=>$tanggal,
+                'modified_by'=>$user_id,
+                'update_remarks'=>$this->input->post('update_remarks')
+            );
+        }else if($jenis=="Giro"){
+            $data = array(
+                'status'=>0,
+                'rekening_pembayaran'=>$this->input->post('nomor'),
+                'modified_at'=>$tanggal,
+                'modified_by'=>$user_id,
+                'update_remarks'=>$this->input->post('update_remarks')
+            );
+        }
         $this->db->where('id', $id);
         if($this->db->update('f_uang_masuk', $data)){
             $this->session->set_flashdata('flash_msg', 'Uang Masuk berhasil di update');
@@ -1170,5 +1189,29 @@ class Finance extends CI_Controller{
                 $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat penginputan Data Matching, silahkan coba kembali!');
             }
        redirect('index.php/Finance/matching_invoice/'.$id);
+    }
+
+    function filter_cek(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Finance";
+            $data['content']   = "finance/filter_cek";
+
+            $this->load->model('Model_finance');
+            $data['list_data'] = $this->Model_finance->list_data_filter($id)->result();
+            $data['list_customer'] = $this->Model_finance->customer_list()->result();
+
+            $this->load->view('layout', $data);
+        }else{
+            redirect('index.php/Finance');
+        }
     }
 }

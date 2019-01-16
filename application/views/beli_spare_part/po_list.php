@@ -154,6 +154,43 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-5">
+                                    Nomor Giro
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="nomor_giro" name="nomor_giro" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);">                                                                       
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Bank
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="bank" name="bank" 
+                                        class="form-control myline" style="margin-bottom:5px">         
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Jatuh Tempo
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="tgl_jatuh" name="tgl_jatuh" 
+                                        class="form-control myline" style="margin-bottom:5px">         
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Kurs
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="kurs" name="kurs" 
+                                        class="form-control myline" style="margin-bottom:5px">         
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
                                     Keterangan
                                 </div>
                                 <div class="col-md-7">

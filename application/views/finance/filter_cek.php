@@ -24,7 +24,8 @@
                             <div class="col-md-8">
                                 <select  id="customer" name="customer" placeholder="Silahkan pilih..."
                                     class="form-control myline select2me" style="margin-bottom:5px">
-                                    <option value=""></option>
+                                    <option></option>
+                                    <option value="0">Tampilkan Semua</option>
                                     <?php 
                                     foreach($list_customer as $p){
                                     ?>
@@ -142,6 +143,11 @@
 <script>
 function filterData(){
     var id=$('#customer').val();
-    window.location = 'Finance/filter_cek/'+id;
+    if(id==0 || id==''){
+    var base_url = '<?php echo base_url() ?>';
+    window.location = base_url+'index.php/Finance';
+    }else{
+    window.location = id;
+    }
 }
-</script>         
+</script>           

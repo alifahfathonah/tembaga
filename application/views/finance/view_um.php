@@ -34,6 +34,8 @@
                                     
                                     <input type="hidden" id="headers_id" name="header_id">
                                     <input type="hidden" id="tanggal_cek_baru" name="tanggal_cek_baru">
+                                    <input type="hidden" id="nomor" name="nomor">
+                                    <input type="hidden" id="jenis1" name="jenis1">
                                 </div>
                             </div>                           
                         </form>
@@ -286,8 +288,13 @@
                     <a href="<?php echo base_url('index.php/Finance'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                     <?php if( ($group_id==1 || $hak_akses['edit_um']==1) && $myData['jenis_pembayaran']=='Cek Mundur' && $myData['status']==9){
-                            echo '<a href="javascript:;" class="btn green" id="editData" onclick="editData();"> 
+                            echo '<a href="javascript:;" class="btn green" id="editDataCekMundur" onclick="editDataCekMundur();"> 
                         <i class="fa fa-pencil"></i> Edit Cek Mundur </a>';
+                        }
+                    ?>
+                    <?php if( ($group_id==1 || $hak_akses['edit_um']==1) && ($myData['jenis_pembayaran']=='Cek' || $myData['jenis_pembayaran']=='Giro') && $myData['status']==9){
+                            echo '<a href="javascript:;" class="btn green" id="editData" onclick="editData();"> 
+                        <i class="fa fa-pencil"></i> Edit </a>';
                         }
                     ?>
                     <a href="javascript:;" onclick="showUpdateBox();" class="btn blue" id="saveData" style="display: none;"><i class="fa fa-check"></i> Update </a>
@@ -344,8 +351,8 @@
     </div>
 </div> 
 <script>
-function editData(){
-    $("#editData").hide();
+function editDataCekMundur(){
+    $("#editDataCekMundur").hide();
     $("#tanggal_cek").attr("readonly", false);
     $("#tanggal_cek").datepicker({
             showOn: "button",
@@ -359,30 +366,48 @@ function editData(){
     $("#saveData").show();
 }
 
+function editData(){
+    $("#editData").hide();
+    if($("#jenis").val()=="Cek"){
+        $("#nomor_cek").prop('readonly', false);
+    }else if($("jenis").val()=="Giro"){
+        $("#no_rek").prop('readonly', false);
+    }
+    $("#saveData").show();
+}
+
 function showUpdateBox(){
     var r=confirm("Anda yakin untuk merevisi Cek ini?");
-    if (r==true){
-        $('#headers_id').val($('#id').val());
-        $('#tanggal_cek_baru').val($('#tanggal_cek').val());
-        $('#message').html("");
-        $('.alert-danger').hide();
-        
-        $("#updateModal").find('.modal-title').text('Update Cek Mundur');
-        $("#updateModal").modal('show',{backdrop: 'true'}); 
+    if($('#jenis').val()=="Cek Mundur" && $.trim($("#tanggal_cek").val()) == ""){
+        $('#message').html("Tanggal Cek harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else{
+        if (r==true){
+            $('#headers_id').val($('#id').val());
+            $('#jenis1').val($('#jenis').val());
+            if($("#jenis").val()=="Cek Mundur"){
+                $('#tanggal_cek_baru').val($('#tanggal_cek').val());
+            }else if($("#jenis").val()=="Cek"){
+                $('#nomor').val($('#nomor_cek').val());
+            }else if($("#jenis").val()=="Giro"){
+                $('#nomor').val($('#no_rek').val());
+            }
+            $('#message').html("");
+            $('.alert-danger').hide();
+            
+            $("#updateModal").find('.modal-title').text('Update');
+            $("#updateModal").modal('show',{backdrop: 'true'}); 
+        }
     }
 }
 
 function updateData(){
-    if($.trim($("#tanggal_cek").val()) == ""){
-        $('#message').html("Reject remarks harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show(); 
-    }else{
-        $('#message').html("");
-        $('.alert-danger').hide();
-        $('#frmUpdate').attr("action", "<?php echo base_url(); ?>index.php/Finance/update_um");
-        $('#frmUpdate').submit(); 
-    }
+    $('#message').html("");
+    $('.alert-danger').hide();
+    $('#frmUpdate').attr("action", "<?php echo base_url(); ?>index.php/Finance/update_um");
+    $('#frmUpdate').submit(); 
 }
+
 function showRejectBox(){
     var r=confirm("Anda yakin me-reject permintaan barang ini?");
     if (r==true){

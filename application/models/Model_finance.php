@@ -7,6 +7,13 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function list_data_filter($id){
+        $data = $this->db->query("Select fum.*, mc.nama_customer From f_uang_masuk fum
+            left join m_customers mc on mc.id = fum.m_customer_id
+            where fum.m_customer_id =".$id." Order By id desc");
+        return $data;
+    }
+
     function replace_list($id, $jenis){
         $data = $this->db->query("Select * from f_uang_masuk where status = 9 and replace_id = 0 and m_customer_id =".$id." and jenis_pembayaran = '".$jenis."'");
         return $data;

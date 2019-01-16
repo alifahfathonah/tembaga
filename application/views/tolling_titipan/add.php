@@ -43,7 +43,7 @@
                             No. PO <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_po" name="no_po" class="form-control myline" style="margin-bottom:5px">
+                            <input type="text" id="no_po" name="no_po" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
                         </div>
                     </div>
                     <div class="row">
