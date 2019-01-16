@@ -71,6 +71,7 @@
                                 <option value="Cek">Cek</option>
                                 <option value="Cek Mundur">Cek Mundur</option>
                                 <option value="Giro">Giro</option>
+                                <option value="Transfer">Transfer</option>
                                 <option value="Cash">Cash</option>
                             </select>
                         </div>
@@ -210,8 +211,8 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Keterangan Rejec
-t                        </div>
+                            Keterangan Reject
+                        </div>
                         <div class="col-md-8">
                             <textarea type="text" id="reject_remarks" name="reject_remarks" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly">
@@ -377,6 +378,20 @@ function get_cek(id){
         });
         get_replace('Cek Mundur');
     }else if(id === "Giro") {
+        resetAllValues();
+        $('#show_replace').hide();
+        $('#show_replace_detail').hide();
+        get_replace();
+        $('#show_rek').hide();
+        $("#show_rek_tuj").hide();
+        $("#show_bank").hide();
+        $("#show_cek_mu").hide();
+        $("#show_nomor_cek").hide();
+
+        $("#show_rek_tuj").show();
+        $("#show_bank").show();
+        $("#show_rek").show();
+    }else if(id == "Transfer"){
         resetAllValues();
         $('#show_replace').hide();
         $('#show_replace_detail').hide();

@@ -40,18 +40,6 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            No. PO<font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="no_spb" name="no_spb" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['no_po']; ?>">
-
-                            <input type="hidden" id="no_spb" name="no_spb" value="<?php echo $header['no_spb']; ?>">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
                             No. SPB<font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -72,11 +60,43 @@
                                 value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Barang
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jenis_barang" name="jenis_barang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $header['jenis_barang']; ?>">
+                        </div>
+                    </div>
                     <div class="row">&nbsp;</div>
 
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. PO<font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_spb" name="no_spb" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['no_po']; ?>">
+
+                            <input type="hidden" id="no_spb" name="no_spb" value="<?php echo $header['no_spb']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal PO<font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tanggal" name="tanggal" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo date('d-m-Y', strtotime($header['tgl_po'])); ?>">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Customer
@@ -95,16 +115,6 @@
                             <input type="text" id="cp_customer" name="cp_customer" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $header['pic']; ?>">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Jenis Barang
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['jenis_barang']; ?>">
                         </div>
                     </div>
                 </div>              

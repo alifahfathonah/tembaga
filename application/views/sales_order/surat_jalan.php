@@ -23,12 +23,15 @@
                 </div>
             </div>
         </div>
+
+        
+
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-truck"></i>List Surat Jalan
                 </div>  
-                <div class="tools">    
+                <div class="tools"> 
                 <?php
                     if( ($group_id==1)||($hak_akses['add_surat_jalan']==1) ){
                         echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/SalesOrder/add_surat_jalan').'"> '
@@ -119,6 +122,7 @@
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
+
 $(function(){       
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });

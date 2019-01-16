@@ -243,7 +243,7 @@
 <script>
 function simpanData(){
     if($.trim($("#remarks").val()) == ""){
-        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
+        $('#message').html("Catatan harus diisi, tidak boleh kosong!");
         $('.alert-danger').show();
     }else{   
         $('#formku').submit(); 

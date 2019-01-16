@@ -13,6 +13,19 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
+    function filter_so_list($id){
+        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, so.flag_ppn, so.flag_sj, usr.realname As nama_marketing, cust.nama_customer, cust.pic, COALESCE(tsf.status,tsw.status,spb.status) as status_spb,
+            (Select count(tsod.id)As jumlah_item From t_sales_order_detail tsod Where tsod.t_so_id = tso.id)As jumlah_item From t_sales_order tso
+            Left Join sales_order so on (so.id = tso.so_id)
+            Left Join m_customers cust On (so.m_customer_id = cust.id) 
+            Left Join t_spb_fg tsf on (tso.jenis_barang='FG') and (tsf.id=tso.no_spb)
+            Left Join t_spb_wip tsw on (tso.jenis_barang='WIP') and (tsw.id=tso.no_spb)
+            Left Join spb on (tso.jenis_barang='RONGSOK') and (spb.id=tso.no_spb)
+            Left Join users usr On (so.marketing_id = usr.id)
+            Where so.flag_sj = ".$id." Order by so.tanggal desc");
+        return $data;
+    }
+
     function customer_list(){
         $data = $this->db->query("Select * From m_customers Order By nama_customer");
         return $data;
@@ -102,6 +115,10 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
     
+    function type_kendaraan_list(){
+        $data = $this->db->query("select *from m_type_kendaraan order by type_kendaraan");
+        return $data;
+    }
     function kendaraan_list(){
         $data = $this->db->query("Select * From m_kendaraan Order By no_kendaraan");
         return $data;
@@ -308,13 +325,11 @@ class Model_sales_order extends CI_Model{
     function surat_jalan(){
         $data = $this->db->query("Select tsj.*, (select count(tsjd.id) from t_surat_jalan_detail tsjd where tsjd.t_sj_id = tsj.id) as jumlah_item,
                     cust.nama_customer, cust.alamat,
-                    so.no_sales_order, fi.id as inv,
-                    kdr.no_kendaraan
+                    so.no_sales_order, fi.id as inv
                 From t_surat_jalan tsj
                     Left Join m_customers cust On (tsj.m_customer_id = cust.id)
                     Left Join sales_order so On (tsj.sales_order_id = so.id) 
                     Left Join f_invoice fi on (fi.id_surat_jalan = tsj.id)
-                    Left Join m_kendaraan kdr On (tsj.m_kendaraan_id = kdr.id) 
                 Where tsj.jenis_barang <>'TOLLING' 
                 Order By tsj.id Desc");
         return $data;
@@ -324,15 +339,13 @@ class Model_sales_order extends CI_Model{
         $data = $this->db->query("Select tsj.*, cust.id as id_customer,
                     cust.nama_customer, cust.alamat,
                     tso.no_spb, so.no_sales_order,
-                    kdr.no_kendaraan,
                     tkdr.type_kendaraan,
                     usr.realname
                 From t_surat_jalan tsj
                     Left Join m_customers cust On (tsj.m_customer_id = cust.id)
                     Left Join t_sales_order tso On (tsj.sales_order_id = tso.so_id) 
                     Left Join sales_order so On (so.id = tso.so_id)
-                    Left Join m_kendaraan kdr On (tsj.m_kendaraan_id = kdr.id) 
-                    Left Join m_type_kendaraan tkdr On (kdr.m_type_kendaraan_id = tkdr.id) 
+                    Left Join m_type_kendaraan tkdr On (tsj.m_type_kendaraan_id = tkdr.id) 
                     Left Join users usr On (tsj.created_by = usr.id)
                     Where tsj.id=".$id);
         return $data;

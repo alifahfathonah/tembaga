@@ -55,14 +55,6 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Nomor PO <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="no_po" name="no_po" class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_po']; ?>" onkeyup="this.value = this.value.toUpperCase()">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
                             Tanggal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -87,11 +79,38 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Barang
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
+                                   class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['jenis_barang']; ?>">
+                        </div>
+                    </div> 
                     <div class="row">&nbsp;</div>
                     
                 </div>
                 <div class="col-md-2">&nbsp;</div>
                 <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nomor PO <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_po" name="no_po" class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_po']; ?>" onkeyup="this.value = this.value.toUpperCase()">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal PO<font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tanggal_po" name="tanggal_po" 
+                                class="form-control input-small myline" style="margin-bottom:5px; float:left;" 
+                                value="<?php echo date('d-m-Y', strtotime($header['tgl_po'])); ?>">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Alias Customer <font color="#f00">*</font>
@@ -125,16 +144,7 @@
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
                                    class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['pic']; ?>">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Jenis Barang
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
-                                   class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['jenis_barang']; ?>">
-                        </div>
-                    </div>                    
+                    </div>                   
                 </div>              
             </div>
             <div class="row">&nbsp;</div>
@@ -370,6 +380,20 @@ function hapusDetail(id){
 <script>
 $(function(){        
     $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    }); 
+    
+    loadDetail(<?php echo $header['id']; ?>);
+});
+
+$(function(){        
+    $("#tanggal_po").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,

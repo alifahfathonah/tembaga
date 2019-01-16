@@ -23,6 +23,47 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="modalFilter" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">&nbsp;</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-danger display-hide">
+                                    <button class="close" data-close="alert"></button>
+                                    <span id="message">&nbsp;</span>
+                                </div>
+                            </div>
+                        </div>
+                        <form class="eventInsForm" method="post" target="_self" name="formku" 
+                              id="formku">                            
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Surat Jalan
+                                </div>
+                                <div class="col-md-7">
+                                    <select class="form-control myline" style="margin-bottom: 5px" id="surat_jalan" name="surat_jalan">
+                                        <option></option>
+                                        <option value="0">Belum dikirim semua</option>
+                                        <option value="1">Sudah dikirim semua</option>
+                                    </select>
+                                    
+                                </div>
+                            </div>                             
+                            
+                        </form>
+                    </div>
+                    <div class="modal-footer">                        
+                        <button type="button" class="btn blue" onClick="saveFilter();">Simpan</button>
+                        <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div> 
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
@@ -30,6 +71,11 @@
                 </div>  
                 <div class="tools">    
                 <?php
+                    if( ($group_id==1||($hak_akses['add'])==1) ){
+                        echo '<a href="javascript:;" style="height: 28px;" class="btn btn-circle btn-sm blue-ebonyclay" onclick="showFilter()">
+                            <i class="fa fa-filter"></i> Filter
+                        </a>   ';
+                    }
                     if( ($group_id==1)||($hak_akses['add']==1) ){
                         echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/SalesOrder/add').'"> '
                         .'<i class="fa fa-plus"></i> Input Sales Order </a>';
@@ -146,7 +192,23 @@
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
+
+function showFilter(){  
+    $("#modalFilter").find('.modal-title').text('Filter');
+    $("#modalFilter").modal('show',{backdrop: 'true'}); 
+}
+
 $(function(){       
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });
+
+function saveFilter(){
+    if ($.trim($("#surat_jalan").val()) == "") {
+        $('#message').html("Silahkan pilih filter surat jalan");
+        $('.alert-danger').show();
+    } else {
+        $('#formku').attr('action','<?php echo base_url(); ?>index.php/SalesOrder/filter_so');
+        $('#formku').submit();
+    }
+}
 </script>         

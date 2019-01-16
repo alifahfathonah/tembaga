@@ -26,6 +26,24 @@ class SalesOrder extends CI_Controller{
 
         $this->load->view('layout', $data);
     }
+
+    function filter_so(){
+        $surat_jalan = $this->input->post('surat_jalan');
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "sales_order/index";
+        $this->load->model('Model_sales_order');
+        $data['list_data'] = $this->Model_sales_order->filter_so_list($surat_jalan)->result();
+
+        $this->load->view('layout', $data);
+    }
     
     function add(){
         $module_name = $this->uri->segment(1);
@@ -171,6 +189,7 @@ class SalesOrder extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
         $user_ppn  = $this->session->userdata('user_ppn');
         
         $this->load->model('Model_m_numberings');
@@ -248,6 +267,7 @@ class SalesOrder extends CI_Controller{
                 'so_id'=>$so_id,
                 'no_po'=>$this->input->post('no_po'),
                 'no_spb'=>$insert_id,
+                'tgl_po'=>$tgl_po,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id,
@@ -519,7 +539,7 @@ class SalesOrder extends CI_Controller{
         $this->load->model('Model_sales_order');
         $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
         //$data['jenis_barang_list'] = $this->Model_sales_order->jenis_barang_list()->result();
-        $data['kendaraan_list'] = $this->Model_sales_order->kendaraan_list()->result();
+        $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
         $this->load->view('layout', $data);
     }
 
@@ -576,7 +596,8 @@ class SalesOrder extends CI_Controller{
                 'tanggal'=> $tgl_input,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'm_customer_id'=>$this->input->post('m_customer_id'),
-                'm_kendaraan_id'=>$this->input->post('m_kendaraan_id'),
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
                 'supir'=>$this->input->post('supir'),
                 'remarks'=>$this->input->post('remarks'),
                 'created_at'=> $tanggal,
@@ -613,7 +634,7 @@ class SalesOrder extends CI_Controller{
             $this->load->model('Model_sales_order');
             $data['header'] = $this->Model_sales_order->show_header_sj($id)->row_array();  
             $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
-            $data['kendaraan_list'] = $this->Model_sales_order->kendaraan_list()->result();
+            $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
 
             $jenis = $data['header']['jenis_barang'];
             $soid = $data['header']['sales_order_id'];
@@ -770,7 +791,8 @@ class SalesOrder extends CI_Controller{
 
         $data = array(
                 'tanggal'=> $tgl_input,
-                'm_kendaraan_id'=>$this->input->post('m_kendaraan_id'),
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
                 'supir'=>$this->input->post('supir'),
                 'remarks'=>$this->input->post('remarks'),
                 'modified_at'=> $tanggal,
