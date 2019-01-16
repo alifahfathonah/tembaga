@@ -57,21 +57,6 @@
                             
                             <input type="hidden" id="produksi_ingot_id" name="produksi_ingot_id" value="<?php echo $header['id']; ?>">
                         </div>
-                    </div>                    
-                    <div class="row">
-                        <div class="col-md-4">
-                            Tipe Apolo <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <select id="tipe_apolo" name="tipe_apolo" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option></option>
-                                <?php
-                                foreach ($apolo as $row) {
-                                echo "<option value='".$row->id."'>".$row->tipe_apolo."</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
                     </div>
                 </div>
                 <div class="col-md-2">&nbsp;</div>
@@ -199,10 +184,7 @@ function simpanData(){
         $('.alert-danger').show(); 
     }else if($.trim($("#remarks_header").val()) == ""){
         $('#message').html("Catatan harus diisi, tidak boleh kososng!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#tipe_apolo").val()) == ""){
-        $('#message').html("Apolo harus diisi, tidak boleh kososng!");
-        $('.alert-danger').show(); 
+        $('.alert-danger').show();
     }else{
         $('#message').html("");
         $('.alert-danger').hide(); 

@@ -44,7 +44,8 @@
                     <th style="width:50px;">No</th>
                     <th>No. Produksi</th>
                     <th>Tanggal</th>
-                    <th>Jenis Barang</th> 
+                    <th>Jenis Barang</th>
+                    <th>Tipe Apolo</th> 
                     <th>PIC</th>
                     <th>Keterangan</th> 
                     <th>Jmlh Item <br>Bahan Baku</th>
@@ -62,6 +63,7 @@
                         <td><?php echo $data->no_produksi; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->jenis_barang; ?></td>
+                        <td><?php echo $data->tipe_apolo;?></td>
                         <td><?php echo $data->pic; ?></td>  
                         <td><?php echo $data->remarks; ?></td> 
                         <td style="text-align:right"><?php echo $data->jumlah_item; ?></td> 

@@ -120,16 +120,6 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Tipe Apolo
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="tipe_apolo" name="tipe_apolo" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $myData['tipe_apolo']; ?>">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">

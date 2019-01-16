@@ -12,7 +12,7 @@ class Ingot extends CI_Controller{
     
     function index(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');   
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -40,6 +40,7 @@ class Ingot extends CI_Controller{
         
         $this->load->model('Model_ingot');
         $data['jenis_barang_list'] = $this->Model_ingot->jenis_barang_list()->result();
+        $data['apolo'] = $this->Model_ingot->show_apolo()->result();
         $this->load->view('layout', $data);
     }
     
@@ -56,6 +57,7 @@ class Ingot extends CI_Controller{
                 'no_produksi'=> $code,
                 'tanggal'=> $tgl_input,
                 'jenis_barang_id'=>$this->input->post('jenis_barang'),
+                'id_apolo'=>$this->input->post('tipe_apolo'),
                 'remarks'=>$this->input->post('remarks'),
                 'created'=> $tanggal,
                 'created_by'=> $user_id
@@ -231,7 +233,6 @@ class Ingot extends CI_Controller{
             $data['content']= "ingot/create_spb";
             $this->load->model('Model_ingot');
             $data['header'] = $this->Model_ingot->show_header_pi($id)->row_array();
-            $data['apolo'] = $this->Model_ingot->show_apolo()->result();
             $this->load->model('Model_rongsok');
             $data['list_rongsok'] = $this->Model_rongsok->list_data()->result();
             
@@ -256,7 +257,6 @@ class Ingot extends CI_Controller{
                         'tanggal'=> $tgl_input,
                         'produksi_ingot_id'=> $this->input->post('produksi_ingot_id'),
                         'jenis_barang'=> $this->input->post('jenis_barang_id'),
-                        'id_apolo'=> $this->input->post('tipe_apolo'),
                         'remarks'=> $this->input->post('remarks'),
                         'created'=> $tanggal,
                         'created_by'=> $user_id,
@@ -441,7 +441,6 @@ class Ingot extends CI_Controller{
         $this->load->view('layout', $data);
     }
 
-
     function hasil_produksi2(){
     
         $module_name = $this->uri->segment(1);
@@ -458,11 +457,7 @@ class Ingot extends CI_Controller{
         $data['no_produksi_list'] = $this->Model_ingot->get_no_produksi_list()->result();
 
         $this->load->view('layout', $data);
-
-
     }
-
-
     
     function add_produksi(){
         $module_name = $this->uri->segment(1);
@@ -481,11 +476,6 @@ class Ingot extends CI_Controller{
         $this->load->view('layout', $data);
     }
 
-
-
-
-
-    
     function save_produksi(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
@@ -519,8 +509,6 @@ class Ingot extends CI_Controller{
         }
     }
 
-
-
     function save_produksi2(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
@@ -535,7 +523,7 @@ class Ingot extends CI_Controller{
                 'total_rongsok'=>$this->input->post('total_rongsok'),
                 'kayu'=>$this->input->post('kayu'),
                 'gas'=> $this->input->post('gas'),
-                'no_bpb_rongsok'=> $this->input->post('no_bpb_rongsok'),
+                'no_spb_rongsok'=> $this->input->post('no_spb_rongsok'),
                 'id_produksi'=> $this->input->post('no_masak'),
                 'ingot'=> $this->input->post('ingot'),
                 'berat_ingot'=> $this->input->post('berat_ingot'),
@@ -543,7 +531,7 @@ class Ingot extends CI_Controller{
                 'susut'=> $this->input->post('susut'),
                 'ampas'=> $this->input->post('ampas'),
                 'serbuk'=> $this->input->post('serbuk'),
-                'created_by'=> $user_id,
+                'created_by'=> $user_id
             );
 
         #insert data hasil masak
@@ -551,29 +539,33 @@ class Ingot extends CI_Controller{
 
         $id_masak = $this->db->insert_id();
 
+        if($this->input->post('bs') != 0){
+            #insert bs ke gudang bs
+            $data_bs = array(
+                'id_produksi' => $id_masak,
+                'jenis_barang_id' => 7,
+                'berat' => $this->input->post('bs'),
+                'tanggal' => $tgl_input,
+                'status' => 0,
+                'created_by' => $user_id,
+                'created_at' => $tanggal
+            );
+            $this->db->insert('t_gudang_bs', $data_bs);
+        }
 
-        #insert gudang bs
-        $data_bs = array(
-            'id_produksi' => $id_masak,
-            'jenis_barang_id' => 14,
-            'berat' => $this->input->post('bs'),
-            'tanggal' => $tgl_input,
-            'status' => 0,
-            'created_by' => $user_id,
-            'created_at' => $tanggal
-        );
-        $this->db->insert('t_gudang_bs', $data_bs);
-
-        // #insert serbuk ke gudang bs
-        // $data_bs = array(
-        //     'id_produksi' => $id_masak,
-        //     'berat' => $this->input->post('bs'),
-        //     'tanggal' => $tgl_input,
-        //     'status' => 0,
-        //     'created_by' => $user_id,
-        //     'created_at' => $tanggal
-        // );
-        // $this->db->insert('t_gudang_bs', $data_bs);
+        if($this->input->post('serbuk') != 0){
+            #insert serbuk ke gudang bs
+            $data_bs = array(
+                'id_produksi' => $id_masak,
+                'berat' => $this->input->post('serbuk'),
+                'jenis_barang_id' => 14,
+                'tanggal' => $tgl_input,
+                'status' => 0,
+                'created_by' => $user_id,
+                'created_at' => $tanggal
+            );
+            $this->db->insert('t_gudang_bs', $data_bs);
+        }
         
         // #insert gudang ampas
         // $data_ampas = array(
@@ -666,7 +658,7 @@ class Ingot extends CI_Controller{
             $data_bpb_ampas = array(
                     'no_bpb' => $code_bpb_ampas,
                     'status' => 0,
-                    'hasil_wip_id'=> $id_masak,
+                    'hasil_masak_id'=> $id_masak,
                     'created_by' => $user_id,
                     'created' => $tgl_input
                     );
@@ -678,16 +670,145 @@ class Ingot extends CI_Controller{
                     'created' => $tgl_input,
                     'jenis_barang_id' => 3,
                     'uom' => 'KG',
-                    'berat' => $this->input->post('bs'),
+                    'berat' => $this->input->post('ampas'),
                     'keterangan' => 'SISA PRODUKSI INGOT',
                     'created_by' => $user_id
                     );
             $this->db->insert('t_bpb_ampas_detail',$data_bpb_detail_ampas);
         }
-
         $this->db->trans_complete();
-        redirect('index.php/Ingot/hasil_produksi/');  
-         
+        redirect('index.php/Ingot/hasil_produksi/');
+    }
+
+    function update_hasil(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $id = $this->input->post('id');
+
+        $this->db->trans_start();
+
+        $data = array(
+                'mulai'=>$this->input->post('mulai'),
+                'selesai'=>$this->input->post('selesai'),
+                'kayu'=>$this->input->post('kayu'),
+                'gas'=> $this->input->post('gas'),
+                'ingot'=> $this->input->post('ingot'),
+                'berat_ingot'=> $this->input->post('berat_ingot'),
+                'bs'=> $this->input->post('bs'),
+                'susut'=> $this->input->post('susut'),
+                'ampas'=> $this->input->post('ampas'),
+                'serbuk'=> $this->input->post('serbuk'),
+                'modified_at'=>$tanggal,
+                'modified_by'=>$user_id
+            );
+
+        #update data hasil masak
+        $this->db->where('id', $id);
+        $this->db->update('t_hasil_masak', $data);
+
+        //BS
+        if($this->input->post('bs_old') != 0){
+            #update bs ke gudang bs
+            $data_bs = array(
+                'berat' => $this->input->post('bs'),
+                'status' => 0
+            );
+            $this->db->where('id_produksi', $id);
+            $this->db->where('jenis_barang_id', 7);
+            $this->db->update('t_gudang_bs', $data_bs);
+        }else if($this->input->post('bs') != 0){
+            #insert bs ke gudang bs
+            $data_bs = array(
+                'id_produksi' => $id,
+                'jenis_barang_id' => 7,
+                'berat' => $this->input->post('bs'),
+                'tanggal' => $tgl_input,
+                'status' => 0,
+                'created_by' => $user_id,
+                'created_at' => $tanggal
+            );
+            $this->db->insert('t_gudang_bs', $data_bs);
+        }
+
+        //SERBUK
+        if($this->input->post('serbuk_old') != 0){
+            #update serbuk ke gudang bs
+            $data_bs = array(
+                'berat' => $this->input->post('serbuk')
+            );
+            $this->db->where('id_produksi', $id);
+            $this->db->where('jenis_barang_id', 14);
+            $this->db->update('t_gudang_bs', $data_bs);
+        }else if($this->input->post('serbuk') != 0){
+            #update serbuk ke gudang bs
+            $data_bs = array(
+                'id_produksi' => $id,
+                'berat' => $this->input->post('serbuk'),
+                'jenis_barang_id' => 14,
+                'tanggal' => $tgl_input,
+                'status' => 0,
+                'created_by' => $user_id,
+                'created_at' => $tanggal
+            );
+            $this->db->insert('t_gudang_bs', $data_bs);
+        }
+        
+        #Update hasil WIP
+        $data_wip = array(
+                'qty'=> $this->input->post('ingot'),
+                'berat'=> $this->input->post('berat_ingot')
+            );
+        $this->db->where('hasil_masak_id', $id);
+        $this->db->update('t_hasil_wip', $data_wip);
+
+        #Create BPB detail ke gudang WIP
+        $data_bpb_detail = array(
+                'qty' => $this->input->post('ingot'),
+                'berat' => $this->input->post('berat_ingot')
+                );
+        $this->db->where('bpb_wip_id', $this->input->post('id_bpb_wip'));
+        $this->db->update('t_bpb_wip_detail',$data_bpb_detail);
+
+        #Update BPB Ampas
+        if($this->input->post('ampas_old') != $this->input->post('ampas')){
+            if($this->input->post('ampas_old') != 0){
+
+                $data_bpb_detail_ampas = array(
+                        'berat' => $this->input->post('ampas')
+                        );
+                $this->db->where('bpb_ampas_id', $this->input->post('id_bpb_ampas'));
+                $this->db->update('t_bpb_ampas_detail',$data_bpb_detail_ampas);
+            }else if($this->input->post('ampas') != 0){
+
+                $this->load->model('Model_m_numberings');
+                #Create BPB Ampas ke gudang ampas
+                $code_bpb_ampas = $this->Model_m_numberings->getNumbering('BPB-AMP', $tgl_input); 
+
+                $data_bpb_ampas = array(
+                        'no_bpb' => $code_bpb_ampas,
+                        'status' => 0,
+                        'hasil_masak_id'=> $id,
+                        'created_by' => $user_id,
+                        'created' => $tgl_input
+                        );
+                $this->db->insert('t_bpb_ampas',$data_bpb_ampas);
+
+                #Create BPB Detail Ampas ke gudang ampas
+                $data_bpb_detail_ampas = array(
+                        'bpb_ampas_id' => $this->db->insert_id(),
+                        'created' => $tgl_input,
+                        'jenis_barang_id' => 3,
+                        'uom' => 'KG',
+                        'berat' => $this->input->post('ampas'),
+                        'keterangan' => 'SISA PRODUKSI INGOT',
+                        'created_by' => $user_id
+                        );
+                $this->db->insert('t_bpb_ampas_detail',$data_bpb_detail_ampas);
+            }
+        }
+        $this->db->trans_complete();
+        redirect('index.php/Ingot/hasil_produksi/');
     }
     
     function edit_produksi(){
@@ -876,6 +997,27 @@ class Ingot extends CI_Controller{
         $this->session->set_flashdata('flash_msg', 'Data produksi ingot berhasil disimpan');
         redirect('index.php/Ingot/hasil_produksi');
     }
+
+    function edit_hasil(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "ingot/edit_hasil";
+            $this->load->model('Model_ingot');
+            $data['header'] = $this->Model_ingot->show_hasil($id)->row_array();
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/Ingot');
+        }
+    }
     
     function view_spb(){
         $module_name = $this->uri->segment(1);
@@ -1008,9 +1150,7 @@ class Ingot extends CI_Controller{
                 $this->session->set_flashdata('flash_msg', 'SPB sudah di-approve. Detail Pemenuhan SPB sudah disimpan');                 
             }else{
                 $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
-            }             
-        
-
+            }
        redirect('index.php/Ingot/spb_list');
     }
     

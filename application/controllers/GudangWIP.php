@@ -273,7 +273,6 @@ class GudangWIP extends CI_Controller{
         $this->load->view('layout', $data);
     }
 
-    
     function proses_bpb(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);

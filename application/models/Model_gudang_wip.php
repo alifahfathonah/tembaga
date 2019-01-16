@@ -36,15 +36,14 @@ class Model_gudang_wip extends CI_Model{
     
     function show_header_bpb($id){
         $data = $this->db->query("Select bpbwip.*, tsw.no_spb_wip, 
-                (pi.no_produksi)as no_produksi_ingot,
-                (hslwip.id)as hasil_wip_id,
+                (pi.no_produksi) as no_produksi_ingot,
                     usr.realname As pengirim
                     From t_bpb_wip bpbwip
                         Left Join users usr On (bpbwip.created_by = usr.id) 
                         left join t_spb_wip tsw on (tsw.id = bpbwip.spb_wip_id)
                         left join t_hasil_wip hslwip on (hslwip.id = bpbwip.hasil_wip_id)
                         left join t_hasil_masak hslmsk on (hslmsk.id = hslwip.hasil_masak_id)
-                        left join produksi_ingot pi on (pi.no_produksi = hslmsk.id_produksi)
+                        left join produksi_ingot pi on (pi.id = hslmsk.id_produksi)
                     Where bpbwip.id=".$id);
         return $data;
     }

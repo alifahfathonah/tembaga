@@ -761,7 +761,7 @@ class PengirimanAmpas extends CI_Controller{
             $key = $this->db->query("select tbad.*, thm.id_produksi
                 from t_bpb_ampas_detail tbad
                 left join t_bpb_ampas tba on (tbad.bpb_ampas_id = tba.id)
-                left join t_hasil_masak thm on (tba.hasil_wip_id = thm.id)
+                left join t_hasil_masak thm on (tba.hasil_masak_id = thm.id)
                 where tbad.bpb_ampas_id = ".$bpb_id)->result();
             foreach ($key as $row) {
                 $this->db->insert('t_gudang_ampas', array(

@@ -94,6 +94,21 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Tipe Apolo <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="tipe_apolo" name="tipe_apolo" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option></option>
+                                <?php
+                                foreach ($apolo as $row) {
+                                echo "<option value='".$row->id."'>".$row->tipe_apolo."</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">

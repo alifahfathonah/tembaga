@@ -1,4 +1,4 @@
-Apolo pindahin ke Create Produksi
+Apolo pindahin ke Create Produksi(done)
 Bisa edit hasil masak (produksi_ingot)
 Input serbuk manual per bulan
 Produksi Ingot(Untuk barang selain Ingot, jarang terjadi)

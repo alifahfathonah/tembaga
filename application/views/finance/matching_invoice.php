@@ -177,7 +177,7 @@
                                         echo '<td style="text-align:center;">'.$no.'</td>';
                                         echo '<td>'.$row->no_invoice.'</td>';
                                         echo '<td style="text-align:right;">'.number_format($row->total,0,',','.').'</td>';
-                                        $sisa = $row->total - $row->sisa_invoice;
+                                        $sisa = $row->total - $row->used_invoice;
                                         echo '<td>'.number_format($sisa,0,',','.').'</td>';
                                         $total_invoice += $row->total;
                                         $total_sisa += $sisa;
@@ -197,7 +197,6 @@
                     </div> 
                 </div>
             </div>
-
             <div class="col-md-6">                
                 <div class="portlet box green-seagreen">
                     <div class="portlet-title">
@@ -215,13 +214,15 @@
                                     <th>Bank<br>Pembayaran</th>
                                     <th>Nomor Cek/<br>Rekening</th>
                                     <th>Currency</th> 
-                                    <th>Nominal</th>                      
+                                    <th>Nominal</th>
+                                    <th>Sisa</th>                      
                                 </tr>
                                 </thead>
                                 <tbody>
                                     <?php
                                     $no = 1;
                                     $total_nominal = 0;
+                                    $total_sisa_um = 0;
                                     foreach ($details_um as $row){
                                         echo '<tr>';
                                         echo '<td style="text-align:center;">'.$no.'</td>';
@@ -229,9 +230,12 @@
                                         echo '<td>'.$row->bank_pembayaran.'</td>';
                                         echo '<td>'.$row->nomor.'</td>';
                                         echo '<td>'.$row->currency.'</td>';
+                                        $sisa = $row->nominal - $row->used_um;
                                         echo '<td style="text-align:right;">'.number_format($row->nominal,0,',', '.').'</td>';
+                                        echo '<td>'.number_format($sisa,0,',','.').'</td>';
                                         echo '</tr>';
                                         $total_nominal += $row->nominal;
+                                        $total_sisa_um += $sisa;
                                         $no++;
                                     }
                                     ?>
@@ -239,6 +243,9 @@
                                         <td style="text-align:right;" colspan="5"><strong>Total Harga </strong></td>
                                         <td style="text-align:right;">
                                             <strong><?php echo number_format($total_nominal,0,',','.'); ?></strong>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <strong><?php echo number_format($total_sisa_um,0,',','.'); ?></strong>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -263,11 +270,11 @@
                                     <th>No</th>
                                     <th>No. Invoice</th>
                                     <th style="border-right:2px solid #000;">Total Invoice</th>
-                                    <th>Jenis Pembayaran</th>
-                                    <th>Nomor Cek/Rekening</th>
-                                    <th>Total Nominal</th>
-                                    <th>Sisa Invoice</th>
-                                    <th>Sisa UM</th>
+                                    <th>Jenis<br>Pembayaran</th>
+                                    <th>Nomor Cek<br>/Rekening</th>
+                                    <th style="border-right:2px solid #000;">Total Nominal</th>
+                                    <th>Invoice Dibayar</th>
+                                    <th>UM Digunakan</th>
                                 </thead>
                                 <tbody id="boxDetailUm">
                                     <?php
@@ -279,9 +286,9 @@
                                             echo '<td style="border-right:2px solid #000;">'.number_format($row->total,0,',', '.').'</td>';
                                             echo '<td>'.$row->jenis_pembayaran.'</td>';
                                             echo '<td>'.$row->nomor.'</td>';
-                                            echo '<td style="text-align:right;">'.number_format($row->nominal,0,',', '.').'</td>';
-                                            echo '<td style="text-align:right;">'.number_format($row->sisa_invoice,0,',', '.').'</td>';
-                                            echo '<td style="text-align:right;">'.number_format($row->sisa_um,0,',', '.').'</td>';
+                                            echo '<td style="border-right:2px solid #000;">'.number_format($row->nominal,0,',', '.').'</td>';
+                                            echo '<td style="text-align:right;">'.number_format($row->used_invoice,0,',', '.').'</td>';
+                                            echo '<td style="text-align:right;">'.number_format($row->used_um,0,',', '.').'</td>';
                                             echo '</tr>';
                                             $no++;
                                         }
@@ -332,7 +339,7 @@ function get_data_invoice(id){
             data: "id="+id,
             dataType: "json",
             success: function(result) {
-                $('#harga_invoice').val(numberWithCommas(result['total']-result['sisa_invoice']));
+                $('#harga_invoice').val(numberWithCommas(result['total']-result['used_invoice']));
                 var myInv = $('#harga_invoice').val();
                 var newInv = myInv.replace(/\./g, '');
                 var myUm = $('#harga_um').val();
@@ -372,7 +379,7 @@ function get_data_um(id){
             data: "id="+id,
             dataType: "json",
             success: function(result) {
-                $('#harga_um').val(numberWithCommas(result['nominal']-result['sisa_um']));
+                $('#harga_um').val(numberWithCommas(result['nominal']-result['used_um']));
                 var myInv = $('#harga_invoice').val();
                 var newInv = myInv.replace(/\./g, '');
                 var myUm = $('#harga_um').val();

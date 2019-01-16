@@ -2,24 +2,40 @@
 class Model_ingot extends CI_Model{
     function list_data(){
         $data = $this->db->query("Select pi.*, jb.jenis_barang,
-                    usr.realname As pic,
+                    usr.realname As pic, a.tipe_apolo,
                     (Select count(pid.id)As jumlah_item From produksi_ingot_detail pid Where pid.produksi_ingot_id = pi.id)As jumlah_item,
                     (Select Count(pid.id)As ready_to_spb From produksi_ingot_detail pid Where 
                     pid.produksi_ingot_id = pi.id And pid.flag_spb=0)As ready_to_spb
                 From produksi_ingot pi
                     Left Join users usr On (pi.created_by = usr.id) 
                     Left Join jenis_barang jb On (pi.jenis_barang_id = jb.id)
+                    Left Join apolo a On (a.id = pi.id_apolo)
                 Order By pi.id Desc");
         return $data;
     }
     
     function show_header_pi($id){
-        $data = $this->db->query("Select pi.*, jb.jenis_barang, usr.realname As pic, pid.qty
+        $data = $this->db->query("Select pi.*, jb.jenis_barang, usr.realname As pic, pid.qty, a.tipe_apolo
                 From produksi_ingot pi
                     Left Join users usr On (pi.created_by = usr.id) 
                     left join jenis_barang jb on (jb.id = pi.jenis_barang_id)
                     Left join produksi_ingot_detail pid on (pid.produksi_ingot_id = pi.id)
+                    Left Join apolo a On (a.id = pi.id_apolo)
                 Where pi.id=".$id);
+        return $data;
+    }
+
+    function show_hasil($id){
+        $data = $this->db->query("Select thm.*, pi.no_produksi, pi.remarks, a.tipe_apolo, jb.jenis_barang, jb.uom, usr.realname as pic, tbw.id as id_bpb_wip, tba.id as id_bpb_ampas, tba.status as status_ampas
+                From t_hasil_masak thm
+                    Left Join users usr On (thm.created_by = usr.id) 
+                    left join produksi_ingot pi On (pi.id = thm.id_produksi)
+                    left join t_hasil_wip thw ON (thw.hasil_masak_id = thm.id)
+                    left join t_bpb_wip tbw On (tbw.hasil_wip_id = thw.id)
+                    left join apolo a On (a.id = pi.id_apolo)
+                    left join jenis_barang jb On (jb.id = pi.jenis_barang_id)
+                    left join t_bpb_ampas tba On (tba.hasil_masak_id = thm.id)
+                Where thm.id =".$id);
         return $data;
     }
     
@@ -72,14 +88,12 @@ class Model_ingot extends CI_Model{
     function show_header_spb($id){
         $data = $this->db->query("Select spb.*, 
                     pi.no_produksi,
-                    a.tipe_apolo,
                     jb.jenis_barang,
                     usr.realname As pic,
                     appr.realname As approved_name,
                     rjct.realname As reject_name
                     From spb
                         Left Join produksi_ingot pi On (spb.produksi_ingot_id = pi.id)
-                        Left Join apolo a on (spb.id_apolo = a.id) 
                         Left join jenis_barang jb on (jb.id = spb.jenis_barang)
                         Left Join users usr On (spb.created_by = usr.id) 
                         Left Join users appr On (spb.approved_by = appr.id)
@@ -154,10 +168,12 @@ class Model_ingot extends CI_Model{
         
     function hasil_produksi(){
         $data = $this->db->query("Select thm.*,  pi.no_produksi,
-                    usr.realname As pic
+                    usr.realname As pic, tbw.status as status_bpb_wip
                 From t_hasil_masak thm
                     Left Join users usr On (thm.created_by = usr.id)
-                    Left Join produksi_ingot pi On (pi.id = thm.id_produksi) 
+                    Left Join produksi_ingot pi On (pi.id = thm.id_produksi)
+                    Left Join t_hasil_wip thw ON (thw.hasil_masak_id = thm.id)
+                    Left Join t_bpb_wip tbw On (tbw.hasil_wip_id = thw.id)
                 Order By thm.id Desc");
         return $data;
     }

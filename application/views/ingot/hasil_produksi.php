@@ -49,6 +49,11 @@
                     <th>PIC</th>
                     <th>Hasil <br/>Ingot (Btg)</th>
                     <th>Berat <br/>Ingot (Kg)</th>
+                    <th>BS</th>
+                    <th>Susut</th>
+                    <th>Ampas</th>
+                    <th>Serbuk</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -62,14 +67,23 @@
                         <td><?php echo $data->no_produksi; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->total_rongsok; ?></td>
-                        <td><?php echo $data->no_bpb_rongsok; ?></td>
+                        <td><?php echo $data->no_spb_rongsok; ?></td>
                         <td><?php echo $data->pic; ?></td>                        
-                        <td style="text-align:center"><?php echo $data->ingot; ?></td>                        
-                        <td><?php echo $data->berat_ingot; ?></td>                        
+                        <td style="text-align:center"><?php echo $data->ingot; ?></td>
+                        <td><?php echo $data->berat_ingot; ?></td>  
+                        <td><?php echo $data->bs;?></td>
+                        <td><?php echo $data->susut;?></td>
+                        <td><?php echo $data->ampas;?></td>
+                        <td><?php echo $data->serbuk;?></td>  
+                        <td><?php
+                        if($data->status_bpb_wip == 0){
+                        echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/Ingot/edit_hasil/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit </a>';
+                        }?>
+                        </td>                    
                     </tr>
                     <?php
                         }
-                    ?>                                                                                    
+                    ?>                                                                      
                 </tbody>
                 </table>
             </div>
