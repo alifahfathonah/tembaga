@@ -1,0 +1,39 @@
+Apolo pindahin ke Create Produksi
+Bisa edit hasil masak (produksi_ingot)
+Input serbuk manual per bulan
+Produksi Ingot(Untuk barang selain Ingot, jarang terjadi)
+
+
+(produksi wip)
+Rolling ambil SPB Ingot
+	#Berat Keras (Roll dan KG) -> Menjadi Gudang Kawat Hitam Keras
+	#Jenis BS berbeda2
+Bakar Ulang ambil Hasil Rolling(Gudang Kawat Hitam)
+	#Berat Keras (Roll dan KG) -> Ke Gudang Kawat Hitam Keras
+	#Jenis BS berbeda2
+Cuci ambill SPB WIP
+
+Revisi Sales Order bisa sebelum spb di penuhi
+
+SalesOrder, Surat jalan no.kendaraan tidak harus diisi
+
+Invoice, kurang No.Po dan Tgl jatuh tempo(input sendiri)
+
+Sales Order filter status surat jalan yang belum dikirim
+
+Sebelum buat surat jalan, input terus simpan dulu(bisa di print), -> proses checker
+Approve checker -> kebuat surat jalan.
+Reject checker -> surat jalan sebelumya gagal, barang kembali lagi, scan lagi untuk buat surat jalan
+
+Print SJ , tambahin no po yang diinput manual, berat bobbin, no.produksi, Header packing list
+
+Matching Invoice masih ada yang salah
+
+SPB FG show semua barang yang ada stok nya aja,
+Setelah di input, save dulu, baru bisa di approve
+
+Bisa buat surat peminjaman bobbin manual untuk kirim bobbin ke customer
+
+View PO di Sparepart masih sesuai PO bukan LPB
+
+Pembelian Finish Good / WIP menjadi customer bukan supplier

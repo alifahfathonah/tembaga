@@ -209,14 +209,12 @@
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
-                        
                     <?php
                         if( ($group_id==1)||($hak_akses['close_po']==1) ){
                             echo '<a href="javascript:;" class="btn red-sunglo" onclick="showRejectBox();"> 
                                 <i class="fa fa-lock"></i> Close PO </a>';
                         }
                     ?>
-                        
                     <a href="<?php echo base_url('index.php/BeliRongsok'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
@@ -331,7 +329,6 @@
             }
             ?>
         </form>
-        
         <?php
             }else{
         ?>

@@ -38,7 +38,11 @@
                         <tr>
                             <td>No. Sales Order</td>
                             <td>: <?php echo $header['no_sales_order']; ?></td>
-                        </tr>
+                        </tr><!-- 
+                        <tr>
+                            <td>No. PO</td>
+                            <td>: <?php echo $header['no_po']; ?></td>
+                        </tr> -->
                         <tr>
                             <td>No. Kendaraan</td>
                             <td>: <?php echo $header['no_kendaraan']; ?></td>
