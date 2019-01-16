@@ -1146,20 +1146,20 @@ class Finance extends CI_Controller{
         $id = $this->input->post('id_modal');
         $id_invoice = $this->input->post('invoice_id');
         $id_um = $this->input->post('um_id');
-        $sisa_invoice =  str_replace('.', '', $this->input->post('sisa_invoice'));
+        $sisa_invoice = str_replace('.', '', $this->input->post('sisa_invoice'));
         $sisa_um = str_replace('.', '', $this->input->post('sisa_um'));
         $harga_um = str_replace('.', '', $this->input->post('harga_um'));
         $harga_invoice = str_replace('.', '', $this->input->post('harga_invoice'));
         $this->load->model('Model_finance');
 
-        $used_invoice = $harga_invoice - $sisa_invoice;
-        $used_um = $harga_um - $sisa_um;
+        $paid = $harga_um - $sisa_um;
             $data = array(
                 'customer_id'=>$id,
                 'id_invoice'=> $id_invoice,
                 'id_um'=> $id_um,
-                'used_invoice'=>$used_invoice,
-                'used_um'=>$used_um,
+                'paid'=>$paid,
+                'sisa_um'=>$sisa_um,
+                'sisa_invoice'=>$sisa_invoice,
                 'created_at'=> $tanggal_input,
                 'created_by'=> $user_id
             );

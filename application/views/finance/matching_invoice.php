@@ -177,7 +177,7 @@
                                         echo '<td style="text-align:center;">'.$no.'</td>';
                                         echo '<td>'.$row->no_invoice.'</td>';
                                         echo '<td style="text-align:right;">'.number_format($row->total,0,',','.').'</td>';
-                                        $sisa = $row->total - $row->used_invoice;
+                                        $sisa = $row->total - $row->paid;
                                         echo '<td>'.number_format($sisa,0,',','.').'</td>';
                                         $total_invoice += $row->total;
                                         $total_sisa += $sisa;
@@ -230,7 +230,7 @@
                                         echo '<td>'.$row->bank_pembayaran.'</td>';
                                         echo '<td>'.$row->nomor.'</td>';
                                         echo '<td>'.$row->currency.'</td>';
-                                        $sisa = $row->nominal - $row->used_um;
+                                        $sisa = $row->nominal - $row->paid;
                                         echo '<td style="text-align:right;">'.number_format($row->nominal,0,',', '.').'</td>';
                                         echo '<td>'.number_format($sisa,0,',','.').'</td>';
                                         echo '</tr>';
@@ -273,8 +273,9 @@
                                     <th>Jenis<br>Pembayaran</th>
                                     <th>Nomor Cek<br>/Rekening</th>
                                     <th style="border-right:2px solid #000;">Total Nominal</th>
-                                    <th>Invoice Dibayar</th>
                                     <th>UM Digunakan</th>
+                                    <th>Sisa Invoice</th>
+                                    <th>Sisa UM</th>
                                 </thead>
                                 <tbody id="boxDetailUm">
                                     <?php
@@ -287,8 +288,9 @@
                                             echo '<td>'.$row->jenis_pembayaran.'</td>';
                                             echo '<td>'.$row->nomor.'</td>';
                                             echo '<td style="border-right:2px solid #000;">'.number_format($row->nominal,0,',', '.').'</td>';
-                                            echo '<td style="text-align:right;">'.number_format($row->used_invoice,0,',', '.').'</td>';
-                                            echo '<td style="text-align:right;">'.number_format($row->used_um,0,',', '.').'</td>';
+                                            echo '<td style="text-align:right;">'.number_format($row->paid,0,',', '.').'</td>';
+                                            echo '<td style="text-align:right;">'.number_format($row->sisa_invoice,0,',', '.').'</td>';
+                                            echo '<td style="text-align:right;">'.number_format($row->sisa_um,0,',', '.').'</td>';
                                             echo '</tr>';
                                             $no++;
                                         }
@@ -339,7 +341,7 @@ function get_data_invoice(id){
             data: "id="+id,
             dataType: "json",
             success: function(result) {
-                $('#harga_invoice').val(numberWithCommas(result['total']-result['used_invoice']));
+                $('#harga_invoice').val(numberWithCommas(result['total']-result['paid']));
                 var myInv = $('#harga_invoice').val();
                 var newInv = myInv.replace(/\./g, '');
                 var myUm = $('#harga_um').val();
@@ -379,7 +381,7 @@ function get_data_um(id){
             data: "id="+id,
             dataType: "json",
             success: function(result) {
-                $('#harga_um').val(numberWithCommas(result['nominal']-result['used_um']));
+                $('#harga_um').val(numberWithCommas(result['nominal']-result['paid']));
                 var myInv = $('#harga_invoice').val();
                 var newInv = myInv.replace(/\./g, '');
                 var myUm = $('#harga_um').val();
