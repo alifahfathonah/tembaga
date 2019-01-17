@@ -5,13 +5,14 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
+        <h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br>BUKTI PENERIMAAN BOBBIN</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>No. Surat Penerimaan</td>
-                            <td>: <?php echo $header['no_surat_peminjaman']; ?></td>
+                            <td>: <?php echo $header['no_penerimaan']; ?></td>
                         </tr>
                         <tr>
                             <td>No. Surat Jalan</td>

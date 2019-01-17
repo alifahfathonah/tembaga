@@ -700,6 +700,18 @@ class Retur extends CI_Controller{
         $this->load->view('layout', $data);
     }
 
+    function print_surat_jalan(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_retur');
+            $data['header']  = $this->Model_retur->show_header_sj($id)->row_array();
+            $data['details'] = $this->Model_retur->load_detail_sj($id)->result();
+            $this->load->view('retur/print_surat_jalan', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
+
     function add_surat_jalan(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
@@ -1399,18 +1411,18 @@ class Retur extends CI_Controller{
         redirect('index.php/Retur/surat_jalan');
     }
     
-    function print_surat_jalan(){
-        $id = $this->uri->segment(3);
-        if($id){        
-            $this->load->model('Model_pengiriman_ampas');
-            $data['header']  = $this->Model_pengiriman_ampas->show_header_sj($id)->row_array();
-            $data['details'] = $this->Model_pengiriman_ampas->load_detail_surat_jalan($id)->result();
+    // function print_surat_jalan(){
+    //     $id = $this->uri->segment(3);
+    //     if($id){        
+    //         $this->load->model('Model_pengiriman_ampas');
+    //         $data['header']  = $this->Model_pengiriman_ampas->show_header_sj($id)->row_array();
+    //         $data['details'] = $this->Model_pengiriman_ampas->load_detail_surat_jalan($id)->result();
 
-            $this->load->view('print_sj_ampas', $data);
-        }else{
-            redirect('index.php'); 
-        }
-    } 
+    //         $this->load->view('print_sj_ampas', $data);
+    //     }else{
+    //         redirect('index.php'); 
+    //     }
+    // } 
     
     
 }

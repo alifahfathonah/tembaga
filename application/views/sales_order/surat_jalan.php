@@ -55,6 +55,7 @@
                     <th>Kendaraan</th>
                     <th>Supir</th>
                     <th>Status<br>Invoice</th>
+                    <th>Status<br>Surat Jalan</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -81,12 +82,26 @@
                                 echo '<div style="background-color:darkkhaki; padding:3px; color:white">Belum ada Invoice</div>';
                                 }
                                 ?></td>
+                        <td style="text-align:center">
+                            <?php
+                                if($data->status==0){
+                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Approval</div>';
+                                }else if($data->status==1){
+                                    echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
+                                }else if($data->status==2){
+                                    echo '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
+                                }else if($data->status==9){
+                                    echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
+                                }
+                            ?>
+                        </td>  
                         <td style="text-align:center"> 
                             <?php
-                                if($group_id==1 || $hak_akses['print_surat_jalan']==1){
+                                if($group_id==1 || $hak_akses['view_surat_jalan']==1){
                             ?>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/SalesOrder/print_surat_jalan/<?php echo $data->id; ?>" 
-                                style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/SalesOrder/view_surat_jalan/<?php echo $data->id; ?>" 
+                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-file-text-o"></i> View &nbsp; </a>
+                            
                             <?php
                                 }
                                 if(($group_id==1 || $hak_akses['revisi_surat_jalan']==1) && $data->jenis_barang=='FG'){
@@ -94,7 +109,13 @@
                             <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/SalesOrder/revisi_surat_jalan/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Revisi &nbsp; </a>
                             <?php
-                            }
+                            } 
+                            if($group_id==1 || $hak_akses['print_surat_jalan']==1){
+                            ?>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/SalesOrder/print_surat_jalan/<?php echo $data->id; ?>" 
+                                style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
+                            <?php
+                                }
                             ?>
                         </td>
                     </tr>

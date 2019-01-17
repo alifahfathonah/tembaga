@@ -296,4 +296,9 @@ class Model_finance extends CI_Model{
                 where fmd.customer_id =".$id);
         return $data;
     }
+
+    function check_urut(){
+        $data = $this->db->query("select no_uang_masuk from f_uang_masuk order by id desc");
+        return $data;
+    }
 }

@@ -19,10 +19,6 @@
                             <td>: <?php echo date('d-m-Y', strtotime($header['tanggal'])); ?></td>
                         </tr>
                         <tr>
-                            <td>Jenis Barang</td>
-                            <td>: <?php echo $header['jenis_barang']; ?></td>
-                        </tr>
-                        <tr>
                             <td>Customer</td>
                             <td>: <?php echo $header['nama_customer']; ?></td>
                         </tr>
@@ -35,15 +31,15 @@
                 </td>
                 <td>&nbsp;</td>
                 <td width="40%">
-                    <table border="0" cellpadding="2" cellspacing="0" width="100%">
-                        <tr>
-                            <td>No. Sales Order</td>
-                            <td>: <?php echo $header['no_sales_order']; ?></td>
-                        </tr><!-- 
+                    <table border="0" cellpadding="2" cellspacing="0" width="100%"><!-- 
                         <tr>
                             <td>No. PO</td>
                             <td>: <?php echo $header['no_po']; ?></td>
                         </tr> -->
+                        <tr>
+                            <td>Jenis Barang</td>
+                            <td>: <?php echo $header['jenis_barang']; ?></td>
+                        </tr>
                         <tr>
                             <td>No. Kendaraan</td>
                             <td>: <?php echo $header['no_kendaraan']; ?></td>

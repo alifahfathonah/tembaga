@@ -5,6 +5,7 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
+        <h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br>VOURCHER PEMBELIAN RONGSOK</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="40%">

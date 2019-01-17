@@ -289,10 +289,10 @@
                                             <td><?php echo $row->netto;?></td>
                                             <td><?php echo $row->qty;?></td>
                                             <td><?php 
-                                            if($row->nomor_bobbin == 0){
+                                            if(is_null($row->nomor_bobbin)){
                                                 echo 'Tidak ada Nomor Bobbin';
                                             }else{
-                                                echo $row->bruto;
+                                                echo $row->nomor_bobbin;
                                             }
                                             ?>
                                             </td>

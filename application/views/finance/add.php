@@ -23,7 +23,19 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/Finance/save'); ?>">                
+              id="formku" action="<?php echo base_url('index.php/Finance/save'); ?>">  
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Uang Masuk
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" name="no_uang_masuk" id="no_uang_masuk" class="form-control myline" style="margin-bottom: 5px;" readonly value="Auto Generate">
+                        </div>
+                    </div>
+                </div>
+            </div>              
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">

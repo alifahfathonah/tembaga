@@ -600,6 +600,7 @@ class SalesOrder extends CI_Controller{
                 'no_kendaraan'=>$this->input->post('no_kendaraan'),
                 'supir'=>$this->input->post('supir'),
                 'remarks'=>$this->input->post('remarks'),
+                'status'=>0,
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id,
                 'modified_at'=> $tanggal,
@@ -684,6 +685,7 @@ class SalesOrder extends CI_Controller{
                 if($jenis=='FG'){// BARANG FINISH GOOD
                     $this->db->insert('t_surat_jalan_detail', array(
                         't_sj_id'=>$this->input->post('id'),
+                        'gudang_id'=>$v['id_barang'],
                         'jenis_barang_id'=>$v['jenis_barang_id'],
                         'jenis_barang_alias'=>$v['barang_alias_id'],
                         'no_packing'=>$v['no_packing'],
@@ -695,13 +697,10 @@ class SalesOrder extends CI_Controller{
                         'created_by'=>$user_id,
                         'created_at'=>$tanggal
                     ));
-                    $this->db->where('id',$v['id_barang']);
-                    $this->db->update('t_gudang_fg',array(
-                        'flag_taken'=>1,
-                    ));
                 }else if($jenis=='WIP'){//BARANG WIP
                     $this->db->insert('t_surat_jalan_detail', array(
                         't_sj_id'=>$this->input->post('id'),
+                        'gudang_id'=>$v['id_barang'],
                         'jenis_barang_id'=>$v['jenis_barang_id'],
                         'no_packing'=>0,
                         'qty'=>$v['qty'],
@@ -712,13 +711,10 @@ class SalesOrder extends CI_Controller{
                         'created_by'=>$user_id,
                         'created_at'=>$tanggal
                     ));
-                    $this->db->where('id',$v['id_barang']);
-                    $this->db->update('t_gudang_wip',array(
-                        'flag_taken'=>1,
-                    ));
                 }else if($jenis=='RONGSOK'){
                     $this->db->insert('t_surat_jalan_detail', array(
                         't_sj_id'=>$this->input->post('id'),
+                        'gudang_id'=>$v['id_barang'],
                         'jenis_barang_id'=>$v['jenis_barang_id'],
                         'no_packing'=>$v['no_palette'],
                         'qty'=>$v['qty'],
@@ -729,63 +725,7 @@ class SalesOrder extends CI_Controller{
                         'created_by'=>$user_id,
                         'created_at'=>$tanggal
                     ));
-                    $this->db->where('id',$v['id_barang']);
-                    $this->db->update('dtr_detail',array(
-                        'so_id'=>$this->input->post('so_id')
-                    ));
                 }
-            }
-        }
-
-        $this->load->model('Model_sales_order');
-        #cek jika surat jalan sudah di kirim semua atau belum
-        if($jenis == 'FG'){
-            $list_produksi = $this->Model_sales_order->list_item_sj_fg($soid)->result();
-        }else if($jenis == 'WIP'){
-            $list_produksi = $this->Model_sales_order->list_item_sj_wip($soid)->result();
-        }else{
-            $list_produksi = $this->Model_sales_order->list_item_sj_rsk($soid)->result();
-        }
-
-        $this->db->where('id',$soid);
-        $this->db->update('sales_order', array(
-            'flag_invoice'=>0
-        ));
-
-        if(empty($list_produksi)){
-            $this->db->where('id',$soid);
-            $this->db->update('sales_order', array(
-                'flag_sj'=>1
-            ));
-        }
-
-        if($jenis=='FG'){
-            #insert bobbin_peminjaman
-            $this->load->model('Model_m_numberings');
-            $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);
-
-            $this->db->insert('m_bobbin_peminjaman', array(
-                'no_surat_peminjaman' => $code,
-                'id_surat_jalan' => $this->input->post('id'),
-                'id_customer' => $this->input->post('id_customer'),
-                'status' => 0,
-                'created_by' => $user_id,
-                'created_at' => $tanggal
-            ));
-            $insert_id = $this->db->insert_id();
-
-            $query = $this->db->query('select *from t_surat_jalan_detail where t_sj_id = '.$this->input->post('id'))->result();
-            foreach ($query as $row) {
-                $this->db->where('nomor_bobbin', $row->nomor_bobbin);
-                $this->db->update('m_bobbin', array(
-                    'borrowed_by' => $this->input->post('id_customer'),
-                    'status' => 2
-                ));
-
-                $this->db->insert('m_bobbin_peminjaman_detail', array(
-                    'id_peminjaman' => $insert_id,
-                    'nomor_bobbin' => $row->nomor_bobbin
-                ));
             }
         }
 
@@ -807,6 +747,139 @@ class SalesOrder extends CI_Controller{
         redirect('index.php/SalesOrder/surat_jalan');
     }
     
+    function view_surat_jalan(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "sales_order/view_sj";
+            $this->load->model('Model_sales_order');
+            $data['header'] = $this->Model_sales_order->show_header_sj($id)->row_array();  
+            $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+            $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
+
+            $jenis = $data['header']['jenis_barang'];
+            $soid = $data['header']['sales_order_id'];
+            if($jenis == 'FG'){
+                $data['list_sj'] = $this->Model_sales_order->load_view_sjd($id)->result();
+            }else if($jenis == 'WIP'){
+                $data['list_sj'] = $this->Model_sales_order->list_item_sj_wip($id)->result();
+            }else{
+                $data['list_sj'] = $this->Model_sales_order->list_item_sj_rsk($id)->result();
+            }
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/SalesOrder/surat_jalan');
+        }
+    }
+
+    function approve_surat_jalan(){
+        $sjid = $this->input->post('id');
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $so_id = $this->input->post('so_id');
+        $custid = $this->input->post('id_customer');
+        $jenis = $this->input->post('jenis_barang');
+
+        $this->db->trans_start();
+        
+        #set flag taken
+        $loop = $this->db->query("select *from t_surat_jalan_detail where t_sj_id = ".$sjid)->result();
+        if ($jenis == 'FG') {
+            foreach ($loop as $row) {
+                $this->db->where('id', $row->gudang_id);
+                $this->db->update('t_gudang_fg', array('flag_taken' => 1));
+            }
+        } else if ($jenis == 'WIP') {
+            foreach ($loop as $row) {
+                $this->db->where('id', $row->gudang_id);
+                $this->db->update('t_gudang_wip', array('flag_taken' => 1));
+            }
+        } else if ($jenis == 'RONGSOK'){
+            foreach ($loop as $row) {
+                $this->db->where('id', $row->gudang_id);
+                $this->db->update('dtr_detail', array('so_id' => $so_id));
+            }
+        }
+
+         $this->load->model('Model_sales_order');
+        #cek jika surat jalan sudah di kirim semua atau belum
+        if($jenis == 'FG'){
+            $list_produksi = $this->Model_sales_order->list_item_sj_fg($so_id)->result();
+        }else if($jenis == 'WIP'){
+            $list_produksi = $this->Model_sales_order->list_item_sj_wip($so_id)->result();
+        }else{
+            $list_produksi = $this->Model_sales_order->list_item_sj_rsk($so_id)->result();
+        }
+
+        $this->db->where('id',$so_id);
+        $this->db->update('sales_order', array(
+            'flag_invoice'=>0
+        ));
+
+        if(empty($list_produksi)){
+            $this->db->where('id',$so_id);
+            $this->db->update('sales_order', array(
+                'flag_sj'=>1
+            ));
+        }
+
+        if($jenis=='FG'){
+            #insert bobbin_peminjaman
+            $this->load->model('Model_m_numberings');
+            $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);
+
+            $this->db->insert('m_bobbin_peminjaman', array(
+                'no_surat_peminjaman' => $code,
+                'id_surat_jalan' => $sjid,
+                'id_customer' => $custid,
+                'status' => 0,
+                'created_by' => $user_id,
+                'created_at' => $tanggal
+            ));
+            $insert_id = $this->db->insert_id();
+
+            $query = $this->db->query('select *from t_surat_jalan_detail where t_sj_id = '.$sjid)->result();
+            foreach ($query as $row) {
+                $this->db->where('nomor_bobbin', $row->nomor_bobbin);
+                $this->db->update('m_bobbin', array(
+                    'borrowed_by' => $custid,
+                    'status' => 2
+                ));
+
+                $this->db->insert('m_bobbin_peminjaman_detail', array(
+                    'id_peminjaman' => $insert_id,
+                    'nomor_bobbin' => $row->nomor_bobbin
+                ));
+            }
+        }
+        
+        $data = array(
+                'status' => 1,
+                'approved_at'=> $tanggal,
+                'approved_by'=> $user_id
+            );
+        
+        $this->db->where('id', $sjid);
+        $this->db->update('t_surat_jalan', $data);
+
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'Surat jalan sudah di-approve. Detail Surat jalan sudah disimpan');            
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Surat Jalan, silahkan coba kembali!');
+        }             
+        
+       redirect('index.php/SalesOrder/surat_jalan');
+    }
+
     function print_surat_jalan(){
         $id = $this->uri->segment(3);
         if($id){        

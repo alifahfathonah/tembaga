@@ -25,3 +25,7 @@ update table 080119
 update table 090119
 -table po_detail add po_id (udah)
 -table po_detail add flag_dtwip(udah)
+
+update table 170119
+-table t_surat_jalan add gudang_id, status, approved_by, approved_at
+-table f_uang_masuk add no_uang_masuk

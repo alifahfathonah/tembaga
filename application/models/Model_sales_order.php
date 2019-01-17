@@ -379,4 +379,14 @@ class Model_sales_order extends CI_Model{
         $data = $this->db->query("select id_gudang from t_surat_jalan_detail where id =".$id);
         return $data;
     }
+
+    function load_view_sjd($id){
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jba.jenis_barang as jenis_barang_a, jb.uom 
+                from t_surat_jalan_detail tsjd
+                left join jenis_barang jb on jb.id= tsjd.jenis_barang_id
+                
+                left join jenis_barang jba on tsjd.jenis_barang_alias != 0 and jba.id = tsjd.jenis_barang_alias
+                where tsjd.t_sj_id = ".$id);
+        return $data;
+    }
 }

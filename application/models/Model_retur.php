@@ -198,14 +198,20 @@ class Model_retur extends CI_Model{
     function surat_jalan(){
         $data = $this->db->query("Select tsj.*, (select count(tsjd.id) from t_surat_jalan_detail tsjd where tsjd.t_sj_id = tsj.id) as jumlah_item,
                     cust.nama_customer, cust.alamat,
-                    so.no_sales_order,
-                    kdr.no_kendaraan
+                    so.no_sales_order
                 From t_surat_jalan tsj
                     Left Join m_customers cust On (tsj.m_customer_id = cust.id)
                     Left Join sales_order so On (tsj.sales_order_id = so.id) 
-                    Left Join m_kendaraan kdr On (tsj.m_kendaraan_id = kdr.id) 
                 Where tsj.jenis_barang = 'RETUR' 
                 Order By tsj.id Desc");
+        return $data;
+    }
+
+    function load_detail_sj($id){
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jb.uom 
+                from t_surat_jalan_detail tsjd
+                left join jenis_barang jb on jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
+                where tsjd.t_sj_id =".$id);
         return $data;
     }
 
@@ -272,14 +278,12 @@ class Model_retur extends CI_Model{
         $data = $this->db->query("Select tsj.*, 
                     cust.nama_customer, cust.alamat,
                     r.no_retur, r.spb_id,
-                    kdr.no_kendaraan,
                     tkdr.type_kendaraan,
                     usr.realname
                 From t_surat_jalan tsj
                     Left Join m_customers cust On (tsj.m_customer_id = cust.id)
                     Left Join retur r On (tsj.retur_id = r.id) 
-                    Left Join m_kendaraan kdr On (tsj.m_kendaraan_id = kdr.id) 
-                    Left Join m_type_kendaraan tkdr On (kdr.m_type_kendaraan_id = tkdr.id) 
+                    Left Join m_type_kendaraan tkdr On (tsj.m_type_kendaraan_id = tkdr.id) 
                     Left Join users usr On (tsj.created_by = usr.id)
                     Where tsj.id=".$id);
         return $data;

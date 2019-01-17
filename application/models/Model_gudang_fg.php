@@ -109,6 +109,14 @@ class Model_gudang_fg extends CI_Model{
         return $data;
     }
 
+    function barang_fg_stock_list(){
+        $data = $this->db->query("select jb.jenis_barang, jb.id
+            from jenis_barang jb
+            left join t_gudang_fg tgf on (jb.id = tgf.jenis_barang_id)
+            where category = 'FG' and jb.id = tgf.jenis_barang_id and tgf.t_spb_fg_detail_id is null group by jb.jenis_barang");
+        return $data;
+    }
+
     function packing_fg_list(){
         $data = $this->db->query("select mjb.*
                 from m_jenis_packing mjb"

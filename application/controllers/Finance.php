@@ -79,9 +79,49 @@ class Finance extends CI_Controller{
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
+        $tglurut = date('ymd', strtotime($this->input->post('tanggal')));
 
+        $tgl_sekarang = date('d', strtotime($this->input->post('tanggal')));
+        if ($tgl_sekarang == 01) {
+            $cek_no_sebelumnya = $this->db->query("select no_uang_masuk from f_uang_masuk where tanggal = '$tgl_input' order by id desc")->row_array();
+                $cek = $cek_no_sebelumnya['no_uang_masuk'];
+            if (empty($cek_no_sebelumnya)) {
+                $no_urut = 0;
+            } else {
+                $this->load->model('Model_finance');
+                $check = $this->Model_finance->check_urut()->row_array();
+                $no_urut = substr($check['no_uang_masuk'], 0, 4);
+            }
+            
+        } else {
+           $this->load->model('Model_finance');
+            $check = $this->Model_finance->check_urut()->row_array();
+            $no_urut = substr($check['no_uang_masuk'], 0, 4);
+        }
+
+        
+        $no_urut = $no_urut + 1;
+        switch (strlen($no_urut)) {
+            case 1 : $urutan = "000".$no_urut;
+                break;
+            case 2 : $urutan = "00".$no_urut;
+                break;
+            case 3 : $urutan = "0".$no_urut;
+                break;
+            
+            default:
+                $urutan = $no_urut;
+                break;
+        }
+
+
+        // $this->load->model('Model_m_numberings');
+        // $code = $this->Model_m_numberings->getNumbering('UM', $tgl_input);
+        $code = $urutan.$tglurut;
+        echo $code;
         $this->db->trans_start();
         $data = array(
+            'no_uang_masuk'=> $code,
             'm_customer_id'=> $this->input->post('customer_id'),
             'tanggal'=> $this->input->post('tanggal'),
             'status'=> 0,
