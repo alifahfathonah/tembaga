@@ -116,10 +116,35 @@
                     <div class="col-md-6">
                         <div class="form-inline">
                             <div class="form-group">
-                                <label>Berat Keras </label>
+                                <label>Jumlah Ingot Keras </label>
+                                <input type="text" id="berat_ingot_keras_in" name="jml_ingot_keras" 
+                                class="form-control myline" size="25" 
+                                value="" placeholder="Berat BS"/>
+                                <label> Roll</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label>Berat Ingot Keras </label>
                                 <input type="text" id="qty_keras_in" name="keras" 
                                 class="form-control myline" size="25" 
                                 value="" placeholder="Berat Keras"/>
+                                <label> Kg </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-inline">
+                            <div class="form-group">
+                            <label>Berat Serbuk</label>
+                            <input id="berat_serbuk_in" name="serbuk" 
+                                class="form-control myline" size="25" 
+                                value="" placeholder="Berat Serbuk"/>
                                 <label> Kg </label>
                             </div>
                         </div>
@@ -141,11 +166,11 @@
                     <div class="col-md-6">
                         <div class="form-inline">
                             <div class="form-group">
-                            <label>Berat Serbuk</label>
-                            <input id="berat_serbuk_in" name="serbuk" 
+                                <label>Berat Tali Rolling </label>
+                                <input type="text" id="berat_tali_rolling" name="tali_rolling" 
                                 class="form-control myline" size="25" 
-                                value="" placeholder="Berat Serbuk"/>
-                                <label> Kg </label>
+                                value="" placeholder="Berat Tali Rolling"/>
+                                <label> Kg</label>
                             </div>
                         </div>
                     </div>
