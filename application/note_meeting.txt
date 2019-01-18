@@ -37,3 +37,7 @@ Bisa buat surat peminjaman bobbin manual untuk kirim bobbin ke customer
 View PO di Sparepart masih sesuai PO bukan LPB
 
 Pembelian Finish Good / WIP menjadi customer bukan supplier
+
+Voucher Sparepart langsung buat cek dan menjadi jenis_trx keluar
+
+Kas Bank per jenis_trx masuk/keluar

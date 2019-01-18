@@ -69,6 +69,20 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
+                            Keperluan
+                        </div>
+                        <div class="col-md-8">
+                            <select id="flag_produksi" name="flag_produksi" placeholder="Silahkan pilih..."
+                                class="form-control myline select2me" style="margin-bottom:5px;" onchange="pilih_data(this.value,6)">
+                                <option></option>
+                                <option value="0">LAINNYA</option>
+                                <option value="2">ROLLING (INGOT)</option>
+                                <option value="3">CUCI (KAWAT HITAM)</option>
+                            </select> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">
@@ -98,7 +112,10 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else{     
+    }else if($.trim($("#flag_produksi").val()) == ""){
+        $('#message').html("Keperluan harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{    
         $('#formku').submit(); 
     };
 };

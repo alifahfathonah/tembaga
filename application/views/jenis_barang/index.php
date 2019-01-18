@@ -76,6 +76,7 @@
                                     <select id="kategori" class="form-control myline" placeholder="pilih kategori" name="kategori" style="margin-bottom:5px">
                                         <option value="FG">Finish Good</option>
                                         <option value="WIP">WIP</option>
+                                        <option value="ROLLING">ROLLING</option>
                                     </select>
                                 </div>
                             </div>
@@ -176,7 +177,7 @@
                     </tr>
                     <?php
                         }
-                    ?>                                                                                    
+                    ?>
                 </tbody>
                 </table>
             </div>
@@ -255,7 +256,6 @@ function editData(id){
         data : {id: id},
         success: function (result){
             $('#jenis_barang').val(result['jenis_barang']);
-            $('#jenis_barang').attr('readonly', true);
             $('#keterangan').val(result['keterangan']);
             $('#uom').val(result['uom']);
             $('#ukuran').val(result['ukuran']);

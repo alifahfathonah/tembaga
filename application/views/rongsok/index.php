@@ -28,7 +28,17 @@
                             </div>
                         </div>
                         <form class="eventInsForm" method="post" target="_self" name="formku" 
-                              id="formku">                            
+                              id="formku">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Nama Item <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="id" name="id" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeyup="this.value = this.value.toUpperCase()" readonly="readonly">
+                                </div>
+                            </div>                          
                             <div class="row">
                                 <div class="col-md-5">
                                     Nama Item <font color="#f00">*</font>
@@ -37,8 +47,6 @@
                                     <input type="text" id="nama_item" name="nama_item" 
                                         class="form-control myline" style="margin-bottom:5px" 
                                         onkeyup="this.value = this.value.toUpperCase()">
-                                    
-                                    <input type="hidden" id="id" name="id">
                                 </div>
                             </div>
                             <div class="row">
