@@ -14,9 +14,10 @@ class Model_gudang_wip extends CI_Model{
     }          
 
     function gudang_wip_produksi_list(){
-        $data = $this->db->query("Select thw.*, jb.jenis_barang,
-                    usr.realname As pembuat
+        $data = $this->db->query("Select COALESCE(NULLIF(thw.no_produksi_wip,''), pi.no_produksi) as no_produksi_wip,thw.jenis_masak, thw.tanggal, thw.qty, thw.uom, thw.berat, thw.susut, thw.keras, thw.bs, jb.jenis_barang, usr.realname As pembuat
                 From t_hasil_wip thw
+                    left join t_hasil_masak thm On (thm.id = thw.hasil_masak_id)
+                    left join produksi_ingot pi On (pi.id = thm.id_produksi)
                     Left Join users usr On (thw.created_by = usr.id)
                     left join jenis_barang jb on (jb.id = thw.jenis_barang_id)   
                 Order By thw.id Desc");
@@ -100,6 +101,13 @@ class Model_gudang_wip extends CI_Model{
         return $data;
     }
 
+    function jenis_barang_spb($id){
+        $data = $this->db->query("select jb.jenis_barang, jb.id
+                from jenis_barang jb
+                where id=".$id);
+        return $data;
+    }
+
     function show_header_spb($id){
         $data = $this->db->query("Select tsw.*, 
                     usr.realname As pic,
@@ -174,6 +182,30 @@ class Model_gudang_wip extends CI_Model{
                 left join jenis_barang jb on (jb.id = tgw.jenis_barang_id)
                 where tgw.id=".$id
                 );
+        return $data;
+    }
+
+    function spb_ingot(){
+        $data = $this->db->query("select tsw.id, tsw.no_spb_wip FROM t_spb_wip tsw
+                left join t_spb_wip_detail tswd on tswd.t_spb_wip_id = tsw.id
+                where tswd.jenis_barang_id = 2 and tsw.status = 1 and flag_produksi = 2");
+        return $data;
+    }
+
+    function spb_kawat_hitam(){
+        $data = $this->db->query("select tsw.id, tsw.no_spb_wip FROM t_spb_wip tsw
+                left join t_spb_wip_detail tswd on tswd.t_spb_wip_id = tsw.id
+                where tswd.jenis_barang_id = 6 and tsw.status = 1 and flag_produksi = 3");
+        return $data;
+    }
+
+    function get_spb($id,$jb){
+        $data = $this->db->query("select * from t_spb_wip_detail where t_spb_wip_id =".$id." and jenis_barang_id =".$jb);
+        return $data;
+    }
+
+    function stok_keras(){
+        $data = $this->db->query("select * from stok_keras");
         return $data;
     }
     /*

@@ -33,6 +33,7 @@
     <thead>
        <tr >
             <th>No</th>
+            <th>No. Produksi</th>
             <th>Tanggal</th>
             <th>Jenis Barang WIP</th>
             <th>Jenis Proses</th>
@@ -47,6 +48,7 @@
             foreach($gudang_wip as $data) { ?>
         <tr>
             <td><?= $no;?></td>
+            <td><?= $data->no_produksi_wip;?></td>
             <td><?= $data->tanggal;?></td>
             <td><?= $data->jenis_barang;?></td>
             <td><?= $data->jenis_masak;?></td>

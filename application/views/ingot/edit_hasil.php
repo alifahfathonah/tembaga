@@ -68,7 +68,14 @@
                      class="form-control myline" style="margin-bottom:5px; float:left;" value="<?php echo $header['jenis_barang']; ?>" readonly="readonly">
                </div>
             </div>
-            <div class="row">&nbsp;</div>
+            <div class="row">
+               <div class="col-md-4">
+                  Catatan Edit
+               </div>
+               <div class="col-md-8">
+                  <textarea id="modified_remarks" name="modified_remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px"><?php echo $header['modified_remarks'];?></textarea>
+               </div>
+            </div>
          </div>
          <div class="col-md-2">&nbsp;</div>
          <div class="col-md-5">
@@ -110,7 +117,6 @@
             </div>
          </div>
       </div>
-      <div class="row">&nbsp;</div>
       <div class="row">&nbsp;</div>
       <div class="row">
          <div class="col-md-12">
@@ -261,17 +267,20 @@ function hitung_susut(){
     $('#susut').val(susut);
 }
 
-   function simpanData(){
-       if($.trim($("#tanggal").val()) == ""){
-           $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
-           $('.alert-danger').show(); 
-       }else if($.trim($("#jenis_barang").val()) == ""){
-           $('#message').html("Silahkan pilih jenis barang!");
-           $('.alert-danger').show(); 
-       }else{     
-           $('#formku').submit(); 
-       };
+function simpanData(){
+   if($.trim($("#tanggal").val()) == ""){
+      $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
+      $('.alert-danger').show(); 
+   }else if($.trim($("#jenis_barang").val()) == ""){
+      $('#message').html("Silahkan pilih jenis barang!");
+      $('.alert-danger').show(); 
+   }else if($.trim($("#modified_remarks").val()) == ""){
+      $('#message').html("Isi Catatan Edit");
+      $('.alert-danger').show(); 
+   }else{     
+      $('#formku').submit(); 
    };
+};
 </script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>

@@ -62,6 +62,24 @@
                 </div>
                 <div class="col-md-2">&nbsp;</div>
                 <div class="col-md-5">
+                    <?php 
+                    if($header['flag_produksi']!=0){
+                        if($header['flag_produksi']==2){
+                            $jenis='ROLLING (INGOT)';
+                        }else if($header['flag_produksi']==3){
+                            $jenis='CUCI (KAWAT HITAM)';
+                        }
+                    ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Keperluan
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $jenis; ?>">
+                        </div>
+                    </div>
+                    <?php } ?>
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
@@ -80,7 +98,7 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th>No</th>
-                                <th>Nama Item WIP</th>
+                                <th style="width: 20%;">Nama Item WIP</th>
                                 <th>UOM</th>
                                 <th>Quantity</th>
                                 <th>Berat (Kg)</th>
@@ -90,6 +108,22 @@
                             <tbody id="boxDetail">
 
                             </tbody>
+                            <tr>
+                                <td style="text-align:center"><i class="fa fa-plus"></i></td>
+                                <td>
+                                <select id="barang_id" name="barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
+                                    <option value=""></option>
+                                <?php foreach ($list_barang as $value){
+                                        echo "<option value='".$value->id."'>".$value->jenis_barang."</option>";
+                                    }?>
+                                </select>
+                                </td>
+                                <td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="qty_item" name="qty" class="form-control myline"/></td>
+                                <td><input type="text" id="berat" name="berat" class="form-control myline"/></td>
+                                <td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
+                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -180,6 +214,10 @@ function saveDetail(){
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
+                    $('#barang_id').select2('val', '');
+                    $('#uom').val('');
+                    $('#berat').val('');
+                    $('#qty_item').val('');
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{

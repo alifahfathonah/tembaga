@@ -543,7 +543,8 @@ class Ingot extends CI_Controller{
             #insert bs ke gudang bs
             $data_bs = array(
                 'id_produksi' => $id_masak,
-                'jenis_barang_id' => 7,
+                'jenis_produksi' => 'INGOT',
+                'jenis_barang_id' => 22,
                 'berat' => $this->input->post('bs'),
                 'tanggal' => $tgl_input,
                 'status' => 0,
@@ -557,8 +558,9 @@ class Ingot extends CI_Controller{
             #insert serbuk ke gudang bs
             $data_bs = array(
                 'id_produksi' => $id_masak,
+                'jenis_produksi' => 'INGOT',
                 'berat' => $this->input->post('serbuk'),
-                'jenis_barang_id' => 14,
+                'jenis_barang_id' => 31,
                 'tanggal' => $tgl_input,
                 'status' => 0,
                 'created_by' => $user_id,
@@ -700,7 +702,8 @@ class Ingot extends CI_Controller{
                 'ampas'=> $this->input->post('ampas'),
                 'serbuk'=> $this->input->post('serbuk'),
                 'modified_at'=>$tanggal,
-                'modified_by'=>$user_id
+                'modified_by'=>$user_id,
+                'modified_remarks'=>$this->input->post('modified_remarks')
             );
 
         #update data hasil masak
@@ -715,13 +718,13 @@ class Ingot extends CI_Controller{
                 'status' => 0
             );
             $this->db->where('id_produksi', $id);
-            $this->db->where('jenis_barang_id', 7);
+            $this->db->where('jenis_barang_id',22);
             $this->db->update('t_gudang_bs', $data_bs);
         }else if($this->input->post('bs') != 0){
             #insert bs ke gudang bs
             $data_bs = array(
                 'id_produksi' => $id,
-                'jenis_barang_id' => 7,
+                'jenis_barang_id' => 22,
                 'berat' => $this->input->post('bs'),
                 'tanggal' => $tgl_input,
                 'status' => 0,
@@ -738,14 +741,14 @@ class Ingot extends CI_Controller{
                 'berat' => $this->input->post('serbuk')
             );
             $this->db->where('id_produksi', $id);
-            $this->db->where('jenis_barang_id', 14);
+            $this->db->where('jenis_barang_id', 31);
             $this->db->update('t_gudang_bs', $data_bs);
         }else if($this->input->post('serbuk') != 0){
             #update serbuk ke gudang bs
             $data_bs = array(
                 'id_produksi' => $id,
                 'berat' => $this->input->post('serbuk'),
-                'jenis_barang_id' => 14,
+                'jenis_barang_id' => 31,
                 'tanggal' => $tgl_input,
                 'status' => 0,
                 'created_by' => $user_id,
