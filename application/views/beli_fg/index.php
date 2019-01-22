@@ -105,6 +105,14 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-5">
+                                    Terbilang
+                                </div>
+                                <div class="col-md-7">
+                                    <textarea id="terbilang" name="terbilang" class="form-control myline" style="margin-bottom: 5px;" readonly></textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
                                     Total Voucher DP (Rp) <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-7">
@@ -300,6 +308,7 @@ function createVoucher(id){
             $('#supplier_id').val(result['supplier_id']);
             $('#amount').val('0');
             $('#nilai_po').val(result['nilai_po']);
+            $('#terbilang').val(result['terbilang']);
             $('#nilai_dp').val(result['nilai_dp']);
             $('#amount').val(result['sisa']);
             $('#keterangan').val('');

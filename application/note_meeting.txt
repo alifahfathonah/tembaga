@@ -20,14 +20,6 @@ SalesOrder, Surat jalan no.kendaraan tidak harus diisi(DONE)
 
 Invoice, kurang No.Po dan Tgl jatuh tempo(input sendiri)
 
-Sales Order filter status surat jalan yang belum dikirim(DONE)
-
-Sebelum buat surat jalan, input terus simpan dulu(bisa di print), -> proses checker
-Approve checker -> kebuat surat jalan.
-Reject checker -> surat jalan sebelumya gagal, barang kembali lagi, scan lagi untuk buat surat jalan
-(Done)
-Print SJ , tambahin no po yang diinput manual, berat bobbin, no.produksi, Header packing list(DONE)
-
 Matching Invoice masih ada yang salah(DONE)
 
 SPB FG show semua barang yang ada stok nya aja,(DONE)

@@ -5,30 +5,18 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br>VOUCHER PEMBELIAN WIP</h3>
+        <h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br>INVOICE</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="60%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
-                            <td>No. Voucher</td>
-                            <td>: <?php echo $header['no_voucher'];?></td>
-                        </tr>
-                        <tr>
-                            <td>Tanggal</td>
-                            <td>: <?php echo $header['tanggal'];?></td>
-                        </tr>
-                        <tr>
-                            <td>PIC</td>
-                            <td>: <?php echo $header['pic']; ?></td>
-                        </tr>
-                        <tr>
-                            <td>Nama Supplier</td>
-                            <td>: <?php echo $header['nama_supplier'] ?></td>
+                            <td>No. Invoice</td>
+                            <td>: <?php echo $header['no_invoice_resmi'];?></td>
                         </tr>
                         <tr>
                             <td valign="top">Sejumlah</td>
-                            <td>: <?php echo ucwords(number_to_words($total)); ?></td>
+                            <td>: <?php //echo ucwords(number_to_words($total)); ?></td>
                         </tr>
                     </table>
                 </td>
@@ -36,16 +24,20 @@
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
-                            <td>No. PO</td>
-                            <td>: <?php echo $header['no_po'];?></td>
+                            <td>Tanggal</td>
+                            <td>: <?php echo $header['tanggal'];?></td>
                         </tr>
                         <tr>
-                            <td>No. Pembayaran</td>
-                            <td>: <?php echo $header['no_pembayaran'];?></td>
+                            <td>Customer</td>
+                            <td>: <?php //echo $header['alias'];?></td>
+                        </tr>
+                        <tr>
+                            <td>Alamat</td>
+                            <td>: <?php //echo $header['alamat'];?></td>
                         </tr>             
                         <tr>
                             <td>Catatan</td>
-                            <td>: <?php echo $header['keterangan'];?></td>
+                            <td>: <?php echo $header['remarks'];?></td>
                         </tr>
                     </table>
                 </td>
@@ -55,29 +47,33 @@
                     <table border="0" cellpadding="4" cellspacing="0" width="100%">
                         <tr>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
-                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Jenis Voucher</strong></td>
-                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Jenis Barang</strong></td>
-                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Keterangan</strong></td>
-                            <td rowspan="2" style="text-align:center; border:1px solid #000;"><strong>Amount (Rp)</strong></td>
+                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nama Item</strong></td>
+                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Netto</strong></td>
+                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Harga</strong></td>
+                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Total Harga</strong></td>
+                            <td rowspan="2" style="text-align:center; border:1px solid #000"><strong>Keterangan</strong></td>
                         </tr>
                        
                                 <tr>
                                 </tr>
                         <?php
-                            $no = 0;
-                            $total_vc = 0;
-                            foreach ($list_data as $row){
-                                $no++;
+                            $no = 1;
+                            $total = 0;
+                            $total_netto = 0;
+                            foreach ($list_invoice_detail as $row){
                         ?>
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
-                            <td style="border-left:1px solid #000;"><?=$row->jenis_voucher;?></td>
-                            <td style="border-left:1px solid #000;"><?=$row->jenis_barang;?></td>
-                            <td style="text-align:right; border-left:1px solid #000;"><?=$row->keterangan;?></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=number_format($row->amount,0,',', '.');?></td>
+                            <td style="border-left:1px solid #000;"><?=$row->nama_item;?></td>
+                            <td style="text-align:right; border-left:1px solid #000;"><?=$row->netto;?></td>
+                            <td style="text-align:right; border-left:1px solid #000;"><!--<?=number_format($row->harga,0,',', '.');?>--></td>
+                            <td style="text-align:right; border-left:1px solid #000;"><!--<?=number_format($row->total_harga,0,',', '.');?>--></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000;>">&nbsp;</td>
                         </tr>
                         <?php
-                                $total_vc += $row->amount;
+                                // $total_netto += $row->netto;
+                                // $total += $row->total_harga;
+                                $no++;
                             }
                         ?>
                         <tr style="height:100px">
@@ -85,15 +81,21 @@
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                         </tr>
                         <tr>
                             <td style="text-align:right;" colspan="4"><strong>Total</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
-                                <strong><?=number_format($total_vc,0,',', '.');?></strong>
+                                <strong><?=$total_netto;?></strong>
+                            </td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
+                                <strong></strong>
+                            </td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
+                                <strong><!--<?=number_format($total,0,',', '.');?>--></strong>
                             </td>
                             <td style="border-left:1px solid #000;"></td>
-                            <td style="text-align:right;"></td>
                         </tr>
                     </table>
                 </td>
@@ -102,28 +104,24 @@
                     <p>&nbsp;</p>
                     <table border="0" width="100%">
                         <tr>
-                            <td style="text-align:center">Mengetahui</td>
-                            <td style="text-align:center">Disetujui</td>
-                            <td style="text-align:center">Pembukuan</td>
-                            <td style="text-align:center">Kassa</td>
-                            <td style="text-align:center">Keuangan</td>
+                            <td style="text-align:center"></td>
+                            <td style="text-align:center"></td>
+                            <td style="text-align:center"></td>
+                            <td style="text-align:center"></td>
                             <td style="text-align:center">Dibuat Oleh</td>
                         </tr>
-                        <tr style="height:55">
+                        <tr style="height:35">
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
-                            <td style="text-align:center">&nbsp;</td>
-                            <td style="text-align:center">&nbsp;</td>
+                            <td style="text-align:center"><?=$header['pic'];?></td>
                         </tr>
                         <tr>
                             <td style="text-align:center"></td>
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center"></td>
-                            <td style="text-align:center"></td>
-                            <td style="text-align:center"> <?=$header['pic'];?> </td>
                         </tr>
                     </table>
                 </td>

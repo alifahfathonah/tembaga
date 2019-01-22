@@ -24,6 +24,37 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">&nbsp;</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="eventInsForm" method="post" target="_self" name="frmReject" 
+                              id="frmReject">                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Reject Remarks <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <textarea id="reject_remarks" name="reject_remarks" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>
+                                    
+                                    <input type="hidden" id="sj_id" name="sj_id">
+                                </div>
+                            </div>                           
+                        </form>
+                    </div>
+                    <div class="modal-footer">                        
+                        <button type="button" class="btn blue" onClick="rejectData();">Simpan</button>
+                        <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku" action="<?php echo base_url('index.php/SalesOrder/approve_surat_jalan'); ?>">
             <div class="row">
@@ -140,6 +171,25 @@
                                 class="form-control myline" style="margin-bottom:5px"><?php echo $header['remarks']; ?></textarea>                           
                         </div>
                     </div>
+                    <?php if ($header['status'] == 1){ ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Approved By
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="approved_name" id="approved_name" readonly class="form-control myline" style="margin-bottom: 5px;" value="<?php echo $header['approved_name']; ?>">
+                        </div>
+                    </div>
+                    <?php } else if ($header['status'] == 9){?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Rejected By
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="approved_name" id="approved_name" readonly class="form-control myline" style="margin-bottom: 5px;" value="<?php echo $header['rejected_name']; ?>">
+                        </div>
+                    </div>
+                    <?php } ?>
                 </div>              
             </div>
             <div class="row">&nbsp;</div>
@@ -311,6 +361,28 @@ function approveData(){
     }
 };
 
+function showRejectBox(){
+    var r=confirm("Anda yakin me-reject surat jalan ini?");
+    if(r == true){
+        $('#sj_id').val($('#id').val());
+        $('#message').html("");
+        $('.alert-danger').hide();
+        $('#myModal').find('.modal-title').text('Reject Surat Jalan');
+        $('#myModal').modal('show', {backdrop : 'true'});
+    }
+}
+
+function rejectData(){
+    if($.trim($('#reject_remarks').val()) == ""){
+        $('#message').html("Reject remarks tidak boleh kosong!");
+        $('.alert-danger').show();
+    } else {
+        $('#message').val("");
+        $('.alert-danger').hide();
+        $('#frmReject').attr('action', '<?php echo base_url(); ?>index.php/SalesOrder/reject_surat_jalan');
+        $('#frmReject').submit();
+    }
+}
 </script>
 
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>

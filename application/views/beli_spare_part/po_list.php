@@ -134,6 +134,16 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-5">
+                                    Terbilang
+                                </div>
+                                <div class="col-md-7">
+                                    <textarea id="terbilang" name="terbilang" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        readonly="readonly"></textarea>                                                 
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
                                     Total Pembayaran Sebelumnya (Rp) <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-7">
@@ -372,13 +382,13 @@ function getComa(value, id){
 }
 
 function createVoucher(id){
-    console.log(id);
+    // console.log(id);
     $.ajax({
         url: "<?php echo base_url('index.php/BeliSparePart/create_voucher'); ?>",
         type: "POST",
         data : {id: id},
         success: function (result){
-            //console.log(result);
+            console.log(result);
             $('#no_po').val(result['no_po']);
             $('#tanggal_po').val(result['tanggal']);
             $('#nama_supplier').val(result['nama_supplier']);
@@ -387,6 +397,7 @@ function createVoucher(id){
             $('#materai').val(result['materai']);
             $('#ppn').val(result['after_ppn']);
             $('#nilai_po').val(result['nilai_po_asli']);
+            $('#terbilang').val(result['terbilang']);
             $('#jumlah_dibayar').val(result['jumlah_dibayar']);
             
             $('#amount').val(result['sisa']);

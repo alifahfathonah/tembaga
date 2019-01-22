@@ -880,6 +880,26 @@ class SalesOrder extends CI_Controller{
        redirect('index.php/SalesOrder/surat_jalan');
     }
 
+    function reject_surat_jalan(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $sjid = $this->input->post('sj_id');
+        
+        #Update status t_surat_jalan
+        $data = array(
+                'status'=> 9,
+                'rejected_at'=> $tanggal,
+                'rejected_by'=>$user_id,
+                'reject_remarks'=>$this->input->post('reject_remarks')
+            );
+        
+        $this->db->where('id', $sjid);
+        $this->db->update('t_surat_jalan', $data);
+        
+        $this->session->set_flashdata('flash_msg', 'Surat jalan berhasil direject');
+        redirect('index.php/SalesOrder/surat_jalan');
+    }
+
     function print_surat_jalan(){
         $id = $this->uri->segment(3);
         if($id){        

@@ -8,7 +8,7 @@
         <h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br>INVOICE</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
-                <td width="40%">
+                <td width="60%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>No. Invoice</td>
@@ -23,15 +23,18 @@
                             <td>: <?php echo $header['no_surat_jalan'];?></td>
                         </tr>
                         <tr>
-                            <td>Tanggal</td>
-                            <td>: <?php echo $header['tanggal'];?></td>
+                            <td valign="top">Sejumlah</td>
+                            <td>: <?php echo ucwords(number_to_words($total)); ?></td>
                         </tr>
-                        
                     </table>
                 </td>
                 <td>&nbsp;</td>
-                <td width="50%">
+                <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
+                        <tr>
+                            <td>Tanggal</td>
+                            <td>: <?php echo $header['tanggal'];?></td>
+                        </tr>
                         <tr>
                             <td>Customer</td>
                             <td>: <?php echo $header['alias'];?></td>
