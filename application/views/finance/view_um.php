@@ -157,7 +157,7 @@
                         </div>
                     </div>
             <?php if($myData['jenis_pembayaran']!='Cash'){ 
-                    if($myData['jenis_pembayaran']=='Giro'){ ?>
+                    if($myData['jenis_pembayaran']=='Giro' || $myData['jenis_pembayaran']=='Transfer'){ ?>
                     <div class="row">
                         <div class="col-md-4">
                             Bank Pembayaran<font color="#f00">*</font>
@@ -189,7 +189,7 @@
                                 value="<?php echo $myData['jenis_pembayaran']; ?>">
                         </div>
                     </div>
-                    <?php if($myData['jenis_pembayaran']=='Giro'){ ?>
+                    <?php if($myData['jenis_pembayaran']=='Giro' || $myData['jenis_pembayaran']=='Transfer'){ ?>
                     <div class="row">
                         <div class="col-md-4">
                             Bank <font color="#f00">*</font>
@@ -201,7 +201,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Nama Bank
+                            Bank Tujuan
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="nama_bank" name="nama_bank" readonly="readonly"
@@ -210,7 +210,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Nomor Rekening
+                            Nomor Rekening Tujuan
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_rek" name="no_rek" readonly="readonly"

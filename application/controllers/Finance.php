@@ -451,8 +451,6 @@ class Finance extends CI_Controller{
 
         $this->load->model('Model_finance');
         $data['header'] = $this->Model_finance->list_detail_pembayaran($id)->row_array();
-        //$data['voucher_list'] = $this->Model_finance->list_data_voucher()->result();
-
         $this->load->view('layout', $data); 
     }
 
@@ -496,6 +494,16 @@ class Finance extends CI_Controller{
         $arr_so[] = "Silahkan pilih....";
         foreach ($data as $row) {
             $arr_so[$row->id] = $row->no_voucher;
+        } 
+        print form_dropdown('vc_id', $arr_so);
+    }
+
+    function get_um_list_pmb(){ 
+        $this->load->model('Model_finance');
+        $data = $this->Model_finance->list_data_um()->result();
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->no_uang_masuk;
         } 
         print form_dropdown('vc_id', $arr_so);
     }
@@ -584,15 +592,14 @@ class Finance extends CI_Controller{
         $no    = 1;
         $this->load->model('Model_finance');
         $myDetail = $this->Model_finance->load_detail_um($id)->result();
-        $um_list = $this->Model_finance->list_data_um()->result();
+
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
-            $tabel .= '<td>'.$row->currency.' '.number_format($row->nominal,0,',','.').'</td>';
+            $tabel .= '<td>'.$row->no_uang_masuk.'</td>';
             $tabel .= '<td>'.$row->jenis_pembayaran.'</td>';
             $tabel .= '<td>'.$row->bank_pembayaran.'</td>';
             $tabel .= '<td>'.$row->rekening_pembayaran.$row->nomor_cek.'</td>';
-            $tabel .= '<td>'.$row->keterangan.'</td>';
             $tabel .= '<td>';
                     if($row->status==0){
                         $tabel .= '<div style="background-color:darkkhaki; padding:3px">Belum Cair</div>';
@@ -607,41 +614,20 @@ class Finance extends CI_Controller{
                         $tabel .= '<input type="hidden" id="tag" value="1">';
                     }
             $tabel .= '</td>';
+            $tabel .= '<td>'.$row->currency.' '.number_format($row->nominal,0,',','.').'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail_um('.$row->id.');"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';            
             $no++;
             $total_um += $row->nominal;
-        }
-        $tabel .= '<tr>';
+        }$tabel .= '<tr>';
         $tabel .= '<td></td>';
         $tabel .= '<td><a <a href="'.base_url().'index.php/Finance/check_um" onclick="window.open(\''.base_url().'index.php/Finance/check_um\',\'newwindow\',\'width=1200,height=550\'); return false;" class="btn btn-primary" style="width:100%;">Lihat daftar Uang Masuk</a></td>';
         $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
         $tabel .= '<td><input type="text" id="total_um" name="total_um" style="background-color: green; color: white;" class="form-control" data-myvalue="'.$total_um.'" value="'.number_format($total_um,0,',','.').'" readonly="readonly"></td>';
         $tabel .= '<td></td>';
         $tabel .= '<tr>';
-            
-        $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:center">'.$no.'</td>';
-        $tabel .= '<td>';
-        $tabel .= '<select id="um_id" name="um_id" class="form-control select2me myline" ';
-            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_data_um(this.value);">';
-            $tabel .= '<option value=""></option>';
-            foreach ($um_list as $value){
-                $tabel .= "<option value='".$value->id."'>".$value->currency.' '.number_format($value->nominal,0,',','.')."</option>";
-            }
-        $tabel .= '</select>';
-        $tabel .= '</td>';
-        $tabel .= '<td><input type="text" id="jenis_pembayaran" name="jenis_voucher" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td><input type="text" id="bank_pembayaran" name="bank_pembayaran" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td><input type="text" id="nomor" name="nomor" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<input type="hidden" id="amount_um" name="amount_um" class="form-control myline" readonly="readonly"/>';
-        $tabel .= '<td colspan="2"><input type="text" id="keterangan_um" name="keterangan_um" class="form-control myline" readonly="readonly"'
-                . 'onkeyup="this.value = this.value.toUpperCase()"></td>';        
-        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail_um();" style="margin-top:7px" id="btnSaveDetail"> <i class="fa fa-plus"></i> Tambah </a></td>';
-        $tabel .= '</tr>';
 
         header('Content-Type: application/json');
         echo json_encode($tabel); 
@@ -649,7 +635,6 @@ class Finance extends CI_Controller{
 
     function get_data_um(){
         $id = $this->input->post('id');
-        $tabel = "";
 
         $this->load->model('Model_finance');
         $um= $this->Model_finance->get_data_um($id)->row_array();
@@ -988,6 +973,7 @@ class Finance extends CI_Controller{
         $data = array(
             'no_invoice'=> $code,
             'tanggal'=> $tgl_input,
+            'tgl_jatuh_tempo'=> $this->input->post('tanggal_jatuh'),
             'id_customer'=> $this->input->post('m_customer_id'),
             'id_sales_order'=> $this->input->post('sales_order_id'),
             'id_surat_jalan'=> $this->input->post('surat_jalan_id'),
@@ -1254,6 +1240,101 @@ class Finance extends CI_Controller{
             $data['list_customer'] = $this->Model_finance->customer_list()->result();
 
             $this->load->view('layout', $data);
+        }else{
+            redirect('index.php/Finance');
+        }
+    }
+
+    function list_kas(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "finance/list_kas";
+        $this->load->model('Model_finance');
+        $data['list_data'] = $this->Model_finance->list_kas()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function add_kas(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Finance";
+        $data['content']   = "finance/add_kas";
+        
+        $this->load->model('Model_finance');
+        $data['um_list'] = $this->Model_finance->um_list_kas()->result();
+        $data['bank_list'] = $this->Model_finance->bank_list()->result();
+        $this->load->view('layout', $data); 
+    }
+
+    function save_kas(){
+        $user_id   = $this->session->userdata('user_id');
+        $tanggal   = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+
+        $this->db->trans_start();
+
+        $data = array(
+            'jenis_trx'=>0,
+            'tanggal'=> $tgl_input,
+            'id_bank'=> $this->input->post('bank_id'),
+            'id_um'=> $this->input->post('um_id'),
+            'currency'=> $this->input->post('currency'),
+            'nominal'=> $this->input->post('nominal'),
+            'keterangan'=> $this->input->post('remarks'),
+            'created_at'=> $tanggal,
+            'created_by'=> $user_id
+        );
+        $this->db->insert('f_kas', $data);
+
+        $this->db->where('id', $this->input->post('um_id'));
+        $this->db->update('f_uang_masuk', array(
+            'status'=>1,
+            'flag_matching'=>2,
+            'approved_at'=>$tanggal,
+            'approved_by'=>$user_id
+        ));
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Uang Kas Berhasil disimpan!');
+            redirect(base_url('index.php/Finance/list_kas'));
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Uang Masuk gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/Finance');  
+        }            
+    }
+
+    function view_kas(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Finance";
+            $data['content']   = "finance/view_kas";
+
+            $this->load->model('Model_finance');
+            $data['header'] = $this->Model_finance->show_header_kas($id)->row_array();
+
+            $this->load->view('layout', $data);   
         }else{
             redirect('index.php/Finance');
         }

@@ -183,17 +183,29 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th>No</th>
-                                <th>Amount</th>
+                                <th>No. Uang Masuk</th>
                                 <th>Jenis Pembayaran</th>
                                 <th>Bank Pembayaran</th>
-                                <th>Nomor Cek/Rekening</th> 
-                                <th>Keterangan</th>
+                                <th>Nomor Cek/Rekening</th>
                                 <th>Status UM</th>
+                                <th>Amount</th>
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetailUm">
 
                             </tbody>
+                            <tr>
+                                <td style="text-align:center"><i class="fa fa-plus"></i></td>
+                                <td>
+                                <select id="um_id" name="um_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_data_um(this.value);">
+                                </select>
+                                </td>
+                                <td><input type="text" id="jenis_pembayaran" name="jenis_voucher" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="bank_pembayaran" name="bank_pembayaran" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="nomor" name="nomor" class="form-control myline" readonly="readonly"></td>
+                                <td colspan="2"><input type="text" id="amount_um" name="amount_um" class="form-control myline" readonly="readonly"/></td>
+                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail_um();" style="margin-top:7px" id="btnSaveDetail"> <i class="fa fa-plus"></i> Tambah </a></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -229,7 +241,6 @@
                 </div>    
             </div>
         </form>
-        
         <?php
             }else{
         ?>
@@ -243,6 +254,9 @@
     </div>
 </div> 
 <script>
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
 function approveAgain(){
     var r=confirm("Anda yakin meng-approve kembali permintaan barang ini?");
     if (r==true){
@@ -296,7 +310,7 @@ function get_data_vc(id){
             success: function(result) {
                 $('#jenis_voucher').val(result['jenis_voucher']);
                 $('#jenis_barang').val(result['jenis_barang']);
-                $('#amount_vc').val(result['amount']);
+                $('#amount_vc').val(numberWithCommas(result['amount']));
                 $('#keterangan_vc').val(result['keterangan']);
             }
         });
@@ -367,6 +381,18 @@ function hapusDetail_vc(id){
 }
 
 // DIBAWAH CODINGAN UANG MASUK
+function load_um(){
+    $.ajax({
+        url: "<?php echo base_url('index.php/Finance/get_um_list_pmb'); ?>",
+        async: false,
+        type: "POST",
+        dataType: "html",
+        success: function(result) {
+            $('#um_id').html(result);
+        }
+    })
+}
+
 function get_data_um(id){
     if(''!=id){
     $.ajax({
@@ -378,8 +404,7 @@ function get_data_um(id){
             $('#jenis_pembayaran').val(result['jenis_pembayaran']);
             $('#bank_pembayaran').val(result['bank_pembayaran']);
             $('#nomor').val(result['nomor_cek']+result['rekening_pembayaran']);
-            $('#amount_um').val(result['amount']);
-            $('#keterangan_um').val(result['keterangan']);
+            $('#amount_um').val(result['currency']+' '+numberWithCommas(result['nominal']));
         }
     });
     }
@@ -395,6 +420,7 @@ function loadDetail_um(id){
             },
         success:function(result){
             $('#boxDetailUm').html(result);
+            load_um();
             slipSetoran();
         }
     });
@@ -415,6 +441,11 @@ function saveDetail_um(){
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail_um(<?php echo $header['id'];?>);
+                    $('#um_id').select2("val", "");
+                    $('#jenis_pembayaran').val('');
+                    $('#bank_pembayaran').val('');
+                    $('#nomor').val('');
+                    $('#amount_um').val('');
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{
@@ -487,6 +518,7 @@ $(function(){
     loadDetail_vc(<?php echo $header['id']; ?>);
     loadDetail_um(<?php echo $header['id']; ?>);
     load_vc();
+    load_um();
 });
 </script>
       

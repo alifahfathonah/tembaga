@@ -23,17 +23,23 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/Finance/save_invoice'); ?>">
+              id="formku" action="<?php echo base_url('index.php/Finance/save_kas'); ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            No. Invoice <font color="#f00">*</font>
+                            Pilih Bank Tujuan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_pembayaran" name="no_pembayaran" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="Auto generate">
+                            <select id="bank_id" name="bank_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($bank_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->kode_bank.' ('.$row->nomor_rekening.')'.'</option>';
+                                    }
+                                ?>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -42,7 +48,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;"
                                 value="<?php echo date('Y-m-d'); ?>">
                         </div>
                     </div>  
@@ -80,16 +86,16 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
-                            Customer <font color="#f00">*</font>
+                            Pilih Uang Masuk <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
+                            <select id="um_id" name="um_id" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
-                                onclick="get_no_so(this.value);">
+                                onclick="get_data_um(this.value);">
                                 <option value=""></option>
                                 <?php
-                                    foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
+                                    foreach ($um_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->no_uang_masuk.' ('.$row->jenis_pembayaran.')</option>';
                                     }
                                 ?>
                             </select>
@@ -97,38 +103,55 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            No. Sales Order <font color="#f00">*</font>
+                            Customer
                         </div>
                         <div class="col-md-8">
-                            <select id="sales_order_id" name="sales_order_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_no_sj(this.value);">
-                                <option value=""></option>
-                            </select>
+                            <input type="text" id="nama_customer" name="nama_customer" 
+                                class="form-control" style="margin-bottom:5px" readonly="readonly">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            No. Surat Jalan <font color="#f00">*</font>
+                            Jenis Pembayaran
                         </div>
                         <div class="col-md-8">
-                            <select id="surat_jalan_id" name="surat_jalan_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value=""></option>
-                            </select>
+                            <input type="text" id="jenis_pembayaran" name="jenis_pembayaran" 
+                                class="form-control" style="margin-bottom:5px" readonly="readonly">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Tanggal Jatuh Tempo<font color="#f00">*</font>
+                            Bank Pembayaran
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="tanggal_jatuh" name="tanggal_jatuh" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;"
-                                value="<?php echo date('Y-m-d'); ?>">
+                            <input type="text" id="bank_pembayaran" name="bank_pembayaran" 
+                                class="form-control" style="margin-bottom:5px" readonly="readonly">
                         </div>
-                    </div>  
-                </div>         
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Rekening Pembayaran/Nomor Cek
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="rekening_nomor" name="rekening_nomor" 
+                                class="form-control" style="margin-bottom:5px" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nominal
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nominal_view" name="nominal_view" 
+                                class="form-control" style="margin-bottom:5px" readonly="readonly">
+
+                            <input type="hidden" id="currency" name="currency">
+                            <input type="hidden" id="nominal" name="nominal">
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
-        
         <?php
             }else{
         ?>
@@ -142,28 +165,27 @@
     </div>
 </div> 
 <script>
-function get_no_so(id){
-    $.ajax({
-        url: "<?php echo base_url('index.php/Finance/get_so_list'); ?>",
-        async: false,
-        type: "POST",
-        data: "id="+id,
-        dataType: "html",
-        success: function(result) {
-            $('#sales_order_id').html(result);
-        }
-    });
+function numberWithCommas(x) {
+     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-function get_no_sj(id){
+function get_data_um(id){
     $.ajax({
-        url: "<?php echo base_url('index.php/Finance/get_sj_list'); ?>",
-        async: false,
+        url: "<?php echo base_url('index.php/Finance/get_data_um'); ?>",
         type: "POST",
         data: "id="+id,
-        dataType: "html",
+        dataType: "json",
         success: function(result) {
-            $('#surat_jalan_id').html(result);
+            if(result['rekening_tujuan'] != 0){
+                $('#bank_id').select2('val', result['rekening_tujuan']);
+            }
+            $('#nama_customer').val(result['nama_customer']);
+            $('#jenis_pembayaran').val(result['jenis_pembayaran']);
+            $('#bank_pembayaran').val(result['bank_pembayaran']);
+            $('#rekening_nomor').val(result['rekening_pembayaran']+result['nomor_cek']);
+            $('#nominal_view').val(result['currency']+' '+numberWithCommas(result['nominal']));
+            $('#nominal').val(result['nominal']);
+            $('#currency').val(result['currency']);
         }
     });
 }
@@ -172,12 +194,17 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else{     
+    }else if($.trim($("#bank_id").val()) == ""){
+        $('#message').html("Bank Tujuan harus dipilih!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#um_id").val()) == ""){
+        $('#message').html("Uang Masuk harus dipilih, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{    
         $('#formku').submit(); 
     };
 };
 </script>
-
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
@@ -190,16 +217,7 @@ $(function(){
         buttonText: "Select date",
         changeMonth: true,
         changeYear: true,
-        dateFormat: 'yy-mm-dd'
-    });
-    $("#tanggal_jatuh").datepicker({
-        showOn: "button",
-        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
-        buttonImageOnly: true,
-        buttonText: "Select date",
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'yy-mm-dd'
-    });
+        dateFormat: 'dd-mm-yy'
+    });       
 });
 </script>

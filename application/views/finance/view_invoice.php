@@ -104,6 +104,11 @@
                             <input type="hidden" id="id_sj" name="id_sj" value="<?php echo $header['id_surat_jalan']; ?>">
                         </div>
                     </div>
+                    <div class="row">&nbsp;</div>
+
+                </div>
+                <div class="col-md-1">&nbsp;</div>
+                <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
                             Tanggal <font color="#f00">*</font>
@@ -114,11 +119,16 @@
                                 value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
-                    <div class="row">&nbsp;</div>
-
-                </div>
-                <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal Jatuh Tempo<font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tanggal" name="tanggal" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo date('d-m-Y', strtotime($header['tgl_jatuh_tempo'])); ?>">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Catatan

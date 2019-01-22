@@ -30,7 +30,7 @@
                         <div class="col-md-4">
                             No. Uang Masuk
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <input type="text" name="no_uang_masuk" id="no_uang_masuk" class="form-control myline" style="margin-bottom: 5px;" readonly value="Auto Generate">
                         </div>
                     </div>

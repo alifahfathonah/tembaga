@@ -338,7 +338,7 @@ class Model_sales_order extends CI_Model{
     function show_header_sj($id){
         $data = $this->db->query("Select tsj.*, cust.id as id_customer,
                     cust.nama_customer, cust.alamat,
-                    tso.no_spb, so.no_sales_order,
+                    tso.no_spb, so.no_sales_order, tso.no_po,
                     tkdr.type_kendaraan,
                     usr.realname
                 From t_surat_jalan tsj
@@ -352,9 +352,12 @@ class Model_sales_order extends CI_Model{
     }
 
     function load_detail_surat_jalan_fg($id){
-        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jb.uom 
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jb.uom, tgf.no_produksi, mb.berat
                 from t_surat_jalan_detail tsjd
                 left join jenis_barang jb on jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
+                left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
+                left join t_gudang_fg tgf on tgf.id = tsjd.gudang_id
+                left join m_bobbin mb on tgf.bobbin_id>0 and mb.id = tgf.bobbin_id
                 where tsjd.t_sj_id =".$id);
         return $data;
     }

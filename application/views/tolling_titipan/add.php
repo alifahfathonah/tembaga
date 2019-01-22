@@ -77,7 +77,7 @@
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
                             <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                                <i class="fa fa-floppy-o"></i> Input Details Rongsok </a>
+                                <i class="fa fa-floppy-o"></i> Input Details</a>
                         </div>    
                     </div>
                 </div>
@@ -114,7 +114,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
-                                   class="form-control myline" style="margin-bottom:5px" value="RONGSOK">
+                                   class="form-control myline" style="margin-bottom:5px" value="FG">
                         </div>
                     </div>                    
                 </div>              

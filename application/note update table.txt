@@ -20,12 +20,16 @@ update table 060119
 update table 080119
 -table po_detail add fg_id(udah)
 -table po_detail add flag_dtbj(udah)
--create table dtwip dan detail
+-create table dtwip dan detail(udah)
+
+update table 210119
+-tambah status di voucher
 
 update table 090119
 -table po_detail add po_id (udah)
 -table po_detail add flag_dtwip(udah)
 
 update table 170119
--table t_surat_jalan add gudang_id, status, approved_by, approved_at
--table f_uang_masuk add no_uang_masuk
+-table t_surat_jalan_detail add gudang_id(udah)
+-table t_surat_jalan status, approved_by, approved_at(udah)
+-table f_uang_masuk add no_uang_masuk(udah)

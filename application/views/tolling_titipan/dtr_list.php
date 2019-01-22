@@ -26,7 +26,15 @@
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-beer"></i>DTR List
-                </div>                
+                </div>
+                <div class="tools">    
+                <?php
+                    if( ($group_id==1)||($hak_akses['add']==1) ){
+                        echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/Tolling/create_dtr').'"> '
+                        .'<i class="fa fa-plus"></i> Create DTR Tolling</a>';
+                    }
+                ?>                    
+                </div> 
             </div>
             <div class="portlet-body">
                 <table class="table table-striped table-bordered table-hover" id="sample_6">
@@ -51,7 +59,7 @@
                             $no++;
                     ?>
                     <tr>
-                        <td style="text-align:center;"><?php echo $no; ?></td>
+                        <td style="text-align:center; width: 5%;"><?php echo $no; ?></td>
                         <td style="background-color: "><?php echo $data->no_dtr; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->no_sales_order; ?></td>
@@ -72,16 +80,6 @@
                         </td>
                         <td style="text-align:center"> 
                             <?php
-                                if(($group_id==1 || $hak_akses['edit_dtr']==1) && $data->status==9){
-                                    echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/Tolling/edit_dtr/'.$data->id.'" 
-                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit &nbsp; </a> ';
-                                }
-                                
-                                if(($group_id==1 || $hak_akses['view_dtr']==1)){
-                                    echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/Tolling/view_dtr/'.$data->id.'" 
-                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-file-pdf-o"></i> Review </a> ';
-                                }
-                                
                                 if($group_id==1 || $hak_akses['print_dtr']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Tolling/print_dtr/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';

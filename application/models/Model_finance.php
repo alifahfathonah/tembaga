@@ -60,7 +60,7 @@ class Model_finance extends CI_Model{
     }
 
     function list_data_voucher(){
-        $data = $this->db->query("Select * from voucher where pembayaran_id = 0");
+        $data = $this->db->query("Select * from voucher where pembayaran_id = 0 and status = 0");
         return $data;
     }
 
@@ -132,7 +132,7 @@ class Model_finance extends CI_Model{
     }
 
     function load_detail_um($id){
-        $data = $this->db->query("select fpd.*, fum.bank_pembayaran, fum.jenis_pembayaran, fum.nominal, fum.keterangan, fum.currency, fum.rekening_pembayaran, fum.nomor_cek, mc.nama_customer, fum.status
+        $data = $this->db->query("select fpd.*, fum.bank_pembayaran, fum.no_uang_masuk, fum.jenis_pembayaran, fum.nominal, fum.keterangan, fum.currency, fum.rekening_pembayaran, fum.nomor_cek, mc.nama_customer, fum.status
             from f_pembayaran_detail fpd
             left join f_uang_masuk fum on fum.id = fpd.um_id
             left join m_customers mc on mc.id = fum.m_customer_id
@@ -143,7 +143,7 @@ class Model_finance extends CI_Model{
     function list_data_um(){
         $data = $this->db->query("Select fum.* from f_uang_masuk fum
                 left join f_pembayaran_detail fpd on fpd.um_id = fum.id 
-                where fpd.um_id is null and (status = 1 or status = 0)");
+                where fpd.um_id is null and fum.status = 0");
         return $data;
     }
 
@@ -299,6 +299,33 @@ class Model_finance extends CI_Model{
 
     function check_urut(){
         $data = $this->db->query("select no_uang_masuk from f_uang_masuk order by id desc");
+        return $data;
+    }
+
+    function list_kas(){
+        $data = $this->db->query("select fk.*, b.kode_bank, fum.no_uang_masuk, mc.nama_customer 
+            from f_kas fk
+            left join bank b on b.id=fk.id_bank
+            left join f_uang_masuk fum on fum.id=fk.id_um
+            left join m_customers mc on mc.id=fum.m_customer_id
+            order by id desc");
+        return $data;
+    }
+
+    function um_list_kas(){
+        $data = $this->db->query("select id,no_uang_masuk,jenis_pembayaran from f_uang_masuk where status = 0");
+        return $data;
+    }
+
+    function show_header_kas($id){
+        $data = $this->db->query("select fk.*, fum.no_uang_masuk, fum.jenis_pembayaran, fum.bank_pembayaran, coalesce(fum.rekening_pembayaran,fum.nomor_cek) as nomor, fum.keterangan, b.kode_bank, b.nama_bank, b.nomor_rekening, v.jenis_barang, v.no_voucher, v.jenis_voucher, v.supplier_id, p.no_po, mc.nama_customer, s.nama_supplier, v.keterangan FROM f_kas fk
+            left join bank b on b.id= fk.id_bank
+            left join f_uang_masuk fum on fk.id_um != 0 and fum.id = fk.id_um
+            left join voucher v on fk.id_vc != 0 and v.id = fk.id_vc
+            left join po p on p.id = v.po_id
+            left join m_customers mc on mc.id = fum.m_customer_id or mc.id = v.customer_id
+            left join supplier s on s.id = v.supplier_id
+            where fk.id =".$id);
         return $data;
     }
 }

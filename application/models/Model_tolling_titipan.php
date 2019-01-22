@@ -9,8 +9,7 @@ class Model_tolling_titipan extends CI_Model{
                     sod.sales_order_id = so.id And sod.flag_dtr=0)As ready_to_dtr
                 From sales_order so
                     Left Join m_customers cust On (so.m_customer_id = cust.id) 
-                    Left Join users usr On (so.marketing_id = usr.id) 
-                Where so.jenis_barang_id='4' 
+                    Left Join users usr on (usr.id = so.marketing_id)
                 Order By so.id Desc");
         return $data;
     }
@@ -48,12 +47,12 @@ class Model_tolling_titipan extends CI_Model{
         return $data;
     }
 
-    function load_detail_edit($id){
-        $data = $this->db->query("Select sod.*, rsk.nama_item, rsk.uom From sales_order_detail sod 
-                Left Join rongsok rsk On(sod.rongsok_id = rsk.id) 
+    /**function load_detail_edit($id){
+        $data = $this->db->query("Select sod.*, jb.jenis_barang, jb.uom From sales_order_detail sod 
+                Left Join jenis_barang jb On(sod.jenis_barang_id = jb.id) 
                 Where sod.sales_order_id=".$id);
         return $data;
-    }
+    }**/
 
     function load_detail_saved($id){
         $data = $this->db->query("Select dd.*, rsk.nama_item, rsk.uom From dtr_detail dd
@@ -63,13 +62,13 @@ class Model_tolling_titipan extends CI_Model{
         return $data;
     }
     
-    function show_detail_so($id){
+    /**function show_detail_so($id){
         $data = $this->db->query("Select sod.*, rsk.nama_item, rsk.uom
                     From sales_order_detail sod 
                         Left Join rongsok rsk On (sod.rongsok_id = rsk.id) 
                     Where sod.sales_order_id=".$id);
         return $data;
-    }
+    }**/
 
     function dtr_list(){
         $data = $this->db->query("Select dtr.*, 
@@ -81,7 +80,7 @@ class Model_tolling_titipan extends CI_Model{
                     Left Join sales_order so On (dtr.so_id = so.id) 
                     Left Join m_customers cust On (so.m_customer_id = cust.id) 
                     Left Join users usr On (dtr.created_by = usr.id) 
-                Where dtr.so_id>0 
+                Where dtr.customer_id!=0 
                 Order By dtr.id Desc");
         return $data;
     }
@@ -171,6 +170,11 @@ class Model_tolling_titipan extends CI_Model{
         return $data;
     }
     
+    function jenis_barang_fg(){
+        $data = $this->db->query("Select id, jenis_barang from jenis_barang where category ='FG'");
+        return $data;
+    }
+
     function jenis_barang_list(){
         $data = $this->db->query("Select * From jenis_barang Order By jenis_barang");
         return $data;
@@ -276,7 +280,7 @@ class Model_tolling_titipan extends CI_Model{
         return $data;
     }
 
-    function list_data_on_so($id){
+    /**function list_data_on_so($id){
         $data = $this->db->query("Select rongsok.id,rongsok.uom,rongsok.nama_item From sales_order_detail sod
                 left join rongsok on rongsok.id = sod.rongsok_id
                 Where type_barang='Rongsok' And
@@ -284,7 +288,7 @@ class Model_tolling_titipan extends CI_Model{
                 group by rongsok.id
                 Order By nama_item");
         return $data;
-    }
+    }**/
 
     function get_uom($id){
         $data = $this->db->query("Select rongsok.id,rongsok.uom,rongsok.nama_item From rongsok where id=".$id);
@@ -318,7 +322,7 @@ class Model_tolling_titipan extends CI_Model{
         return $data;
     }
 
-    function get_detail_so($id){
+    /**function get_detail_so($id){
         $data = $this->db->query("select so.*, 
             usr.realname As nama_marketing,
             cust.nama_customer, cust.pic, 
@@ -331,7 +335,7 @@ class Model_tolling_titipan extends CI_Model{
         left Join users usr On (so.marketing_id = usr.id)
         Where so.id =".$id." limit 1");
         return $data;
-    }
+    }**/
 
     function show_header_tolling_fg($id){
         $data = $this->db->query("Select tf.*, 

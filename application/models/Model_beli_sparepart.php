@@ -49,6 +49,11 @@ class Model_beli_sparepart extends CI_Model{
         return $data;
     }
     
+    function bank_list(){
+        $data = $this->db->query("select id, kode_bank, nomor_rekening from bank");
+        return $data;
+    }
+
     function po_list_cek($id){
         $data = $this->db->query("Select po.*,
             (Select Count(pd.id)As ready_to_lpb From po_detail pd Where pd.po_id = po.id And pd.flag_lpb=0)As ready_to_lpb 
@@ -113,6 +118,15 @@ class Model_beli_sparepart extends CI_Model{
         return $data;
     }
 
+    function show_detail_po_lpb($id){
+        $data = $this->db->query("select l.id, s.nama_item, s.uom, pd.amount, ld.qty, (pd.amount*ld.qty) as total_amount from lpb_detail ld
+                    left join lpb l on l.id = ld.lpb_id
+                    left join po_detail pd on pd.id = ld.po_detail_id
+                    left join sparepart s on s.id = ld.sparepart_id
+                    where l.po_id =".$id);
+        return $data;
+    }
+
     function show_detail_po_create_lpb($id){
         $data = $this->db->query("Select pod.*, spr.nama_item, spr.uom
                     From po_detail pod 
@@ -173,7 +187,7 @@ class Model_beli_sparepart extends CI_Model{
                     (Select sum((select sum(pd.amount*ld.qty) from po_detail pd where ld.po_detail_id = pd.id)) From lpb
                     inner join lpb_detail ld on ld.lpb_id = lpb.id
                     Where lpb.po_id = po.id group by lpb.po_id)As nilai_po,
-                    (Select Sum(voucher.amount) From voucher Where voucher.po_id = po.id And jenis_voucher='Parsial')As jumlah_dibayar
+                    (Select Sum(voucher.amount) From voucher Where voucher.po_id = po.id)As jumlah_dibayar
                 From po
                     Left Join supplier On (po.supplier_id = supplier.id)
                 Where po.id=".$id);

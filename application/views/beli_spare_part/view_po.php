@@ -199,6 +199,86 @@
                 </div>
             </div>
         </div>
+        <hr>
+        <h4 align="center"><b> Detail Penerimaan</b></h4>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-scrollable">
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead>
+                            <th style="width:40px">No</th>
+                            <th>Nama Item Spare Part</th>
+                            <th>Unit of Measure</th>
+                            <th>Harga</th>
+                            <th>Jumlah</th>
+                            <th>Sub Total</th>
+                        </thead>
+                        <tbody>
+                        <?php
+                            $no = 1;
+                            $total = 0;
+                            $jumlah = 0;
+                            foreach ($details_bpb as $row){
+                                echo '<tr>';
+                                echo '<td style="text-align:center">'.$no.'</td>';
+                                echo '<td>'.$row->nama_item.'</td>';
+                                echo '<td>'.$row->uom.'</td>';
+                                echo '<td style="text-align:right">'.number_format($row->amount,0,',', '.').'</td>';
+                                echo '<td style="text-align:right">'.number_format($row->qty,0,',', '.').'</td>';
+                                echo '<td style="text-align:right">'.number_format($row->total_amount,0,',', '.').'</td>';
+                                echo '</tr>';
+                                $jumlah += $row->qty;
+                                $total += $row->total_amount;
+                                $no++;
+                            }
+                        ?>
+                        <tr>
+                            <td colspan="4"> Total</td>
+                            <td><?= $jumlah;?></td>
+                            <td><?= number_format($total,0,',','.');?></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">Diskon</td>
+                            <?php
+                            $diskon = 0;
+                            $after_diskon = 0;
+                            $after_ppn = 0;
+                            $data_total = 0;
+                            $total_all = 0;
+                                if($header['ppn'] == 1){
+                                    if($header['diskon'] > 0){
+                                        $diskon = $total*$header['diskon']/100;
+                                        $after_diskon = $total-$diskon;
+                                    }else{
+                                        $after_diskon = $total;
+                                    }
+
+                                    $after_ppn = ($after_diskon)*10/100;
+                                    $data_total = $after_diskon + $after_ppn + $header['materai'];
+                                    $total_all = number_format($data_total,0,',','.');
+                                }else{
+                                    if($header['diskon'] > 0){
+                                        $diskon = $total*$header['diskon']/100;
+                                        $after_diskon = $total-$diskon;
+                                    }else{
+                                        $after_diskon = $total;
+                                    }
+
+                                    $data_total = $after_diskon + $header['materai'];
+                                    $total_all = number_format($data_total,0,',','.');
+                                }   
+                            ?>
+                            <td><?= number_format($diskon,0,',','.');?></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">Total Dibayar</td>
+                            <td style="background: green; color: white;"><?= $total_all;?></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
         <div class="row">&nbsp;</div>
         <div class="row">
             <div class="col-md-12">

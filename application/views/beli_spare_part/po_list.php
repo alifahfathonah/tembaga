@@ -50,7 +50,7 @@
                                 <div class="col-md-7">
                                     <input type="text" id="tanggal" name="tanggal" 
                                         class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                        value="<?php echo date('d-m-Y'); ?>">
+                                        value="<?php echo date('Y-m-d'); ?>">
                                 </div>
                             </div> 
                             <div class="row">
@@ -144,22 +144,11 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-5">
-                                    Jumlah Bayar (Rp) <font color="#f00">*</font>
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="amount" name="amount" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);">                                                                       
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
                                     Nomor Giro
                                 </div>
                                 <div class="col-md-7">
                                     <input type="text" id="nomor_giro" name="nomor_giro" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);">                                                                       
+                                        class="form-control myline" style="margin-bottom:5px">   
                                 </div>
                             </div>
                             <div class="row">
@@ -167,26 +156,46 @@
                                     Bank
                                 </div>
                                 <div class="col-md-7">
-                                    <input type="text" id="bank" name="bank" 
-                                        class="form-control myline" style="margin-bottom:5px">         
+                                    <select id="bank_id" name="bank_id" class="form-control myline select2me"
+                                    data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                    <option value=""></option>
+                                    <?php
+                                        foreach ($bank_list as $row){
+                                            echo '<option value="'.$row->id.'">'.$row->kode_bank.' ('.$row->nomor_rekening.')</option>';
+                                        }
+                                    ?>
+                                    </select>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-5">
-                                    Jatuh Tempo
+                                    Tanggal Jatuh Tempo
                                 </div>
                                 <div class="col-md-7">
-                                    <input type="text" id="tgl_jatuh" name="tgl_jatuh" 
-                                        class="form-control myline" style="margin-bottom:5px">         
+                                    <input type="text" id="tanggal_jatuh" name="tanggal_jatuh" 
+                                        class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                        value="<?php echo date('Y-m-d'); ?>">
                                 </div>
-                            </div>
+                            </div> 
                             <div class="row">
                                 <div class="col-md-5">
                                     Kurs
                                 </div>
                                 <div class="col-md-7">
-                                    <input type="text" id="kurs" name="kurs" 
-                                        class="form-control myline" style="margin-bottom:5px">         
+                                    <select id="currency" name="currency" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                    <option value="IDR">IDR</option>
+                                    <option value="USD">USD</option>
+                                    </select>         
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Jumlah Bayar (Rp) <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="amount" name="amount" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);">
                                 </div>
                             </div>
                             <div class="row">
@@ -226,7 +235,7 @@
                     <i class="fa fa-beer"></i>Purchase Order List
                 </div>
                 <div class="tools">    
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliSparePart/po_list_outdated"> <i class="fa fa-minus"></i> PO LIST OUTDATED</a>              
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliSparePart/po_list_outdated"> <i class="fa fa-minus"></i> PO LIST OUTDATED</a>
                 </div>  
             </div>
             <div class="portlet-body">
@@ -264,12 +273,12 @@
                         <?php
                         } else {
                         ?>
-                        <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
+                        <td><?php echo date('Y-m-d', strtotime($data->tanggal)); ?></td>
                         <?php
                         }
                         ?>
                         <td><?php echo $data->no_pengajuan; ?></td>
-                        <td><?php echo date('d-m-Y', strtotime($data->tgl_pengajuan)); ?></td>
+                        <td><?php echo date('Y-m-d', strtotime($data->tgl_pengajuan)); ?></td>
                         <td><?php echo $data->created_name; ?></td>
                         <td><?php echo $data->nama_supplier; ?></td>
                         <td>
@@ -296,7 +305,7 @@
                         <td><?php echo $data->remarks; ?></td>
                         <td style="text-align:center">
                             <?php
-                                if($data->flag_pelunasan==0){
+                                if($data->flag_pelunasan==0 || $data->ready_to_lpb>0){
                                     if( ($group_id==1 || $hak_akses['create_voucher']==1)){
                                         echo '<a class="btn btn-circle btn-xs green" href="javascript:;" onclick="createVoucher('.$data->id.');"
                                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Create &nbsp; </a>';
@@ -304,7 +313,7 @@
                                         echo '<small style="color:green"><i>Sudah ada DP</i></small>';
                                         }
                                     }
-                                }else{
+                                }else if($data->flag_pelunasan==1 && $data->ready_to_lpb==0){
                                     echo '<small style="color:green"><i>Sudah Lunas</i></small>';
                                 }
                             ?>
@@ -350,6 +359,18 @@
     </div>
 </div> 
 <script>
+function myCurrency(evt) {
+    var charCode = (evt.which) ? evt.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
+        return false;
+    return true;
+}
+
+function getComa(value, id){
+    angka = value.toString().replace(/\./g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+}
+
 function createVoucher(id){
     console.log(id);
     $.ajax({
@@ -388,6 +409,9 @@ function prosesVoucher(){
     }else if($.trim($("#amount").val()) == "" || $("#amount").val()=="0"){
         $('#msg_voucher').html("Amount harus diisi, tidak boleh kosong!");
         $('#box_error_voucher').show();
+    }else if($.trim($("#bank_id").val()) == ""){
+        $('#msg_voucher').html("Bank harus dipilih!");
+        $('#box_error_voucher').show();
     }else{    
         $('#msg_voucher').html("");
         $('#box_error_voucher').hide();
@@ -409,9 +433,17 @@ $(function(){
         buttonText: "Select date",
         changeMonth: true,
         changeYear: true,
-        dateFormat: 'dd-mm-yy'
-    }); 
-    
+        dateFormat: 'yy-mm-dd'
+    });
+    $("#tanggal_jatuh").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yy-mm-dd'
+    });
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });
 </script>         

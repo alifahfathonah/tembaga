@@ -432,6 +432,7 @@ class BeliSparePart extends CI_Controller{
         $data['content']= "beli_spare_part/po_list";
         $this->load->model('Model_beli_sparepart');
         $data['list_data'] = $this->Model_beli_sparepart->po_list()->result();
+        $data['bank_list'] = $this->Model_beli_sparepart->bank_list()->result();
 
         $this->load->view('layout', $data);
     }
@@ -508,6 +509,7 @@ class BeliSparePart extends CI_Controller{
             $this->load->model('Model_beli_sparepart');
             $data['header']  = $this->Model_beli_sparepart->show_header_po($id)->row_array();
             $data['details'] = $this->Model_beli_sparepart->show_detail_po($id)->result();
+            $data['details_bpb'] = $this->Model_beli_sparepart->show_detail_po_lpb($id)->result();
             
             $this->load->view('layout', $data);   
         }else{
@@ -645,18 +647,23 @@ class BeliSparePart extends CI_Controller{
             }
 
             $this->load->model('Model_beli_sparepart');
-            $get_status = $this->Model_beli_sparepart->po_list_cek($this->input->post('po_id'))->row_array(); 
+            $get_status = $this->Model_beli_sparepart->po_list_cek($this->input->post('po_id'))->row_array();
 
             if($get_status['ready_to_lpb'] == 0){           
                         $this->db->where('id', $get_status['id']);
                         $this->db->update('po', array(
                                 'status'=>3,
+                                'flag_pelunasan'=>0,
                                 'modified'=>$tanggal, 
                                 'modified_by'=>$user_id));
             }else{
             #Update status PO
             $this->db->where('id', $this->input->post('po_id'));
-            $this->db->update('po', array('status'=>2, 'modified'=>$tanggal, 'modified_by'=>$user_id));
+            $this->db->update('po', array(
+                'status'=>2,
+                'flag_pelunasan'=>0,
+                'modified'=>$tanggal, 
+                'modified_by'=>$user_id));
             }
                     
             if($this->db->trans_complete()){    
@@ -738,7 +745,7 @@ class BeliSparePart extends CI_Controller{
         $data['diskon'] = number_format($diskon,0,',','.');
         $data['materai'] = number_format($data['materai'],0,',','.');
         $data['jumlah_dibayar'] = number_format($data['jumlah_dibayar'],0,',','.');
-        $data['sisa']     = number_format($sisa,0,',','.');
+        $data['sisa'] = number_format($sisa,0,',','.');
         
         header('Content-Type: application/json');
         echo json_encode($data);       
@@ -757,7 +764,6 @@ class BeliSparePart extends CI_Controller{
             $jenis_voucher = 'Pelunasan';
         }
         
-        
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('VSP', $tgl_input); 
@@ -766,6 +772,7 @@ class BeliSparePart extends CI_Controller{
                 'no_voucher'=>$code,
                 'tanggal'=>$tgl_input,
                 'jenis_voucher'=>$jenis_voucher,
+                'status'=>1,
                 'po_id'=>$this->input->post('id'),
                 'supplier_id'=>$this->input->post('supplier_id'),
                 'jenis_barang'=>$this->input->post('jenis_barang'),
@@ -783,6 +790,18 @@ class BeliSparePart extends CI_Controller{
             }else{
                 $this->db->update('po', array('flag_dp'=>1));
             }
+
+            $this->db->insert('f_kas', array(
+                'jenis_trx'=>1,
+                'tanggal'=>$tgl_input,
+                'tgl_jatuh_tempo'=>$this->input->post('tanggal_jatuh'),
+                'no_giro'=>$this->input->post('nomor_giro'),
+                'id_bank'=>$this->input->post('bank_id'),
+                'currency'=>$this->input->post('currency'),
+                'nominal'=>str_replace('.', '', $amount),
+                'created_at'=>$tanggal,
+                'created_by'=>$user_id
+            ));
             
             if($this->db->trans_complete()){    
                 $this->session->set_flashdata('flash_msg', 'Voucher pembayaran spare part berhasil di-create dengan nomor : '.$code);                 

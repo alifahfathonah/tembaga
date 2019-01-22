@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Finance
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Finance'); ?>"> Data Uang Masuk </a>
+            <a href="<?php echo base_url('index.php/Finance/list_kas'); ?>"> List Kas </a>
         </h4>          
     </div>
 </div>
@@ -25,11 +25,8 @@
                                 <select  id="customer" name="customer" placeholder="Silahkan pilih..."
                                     class="form-control myline select2me" style="margin-bottom:5px">
                                     <option value=""></option>
-                                    <?php 
-                                    foreach($list_customer as $p){
-                                    ?>
-                                    <option value="<?=$p->id;?>"><?=$p->nama_customer;?> </option>
-                                    <?php } ?>    
+                                    <option value="0">Transaksi Keluar</option>
+                                    <option value="1">Transaksi Masuk</option>
                                 </select> 
                             </div>
                             <div class="col-md-4">
@@ -52,26 +49,25 @@
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-file-word-o"></i>Data Uang Masuk
-                </div> 
+                    <i class="fa fa-file-word-o"></i>Data Matching Invoice Customer
+                </div>
                 <div class="tools">
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter"><i class="fa fa-search"></i> Filter Cek</a>
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Finance/add"> <i class="fa fa-plus"></i> Input Uang Masuk</a>
-                </div>               
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter"><i class="fa fa-search"></i> Filter Cek</a>
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Finance/add_kas"> <i class="fa fa-plus"></i> Input Kas</a>
+                </div>
             </div>
             <div class="portlet-body">
                 <table class="table table-striped table-bordered table-hover" id="sample_6">
                 <thead>
                 <tr>
                     <th style="width:50px;">No</th>
+                    <th>Jenis Transaksi</th> 
+                    <th>Bank</th> 
+                    <th>No. Uang Masuk/<br>No. Giro</th>
                     <th>Nama Customer</th>
-                    <th>No<br> Uang Masuk</th>
-                    <th>Tanggal</th>
-                    <th>Jenis<br>Pembayaran</th>
                     <th>Nominal</th>
                     <th>Keterangan</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -82,41 +78,15 @@
                     ?>
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
+                        <td><?php ($data->jenis_trx) ? print('<i class="fa fa-arrow-circle-up"></i> Keluar'): print('<i class="fa fa-arrow-circle-down"></i> Masuk');?></td>
+                        <td><?php echo $data->kode_bank; ?></td>
+                        <td><?php echo $data->no_uang_masuk.$data->no_giro; ?></td>
                         <td><?php echo $data->nama_customer; ?></td>
-                        <td><?php echo $data->no_uang_masuk; ?></td>
-                        <td><?php echo $data->tanggal; ?></td>
-                        <td><?php echo $data->jenis_pembayaran; ?></td>
-                        <td><?php echo $data->currency.' '.number_format($data->nominal,0,',','.');?></td>
+                        <td><?php echo $data->currency.' '.number_format($data->nominal,0,',','.') ?></td>
                         <td><?php echo $data->keterangan; ?></td>
-                        <td style="text-align:center">
-                            <?php
-                                if($data->status==0){
-                                    echo '<div style="background-color:darkkhaki; padding:3px">Belum Cair</div>';
-                                }else if($data->status==1){
-                                    echo '<div style="background-color:green; padding:3px; color:white">Sudah Cair</div>';
-                                }else if($data->status==2){
-                                    echo '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
-                                }else if($data->status==9){
-                                    echo '<div style="background-color:red; color:#fff; padding:3px">Gagal Cair</div>';
-                                }else if($data->status==8){
-                                    echo '<div style="background-color:orange; color:#fff; padding:3px">Sudah Diganti</div>';
-                                }
-                            ?>
-                        </td>
-                        <td style="text-align:center"> 
-                            <?php
-                                if($group_id==1 || $hak_akses['view_spb']==1){
-                            ?>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/view_um/<?php echo $data->id; ?>" 
+                        <td>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/view_kas/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
-                               
-                            <?php
-                                }
-                                if($group_id==1 || $hak_akses['print_spb']==1){
-                                    echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Finance/print_um/'.$data->id.'" 
-                                        style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
-                                }
-                            ?>
                         </td>
                     </tr>
                     <?php
@@ -144,6 +114,6 @@
 <script>
 function filterData(){
     var id=$('#customer').val();
-    window.location = 'Finance/filter_cek/'+id;
+    window.location = 'Finance/filter_kas/'+id;
 }
-</script>         
+</script>  

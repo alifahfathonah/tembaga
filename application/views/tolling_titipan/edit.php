@@ -124,10 +124,9 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th>No</th>
-                                <th style="width: 20%">Nama Item Rongsok</th>
-                                <th>Unit of Measure</th>
+                                <th style="width: 22%">Nama Item </th>
+                                <th style="width: 5%">Unit of Measure</th>
                                 <th>Harga (Rp)</th>
-                                <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
                                 <th>Sub Total (Rp)</th>
                                 <th>Actions</th>
@@ -140,14 +139,13 @@
                                 <td>
                                 <select id="rongsok_id" name="rongsok_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
                                 <option value=""></option><?php
-                                    foreach ($list_rongsok as $value){
-                                        echo "<option value='".$value->id."'>".$value->nama_item."</option>";
+                                    foreach ($list_fg as $value){
+                                        echo "<option value='".$value->id."'>".$value->jenis_barang."</option>";
                                     }?>
                                 </select>
                                 </td>
                                 <td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>
                                 <td><input type="text" id="harga" name="harga" class="form-control myline" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);"></td>
-                                <td><input type="text" id="bruto" name="bruto" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>
                                 <td><input type="text" id="netto" name="netto" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>
                                 <td><input type="text" id="total_harga" name="total_harga" class="form-control myline" readonly="readonly" value="0"></td>
                                 <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
@@ -161,14 +159,11 @@
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
-                        
                     <a href="<?php echo base_url('index.php/Tolling'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
-            
         </form>
-        
         <?php
             }else{
         ?>

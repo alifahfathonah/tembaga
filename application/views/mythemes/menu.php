@@ -645,6 +645,11 @@
                             Matching Invoice </a>
                         </li>
                         <li>
+                            <a href="<?php echo base_url(); ?>index.php/Finance/list_kas">
+                            <i class="fa fa-book"></i>
+                            List Kas </a>
+                        </li>
+                        <li>
                             <a href="<?php echo base_url(); ?>index.php/Finance/voucher_list">
                             <i class="fa fa-file-excel-o"></i>
                             Voucher List </a>

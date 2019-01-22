@@ -1,7 +1,7 @@
 Apolo pindahin ke Create Produksi(done)
 Bisa edit hasil masak (produksi_ingot)(done)
-Input serbuk manual per bulan
-Produksi Ingot(Untuk barang selain Ingot, jarang terjadi)
+Input serbuk manual per bulan(done)
+Produksi Ingot(Untuk barang selain Ingot, jarang terjadi)(done)
 
 
 (produksi wip)
@@ -12,32 +12,35 @@ Bakar Ulang ambil Hasil Rolling(Gudang Kawat Hitam)
 	#Berat Keras (Roll dan KG) -> Ke Gudang Kawat Hitam Keras
 	#Jenis BS berbeda2
 Cuci ambill SPB WIP
+(DONE)
 
 Revisi Sales Order bisa sebelum spb di penuhi
 
-SalesOrder, Surat jalan no.kendaraan tidak harus diisi
+SalesOrder, Surat jalan no.kendaraan tidak harus diisi(DONE)
 
 Invoice, kurang No.Po dan Tgl jatuh tempo(input sendiri)
 
-Sales Order filter status surat jalan yang belum dikirim
+Sales Order filter status surat jalan yang belum dikirim(DONE)
 
 Sebelum buat surat jalan, input terus simpan dulu(bisa di print), -> proses checker
 Approve checker -> kebuat surat jalan.
 Reject checker -> surat jalan sebelumya gagal, barang kembali lagi, scan lagi untuk buat surat jalan
+(Done)
+Print SJ , tambahin no po yang diinput manual, berat bobbin, no.produksi, Header packing list(DONE)
 
-Print SJ , tambahin no po yang diinput manual, berat bobbin, no.produksi, Header packing list
+Matching Invoice masih ada yang salah(DONE)
 
-Matching Invoice masih ada yang salah
+SPB FG show semua barang yang ada stok nya aja,(DONE)
+Setelah di input, save dulu, baru bisa di approve(DONE)
 
-SPB FG show semua barang yang ada stok nya aja,
-Setelah di input, save dulu, baru bisa di approve
+Bisa buat surat peminjaman bobbin manual untuk kirim bobbin ke customer(DONE)
 
-Bisa buat surat peminjaman bobbin manual untuk kirim bobbin ke customer
-
-View PO di Sparepart masih sesuai PO bukan LPB
+View PO di Sparepart masih sesuai PO bukan LPB(DONE)
 
 Pembelian Finish Good / WIP menjadi customer bukan supplier
 
-Voucher Sparepart langsung buat cek dan menjadi jenis_trx keluar
+Voucher Sparepart langsung buat cek dan menjadi jenis_trx keluar(DONE)
 
-Kas Bank per jenis_trx masuk/keluar
+Kas Bank per jenis_trx masuk/keluar(DONE)
+
+No uang masuk pada view uang masuk belum ditampilin(Done)

@@ -70,7 +70,6 @@ class Tolling extends CI_Controller{
                 'flag_ppn'=>$user_ppn,
                 'm_customer_id'=>$this->input->post('m_customer_id'),
                 'marketing_id'=>$this->input->post('marketing_id'),
-                'jenis_barang_id'=>4,
                 'created'=> $tanggal,
                 'created_by'=> $user_id,
                 'modified'=> $tanggal,
@@ -107,8 +106,7 @@ class Tolling extends CI_Controller{
             
             $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
             $data['marketing_list'] = $this->Model_tolling_titipan->marketing_list()->result();
-            $this->load->model('Model_rongsok');
-            $data['list_rongsok'] = $this->Model_rongsok->list_data()->result();
+            $data['list_fg'] = $this->Model_tolling_titipan->jenis_barang_fg()->result();
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/Tolling');
@@ -335,8 +333,6 @@ class Tolling extends CI_Controller{
 
     function create_dtr(){
         $module_name = $this->uri->segment(1);
-        $id = $this->uri->segment(3);
-        if($id){
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
                 $this->load->model('Model_modules');
@@ -346,14 +342,11 @@ class Tolling extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $data['content']= "tolling_titipan/create_dtr";
+            $this->load->model('Model_beli_rongsok');
+            $data['list_rongsok_on_po'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
             $this->load->model('Model_tolling_titipan');
-            $data['header'] = $this->Model_tolling_titipan->show_header_so($id)->row_array();        
-            $data['details'] = $this->Model_tolling_titipan->show_detail_so($id)->result(); 
-            
-            $this->load->view('layout', $data);   
-        }else{
-            redirect('index.php/Tolling');
-        }
+            $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
+            $this->load->view('layout', $data);
     }
     
     function save_dtr(){
@@ -363,18 +356,14 @@ class Tolling extends CI_Controller{
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('DTR', $tgl_input);
+        $code = $this->Model_m_numberings->getNumbering('DTR-T', $tgl_input);
         $this->load->model('Model_tolling_titipan');
 
-        
         if($code){        
-            $this->db->where('so_id', $this->input->post('sales_order_id'));
-            $this->db->delete('dtr');
-
             $data = array(
                         'no_dtr'=> $code,
                         'tanggal'=> $tgl_input,
-                        'so_id'=> $this->input->post('sales_order_id'),
+                        'customer_id'=> $this->input->post('supplier_id'),
                         'jenis_barang'=> $this->input->post('jenis_barang'),
                         'remarks'=> $this->input->post('remarks'),
                         'created'=> $tanggal,
@@ -383,20 +372,25 @@ class Tolling extends CI_Controller{
                         'modified_by'=> $user_id
                     );
             $this->db->insert('dtr', $data);
-            $dtr_id = $this->db->insert_id();//update detail dtr_id
-                
-                $this->db->where('so_id', $this->input->post('sales_order_id'));
-                $this->db->update('dtr_detail', array('dtr_id'=>$dtr_id));
-
-                $id = $this->input->post('sales_order_id');
-                $details = $this->Model_tolling_titipan->save_dtr_detail($id)->result();
-
-                foreach ($details as $row){
-                    $wherearray = array('rongsok_id' => $row->rongsok_id, 'sales_order_id' => $row->so_id );
-                    $this->db->where($wherearray);
-                    $this->db->update('sales_order_detail', array('flag_dtr'=>1));
+            $dtr_id = $this->db->insert_id();
+            $details = $this->input->post('myDetails');
+            foreach ($details as $row){
+                if($row['rongsok_id']!=''){
+                    $this->db->insert('dtr_detail', array(
+                        'dtr_id'=>$dtr_id,
+                        'rongsok_id'=>$row['rongsok_id'],
+                        // 'qty'=>str_replace('.', '', $row['qty']),
+                        'bruto'=>str_replace('.', '', $row['bruto']),
+                        'berat_palette'=>str_replace('.', '', $row['berat_palette']),
+                        'netto'=>str_replace('.', '', $row['netto']),
+                        'no_pallete'=>$row['no_pallete'],
+                        'line_remarks'=>$row['line_remarks'],
+                        'created'=>$tanggal,
+                        'created_by'=>$user_id,
+                        'tanggal_masuk'=>$tgl_input
+                    ));
                 }
-                    
+            }   
             
             if($this->db->trans_complete()){    
                 $this->session->set_flashdata('flash_msg', 'DTR berhasil di-create dengan nomor : '.$code);                 

@@ -370,8 +370,6 @@ class BeliRongsok extends CI_Controller{
     
     function create_dtr(){
         $module_name = $this->uri->segment(1);
-        // $id = $this->uri->segment(3);
-        // if($id){
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
                 $this->load->model('Model_modules');
@@ -384,19 +382,7 @@ class BeliRongsok extends CI_Controller{
             $this->load->model('Model_beli_rongsok');
             $data['list_rongsok_on_po'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
             $data['supplier_list'] = $this->Model_beli_rongsok->supplier_list()->result();
-            // $data['header'] = $this->Model_beli_rongsok->show_header_po($id)->row_array();           
-            // $data['po_id'] = $id;
-            // $this->load->model('Model_rongsok');
-            // $list_rongsok_on_po = $this->Model_rongsok->list_data_on_po($id)->result();
-            // $opt_rongsok = '';
-            // foreach ($list_rongsok_on_po as $value){
-            //     $opt_rongsok .= "<option value='".$value->id."'>".$value->nama_item."</option>";
-            // }
-            // $data['option_rongsok'] = $opt_rongsok;
-            $this->load->view('layout', $data);   
-        // }else{
-        //     redirect('index.php/BeliRongsok');
-        // }
+            $this->load->view('layout', $data);
     }
     
     function save_dtr(){
