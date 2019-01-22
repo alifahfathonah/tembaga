@@ -8,7 +8,7 @@
         <h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br>VOUCHER PEMBELIAN SPARE PART</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
-                <td width="40%">
+                <td width="60%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>No. Voucher</td>
@@ -26,10 +26,14 @@
                             <td>Nama Supplier</td>
                             <td>: <?php echo $header['nama_supplier'] ?></td>
                         </tr>
+                        <tr>
+                            <td valign="top">Sejumlah</td>
+                            <td>: <?php echo ucwords(number_to_words($total)); ?></td>
+                        </tr>
                     </table>
                 </td>
                 <td>&nbsp;</td>
-                <td width="50%">
+                <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>No. PO</td>
@@ -128,5 +132,8 @@
         <p>&nbsp;</p>
     <body onLoad="window.print()">
     </body>
+    <script type="text/javascript">
+        window.onLoad=
+    </script>
 </html>
         

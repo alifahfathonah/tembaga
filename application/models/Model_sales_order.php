@@ -340,13 +340,17 @@ class Model_sales_order extends CI_Model{
                     cust.nama_customer, cust.alamat,
                     tso.no_spb, so.no_sales_order,
                     tkdr.type_kendaraan,
-                    usr.realname
+                    usr.realname,
+                    aprv.realname as approved_name,
+                    rjct.realname as rejected_name
                 From t_surat_jalan tsj
                     Left Join m_customers cust On (tsj.m_customer_id = cust.id)
                     Left Join t_sales_order tso On (tsj.sales_order_id = tso.so_id) 
                     Left Join sales_order so On (so.id = tso.so_id)
                     Left Join m_type_kendaraan tkdr On (tsj.m_type_kendaraan_id = tkdr.id) 
                     Left Join users usr On (tsj.created_by = usr.id)
+                    Left Join users aprv On (tsj.approved_by = aprv.id)
+                    Left Join users rjct On (tsj.rejected_by = rjct.id)
                     Where tsj.id=".$id);
         return $data;
     }

@@ -1082,10 +1082,18 @@ class Finance extends CI_Controller{
 
     function print_invoice(){
         $id = $this->uri->segment(3);
-        if($id){        
+        if($id){       
+            $this->load->helper('terbilang_helper'); 
             $this->load->model('Model_finance');
             $data['header'] = $this->Model_finance->show_header_invoice($id)->row_array();
             $data['details'] = $this->Model_finance->show_detail_invoice($id)->result();
+
+            $total = 0;
+            foreach ($data['details'] as $row) {
+                $total += $row->total_harga;
+            }
+
+            $data['total'] = $total;
 
             $this->load->view('finance/print_invoice', $data);
         }else{

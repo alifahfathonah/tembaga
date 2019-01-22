@@ -309,12 +309,16 @@ class BeliRongsok extends CI_Controller{
 
     function create_voucher(){
         $id = $this->input->post('id');
+        $this->load->helper('terbilang_helper');
         $this->load->model('Model_beli_rongsok');
         $data = $this->Model_beli_rongsok->voucher_po_rsk($id)->row_array();
+        $terbilang = $data['nilai_po'];
         $sisa = $data['nilai_po'] - $data['nilai_dp'];
         $data['nilai_po'] = number_format($data['nilai_po'],0,',','.');
         $data['nilai_dp'] = number_format($data['nilai_dp'],0,',','.');
         $data['sisa']     = number_format($sisa,0,',','.');
+        $nilai_po = $data['nilai_po'];
+        $data['terbilang'] = ucwords(number_to_words($terbilang));
         
         header('Content-Type: application/json');
         echo json_encode($data);    
@@ -1294,9 +1298,17 @@ class BeliRongsok extends CI_Controller{
                 $data['hak_akses'] = $roles;
             }
 
+            $this->load->helper('terbilang_helper');
             $this->load->model('Model_finance');
             $data['header'] = $this->Model_finance->show_header_voucher($id)->row_array();
             $data['list_data'] = $this->Model_finance->show_detail_voucher($id)->result();
+
+            $total = 0;
+            foreach ($data['list_data'] as $row) {
+                $total += $row->amount;
+            }
+
+            $data['total'] = $total;
 
             $this->load->view('beli_rongsok/print_voucher', $data);   
         }else{

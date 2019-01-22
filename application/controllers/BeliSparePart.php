@@ -705,6 +705,7 @@ class BeliSparePart extends CI_Controller{
         $id = $this->input->post('id');
         $this->load->model('Model_beli_sparepart');
         $data = $this->Model_beli_sparepart->get_data_pembayaran($id)->row_array();
+        $this->load->helper('terbilang_helper');
 
         $diskon = 0;
         $after_diskon = 0;
@@ -721,6 +722,7 @@ class BeliSparePart extends CI_Controller{
                 $after_ppn = ($after_diskon)*10/100;
                 $data_total = $after_diskon + $after_ppn + $data['materai'];
                 $data['nilai_po_asli'] = number_format($data_total,0,',','.');
+                // $data['terbilang'] = ucwords(number_to_words($data['nilai_po_asli']));
             }else{
                 if($data['diskon'] > 0){
                     $diskon = $data['nilai_po']*$data['diskon']/100;
@@ -731,8 +733,10 @@ class BeliSparePart extends CI_Controller{
 
                 $data_total = $after_diskon + $data['materai'];
                 $data['nilai_po_asli'] = number_format($data_total,0,',','.');
+                // $data['terbilang'] = ucwords(number_to_words($data['nilai_po_asli']));
             }
-
+        
+        $data['terbilang'] = ucwords(number_to_words($data_total));
         $sisa = $data_total - $data['jumlah_dibayar'];
         $data['after_ppn'] = number_format($after_ppn,0,',','.');
         $data['diskon'] = number_format($diskon,0,',','.');
@@ -823,10 +827,15 @@ class BeliSparePart extends CI_Controller{
                 $roles = $this->Model_modules->get_akses($module_name, $group_id);
                 $data['hak_akses'] = $roles;
             }
-
+            $this->load->helper('terbilang_helper');
             $this->load->model('Model_finance');
             $data['header'] = $this->Model_finance->show_header_voucher($id)->row_array();
             $data['list_data'] = $this->Model_finance->show_detail_voucher($id)->result();
+            $total = 0;
+            foreach ($data['list_data'] as $row) {
+                $total += $row->amount;
+            }
+            $data['total'] = $total;
 
             $this->load->view('beli_spare_part/print_voucher', $data);   
         }else{

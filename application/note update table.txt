@@ -29,3 +29,7 @@ update table 090119
 update table 170119
 -table t_surat_jalan add gudang_id, status, approved_by, approved_at
 -table f_uang_masuk add no_uang_masuk
+
+update table 210119
+-table m_bobbin_peminjaman add remarks
+-table po_detail add wip_id
