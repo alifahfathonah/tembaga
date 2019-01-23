@@ -8,6 +8,7 @@ class Matching extends CI_Controller{
         if($this->session->userdata('status') != "login"){
             redirect(base_url("index.php/Login"));
         }
+        
     }
     
     function index(){
@@ -48,7 +49,7 @@ class Matching extends CI_Controller{
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('INVOICE', $tgl_input);
+        $code = $this->Model_m_numberings->getNumbering('INV-R', $tgl_input);
 
         $data = array(
             'no_invoice_resmi'=> $code,
@@ -58,7 +59,7 @@ class Matching extends CI_Controller{
             'created_at'=> $tanggal,
             'created_by'=> $user_id
         );
-        $this->db->insert('t_invoice_resmi', $data);
+        $this->db->insert('r_t_invoice', $data);
         $id_new=$this->db->insert_id();
 
         if($this->db->trans_complete()){
@@ -92,6 +93,25 @@ class Matching extends CI_Controller{
         }else{
             redirect('index.php/Finance');
         }
+    }
+
+    function load_list_dtr(){
+        $tabel = "";
+        $no = 1;
+
+        $this->load->model('Model_matching');
+        $list_dtr = $this->Model_matching->list_dtr()->result();
+        foreach ($list_dtr as $row) {
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align: center;">'.$no.'</td>';
+            $tabel .= '<td>'.$row->no_dtr.'</td>';
+            $tabel .= '<td>'.$row->netto.'</td>';
+            $tabel .= '</tr>';
+            $no++;
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel);
     }
 
     function get_dtr_list(){
@@ -150,7 +170,7 @@ class Matching extends CI_Controller{
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
-        $check = $this->db->query("select sum(netto) as total_netto from t_invoice_resmi_detail where invoice_resmi_id = ".$id)->row_array();
+        $check = $this->db->query("select sum(netto) as total_netto from r_t_invoice_detail where invoice_resmi_id = ".$id)->row_array();
         $total_netto = $check['total_netto'];
         
         if ($total_netto < $qty) {
@@ -160,7 +180,7 @@ class Matching extends CI_Controller{
             $this->db->trans_start();
 
             $this->db->where('id', $id);
-            $this->db->update('t_invoice_resmi', array(
+            $this->db->update('r_t_invoice', array(
                 'remarks' => $this->input->post('remarks'),
                 'tanggal' => $tgl_input,
                 'jumlah' => $this->input->post('qty')
@@ -195,7 +215,7 @@ class Matching extends CI_Controller{
             $check = 1;
         }
 
-        if($this->db->insert('t_invoice_resmi_detail', array(
+        if($this->db->insert('r_t_invoice_detail', array(
             'invoice_resmi_id' => $this->input->post('invoice_resmi_id'),
             'dtr_detail_id'=>$this->input->post('dtr_detail_id'),
             'bruto'=>$this->input->post('bruto'),
@@ -227,7 +247,7 @@ class Matching extends CI_Controller{
 
         $return_data = array();
         $this->db->where('dtr_detail_id', $id);
-        if($this->db->delete('t_invoice_resmi_detail')){
+        if($this->db->delete('r_t_invoice_detail')){
             $return_data['message_type']= "sukses";
             $return_data['dtr_id'] = $id_dtr;
             $return_data['check'] = $check;

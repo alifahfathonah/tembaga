@@ -27,7 +27,7 @@
                     <i class="fa fa-beer"></i>List Surat Jalan
                 </div>
                 <div class="tools">    
-                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" onclick="newData()">
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?php echo base_url() ?>index.php/SuratJalan/add_surat_jalan">
                         <i class="fa fa-plus"></i> Tambah</a>
                 </div>
             </div>
@@ -72,73 +72,6 @@
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-var dsState;
-
-function newData(){
-    $('#nama_item').val('');
-    $('#uom').val('');
-    $('#description').val('');
-    $('#alias').val('');
-    $('#id').val('');
-    dsState = "Input";
-    
-    $('#message').html("");
-    $('.alert-danger').hide(); 
-    
-    $("#myModal").find('.modal-title').text('Input Data Ampas');
-    $("#myModal").modal('show',{backdrop: 'true'}); 
-}
-
-function simpandata(){
-    if($.trim($("#nama_item").val()) == ""){
-        $('#message').html("Nama item harus diisi!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#uom").val()) == ""){
-        $('#message').html("Nama unit of measure harus diisi!");
-        $('.alert-danger').show(); 
-    }else{      
-        if(dsState=="Input"){
-            $.ajax({
-                type:"POST",
-                url:'<?php echo base_url('index.php/Ampas/cek_code'); ?>',
-                data:"data="+$("#nama_item").val(),
-                success:function(result){
-                    if(result=="ADA"){
-                        $('#message').html("Nama item sudah ada, silahkan ganti dengan nama lain!");
-                        $('.alert-danger').show();
-                    }else{
-                        $('#message').html("");
-                        $('.alert-danger').hide();
-                        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Ampas/save");
-                        $('#formku').submit();                    
-                    }
-                }
-            });
-        }else{
-            $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Ampas/update");
-            $('#formku').submit(); 
-        }
-    };
-};
-
-function editData(id){
-    dsState = "Edit";
-    $.ajax({
-        url: "<?php echo base_url('index.php/Ampas/edit'); ?>",
-        type: "POST",
-        data : {id: id},
-        success: function (result){
-            $('#nama_item').val(result['nama_item']);
-            $('#uom').val(result['uom']);
-            $('#description').val(result['description']);
-            $('#alias').val(result['alias']);
-            $('#id').val(result['id']);
-            
-            $("#myModal").find('.modal-title').text('Edit Ampas');
-            $("#myModal").modal('show',{backdrop: 'true'});           
-        }
-    });
-}
 
 $(function(){    
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);

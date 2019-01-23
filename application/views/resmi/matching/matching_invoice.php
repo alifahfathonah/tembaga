@@ -111,18 +111,8 @@
                             <th>No. DTR</th>
                             <th>Netto (Kg)</th>
                         </thead>
-                        <tbody>
-                        <?php
-                            $no = 1;
-                            foreach ($list_dtr as $row){
-                                echo '<tr>';
-                                echo '<td style="text-align:center">'.$no.'</td>';
-                                echo '<td>'.$row->no_dtr.'</td>';
-                                echo '<td>'.$row->netto.'</td>';
-                                echo '</tr>';
-                                $no++;
-                            }
-                        ?>
+                        <tbody id="boxDetail0">
+                        
                         </tbody>
                     </table>
                 </div>
@@ -247,6 +237,15 @@
     </div>
 </div> 
 <script>
+function load_list_dtr(){
+    $.ajax({
+        url:'<?php echo base_url('index.php/Matching/load_list_dtr'); ?>',
+        success:function(result){
+            console.log(result);
+            $('#boxDetail0').html(result);     
+        }
+    });
+}
 function load_dtr(){
     $.ajax({
         url: "<?php echo base_url('index.php/Matching/get_dtr_list'); ?>",
@@ -297,6 +296,7 @@ function saveDetail(id){
                     } else {
                         $('#dtr_id').select2('val', result['id_dtr']);
                     }
+                    load_list_dtr();
                     load_dtr();
                     loadDetail(result['id_dtr']);
                     loadDetailInvoice($('#id').val());
@@ -328,6 +328,7 @@ function hapusDetail(id){
                     if (result['check'] == 0) {
                         $('#dtr_id').select2('val', result['dtr_id']);
                     }
+                    load_list_dtr();
                     load_dtr();
                     loadDetail(result['dtr_id']);
                     loadDetailInvoice($('#id').val());
@@ -364,6 +365,7 @@ $(function(){
         changeYear: true,
         dateFormat: 'dd-mm-yy'
     });  
+    load_list_dtr();
     load_dtr();
     loadDetailInvoice(<?php echo $header['id']; ?>);
 });
