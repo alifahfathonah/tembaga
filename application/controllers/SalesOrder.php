@@ -641,7 +641,7 @@ class SalesOrder extends CI_Controller{
             $soid = $data['header']['sales_order_id'];
             if($jenis == 'FG'){
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_fg($soid)->result();
-                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_fg()->result();
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_in_so($soid)->result();
             }else if($jenis == 'WIP'){
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_wip($soid)->result();
                 $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_wip()->result();

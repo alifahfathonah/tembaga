@@ -68,16 +68,14 @@
                         <td style="text-align:right"><?php echo number_format($data->jmlh_afkiran,0,',','.'); ?></td>
                         <td style="text-align:right"><?php echo number_format($data->jmlh_pengepakan,0,',','.'); ?></td>
                         <td style="text-align:right"><?php echo number_format($data->jmlh_lain,0,',','.'); ?></td>
-                        <!--td style="text-align:center">
-                            <?php
-                                if( ($group_id==1 || $hak_akses['create_voucher_pelunasan']==1)  && $data->flag_bayar==0){
-                                    echo '<a class="btn btn-circle btn-xs green" href="javascript:;" onclick="createVoucher('.$data->id.');"
-                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Create &nbsp; </a>';
-                                }
-                            ?>
-                        </td-->
                         <td style="text-align:center"> 
-                            <?php                                
+                            <?php
+                                if($data->ttr_status==0){
+                                    if ($group_id==1 || $hak_akses['review_ttr']==1){
+                                    echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliRongsok/review_ttr/'.$data->id.'" 
+                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-edit"></i> Review &nbsp; </a>';
+                                    }
+                                }
                                 if($group_id==1 || $hak_akses['print_ttr']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Tolling/print_ttr/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';

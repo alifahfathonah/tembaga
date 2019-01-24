@@ -40,14 +40,6 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            No. PO <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="no_po" name="no_po" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
                             Tanggal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -83,6 +75,24 @@
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. PO <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_po" name="no_po" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal PO<font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tanggal_po" name="tanggal_po" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('d-m-Y'); ?>">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Customer <font color="#f00">*</font>
@@ -176,7 +186,16 @@ $(function(){
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd-mm-yy'
-    });       
+    });
+    $("#tanggal_po").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    }); 
 });
 </script>
       

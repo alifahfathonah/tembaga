@@ -229,7 +229,6 @@ function get_alamat(id){
     
     $.ajax({
         url: "<?php echo base_url('index.php/SalesOrder/get_so_list'); ?>",
-        async: false,
         type: "POST",
         data: "id="+id,
         dataType: "html",

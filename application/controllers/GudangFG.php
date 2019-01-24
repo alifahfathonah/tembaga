@@ -714,18 +714,25 @@ class GudangFG extends CI_Controller{
         }
     }
 
- function approve_spb(){
+    function approve_spb(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d');
         $spb_id = $this->input->post('id');
         
         $this->db->trans_start();
+        $this->load->model('Model_gudang_fg');
+        $data['check'] = $this->Model_gudang_fg->check_spb($spb_id)->row_array();
+        if((int)$data['check']['tot_so'] >= (int)$data['check']['tot_spb']){
+            $status = 1;
+        }else{
+            $status = 2;
+        }
         
         #Update status SPB
         $this->db->where('id', $spb_id);
         $this->db->update('t_spb_fg', array(
-                        'status'=> 1,
+                        'status'=> $status,
                         'keterangan' => $this->input->post('remarks'),
                         'approved_at'=> $tanggal,
                         'approved_by'=>$user_id
@@ -735,7 +742,7 @@ class GudangFG extends CI_Controller{
         $this->db->where('t_spb_fg_id', $spb_id);
         $this->db->update('t_gudang_fg', array(
                         'jenis_trx'=> 1,
-                        'modified_date'=> $tanggal,
+                        'modified_date'=>$tanggal,
                         'modified_by'=>$user_id
         ));
             
@@ -1134,8 +1141,9 @@ class GudangFG extends CI_Controller{
 
             $this->load->model('Model_gudang_fg');
             $data['list_barang'] = $this->Model_gudang_fg->barang_fg_stock_list()->result();
-            $data['myData'] = $this->Model_gudang_fg->show_header_spb($id)->row_array();           
-            $data['myDetail'] = $this->Model_gudang_fg->show_detail_spb($id)->result(); 
+            $data['myData'] = $this->Model_gudang_fg->show_header_spb($id)->row_array();
+            $data['myDetail'] = $this->Model_gudang_fg->show_detail_spb($id)->result();
+            $data['myDetailSaved'] = $this->Model_gudang_fg->show_detail_spb_saved($id)->result();
             $data['detailSPB'] = $this->Model_gudang_fg->show_detail_spb_fulfilment($id)->result();
             $this->load->view('layout', $data);   
         }else{
