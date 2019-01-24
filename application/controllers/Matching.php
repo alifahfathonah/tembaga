@@ -49,10 +49,9 @@ class Matching extends CI_Controller{
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('INV-R', $tgl_input);
 
         $data = array(
-            'no_invoice_resmi'=> $code,
+            'no_invoice_resmi'=> $this->input->post('no_invoice'),
             'tanggal'=> $tgl_input,
             'jumlah'=> $this->input->post('qty'),
             'remarks'=> $this->input->post('remarks'),
@@ -134,10 +133,12 @@ class Matching extends CI_Controller{
         $this->load->model('Model_matching'); 
         $myDetail = $this->Model_matching->load_detail_dtr($id)->result(); 
         foreach ($myDetail as $row){
+            $tabel .= '<input type="hidden" id="dtr_id_'.$no.'" value="'.$row->dtr_id.'"/>';
             $tabel .= '<tr>';
             $tabel .= '<td style="width: 30px; text-align:center;"><input type="checkbox" value="1" id="check_'.$no.'" name="details['.$no.'][check]" onclick="check();" class="form-check-input"/></td>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
-            $tabel .= '<input type="hidden" id="dtr_detail_id_'.$no.'" name="details['.$no.'][dtr_detail_id]" value='.$row->id.' />';
+            $tabel .= '<input type="hidden" id="dtr_detail_id_'.$no.'" name="details['.$no.'][dtr_detail_id]" value="'.$row->id.'" />';
+            $tabel .= '<input type="hidden" id="id_barang_'.$no.'" name="details['.$no.'][id_barang]" value="'.$row->rongsok_id.'" />';
             $tabel .= '<td><input type="text" id="nama_item_'.$no.'" name="details['.$no.'][nama_item]" value="'.$row->nama_item.'" class="form-control myline" readonly /></td>';
             $tabel .= '<td style="text-align:right"><input type="text" id="bruto_'.$no.'" name="details['.$no.'][bruto]" value="'.$row->bruto.'" class="form-control myline" readonly /></td>';
             $tabel .= '<td style="text-align:right"><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" value="'.$row->netto.'" class="form-control myline" readonly /></td>';
@@ -181,6 +182,7 @@ class Matching extends CI_Controller{
 
             $this->db->where('id', $id);
             $this->db->update('r_t_invoice', array(
+                'no_invoice_resmi' => $this->input->post('no_invoice_resmi'),
                 'remarks' => $this->input->post('remarks'),
                 'tanggal' => $tgl_input,
                 'jumlah' => $this->input->post('qty')
@@ -199,25 +201,27 @@ class Matching extends CI_Controller{
     function save_invoice_detail(){
         $return_data = array();
         $tgl_input = date("Y-m-d");
-        $check = 0;
         $dtr_id = $this->input->post('id_dtr');
         $dtr_detail_id = $this->input->post('dtr_detail_id');
 
         $this->db->where('id', $dtr_detail_id);
-        $this->db->update('dtr_detail', array('flag_taken' => 1));
+        $this->db->update('dtr_detail', array('flag_resmi' => 1));
 
-        $detail_taken = $this->db->query("select count(flag_taken) as total_taken from dtr_detail where flag_taken = 1 and dtr_id = ".$dtr_id)->row_array();
+        $detail_taken = $this->db->query("select count(flag_resmi) as total_taken from dtr_detail where flag_resmi = 1 and dtr_id = ".$dtr_id)->row_array();
         $detail_id = $this->db->query("select count(id) as total_id from dtr_detail where dtr_id = ".$dtr_id)->row_array();
         if($detail_taken['total_taken'] == $detail_id['total_id']){
-            #update flag_taken dtr
+            #update flag_resmi dtr
             $this->db->where('id', $dtr_id);
             $this->db->update('dtr', array('flag_taken' => 1));
             $check = 1;
+        }else{
+            $check = 0;
         }
 
         if($this->db->insert('r_t_invoice_detail', array(
             'invoice_resmi_id' => $this->input->post('invoice_resmi_id'),
             'dtr_detail_id'=>$this->input->post('dtr_detail_id'),
+            'jenis_barang_id'=>$this->input->post('id_barang'),
             'bruto'=>$this->input->post('bruto'),
             'netto'=>$this->input->post('netto'),
             'berat_pallete' => $this->input->post('berat_pallete')
@@ -240,7 +244,7 @@ class Matching extends CI_Controller{
         $check = 0;
 
         $this->db->where('id', $id);
-        $this->db->update('dtr_detail', array('flag_taken' => 0));
+        $this->db->update('dtr_detail', array('flag_resmi' => 0));
 
         $this->db->where('id', $id_dtr);
         $this->db->update('dtr', array('flag_taken' => 0));

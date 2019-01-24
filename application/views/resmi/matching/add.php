@@ -39,9 +39,8 @@
                             No. Invoice <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_invoice" name="no_invoice" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="Auto generate">
+                            <input type="text" id="no_invoice" name="no_invoice"
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
                         </div>
                     </div>
                     <div class="row">
@@ -51,7 +50,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('Y-m-d'); ?>">
+                                value="<?php echo date('d-m-Y'); ?>">
                         </div>
                     </div>  
                     <div class="row">
@@ -115,6 +114,9 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
+    } else if($.trim($("#no_invoice").val()) == ""){
+        $('#message').html("No Invoice harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
     } else if($.trim($("#qty").val()) == ""){
         $('#message').html("Jumlah harus diisi, tidak boleh kosong!");
         $('.alert-danger').show();

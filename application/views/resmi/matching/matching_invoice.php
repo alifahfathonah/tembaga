@@ -41,9 +41,7 @@
                             No. Invoice<font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_invoice_resmi" name="no_invoice_resmi" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['no_invoice_resmi']; ?>">
+                            <input type="text" id="no_invoice_resmi" name="no_invoice_resmi" class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_invoice_resmi']; ?>" onkeyup="this.value = this.value.toUpperCase()">
 
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
@@ -63,7 +61,7 @@
                             PIC
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="pic" name="pic" 
+                            <input type="text" id="pic" name="pic" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['pic']; ?>">
                         </div>
@@ -99,10 +97,7 @@
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="fa fa-file-word-o"></i>Data DTR
-                    </div>
-                    <div class="tools">    
-                    
-                    </div>    
+                    </div> 
                 </div>
                 <div class="portlet-body">
                     <table class="table table-striped table-bordered table-hover" id="sample_6">
@@ -149,8 +144,8 @@
                         <div class="col-md-2">
                         </div>                    
                     </div>
-                    <div class="table-scrollable">
-                        <table class="table table-striped table-bordered table-hover">
+                    <div class="table-scrollable" id>
+                        <table class="table table-striped table-bordered table-hover" id="sample_6">
                             <thead>
                                 <th></th>
                                 <th style="width:40px">No</th>
@@ -241,7 +236,6 @@ function load_list_dtr(){
     $.ajax({
         url:'<?php echo base_url('index.php/Matching/load_list_dtr'); ?>',
         success:function(result){
-            console.log(result);
             $('#boxDetail0').html(result);     
         }
     });
@@ -277,13 +271,13 @@ function saveData(){
 }
 
 function saveDetail(id){
-    console.log(id+$('#dtr_detail_id_'+id).val());
     $.ajax({
             type:"POST",
             url:'<?php echo base_url('index.php/Matching/save_invoice_detail'); ?>',
             data:{
-                id_dtr:$('#dtr_id').val(),
+                id_dtr:$('#dtr_id_'+id).val(),
                 invoice_resmi_id:$('#id').val(),
+                id_barang:$('#id_barang_'+id).val(),
                 dtr_detail_id:$('#dtr_detail_id_'+id).val(),
                 bruto:$('#bruto_'+id).val(),
                 netto: $('#netto_'+id).val(),

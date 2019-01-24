@@ -37,21 +37,49 @@
                 <tr>
                     <th style="width:50px;">No</th>
                     <th>No. Surat Jalan</th>
+                    <th>No. Invoice</th>
                     <th>Tanggal</th>
                     <th>Jenis<br>Barang</th>                     
-                    <th>Customer</th> 
-                    <th>Alamat</th> 
-                    <th>No. Sales Order</th>
+                    <th>Customer</th>
                     <th>Jumlah<br>Item</th>
-                    <th>Kendaraan</th>
-                    <th>Supir</th>
-                    <th>Status<br>Invoice</th>
-                    <th>Status<br>Surat Jalan</th>
+                    <th>Keterangan</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                                                                                                     
+                    <?php 
+                        $no = 1;
+                        foreach ($list_sj as $row) {
+                    ?>
+                    <tr>
+                        <td style="text-align: center;"><?php echo $no; ?></td>
+                        <td><?php echo $row->no_sj_resmi; ?></td>
+                        <td><?php echo $row->no_invoice_resmi; ?></td>
+                        <td><?php echo $row->tanggal; ?></td>
+                        <td><?php echo $row->jenis_barang; ?></td>
+                        <td><?php echo $row->nama_customer; ?></td>
+                        <td><?php echo $row->jumlah_item; ?></td>
+                        <td><?php echo $row->remarks; ?></td>
+                        <td style="text-align: center;">
+                            <?php
+                                if( ($group_id==9)||($hak_akses['edit']==1)){
+                            ?>
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/SuratJalan/edit_surat_jalan/<?php echo $row->id; ?>" 
+                               style="margin-bottom:4px"> &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
+                            <?php 
+                                }if($group_id==9 || $hak_akses['print']==1){
+                            ?><br>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/Matching/print_invoice/<?php echo $row->id; ?>" 
+                                style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
+                            <?php
+                                }
+                            ?>
+                        </td>
+                    </tr>
+                    <?php
+                            $no++;
+                        }
+                    ?>                                                                            
                 </tbody>
                 </table>
             </div>

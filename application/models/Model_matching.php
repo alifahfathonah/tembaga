@@ -16,7 +16,7 @@ class Model_matching extends CI_Model{
     }
 
     function list_dtr(){
-        $data = $this->db->query("select dtr.*, r.nama_item, (select SUM(netto) from dtr_detail where dtr_detail.dtr_id = dtr.id and flag_taken = 0) as netto, dtrd.berat_palette, dtrd.no_pallete, dtrd.line_remarks
+        $data = $this->db->query("select dtr.*, r.nama_item, (select SUM(netto) from dtr_detail where dtr_detail.dtr_id = dtr.id and flag_resmi = 0) as netto, dtrd.berat_palette, dtrd.no_pallete, dtrd.line_remarks
             from dtr 
             left join dtr_detail dtrd on (dtr.id = dtrd.dtr_id)
             left join rongsok r on (dtrd.rongsok_id = r.id)
@@ -25,7 +25,7 @@ class Model_matching extends CI_Model{
     }
 
     function list_invoice_detail($id){
-        $data = $this->db->query("select ird.*, dtrd.no_pallete, r.nama_item, dtr.id as dtr_id
+        $data = $this->db->query("select ird.*, dtrd.no_pallete, dtrd.qty, r.nama_item, dtr.id as dtr_id
             from r_t_invoice_detail ird
             left join dtr_detail dtrd on (ird.dtr_detail_id = dtrd.id)
             left join dtr on (dtrd.dtr_id = dtr.id)
@@ -35,10 +35,10 @@ class Model_matching extends CI_Model{
     }
 
     function load_detail_dtr($id){
-        $data = $this->db->query("select dtrd.*, r.nama_item, (select sum(netto) from dtr_detail where dtr_id = ".$id.") as total_netto
+        $data = $this->db->query("select dtrd.*, r.nama_item, (select sum(netto) from dtr_detail where dtr_id = dtrd.id) as total_netto
             from dtr_detail dtrd
             left join rongsok r on (dtrd.rongsok_id = r.id)
-            where dtrd.flag_taken = 0 and dtrd.dtr_id = ".$id);
+            where dtrd.flag_resmi = 0 and dtrd.dtr_id = ".$id);
         return $data;
     }
 

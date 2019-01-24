@@ -31,9 +31,8 @@
                             No. Surat Jalan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="Auto generate">
+                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" 
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
                         </div>
                     </div>
                     <div class="row">
@@ -46,7 +45,21 @@
                                 value="<?php echo date('d-m-Y'); ?>">
                         </div>
                     </div> 
-                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Invoice <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="r_invoice_id" name="r_invoice_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($list_invoice as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->no_invoice_resmi.'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Customer <font color="#f00">*</font>
@@ -88,13 +101,10 @@
                             Jenis Barang <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <?php
-                                    foreach ($jenis_barang_list as $row){
-                                        echo '<option value="'.$row->category.'">'.$row->category.'</option>';
-                                    }
-                                ?>
+                            <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option></option>
+                                <option value="RONGSOK">RONGSOK</option>
+                                <option value="FG">FG</option>
                             </select>
                         </div>
                     </div>        
@@ -185,17 +195,6 @@ function get_alamat(id){
             $("#alamat").val(result['alamat']);           
         } 
     });
-    
-    $.ajax({
-        url: "<?php echo base_url('index.php/SalesOrder/get_so_list'); ?>",
-        async: false,
-        type: "POST",
-        data: "id="+id,
-        dataType: "html",
-        success: function(result) {
-            $('#sales_order_id').html(result);
-        }
-    })
 }
 
 </script>
