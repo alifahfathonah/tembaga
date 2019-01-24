@@ -71,12 +71,14 @@
                         ?>
                         </td>
                         <td><?php echo $data->nama_marketing; ?></td>
-                        <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>                        
+                        <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td style="text-align:center">
                             <?php
-                                if( ($group_id==1 || $hak_akses['create_dtr']==1) && $data->ready_to_dtr>0){
-                                    echo '<a class="btn btn-circle btn-xs green-seagreen" href="'.base_url().'index.php/Tolling/create_dtr/'.$data->id.'" 
-                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Create &nbsp; </a>';
+                                if( ($group_id==1 || $hak_akses['create_dtr']==1) && $data->flag_tolling==1){
+                                    echo '<a class="btn btn-circle btn-xs green-seagreen" href="'.base_url().'index.php/Tolling/matching/'.$data->id.'" 
+                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Matching &nbsp; </a>';
+                                }else{
+                                    echo '<div class="bg-green">Received</div>';
                                 }
                             ?>
                         </td>
@@ -86,7 +88,10 @@
                             ?>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/Tolling/print_so/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
-                                
+                            <?php
+                                }if($data->invoice == 0){
+                            ?>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Tolling/edit/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
                             <?php
                                 }
                             ?>

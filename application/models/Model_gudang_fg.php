@@ -81,6 +81,15 @@ class Model_gudang_fg extends CI_Model{
         return $data;
     }
 
+    function check_spb($id){
+        $data = $this->db->query("select tsf.id, 
+                (select sum(tsfd.netto) from t_spb_fg_detail tsfd where tsfd.t_spb_fg_id=tsf.id) as tot_spb,
+                (select sum(tgf.netto) from t_gudang_fg tgf where tgf.t_spb_fg_id=tsf.id) as tot_so
+                from t_spb_fg tsf
+                where tsf.id =".$id);
+        return $data;
+    }
+
     function pilihan_spb_list(){
         $data = $this->db->query("Select tsf.*, 
                 (Select count(tsfd.id)As jumlah_item From t_spb_fg_detail tsfd Where tsfd.t_spb_fg_id = tsf.id)As jml_barang
@@ -167,10 +176,19 @@ class Model_gudang_fg extends CI_Model{
                     Where tsfd.t_spb_fg_id=".$id);
         return $data;
     }
+
+    function show_detail_spb_saved($id){
+        $data = $this->db->query("select jb.jenis_barang, jb.uom, tgf.* from  t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id 
+            where tgf.t_spb_fg_id =".$id." and tgf.jenis_trx=1
+            order by tgf.jenis_barang_id");
+        return $data;
+    }
+
     function load_detail_saved_item($id){
         $data = $this->db->query("select jb.jenis_barang, jb.uom, tgf.* from  t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id 
-            where tgf.t_spb_fg_id =".$id."
+            where tgf.t_spb_fg_id =".$id." and tgf.jenis_trx=0
             order by tgf.jenis_barang_id");
         return $data;
     }

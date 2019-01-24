@@ -139,9 +139,13 @@
                         <i class="fa fa-check"></i> Terima TTR </a>
                     <a href="javascript:;" class="btn red" onclick="rejectTTR(<?=$header['id'];?>);"> 
                         <i class="fa fa-times"></i> Tolak TTR </a>
-
+                    <?php if(substr($header['no_dtr'],0,5)=='DTR-T'){?>
+                    <a href="<?php echo base_url('index.php/Tolling/ttr_list'); ?>" class="btn blue-hoki"> 
+                        <i class="fa fa-angle-left"></i> Kembali </a>
+                    <?php }else{ ?>
                     <a href="<?php echo base_url('index.php/BeliRongsok/ttr_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
+                    <?php } ?>
                 </div>    
             </div>
         </form>
@@ -167,7 +171,11 @@ function approveTTR(id_ttr){
             if(result['status']){
                 alert(result['message']);
                 setTimeout(function(){
+                    if($('#no_dtr').val().substring(0, 5)=='DTR-T'){
+                        window.location="<?=base_url('index.php/Tolling/ttr_list');?>";
+                    }else{
                     window.location="<?=base_url('index.php/BeliRongsok/ttr_list');?>";
+                    }
                 },1000);
             }
         }

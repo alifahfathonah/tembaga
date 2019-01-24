@@ -66,7 +66,7 @@
                                 }else if($data->status==1){
                                     echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
                                 }else if($data->status==2){
-                                    echo '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
+                                    echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
                                 }else if($data->status==9){
                                     echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
                                 }

@@ -134,7 +134,7 @@
             
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <?php if ($myData['status']==0) { ?>
+                    <?php if ($myData['status']==0 || $myData['status']==2) { ?>
                     <div class="row">
                         <div class="col-md-12">
                                 <h4 align="center">Detail SPB FG dan Ketersediaan (Kuantitas dan Stok)</h4>
@@ -179,6 +179,54 @@
                                                 $no++;
                                             }
                                         ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                        </div>
+                    </div>
+                    <hr class="divider"/>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 align="center">SPB FG yang Sudah Dipenuhi</h4>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
+                                        <thead>
+                                            <th style="width:40px">No</th>
+                                            <th>Nama Item</th>
+                                            <th>UOM</th>
+                                            <th>No Packing</th>
+                                            <th>Nomor Bobbin</th>
+                                            <th>Bruto</th>
+                                            <th>Netto (UOM)</th>
+                                            <th>Keterangan</th>
+                                        </thead>
+                                        <tbody>
+                                        <?php
+                                            $no = 1;
+                                            $tb = 0;
+                                            $tn = 0;
+                                            foreach ($myDetailSaved as $row){
+                                                echo '<tr>';
+                                                echo '<td style="text-align:center">'.$no.'</td>';
+                                                echo '<td>'.$row->jenis_barang.'</td>';
+                                                echo '<td>'.$row->uom.'</td>';
+                                                echo '<td>'.$row->no_packing.'</td>';
+                                                echo '<td>'.$row->nomor_bobbin.'</td>';
+                                                echo '<td>'.$row->bruto.'</td>';
+                                                echo '<td>'.$row->netto.' '.$row->uom.'</td>';
+                                                echo '<td>'.$row->keterangan.'</td>';
+                                                $tb += $row->bruto;
+                                                $tn += $row->netto;
+                                                $no++;
+                                            }
+                                        ?>
+                                        <tr>
+                                            <td colspan="5">Total</td>
+                                            <td style="background-color: green; color: white;"><?=$tb;?></td>
+                                            <td style="background-color: green; color: white;"><?=$tn;?></td>
+                                            <td></td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -271,7 +319,6 @@
                                         </tbody>
                                     </table>
                                 </div>
-
                         </div>
                     </div>
 
@@ -321,11 +368,11 @@
             <div class="row">
                 <div class="col-md-12">
                     <?php
-                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && $myData['status']=="0"){
+                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && ($myData['status']=="0" || $myData['status']=='2')){
                             echo '<a href="javascript:;" class="btn green" onclick="approveData();"> '
                                 .'<i class="fa fa-check"></i> Approve </a> ';
                         }
-                        if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="0"){
+                        if( ($group_id==1 || $hak_akses['reject_spb']==1) &&  ($myData['status']=="0" || $myData['status']=='2')){
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
                         }

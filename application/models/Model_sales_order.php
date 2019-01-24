@@ -2,6 +2,7 @@
 class Model_sales_order extends CI_Model{
     function so_list(){
         $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, so.flag_ppn, so.flag_sj, usr.realname As nama_marketing, cust.nama_customer, cust.pic, COALESCE(tsf.status,tsw.status,spb.status) as status_spb,
+            (Select count(fi.id) from f_invoice fi where fi.id_sales_order = so.id) as invoice,
             (Select count(tsod.id)As jumlah_item From t_sales_order_detail tsod Where tsod.t_so_id = tso.id)As jumlah_item From t_sales_order tso
             Left Join sales_order so on (so.id = tso.so_id)
             Left Join m_customers cust On (so.m_customer_id = cust.id) 
@@ -9,6 +10,7 @@ class Model_sales_order extends CI_Model{
             Left Join t_spb_wip tsw on (tso.jenis_barang='WIP') and (tsw.id=tso.no_spb)
             Left Join spb on (tso.jenis_barang='RONGSOK') and (spb.id=tso.no_spb)
             Left Join users usr On (so.marketing_id = usr.id)
+            Where so.flag_tolling = 0
             Order by so.tanggal desc");
         return $data;
     }
@@ -137,7 +139,7 @@ class Model_sales_order extends CI_Model{
     }
     
     function get_so_list($id){
-        $data = $this->db->query("Select * From sales_order Where m_customer_id=".$id." and jenis_barang_id = 0 and flag_sj = 0");
+        $data = $this->db->query("Select * From sales_order Where m_customer_id=".$id." and flag_tolling = 0 and flag_sj = 0");
         return $data;
     }
 
@@ -259,6 +261,7 @@ class Model_sales_order extends CI_Model{
             left join t_spb_wip tsw on tso.jenis_barang='WIP' and tsw.id = tso.no_spb
             left join spb on tso.jenis_barang='RONGSOK' and spb.id = tso.no_spb
             left join m_customers mc on mc.id = so.m_customer_id
+            Where flag_tolling = 0
             order by so.tanggal desc");
         return $data;
     }
@@ -330,7 +333,7 @@ class Model_sales_order extends CI_Model{
                     Left Join m_customers cust On (tsj.m_customer_id = cust.id)
                     Left Join sales_order so On (tsj.sales_order_id = so.id) 
                     Left Join f_invoice fi on (fi.id_surat_jalan = tsj.id)
-                Where tsj.jenis_barang <>'TOLLING' 
+                Where so.flag_tolling = 0 
                 Order By tsj.id Desc");
         return $data;
     }
@@ -352,6 +355,14 @@ class Model_sales_order extends CI_Model{
                     Left Join users aprv On (tsj.approved_by = aprv.id)
                     Left Join users rjct On (tsj.rejected_by = rjct.id)
                     Where tsj.id=".$id);
+        return $data;
+    }
+
+    function jenis_barang_in_so($id){
+        $data = $this->db->query("select jb.id,jb.jenis_barang from t_sales_order_detail tsod 
+            left join t_sales_order tso on tso.id = tsod.t_so_id
+            left join jenis_barang jb on jb.id = tsod.jenis_barang_id
+            where tso.so_id =".$id);
         return $data;
     }
 
@@ -391,7 +402,6 @@ class Model_sales_order extends CI_Model{
         $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jba.jenis_barang as jenis_barang_a, jb.uom 
                 from t_surat_jalan_detail tsjd
                 left join jenis_barang jb on jb.id= tsjd.jenis_barang_id
-                
                 left join jenis_barang jba on tsjd.jenis_barang_alias != 0 and jba.id = tsjd.jenis_barang_alias
                 where tsjd.t_sj_id = ".$id);
         return $data;

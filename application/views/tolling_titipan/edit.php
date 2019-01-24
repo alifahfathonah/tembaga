@@ -37,7 +37,9 @@
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_sales_order']; ?>">
                             
-                            <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
+                            <input type="hidden" id="id" name="id" value="<?php echo $header['id'];?>">
+                            <input type="hidden" id="id_tso" name="id_tso" value="<?php echo $header['id_tso']; ?>">
+                            <input type="hidden" id="id_spb" name="id_spb" value="<?php echo $header['no_spb'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -48,6 +50,16 @@
                             <input type="text" id="no_po" name="no_po" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_po']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. SPB <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_spb" name="no_spb" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['nomor_spb']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -137,7 +149,7 @@
                             <tr>
                                 <td style="text-align:center">+</td>
                                 <td>
-                                <select id="rongsok_id" name="rongsok_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
+                                <select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
                                 <option value=""></option><?php
                                     foreach ($list_fg as $value){
                                         echo "<option value='".$value->id."'>".$value->jenis_barang."</option>";
@@ -236,14 +248,14 @@ function get_uom(id){
 }
 
 function saveDetail(){
-    if($.trim($("#rongsok_id").val()) == ""){
-        $('#message').html("Silahkan pilih item rongsok!");
+    if($.trim($("#jenis_barang_id").val()) == ""){
+        $('#message').html("Silahkan pilih item!");
         $('.alert-danger').show(); 
     }else if($.trim($("#netto").val()) == ""){
         $('#message').html("Jumlah Netto tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#harga").val()) == ""){
-        $('#message').html("Harga item rongsok tidak boleh kosong!");
+        $('#message').html("Harga item tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else{
         $.ajax({
@@ -251,20 +263,20 @@ function saveDetail(){
             url:'<?php echo base_url('index.php/Tolling/save_detail'); ?>',
             data:{
                 id:$('#id').val(),
-                rongsok_id:$('#rongsok_id').val(),
+                id_spb:$('#id_spb').val(),
+                jenis_barang:$('#jenis_barang_id').val(),
+                tanggal:$('#tanggal').val(),
+                uom:$('#uom').val(),
                 harga:$('#harga').val(),
-                qty:$('#qty').val(),
                 total_harga:$('#total_harga').val(),
-                bruto:$('#bruto').val(),
                 netto:$('#netto').val()
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
-                    $("#rongsok_id").select2("val", "");
+                    $("#jenis_barang_id").select2("val", "");
                     $("#uom").val('');
                     $("#harga").val('');
-                    $("#bruto").val('');
                     $("#netto").val('');
                     $("#total_harga").val('');
                     $('#message').html("");
@@ -278,13 +290,16 @@ function saveDetail(){
     }
 }
 
-function hapusDetail(id){
-    var r=confirm("Anda yakin menghapus item rongsok ini?");
+function hapusDetail(id,id_spb){
+    var r=confirm("Anda yakin menghapus item ini?");
     if (r==true){
         $.ajax({
             type:"POST",
             url:'<?php echo base_url('index.php/Tolling/delete_detail'); ?>',
-            data:"id="+ id,
+            data:{
+                id: id,
+                id_spb: id_spb
+            },
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
