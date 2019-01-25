@@ -54,6 +54,7 @@
                             <input type="text" id="no_invoice_resmi" name="no_invoice_resmi" 
                                 class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_invoice_resmi'];?>" readonly="readonly">
                             <input type="hidden" name="id_invoice_resmi" value="<?php echo $header['id'];?>">
+                            <input type="hidden" name="so_id" value="0">
                         </div>
                     </div>
                     <div class="row">
@@ -158,6 +159,7 @@
                                     }
                                 ?>
                             </select>
+                            <input type="hidden" name="id_invoice_resmi" value="0">
                         </div>
                     </div>
                     <div class="row">

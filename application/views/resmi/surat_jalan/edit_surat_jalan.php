@@ -47,18 +47,7 @@
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            No. Surat Jalan <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="no_invoice" name="no_invoice" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['no_invoice_resmi']; ?>">
-                            
-                            <input type="hidden" id="id_inv" name="id_inv" value="<?php echo $header['r_invoice_id']; ?>">
-                        </div>
-                    </div>
+
                     <div class="row">
                         <div class="col-md-4">
                             Tanggal <font color="#f00">*</font>
@@ -69,16 +58,52 @@
                                 value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
+                    <?php if ($header['r_invoice_id'] > 0){ ?>
                     <div class="row">
                         <div class="col-md-4">
-                            Jenis Barang <font color="#f00">*</font>
+                            No. Invoice <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
+                            <input type="text" id="no_invoice" name="no_invoice" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['jenis_barang']; ?>">
+                                value="<?php echo $header['no_invoice_resmi']; ?>">
+                            
+                            <input type="hidden" id="id_inv" name="id_inv" value="<?php echo $header['r_invoice_id']; ?>">
                         </div>
                     </div>
+                <?php } else {
+                    ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Sales Order
+                        </div>
+                        <div class="col-md-8">
+                            <select id="so_id" name="so_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
+                                onclick="get_alamat(this.value);">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($so_list as $row){
+                                        echo '<option value="'.$row->id.'" '.(($row->id == $header['so_id'])? 'selected="selected"' : '').'>'.$row->no_so.'</option>';
+                                    }
+                                ?>
+                            </select>
+                            <input type="hidden" name="id_invoice_resmi" value="0">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal SO.
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="tgl_so" id="tgl_so" class="form-control myline input-small" 
+                                   style="margin-bottom:5px; float: left;" onkeyup="this.value = this.value.toUpperCase();" value="<?php echo date('d-m-Y', strtotime($header['tanggal'])) ?>">
+                        </div>
+                    </div>
+                </div> 
+                <?php
+                } 
+                 if($header['so_id'] > 0){?>
                     <div class="row">
                         <div class="col-md-4">
                             Customer <font color="#f00">*</font>
@@ -108,6 +133,17 @@
                 </div>
                 <div class="col-md-2">&nbsp;</div>
                 <div class="col-md-5">
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Barang <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['jenis_barang']; ?>">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Type Kendaraan
@@ -296,6 +332,16 @@ function get_alamat(id){
 <script>
 $(function(){        
     $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    }); 
+
+    $("#tgl_so").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,
