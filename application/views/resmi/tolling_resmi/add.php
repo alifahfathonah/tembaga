@@ -39,25 +39,9 @@
                             No. Surat Jalan Rongsok <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="sj_id" name="sj_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_customer(this.value);">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($list_sj as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->no_sj_resmi.'</option>';
-                                    }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Nama Customer
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="nama_customer" name="nama_customer" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
-
-                            <input type="hidden" id="customer_id" name="customer_id">
+                            <input type="text" id="sj_id" name="sj_id" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['no_sj_resmi'];?>">
+                            <input type="hidden" id="sj_id" name="sj_id" value="<?php echo $header['id'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -124,8 +108,32 @@
                                 <th>Nomor Pallete</th>
                                 <th>Keterangan</th>
                             </thead>
-                            <tbody id="boxDetail">
-                                
+                            <tbody>
+                            <?php 
+                            $no = 1;
+                            $total = 0;
+                            foreach ($myDetail as $row){ 
+                                $berat_palette = $row->bruto - $row->netto;
+                            ?>
+                                <tr>
+                                <td style="text-align:center"><?=$no;?></td>
+                                <td><?=$row->nama_item;?></td>
+                                <td style="text-align:right;"><?=$row->bruto;?></td>
+                                <td style="text-align:right;"><?=$row->netto;?></td>
+                                <td style="text-align:right;"><?=$berat_palette;?></td>
+                                <td><?=$row->no_packing;?></td>
+                                <td><?=$row->line_remarks;?></td>
+                                </tr>
+                            <?php
+                                $total += $row->netto;
+                                $no++;
+                            }
+                            ?>
+                            <tr>
+                            <td colspan="3" style="text-align:right"><strong>Total (Kg) </strong></td>
+                            <td style="text-align:right; background-color:green; color:white"><strong><?=$total;?></strong></td>
+                            <td colspan="3"></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -144,28 +152,6 @@
     </div>
 </div> 
 <script>
-function get_customer(id){
-    $.ajax({
-        type: "POST",
-        url: "<?php echo base_url('index.php/TollingResmi/get_customer_sj'); ?>",
-        data: {id: id},
-        cache: false,
-        success: function(result) {
-            $("#nama_customer").val(result['nama_customer']);  
-            $("#customer_id").val(result['m_customer_id']);           
-        } 
-    });
-
-    $.ajax({
-        type:"POST",
-        url:'<?php echo base_url('index.php/TollingResmi/load_detail_sj'); ?>',
-        data:"id="+ id,
-        success:function(result){
-            $('#boxDetail').html(result);     
-        }
-    });
-}
-
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");

@@ -72,10 +72,10 @@
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/Matching/print_invoice/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
-                                }if($row->flag_tolling==0){
+                                }if($row->flag_tolling==0 && $row->r_invoice_id > 0){
                             ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/TollingResmi/add/<?php echo $row->id; ?>" 
-                                style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-truck"></i> Create Tolling &nbsp; </a>
+                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-truck"></i> Create Tolling &nbsp; </a>
                             <?php } ?>
                         </td>
                     </tr>

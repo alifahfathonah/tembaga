@@ -29,6 +29,7 @@ class TollingResmi extends CI_Controller{
 
     function add(){
         $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
         $group_id    = $this->session->userdata('group_id');        
         if($group_id != 1){
             $this->load->model('Model_modules');
@@ -36,7 +37,9 @@ class TollingResmi extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
-        $data['list_sj'] = $this->Model_tolling_resmi->list_sj()->result();
+        $data['header'] = $this->Model_tolling_resmi->add_tolling($id)->row_array();
+        $this->load->model('Model_surat_jalan');
+        $data['myDetail'] = $this->Model_surat_jalan->list_sj_detail($id)->result(); 
 
         $data['content']= "resmi/tolling_resmi/add";
 
@@ -50,40 +53,6 @@ class TollingResmi extends CI_Controller{
 
         header('Content-Type: application/json');
         echo json_encode($customer); 
-    }
-
-    function load_detail_sj(){
-        $id = $this->input->post('id');
-        
-        $tabel = "";
-        $no    = 1;
-        $total = 0;
-        $this->load->model('Model_surat_jalan');
-        
-        $myDetail = $this->Model_surat_jalan->list_sj_detail($id)->result(); 
-        foreach ($myDetail as $row){
-            $tabel .= '<tr>';
-            $tabel .= '<td style="text-align:center">'.$no.'</td>';
-            $tabel .= '<td>'.$row->nama_item.'</td>';
-            $tabel .= '<td style="text-align:right;">'.$row->bruto.'</td>';
-            $tabel .= '<td style="text-align:right;">'.$row->netto.'</td>';
-            $berat_palette = $row->bruto - $row->netto;
-            $tabel .= '<td style="text-align:right;">'.$berat_palette.'</td>';
-            $tabel .= '<td>'.$row->no_packing.'</td>';
-            $tabel .= '<td>'.$row->line_remarks.'</td>';
-            $tabel .= '</tr>';
-            $total += $row->netto;
-            $no++;
-        }
-
-        $tabel .= '<tr>';
-        $tabel .= '<td colspan="3" style="text-align:right"><strong>Total (Kg) </strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.$total.'</strong></td>';
-        $tabel .= '<td colspan="3"></td>';
-        $tabel .= '</tr>';
-
-        header('Content-Type: application/json');
-        echo json_encode($tabel);
     }
 
     function save(){
@@ -101,6 +70,7 @@ class TollingResmi extends CI_Controller{
                 'no_dtr_resmi'=> $code_dtr,
                 'tanggal'=> $tgl_input,
                 'sj_id'=>$this->input->post('sj_id'),
+                'f_invoice_id'=>$this->input->post(''),
                 'customer_id'=>$this->input->post('customer_id'),
                 'created_by'=> $user_id,
                 'created_at'=> $tanggal

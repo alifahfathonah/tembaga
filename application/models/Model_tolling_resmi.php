@@ -11,6 +11,11 @@ class Model_tolling_resmi extends CI_Model{
 		return $data;
 	}
 
+    function add_tolling($id){
+        $data = $this->db->query("select * from r_t_surat_jalan where id=".$id);
+        return $data;
+    }
+
 	function list_sj(){
 		$data = $this->db->query("select * from r_t_surat_jalan where flag_tolling = 0");
 		return $data;
