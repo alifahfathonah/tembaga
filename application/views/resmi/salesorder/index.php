@@ -25,14 +25,6 @@
                 <div class="caption">
                     <i class="fa fa-beer"></i>Sales Order List
                 </div>
-                <div class="tools">
-                <!-- <?php
-                    if( ($group_id==9)||($hak_akses['add']==1) ){
-                        echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/SO/add_so').'"> '
-                        .'<i class="fa fa-plus"></i> Input SO </a>';
-                    }
-                ?>     -->                
-                </div>
             </div>
             <div class="portlet-body">
                 <table class="table table-striped table-bordered table-hover" id="sample_6">
@@ -83,7 +75,7 @@
                                 }
                                 if( ($group_id==9 || $hak_akses['edit']==1)){
                             ?>
-                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/PurchaseOrder/edit_po/<?php echo $data->id; ?>" style="margin-bottom:4px">
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/SO/edit_so/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                             <?php
                                 }

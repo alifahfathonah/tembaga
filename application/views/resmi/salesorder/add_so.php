@@ -61,21 +61,15 @@
                             </select>
                         </div>
                     </div>
-                    <!-- <div class="row">
+                    <div class="row">
                         <div class="col-md-4">
                             Jenis Barang <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="jenis_barang" name="jenis_barang" data-placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom:5px" required="required">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($option_jenis_barang as $v) {
-                                        echo '<option value="'.$v->category.'">'.$v->category.'</option>';
-                                    }
-                                ?>           
-                            </select>
+                            <input type="text" id="jenis_barang" name="jenis_barang"
+                                class="form-control myline" style="margin-bottom:5px" value="FinishGood" readonly="readonly">
                         </div>
-                    </div> -->
+                    </div>
                     <div class="row">&nbsp;</div>
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>
@@ -92,15 +86,10 @@
                             Nomor PO <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="po_id" name="po_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." onchange="get_tanggal(this.value);" style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php 
-                                    foreach ($list_po as $row) {
-                                        echo '<option value="'.$row->id.'" '.(($row->id == $header['id'])? 'selected="selected"': '').'>'.$row->no_po.'</option>';
-                                    }
-                                ?>
-                            </select>
+                            <input type="text" id="no_po" name="no_po"
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_po']?>" readonly="readonly">
+
+                            <input type="hidden" name="po_id" value="<?php echo $header['id'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -110,7 +99,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal_po" name="tanggal_po" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>" readonly="readonly">
                         </div>
                     </div>
                     <div class="row">
@@ -118,15 +107,10 @@
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['customer_id'])? 'selected="selected"': '').'>'.$row->nama_customer.'</option>';
-                                    }
-                                ?>
-                            </select>
+                            <input type="text" id="nama_customer" name="nama_customer"
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_customer'];?>" readonly="readonly">
+
+                            <input type="hidden" name="customer_id" value="<?php echo $header['customer_id'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -165,16 +149,7 @@ function simpanData(){
         $('.alert-danger').show(); 
     }else if($.trim($("#marketing_id").val()) == ""){
         $('#message').html("Silahkan pilih marketing!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#po_id").val()) == ""){
-        $('#message').html("Silahkan isi nomor PO!");
         $('.alert-danger').show();
-    }else if($.trim($("#tanggal_po").val()) == ""){
-        $('#message').html("Silahkan pilih tanggal PO!");
-        $('.alert-danger').show();
-    }else if($.trim($("#m_customer_id").val()) == ""){
-        $('#message').html("Silahkan pilih nama customer!");
-        $('.alert-danger').show(); 
     }else{   
         $('#formku').submit(); 
     };
@@ -212,18 +187,6 @@ function get_contact(id){
 <script>
 $(function(){        
     $("#tanggal").datepicker({
-        showOn: "button",
-        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
-        buttonImageOnly: true,
-        buttonText: "Select date",
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'dd-mm-yy'
-    });       
-});
-
-$(function(){        
-    $("#tanggal_po").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,

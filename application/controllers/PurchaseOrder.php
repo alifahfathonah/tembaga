@@ -169,9 +169,9 @@ class PurchaseOrder extends CI_Controller{
             if($v['id']!=''){
                 $data = array(
                         'jenis_barang_id'=> $v['barang_id'],
-                        'netto'=> $v['netto'],
-                        'amount'=> $v['amount'],
-                        'total_amount'=> $v['total_amount'],
+                        'netto'=> str_replace('.', '', $v['netto']),
+                        'amount'=> str_replace('.', '', $v['amount']),
+                        'total_amount'=> str_replace('.', '', $v['total_amount']),
                         'line_remarks'=> $v['line_remarks']
                     );
                 $this->db->where('id', $v['id']);

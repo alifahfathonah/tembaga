@@ -44,8 +44,6 @@ class SO extends CI_Controller{
         $data['header'] = $this->Model_purchase_order->show_header_po($po_id)->row_array();
         $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
         $data['marketing_list'] = $this->Model_sales_order->marketing_list()->result();
-        $data['option_jenis_barang'] = $this->Model_sales_order->jenis_barang_list()->result();
-        $data['list_po'] = $this->Model_so->list_po()->result();
         $this->load->view('layout', $data);
     }
 
@@ -62,10 +60,7 @@ class SO extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
-        
-        $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('SO', $tgl_input); 
-        
+                
         $category = $this->input->post('jenis_barang');
 
         $this->db->trans_start();
@@ -73,7 +68,7 @@ class SO extends CI_Controller{
             'no_so'=>$this->input->post('no_so'),
             'tanggal'=>$tgl_input,
             'marketing_id'=>$this->input->post('marketing_id'),
-            'customer_id'=>$this->input->post('m_customer_id'),
+            'customer_id'=>$this->input->post('customer_id'),
             'po_id'=>$this->input->post('po_id'),
             'tgl_po'=>$tgl_po,
             'jenis_so'=>'JASA',
@@ -81,20 +76,20 @@ class SO extends CI_Controller{
             'created_at'=> $tanggal,
             'created_by'=> $user_id
         );
-
         $this->db->insert('r_t_so', $t_data);
         $so_id = $this->db->insert_id();
+        
         $loop = $this->db->get_where('r_t_po_detail', array('po_id'=>$this->input->post('po_id')))->result();
         foreach ($loop as $row) {
             $data_sod = array(
                 'so_id' => $so_id,
                 'po_detail_id' => $row->id,
-                'jenis_barang_id' => $row->fg_id,
+                'jenis_barang_id' => $row->jenis_barang_id,
                 'netto' => $row->netto,
                 'amount' => $row->amount,
                 'total_amount' => $row->total_amount
-
             );
+
             $this->db->insert('r_t_so_detail', $data_sod);
         }
                   
@@ -123,9 +118,6 @@ class SO extends CI_Controller{
             $data['header'] = $this->Model_so->show_header_so($id)->row_array();  
             $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
             $data['marketing_list'] = $this->Model_sales_order->marketing_list()->result();
-            $data['option_jenis_barang'] = $this->Model_sales_order->jenis_barang_list()->result();
-            $data['list_po'] = $this->Model_so->list_po()->result();
-            $data['list_detail'] = $this->Model_so->list_detail_so($id)->result();
             $data['jenis_barang'] = $this->Model_so->jenis_barang_list()->result();
             $this->load->view('layout', $data);   
         }else{
@@ -139,6 +131,7 @@ class SO extends CI_Controller{
         $no = 1;
         $total = 0;
         $netto = 0;
+        $bruto = 0;
         $tabel = "";
         $jenis_barang = $this->Model_so->jenis_barang_list()->result();
 
@@ -160,46 +153,34 @@ class SO extends CI_Controller{
             $tabel .= '<input type="text" id="uom_'.$no.'" name="uom_'.$no.'" class="form-control myline" value="'.$row->uom.'" readonly  style="display:none;"/></td>';
             $tabel .= '<td style="text-align:right;"><label id="lbl_amount_'.$no.'">'.number_format($row->amount,0,',','.').'</label>';
             $tabel .= '<input type="text" id="amount_'.$no.'" name="amount_'.$no.'" class="form-control myline" value="'.$row->amount.'" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id,'.$no.');"  style="display:none;"/></td>';
+            $tabel .= '<td style="text-align:right;"><label id="lbl_bruto_'.$no.'">'.$row->bruto.'</label>';
+            $tabel .= '<input type="text" id="bruto_'.$no.'" name="bruto_'.$no.'" class="form-control myline" value="'.$row->bruto.'"  style="display:none;" maxlength="10" value="0"/></td>';
             $tabel .= '<td style="text-align:right;"><label id="lbl_netto_'.$no.'">'.number_format($row->netto,0,',','.').'</label>';
-            $tabel .= '<input type="text" id="netto_'.$no.'" name="netto_'.$no.'" class="form-control myline" value="'.$row->netto.'"  style="display:none;" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id, '.$no.');"/></td>';
+            $tabel .= '<input type="text" id="netto_'.$no.'" name="netto_'.$no.'" class="form-control myline" value="'.number_format($row->netto,0,',','.').'"  style="display:none;" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id, '.$no.');"/></td>';
             $tabel .= '<td style="text-align:right;"><label id="lbl_total_amount_'.$no.'">'.number_format($row->total_amount,0,',','.').'</label>';
-            $tabel .= '<input type="text" id="total_amount_'.$no.'" name="total_amount_'.$no.'" class="form-control myline" value="'.$row->total_amount.'" style="display:none;" readonly /></td>';
+            $tabel .= '<input type="text" id="total_amount_'.$no.'" name="total_amount_'.$no.'" class="form-control myline" value="'.number_format($row->total_amount,0,',','.').'" style="display:none;" readonly /></td>';
             $tabel .= '<td style="text-align:center;"><a id="btnEdit_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle '
                     . 'green" onclick="editDetail('.$no.');" style="margin-top:5px"> '
                     . '<i class="fa fa-pencil"></i> Edit </a>';
             $tabel .= '<a id="btnUpdate_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle '
                     . 'green-seagreen" onclick="updateDetail('.$no.');" style="margin-top:5px; display:none;"> '
                     . '<i class="fa fa-save"></i> Update </a>';
-            $tabel .= '<a id="btnDelete_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle '
-                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
-                    . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';
+            $bruto += $row->bruto;
             $netto += $row->netto;
             $total += $row->total_amount;
             $no++;
         }
         $tabel .= '<tr>';
         $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($bruto,0,',','.').'</strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
+        $tabel .= '<td></td>';
         $tabel .= '</tr>';
 
         header('Content-Type: application/json');
         echo json_encode($tabel); 
-    }
-
-    function delete_detail_so(){
-        $id = $this->input->post('id');
-        $return_data = array();
-        $this->db->where('id', $id);
-        if($this->db->delete('r_t_so_detail')){
-            $return_data['message_type']= "sukses";
-        }else{
-            $return_data['message_type']= "error";
-            $return_data['message']= "Gagal menghapus item finish good! Silahkan coba kembali";
-        }           
-        header('Content-Type: application/json');
-        echo json_encode($return_data);
     }
 
     function save_detail_so(){
@@ -233,6 +214,7 @@ class SO extends CI_Controller{
             'jenis_barang_id'=>$this->input->post('jenis_barang_id'),
             'amount'=>str_replace('.', '', $this->input->post('amount')),
             'total_amount'=>str_replace('.', '', $this->input->post('total_amount')),
+            'bruto'=>$this->input->post('bruto'),
             'netto'=>str_replace('.', '', $this->input->post('netto'))
         ))){
             $return_data['message_type']= "sukses";
@@ -264,9 +246,6 @@ class SO extends CI_Controller{
         
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('r_t_so', $data);
-
-        $this->db->where('id', $this->input->post('po_id'));
-        $this->db->update('r_t_po', array('flag_so' => 1));
         
         $this->session->set_flashdata('flash_msg', 'Data sales order jasa berhasil disimpan');
         redirect('index.php/SO');

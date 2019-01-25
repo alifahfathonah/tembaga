@@ -144,21 +144,16 @@
                 <div class="col-md-5">   
                     <?php if ($user_id == 12) {
                     ?>
+                    
                     <div class="row">
                         <div class="col-md-4">
-                            No. Sales Order
+                            No. Sales Order <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="so_id" name="so_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
-                                onclick="get_alamat(this.value);">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($so_list as $row){
-                                        echo '<option value="'.$row->id.'" '.(($row->id == $header['id'])? 'selected="selected"' : '').'>'.$row->no_so.'</option>';
-                                    }
-                                ?>
-                            </select>
+                            <input type="text" id="no_so_resmi" name="no_so_resmi" 
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_so'];?>" readonly="readonly">
+                            <input type="hidden" name="so_id" value="<?php echo $header['id'];?>">
+
                             <input type="hidden" name="id_invoice_resmi" value="0">
                         </div>
                     </div>

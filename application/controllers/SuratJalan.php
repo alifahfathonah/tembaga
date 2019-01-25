@@ -63,7 +63,7 @@ class SuratJalan extends CI_Controller{
             $data = array(
                 'no_sj_resmi'=> $this->input->post('no_surat_jalan'),
                 'r_invoice_id'=>$this->input->post('id_invoice_resmi'),
-                'so_id' => $this->input->post('so_id'),
+                'r_so_id' => $this->input->post('so_id'),
                 'tanggal'=> $tgl_input,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'm_customer_id'=>$this->input->post('m_customer_id'),
@@ -100,6 +100,11 @@ class SuratJalan extends CI_Controller{
                 $this->db->insert('r_t_surat_jalan_detail', $detail);
             }
         }else if($user_id == 12){
+            $this->db->where('id',$this->input->post('so_id'));
+            $this->db->update('r_t_so', array(
+                'sjr_id'=> $sjr_id
+            ));
+
             $this->load->model('Model_so');
             $list_so = $this->Model_so->list_detail_so($this->input->post('so_id'))->result();
             foreach ($list_so as $row) {
@@ -138,7 +143,6 @@ class SuratJalan extends CI_Controller{
             $this->load->model('Model_sales_order');
             $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
             $this->load->model('Model_so');
-            $data['so_list'] = $this->Model_so->so_list()->result();
             $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
 
             $data['list_sj_detail'] = $this->Model_surat_jalan->list_sj_detail($id)->result();
@@ -162,19 +166,41 @@ class SuratJalan extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
-        $details = $this->input->post('details');
-        foreach ($details as $v) {
-            if($v['id']!=''){
-                $data = array(
-                        'jenis_barang_id'=> $v['barang_id'],
-                        'no_packing'=> $v['no_packing'],
-                        'bruto'=> $v['bruto'],
-                        'netto'=> $v['netto'],
-                        'modified_at'=> $tanggal,
-                        'modified_by'=> $user_id
-                    );
-                $this->db->where('id', $v['id']);
-                $this->db->update('r_t_surat_jalan_detail', $data);
+        $jenis = $this->input->jenis_barang;
+
+        if($jenis == 'RONGSOK'){
+            $details = $this->input->post('details');
+            foreach ($details as $v) {
+                if($v['id']!=''){
+                    $data = array(
+                            'jenis_barang_id'=> $v['barang_id'],
+                            'no_packing'=> $v['no_packing'],
+                            'bruto'=> $v['bruto'],
+                            'netto'=> $v['netto'],
+                            'line_remarks'=> $v['line_remarks'],
+                            'modified_at'=> $tanggal,
+                            'modified_by'=> $user_id
+                        );
+                    $this->db->where('id', $v['id']);
+                    $this->db->update('r_t_surat_jalan_detail', $data);
+                }
+            }
+        }else if($jenis == 'FG'){
+            $details = $this->input->post('details');
+            foreach ($details as $v) {
+                if($v['id']!=''){
+                    $data = array(
+                            'jenis_barang_id'=> $v['barang_id'],
+                            'no_packing'=> $v['no_packing'],
+                            'bruto'=> $v['bruto'],
+                            'netto'=> $v['netto'],
+                            'line_remarks'=> $v['line_remarks'],
+                            'modified_at'=> $tanggal,
+                            'modified_by'=> $user_id
+                        );
+                    $this->db->where('id', $v['id']);
+                    $this->db->update('r_t_surat_jalan_detail', $data);
+                }
             }
         }
 

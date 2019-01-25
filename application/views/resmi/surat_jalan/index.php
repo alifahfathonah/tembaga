@@ -33,7 +33,7 @@
                 <tr>
                     <th style="width:50px;">No</th>
                     <th>No. Surat Jalan</th>
-                    <th>No. Invoice</th>
+                    <th>No. Invoice<br>No. Sales Order</th>
                     <th>Tanggal</th>
                     <th>Jenis<br>Barang</th>                     
                     <th>Customer</th>
@@ -50,7 +50,7 @@
                     <tr>
                         <td style="text-align: center;"><?php echo $no; ?></td>
                         <td><?php echo $row->no_sj_resmi; ?></td>
-                        <td><?php echo $row->no_invoice_resmi; ?></td>
+                        <td><?php echo $row->no_invoice_resmi.$row->no_so; ?></td>
                         <td><?php echo $row->tanggal; ?></td>
                         <td><?php echo $row->jenis_barang; ?></td>
                         <td><?php echo $row->nama_customer; ?></td>

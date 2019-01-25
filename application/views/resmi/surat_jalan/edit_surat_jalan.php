@@ -47,7 +47,6 @@
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-md-4">
                             Tanggal <font color="#f00">*</font>
@@ -78,16 +77,11 @@
                             No. Sales Order
                         </div>
                         <div class="col-md-8">
-                            <select id="so_id" name="so_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
-                                onclick="get_alamat(this.value);">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($so_list as $row){
-                                        echo '<option value="'.$row->id.'" '.(($row->id == $header['so_id'])? 'selected="selected"' : '').'>'.$row->no_so.'</option>';
-                                    }
-                                ?>
-                            </select>
+                            <input type="text" id="no_so" name="no_so" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['no_so']; ?>">
+                            
+                            <input type="hidden" id="id_inv" name="id_inv" value="<?php echo $header['r_so_id']; ?>">
                             <input type="hidden" name="id_invoice_resmi" value="0">
                         </div>
                     </div>
@@ -96,11 +90,9 @@
                             Tanggal SO.
                         </div>
                         <div class="col-md-8">
-                            <input type="text" name="tgl_so" id="tgl_so" class="form-control myline input-small" 
-                                   style="margin-bottom:5px; float: left;" onkeyup="this.value = this.value.toUpperCase();" value="<?php echo date('d-m-Y', strtotime($header['tanggal'])) ?>">
+                            <input type="text" name="tgl_so" id="tgl_so" class="form-control myline input-small" style="margin-bottom:5px; float: left;" onkeyup="this.value = this.value.toUpperCase();" value="<?php echo date('d-m-Y', strtotime($header['tgl_so'])) ?>" readonly="readonly">
                         </div>
-                    </div>
-                </div> 
+                    </div> 
                 <?php
                 }
                 ?>
@@ -198,36 +190,38 @@
                             <thead>
                                 <th>No</th>
                                 <th style="width: 19%">Nama Item</th>
-                                <th style="width: 19%">Nama Item Alias</th>
                                 <th>UOM</th>
-                                <th style="width: 15%">No. Packing</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
-                                <th>Bobbin</th>
+                                <th style="width: 15%">No. Packing</th>
                                 <th>Keterangan</th>
-                                <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
                                 <?php 
                                     $no=1; 
-                                    foreach ($list_sj_detail as $row) { 
+                                    foreach ($list_sj_detail as $row) {
+                                echo '<input type="hidden" name="details['.$no.'][id]" value="'.$row->id.'">';
                                 ?>
                                 <tr>
-                                    <td><?php echo $no; ?></td>
-                                    <td></td>
-                                    <?php if(is_null($row->jenis_barang_a)){ ?>
-                                    <td>TIDAK ADA ALIAS</td>
-                                    <?php } else { ?>
-                                    <td><?php echo $row->jenis_barang_a; ?></td>
-                                    <?php } ?>
-                                    <td><?php echo $row->uom; ?></td>
-                                    <td><?php echo $row->no_packing; ?></td>
-                                    <td><?php echo $row->bruto; ?></td>
-                                    <td><?php echo $row->netto; ?></td>
-                                    <td><?php echo $row->nomor_bobbin; ?></td>
-                                    <td><?php echo $row->line_remarks; ?></td>
+                                    <td style="text-align: center;"><?= $no ;?></td>
+                                    <td>
+                                    <?php echo '<select name="details['.$no.'][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px; top: auto; bottom: auto;" onchange="window.scrollTo(0, 150);">
+                                        <option value=""></option>';
+                                        foreach ($jenis_barang as $value){ 
+                                            echo '<option value="'.$value->id.'" '.(($value->id==$row->jenis_barang_id)? 'selected="selected"': '').'>'.$value->jenis_barang.'</option>';
+                                         } 
+                                        '</select>';?>
+                                    </td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" value="'.$row->uom.'">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][bruto]" value="'.$row->bruto.'">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][netto]" value="'.$row->netto.'">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][no_packing]" value="'.$row->no_packing.'">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][line_remarks]" value="'.$row->line_remarks.'">';?></td>
                                 </tr>
-                                <?php } ?>
+                                <?php
+                                    $no++;
+                                    }
+                                ?>
                             </tbody>
                         </table>
                     <?php
@@ -237,9 +231,11 @@
                             <thead>
                                 <th style="width:40px">No</th>
                                 <th>Nama Item</th>
+                                <th>UOM</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
                                 <th>Nomor Pallete</th>
+                                <th>Keterangan</th>
                             </thead>
                             <tbody>
                                 <?php 
@@ -257,9 +253,11 @@
                                          } 
                                         '</select>';?>
                                     </td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" value="'.$row->uom.'">';?></td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][bruto]" value="'.$row->bruto.'">';?></td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][netto]" value="'.$row->netto.'">';?></td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][no_packing]" value="'.$row->no_packing.'">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][line_remarks]" value="'.$row->line_remarks.'">';?></td>
                                 </tr>
                                 <?php
                                     $no++;
@@ -340,18 +338,6 @@ $(function(){
         changeYear: true,
         dateFormat: 'dd-mm-yy'
     }); 
-
-    $("#tgl_so").datepicker({
-        showOn: "button",
-        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
-        buttonImageOnly: true,
-        buttonText: "Select date",
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'dd-mm-yy'
-    }); 
-
-    //loadDetail(<?php echo $header['id']; ?>);
 });
 </script>
       
