@@ -191,10 +191,7 @@ function simpanData(){
         $('.alert-danger').show(); 
     }else if($.trim($("#jenis_barang").val()) == ""){
         $('#message').html("Silahkan pilih jenis barang!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#m_customer_id").val()) == ""){
-        $('#message').html("Silahkan pilih customer");
-        $('.alert-danger').show(); 
+        $('.alert-danger').show();
     }else{     
         $('#formku').submit(); 
     };

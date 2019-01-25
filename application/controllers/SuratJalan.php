@@ -61,7 +61,7 @@ class SuratJalan extends CI_Controller{
 
             $data = array(
                 'no_sj_resmi'=> $this->input->post('no_surat_jalan'),
-                'r_invoice_id'=>$this->input->post('r_invoice_id'),
+                'r_invoice_id'=>$this->input->post('id_invoice_resmi'),
                 'tanggal'=> $tgl_input,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'm_customer_id'=>$this->input->post('m_customer_id'),
@@ -77,13 +77,14 @@ class SuratJalan extends CI_Controller{
             $this->db->insert('r_t_surat_jalan', $data);
             $sjr_id = $this->db->insert_id();
 
+        if($user_id == 9){
             $this->db->where('id',$this->input->post('r_invoice_id'));
             $this->db->update('r_t_invoice', array(
                 'sjr_id'=> $sjr_id
             ));
 
             $this->load->model('Model_matching');
-            $list_invoice = $this->Model_matching->list_invoice_detail($this->input->post('r_invoice_id'))->result();
+            $list_invoice = $this->Model_matching->list_invoice_detail($this->input->post('id_invoice_resmi'))->result();
             foreach ($list_invoice as $row) {
                 $detail = array(
                     'sj_resmi_id' => $sjr_id,
@@ -96,6 +97,7 @@ class SuratJalan extends CI_Controller{
                 );
                 $this->db->insert('r_t_surat_jalan_detail', $detail);
             }
+        }
 
             if($this->db->trans_complete()){
                 redirect('index.php/SuratJalan/edit_surat_jalan/'.$sjr_id);  
