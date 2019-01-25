@@ -109,7 +109,6 @@ class PurchaseOrder extends CI_Controller{
             'fg_id'=>$this->input->post('fg_id'),
             'amount'=>str_replace('.', '', $this->input->post('harga')),
             'netto'=>str_replace('.', '', $this->input->post('qty')),
-            'flag_dtbj' => 0,
             'total_amount'=>str_replace('.', '', $this->input->post('total_harga'))
         ))){
             $return_data['message_type']= "sukses";

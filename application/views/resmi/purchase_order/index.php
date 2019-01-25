@@ -26,12 +26,12 @@
                     <i class="fa fa-beer"></i>Purchase Order List
                 </div>
                 <div class="tools">
-                <?php
+                <!-- <?php
                     if( ($group_id==9)||($hak_akses['add']==1) ){
                         echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/PurchaseOrder/add_po').'"> '
                         .'<i class="fa fa-plus"></i> Input PO </a>';
                     }
-                ?>                    
+                ?>     -->                
                 </div>
             </div>
             <div class="portlet-body">
@@ -75,6 +75,12 @@
                         <td><?php echo $data->remarks; ?></td>
                         <td style="text-align:center"> 
                             <?php
+                                if( ($group_id==9 || $hak_akses['create_so']==1) && $data->flag_so == 0){
+                            ?>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/SO/add_so/<?php echo $data->id; ?>" style="margin-bottom:4px">
+                                &nbsp; <i class="fa fa-truck"></i> Create SO &nbsp; </a>
+                            <?php
+                                }
                                 if( ($group_id==9 || $hak_akses['edit']==1) && $data->status != 1 ){
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/PurchaseOrder/edit_po/<?php echo $data->id; ?>" style="margin-bottom:4px">

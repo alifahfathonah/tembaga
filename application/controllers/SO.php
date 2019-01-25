@@ -29,6 +29,7 @@ class SO extends CI_Controller{
 
     function add_so(){
         $module_name = $this->uri->segment(1);
+        $po_id = $this->uri->segment(3);
         $group_id    = $this->session->userdata('group_id');        
         if($group_id != 1){
             $this->load->model('Model_modules');
@@ -38,7 +39,9 @@ class SO extends CI_Controller{
         $data['group_id']  = $group_id;
         $data['content']= "resmi/salesorder/add_so";
         
+        $this->load->model('Model_purchase_order');
         $this->load->model('Model_sales_order');
+        $data['header'] = $this->Model_purchase_order->show_header_po($po_id)->row_array();
         $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
         $data['marketing_list'] = $this->Model_sales_order->marketing_list()->result();
         $data['option_jenis_barang'] = $this->Model_sales_order->jenis_barang_list()->result();
@@ -251,7 +254,7 @@ class SO extends CI_Controller{
                 'no_so'=> $this->input->post('no_so'),
                 'tanggal'=> $tgl_input,
                 'marketing_id'=>$this->input->post('marketing_id'),
-                'customer_id'=>$this->input->post('customer_id'),
+                'customer_id'=>$this->input->post('m_customer_id'),
                 'po_id'=>$this->input->post('po_id'),
                 'tgl_po'=>$tgl_po,
                 'remarks'=>$this->input->post('remarks'),

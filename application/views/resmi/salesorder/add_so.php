@@ -97,7 +97,7 @@
                                 <option value=""></option>
                                 <?php 
                                     foreach ($list_po as $row) {
-                                        echo '<option value="'.$row->id.'">'.$row->no_po.'</option>';
+                                        echo '<option value="'.$row->id.'" '.(($row->id == $header['id'])? 'selected="selected"': '').'>'.$row->no_po.'</option>';
                                     }
                                 ?>
                             </select>
@@ -110,7 +110,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal_po" name="tanggal_po" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -123,7 +123,7 @@
                                 <option value=""></option>
                                 <?php
                                     foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['customer_id'])? 'selected="selected"': '').'>'.$row->nama_customer.'</option>';
                                     }
                                 ?>
                             </select>
@@ -135,7 +135,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px">
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['pic'] ?>">
                         </div>
                     </div>                   
                 </div>              
@@ -165,9 +165,6 @@ function simpanData(){
         $('.alert-danger').show(); 
     }else if($.trim($("#marketing_id").val()) == ""){
         $('#message').html("Silahkan pilih marketing!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#jenis_barang").val()) == ""){
-        $('#message').html("Silahkan pilih jenis barang!");
         $('.alert-danger').show(); 
     }else if($.trim($("#po_id").val()) == ""){
         $('#message').html("Silahkan isi nomor PO!");

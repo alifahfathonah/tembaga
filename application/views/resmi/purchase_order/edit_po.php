@@ -11,7 +11,7 @@
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12"> 
-        <h3 align="center"><b> PO Jasa Finish Good</b></h3>
+        <h3 align="center"><b> PO Finish Good</b></h3>
         <hr class="divider" />
         
         <?php

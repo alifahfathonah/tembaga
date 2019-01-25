@@ -26,12 +26,12 @@
                     <i class="fa fa-beer"></i>Sales Order List
                 </div>
                 <div class="tools">
-                <?php
+                <!-- <?php
                     if( ($group_id==9)||($hak_akses['add']==1) ){
                         echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/SO/add_so').'"> '
                         .'<i class="fa fa-plus"></i> Input SO </a>';
                     }
-                ?>                    
+                ?>     -->                
                 </div>
             </div>
             <div class="portlet-body">
@@ -75,7 +75,13 @@
                         <td><?php echo $data->remarks; ?></td>
                         <td style="text-align:center"> 
                             <?php
-                                if( ($group_id==9 || $hak_akses['edit']==1) && $data->status != 1 ){
+                                if( ($group_id==9 || $hak_akses['create_sj_so']==1) && $data->flag_sj == 0){
+                            ?>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/SuratJalan/add_sj/<?php echo $data->id; ?>" style="margin-bottom:4px">
+                                &nbsp; <i class="fa fa-truck"></i> Create SJ &nbsp; </a>
+                            <?php
+                                }
+                                if( ($group_id==9 || $hak_akses['edit']==1)){
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/PurchaseOrder/edit_po/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
