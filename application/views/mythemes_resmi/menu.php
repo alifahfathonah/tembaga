@@ -42,7 +42,13 @@
                 <li <?php if ($module_name=="PurchaseOrder") echo 'class="start active open"'; ?>>
                     <a href="<?php echo base_url(); ?>index.php/PurchaseOrder">
                         <i class="fa fa-credit-card"></i>
-                        <span class="title">Purchase Order</span>
+                        <span class="title">PURCHASE ORDER</span>
+                    </a>
+                </li>
+                <li <?php if ($module_name=="SO") echo 'class="start active open"'; ?>>
+                    <a href="<?php echo base_url(); ?>index.php/SO">
+                        <i class="fa fa-file-text-o"></i>
+                        <span class="title">SALES ORDER</span>
                     </a>
                 </li>
                 <li <?php if($module_name=="MNumberings" || $module_name=="Apolo"
