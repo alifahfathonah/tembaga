@@ -158,7 +158,7 @@ class Matching extends CI_Controller{
         $tabel .= '<td></td>';
         $tabel .= '<td colspan="3" style="text-align:right"><strong>Total (Kg) </strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.$total.'</strong></td>';
-        $tabel .= '<td colspan="3"></td>';
+        $tabel .= '<td colspan="4"></td>';
         $tabel .= '</tr>';
 
         header('Content-Type: application/json');
@@ -224,7 +224,8 @@ class Matching extends CI_Controller{
             'jenis_barang_id'=>$this->input->post('id_barang'),
             'bruto'=>$this->input->post('bruto'),
             'netto'=>$this->input->post('netto'),
-            'berat_pallete' => $this->input->post('berat_pallete')
+            'berat_pallete' => $this->input->post('berat_pallete'),
+            'line_remarks' => $this->input->post('keterangan')
         ))){
             $return_data['message_type']= "sukses";
             $return_data['id_dtr'] = $this->input->post('id_dtr');
@@ -281,6 +282,7 @@ class Matching extends CI_Controller{
             $tabel .= '<td style="text-align:right;">'.$row->netto.'</td>';
             $tabel .= '<td style="text-align:right;">'.$row->berat_pallete.'</td>';
             $tabel .= '<td>'.$row->no_pallete.'</td>';
+            $tabel .= '<td>'.$row->line_remarks.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->dtr_detail_id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
@@ -292,7 +294,7 @@ class Matching extends CI_Controller{
         $tabel .= '<tr>';
         $tabel .= '<td colspan="3" style="text-align:right"><strong>Total (Kg) </strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.$total.'</strong></td>';
-        $tabel .= '<td colspan="3"></td>';
+        $tabel .= '<td colspan="4"></td>';
         $tabel .= '</tr>';
 
         header('Content-Type: application/json');

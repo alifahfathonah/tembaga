@@ -83,7 +83,8 @@ class SuratJalan extends CI_Controller{
                     'no_packing' => $row->no_pallete,
                     'qty' => $row->qty,
                     'bruto' => $row->bruto,
-                    'netto' => $row->netto
+                    'netto' => $row->netto,
+                    'line_remarks' => $row->line_remarks
                 );
                 $this->db->insert('r_t_surat_jalan_detail', $detail);
             }
