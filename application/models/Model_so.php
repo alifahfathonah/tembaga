@@ -25,7 +25,7 @@ class Model_so extends CI_Model{
 	function show_header_so($id){
 		$data = $this->db->query("select rso.*, 
 			rpo.no_po, rpo.tanggal as tgl_po, 
-			c.nama_customer, c.pic,
+			c.nama_customer, c.pic, c.alamat,
 			u.realname as nama_marketing 
 			from r_t_so rso
 			left join r_t_po rpo on (rso.po_id = rpo.id)

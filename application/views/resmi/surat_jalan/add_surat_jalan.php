@@ -96,7 +96,7 @@
                                 <option value=""></option>
                                 <?php
                                     foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
+                                        echo '<option value="'.$row->id.'" '.(($row->id == $header['customer_id'])? 'selected="selected"' : '').'>'.$row->nama_customer.'</option>';
                                     }
                                 ?>
                             </select>
@@ -107,7 +107,7 @@
                             Alamat
                         </div>
                         <div class="col-md-8">
-                            <textarea id="alamat" name="alamat" rows="2" readonly="readonly" class="form-control myline" style="margin-bottom:5px"></textarea>
+                            <textarea id="alamat" name="alamat" rows="2" readonly="readonly" class="form-control myline" style="margin-bottom:5px"><?php echo $header['alamat'] ?></textarea>
                         </div>
                     </div>
                     <?php
@@ -123,7 +123,37 @@
                     </div>
                 </div>
                 <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-5">     
+                <div class="col-md-5">   
+                    <?php if ($user_id == 12) {
+                    ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Sales Order
+                        </div>
+                        <div class="col-md-8">
+                            <select id="so_id" name="so_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
+                                onclick="get_alamat(this.value);">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($so_list as $row){
+                                        echo '<option value="'.$row->id.'" '.(($row->id == $header['id'])? 'selected="selected"' : '').'>'.$row->no_so.'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal SO.
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="tgl_so" id="tgl_so" class="form-control myline input-small" 
+                                   style="margin-bottom:5px; float: left;" onkeyup="this.value = this.value.toUpperCase();" value="<?php echo date('d-m-Y', strtotime($header['tanggal'])) ?>">
+                        </div>
+                    </div> 
+                    <?php
+                    } ?>  
                     <div class="row">
                         <div class="col-md-4">
                             Type Kendaraan
@@ -218,6 +248,16 @@ function get_alamat(id){
 <script>
 $(function(){        
     $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    }); 
+
+    $("#tgl_so").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,

@@ -43,8 +43,9 @@ class SuratJalan extends CI_Controller{
         if($user_id == 9){
             $data['header'] = $this->Model_surat_jalan->show_header_invoice($id)->row_array();
         }else if($user_id == 12){
-            $this->load->mode('Model_so');
+            $this->load->model('Model_so');
             $data['header'] = $this->Model_so->show_header_so($id)->row_array();
+            $data['so_list'] = $this->Model_so->so_list()->result();
         }
         $data['customer_list'] = $this->Model_surat_jalan->customer_list()->result();
         $data['tipe_kendaraan_list'] = $this->Model_surat_jalan->tipe_kendaraan_list()->result();
@@ -78,7 +79,7 @@ class SuratJalan extends CI_Controller{
             $sjr_id = $this->db->insert_id();
 
         if($user_id == 9){
-            $this->db->where('id',$this->input->post('r_invoice_id'));
+            $this->db->where('id',$this->input->post('id_invoice_resmi'));
             $this->db->update('r_t_invoice', array(
                 'sjr_id'=> $sjr_id
             ));
@@ -97,6 +98,8 @@ class SuratJalan extends CI_Controller{
                 );
                 $this->db->insert('r_t_surat_jalan_detail', $detail);
             }
+        }else if($user_id == 12){
+
         }
 
             if($this->db->trans_complete()){
