@@ -95,9 +95,18 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            PPN
+                            Jenis PO
                         </div>
                         <div class="col-md-8">
+                            <input type="text" id="jenis_po" name="jenis_po" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" value="Finish Good">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            PPN
+                        </div>
+                    <div class="col-md-8">
                 <?php
                 if($user_ppn == 0){
                 ?>

@@ -385,7 +385,7 @@ class Model_tolling_titipan extends CI_Model{
 
     function select_so(){
         $data = $this->db->query("select * from sales_order so 
-            where so.jenis_barang_id = 4 and so.flag_ppn = 0 and not exists
+            where so.flag_ppn = 0 and not exists
         ( select so_id from tolling_fg tf where tf.so_id = so.id )");
         return $data;
     }

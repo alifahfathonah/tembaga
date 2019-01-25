@@ -26,7 +26,10 @@
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-beer"></i>SPB List
-                </div>                
+                </div>
+                <div class="tools">
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?php echo base_url('index.php/Ingot/create_spb');?>"><i class="fa fa-plus"></i> Create SPB Rongsok </a>
+                </div>
             </div>
             <div class="portlet-body">
                 <table class="table table-striped table-bordered table-hover" id="sample_6">

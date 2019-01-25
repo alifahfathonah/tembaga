@@ -39,6 +39,12 @@
                         <span class="title">SURAT JALAN</span>
                     </a>
                 </li>
+                <li <?php if ($module_name=="TollingResmi") echo 'class="start active open"'; ?>>
+                    <a href="<?php echo base_url(); ?>index.php/TollingResmi">
+                        <i class="fa fa-truck"></i>
+                        <span class="title">Tolling Titipan</span>
+                    </a>
+                </li>
                 <li <?php if ($module_name=="PurchaseOrder") echo 'class="start active open"'; ?>>
                     <a href="<?php echo base_url(); ?>index.php/PurchaseOrder">
                         <i class="fa fa-credit-card"></i>

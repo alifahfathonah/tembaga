@@ -281,7 +281,6 @@ function simpanData(){
 };
 
 function get_alamat(id){
-    console.log(id);
     $.ajax({
         type: "POST",
         url: "<?php echo base_url('index.php/SuratJalan/get_alamat'); ?>",

@@ -183,6 +183,7 @@
                                 <th>Netto (Kg)</th>
                                 <th>Berat Pallete (Kg)</th>
                                 <th>Nomor Pallete</th>
+                                <th>Keterangan</th>
                                 <th style="text-align: center;">Action</th>
                             </thead>
                             <tbody id="boxDetail2">
@@ -240,6 +241,7 @@ function load_list_dtr(){
         }
     });
 }
+
 function load_dtr(){
     $.ajax({
         url: "<?php echo base_url('index.php/Matching/get_dtr_list'); ?>",
@@ -281,7 +283,8 @@ function saveDetail(id){
                 dtr_detail_id:$('#dtr_detail_id_'+id).val(),
                 bruto:$('#bruto_'+id).val(),
                 netto: $('#netto_'+id).val(),
-                berat_pallete: $('#berat_palette_'+id).val()
+                berat_pallete: $('#berat_palette_'+id).val(),
+                keterangan: $('#line_remarks_'+id).val()
             },
             success:function(result){
                 if(result['message_type']=="sukses"){

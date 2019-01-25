@@ -228,7 +228,12 @@
                             <a href="<?php echo base_url(); ?>index.php/Tolling">
                             <i class="fa fa-truck"></i>
                             Sales Order</a>
-                        </li>                        
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/Tolling/po_list">
+                            <i class="fa fa-cubes"></i>
+                            PO List </a>
+                        </li>
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/Tolling/dtr_list">
                             <i class="fa fa-file-excel-o"></i>

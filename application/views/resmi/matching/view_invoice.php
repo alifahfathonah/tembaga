@@ -116,9 +116,10 @@
                                 <th>Netto (Kg)</th>
                                 <th>Berat Pallete (Kg)</th>
                                 <th>Nomor Pallete</th>
+                                <th>Keterangan</th>
                             </thead>
                             <tbody>
-                                <?php 
+                                <?php
                                     $no = 1;
                                     foreach ($list_invoice_detail as $row) {
                                 ?>
@@ -129,6 +130,7 @@
                                     <td><?php echo $row->netto ?></td>
                                     <td><?php echo $row->berat_pallete ?></td>
                                     <td><?php echo $row->no_pallete ?></td>
+                                    <td><?php echo $row->line_remarks ?></td>
                                 </tr>
                                 <?php
                                     $no++;
