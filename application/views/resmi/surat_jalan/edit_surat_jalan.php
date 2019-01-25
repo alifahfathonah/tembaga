@@ -71,6 +71,17 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Jenis Barang <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['jenis_barang']; ?>">
+                        </div>
+                    </div>
+                <?php if($header['r_so_id'] > 0){?>
+                    <div class="row">
+                        <div class="col-md-4">
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -95,19 +106,10 @@
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
+                <?php } ?>
                 </div>
                 <div class="col-md-2">&nbsp;</div>
                 <div class="col-md-5">
-                    <div class="row">
-                        <div class="col-md-4">
-                            Jenis Barang <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['jenis_barang']; ?>">
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Type Kendaraan
@@ -268,10 +270,7 @@ function simpanData(){
         $('.alert-danger').show(); 
     }else if($.trim($("#jenis_barang").val()) == ""){
         $('#message').html("Silahkan pilih jenis barang!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#m_customer_id").val()) == ""){
-        $('#message').html("Silahkan pilih customer");
-        $('.alert-danger').show(); 
+        $('.alert-danger').show();
     }else if($.trim($("#m_type_kendaraan_id").val()) == ""){
         $('#message').html("Silahkan pilih kendaraan");
         $('.alert-danger').show();
