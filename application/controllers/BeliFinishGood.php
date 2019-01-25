@@ -134,7 +134,7 @@ class BeliFinishGood extends CI_Controller{
         
         if($this->db->insert('po_detail', array(
             'po_id'=>$this->input->post('id'),
-            'fg_id'=>$this->input->post('fg_id'),
+            'jenis_barang_id'=>$this->input->post('fg_id'),
             'amount'=>str_replace('.', '', $this->input->post('harga')),
             'qty'=>str_replace('.', '', $this->input->post('qty')),
             'flag_dtbj' => 0,

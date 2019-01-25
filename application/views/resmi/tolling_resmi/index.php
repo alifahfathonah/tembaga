@@ -42,6 +42,7 @@
                     <th>No. TTR Resmi</th>                   
                     <th>Customer</th>
                     <th>Tanggal</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -57,6 +58,7 @@
                         <td><?php echo $row->no_ttr_resmi; ?></td>
                         <td><?php echo $row->nama_customer; ?></td>
                         <td><?php echo $row->tanggal; ?></td>
+                        <td><a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/TollingResmi/view_tolling/<?php echo $row->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a></td>
                     </tr>
                     <?php
                             $no++;

@@ -95,6 +95,15 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Jenis PO
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="contact_person" name="contact_person" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" value="WIP">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             PPN
                         </div>
                         <div class="col-md-8">

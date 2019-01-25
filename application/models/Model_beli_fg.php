@@ -55,7 +55,7 @@ class Model_beli_fg extends CI_Model
 	function show_detail_po($id){
 		$data = $this->db->query("Select pod.*, jb.jenis_barang, jb.uom
                     From po_detail pod 
-                        Left Join jenis_barang jb On (pod.fg_id = jb.id) 
+                        Left Join jenis_barang jb On (pod.jenis_barang_id = jb.id) 
                     Where pod.po_id=".$id);
 		return $data;
 	}
@@ -67,7 +67,7 @@ class Model_beli_fg extends CI_Model
 
 	function load_detail_po($id){
 		$data = $this->db->query("Select pod.*, jb.jenis_barang, jb.uom From po_detail pod 
-                Left Join jenis_barang jb On(pod.fg_id = jb.id) 
+                Left Join jenis_barang jb On(pod.jenis_barang_id = jb.id) 
                 Where pod.po_id=".$id);
 		return $data;
 	}
@@ -162,38 +162,38 @@ class Model_beli_fg extends CI_Model
     }
 
     function get_item_dtbj($id){
-    	$data = $this->db->query("select pdtl.id, pdtl.po_id,pdtl.fg_id, pdtl.qty, dtbjd.id as dtbj_detail_id, dtbjd.jenis_barang_id, dtbjd.bruto, dtbjd.netto, mb.id as bobbin_id
+    	$data = $this->db->query("select pdtl.id, pdtl.po_id,pdtl.jenis_barang_id, pdtl.qty, dtbjd.id as dtbj_detail_id, dtbjd.jenis_barang_id, dtbjd.bruto, dtbjd.netto, mb.id as bobbin_id
                 from po_detail pdtl
                 left join dtbj on dtbj.po_id = pdtl.po_id
                 left join dtbj_detail dtbjd on dtbjd.dtbj_id = dtbj.id
                 left join m_bobbin mb on dtbjd.no_bobbin = mb.nomor_bobbin
                 where dtbj.po_id = pdtl.po_id and dtbj.status=1 
-                and dtbjd.jenis_barang_id = pdtl.fg_id and pdtl.po_id =".$id);
+                and dtbjd.jenis_barang_id = pdtl.jenis_barang_id and pdtl.po_id =".$id);
     	return $data;
     }
 
     function check_to_update($id){
-    	$data = $this->db->query("select pdtl.id, pdtl.po_id,pdtl.fg_id, pdtl.qty, dtbjd.id as dtbj_detail_id
+    	$data = $this->db->query("select pdtl.id, pdtl.po_id,pdtl.jenis_barang_id, pdtl.qty, dtbjd.id as dtbj_detail_id
                 from po_detail pdtl
                 left join dtbj on dtbj.po_id = pdtl.po_id
                 left join dtbj_detail dtbjd on dtbjd.dtbj_id = dtbj.id
                 where dtbj.po_id = pdtl.po_id and dtbj.status=1 
-                and dtbjd.jenis_barang_id = pdtl.fg_id and pdtl.po_id =".$id);
+                and dtbjd.jenis_barang_id = pdtl.jenis_barang_id and pdtl.po_id =".$id);
     	return $data;
     }
 
     function check_po_dtbj($id){
-    	$data = $this->db->query("select pdtl.id, pdtl.po_id,pdtl.fg_id, pdtl.qty,
+    	$data = $this->db->query("select pdtl.id, pdtl.po_id,pdtl.jenis_barang_id, pdtl.qty,
                 (select sum(dtbjd.netto) from dtbj_detail dtbjd
                 left join dtbj on dtbjd.dtbj_id = dtbj.id 
-                where dtbj.po_id = pdtl.po_id and dtbj.status=1 and dtbjd.jenis_barang_id = pdtl.fg_id)as tot_netto from po_detail pdtl
+                where dtbj.po_id = pdtl.po_id and dtbj.status=1 and dtbjd.jenis_barang_id = pdtl.jenis_barang_id)as tot_netto from po_detail pdtl
                 where pdtl.po_id =".$id);
     	return $data;
     }
 
-    function update_flag_dtbj_po_detail($po_id,$fg_id){
+    function update_flag_dtbj_po_detail($po_id,$jb_id){
         $this->db->where('po_id',$po_id);
-        $this->db->where('fg_id',$fg_id);
+        $this->db->where('jenis_barang_id',$jb_id);
         $this->db->update('po_detail',array(
                         'flag_dtbj'=>'1'));
     }

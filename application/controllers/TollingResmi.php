@@ -166,4 +166,30 @@ class TollingResmi extends CI_Controller{
                 redirect('index.php/TollingResmi');  
             }
     }
+
+    function view_tolling(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Matching";
+            $data['content']   = "resmi/tolling_resmi/view_tolling";
+
+            $this->load->model('Model_tolling_resmi');
+            $data['header'] = $this->Model_tolling_resmi->show_tolling_header($id)->row_array();
+            $id_ttr = $data['header']['id_ttr'];
+            $data['dtr_detail'] = $this->Model_tolling_resmi->show_dtr_detail($id)->result();
+            $data['ttr_detail'] = $this->Model_tolling_resmi->show_ttr_detail($id)->result();
+
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/Finance');
+        }
+    }
 }

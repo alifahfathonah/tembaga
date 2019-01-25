@@ -64,7 +64,7 @@ class Model_beli_wip extends CI_Model
 
     function load_detail_po($id){
         $data = $this->db->query("Select pod.*, jb.jenis_barang, jb.uom From po_detail pod 
-                Left Join jenis_barang jb On(pod.wip_id = jb.id) 
+                Left Join jenis_barang jb On(pod.jenis_barang_id = jb.id) 
                 Where pod.po_id=".$id);
         return $data;
     }
@@ -92,7 +92,7 @@ class Model_beli_wip extends CI_Model
     function show_detail_po($id){
         $data = $this->db->query("Select pod.*, jb.jenis_barang, jb.uom
                     From po_detail pod 
-                        Left Join jenis_barang jb On (pod.wip_id = jb.id) 
+                        Left Join jenis_barang jb On (pod.jenis_barang_id = jb.id) 
                     Where pod.po_id=".$id);
         return $data;
     }
@@ -153,27 +153,27 @@ class Model_beli_wip extends CI_Model
     }
 
     function check_to_update($id){
-        $data = $this->db->query("select pdtl.id, pdtl.po_id,pdtl.wip_id, pdtl.qty, dtwipd.id as dtwip_detail_id
+        $data = $this->db->query("select pdtl.id, pdtl.po_id,pdtl.jenis_barang_id, pdtl.qty, dtwipd.id as dtwip_detail_id
                 from po_detail pdtl
                 left join dtwip on dtwip.po_id = pdtl.po_id
                 left join dtwip_detail dtwipd on dtwipd.dtwip_id = dtwip.id
                 where dtwip.po_id = pdtl.po_id and dtwip.status=1 
-                and dtwipd.jenis_barang_id = pdtl.wip_id and pdtl.po_id =".$id);
+                and dtwipd.jenis_barang_id = pdtl.jenis_barang_id and pdtl.po_id =".$id);
         return $data;
     }
 
     function check_po_dtwip($id){
-        $data = $this->db->query("select pdtl.id, pdtl.po_id,pdtl.wip_id, pdtl.qty,
+        $data = $this->db->query("select pdtl.id, pdtl.po_id,pdtl.jenis_barang_id, pdtl.qty,
                 (select sum(dtwipd.berat) from dtwip_detail dtwipd
                 left join dtwip on dtwipd.dtwip_id = dtwip.id 
-                where dtwip.po_id = pdtl.po_id and dtwip.status=1 and dtwipd.jenis_barang_id = pdtl.wip_id)as tot_berat from po_detail pdtl
+                where dtwip.po_id = pdtl.po_id and dtwip.status=1 and dtwipd.jenis_barang_id = pdtl.jenis_barang_id)as tot_berat from po_detail pdtl
                 where pdtl.po_id =".$id);
         return $data;
     }
 
     function update_flag_dtwip_po_detail($po_id,$wip_id){
         $this->db->where('po_id',$po_id);
-        $this->db->where('wip_id',$wip_id);
+        $this->db->where('jenis_barang_id',$wip_id);
         $this->db->update('po_detail',array(
                         'flag_dtwip'=>'1'));
     }
