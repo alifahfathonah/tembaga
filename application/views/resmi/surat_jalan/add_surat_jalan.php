@@ -53,6 +53,7 @@
                         <div class="col-md-8">
                             <input type="text" id="no_invoice_resmi" name="no_invoice_resmi" 
                                 class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_invoice_resmi'];?>" readonly="readonly">
+                            <input type="hidden" name="id_invoice_resmi" value="<?php echo $header['id'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -62,6 +63,7 @@
                         <div class="col-md-8">
                             <input type="text" id="no_invoice_fg" name="no_invoice_fg" 
                                 class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_invoice'];?>" readonly="readonly">
+                            <input type="hidden" name="id_invoice_fg" value="<?php echo $header['invoice_id'];?>">
                         </div>
                     </div>
                     <?php }else if($user_id == 12){ ?>
