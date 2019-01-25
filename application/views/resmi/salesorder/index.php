@@ -77,7 +77,7 @@
                             <?php
                                 if( ($group_id==9 || $hak_akses['create_sj_so']==1) && $data->flag_sj == 0){
                             ?>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/SuratJalan/add_sj/<?php echo $data->id; ?>" style="margin-bottom:4px">
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/SuratJalan/add_surat_jalan/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-truck"></i> Create SJ &nbsp; </a>
                             <?php
                                 }
