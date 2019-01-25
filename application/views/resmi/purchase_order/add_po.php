@@ -23,7 +23,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/PurchaseOrder/save_po'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/PurchaseOrder/save_po'); ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
@@ -42,6 +42,17 @@
                             <input type="text" id="tanggal" name="tanggal" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
                                 value="<?php echo date('d-m-Y'); ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Invoice FG <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_invoice" name="no_invoice" class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_invoice'];?>" readonly="readonly">
+
+                            <input type="hidden" name="r_invoice_id" value="<?php echo $header['id'];?>">
+                            <input type="hidden" name="id_invoice" value="<?php echo $header['invoice_id'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -69,15 +80,8 @@
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="customer_id" name="customer_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
-                                    }
-                                ?>
-                            </select>
+                            <input type="text" id="nama_customer" name="nama_customer" class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_customer'];?>" readonly="readonly">
+                            <input type="hidden" name="customer_id" value="<?php echo $header['customer_id'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -86,7 +90,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px">
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['pic'];?>">
                         </div>
                     </div>
                 </div>              
@@ -113,10 +117,7 @@ function simpanData(){
         $('.alert-danger').show();
     }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#customer_id").val()) == ""){
-        $('#message').html("Silahkan pilih nama customer!");
-        $('.alert-danger').show(); 
+        $('.alert-danger').show();
     }else if($.trim($("#term_of_payment").val()) == ""){
         $('#message').html("Term of payment harus diisi!");
         $('.alert-danger').show(); 

@@ -107,31 +107,40 @@
                             <thead>
                                 <th style="width: 40px">No</th>
                                 <th style="width: 20%">Nama Item Finish Good</th>
-                                <th>Unit of Measure</th>
+                                <th style="width: 5%">Unit of Measure</th>
                                 <th>Harga (Rp)</th>
-                                <th>Jumlah</th>
+                                <th style="width: 10%">Netto</th>
                                 <th>Sub Total (Rp)</th>
-                                <th>Actions</th>
+                                <th>Keterangan</th>
                             </thead>
-                            <tbody id="boxDetail">
-
+                            <tbody>
+                                 <?php 
+                                    $no = 1;
+                                    foreach ($myDetail as $row) {
+                                echo '<input type="hidden" name="details['.$no.'][id]" value="'.$row->id.'">';
+                                ?>
+                                <tr>
+                                    <td style="text-align: center;"><?= $no ;?></td>
+                                    <td>
+                                    <?php echo '<select name="details['.$no.'][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px; top: auto; bottom: auto;" onchange="window.scrollTo(0, 150);">
+                                        <option value=""></option>';
+                                        foreach ($list_fg as $value){ 
+                                            echo '<option value="'.$value->id.'" '.(($value->id==$row->jenis_barang_id)? 'selected="selected"': '').'>'.$value->jenis_barang.'</option>';
+                                         } 
+                                        '</select>';?>
+                                    </td>
+                                    <td><?php echo '<input type="text" class="form-control myline " style="margin-bottom:5px;" id="uom_'.$no.'" value="'.$row->uom.'" readonly="readonly">';?>
+                                    </td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="amount_'.$no.'" name="details['.$no.'][amount]" value="'.number_format($row->amount,0,',','.').'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="netto_'.$no.'" name="details['.$no.'][netto]" value="'.$row->netto.'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="total_amount_'.$no.'" name="details['.$no.'][total_amount]" value="'.number_format($row->total_amount,0,',','.').'" readonly="readonly">';?></td>
+                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" name="details['.$no.'][line_remarks]" value="'.$row->line_remarks.'"  onkeyup="this.value = this.value.toUpperCase()">';?></td>
+                                </tr>
+                                <?php
+                                    $no++;
+                                    }
+                                ?>
                             </tbody>
-                            <tr>
-                                <td style="text-align:center"><i class="fa fa-plus"></i></td>
-                                <td>
-                                <select id="fg_id" name="fg_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
-                                    <option value=""></option><?php
-                                    foreach ($list_fg as $value){
-                                        echo "<option value='".$value->id."'>".$value->kode.' - '.$value->jenis_barang."</option>";
-                                    }?>
-                                </select>
-                                </td>
-                                <td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>
-                                <td><input type="text" id="harga" name="harga" class="form-control myline" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);"></td>
-                                <td><input type="text" id="qty" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="15" value="0" onkeyup="getComa(this.value, this.id);"></td>
-                                <td><input type="text" id="total_harga" name="total_harga" class="form-control myline" readonly="readonly" value="0"></td>
-                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
-                            </tr>
                         </table>
                     </div>
                 </div>
@@ -179,17 +188,17 @@ function myCurrency(evt) {
     return true;
 }
 
-function getComa(value, id){
+function getComa(value, id, no){
     angka = value.toString().replace(/\./g, "");
     $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-    hitungSubTotal();
+    hitungSubTotal(no);
 }
 
-function hitungSubTotal(){
-    harga = $('#harga').val().toString().replace(/\./g, "");
-    qty   = $('#qty').val().toString().replace(/\./g, "");
-    total_harga = Number(harga)* Number(qty);
-    $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+function hitungSubTotal(id){
+    harga = $('#amount_'+id).val().toString().replace(/\./g, "");
+    netto = $('#netto_'+id).val().toString().replace(/\./g, "");
+    total_harga = Number(harga)* Number(netto);
+    $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
 
 function simpanData(){
@@ -209,30 +218,6 @@ function simpanData(){
         $('#formku').submit(); 
     };
 };
-
-function loadDetail(id){
-    $.ajax({
-        type:"POST",
-        url:'<?php echo base_url('index.php/PurchaseOrder/load_detail_po'); ?>',
-        data:"id="+ id,
-        success:function(result){
-            $('#boxDetail').html(result);   
-        }
-    });
-}
-
-function get_uom(id){
-    $.ajax({
-        url: "<?php echo base_url('index.php/BeliFinishGood/get_uom'); ?>",
-        async: false,
-        type: "POST",
-        data: "id="+id,
-        dataType: "json",
-        success: function(result) {
-            $('#uom').val(result['uom']);
-        }
-    })
-}
 
 function saveDetail(){
     if($.trim($("#fg_id").val()) == ""){
@@ -306,8 +291,6 @@ $(function(){
         changeYear: true,
         dateFormat: 'dd-mm-yy'
     }); 
-    
-    loadDetail(<?php echo $header['id']; ?>);
 });
 </script>
       

@@ -141,15 +141,15 @@ class SuratJalan extends CI_Controller{
             $data['so_list'] = $this->Model_so->so_list()->result();
             $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
 
-            // $jenis = $data['header']['jenis_barang'];
-            // $this->load->model('Model_sales_order');
-            // if($jenis == 'FG'){
-            //     $data['list_invoice'] = $this->Model_sales_order->list_item_sj_fg($soid)->result();
-            //     $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_fg()->result();
-            // }else{
-            //     $data['list_sj_detail'] = $this->Model_surat_jalan->list_sj_detail($id)->result();
-            //     $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_rsk()->result();
-            // }
+            $data['list_sj_detail'] = $this->Model_surat_jalan->list_sj_detail($id)->result();
+            $jenis = $data['header']['jenis_barang'];
+            $this->load->model('Model_sales_order');
+            if($jenis == 'FG'){
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_fg()->result();
+            }else{
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_rsk()->result();
+            }
+
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/SuratJalan/surat_jalan');
