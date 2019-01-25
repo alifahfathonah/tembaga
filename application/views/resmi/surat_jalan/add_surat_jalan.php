@@ -74,7 +74,24 @@
                             <input type="text" id="jenis_barang" name="jenis_barang" 
                                 class="form-control myline" style="margin-bottom:5px" value="RONGSOK" readonly="readonly">
                         </div>
-                    </div>   
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Customer <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
+                                onclick="get_alamat(this.value);">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($customer_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>  
                     <?php }else if($user_id == 12){ ?>
                     <div class="row">
                         <div class="col-md-4">

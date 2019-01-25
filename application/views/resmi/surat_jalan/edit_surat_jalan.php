@@ -79,7 +79,6 @@
                                 value="<?php echo $header['jenis_barang']; ?>">
                         </div>
                     </div>
-                <?php if($header['r_so_id'] > 0){?>
                     <div class="row">
                         <div class="col-md-4">
                             Customer <font color="#f00">*</font>
@@ -106,7 +105,6 @@
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
-                <?php } ?>
                 </div>
                 <div class="col-md-2">&nbsp;</div>
                 <div class="col-md-5">

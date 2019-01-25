@@ -26,10 +26,6 @@
                 <div class="caption">
                     <i class="fa fa-beer"></i>List Surat Jalan
                 </div>
-                <div class="tools">    
-                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?php echo base_url() ?>index.php/SuratJalan/add_surat_jalan">
-                        <i class="fa fa-plus"></i> Tambah</a>
-                </div>
             </div>
             <div class="portlet-body">
                 <table class="table table-striped table-bordered table-hover" id="sample_6">

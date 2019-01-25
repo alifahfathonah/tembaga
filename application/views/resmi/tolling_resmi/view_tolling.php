@@ -61,6 +61,7 @@
                 </div>
             </div>              
         </div>
+        <hr>
         <div class="portlet box blue-ebonyclay">
                 <div class="portlet-title">
                     <div class="caption">

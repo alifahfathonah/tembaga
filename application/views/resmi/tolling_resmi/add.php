@@ -41,7 +41,19 @@
                         <div class="col-md-8">
                             <input type="text" id="sj_id" name="sj_id" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['no_sj_resmi'];?>">
+
                             <input type="hidden" id="sj_id" name="sj_id" value="<?php echo $header['id'];?>">
+                            <input type="hidden" id="r_invoice_id" name="r_invoice_id" value="<?php echo $header['r_invoice_id'];?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nama Customer
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_customer" name="nama_customer" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['nama_customer'];?>">
+                            <input type="hidden" id="customer_id" name="customer_id" value="<?php echo $header['m_customer_id'];?>">
                         </div>
                     </div>
                     <div class="row">

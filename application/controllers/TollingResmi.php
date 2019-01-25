@@ -70,7 +70,7 @@ class TollingResmi extends CI_Controller{
                 'no_dtr_resmi'=> $code_dtr,
                 'tanggal'=> $tgl_input,
                 'sj_id'=>$this->input->post('sj_id'),
-                'f_invoice_id'=>$this->input->post(''),
+                'r_invoice_id'=>$this->input->post('r_invoice_id'),
                 'customer_id'=>$this->input->post('customer_id'),
                 'created_by'=> $user_id,
                 'created_at'=> $tanggal
