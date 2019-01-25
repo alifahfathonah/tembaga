@@ -58,7 +58,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            No. Invoice Resmi FG <font color="#f00">*</font>
+                            No. Invoice FG <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_invoice_fg" name="no_invoice_fg" 
