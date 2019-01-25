@@ -8,7 +8,7 @@ class Matching extends CI_Controller{
         if($this->session->userdata('status') != "login"){
             redirect(base_url("index.php/Login"));
         }
-        
+        $this->load->model('Model_matching');
     }
     
     function index(){
@@ -36,10 +36,20 @@ class Matching extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        $data['list_invoice_fg'] = $this->Model_matching->list_invoice_fg()->result();
 
         $data['content']= "resmi/matching/add";
 
         $this->load->view('layout', $data);
+    }
+
+    function get_jumlah(){
+        $id = $this->input->post('id');
+
+        $barang= $this->Model_matching->get_jumlah($id)->row_array();
+        
+        header('Content-Type: application/json');
+        echo json_encode($barang); 
     }
 
     function save_invoice(){
@@ -48,10 +58,15 @@ class Matching extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
-        $this->load->model('Model_m_numberings');
+        
+        $this->db->where('id', $this->input->post('invoice_id'));
+        $this->db->update('f_invoice', array(
+            'flag_resmi' => 1
+        ));
 
         $data = array(
             'no_invoice_resmi'=> $this->input->post('no_invoice'),
+            'invoice_id'=> $this->input->post('invoice_id'),
             'tanggal'=> $tgl_input,
             'jumlah'=> $this->input->post('qty'),
             'remarks'=> $this->input->post('remarks'),
