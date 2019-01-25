@@ -66,7 +66,25 @@
                             <input type="hidden" name="id_invoice_fg" value="<?php echo $header['invoice_id'];?>">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Barang <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jenis_barang" name="jenis_barang" 
+                                class="form-control myline" style="margin-bottom:5px" value="RONGSOK" readonly="readonly">
+                        </div>
+                    </div>   
                     <?php }else if($user_id == 12){ ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Barang <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jenis_barang" name="jenis_barang" 
+                                class="form-control myline" style="margin-bottom:5px" value="FG" readonly="readonly">
+                        </div>
+                    </div>  
                     <div class="row">
                         <div class="col-md-4">
                             Customer <font color="#f00">*</font>
@@ -105,19 +123,7 @@
                     </div>
                 </div>
                 <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-5">
-                    <div class="row">
-                        <div class="col-md-4">
-                            Jenis Barang <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option></option>
-                                <option value="RONGSOK">RONGSOK</option>
-                                <option value="FG">FG</option>
-                            </select>
-                        </div>
-                    </div>        
+                <div class="col-md-5">     
                     <div class="row">
                         <div class="col-md-4">
                             Type Kendaraan
