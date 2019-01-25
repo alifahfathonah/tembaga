@@ -11,6 +11,13 @@ class Model_surat_jalan extends CI_Model{
 		return $data;
 	}
 
+	function show_header_invoice($id){
+		$data = $this->db->query("select ti.*, fi.no_invoice from r_t_invoice ti
+			left join f_invoice fi on fi.id = ti.invoice_id
+			where ti.id=".$id);
+		return $data;
+	}
+
 	function invoice_list(){
 		$data = $this->db->query("select * from r_t_invoice where sjr_id = 0 order by id desc");
 		return $data;

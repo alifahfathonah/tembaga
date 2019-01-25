@@ -38,12 +38,20 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            No. Invoice<font color="#f00">*</font>
+                            No. Invoice Resmi<font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_invoice_resmi" name="no_invoice_resmi" class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_invoice_resmi']; ?>" onkeyup="this.value = this.value.toUpperCase()">
 
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Invoice FG<font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_invoice_fg" name="no_invoice_fg" class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_invoice']; ?>" readonly="readonly">
                         </div>
                     </div>
                     <div class="row">
@@ -78,7 +86,7 @@
                         <div class="col-md-8">
                             <input type="text" id="qty" name="qty" 
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['jumlah']; ?>">
+                                value="<?php echo $header['jumlah']; ?>" readonly="readonly">
                         </div>
                     </div>
                     <div class="row">

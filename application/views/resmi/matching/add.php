@@ -36,11 +36,26 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            No. Invoice <font color="#f00">*</font>
+                            No. Invoice Resmi <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_invoice" name="no_invoice"
+                            <input type="text" id="no_invoice" name="no_invoice" 
                                 class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Invoice FG <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="invoice_id" name="invoice_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_jumlah(this.value);">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($list_invoice_fg as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->no_invoice.'</option>';
+                                    }
+                                ?>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -79,8 +94,7 @@
                             Jumlah (Kg)
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="qty" name="qty"
-                                class="form-control myline" style="margin-bottom:5px" >
+                            <input type="text" id="qty" name="qty" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
                         </div>
                     </div>
                     <div class="row">
@@ -109,6 +123,16 @@
     </div>
 </div> 
 <script>
+function get_jumlah(id){
+    $.ajax({
+        type:"POST",
+        url:'<?php echo base_url('index.php/Matching/get_jumlah'); ?>',
+        data:"id="+ id,
+        success:function(result){
+            $('#qty').val(result['netto_invoice']);     
+        }
+    });
+}
 
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){

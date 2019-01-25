@@ -45,21 +45,26 @@
                                 value="<?php echo date('d-m-Y'); ?>">
                         </div>
                     </div> 
+                    <?php if($user_id == 9){?>
                     <div class="row">
                         <div class="col-md-4">
-                            No. Invoice <font color="#f00">*</font>
+                            No. Invoice Resmi <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="r_invoice_id" name="r_invoice_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($list_invoice as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->no_invoice_resmi.'</option>';
-                                    }
-                                ?>
-                            </select>
+                            <input type="text" id="no_invoice_resmi" name="no_invoice_resmi" 
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_invoice_resmi'];?>" readonly="readonly">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Invoice Resmi FG <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_invoice_fg" name="no_invoice_fg" 
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_invoice'];?>" readonly="readonly">
+                        </div>
+                    </div>
+                    <?php }else if($user_id == 12){ ?>
                     <div class="row">
                         <div class="col-md-4">
                             Customer <font color="#f00">*</font>
@@ -85,6 +90,9 @@
                             <textarea id="alamat" name="alamat" rows="2" readonly="readonly" class="form-control myline" style="margin-bottom:5px"></textarea>
                         </div>
                     </div>
+                    <?php
+                        }
+                    ?>
                     <div class="row">&nbsp;</div>
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>

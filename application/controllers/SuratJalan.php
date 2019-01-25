@@ -29,15 +29,23 @@ class SuratJalan extends CI_Controller{
 
     function add_surat_jalan(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
-        if($group_id != 1){
-            $this->load->model('Model_modules');
-            $roles = $this->Model_modules->get_akses($module_name, $group_id);
-            $data['hak_akses'] = $roles;
-        }
+        $group_id    = $this->session->userdata('group_id');  
+        $id = $this->uri->segment(3);
+        $user_id = $this->session->userdata('user_id');      
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
         $data['group_id']  = $group_id;
+        $data['user_id'] = $user_id;
         $data['content']= "resmi/surat_jalan/add_surat_jalan";
-        $data['list_invoice'] = $this->Model_surat_jalan->invoice_list()->result();
+        if($user_id == 9){
+            $data['header'] = $this->Model_surat_jalan->show_header_invoice($id)->row_array();
+        }else if($user_id == 12){
+            $this->load->mode('Model_so');
+            $data['header'] = $this->Model_so->show_header_so($id)->row_array();
+        }
         $data['customer_list'] = $this->Model_surat_jalan->customer_list()->result();
         $data['tipe_kendaraan_list'] = $this->Model_surat_jalan->tipe_kendaraan_list()->result();
 
