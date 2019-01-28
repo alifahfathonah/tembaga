@@ -180,6 +180,7 @@
                                             <th>Bruto</th>
                                             <th>Netto (UOM)</th>
                                             <th>Nomor<br>Bobbin</th>
+                                            <th>Nomor Packing</th>
                                             <th>Amount</th>
                                             <th>Keterangan</th>
                                             <th>Total</th>
@@ -197,6 +198,7 @@
                                                 echo '<td>'.$row->bruto.'</td>';
                                                 echo '<td>'.$row->netto.' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->nomor_bobbin.'</td>';
+                                                echo '<td>'.$row->no_packing.'</td>';
                                                 echo '<td>'.number_format($row->amount,0,',','.').'</td>';
                                                 echo '<td>'.$row->line_remarks.'</td>';
                                                 $total = ($row->netto * $row->amount);
@@ -295,7 +297,7 @@
 </div> 
 <script>
 function simpanData(){
-    var r=confirm("Anda yakin meng-approve permintaan barang ini?");
+    var r=confirm("Anda yakin invoice sudah benar?");
     if (r==true){
         $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/simpan_invoice");    
         $('#formku').submit(); 

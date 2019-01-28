@@ -1037,6 +1037,8 @@ class Finance extends CI_Controller{
             $this->db->insert('f_invoice_detail', array(
                     'id_invoice'=>$this->input->post('id'),
                     'jenis_barang_id'=>$jenis_barang,
+                    'nomor_bobbin'=>$row->nomor_bobbin,
+                    'no_packing'=>$row->no_packing,
                     'qty'=>$row->qty,
                     'netto'=>$row->netto,
                     'harga'=>$row->amount,
