@@ -71,7 +71,7 @@
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
                             <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                                <i class="fa fa-floppy-o"></i> Proses Surat Jalan </a>
+                                <i class="fa fa-floppy-o"></i> Proses Tolling </a>
                         </div>
                     </div>
                 </div>

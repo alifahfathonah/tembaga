@@ -64,6 +64,7 @@ class SO extends CI_Controller{
         $category = $this->input->post('jenis_barang');
 
         $this->db->trans_start();
+
         $t_data = array(
             'no_so'=>$this->input->post('no_so'),
             'tanggal'=>$tgl_input,
@@ -78,6 +79,11 @@ class SO extends CI_Controller{
         );
         $this->db->insert('r_t_so', $t_data);
         $so_id = $this->db->insert_id();
+
+        $this->db->where('id', $this->input->post('po_id'));
+        $this->db->update('r_t_po', array(
+            'flag_so' => $so_id
+        ));
         
         $loop = $this->db->get_where('r_t_po_detail', array('po_id'=>$this->input->post('po_id')))->result();
         foreach ($loop as $row) {

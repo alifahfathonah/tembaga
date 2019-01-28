@@ -36,3 +36,5 @@ Voucher Sparepart langsung buat cek dan menjadi jenis_trx keluar(DONE)
 Kas Bank per jenis_trx masuk/keluar(DONE)
 
 No uang masuk pada view uang masuk belum ditampilin(Done)
+
+PO, SO, INVOICE JASA DI Resmi tambah PPN 10% Sub Totalnya

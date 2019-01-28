@@ -25,6 +25,7 @@
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku" action="<?php echo base_url('index.php/SuratJalan/save_surat_jalan'); ?>">
             <div class="row">
+                <input type="hidden" name="jenis" value="<?php echo $jenis;?>">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
@@ -45,7 +46,7 @@
                                 value="<?php echo date('d-m-Y'); ?>">
                         </div>
                     </div> 
-                    <?php if($user_id == 9){?>
+                    <?php if($jenis == 'matching'){?>
                     <div class="row">
                         <div class="col-md-4">
                             No. Invoice Resmi <font color="#f00">*</font>
@@ -55,6 +56,7 @@
                                 class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_invoice_resmi'];?>" readonly="readonly">
                             <input type="hidden" name="id_invoice_resmi" value="<?php echo $header['id'];?>">
                             <input type="hidden" name="so_id" value="0">
+                            <input type="hidden" name="po_id" value="0">
                         </div>
                     </div>
                     <div class="row">
@@ -93,7 +95,19 @@
                             </select>
                         </div>
                     </div>  
-                    <?php }else if($user_id == 12){ ?>
+                    <?php }else if($jenis == 'so'){ ?>
+                    <input type="hidden" name="so_id" value="<?php echo $header['id'];?>">
+                    <input type="hidden" name="id_invoice_resmi" value="0">
+                    <input type="hidden" name="po_id" value="0">
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. SO <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_po" name="no_po" 
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_so'];?>" readonly="readonly">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Jenis Barang <font color="#f00">*</font>
@@ -129,7 +143,55 @@
                         </div>
                     </div>
                     <?php
-                        }
+                        }else if($jenis == 'po'){ ?>
+                    <input type="hidden" name="po_id" value="<?php echo $header['id'];?>">
+                    <input type="hidden" name="so_id" value="0">
+                    <input type="hidden" name="id_invoice_resmi" value="0">
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. PO <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_po" name="no_po" 
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_po'];?>" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Barang <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jenis_barang" name="jenis_barang" 
+                                class="form-control myline" style="margin-bottom:5px" value="FG" readonly="readonly">
+                        </div>
+                    </div>  
+                    <div class="row">
+                        <div class="col-md-4">
+                            Customer <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
+                                onclick="get_alamat(this.value);">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($customer_list as $row){
+                                        echo '<option value="'.$row->id.'" '.(($row->id == $header['customer_id'])? 'selected="selected"' : '').'>'.$row->nama_customer.'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            Alamat
+                        </div>
+                        <div class="col-md-8">
+                            <textarea id="alamat" name="alamat" rows="2" readonly="readonly" class="form-control myline" style="margin-bottom:5px"><?php echo $header['alamat'] ?></textarea>
+                        </div>
+                    </div>
+                    <?php
+                    }
                     ?>
                     <div class="row">&nbsp;</div>
                     <div class="row">
@@ -141,33 +203,7 @@
                     </div>
                 </div>
                 <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-5">   
-                    <?php if ($user_id == 12) {
-                    ?>
-                    
-                    <div class="row">
-                        <div class="col-md-4">
-                            No. Sales Order <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="no_so_resmi" name="no_so_resmi" 
-                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_so'];?>" readonly="readonly">
-                            <input type="hidden" name="so_id" value="<?php echo $header['id'];?>">
-
-                            <input type="hidden" name="id_invoice_resmi" value="0">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Tanggal SO.
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" name="tgl_so" id="tgl_so" class="form-control myline input-small" 
-                                   style="margin-bottom:5px; float: left;" onkeyup="this.value = this.value.toUpperCase();" value="<?php echo date('d-m-Y', strtotime($header['tanggal'])) ?>">
-                        </div>
-                    </div> 
-                    <?php
-                    } ?>  
+                <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
                             Type Kendaraan

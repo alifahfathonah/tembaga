@@ -75,12 +75,12 @@
                             <?php
                                 }if(($group_id==9 || $hak_akses['create_sj']==1) && $row->sjr_id ==0){
                             ?>
-                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/SuratJalan/add_surat_jalan/<?php echo $row->id; ?>" 
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/SuratJalan/add_surat_jalan/matching/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px"><i class="fa fa-car"></i> Create Surat Jalan &nbsp; </a>
                             <?php 
-                                }if(($group_id==9 || $hak_akses['create_po']==1) && $row->r_po_id ==0){
+                                }if(($group_id==9 || $hak_akses['create_po']==1) && $row->r_po_id == 0){
                             ?>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/PurchaseOrder/add_po/<?php echo $row->id; ?>" 
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/PurchaseOrder/add_po/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-cube"></i> Create PO &nbsp; </a>
                             <?php } ?>
                         </td>

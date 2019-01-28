@@ -359,8 +359,6 @@ $(function(){
         changeYear: true,
         dateFormat: 'dd-mm-yy'
     }); 
-    
-    loadDetail(<?php echo $header['id']; ?>);
 });
 </script>
       

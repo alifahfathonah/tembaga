@@ -2,9 +2,8 @@
 class Model_purchase_order extends CI_Model{
 	
 	function po_list(){
-		$data = $this->db->query("select rpo.*, c.nama_customer, c.pic, count(rpod.id) as jumlah_item
+		$data = $this->db->query("select rpo.*, c.nama_customer, c.pic, (select count(tpd.id) from r_t_po_detail tpd where tpd.po_id = rpo.id)as jumlah_item
 			from r_t_po rpo
-			left join r_t_po_detail rpod on (rpo.id = rpod.po_id)
 			left join m_customers c on (rpo.customer_id = c.id)
 			order by rpo.created_at desc");
 		return $data;
@@ -37,7 +36,7 @@ class Model_purchase_order extends CI_Model{
 	}
 
 	function show_header_po($id){
-		$data = $this->db->query("select rpo.*, c.nama_customer, c.pic
+		$data = $this->db->query("select rpo.*, c.nama_customer, c.pic, c.alamat
 			from r_t_po rpo
 			left join m_customers c on (rpo.customer_id = c.id)
 			where rpo.id = ".$id);

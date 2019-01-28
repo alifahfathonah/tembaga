@@ -29,8 +29,9 @@ class SuratJalan extends CI_Controller{
 
     function add_surat_jalan(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');  
-        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');
+        $jenis = $this->uri->segment(3);
+        $id = $this->uri->segment(4);
         $user_id = $this->session->userdata('user_id');      
             if($group_id != 1){
                 $this->load->model('Model_modules');
@@ -39,13 +40,17 @@ class SuratJalan extends CI_Controller{
             }
         $data['group_id']  = $group_id;
         $data['user_id'] = $user_id;
+        $data['jenis'] = $jenis;
         $data['content']= "resmi/surat_jalan/add_surat_jalan";
-        if($user_id == 9){
+        if($jenis == 'matching'){
             $data['header'] = $this->Model_surat_jalan->show_header_invoice($id)->row_array();
-        }else if($user_id == 12){
+        }else if($jenis == 'so'){
             $this->load->model('Model_so');
             $data['header'] = $this->Model_so->show_header_so($id)->row_array();
             $data['so_list'] = $this->Model_so->so_list()->result();
+        }else if($jenis == 'po'){
+            $this->load->model('Model_purchase_order');
+            $data['header'] = $this->Model_purchase_order->show_header_po($id)->row_array();
         }
         $data['customer_list'] = $this->Model_surat_jalan->customer_list()->result();
         $data['tipe_kendaraan_list'] = $this->Model_surat_jalan->tipe_kendaraan_list()->result();
@@ -56,7 +61,8 @@ class SuratJalan extends CI_Controller{
     function save_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));        
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $jenis = $this->input->post('jenis');    
         
         $this->db->trans_start();
 
@@ -64,6 +70,7 @@ class SuratJalan extends CI_Controller{
                 'no_sj_resmi'=> $this->input->post('no_surat_jalan'),
                 'r_invoice_id'=>$this->input->post('id_invoice_resmi'),
                 'r_so_id' => $this->input->post('so_id'),
+                'r_po_id' => $this->input->post('po_id'),
                 'tanggal'=> $tgl_input,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'm_customer_id'=>$this->input->post('m_customer_id'),
@@ -79,7 +86,7 @@ class SuratJalan extends CI_Controller{
             $this->db->insert('r_t_surat_jalan', $data);
             $sjr_id = $this->db->insert_id();
 
-        if($user_id == 9){
+        if($jenis == 'matching'){
             $this->db->where('id',$this->input->post('id_invoice_resmi'));
             $this->db->update('r_t_invoice', array(
                 'sjr_id'=> $sjr_id
@@ -99,7 +106,7 @@ class SuratJalan extends CI_Controller{
                 );
                 $this->db->insert('r_t_surat_jalan_detail', $detail);
             }
-        }else if($user_id == 12){
+        }else if($jenis == 'so'){
             $this->db->where('id',$this->input->post('so_id'));
             $this->db->update('r_t_so', array(
                 'sjr_id'=> $sjr_id
@@ -110,7 +117,27 @@ class SuratJalan extends CI_Controller{
             foreach ($list_so as $row) {
                 $detail = array(
                     'sj_resmi_id' => $sjr_id,
+                    'so_detail_id' => $row->id,
                     'jenis_barang_id' => $row->jenis_barang_id,
+                    'netto' => $row->netto,
+                    'line_remarks' => $row->line_remarks
+                );
+                $this->db->insert('r_t_surat_jalan_detail', $detail);
+            }
+        }else if($jenis == 'po'){
+            $this->db->where('id',$this->input->post('po_id'));
+            $this->db->update('r_t_po', array(
+                'flag_sj'=> $sjr_id
+            ));
+
+            $this->load->model('Model_purchase_order');
+            $list_po = $this->Model_purchase_order->load_detail_po($this->input->post('po_id'))->result();
+            foreach ($list_po as $row) {
+                $detail = array(
+                    'sj_resmi_id' => $sjr_id,
+                    'po_detail_id' => $row->id,
+                    'jenis_barang_id' => $row->jenis_barang_id,
+                    'bruto' => $row->bruto,
                     'netto' => $row->netto,
                     'line_remarks' => $row->line_remarks
                 );
@@ -160,7 +187,7 @@ class SuratJalan extends CI_Controller{
         }
     }
 
-     function update_surat_jalan(){
+    function update_surat_jalan(){
         $user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));

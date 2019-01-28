@@ -4,10 +4,9 @@ class Model_so extends CI_Model{
 	function so_list(){
 		$data = $this->db->query("select rso.*, 
 			c.nama_customer, c.pic,
-			count(rsod.id) as jumlah_item
+			(select count(rsod.id) from r_t_so_detail rsod where rsod.so_id = rso.id) as jumlah_item
 			from r_t_so rso
-			left join m_customers c on(rso.customer_id = c.id)
-			left join r_t_so_detail rsod on (rso.id = rsod.so_id)");
+			left join m_customers c on(rso.customer_id = c.id)");
 		return $data;
 	}
 

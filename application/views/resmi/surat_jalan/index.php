@@ -33,7 +33,7 @@
                 <tr>
                     <th style="width:50px;">No</th>
                     <th>No. Surat Jalan</th>
-                    <th>No. Invoice<br>No. Sales Order</th>
+                    <th>No. Invoice/<br>No. SO / No. PO</th>
                     <th>Tanggal</th>
                     <th>Jenis<br>Barang</th>                     
                     <th>Customer</th>
@@ -50,7 +50,7 @@
                     <tr>
                         <td style="text-align: center;"><?php echo $no; ?></td>
                         <td><?php echo $row->no_sj_resmi; ?></td>
-                        <td><?php echo $row->no_invoice_resmi.$row->no_so; ?></td>
+                        <td><?php echo $row->no_invoice_resmi.$row->no_so.$row->no_po; ?></td>
                         <td><?php echo $row->tanggal; ?></td>
                         <td><?php echo $row->jenis_barang; ?></td>
                         <td><?php echo $row->nama_customer; ?></td>
@@ -72,6 +72,9 @@
                             ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/TollingResmi/add/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-truck"></i> Create Tolling &nbsp; </a>
+                            <?php }else if($row->flag_tolling==0 && ($row->r_so_id == 0 || $row->r_po_id == 0) && $row->r_inv_jasa_id == 0){ ?>
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/InvoiceJasa/add/<?php echo $row->id; ?>" 
+                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-truck"></i> Create Invoice Jasa &nbsp; </a>
                             <?php } ?>
                         </td>
                     </tr>

@@ -57,6 +57,12 @@
                         <span class="title">SALES ORDER</span>
                     </a>
                 </li>
+                <li <?php if ($module_name=="InvoiceJasa") echo 'class="start active open"'; ?>>
+                    <a href="<?php echo base_url(); ?>index.php/InvoiceJasa">
+                        <i class="fa fa-credit-card"></i>
+                        <span class="title">Invoice Jasa</span>
+                    </a>
+                </li>
                 <li <?php if($module_name=="MNumberings" || $module_name=="Apolo"
                         || $module_name=="MProvinces" || $module_name=="MCities" 
                         || $module_name=="Customer" || $module_name=="Supplier" 

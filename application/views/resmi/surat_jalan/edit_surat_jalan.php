@@ -70,7 +70,7 @@
                             <input type="hidden" id="id_inv" name="id_inv" value="<?php echo $header['r_invoice_id']; ?>">
                         </div>
                     </div>
-                <?php } else {
+                <?php } else if($header['r_so_id'] > 0){
                     ?>
                     <div class="row">
                         <div class="col-md-4">
@@ -94,8 +94,30 @@
                         </div>
                     </div> 
                 <?php
-                }
-                ?>
+                } else if($header['r_po_id'] > 0){
+                ?>  
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Purchase Order
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_po" name="no_po" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['no_po']; ?>">
+                            
+                            <input type="hidden" id="id_inv" name="id_inv" value="<?php echo $header['r_po_id']; ?>">
+                            <input type="hidden" name="id_invoice_resmi" value="0">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal PO
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="tgl_po" id="tgl_po" class="form-control myline input-small" style="margin-bottom:5px; float: left;" onkeyup="this.value = this.value.toUpperCase();" value="<?php echo date('d-m-Y', strtotime($header['tgl_po'])) ?>" readonly="readonly">
+                        </div>
+                    </div> 
+                <?php } ?>
                     <div class="row">
                         <div class="col-md-4">
                             Customer <font color="#f00">*</font>

@@ -2,13 +2,14 @@
 class Model_surat_jalan extends CI_Model{
 
 	function list_sj(){
-		$data = $this->db->query("select tsj.*, mc.nama_customer, ti.no_invoice_resmi, ts.no_so,
+		$data = $this->db->query("select tsj.*, mc.nama_customer, ti.no_invoice_resmi, ts.no_so, tp.no_po,
 		(select count(tsjd.id) from r_t_surat_jalan_detail tsjd where tsjd.sj_resmi_id = tsj.id) as jumlah_item
     	from r_t_surat_jalan tsj
     	left join r_t_invoice ti on ti.id = tsj.r_invoice_id
         left join r_t_so ts on ts.id = tsj.r_so_id
+        left join r_t_po tp on tp.id = tsj.r_po_id
     	left join m_customers mc on mc.id = tsj.m_customer_id
-    	order by id asc");
+    	order by id desc");
 		return $data;
 	}
 
@@ -44,10 +45,11 @@ class Model_surat_jalan extends CI_Model{
 	// }
 
 	function show_header_sj($id){
-		$data = $this->db->query("select sjr.*, c.id as id_customer, c.nama_customer, c.alamat, tri.no_invoice_resmi, ts.no_so, ts.tanggal as tgl_so
+		$data = $this->db->query("select sjr.*, c.id as id_customer, c.nama_customer, c.alamat, tri.no_invoice_resmi, ts.no_so, ts.tanggal as tgl_so, tp.no_po, tp.tanggal as tgl_po
 			from r_t_surat_jalan sjr
 			left join r_t_invoice tri on (tri.id = sjr.r_invoice_id)
             left join r_t_so ts on (ts.id = sjr.r_so_id)
+            left join r_t_po tp on (tp.id = sjr.r_po_id)
 			left join m_customers c on (sjr.m_customer_id = c.id)
 			where sjr.id =".$id);
 		return $data;

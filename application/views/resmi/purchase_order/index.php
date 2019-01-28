@@ -80,8 +80,12 @@
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/SO/add_so/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-truck"></i> Create SO &nbsp; </a>
                             <?php
-                                }
-                                if( ($group_id==9 || $hak_akses['edit']==1) && $data->status != 1 ){
+                                }if( ($group_id==9 || $hak_akses['create_sj']==1) && $data->flag_sj == 0){
+                            ?>
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/SuratJalan/add_surat_jalan/po/<?php echo $data->id; ?>" style="margin-bottom:4px">
+                                &nbsp; <i class="fa fa-truck"></i> Create SJ &nbsp; </a>
+                            <?php
+                                }if( ($group_id==9 || $hak_akses['edit']==1) && $data->status != 1 ){
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/PurchaseOrder/edit_po/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>

@@ -2,9 +2,8 @@
 class Model_matching extends CI_Model{
 
     function list_invoice(){
-        $data = $this->db->query("Select ir.*, count(ird.id) as jumlah_item
-            from r_t_invoice ir
-            left join r_t_invoice_detail ird on (ir.id = ird.invoice_resmi_id)");
+        $data = $this->db->query("Select ir.*, (select count(tid.id) from r_t_invoice_detail tid where tid.invoice_resmi_id = ir.id) as jumlah_item
+            from r_t_invoice ir");
         return $data;
     }
 
