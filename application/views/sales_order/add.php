@@ -71,11 +71,10 @@
                         <div class="col-md-8">
                             <select id="jenis_barang" name="jenis_barang" data-placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom:5px" required="required">
                                 <option value=""></option>
-                                <?php
-                                    foreach ($option_jenis_barang as $v) {
-                                        echo '<option value="'.$v->category.'">'.$v->category.'</option>';
-                                    }
-                                ?>           
+                                <option value="FG">FINISH GOOD</option>
+                                <option value="WIP">WIP</option>
+                                <option value="RONGSOK">RONGSOK</option>
+                                <option value="AMPAS">AMPAS</option>
                             </select>
                         </div>
                     </div>

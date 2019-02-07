@@ -1,7 +1,7 @@
 <?php
 class Model_sales_order extends CI_Model{
     function so_list(){
-        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, so.flag_ppn, so.flag_sj, usr.realname As nama_marketing, cust.nama_customer, cust.pic, COALESCE(tsf.status,tsw.status,spb.status) as status_spb,
+        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, so.flag_ppn, so.flag_sj, so.flag_invoice, usr.realname As nama_marketing, cust.nama_customer, cust.pic, COALESCE(tsf.status,tsw.status,spb.status) as status_spb,
             (Select count(fi.id) from f_invoice fi where fi.id_sales_order = so.id) as invoice,
             (Select count(tsod.id)As jumlah_item From t_sales_order_detail tsod Where tsod.t_so_id = tso.id)As jumlah_item From t_sales_order tso
             Left Join sales_order so on (so.id = tso.so_id)
@@ -49,16 +49,9 @@ class Model_sales_order extends CI_Model{
                 Where sod.sales_order_id=".$id);
         return $data;
     }
-    
-    function list_data($id){
-        $data = $this->db->query("Select so.*, jb.jenis_barang, jb.category, jb.uom From sales_order so 
-                Left Join jenis_barang jb On(jb.id = so.jenis_barang_id) 
-                Where so.id =".$id);
-        return $data;
-    }
 
     function show_header_so($id){
-        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, cust.nama_customer, cust.pic, cust.alamat, cust.telepon as telepon, COALESCE(tsf.no_spb, tsw.no_spb_wip, spb.no_spb,tsa.no_spb_ampas) as no_spb_barang
+        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, so.flag_invoice, u.realname, cust.nama_customer, cust.pic, cust.alamat, cust.telepon as telepon, COALESCE(tsf.no_spb, tsw.no_spb_wip, spb.no_spb,tsa.no_spb_ampas) as no_spb_barang, COALESCE(tsf.status,tsw.status,spb.status) as status_spb
                     From t_sales_order tso
                         Left join sales_order so on (so.id = tso.so_id)
                         Left join m_customers cust On (so.m_customer_id = cust.id)
@@ -66,6 +59,7 @@ class Model_sales_order extends CI_Model{
                         Left join t_spb_wip tsw on tso.jenis_barang = 'WIP' and tsw.id = tso.no_spb
                         Left join spb on tso.jenis_barang = 'RONGSOK' and spb.id = tso.no_spb
                         Left join t_spb_ampas tsa on tso.jenis_barang = 'AMPAS' and tso.no_spb
+                        Left join users u on u.id = so.marketing_id
                     Where tso.id=".$id);
         return $data;
     }
@@ -139,7 +133,13 @@ class Model_sales_order extends CI_Model{
     }
     
     function get_so_list($id){
-        $data = $this->db->query("Select * From sales_order Where m_customer_id=".$id." and flag_tolling = 0 and flag_sj = 0");
+        $data = $this->db->query("Select so.id, so.no_sales_order From sales_order so
+                left join t_sales_order tso on tso.so_id = so.id
+                left join t_spb_fg tsf on tso.jenis_barang = 'FG' and tsf.id = tso.no_spb
+                left join t_spb_wip tsw on tso.jenis_barang = 'wip' and tsw.id = tso.no_spb
+                left join spb s on tso.jenis_barang = 'RONGSOK' and s.id = tso.no_spb
+                Left join t_spb_ampas tsa on tso.jenis_barang = 'AMPAS' and tso.no_spb
+                Where so.m_customer_id=".$id." and so.flag_tolling = 0 and so.flag_sj = 0 and COALESCE(tsf.status,tsw.status,s.status,tsa.status) != 0");
         return $data;
     }
 
@@ -236,6 +236,11 @@ class Model_sales_order extends CI_Model{
         $data = $this->db->query("Select uom From jenis_barang Where id=".$id);        
         return $data;
     }
+
+    function get_uom_so($id){
+        $data = $this->db->query("Select uom From rongsok Where id=".$id);        
+        return $data;
+    }
     
     function list_barang_so($jenis){
         $data = $this->db->query("Select id, jenis_barang, uom from jenis_barang where category = '".$jenis."'");
@@ -261,7 +266,7 @@ class Model_sales_order extends CI_Model{
             left join t_spb_wip tsw on tso.jenis_barang='WIP' and tsw.id = tso.no_spb
             left join spb on tso.jenis_barang='RONGSOK' and spb.id = tso.no_spb
             left join m_customers mc on mc.id = so.m_customer_id
-            Where flag_tolling = 0
+            Where so.flag_tolling = 0
             order by so.tanggal desc");
         return $data;
     }
@@ -339,8 +344,9 @@ class Model_sales_order extends CI_Model{
     }
 
     function show_header_sj($id){
-        $data = $this->db->query("Select tsj.*, cust.id as id_customer,
-                    cust.nama_customer, cust.alamat,
+        $data = $this->db->query("Select tsj.*, cust.id as id_customer, cust.nama_customer, cust.alamat, 
+                    COALESCE(tsf.no_spb, tsw.no_spb_wip, s.no_spb) as nomor_spb,
+                    COALESCE(tsf.status, tsw.status, s.status) as status_spb,
                     tso.no_spb, so.no_sales_order, tso.no_po,
                     tkdr.type_kendaraan,
                     usr.realname,
@@ -349,6 +355,9 @@ class Model_sales_order extends CI_Model{
                 From t_surat_jalan tsj
                     Left Join m_customers cust On (tsj.m_customer_id = cust.id)
                     Left Join t_sales_order tso On (tsj.sales_order_id = tso.so_id) 
+                    Left Join t_spb_fg tsf On (tso.jenis_barang = 'FG' and tsf.id = tso.no_spb)
+                    Left Join t_spb_wip tsw On (tso.jenis_barang = 'WIP' and tsw.id = tso.no_spb)
+                    Left Join spb s On (tso.jenis_barang = 'RONGSOK' and s.id = tso.no_spb)
                     Left Join sales_order so On (so.id = tso.so_id)
                     Left Join m_type_kendaraan tkdr On (tsj.m_type_kendaraan_id = tkdr.id) 
                     Left Join users usr On (tsj.created_by = usr.id)

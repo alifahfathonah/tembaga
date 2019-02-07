@@ -244,16 +244,6 @@
     </div>
 </div> 
 <script>
- /*   $('#barang_1').change(function() { // When the select is changed
-        var id_barang=$(this).val(); // Get the chosen value
-        console.log(id_barang);
-        $.ajax({
-            type: "POST",
-            url: "<?php //echo base_url('index.php/GudangFG/get_no_packing'); ?>", // The new PHP page which will get the option value, process it and return the possible options for second select
-            data: {id: id_barang}, // Send the slected option to the PHP page
-        });
-    });*/
-
 function approveData(){
     var r=confirm("Anda yakin meng-approve permintaan barang ini?");
     if (r==true){
@@ -283,82 +273,6 @@ function rejectData(){
         $('.alert-danger').hide();
         $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/GudangBobbin/reject_spb");
         $('#frmReject').submit(); 
-    }
-}
-
-function check_duplicate(){
-    var valid = true;
-        $.each($("input[name$='[id_barang]']"), function (index1, item1) {
-            $.each($("input[name$='[id_barang]']").not(this), function (index2, item2) {
-                if ($(item1).val() == $(item2).val()) {
-                    valid = false;
-                }
-            });
-        });
-        return valid;
-}
-
-function get_tsfd_id(id){
-    id_spb = $("#id").val();
-    console.log('id_spb' + id_spb);
-    console.log('id_barang' + id);
-    $.ajax({
-        type:"POST",
-        url:"<?php echo base_url('index.php/GudangFG/get_tsfd_id'); ?>",
-        data: {
-            id_spb : id_spb,
-            id_barang : id
-        },
-        success:function(result){
-            console.log('tsfd id =' + result['id']);
-            $('#tsfd_id').val(result['id']);     
-        }
-    });
-}
-
-function get_no_packing_detail(id){
-    $("#packing_id_"+id).val($("#packing_"+id).val());
-    var id_packing = $("#packing_"+id).val();
-    console.log('ID PACKING'+id_packing);
-    if(id_packing!=''){    
-        var check = check_duplicate();
-        if(check){
-            $.ajax({
-                url: "<?php echo base_url('index.php/GudangFG/get_no_packing_detail'); ?>",
-                type: "POST",
-                data : {no_packing: id_packing},
-                dataType: "json",
-                success: function(result) {
-                    console.log('uom' + result['uom']);
-                    console.log('netto' + result['netto']);
-                    $('#uom_'+id).val(result['uom']);
-                    $('#netto_'+id).val(result['netto']);
-                }
-            });
-        } else {
-            alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
-        }
-    }
-}
-
-function get_no_packing(id){
-    $("#barang_id_"+id).val($("#barang_"+id).val());
-    var id_barang = $("#barang_"+id).val();
-    console.log(id_barang);
-    if(id_barang!=''){    
-        var check = check_duplicate();
-        if(check){
-            $.ajax({
-                url: "<?php echo base_url('index.php/GudangFG/get_no_packing'); ?>",
-                type: "POST",
-                data : {id: id_barang},
-                success:function(result){
-                    $('#no_packing').html(result);     
-                }
-            });
-        } else {
-            alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
-        }
     }
 }
 
@@ -393,79 +307,6 @@ function get_no_packing(id){
         }
     }
 }*/
-
-function loadDetail(id){
-    $.ajax({
-        type:"POST",
-        url:"<?php echo base_url('index.php/GudangFG/load_detail_saved_item'); ?>",
-        data: "id="+ id,
-        success:function(result){
-            $('#boxSavedItem').html(result);     
-        }
-    });
-}
-
-function saveDetail(){
-    if($.trim($("#barang_1").val()) == ""){
-        $('#message').html("Silahkan pilih nama barang !");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#packing_1").val()) == ""){
-        $('#message').html("Silahkan pilih nomor packing !");
-        $('.alert-danger').show();
-    }else{
-        $.ajax({
-            type:"POST",
-            url:'<?php echo base_url('index.php/GudangFG/save_detail_spb_fg_detail'); ?>',
-            data:{
-                t_spb_fg_id:$('#id').val(),
-                tsfd_detail_id:$('#tsfd_id').val(),
-                no_spb:$('#no_spb').val(),
-                id_packing:$('#packing_1').val(),
-                keterangan:$('#keterangan_1').val()
-            },
-            success:function(result){
-                if(result['message_type']=="sukses"){
-                    console.log('SUKSES TAMBAH');
-                    loadDetail(<?php echo $myData['id'];?>);
-                    $('#barang_1').val(''); // set the value to blank with empty quotes
-                    $('#uom_1').val('');
-                    $('#packing_1').val('').hide();
-                    $('#netto_1').val('');
-                    $('#keterangan_1').val('');
-                    $('#message').html("");
-                    $('.alert-danger').hide(); 
-                }else{
-                    $('#message').html(result['message']);
-                    $('.alert-danger').show(); 
-                }            
-            }
-        });
-    }
-}
-/*
-function create_new_input(id){
-       var new_id = id+1; 
-        $("#tabel_barang>tbody").append('<tr><td><div id="no_tabel_'+new_id+'">'+new_id+'</div><input id="spb_id_'+new_id+'" name="details['+new_id+'][spb_detail_id]" type="hidden"></td><td><select id="barang_'+new_id+'" class="form-control" placeholder="pilih jenis barang" name="details['+new_id+'][jenis_barang]" onchange="getBarang('+new_id+')"><option value=""></option><?php //foreach($list_barang as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}?></select><input name="details['+new_id+'][id_barang]" id="barang_id_'+new_id+'" type="hidden"></td><td><input id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly" type="text"></td><td><input id="qty_'+new_id+'" name="details['+new_id+'][qty]" class="form-control myline" type="text"></td><td><input id="berat_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline" type="text"></td><td><input id="keterangan_'+new_id+'" name="details['+new_id+'][keterangan]" class="form-control myline" type="text" onkeyup="this.value = this.value.toUpperCase()"></td><td style="text-align:center"><a id="btn_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td></tr>');
-}*/
-
-function hapusDetail(id){
-    var r=confirm("Anda yakin menghapus pemenuhan SPB FG ini?");
-    if (r==true){
-        $.ajax({
-            type:"POST",
-            url:'<?php echo base_url('index.php/GudangFG/delete_spb_fg_detail'); ?>',
-            data:"id="+ id,
-            success:function(result){
-                if(result['message_type']=="sukses"){
-                    console.log('BERHASIL DELETE');
-                    loadDetail(<?php echo $myData['id'];?>);
-                }else{
-                    alert(result['message']);
-                }     
-            }
-        });
-    }
-}
 </script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>

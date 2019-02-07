@@ -81,6 +81,15 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
+                                    Pilih Invoice Hutang <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <select id="invoice_id" name="invoice_id" class="form-control select2me myline"  style="margin-bottom:5px;" onchange="get_data_invoice(this.value);">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
                                     Sisa Invoice
                                 </div>
                                 <div class="col-md-8">
@@ -162,6 +171,7 @@
                                 <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th>Trx</th>
                                     <th>No Invoice</th>
                                     <th>Total</th>
                                     <th>Sisa</th>
@@ -175,17 +185,24 @@
                                     foreach ($details_invoice as $row){
                                         echo '<tr>';
                                         echo '<td style="text-align:center;">'.$no.'</td>';
+                                        $sisa = $row->total - $row->paid;
+                                        if($row->jenis_trx == 0){
+                                            echo '<td style="background-color: green; color: white;"><i class="fa fa-arrow-circle-up"></i></td>';
+                                        $total_invoice += $row->total;
+                                        $total_sisa += $sisa;    
+                                        }else{
+                                            echo '<td style="background-color: red; color: white;"><i class="fa fa-arrow-circle-down"></i></td>';
+                                        $total_invoice += -$row->total;
+                                        $total_sisa += -$sisa;
+                                        }
                                         echo '<td>'.$row->no_invoice.'</td>';
                                         echo '<td style="text-align:right;">'.number_format($row->total,0,',','.').'</td>';
-                                        $sisa = $row->total - $row->paid;
                                         echo '<td>'.number_format($sisa,0,',','.').'</td>';
-                                        $total_invoice += $row->total;
-                                        $total_sisa += $sisa;
                                         $no++;
                                     }
                                     ?>
                                     <tr>
-                                        <td style="text-align:right;" colspan="2"><strong>Total Harga </strong></td>
+                                        <td style="text-align:right;" colspan="3"><strong>Total Harga </strong></td>
                                         <td style="text-align:right;">
                                             <strong><?php echo number_format($total_invoice,0,',','.'); ?></strong>
                                         </td>
@@ -266,6 +283,11 @@
                     <div class="portlet-body">
                         <div class="table-scrollable">
                             <table class="table table-bordered table-striped table-hover">
+                                <thead style="border: 2px solid #000;">
+                                    <th colspan="3" style="text-align: center; border-right: 2px solid #000;">Invoice</th>
+                                    <th colspan="3" style="text-align: center;">Uang Masuk</th>
+                                    <th colspan="3" style="text-align: center; border-left: 2px solid #000;">Details</th>
+                                </thead>
                                 <thead>
                                     <th>No</th>
                                     <th>No. Invoice</th>
@@ -321,14 +343,26 @@ function numberWithCommas(x) {
      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-function load_invoice(id){
+function load_invoice_plus(id){
     $.ajax({
-        url: "<?php echo base_url('index.php/Finance/get_invoice_list'); ?>",
+        url: "<?php echo base_url('index.php/Finance/get_invoice_list_plus'); ?>",
         type: "POST",
         data: "id="+id,
         dataType: "html",
         success: function(result) {
             $('#invoice_id').html(result);
+        }
+    })
+}
+
+function load_invoice_minus(id){
+    $.ajax({
+        url: "<?php echo base_url('index.php/Finance/get_invoice_list_minus'); ?>",
+        type: "POST",
+        data: "id="+id,
+        dataType: "html",
+        success: function(result) {
+            $('#invoice_min').html(result);
         }
     })
 }

@@ -99,30 +99,30 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
-                            No. Kendaraan <font color="#f00">*</font>
+                            Type Kendaraan
                         </div>
                         <div class="col-md-8">
-                            <select id="m_kendaraan_id" name="m_kendaraan_id" class="form-control myline select2me" 
+                            <select id="m_type_kendaraan_id" name="m_type_kendaraan_id" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
                                 onclick="get_type_kendaraan(this.value);">
                                 <option value=""></option>
                                 <?php
-                                    foreach ($kendaraan_list as $row){
-                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['m_kendaraan_id'])? 'selected="selected"': '').'>'.$row->no_kendaraan.'</option>';
+                                    foreach ($type_kendaraan_list as $row){
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['m_type_kendaraan_id'])? 'selected="selected"': '').'>'.$row->type_kendaraan.'</option>';
                                     }
                                 ?>
                             </select>
                         </div>
-                    </div> 
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Type Kendaraan
+                            No. Kendaraan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" name="type_kendaraan" id="type_kendaraan" class="form-control myline" 
-                                   style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['type_kendaraan']; ?>">
+                            <input type="text" name="no_kendaraan" id="no_kendaraan" class="form-control myline" 
+                                   style="margin-bottom:5px" value="<?php echo $header['no_kendaraan']; ?>">
                         </div>
-                    </div>
+                    </div> 
                     <div class="row">
                         <div class="col-md-4">
                             Supir
@@ -218,9 +218,6 @@ function simpanData(){
         $('.alert-danger').show(); 
     }else if($.trim($("#nama_customer").val()) == ""){
         $('#message').html("Silahkan pilih customer");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#m_kendaraan_id").val()) == ""){
-        $('#message').html("Silahkan pilih kendaraan");
         $('.alert-danger').show();
     }else{   
         $('#formku').submit(); 

@@ -120,14 +120,31 @@
                                 <table class="table table-bordered table-striped table-hover">
                                     <thead>
                                         <th style="width:40px">No</th>
-                                        <th>Nama Barang</th>
+                                        <th width="25%;">Nama Barang</th>
                                         <th>Netto (kg)</th>
+                                        <th></th>
                                         <th>Keterangan</th>
                                         <th>Action</th>
                                     </thead>
                                     <tbody id="boxDetail">
                                         
-                                    </tbody>
+                                    </tbody>                 
+                                    <tr>
+                                        <td style="text-align:center"><i class="fa fa-plus"></i></td>
+                                        <td>
+                                        <select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="check(this.value);">
+                                        <option value=""></option>
+                                           <?php foreach ($jenis_barang_list as $value){
+                                                echo "<option value='".$value->id."'>".$value->jenis_barang."</option>";
+                                            } ?>
+                                        </select>
+                                        </td>
+                                        <td><input type="text" id="netto" name="netto" class="form-control myline"/></td>
+                                        <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen"><i class="fa fa-dashboard"></i> Timbang </a></td>
+                                        <td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
+                                        <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
+                                        </td>
+                                    </tr>
                                 </table>
                             </div>
                         </div>
@@ -217,6 +234,9 @@ function saveDetail(){
                 console.log(result);
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
+                    $('#jenis_barang_id').select2('val','');
+                    $('#netto').val('');
+                    $('#line_remarks').val('');
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{

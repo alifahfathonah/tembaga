@@ -95,9 +95,10 @@
                     <th>Tanggal</th>
                     <th>Customer</th> 
                     <th>PPN</th> 
-                    <th>Jumlah <br>Items</th>
-                    <th>Status Surat Jalan</th>
-                    <th>Status SPB</th>
+                    <th>Jumlah<br>Items</th>
+                    <th>Status<br>Invoice</th>
+                    <th>Status<br>Surat Jalan</th>
+                    <th>Status<br>SPB</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -123,6 +124,16 @@
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td>
                         <?php 
+                           if($data->flag_invoice==1){ echo '<div style="background-color:green; padding:3px; color:white; text-align: center;">Invoice Lengkap</div>';
+                            }else if($data->flag_invoice==2){
+                                echo '<div style="background-color:orange; padding:3px; color:white; text-align: center;">Invoice Sudah Ada</div>';
+                            }else{
+                                echo '<div style="background-color:darkkhaki; padding:3px; text-align: center;">Invoice Belum Semua</div>';
+                            }
+                        ?>
+                        </td>
+                        <td>
+                        <?php 
                            echo (($data->flag_sj==1)? '<div style="background-color:green; padding:3px; color:white; text-align: center;">Sudah Dikirim Semua</div>':'<div style="background-color:darkkhaki; padding:3px; text-align: center;">Belum Dikirim Semua</div>');
                         ?>
                         </td>
@@ -133,7 +144,7 @@
                                 }else if($data->status_spb==1){
                                     echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
                                 }else if($data->status_spb==2){
-                                    echo '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
+                                    echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
                                 }else if($data->status_spb==9){
                                     echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
                                 }

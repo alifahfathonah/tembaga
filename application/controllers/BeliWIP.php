@@ -131,7 +131,7 @@ class BeliWIP extends CI_Controller{
         
         if($this->db->insert('po_detail', array(
             'po_id'=>$this->input->post('id'),
-            'wip_id'=>$this->input->post('wip_id'),
+            'jenis_barang_id'=>$this->input->post('wip_id'),
             'amount'=>str_replace('.', '', $this->input->post('harga')),
             'qty'=>str_replace('.', '', $this->input->post('qty')),
             'flag_dtwip' => 0,
@@ -518,7 +518,7 @@ class BeliWIP extends CI_Controller{
                                 'status'=>2));
            }
 
-            #Create BPB FG
+            #Create BPB WIP
             $this->load->model('Model_m_numberings');
             $loop1 = $this->db->query("select dtwipd.dtwip_id, dtwipd.jenis_barang_id, jb.jenis_barang
                 from dtwip_detail dtwipd

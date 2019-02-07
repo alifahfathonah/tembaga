@@ -4,9 +4,9 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Tolling Titipan 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Tolling'); ?>"> Sales Order </a> 
+            <a href="<?php echo base_url('index.php/Tolling/po_list'); ?>"> PO Tolling </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Tolling/add'); ?>"> Input Sales Order </a> 
+            <a href="<?php echo base_url('index.php/Tolling/add_tolling_fg'); ?>"> Input Purchase Order </a> 
         </h5>          
     </div>
 </div>
@@ -30,59 +30,28 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            No. Sales Order <font color="#f00">*</font>
+                            No. PO Tolling<font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="no_sales_order" name="no_sales_order" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_detail(this.value);">
+                            <input type="text" name="no_po" id="no_po" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="Auto Generate">        
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Customer <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="customer_id" name="customer_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cp(this.value);">
                                 <option value=""></option>
                                 <?php
-                                    foreach ($so_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->no_sales_order.'</option>';
+                                    foreach ($customer_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
                                     }
                                 ?>
-                            </select>               
+                            </select>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Nama Customer <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" name="nama_customer" id="nama_customer" readonly="readonly" class="form-control myline" style="margin-bottom:5px">
-
-                            <input type="hidden" name="id_customer" id="id_customer">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Jumlah Item<font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" name="jumlah_item" id="jumlah_item" readonly="readonly" class="form-control myline" style="margin-bottom:5px">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Tanggal <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="tanggal" name="tanggal" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
-                        </div>
-                    </div>  
-                    <div class="row">&nbsp;</div>
-                    <div class="row">
-                        <div class="col-md-4">&nbsp;</div>
-                        <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                                <i class="fa fa-floppy-o"></i> Input Details Tolling FG </a>
-                        </div>    
-                    </div>
-                </div>
-                <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
                             Contact Person
@@ -94,23 +63,82 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Marketing <font color="#f00">*</font>
+                            Tanggal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" name="marketing" id="marketing" readonly="readonly" class="form-control myline" style="margin-bottom:5px">
-
-                            <input type="hidden" name="marketing_id" id="marketing_id">
+                            <input type="text" id="tanggal" name="tanggal" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('d-m-Y'); ?>">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Netto Yang Di terima
+                            Term of Payment<font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="netto" name="netto" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px">
+                            <input type="text" name="top" id="top" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" >        
                         </div>
-                    </div>             
+                    </div>
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <div class="col-md-4">&nbsp;</div>
+                        <div class="col-md-8">
+                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                                <i class="fa fa-floppy-o"></i> Input Details Tolling</a>
+                        </div>    
+                    </div>
+                </div>
+                <div class="col-md-1">&nbsp;</div>
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Barang<font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value=""></option>
+                                <option value="WIP">WIP</option>
+                                <option value="FG">Finish Good</option>
+                            </select>   
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Marketing
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="marketing" id="marketing" readonly="readonly" class="form-control myline" style="margin-bottom:5px" value="<?php echo $this->session->userdata('realname'); ?>">
+
+                            <input type="hidden" name="marketing_id" id="marketing_id" value="<?php echo $this->session->userdata('user_id'); ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            PPN
+                        </div>
+                        <div class="col-md-8">
+                            <?php
+                            if($user_ppn == 0){
+                            ?>
+                                <input type="text" id="ppn" name="ppn" readonly="readonly" class="form-control myline" style="margin-bottom:5px" value="NO PPN">
+                            
+                            <?php                
+                            }else{
+                            ?>
+                                <input type="text" id="ppn" name="ppn" readonly="readonly" class="form-control myline" style="margin-bottom:5px" value="PPN 10%">
+                            <?php
+                            }
+                            ?>
+                            </div>
+                        </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Catatan
+                        </div>
+                        <div class="col-md-8">
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px"></textarea>                           
+                        </div>
+                    </div>         
                 </div>          
             </div>
             
@@ -133,36 +161,29 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#nama_customer").val()) == ""){
+    }else if($.trim($("#customer_id").val()) == ""){
         $('#message').html("Silahkan pilih nama customer!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#netto").val()) == ""){
-        $('#message').html("Netto Belum Ada");
+    }else if($.trim($("#jenis_barang").val()) == ""){
+        $('#message').html("Silahkan pilih jenis barang");
         $('.alert-danger').show(); 
     }else{     
         $('#formku').submit(); 
     };
 };
 
-function get_detail(id){
+function get_cp(id){
     $.ajax({
         type: "POST",
-        url: "<?php echo base_url('index.php/Tolling/get_detail_so'); ?>",
+        url: "<?php echo base_url('index.php/Tolling/get_cp'); ?>",
         data: {id: id},
         cache: false,
-        success: function(result) {
-            $('#nama_customer').val(result['nama_customer']);
-            $('#id_customer').val(result['m_customer_id']);
-            $('#jumlah_item').val(result['jumlah_item']);
-            $('#contact_person').val(result['pic']);
-            $('#marketing').val(result['nama_marketing']);
-            $('#marketing_id').val(result['marketing_id']);
-            $('#netto').val(result['netto']);
+        success: function(result){
+            $("#contact_person").val(result['pic']);
         } 
     });
 }
 </script>
-
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>

@@ -167,8 +167,7 @@ class Model_finance extends CI_Model{
 
     function get_so_list($id){
         $data = $this->db->query("Select so.* From sales_order so
-            Where so.m_customer_id=".$id." and so.jenis_barang_id = 0 
-            and (select id from t_surat_jalan tsj where tsj.sales_order_id = so.id group by tsj.sales_order_id) and flag_invoice = 0");
+            Where so.m_customer_id=".$id." and flag_tolling = 0 and (select id from t_surat_jalan tsj where tsj.sales_order_id = so.id group by tsj.sales_order_id) and flag_invoice != 1");
         return $data;
     }
 
@@ -178,11 +177,12 @@ class Model_finance extends CI_Model{
     }
 
     function show_header_invoice($id){
-        $data = $this->db->query("select fi.*, tso.alias,mc.alamat, so.no_sales_order, tso.no_po, u.realname, tsj.no_surat_jalan, tso.id as id_t_sales_order from f_invoice fi
+        $data = $this->db->query("select fi.*, tso.alias, mc.nama_customer, mc.alamat, so.no_sales_order, tso.no_po, u.realname, tsj.no_surat_jalan, tso.id as id_t_sales_order, r.no_retur from f_invoice fi
             left join m_customers mc on mc.id = fi.id_customer
             left join sales_order so on so.id = fi.id_sales_order
             left join t_sales_order tso on tso.so_id = fi.id_sales_order
             left join t_surat_jalan tsj on tsj.id = fi.id_surat_jalan
+            left join retur r on fi.id_retur > 0 and r.id = fi.id_retur
             left join users u on u.id = fi.created_by
             where fi.id = ".$id);
         return $data;
@@ -211,6 +211,13 @@ class Model_finance extends CI_Model{
         left join jenis_barang jb on tso.jenis_barang != 'RONGSOK' and jb.id = fid.jenis_barang_id
         left join rongsok r on tso.jenis_barang = 'RONGSOK' and r.id = fid.jenis_barang_id
         where fid.id_invoice = ".$id);
+        return $data;
+    }
+
+    function show_invoice_detail($id){
+        $data = $this->db->query("select fid.*, jb.jenis_barang, jb.uom from f_invoice_detail fid
+            left join jenis_barang jb on jb.id=fid.jenis_barang_id
+            where id_invoice=".$id);
         return $data;
     }
 
@@ -261,8 +268,13 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function list_invoice_matching($id){
-        $data = $this->db->query("select fi.id, fi.no_invoice from f_invoice fi where fi.id_customer =".$id." and flag_matching = 0");
+    function list_invoice_matching_plus($id){
+        $data = $this->db->query("select fi.id, fi.no_invoice from f_invoice fi where fi.id_customer =".$id." and flag_matching = 0 and jenis_trx = 0");
+        return $data;
+    }
+
+    function list_invoice_matching_minus($id){
+        $data = $this->db->query("select fi.id, fi.no_invoice from f_invoice fi where fi.id_customer =".$id." and flag_matching = 0 and jenis_trx = 1");
         return $data;
     }
 

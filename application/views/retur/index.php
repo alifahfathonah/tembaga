@@ -66,7 +66,7 @@
                         <td><?php echo $data->pic; ?></td>
                         <td><?php echo $data->penimbang; ?></td>                        
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
-                        <td><?php echo (($data->jenis_retur==1)? "Ganti Voucher": "Ganti Barang"); ?></td>
+                        <td><?php echo (($data->jenis_retur==0)? "Ganti Barang": "Ganti Voucher"); ?></td>
                         <td style="text-align:center">
                             <?php 
                                 if($data->status==0){ 
@@ -83,14 +83,14 @@
                                 if( ($group_id==1 || $hak_akses['view_retur']==1)/* && $data->ready_to_ttr>0*/){
                                     echo '<a class="btn btn-circle btn-xs green-seagreen" href="'.base_url().'index.php/Retur/view/'.$data->id.'" 
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> View &nbsp; </a>';
-                                }
-                            ?>
-                        </td>
-                        <td style="text-align:center"> 
-                            <?php                                                                
+                                }                                                      
                                 if($group_id==1 || $hak_akses['print_retur']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Retur/print/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
+                                }
+                                if(($group_id==1 || $hak_akses['create_invoice']==1) && $data->jenis_retur==1 ){
+                                    echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/Retur/add_invoice/'.$data->id.'" 
+                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Create Hutang Invoice &nbsp; </a> ';
                                 }
                             ?>
                         </td>

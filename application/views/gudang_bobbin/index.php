@@ -132,8 +132,6 @@
                         </div>
                             <input type="hidden" name="id_packing_2" id="id_packing_2">
                     </div>
-                                       
-                    
                 </div>
                 <div class="col-md-2">&nbsp;</div>
                 <div class="col-md-5"> 
@@ -231,8 +229,12 @@
                                 }
                                 if( ($group_id==1)||($hak_akses['delete']==1) ){
                             ?>
-                            <a href="<?php echo base_url(); ?>index.php/GudangBobbin/delete/<?php echo $data->id; ?>" 
-                               class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus data ini?');">
+                            <a href="<?php echo base_url(); ?>index.php/GudangBobbin/view/<?php echo $data->id; ?>" 
+                               class="btn btn-circle btn-xs blue" style="margin-bottom:4px">
+                                <i class="fa fa-book"></i> View </a>
+                            <?php }if( ($group_id==1)||($hak_akses['view']==1) ){
+                            ?>
+                            <a href="<?php echo base_url(); ?>index.php/GudangBobbin/delete/<?php echo $data->id; ?>" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus data ini?');">
                                 <i class="fa fa-trash-o"></i> Hapus </a>
                             <?php }?>
                         </td>

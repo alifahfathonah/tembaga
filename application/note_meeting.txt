@@ -38,3 +38,19 @@ Kas Bank per jenis_trx masuk/keluar(DONE)
 No uang masuk pada view uang masuk belum ditampilin(Done)
 
 PO, SO, INVOICE JASA DI Resmi tambah PPN 10% Sub Totalnya
+
+SPB Rongsok untuk Tolling ke Customer(Done)
+
+Flag invoice di SO jadi 2 jika sudah buat satu invoice dari sales order itu (Done)
+
+Gudang FG belum work tanggal keluar (Done)
+
+Gudang FG index perlu di cek lagi (Done)
+
+Kirim rongsok gudang fg (Done)
+
+Bikin Invoice hutang bernomor retur, nanti di matching sebagai nilai yang mengurangi
+harga invoice. dan nanti milihnya ada dalam modal
+
+Slip setoran kalau sudah cair pembayarannya, bisa diproses slip setorannya mau masuk
+bank di uang kas mana

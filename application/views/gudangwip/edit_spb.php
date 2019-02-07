@@ -68,6 +68,8 @@
                             $jenis='ROLLING (INGOT)';
                         }else if($header['flag_produksi']==3){
                             $jenis='CUCI (KAWAT HITAM)';
+                        }else if($header['flag_produksi']==4){
+                            $jenis='TOLLING';
                         }
                     ?>
                     <div class="row">

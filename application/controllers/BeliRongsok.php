@@ -147,6 +147,7 @@ class BeliRongsok extends CI_Controller{
         $tabel = "";
         $no    = 1;
         $total = 0;
+        $qty = 0;
         
         $this->load->model('Model_beli_rongsok'); 
         $myDetail = $this->Model_beli_rongsok->load_detail($id)->result(); 
@@ -162,12 +163,14 @@ class BeliRongsok extends CI_Controller{
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';
+            $qty += $row->qty;
             $total += $row->total_amount;
             $no++;
         }
 
         $tabel .= '<tr>';
-        $tabel .= '<td colspan="5" style="text-align:right"><strong>Total (Rp) </strong></td>';
+        $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($qty,0,',','.').'</strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
         $tabel .= '</tr>';
         
@@ -419,7 +422,7 @@ class BeliRongsok extends CI_Controller{
                         'dtr_id'=>$dtr_id,
                         //'po_detail_id'=>$row['po_detail_id'],
                         'rongsok_id'=>$row['rongsok_id'],
-                        // 'qty'=>str_replace('.', '', $row['qty']),
+                        'qty'=>str_replace('.', '', $row['qty']),
                         'bruto'=>str_replace('.', '', $row['bruto']),
                         'berat_palette'=>str_replace('.', '', $row['berat_palette']),
                         'netto'=>str_replace('.', '', $row['netto']),
@@ -605,7 +608,8 @@ class BeliRongsok extends CI_Controller{
                         if(((int)$v->tot_netto) >= (0.9*((int)$v->tot_qty))){
                             $this->db->where('id',$po_id);
                             $this->db->update('po',array(
-                                            'status'=>3));
+                                            'status'=>3,
+                                            'flag_pelunasan'=>0));
                         }else {
                             $this->db->where('id',$po_id);
                             $this->db->update('po',array(

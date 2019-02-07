@@ -2,11 +2,11 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Sales Order
+            <i class="fa fa-angle-right"></i> Tolling
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/SalesOrder/surat_jalan'); ?>"> Surat Jalan </a> 
+            <a href="<?php echo base_url('index.php/Tolling/surat_jalan'); ?>"> Surat Jalan </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/SalesOrder/view_surat_jalan'); ?>"> View Surat Jalan </a> 
+            <a href="<?php echo base_url('index.php/Tolling/surat_jalan'); ?>"> View Surat Jalan </a> 
         </h5>          
     </div>
 </div>
@@ -56,7 +56,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/SalesOrder/approve_surat_jalan'); ?>">
+              id="formku">
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -73,14 +73,35 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            No. Sales Order <font color="#f00">*</font>
+                            No. PO Tolling <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_sales_order" name="no_sales_order" readonly="readonly"
+                        <?php if($header['po_id'] > 0){?>
+                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['no_sales_order']; ?>">
-
-                            <input type="hidden" id="so_id" name="so_id" value="<?php echo $header['sales_order_id'];?>">
+                                value="<?php echo $header['no_po']; ?>">
+                        <?php }else{?>
+                            <select id="po_id" name="po_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
+                                onclick="get_alamat(this.value);">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($list_po as $row){
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['po_id'])? 'selected="selected"': '').'>'.$row->no_po.'</option>';
+                                    }
+                                ?>
+                            </select>
+                        <?php } ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. SPB <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_spb" name="no_spb" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['no_spb']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -91,6 +112,16 @@
                             <input type="text" id="tanggal" name="tanggal" 
                                 class="form-control input-small myline" style="margin-bottom:5px; float:left;" 
                                 readonly value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Barang <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['jenis_barang']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -119,48 +150,12 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
-                            Status SPB <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <?php
-                                if($header['status_spb']==0){
-                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Approval</div>';
-                                }else if($header['status_spb']==1){
-                                    echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
-                                }else if($header['status_spb']==2){
-                                    echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
-                                }else if($header['status_spb']==9){
-                                    echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
-                                }
-                            ?>
-                            <input type="hidden" name="status_spb" value="<?php echo $header['status_spb'];?>">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Jenis Barang <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['jenis_barang']; ?>">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
                             Type Kendaraan
                         </div>
                         <div class="col-md-8">
-                            <select disabled id="m_type_kendaraan_id" name="m_type_kendaraan_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
-                                onclick="get_type_kendaraan(this.value);">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($type_kendaraan_list as $row){
-                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['m_type_kendaraan_id'])? 'selected="selected"': '').'>'.$row->type_kendaraan.'</option>';
-                                    }
-                                ?>
-                            </select>
+                            <input type="text" id="type_kendaraan" name="type_kendaraan" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['type_kendaraan']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -211,7 +206,6 @@
                     <?php } ?>
                 </div>              
             </div>
-            <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
@@ -220,7 +214,6 @@
                             <thead>
                                 <th>No</th>
                                 <th style="width: 19%">Nama Item</th>
-                                <th style="width: 19%">Nama Item Alias</th>
                                 <th>UOM</th>
                                 <th style="width: 15%">No. Packing</th>
                                 <th>Bruto (Kg)</th>
@@ -236,11 +229,6 @@
                                 <tr>
                                     <td><?php echo $no; ?></td>
                                     <td><?php echo $row->jenis_barang; ?></td>
-                                    <?php if(is_null($row->jenis_barang_a)){ ?>
-                                    <td>TIDAK ADA ALIAS</td>
-                                    <?php } else { ?>
-                                    <td><?php echo $row->jenis_barang_a; ?></td>
-                                    <?php } ?>
                                     <td><?php echo $row->uom; ?></td>
                                     <td><?php echo $row->no_packing; ?></td>
                                     <td><?php echo $row->bruto; ?></td>
@@ -327,9 +315,12 @@
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
                         }
+                        if($group_id==1 && $header['po_id']==0){
+                            echo '<a href="javascript:;" class="btn green" onclick="simpanData();"> '
+                                .'<i class="fa fa-check"></i>Simpan</a> ';
+                        }
                     ?>
-
-                    <a href="<?php echo base_url('index.php/SalesOrder/surat_jalan'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/Tolling/surat_jalan_keluar'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -352,9 +343,14 @@
 function approveData(){
     var r=confirm("Anda yakin me-approve surat jalan ini?");
     if(r == true){
-        
+        $('#formku').attr('action', '<?php echo base_url(); ?>index.php/Tolling/approve_surat_jalan_keluar');
         $('#formku').submit(); 
     }
+};
+
+function simpanData(){
+    $('#formku').attr('action', '<?php echo base_url(); ?>index.php/Tolling/simpan_surat_jalan_keluar');
+    $('#formku').submit(); 
 };
 
 function showRejectBox(){
@@ -375,7 +371,7 @@ function rejectData(){
     } else {
         $('#message').val("");
         $('.alert-danger').hide();
-        $('#frmReject').attr('action', '<?php echo base_url(); ?>index.php/SalesOrder/reject_surat_jalan');
+        $('#frmReject').attr('action', '<?php echo base_url(); ?>index.php/Tolling/reject_surat_jalan');
         $('#frmReject').submit();
     }
 }
@@ -399,4 +395,3 @@ $(function(){
     //loadDetail(<?php echo $header['id']; ?>);
 });
 </script>
-      

@@ -2,9 +2,9 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Gudang WIP
+            <i class="fa fa-angle-right"></i> Tolling
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/GudangFG/spb_kirim_rongsok'); ?>"> SPB Kirim WIP Ke Rongsok </a> 
+            <a href="<?php echo base_url('index.php/Tolling/add_spb'); ?>"> Create SPB Keluar </a> 
         </h5>          
     </div>
 </div>
@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['spb_kirim_rongsok']==1) ){
+            if( ($group_id==1)||($hak_akses['add_spb']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -23,7 +23,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/GudangFG/save_spb_kirim_rongsok'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/Tolling/save_spb'); ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
@@ -56,68 +56,51 @@
                                 value="<?php echo $this->session->userdata('realname'); ?>">
                         </div>
                     </div>
-                    
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <div class="col-md-4">&nbsp;</div>
+                        <div class="col-md-8">
+                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                                <i class="fa fa-floppy-o"></i> Input Details </a>
+                        </div>    
+                    </div> 
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
+                            Jenis Barang <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="show(this.value)">
+                                <option value=""></option>
+                                <option value="RONGSOK">Rongsok</option>
+                                <option value="WIP">WIP</option>
+                                <option value="FG">FinishGood</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" id="show_jumlah">
+                        <div class="col-md-4">
+                            Jumlah Rongsok <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="number" id="jumlah_rsk" name="jumlah_rsk" 
+                                class="form-control myline" style="margin-bottom:5px">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">
-                            <textarea id="remarks" name="remarks" rows="2" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px">BARANG FG TRANSFER KE RONGSOK</textarea>                           
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
+                                class="form-control myline" style="margin-bottom:5px"></textarea>    
                         </div>
                     </div>
                 </div>              
             </div>
-
-            <div class="row">&nbsp;</div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="table-scrollable">
-                        <table class="table table-bordered table-striped table-hover">
-                            <thead>
-                                <th>No</th>
-                                <th>Nama Item FG</th>
-                                <th>UOM</th>
-                                <th>Bruto</th>
-                                <th>Netto</th>
-                                <th>No Packing</th>
-                                <th>No Bobbin</th>
-                                <th>Keterangan</th>
-                            </thead>
-                            <tbody id="boxDetail">
-                                <tr>
-                                    <td>1<input type="hidden" name="id_gudang" value="<?=$barang['id'];?>"></td>
-                                    <td><?=$barang['jenis_barang'];?><input type="hidden" name="id_jenis_barang" value="<?=$barang['id_jenis_barang'];?>"></td>
-                                    <td><?=$barang['uom'];?><input type="hidden" name="uom" value="<?=$barang['uom'];?>"></td>
-                                    <td><?=$barang['bruto'];?><input type="hidden" name="bruto" value="<?=$barang['bruto'];?>"></td>
-                                    <td><?=$barang['netto'];?><input type="hidden" name="netto" value="<?=$barang['netto'];?>"></td>
-                                    <td><?=$barang['no_packing'];?><input type="hidden" name="no_packing" value="<?=$barang['no_packing'];?>"></td>
-                                    <td><?=$barang['nomor_bobbin'];?>
-                                    <input type="hidden" name="nomor_bobbin" value="<?=$barang['nomor_bobbin'];?>">
-                                    <input type="hidden" name="id_bobbin" value="<?=$barang['bobbin_id'];?>"></td>
-                                    <td><?=$barang['keterangan'];?><input type="hidden" name="keterangan"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="row">&nbsp;</div>
-            <div class="row">
-                <div class="col-md-12">
-                    <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                        <i class="fa fa-floppy-o"></i> Simpan </a>
-                        
-                    <a href="<?php echo base_url('index.php/GudangFG'); ?>" class="btn blue-hoki"> 
-                        <i class="fa fa-angle-left"></i> Kembali </a>
-                </div>    
-            </div>
-            
         </form>
-        
         <?php
             }else{
         ?>
@@ -135,12 +118,24 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else{     
+    }else if($.trim($("#jenis_barang").val()) == ""){
+        $('#message').html("Jenis Barang harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{
         $('#formku').submit(); 
     };
 };
-</script>
 
+function show(id) {
+    if(id == 'RONGSOK'){
+        $('#show_jumlah').show()
+        $('#jumlah_rsk').prop("disabled", false);
+    }else{
+        $('#show_jumlah').hide()
+        $('#jumlah_rsk').prop("disabled", true);
+    }
+}
+</script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
@@ -154,7 +149,9 @@ $(function(){
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd-mm-yy'
-    });       
+    });     
+    
+        $('#show_jumlah').hide()
+        $('#jumlah_rsk').prop("disabled", true);  
 });
 </script>
-      

@@ -124,7 +124,7 @@
                         </div>
                         <div class="col-md-8">
                             <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px"><?php echo $myData['remarks']; ?></textarea>                           
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly"><?php echo $myData['remarks']; ?></textarea>                           
                         </div>
                     </div>
                     <?php

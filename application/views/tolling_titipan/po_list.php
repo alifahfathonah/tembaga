@@ -2,9 +2,9 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Pembelian 
+            <i class="fa fa-angle-right"></i> Tolling 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>"> Pembelian Finish Good </a> 
+            <a href="<?php echo base_url('index.php/Tolling/po_list'); ?>"> PO List Tolling </a> 
         </h5>          
     </div>
 </div>
@@ -86,13 +86,13 @@
                             </div> 
                             <div class="row">
                                 <div class="col-md-5">
-                                    Supplier
+                                    Customer
                                 </div>
                                 <div class="col-md-7">
-                                    <input type="text" id="nama_supplier" name="nama_supplier" 
+                                    <input type="text" id="nama_customer" name="nama_customer" 
                                         class="form-control myline" style="margin-bottom:5px" 
                                         readonly="readonly">  
-                                    <input type="hidden" name="supplier_id" id="supplier_id">                                                                 
+                                    <input type="hidden" name="customer_id" id="customer_id">
                                 </div>
                             </div>
                             <div class="row">
@@ -163,10 +163,10 @@
                     <i class="fa fa-beer"></i>Purchase Order List
                 </div>
                 <div class="tools">
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliFinishGood/po_list_outdated"> <i class="fa fa-minus"></i> PO LIST OUTDATED</a>
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Tolling/po_list_outdated"> <i class="fa fa-minus"></i> PO LIST OUTDATED</a>
                 <?php
                     if( ($group_id==1)||($hak_akses['add']==1) ){
-                        echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/BeliFinishGood/add').'"> '
+                        echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/Tolling/add_tolling_fg').'"> '
                         .'<i class="fa fa-plus"></i> Input PO </a>';
                     }
                 ?>                    
@@ -179,8 +179,8 @@
                     <th style="width:50px;">No</th>
                     <th>No. PO</th>
                     <th>Tanggal</th>
-                    <th>Supplier</th> 
-                    <th>Attention To</th>
+                    <th>Customer</th> 
+                    <th>Jenis Barang</th>
                     <th>PPN</th> 
                     <th>Jumlah <br>Items</th>
                     <th>Status</th>
@@ -209,8 +209,8 @@
                         <?php
                         }
                         ?>
-                        <td><?php echo $data->nama_supplier; ?></td>
-                        <td><?php echo $data->pic; ?></td>
+                        <td><?php echo $data->nama_customer; ?></td>
+                        <td><?php echo $data->jenis_po; ?></td>
                         <td>
                         <?php 
                            echo (($data->ppn==1)? '<i class="fa fa-check"></i> Yes': '<i class="fa fa-times"></i> No');
@@ -236,7 +236,7 @@
                         <td style="text-align:center">
                             <?php
                                 if($data->tot_voucher>0){print('Ada <b>'.$data->tot_voucher.'</b> Voucher<br/>');}
-                                if( ($group_id==1 || $hak_akses['create_voucher_dp']==1) && $data->flag_pelunasan==0 && $data->status==3){
+                                if( ($group_id==1 || $hak_akses['create_voucher_dp']==1) && $data->flag_pelunasan==0 && $data->status== (2 || 3)){
                                     echo '<a class="btn btn-circle btn-xs green" href="javascript:;" onclick="createVoucher('.$data->id.');"
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Create &nbsp; </a>';
                                 }
@@ -249,13 +249,13 @@
                             <?php
                                 if( ($group_id==1 || $hak_akses['edit']==1) && $data->status != 1 ){
                             ?>
-                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/BeliFinishGood/edit/<?php echo $data->id; ?>" style="margin-bottom:4px">
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/Tolling/edit_tolling_fg/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                             <?php
                                 }
                                 if($group_id==1 || $hak_akses['print_po']==1){
                             ?>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/BeliFinishGood/print_po/<?php echo $data->id; ?>" 
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/Tolling/print_po/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
                                 }
@@ -295,17 +295,16 @@ function getComa(value, id){
 }
 
 function createVoucher(id){
-    console.log(id);
     $.ajax({
-        url: "<?php echo base_url('index.php/BeliFinishGood/create_voucher'); ?>",
+        url: "<?php echo base_url('index.php/Tolling/create_voucher'); ?>",
         type: "POST",
         data : {id: id},
         success: function (result){
-            //console.log(result);
             $('#no_po').val(result['no_po']);
             $('#tanggal_po').val(result['tanggal']);
-            $('#nama_supplier').val(result['nama_supplier']);
-            $('#supplier_id').val(result['supplier_id']);
+            $('#nama_customer').val(result['nama_customer']);
+            $('#customer_id').val(result['customer_id']);
+            $('#jenis_barang').val(result['jenis_po']);
             $('#amount').val('0');
             $('#nilai_po').val(result['nilai_po']);
             $('#terbilang').val(result['terbilang']);
@@ -333,7 +332,7 @@ function saveVoucher(){
     }else{    
         $('#message').html("");
         $('.alert-danger').hide();
-        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/BeliFinishGood/save_voucher");
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Tolling/save_voucher");
         $('#formku').submit(); 
     };
 };

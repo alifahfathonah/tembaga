@@ -486,6 +486,8 @@ function pilih_data(id){
         $('#div_stok_keras').addClass('hidden disabled');
         $('#div_spb_cuci').addClass('hidden disabled');
         $('#div_data_spb_kh').addClass('hidden disabled');
+        $('#id_spb_kh').prop("disabled", true);
+        $('#id_spb_ingot').prop("disabled", false);
         $('#div_data_spb').removeClass('hidden disabled');
         $('#div_kawat_hitam_masuk').removeClass('hidden disabled');
         $('#div_spb_rolling').removeClass('hidden disabled');
@@ -498,6 +500,8 @@ function pilih_data(id){
         $('#div_data_spb').addClass('hidden disabled');
         $('#div_spb_cuci').addClass('hidden disabled');
         $('#div_data_spb_kh').addClass('hidden disabled');
+        $('#id_spb_kh').prop("disabled", true);
+        $('#id_spb_ingot').prop("disabled", true);
         $('#div_kawat_hitam_masuk').removeClass('hidden disabled');
         $('#div_stok_keras').removeClass('hidden disabled');
         $('#id_jenis_barang').val('6');
@@ -507,6 +511,8 @@ function pilih_data(id){
         $('#div_kawat_hitam_masuk').addClass('hidden disabled');
         $('#div_stok_keras').addClass('hidden disabled');
         $('#div_data_spb').addClass('hidden disabled');
+        $('#id_spb_kh').prop("disabled", false);
+        $('#id_spb_ingot').prop("disabled", true);
         $('#div_data_spb_kh').removeClass('hidden disabled');
         $('#div_spb_cuci').removeClass('hidden disabled');
         $('#div_kawat_merah_masuk').removeClass('hidden disabled');

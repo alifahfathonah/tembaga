@@ -80,7 +80,7 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th>No</th>
-                                <th>Nama Item FG</th>
+                                <th style="width: 20%;">Nama Item FG</th>
                                 <th>UOM</th>
                                 <th>Netto</th>
                                 <th>Keterangan</th>
@@ -89,6 +89,22 @@
                             <tbody id="boxDetail">
 
                             </tbody>
+                            <tr>
+                                <td style="text-align:center"><i class="fa fa-plus"></i></td>
+                                <td>
+                                <select id="barang_id" name="barang_id" class="form-control select2me myline" 
+                                data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
+                                <option value=""></option><?php
+                                    foreach ($list_barang as $value){
+                                        echo "<option value='".$value->id."'>".$value->jenis_barang."</option>";
+                                    }?>
+                                </select>
+                                </td>
+                                <td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="netto" name="netto" class="form-control myline"/></td>
+                                <td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
+                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -175,6 +191,10 @@ function saveDetail(){
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
+                    $('#barang_id').select2('val','');
+                    $('#uom').val('');
+                    $('#netto').val('');
+                    $('#line_remarks').val('');
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{
@@ -191,7 +211,7 @@ function hapusDetail(id){
     if (r==true){
         $.ajax({
             type:"POST",
-            url:'<?php echo base_url('index.php/GudangFG/delete_detail'); ?>',
+            url:'<?php echo base_url('index.php/GudangFG/delete_detail_spb'); ?>',
             data:"id="+ id,
             success:function(result){
                 if(result['message_type']=="sukses"){
