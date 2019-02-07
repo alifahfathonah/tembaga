@@ -151,6 +151,8 @@ function get_no_so(id){
         dataType: "html",
         success: function(result) {
             $('#sales_order_id').html(result);
+            $('#sales_order_id').select2('val','');
+            $('#surat_jalan_id').select2('val','');
         }
     });
 }
@@ -164,6 +166,7 @@ function get_no_sj(id){
         dataType: "html",
         success: function(result) {
             $('#surat_jalan_id').html(result);
+            $('#surat_jalan_id').select2('val','');
         }
     });
 }

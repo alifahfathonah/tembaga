@@ -651,7 +651,7 @@ class GudangWIP extends CI_Controller{
             $this->load->model('Model_gudang_wip');
             $data['header'] = $this->Model_gudang_wip->show_header_spb($id)->row_array();
             $jenis = $data['header']['flag_produksi'];
-            if($jenis==0){
+            if($jenis== (0 || 4)){
                 $data['list_barang'] = $this->Model_gudang_wip->jenis_barang_list()->result();
             }else if($jenis==2){
                 $data['list_barang'] = $this->Model_gudang_wip->jenis_barang_spb(2)->result();

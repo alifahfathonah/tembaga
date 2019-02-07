@@ -2,11 +2,11 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Sales Order
+            <i class="fa fa-angle-right"></i> Tolling Titipan
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/SalesOrder/surat_jalan'); ?>"> Surat Jalan </a> 
+            <a href="<?php echo base_url('index.php/Tolling/surat_jalan_keluar'); ?>"> Surat Jalan </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/SalesOrder/edit_surat_jalan'); ?>"> Edit Surat Jalan </a> 
+            <a href="<?php echo base_url('index.php/Tolling/add_surat_jalan_keluar'); ?>"> Edit Surat Jalan </a> 
         </h5>          
     </div>
 </div>
@@ -25,7 +25,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/SalesOrder/update_surat_jalan'); ?>">
+              id="formku" action="<?php echo base_url('index.php/Tolling/update_surat_jalan_keluar'); ?>">
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -42,14 +42,14 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            No. Sales Order <font color="#f00">*</font>
+                            No. PO Tolling <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_sales_order" name="no_sales_order" readonly="readonly"
+                            <input type="text" id="no_po" name="no_po" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['no_sales_order']; ?>">
-
-                            <input type="hidden" id="so_id" name="so_id" value="<?php echo $header['sales_order_id'];?>">
+                                value="<?php echo $header['no_po']; ?>">
+                            
+                            <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['po_id']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -59,7 +59,9 @@
                         <div class="col-md-8">
                             <input type="text" id="no_sales_order" name="no_sales_order" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['nomor_spb']; ?>">
+                                value="<?php echo $header['no_spb']; ?>">
+
+                            <input type="hidden" id="spb_id" name="spb_id" value="<?php echo $header['spb_id'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -180,7 +182,6 @@
                             <thead>
                                 <th>No</th>
                                 <th style="width: 19%">Nama Item</th>
-                                <th style="width: 19%">Nama Item Alias</th>
                                 <th>UOM</th>
                                 <th style="width: 15%">No. Packing</th>
                                 <th>Bruto (Kg)</th>
@@ -204,17 +205,6 @@
                                     </td>
                                     <input type="hidden" name="details[1][id_barang]" id="id_barang_1">
                                     <input type="hidden" id="jenis_barang_id_1" name="details[1][jenis_barang_id]" class="form-control myline">
-                                    <td>
-                                        <select id="barang_alias_id_1" name="details[1][barang_alias_id]" class="form-control select2me myline" disabled data-placeholder="Pilih..." style="margin-bottom:5px">
-                                            <option></option>
-                                            <option value="0">TIDAK ADA ALIAS</option>
-                                        <?php foreach ($jenis_barang as $value){ ?>
-                                            <option value='<?=$value->id;?>'>
-                                                <?=$value->jenis_barang;?>
-                                            </option>
-                                        <?php } ?>
-                                        </select>
-                                    </td>
                                     <td><input type="text" id="uom_1" name="details[1][uom]" class="form-control myline" readonly="readonly"></td>
                                     <td><input type="text" id="no_packing_1" name="details[1][no_packing]" class="form-control myline" readonly="readonly"></td>
                                     <td><input type="text" id="bruto_1" name="details[1][bruto]" class="form-control myline" readonly="readonly"></td>
@@ -282,11 +272,11 @@
                                 <tr>
                                     <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
                                     <td><!-- INI NOMOR PALETTE BUKAN BARANG_ID-->
-                                        <select id="barang_id_1" name="details[1][barang_id]" class="form-control myline" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="get_data(1);">
+                                        <select id="barang_id_1" name="details[1][barang_id]" class="form-control myline select2me" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="get_data(1);">
                                             <option value=""></option>
                                         <?php foreach ($list_produksi as $value){ ?>
                                             <option value='<?=$value->id;?>'>
-                                                <?=$value->jenis_barang;?>
+                                                <?=$value->no_pallete;?>
                                             </option>
                                         <?php } ?>
                                         </select>
@@ -318,7 +308,7 @@
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
-                    <a href="<?php echo base_url('index.php/SalesOrder/surat_jalan'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/Tolling/surat_jalan_keluar'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -363,7 +353,6 @@ function create_new_input(id){
     if($.trim($("#barang_id_"+id).val()) == ""){
         alert('Barang Belum Di Input !');
     }else{
-        $("#barang_alias_id_"+id).attr('readonly','readonly');
         $("#barang_id_"+id).attr('disabled','disabled');
         $("#save_"+id).attr('disabled','disabled').hide();
         $("#delete_"+id).show();
@@ -380,13 +369,6 @@ function create_new_input(id){
             '</td>'+
             '<input type="hidden" name="details['+new_id+'][id_barang]" id="id_barang_'+new_id+'">'+
             '<input type="hidden" id="jenis_barang_id_'+new_id+'" name="details['+new_id+'][jenis_barang_id]" class="form-control myline">'+
-            '<td>'+
-                '<select id="barang_alias_id_'+new_id+'" name="details['+new_id+'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">'+
-                    '<option value=""></option>'+
-                    '<option value="0">TIDAK ADA ALIAS</option>'+
-                    '<?php if($header["jenis_barang"]=="FG"){foreach($jenis_barang as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}}?>'+
-                '</select>'+
-            '</td>'+
             '<td><input type="text" id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
             '<td><input type="text" id="no_packing_'+new_id+'" name="details['+new_id+'][no_packing]" class="form-control myline" readonly="readonly"></td>'+
             '<td><input type="text" id="bruto_'+new_id+'" name="details['+new_id+'][bruto]" class="form-control myline" readonly="readonly"></td>'+
@@ -397,7 +379,6 @@ function create_new_input(id){
             '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail('+new_id+');" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Delete </a></td>'+
         '</tr>');
         $('#barang_id_'+new_id).select2();
-        $('#barang_alias_id_'+new_id).select2();
         }else if($("#jenis_barang").val()=='WIP'){
         $("#tabel_barang>tbody").append(
         '<tr>'+
@@ -424,7 +405,7 @@ function create_new_input(id){
             '<td>'+
                 '<select id="barang_id_'+new_id+'" name="details['+new_id+'][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_data('+new_id+');">'+
                     '<option value=""></option>'+
-                    '<?php if($header["jenis_barang"]=="RONGSOK"){foreach($list_produksi as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}}?>'+
+                    '<?php if($header["jenis_barang"]=="RONGSOK"){foreach($list_produksi as $v){ print('<option value="'.$v->id.'">'.$v->no_pallete.'</option>');}}?>'+
                 '</select>' +
             '<input type="hidden" name="details['+new_id+'][id_barang]" id="id_barang_'+new_id+'">'+
             '<input type="hidden" id="jenis_barang_id_'+new_id+'" name="details['+new_id+'][jenis_barang_id]" class="form-control myline">'+
@@ -440,6 +421,7 @@ function create_new_input(id){
             '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail('+new_id+');" style="margin-top:5px; display:none;"><i class="fa fa-trash"></i> Delete </a>'+
             '</td>'+
         '</tr>');
+        $('#barang_id_'+new_id).select2();
         }
     }
 }
@@ -463,7 +445,7 @@ function get_data(id){
         var check = check_duplicate();
         if(check){
         $.ajax({
-            url: "<?php echo base_url('index.php/SalesOrder/get_data_sj'); ?>",
+            url: "<?php echo base_url('index.php/Tolling/get_data_sj'); ?>",
             type: "POST",
             data: {
                 id:id_barang,
@@ -472,7 +454,6 @@ function get_data(id){
             dataType: "json",
             success: function(result) {
                 if ($("#jenis_barang").val()=="FG"){
-                    $('#barang_alias_id_'+id).prop("disabled", false);
                     $('#jenis_barang_id_'+id).val(result['jenis_barang_id']);
                     $('#uom_'+id).val(result['uom']);
                     $('#no_packing_'+id).val(result['no_packing']);
@@ -543,4 +524,3 @@ $(function(){
     //loadDetail(<?php echo $header['id']; ?>);
 });
 </script>
-      

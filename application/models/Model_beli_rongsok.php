@@ -163,6 +163,7 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join po On (dtr.po_id = po.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) or (dtr.supplier_id = spl.id) 
                     Left Join users usr On (dtr.created_by = usr.id) 
+                    Where dtr.customer_id = 0
                 Order By dtr.id Desc");
         return $data;
     }
@@ -208,7 +209,7 @@ class Model_beli_rongsok extends CI_Model{
 
     function get_po_list(){
         $data = $this->db->query("Select id, no_po, jenis_po From po 
-            Where jenis_po= 'Rongsok' And (status= 0 or status = 2)");
+            Where jenis_po= 'Rongsok' And status != 1");
         return $data;
     }
     

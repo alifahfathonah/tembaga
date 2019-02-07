@@ -23,7 +23,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/Retur/update'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/Retur/update'); ?>">          
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -123,7 +123,7 @@
                             <?php } else if ($header['jenis_retur'] == 1){ ?>
                             <input type="text" id="type_retur" name="type_retur" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="Ganti Voucher">
+                                value="Mengurangi Hutang">
                             <?php } ?>
                         </div>
                     </div>
@@ -134,11 +134,11 @@
                     <div class="table-scrollable">
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
-                                <th style="width:35px">No</th>
-                                <th>Nama Item Retur</th>
+                                <th>No</th>
+                                <th width="20%">Nama Item Retur</th>
                                 <th>No. Packing</th>
-                                <th style="width: 80px">Bruto (Kg)</th>
-                                <th style="width:80px">Netto (Kg)</th>
+                                <th>Bruto (Kg)</th>
+                                <th>Netto (Kg)</th>
                                 <th>ID Bobbin / Keranjang</th>
                                 <th>Keterangan</th>
                                 <th>Actions</th>
@@ -146,6 +146,26 @@
                             <tbody id="boxDetail">
 
                             </tbody>
+                            <tr>
+                                <td style="text-align:center"><i class="fa fa-plus"></i></td>
+                                <td>
+                                <select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($jenis_barang_list as $value){
+                                        echo "<option value='".$value->id."'>".$value->jenis_barang."</option>";
+                                    }
+                                ?>
+                                </select>
+                                </td>
+                                <td><input type="text" id="no_packing" name="no_packing" class="form-control myline" readonly="readonly" value="Auto"></td>
+                                <td><input type="text" id="bruto" name="bruto" class="form-control myline"></td>
+                                <td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"/></td>
+                                <td><input type="text" id="no_bobbin" name="no_bobbin" class="form-control myline" onchange="get_bobbin(this.value)" onkeyup="this.value = this.value.toUpperCase()"/><input type="hidden" name="id_bobbin" id="id_bobbin"></td>
+                                <!-- <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen"> <i class="fa fa-dashboard"></i> Timbang </a></td> -->
+                                <td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
+                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -289,6 +309,13 @@ function saveDetail(){
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
+                    $('#jenis_barang_id').select2('val','');
+                    $('#qty').val('');
+                    $('#bruto').val('');
+                    $('#netto').val('');
+                    $('#no_bobbin').val('');
+                    $('#id_bobbin').val('');
+                    $('#line_remarks').val('');
                     loadDetail($('#id').val());
                     $('#message').html("");
                     $('.alert-danger').hide(); 

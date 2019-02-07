@@ -123,12 +123,14 @@
                                 <th style="width:40px">No</th>
                                 <th style="width:20%">Nama Item Rongsok</th>
                                 <th>UOM</th>
+                                <th>Jumlah Rongsok</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Berat Palette</th>
                                 <th>Netto (Kg)</th>
                                 <th></th>
                                 <th>No. Pallete</th>
                                 <th>Keterangan</th>
+                                <th>Action</th>
                             </thead>
                             <tbody id="boxDetail">
                             <tr>
@@ -145,6 +147,7 @@
                                 </select>
                                 </td>
                                 <td><input type="text" id="uom_1" name="myDetails[1][uom]" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="qty_1" name="myDetails[1][qty]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
                                 <td><input type="text" id="bruto_1" name="myDetails[1][bruto]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
                                 <td><input type="text" id="berat_palette_1" name="myDetails[1][berat_palette]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
                                 <td><input type="text" id="netto_1" name="myDetails[1][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
@@ -196,7 +199,6 @@ function loadTimbangan(id){
         type: "POST",
         data : {},
         success: function (result){
-            //console.log(result);
             if(result['type_message'][0]=="error"){
                 $("#bruto_"+id).val('0');
                 $('#message').html(result['message'][0]);
@@ -250,38 +252,20 @@ function simpanData(){
     };
 };
 
-function check_duplicate(){
-    var valid = true;
-        $.each($("select[name$='[nama_item]']"), function (index1, item1) {
-            $.each($("select[name$='[nama_item]']").not(this), function (index2, item2) {
-                if ($(item1).val() == $(item2).val()) {
-                    valid = false;
-                }
-            });
-        });
-    return valid;
-}
-
 function get_uom_po(id, nmr){
     // var idpo = $('#po_id').val();
-    if($.trim($('#name_rongsok_'+nmr).val())!=''){    
-    var check = check_duplicate();
-        if(check){
-            $.ajax({
-                url: "<?php echo base_url('index.php/BeliRongsok/get_uom_po'); ?>",
-                type: "POST",
-                data: {iditem: id},
-                dataType: "json",
-                success: function(result) {
-                    $('#uom_'+nmr).val(result['uom']);
-                    $('#rongsok_id_'+nmr).val(result['id']);
-                    $('#no_pallete_'+nmr).val(makepallete_id());
-                }
-            });
-        }else{
-            alert('Barang tidak Boleh Sama');
-            $('#name_rongsok_'+nmr).select2("val", "");
-        }
+    if($.trim($('#name_rongsok_'+nmr).val())!=''){
+        $.ajax({
+            url: "<?php echo base_url('index.php/BeliRongsok/get_uom_po'); ?>",
+            type: "POST",
+            data: {iditem: id},
+            dataType: "json",
+            success: function(result) {
+                $('#uom_'+nmr).val(result['uom']);
+                $('#rongsok_id_'+nmr).val(result['id']);
+                $('#no_pallete_'+nmr).val(makepallete_id());
+            }
+        });
     }
 }
 
@@ -311,6 +295,7 @@ function saveDetail(id){
                 '</select>'+
                 '</td>'+
                 '<td><input type="text" id="uom_'+new_id+'" name="myDetails['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
+                '<td><input type="text" id="qty_'+new_id+'" name="myDetails['+new_id+'][qty]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
                 '<td><input type="text" id="bruto_'+new_id+'" name="myDetails['+new_id+'][bruto]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
                 '<td><input type="text" id="berat_palette_'+new_id+'" name="myDetails['+new_id+'][berat_palette]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
                 '<td><input type="text" id="netto_'+new_id+'" name="myDetails['+new_id+'][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+

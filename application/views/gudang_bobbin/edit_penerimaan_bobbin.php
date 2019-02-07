@@ -23,7 +23,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/GudangBobbin/update_penerimaan_bobbin'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/GudangBobbin/update_penerimaan_bobbin'); ?>">
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -72,12 +72,10 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Customer
+                            Customer/Supplier
                         </div>
                         <div class="col-md-8">
-                            <input type="text" class="form-control myline" style="margin-bottom: 5px" readonly name="jenis_packing" value="<?php echo $header['nama_customer'] ?>">
-
-                            <input type="hidden" name="id_jenis" id="id_jenis" value="<?php echo $header['nama_customer'] ?>">
+                            <input type="text" class="form-control myline" style="margin-bottom: 5px" readonly name="jenis_packing" value="<?php echo $header['pengirim'] ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -105,14 +103,27 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
-                        <table class="table table-bordered table-striped table-hover">
+                        <table class="table table-bordered table-striped table-hover" id="tabel_barang">
                             <thead>
                                 <th>No</th>
                                 <th>Nomor Bobbin</th>
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
-
+                                <tr>
+                                    <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
+                                    <td>
+                                        <select id="barang_id_1" name="details[1][barang_id]" class="form-control myline select2me" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_nomor(1)">
+                                            <option value=""></option>
+                                        <?php foreach ($list_barang as $value){ ?>
+                                            <option value='<?=$value->id;?>'><?=$value->nomor_bobbin;?></option>
+                                        <?php } ?>
+                                        </select>
+                                    </td>
+                                    <input type="hidden" id="nomor_bobbin_1" name="details[1][nomor_bobbin]">
+                                    <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input(1);" style="margin-top:5px" id="save_1"><i class="fa fa-plus"></i> Tambah </a><a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail(1);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Delete </a>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -153,64 +164,110 @@ function simpanData(){
     };
 };
 
-function loadDetail(id){
-    id_peminjaman = $('#id_peminjaman').val();
-    $.ajax({
-        type:"POST",
-        url:'<?php echo base_url('index.php/GudangBobbin/load_detail_penerimaan'); ?>',
-        data:{
-            id: id,
-            id_peminjaman: id_peminjaman
-        },
-        success:function(result){
-            $('#boxDetail').html(result);     
+function check_duplicate(){
+    var valid = true;
+        $.each($("select[name$='[barang_id]']"), function (index1, item1) {
+            $.each($("select[name$='[barang_id]']").not(this), function (index2, item2) {
+                if ($(item1).val() == $(item2).val()) {
+                    valid = false;
+                }
+            });
+        });
+        return valid;
+}
+
+function create_new_input(id){
+    if($.trim($("#barang_id_"+id).val()) == ""){
+        alert('Barang Belum Di Input !');
+    }else{  
+        var check = check_duplicate();
+        if(check){
+        $("#barang_id_"+id).attr('readonly','readonly');
+        $("#save_"+id).attr('disabled','disabled').hide();
+        $("#delete_"+id).show();
+        var new_id = id+1;
+        $("#tabel_barang>tbody").append(
+        '<tr>'+
+            '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
+            '<td>'+
+                '<select id="barang_id_'+new_id+'" name="details['+new_id+'][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_nomor('+new_id+');">'+
+                    '<option value=""></option>'+
+                    '<?php foreach($list_barang as $v){ print('<option value="'.$v->id.'">'.$v->nomor_bobbin.'</option>');}?>'+
+                '</select>' +
+            '</td>'+
+            '<input type="hidden" id="nomor_bobbin_'+new_id+'" name="details['+new_id+'][nomor_bobbin]">'+
+            '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input('+new_id+');" style="margin-top:5px" id="save_'+new_id+'"><i class="fa fa-plus"></i> Tambah </a>'+
+            '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail('+new_id+');" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Delete </a></td>'+
+        '</tr>');
+        $('#barang_id_'+new_id).select2();
+        } else {
+            alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
+            $("#barang_id_"+id).select2("val", "");
         }
-    });
-}
+    };
+};
 
-function saveDetail(){
-    if($.trim($("#nomor_bobbin").val()) == ""){
-        $('#message').html("Silahkan pilih nomor bobbin!");
-        $('.alert-danger').show(); 
-    }else{
-        $.ajax({
-            type:"POST",
-            url:'<?php echo base_url('index.php/GudangBobbin/save_penerimaan_bobbin_detail'); ?>',
-            data:{
-                id_bobbin_penerimaan:$('#id').val(),
-                nomor_bobbin:$('#nomor_bobbin').val()
-            },
-            success:function(result){
-                if(result['message_type']=="sukses"){
-                    loadDetail($('#id').val());
-                    $('#message').html("");
-                    $('.alert-danger').hide(); 
-                }else{
-                    $('#message').html(result['message']);
-                    $('.alert-danger').show(); 
-                }            
-            }
-        });
-    }
+function get_nomor(id){
+    $('#nomor_bobbin_'+id).val($("#barang_id_"+id+" option:selected" ).text());
 }
+// function loadDetail(id){
+//     id_peminjaman = $('#id_peminjaman').val();
+//     $.ajax({
+//         type:"POST",
+//         url:'<?php echo base_url('index.php/GudangBobbin/load_detail_penerimaan'); ?>',
+//         data:{
+//             id: id,
+//             id_peminjaman: id_peminjaman
+//         },
+//         success:function(result){
+//             $('#boxDetail').html(result);     
+//         }
+//     });
+// }
 
-function hapusDetail(id){
-    var r=confirm("Anda yakin menghapus item barang ini?");
-    if (r==true){
-        $.ajax({
-            type:"POST",
-            url:'<?php echo base_url('index.php/GudangBobbin/delete_penerimaan_bobbin_detail'); ?>',
-            data:"id="+ id,
-            success:function(result){
-                if(result['message_type']=="sukses"){
-                    loadDetail($('#id').val());
-                }else{
-                    alert(result['message']);
-                }     
-            }
-        });
-    }
-}
+// function saveDetail(){
+//     if($.trim($("#nomor_bobbin").val()) == ""){
+//         $('#message').html("Silahkan pilih nomor bobbin!");
+//         $('.alert-danger').show(); 
+//     }else{
+//         $.ajax({
+//             type:"POST",
+//             url:'<?php echo base_url('index.php/GudangBobbin/save_penerimaan_bobbin_detail'); ?>',
+//             data:{
+//                 id_bobbin_penerimaan:$('#id').val(),
+//                 nomor_bobbin:$('#nomor_bobbin').val()
+//             },
+//             success:function(result){
+//                 if(result['message_type']=="sukses"){
+//                     loadDetail($('#id').val());
+//                     $('#message').html("");
+//                     $('.alert-danger').hide(); 
+//                 }else{
+//                     $('#message').html(result['message']);
+//                     $('.alert-danger').show(); 
+//                 }            
+//             }
+//         });
+//     }
+// }
+
+// function hapusDetail(id){
+//     var r=confirm("Anda yakin menghapus item barang ini?");
+//     if (r==true){
+//         $.ajax({
+//             type:"POST",
+//             url:'<?php echo base_url('index.php/GudangBobbin/delete_penerimaan_bobbin_detail'); ?>',
+//             data:"id="+ id,
+//             success:function(result){
+//                 if(result['message_type']=="sukses"){
+//                     loadDetail($('#id').val());
+//                 }else{
+//                     alert(result['message']);
+//                 }     
+//             }
+//         });
+//     }
+// }
 
 </script>
 
@@ -229,7 +286,7 @@ $(function(){
         dateFormat: 'dd-mm-yy'
     }); 
     
-    loadDetail(<?php echo $header['id']; ?>);
+    // loadDetail(<?php echo $header['id']; ?>);
 });
 </script>
       

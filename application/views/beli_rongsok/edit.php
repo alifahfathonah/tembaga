@@ -13,16 +13,24 @@
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12"> 
-        <h3 align="center"><b> Konfirmasi Close PO Rongsok</b></h3>
-        <hr class="divider" />
         <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
+                    <h3 align="center"><b> Konfirmasi Close PO Rongsok</b></h3>
+                    <hr class="divider" />
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                         <h4 class="modal-title">&nbsp;</h4>
                     </div>
                     <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-danger display-hide">
+                                <button class="close" data-close="alert"></button>
+                                <span id="message">&nbsp;</span>
+                            </div>
+                        </div>
+                    </div>
                         <form class="eventInsForm" method="post" target="_self" name="frmReject" 
                               id="frmReject">                            
                             <div class="row">
@@ -49,14 +57,6 @@
         <?php
             if( ($group_id==1)||($hak_akses['edit']==1) ){
         ?>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="alert alert-danger display-hide">
-                    <button class="close" data-close="alert"></button>
-                    <span id="message">&nbsp;</span>
-                </div>
-            </div>
-        </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku" action="<?php echo base_url('index.php/BeliRongsok/update'); ?>">                            
             <div class="row">
@@ -132,6 +132,7 @@
                             <input type="text" id="supplier" name="supplier" 
                                 class="form-control myline" style="margin-bottom:5px"
                                 value="<?php echo $header['nama_supplier']; ?>"  readonly="readonly">
+                            <input type="hidden" id="supplier_id" name="supplier_id" value="<?php echo $header['supplier_id'];?>">
                         <?php } ?>
                         </div>
                     </div>
@@ -224,6 +225,8 @@
             ?>
             <div class="row">
                 <div class="col-md-12">
+                <center><h2>Permintaan PO</h2></center>
+                <hr class="divider">
                     <div class="table-scrollable">
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
@@ -256,7 +259,7 @@
                             </tbody>
                             <tr>
                                 <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
-                                <td><?=$total_qty;?></td>
+                                <td style="background-color: green; color: white;"><?=$total_qty;?></td>
                                 <td><?=number_format($total,0,',','.');?></td>
                             </tr>
                         </table>
@@ -265,6 +268,8 @@
                 <hr class="divider"/>
                 <h3></h3>
                 <div class="col-md-12">
+                <center><h2>Pemenuhan PO</h2></center>
+                <hr class="divider">
                     <div class="table-scrollable">
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
@@ -305,7 +310,7 @@
                                 <td colspan="3" style="text-align: right; font-weight: bold;">Total</td>
                                 <td><?=$qty;?></td>
                                 <td><?=$bruto;?></td>
-                                <td><?=$netto;?></td>
+                                <td style="background-color: green; color: white;"><?=$netto;?></td>
                                 <td><?=$ttr;?></td>
                             </tr>
                         </table>

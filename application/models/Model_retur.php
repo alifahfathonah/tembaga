@@ -34,7 +34,7 @@ class Model_retur extends CI_Model{
             left join users u on (u.id = r.created_by)
             left join m_jenis_packing jp on (jp.id = r.jenis_packing_id)
             left join m_customers c on (c.id = r.customer_id)
-            where r.customer_id = ".$id." and status = 1 and flag_sj = 0");
+            where r.customer_id = ".$id." and status = 1 and flag_taken = 0 and jenis_retur = 0");
         return $data;
     }
     
@@ -91,7 +91,7 @@ class Model_retur extends CI_Model{
     }
     
     function load_detail($id){
-        $data = $this->db->query("Select rd.*, jb.jenis_barang, mb.nomor_bobbin From retur_detail rd 
+        $data = $this->db->query("Select rd.*, jb.jenis_barang, jb.uom, mb.nomor_bobbin From retur_detail rd 
                 Left Join jenis_barang jb On(rd.jenis_barang_id = jb.id) 
                 left join m_bobbin mb on (rd.bobbin_id = mb.id)
                 Where rd.retur_id=".$id);
@@ -174,7 +174,7 @@ class Model_retur extends CI_Model{
     }
 
     function get_retur($id){
-        $data = $this->db->query("select *from retur where customer_id = ".$id." and status = 1 and jenis_retur = 0 and flag_sj = 0");
+        $data = $this->db->query("select * from retur where customer_id = ".$id." and status = 1 and jenis_retur = 0 and flag_taken = 0");
         return $data;
     }
 

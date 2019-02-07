@@ -205,6 +205,11 @@ class Model_ingot extends CI_Model{
         return $data;
     }
 
+    function approve_loop($id){
+        $data = $this->db->query("select * from spb_detail_fulfilment sdf where sdf.spb_id =".$id);
+        return $data;
+    }
+
     function jenis_barang_list(){
         $data = $this->db->query("Select * From jenis_barang Where category='WIP' Order By jenis_barang");
         return $data;

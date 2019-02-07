@@ -59,8 +59,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
-                                class="form-control input-small myline" style="margin-bottom:5px; float:left;" 
-                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
+                                class="form-control input-small myline" style="margin-bottom:5px; float:left;" value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -68,8 +67,8 @@
                             Marketing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="marketing_id" name="marketing_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                    <?php if($header['flag_invoice']>0){ ?>
+                            <select id="marketing_id" name="marketing_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                 <option value=""></option>
                                 <?php
                                     foreach ($marketing_list as $row){
@@ -77,6 +76,12 @@
                                     }
                                 ?>
                             </select>
+                    <?php }else{ ?>
+                        <input type="text" id="nama_marketing" name="nama_marketing"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['realname']; ?>" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly">
+                        <input type="hidden" id="marketing_id" name="marketing_id" value="<?php echo $header['marketing_id'];?>">
+                    <?php } ?> 
                         </div>
                     </div>
                     <div class="row">
@@ -107,8 +112,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal_po" name="tanggal_po" 
-                                class="form-control input-small myline" style="margin-bottom:5px; float:left;" 
-                                value="<?php echo date('d-m-Y', strtotime($header['tgl_po'])); ?>">
+                                class="form-control input-small myline" style="margin-bottom:5px; float:left;"value="<?php echo date('d-m-Y', strtotime($header['tgl_po'])); ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -122,9 +126,10 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Supplier <font color="#f00">*</font>
+                            Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
+                <?php if($header['flag_invoice']>0){ ?>
                             <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
                                 <option value=""></option>
@@ -134,6 +139,12 @@
                                     }
                                 ?>
                             </select>
+                <?php }else{ ?>
+                        <input type="text" id="nama_customer" name="nama_customer"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['nama_customer']; ?>" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly">
+                        <input type="hidden" id="m_customer_id" name="m_customer_id" value="<?php echo $header['m_customer_id'];?>">
+                <?php } ?>
                         </div>
                     </div>
                     <div class="row">
@@ -148,6 +159,7 @@
                 </div>              
             </div>
             <div class="row">&nbsp;</div>
+            <?php if($header['status_spb'] == 0){ ?>
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
@@ -191,18 +203,18 @@
                         echo '</select>'.
                         '</td>'.
                         '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>'.
-                        '<td><input type="text" id="harga" name="harga" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';
+                        '<td><input type="text" id="amount_1" name="harga" class="form-control myline" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id, 1);"></td>';
         if($header['jenis_barang'] == 'WIP'){
-                    echo '<td><input type="text" id="qty" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="5" value="0"></td>'.
-                        '<td><input type="text" id="netto" name="netto" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';  
+                    echo '<td><input type="text" id="qty_1" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="5" value="0"></td>'.
+                        '<td><input type="text" id="netto_1" name="netto" class="form-control myline" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id, 1);"></td>';  
         } else if($header['jenis_barang'] == 'FG' || $header['jenis_barang'] == 'AMPAS') {
-                    echo '<input type="hidden" id="qty" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="1">'.
+                    echo '<input type="hidden" id="qty_1" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="1">'.
                         '<input type="hidden" id="bruto" name="bruto" class="form-control myline" maxlength="10" value="0">'.
-                        '<td><input type="text" id="netto" name="netto" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';
+                        '<td><input type="text" id="netto_1" name="netto" class="form-control myline" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id, 1);"></td>';
         } else {
-                    echo '<td><input type="text" id="qty" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="5" value="0" onkeyup="getComa(this.value, this.id);"></td>';
+                    echo '<td><input type="text" id="netto_1" name="qty" class="form-control myline" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id, 1);"></td>';
         }
-                    echo '<td><input type="text" id="total_harga" name="total_harga" class="form-control myline" readonly="readonly" value="0"></td>'.
+                    echo '<td><input type="text" id="total_amount_1" name="total_harga" class="form-control myline" readonly="readonly" value="0"></td>'.
                         '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>';
                                 ?>
                         </table>
@@ -219,10 +231,56 @@
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
-            
         </form>
-        
+            <?php }else{ ?>
+        <div class="row">&nbsp;</div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-scrollable">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <th>No</th>
+                                <th style="width: 20%;">Nama Item</th>
+                                <th>Unit of Measure</th>
+                                <th>Harga (Rp)</th>
+                        <?php
+                        if($header['jenis_barang'] == 'WIP'){
+                        ?>
+                                <th>Qty</th>
+                                <th>Netto (Kg)</th>
+                        <?php
+                        } else if($header['jenis_barang'] == 'FG' || $header['jenis_barang'] == 'AMPAS'){
+                        ?>
+                                <th>Netto (Kg)</th>
+                        <?php
+                        } else {
+                        ?>
+                                <th>Jumlah</th>
+                        <?php
+                        }
+                        ?>
+                                <th>Sub Total(Rp)</th>
+                                <th>Actions</th>
+                            </thead>
+                            <tbody id="boxDetailEdit">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <div class="col-md-12">
+                    <?php echo (($header['flag_invoice']!=1)? '<a href="javascript:;" class="btn green" onclick="simpanData();"><i class="fa fa-floppy-o"></i> Simpan </a> ':'');
+                    ?>                       
+                    <a href="<?php echo base_url('index.php/SalesOrder'); ?>" class="btn blue-hoki"> 
+                        <i class="fa fa-angle-left"></i> Kembali </a>
+                </div>    
+            </div>
+        </form>
         <?php
+                }//if status_spb
             }else{
         ?>
         <div class="alert alert-danger">
@@ -235,33 +293,81 @@
     </div>
 </div> 
 <script>
-function myCurrency(evt) {
+function editDetail(id){
+    $('#btnEdit_'+id).hide();
+    $('#lbl_jenis_barang_'+id).hide();
+    $('#lbl_uom_'+id).hide();
+    $('#lbl_amount_'+id).hide();
+    $('#lbl_netto_'+id).hide();
+    $('#lbl_total_amount_'+id).hide();
+    
+    $('#btnUpdate_'+id).show();
+    $('#jenis_barang_id_'+id).show();
+    $('#uom_'+id).show();
+    $('#amount_'+id).show();
+    $('#netto_'+id).show();
+    $('#total_amount_'+id).show();
+}
+
+function updateDetail(id){
+    const jenis = $("#jenis_barang").val();
+    if($.trim($("#jenis_barang_id_"+id).val()) == ""){
+        $('#message').html("Silahkan pilih nama spare part!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#netto_"+id).val()) == ""){
+        $('#message').html("Jumlah spare part tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{
+        $.ajax({
+            type:"POST",
+            url:'<?php echo base_url('index.php/SalesOrder/update_detail_so'); ?>',
+            data:{
+                detail_id:$('#detail_id_'+id).val(),
+                jenis: jenis,
+                netto:$('#netto_'+id).val(),
+                amount:$('#amount_'+id).val(),
+                total_amount:$('#total_amount_'+id).val(),
+            },
+            success:function(result){
+                if(result['message_type']=="sukses"){
+                    loadDetailEdit($('#id').val());
+                    $('#message').html("");
+                    $('.alert-danger').hide(); 
+                }else{
+                    $('#message').html(result['message']);
+                    $('.alert-danger').show(); 
+                }            
+            }
+        });
+    }
+}
+
+function myCurrency_a(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
         return false;
     return true;
 }
 
-function getComa(value, id){
+function getComa_a(value, id, no){
     angka = value.toString().replace(/\./g, "");
     $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-    hitungSubTotal();
+    hitungSubTotal_a(no);
 }
 
-function hitungSubTotal(){
+function hitungSubTotal_a(id){
     if($('#jenis_barang').val() == 'FG' || $('#jenis_barang').val() == 'AMPAS' || $('#jenis_barang').val() == 'WIP'){
-        harga = $('#harga').val().toString().replace(/\./g, "");
-        netto = $('#netto').val().toString().replace(/\./g, "");
+        harga = $('#amount_'+id).val().toString().replace(/\./g, "");
+        netto = $('#netto_'+id).val().toString().replace(/\./g, "");
         total_harga = Number(harga)* Number(netto);
-        $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+        $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
     }else{
-        harga = $('#harga').val().toString().replace(/\./g, "");
-        qty   = $('#qty').val().toString().replace(/\./g, "");
-        total_harga = Number(harga)* Number(qty);
-        $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+        harga = $('#amount_'+id).val().toString().replace(/\./g, "");
+        netto = $('#netto_'+id).val().toString().replace(/\./g, "");
+        total_harga = Number(harga)* Number(netto);
+        $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
     }
 }
-
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
@@ -292,11 +398,31 @@ function loadDetail(id){
     });
 }
 
-function get_uom(id){
+function loadDetailEdit(id){
+    var jenis = $('#jenis_barang').val();
     $.ajax({
-        url: "<?php echo base_url('index.php/SalesOrder/get_uom'); ?>",
+        type:"POST",
+        url:'<?php echo base_url('index.php/SalesOrder/load_detail_so_edit'); ?>',
+        data:{
+            id: id,
+            jenis: jenis
+        },
+        success:function(result){
+            $('#boxDetailEdit').html(result);     
+        }
+    });
+}
+
+
+function get_uom(id){
+    const jenis = $('#jenis_barang').val();
+    $.ajax({
+        url: "<?php echo base_url('index.php/SalesOrder/get_uom_so'); ?>",
         type: "POST",
-        data: "id="+id,
+        data: {
+            id: id,
+            jenis: jenis
+        },
         dataType: "json",
         success: function(result) {
             $('#uom').val(result['uom']);
@@ -308,10 +434,10 @@ function saveDetail(){
     if($.trim($("#barang_id").val()) == ""){
         $('#message').html("Silahkan pilih item rongsok!");
         $('.alert-danger').show(); 
-    }else if(($.trim($("#netto").val()) || $.trim($("#qty").val())) == ""){
+    }else if(($.trim($("#netto_1").val()) || $.trim($("#qty_1").val())) == ""){
         $('#message').html("Jumlah item/netto rongsok tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#harga").val()) == ""){
+    }else if($.trim($("#amount_1").val()) == ""){
         $('#message').html("Harga item rongsok tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else{
@@ -321,24 +447,25 @@ function saveDetail(){
             data:{
                 id:$('#id').val(),
                 barang_id:$('#barang_id').val(),
-                harga:$('#harga').val(),
+                harga:$('#amount_1').val(),
                 uom:$('#uom').val(),
-                qty:$('#qty').val(),
-                total_harga:$('#total_harga').val(),
+                qty:$('#qty_1').val(),
+                total_harga:$('#total_amount_1').val(),
                 bruto:$('#bruto').val(),
-                netto:$('#netto').val(),
+                netto:$('#netto_1').val(),
                 no_spb:$('#no_spb').val(),
                 jenis:$('#jenis_barang').val()
             },
             success:function(result){
+                console.log(result);
                 if(result['message_type']=="sukses"){
                     $('#barang_id').select2("val", "");;
                     $('#uom').val('');
-                    $('#qty').val('');
+                    $('#qty_1').val('');
                     $('#bruto').val('');
-                    $('#netto').val('');
-                    $('#harga').val('');
-                    $('#total_harga').val('');
+                    $('#netto_1').val('');
+                    $('#amount_1').val('');
+                    $('#total_amount_1').val('');
                     loadDetail($('#id').val());
                     $('#message').html("");
                     $('.alert-danger').hide(); 
@@ -387,12 +514,8 @@ $(function(){
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd-mm-yy'
-    }); 
-    
-    loadDetail(<?php echo $header['id']; ?>);
-});
+    });
 
-$(function(){        
     $("#tanggal_po").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
@@ -400,10 +523,16 @@ $(function(){
         buttonText: "Select date",
         changeMonth: true,
         changeYear: true,
+        yearRange: "-10:+10",
         dateFormat: 'dd-mm-yy'
-    }); 
-    
-    loadDetail(<?php echo $header['id']; ?>);
+    });
+
+    const status = <?= $header['status_spb'] ;?>;
+    if(status==0){
+        loadDetail(<?php echo $header['id']; ?>);
+    }else{
+        loadDetailEdit(<?php echo $header['id']; ?>);
+    }
 });
 </script>
       

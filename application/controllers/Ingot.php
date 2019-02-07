@@ -291,6 +291,34 @@ class Ingot extends CI_Controller{
         }
         redirect('index.php/Ingot');    
     }
+
+    function save_spb_rsk(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $id = $this->input->post('id');
+
+            $this->db->trans_start();
+
+            $details = $this->input->post('myDetails');
+            foreach ($details as $row){
+                if($row['rongsok_id']!=0 && $row['netto']!=0){
+                    $this->db->insert('spb_detail', array(
+                        'spb_id'=>$id,
+                        'rongsok_id'=>$row['rongsok_id'],
+                        'qty'=>$row['netto'],
+                        'line_remarks'=>$row['line_remarks']
+                    ));
+                }
+            }
+            
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'SPB berhasil di-create dengan nomor : '.$code);                 
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create SPB, silahkan coba kembali!');
+            }                   
+        redirect('index.php/Ingot/spb_list');    
+    }
     
     function spb_list(){
         $module_name = $this->uri->segment(1);
@@ -1021,6 +1049,30 @@ class Ingot extends CI_Controller{
             redirect('index.php/Ingot');
         }
     }
+
+    function add_spb(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "ingot/add_spb";
+
+            $this->load->model('Model_ingot');
+            $data['myData'] = $this->Model_ingot->show_header_spb($id)->row_array();
+            $this->load->model('Model_rongsok');
+            $data['list_rongsok'] = $this->Model_rongsok->list_data()->result();
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/Ingot/spb_list');
+        }
+    }
     
     function view_spb(){
         $module_name = $this->uri->segment(1);
@@ -1101,18 +1153,15 @@ class Ingot extends CI_Controller{
         ));
 
         #loop SPB fulfilment
-        $details = $this->input->post('details');
-        $spb_id = $this->input->post('id');
+        $this->load->model('Model_ingot');
+        $details = $this->Model_ingot->approve_loop($spb_id)->result();
         foreach ($details as $v) {
-        	if($v['no_pallete']!=''){	        	
-
         	#update dtr_detail flag_taken
-        	$this->db->where('id',$v['dtr_id']);
+        	$this->db->where('id',$v->dtr_detail_id);
         	$this->db->update('dtr_detail',array(
         					'flag_taken' => 1,
                             'tanggal_keluar' => $tgl_input
         					));
-        	}	
         }
             
             /*    

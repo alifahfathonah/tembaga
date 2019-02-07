@@ -2,11 +2,11 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Gudang 
+            <i class="fa fa-angle-right"></i> Tolling 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/GudangFG'); ?>"> Gudang FG </a> 
+            <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>"> Data Timbang Tolling </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/GudangFG/bpb_list'); ?>"> BPB FG List </a> 
+            <a href="<?php echo base_url('index.php/BeliFinishGood/dtbj_list'); ?>"> DTT List </a> 
         </h5>          
     </div>
 </div>
@@ -14,7 +14,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['bpb_list']==1) ){
+            if( ($group_id==1)||($hak_akses['dtt_list']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -27,21 +27,25 @@
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-file-excel-o"></i>BPB FG List
-                </div>                
+                    <i class="fa fa-beer"></i>Data Timbang Tolling (DTT) List
+                </div>
+                <div class="tools">    
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Tolling/create_dtt"> <i class="fa fa-plus"></i> Create DTT</a>
+                </div>           
             </div>
             <div class="portlet-body">
                 <table class="table table-striped table-bordered table-hover" id="sample_6">
                 <thead>
                 <tr>
-                    <th style="width:10px;">No</th>
+                    <th style="width:50px;">No</th>
+                    <th>No. DTT</th>
                     <th>Tanggal</th>
-                    <th>No. BPB</th>
-                    <th>No. Produksi</th>
-                    <th>Jenis Barang</th>
-                    <th>Jenis Packing</th>
-                    <th>Pengirim</th>
-                    <th>Jumlah <br>Item</th>
+                    <th>No. PO</th>
+                    <th>Customer</th>
+                    <th>Jenis<br>Barang</th>
+                    <th>Penimbang</th>
+                    <th>Jumlah <br>Items</th>
+                    <th>Remarks</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -54,22 +58,14 @@
                     ?>
                     <tr>
                         <td style="text-align:center;"><?php echo $no; ?></td>
+                        <td style="background-color: "><?php echo $data->no_dtt; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <td><?php echo $data->no_bpb_fg;?></td>
-                        <td><?php echo $data->no_produksi; ?></td>
+                        <td><?php echo $data->no_po; ?></td>
+                        <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->jenis_barang; ?></td>
-                        <td>
-                            <?php if($data->jenis_packing_id == 1){ ?>
-                            BOBBIN
-                            <?php } else if($data->jenis_packing_id == 2){ ?>
-                            KERANJANG
-                            <?php } else if($data->jenis_packing_id == 3){ ?>
-                            KARDUS
-                            <?php } else if($data->jenis_packing_id == 4){ ?>
-                            ROLL
-                            <?php } ?>                     </td>
-                        <td><?php echo $data->pengirim; ?></td>                       
+                        <td><?php echo $data->penimbang; ?></td>                        
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
+                        <td><?php echo $data->remarks; ?></td>
                         <td style="text-align:center">
                             <?php 
                                 if($data->status==0){ 
@@ -83,14 +79,9 @@
                         </td>                        
                         <td style="text-align:center"> 
                             <?php
-                                if(($group_id==1 || $hak_akses['edit_bpb']==1) && $data->status==0){
-                                    echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/GudangFG/proses_bpb/'.$data->id.'" 
-                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Tanggapi &nbsp; </a> ';
-                                }
-                                
-
-                                if($group_id==1 || $hak_akses['print_bpb']==1){
-                                    echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangFG/print_bpb/'.$data->id.'"style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
+                                if($group_id==1 || $hak_akses['print_dtbj']==1){
+                                    echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Tolling/print_dtt/'.$data->id.'" 
+                                        style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }
                             ?>
                         </td>
@@ -121,4 +112,4 @@
 $(function(){    
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });
-</script>         
+</script>

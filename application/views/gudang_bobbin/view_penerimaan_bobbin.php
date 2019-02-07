@@ -109,9 +109,7 @@
                             Customer
                         </div>
                         <div class="col-md-8">
-                            <input type="text" class="form-control myline" style="margin-bottom: 5px" readonly name="jenis_packing" value="<?php echo $header['nama_customer'] ?>">
-
-                            <input type="hidden" name="id_jenis" id="id_jenis" value="<?php echo $header['nama_customer'] ?>">
+                            <input type="text" class="form-control myline" style="margin-bottom: 5px" readonly name="jenis_packing" value="<?php echo $header['pengirim'] ?>">
                         </div>
                     </div>
                     <div class="row">

@@ -970,19 +970,55 @@ class Finance extends CI_Controller{
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('INVOICE', $tgl_input);
 
+        $id_so = $this->input->post('sales_order_id');
+        $id_sj = $this->input->post('surat_jalan_id');
+
         $data = array(
             'no_invoice'=> $code,
             'tanggal'=> $tgl_input,
             'tgl_jatuh_tempo'=> $this->input->post('tanggal_jatuh'),
             'id_customer'=> $this->input->post('m_customer_id'),
-            'id_sales_order'=> $this->input->post('sales_order_id'),
-            'id_surat_jalan'=> $this->input->post('surat_jalan_id'),
+            'id_sales_order'=> $id_so,
+            'id_surat_jalan'=> $id_sj,
             'keterangan'=> $this->input->post('remarks'),
             'created_at'=> $tanggal,
             'created_by'=> $user_id
         );
         $this->db->insert('f_invoice', $data);
         $id_new=$this->db->insert_id();
+
+        $this->load->model('Model_finance');
+        $loop_detail = $this->Model_finance->load_detail_invoice($id_sj)->result();
+        foreach($loop_detail as $row){
+            $total = $row->amount * $row->netto;
+                if($row->jenis_barang_alias>0){
+                    $jenis_barang = $row->jenis_barang_alias;
+                }else{
+                    $jenis_barang = $row->jenis_barang_id;
+                }
+            $this->db->insert('f_invoice_detail', array(
+                    'id_invoice'=>$id_new,
+                    'jenis_barang_id'=>$jenis_barang,
+                    'qty'=>$row->qty,
+                    'netto'=>$row->netto,
+                    'harga'=>$row->amount,
+                    'total_harga'=>$total,
+                    'keterangan'=>$row->line_remarks
+            ));
+        }
+
+        $cek = $this->Model_finance->get_sj_list($id_so)->result();
+        if(empty($cek)){
+            $this->db->where('id',$id_so);
+            $this->db->update('sales_order', array(
+                'flag_invoice'=>1
+            ));
+        }else{
+            $this->db->where('id',$id_so);
+            $this->db->update('sales_order', array(
+                'flag_invoice'=>2
+            ));
+        }
 
         if($this->db->trans_complete()){
             redirect(base_url('index.php/Finance/view_invoice/'.$id_new));
@@ -1008,9 +1044,11 @@ class Finance extends CI_Controller{
 
             $this->load->model('Model_finance');
             $data['header'] = $this->Model_finance->show_header_invoice($id)->row_array();
-            $id_sj = $data['header']['id_surat_jalan'];
-            $data['details'] = $this->Model_finance->load_detail_invoice($id_sj)->result();
-            $data['detailInvoice'] = $this->Model_finance->show_detail_invoice($id)->result();
+            if($data['header']['id_retur']==0){
+                $data['detailInvoice'] = $this->Model_finance->show_detail_invoice($id)->result();
+            }else{
+                $data['detailInvoice'] = $this->Model_finance->show_invoice_detail($id)->result();
+            }
 
             $this->load->view('layout', $data);   
         }else{
@@ -1025,41 +1063,7 @@ class Finance extends CI_Controller{
         $tanggal   = date('Y-m-d h:m:s');
         
         $this->db->trans_start();
-        $this->load->model('Model_finance');
-        $loop_detail = $this->Model_finance->load_detail_invoice($this->input->post('id_sj'))->result();
-        foreach($loop_detail as $row){
-            $total = $row->amount * $row->netto;
-                if($row->jenis_barang_alias>0){
-                    $jenis_barang = $row->jenis_barang_alias;
-                }else{
-                    $jenis_barang = $row->jenis_barang_id;
-                }
-            $this->db->insert('f_invoice_detail', array(
-                    'id_invoice'=>$this->input->post('id'),
-                    'jenis_barang_id'=>$jenis_barang,
-                    'nomor_bobbin'=>$row->nomor_bobbin,
-                    'no_packing'=>$row->no_packing,
-                    'qty'=>$row->qty,
-                    'netto'=>$row->netto,
-                    'harga'=>$row->amount,
-                    'total_harga'=>$total,
-                    'keterangan'=>'BARANG RONGSOK'
-            ));
-        }
-        $data = array(
-            'modified_at'=> $tanggal,
-            'modified_by'=> $user_id
-        );
-
-        $cek = $this->Model_finance->get_sj_list($this->input->post('so_id'))->result();
-        if(empty($cek)){
-            $this->db->where('id',$this->input->post('so_id'));
-            $this->db->update('sales_order', array(
-                'flag_invoice'=>1
-            ));
-        }
-        $this->db->where('id', $this->input->post('id'));
-        $this->db->update('f_invoice', $data);
+        
         if($this->db->trans_complete()){
             redirect(base_url('index.php/Finance/invoice'));
         }else{
@@ -1142,14 +1146,23 @@ class Finance extends CI_Controller{
         echo json_encode($um);
     }
 
-    function get_invoice_list(){ 
+    function get_invoice_list_plus(){ 
         $this->load->model('Model_finance');
-        $data = $this->Model_finance->list_invoice_matching($this->input->post('id'))->result();
+        $data = $this->Model_finance->list_invoice_matching_plus($this->input->post('id'))->result();
         $arr_so[] = "Silahkan pilih....";
         foreach ($data as $row) {
             $arr_so[$row->id] = $row->no_invoice;
         } 
         print form_dropdown('invoice_id', $arr_so);
+    }
+
+    function get_invoice_list_minus(){
+        $this->load->model('Model_finance');
+        $data = $this->Model_finance->list_invoice_matching_minus($this->input->post('id'))->result();
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row_id] = $row->no_invoice;
+        }
     }
 
     function get_um_list(){ 

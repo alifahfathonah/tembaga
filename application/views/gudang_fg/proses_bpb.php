@@ -87,7 +87,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            No. Produksi Ingot<font color="#f00">*</font>
+                            No. Produksi
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_prod" name="no_prod_ingot" readonly="readonly"

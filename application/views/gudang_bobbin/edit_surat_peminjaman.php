@@ -63,6 +63,18 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
+                            Keperluan
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control myline" style="margin-bottom: 5px" readonly name="supplier" value="<?php
+                                if($header['keperluan']==1){
+                                    echo 'Internal';
+                                }else if($header['keperluan']==2){
+                                    echo 'Eksternal';}?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Supplier
                         </div>
                         <div class="col-md-8">

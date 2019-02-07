@@ -15,7 +15,7 @@ class Model_beli_fg extends CI_Model
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='FG' 
+                Where po.jenis_po='FG' and po.supplier_id > 0
                 Order By po.id Desc");
 		return $data;
 	}

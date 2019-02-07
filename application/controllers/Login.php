@@ -28,7 +28,7 @@ class Login extends CI_Controller{
                     'photo_profile_url'=>$cek['photo_profile_url'],
                     'user_ppn'=>$cek['user_ppn']
                     );
-
+                    
             $this->session->set_userdata($data_session);
             $url = "BENAR";
         }else{

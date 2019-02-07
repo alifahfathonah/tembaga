@@ -324,7 +324,6 @@ class GudangFG extends CI_Controller{
         $tabel = "";
         $no    = 1;
         $this->load->model('Model_gudang_fg');
-        $list_barang = $this->Model_gudang_fg->barang_fg_list()->result();
         
         $myDetail = $this->Model_gudang_fg->load_spb_detail($id)->result(); 
         foreach ($myDetail as $row){
@@ -340,26 +339,6 @@ class GudangFG extends CI_Controller{
             $tabel .= '</tr>';            
             $no++;
         }
-            
-        $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:center">'.$no.'</td>';
-        $tabel .= '<td>';
-        $tabel .= '<select id="barang_id" name="barang_id" class="form-control select2me myline" ';
-            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">';
-            $tabel .= '<option value=""></option>';
-            foreach ($list_barang as $value){
-                $tabel .= "<option value='".$value->id."'>".$value->jenis_barang."</option>";
-            }
-        $tabel .= '</select>';
-        $tabel .= '</td>';
-        $tabel .= '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline"/></td>';
-        $tabel .= '<td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" '
-                . 'onkeyup="this.value = this.value.toUpperCase()"></td>';        
-        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
-                . '<i class="fa fa-plus"></i> Tambah </a></td>';
-        $tabel .= '</tr>';
 
         header('Content-Type: application/json');
         echo json_encode($tabel); 
@@ -595,6 +574,19 @@ class GudangFG extends CI_Controller{
         echo json_encode($return_data);
     }
 
+    function delete_detail_spb(){
+        $id = $this->input->post('id');
+
+        $this->db->where('id', $id);
+        if($this->db->delete('t_spb_fg_detail')){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menghapus item barang! Silahkan coba kembali";
+        }           
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
 
     function bpb_list(){
         $module_name = $this->uri->segment(1);
@@ -723,7 +715,7 @@ class GudangFG extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_gudang_fg');
         $data['check'] = $this->Model_gudang_fg->check_spb($spb_id)->row_array();
-        if((int)$data['check']['tot_so'] >= (int)$data['check']['tot_spb']){
+        if(((int)$data['check']['tot_so']) >= (0.9*((int)$data['check']['tot_spb']))){
             $status = 1;
         }else{
             $status = 2;
@@ -743,7 +735,8 @@ class GudangFG extends CI_Controller{
         $this->db->update('t_gudang_fg', array(
                         'jenis_trx'=> 1,
                         'modified_date'=>$tanggal,
-                        'modified_by'=>$user_id
+                        'modified_by'=>$user_id,
+                        'tanggal_keluar'=>$tanggal
         ));
             
             if($this->db->trans_complete()){    
@@ -959,7 +952,7 @@ class GudangFG extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('SPB-FG', $tgl_input); 
+        $code = $this->Model_m_numberings->getNumbering('SPB-FGR', $tgl_input); 
         
         if($code){     
             $this->db->trans_start();
@@ -988,7 +981,7 @@ class GudangFG extends CI_Controller{
             $id_spb_detail = $this->db->insert_id();
 
             $data_gudang = array(
-                //'flag_result' => 1,
+                'jenis_trx' => 1,
                 't_spb_fg_id'=> $id_spb,
                 't_spb_fg_detail_id'=> $id_spb_detail,
                 'nomor_SPB'=> $code,
@@ -998,6 +991,11 @@ class GudangFG extends CI_Controller{
             );
             $this->db->where('id', $this->input->post('id_gudang'));
             $this->db->update('t_gudang_fg', $data_gudang);
+
+            $this->db->where('id', $this->input->post('id_bobbin'));
+            $this->db->update('m_bobbin', array(
+                'status' => 3
+            ));
 
             #insert DTR ke gudang rongsok
             $code_DTR = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
@@ -1019,7 +1017,7 @@ class GudangFG extends CI_Controller{
             $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
             $this->db->insert('dtr_detail', array(
                         'dtr_id'=>$dtr_id,
-                        'spb_id'=>$id_spb,
+                        //'spb_id'=>$id_spb,
                         //sisa WIP id 8
                         'rongsok_id' => 8,
                         'qty'=> 0,
@@ -1118,6 +1116,7 @@ class GudangFG extends CI_Controller{
             $this->load->model('Model_gudang_fg');
             $data['header'] = $this->Model_gudang_fg->show_header_spb($id)->row_array();
             $data['details'] =   $this->Model_gudang_fg->show_detail_spb($id)->result();
+            $data['list_barang'] = $this->Model_gudang_fg->barang_fg_list()->result();
     
             $this->load->view('layout', $data);   
         }else{

@@ -168,40 +168,13 @@ class Retur extends CI_Controller{
             $netto += $row->netto;
             $no++;
         }
-            
+                    
         $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:center">'.$no.'</td>';
-        $tabel .= '<td>';
-        $tabel .= '<select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" ';
-            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">';
-            $tabel .= '<option value=""></option>';
-            foreach ($jenis_barang_list as $value){
-                $tabel .= "<option value='".$value->id."'>".$value->jenis_barang."</option>";
-            }
-        $tabel .= '</select>';
-        $tabel .= '</td>';
-        $tabel .= '<td><input type="text" id="no_packing" name="no_packing" class="form-control myline" readonly="readonly" value="Auto"></td>';
-        
-        $tabel .= '<td><input type="text" id="bruto" name="bruto" class="form-control myline"></td>';
-
-        $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"/></td>';
-
-        $tabel .= '<td><input type="text" id="no_bobbin" name="no_bobbin" class="form-control myline" onchange="get_bobbin(this.value)" onkeyup="this.value = this.value.toUpperCase()"/><input type="hidden" name="id_bobbin" id="id_bobbin"></td>';
-        
-        // $tabel .= '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen"> <i class="fa fa-dashboard"></i> Timbang </a></td>';
-        $tabel .= '<td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'; 
-        
-        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
-                . '<i class="fa fa-plus"></i> Tambah </a></td>';
+        $tabel .= '<td colspan="3" style="text-align:right"><strong>Total</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($bruto,0,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
+        $tabel .= '<td colspan="3"></td>';
         $tabel .= '</tr>';
-        
-        // $tabel .= '<tr>';
-        // $tabel .= '<td colspan="4" style="text-align:right"><strong>Total</strong></td>';
-        // $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($bruto,0,',','.').'</strong></td>';
-        // $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
-        // $tabel .= '<td colspan="3"></td>';
-        // $tabel .= '</tr>';
        
         
         header('Content-Type: application/json');
@@ -622,6 +595,7 @@ class Retur extends CI_Controller{
             where rd.retur_id = ".$this->input->post('id')."
             group by jb.jenis_barang
             ")->result();
+        
         foreach($loop1 as $row1){
             $code_bpb = $this->Model_m_numberings->getNumbering('BPB-RTR', $tgl_input);
             #insert bpb
@@ -648,6 +622,12 @@ class Retur extends CI_Controller{
                     'netto' => $row2->netto,
                     'no_packing_barcode' => $row2->no_packing,
                     'bobbin_id' => $row2->bobbin_id
+                ));
+
+                #update status bobbin
+                $this->db->where('id' ,$row2->bobbin_id);
+                $this->db->update('m_bobbin', array(
+                     'status' => 1
                 ));
             }
         }
@@ -726,8 +706,7 @@ class Retur extends CI_Controller{
         $this->load->model('Model_sales_order');
         $this->load->model('Model_retur');
         $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
-        $data['jenis_barang_list'] = $this->Model_retur->jenis_barang_list()->result();
-        $data['kendaraan_list'] = $this->Model_retur->kendaraan_list()->result();
+        $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
         // $data['retur_list'] = $this->Model_retur->retur_list_2()->result();
         $this->load->view('layout', $data);
     }
@@ -849,6 +828,7 @@ class Retur extends CI_Controller{
             $tabel .= '<input type="hidden" id="id_jenis_barang" value="'.$row->jenis_barang_id.'" />';
             $tabel .= '<td>'.$row->jenis_barang.'</td>';
             $tabel .= '<td>'.$row->netto.'</td>';
+            $tabel .= '<td></td>';
             $tabel .= '<td>'.$row->keterangan.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
@@ -861,30 +841,7 @@ class Retur extends CI_Controller{
         // $tabel .= '<td style="text-align: right;" colspan="2">Total</td>';
         // $tabel .= '<td name="sum_netto" id="sum_netto">'.$netto.'</td>';
         // $tabel .= '<td></td>';
-        // $tabel .= '</tr>';
-
-        $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:center">'.$no.'</td>';
-        $tabel .= '<td>';
-        $tabel .= '<select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" ';
-            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onchange="check(this.value);">';
-            $tabel .= '<option value=""></option>';
-            foreach ($jenis_barang_list as $value){
-                $tabel .= "<option value='".$value->id."'>".$value->jenis_barang."</option>";
-            }
-        $tabel .= '</select>';
-        $tabel .= '</td>';
-
-        $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline"/></td>';
-        
-        // $tabel .= '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen"> <i class="fa fa-dashboard"></i> Timbang </a></td>';
-        $tabel .= '<td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'; 
-        
-        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
-                . '<i class="fa fa-plus"></i> Tambah </a></td>';
-        $tabel .= '</tr>';
-       
+        // $tabel .= '</tr>';       
         
         header('Content-Type: application/json');
         echo json_encode($tabel); 
@@ -1139,11 +1096,13 @@ class Retur extends CI_Controller{
                 'retur_id' => $this->input->post('retur_id'),
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'm_customer_id'=>$this->input->post('m_customer_id'),
-                'm_kendaraan_id'=>$this->input->post('m_kendaraan_id'),
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
                 'supir'=>$this->input->post('supir'),
                 'remarks'=>$this->input->post('remarks'),
+                'status'=>0,
                 'created_at'=> $tanggal,
-                'created_by'=> $user_id
+                'created_by'=> $user_id,
             );
 
             if($this->db->insert('t_surat_jalan', $data)){
@@ -1178,9 +1137,8 @@ class Retur extends CI_Controller{
         
             $this->load->model('Model_tolling_titipan');            
             $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
-
-            // $data['jenis_barang_list'] = $this->Model_tolling_titipan->jenis_barang_list()->result();
-            $data['kendaraan_list'] = $this->Model_tolling_titipan->kendaraan_list()->result();
+            $this->load->model('Model_sales_order');
+            $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/PengirimanAmpas/surat_jalan');
@@ -1362,7 +1320,7 @@ class Retur extends CI_Controller{
         if(empty($list_produksi)){
             $this->db->where('id',$retur_id);
             $this->db->update('retur', array(
-                'flag_sj'=>1
+                'flag_taken'=>1
             ));
         }
 
@@ -1396,7 +1354,8 @@ class Retur extends CI_Controller{
 
         $data = array(
                 'tanggal'=> $tgl_input,
-                'm_kendaraan_id'=>$this->input->post('m_kendaraan_id'),
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
                 'supir'=>$this->input->post('supir'),
                 'remarks'=>$this->input->post('remarks'),
                 'modified_at'=> $tanggal,
@@ -1424,5 +1383,83 @@ class Retur extends CI_Controller{
     //     }
     // } 
     
-    
+    function add_invoice(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Retur";
+        $data['content']   = "retur/add_invoice";
+        
+        $this->load->model('Model_retur');
+        $data['header'] = $this->Model_retur->show_header_retur($id)->row_array();
+        $data['list_retur'] = $this->Model_retur->load_detail($id)->result();
+        $this->load->view('layout', $data); 
+    }
+
+    function save_invoice(){
+        $user_id   = $this->session->userdata('user_id');
+        $tanggal   = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+
+        // $details = $this->input->post('details');
+        // foreach ($details as $v) {
+        //     echo $v['nama_barang'], '<br>';
+        //     echo $v['jenis_barang_id'], '<br>';
+        //     echo $v['bruto'], '<br>';
+        //     echo $v['netto'], '<br>';
+        //     echo str_replace('.', '', $v['amount']), '<br>';
+        //     echo str_replace('.', '', $v['total']), '<br>';
+        //     echo $v['line_remarks'];
+        // }
+        // die();
+
+        $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('INV-RTR', $tgl_input);
+
+        $data = array(
+            'jenis_trx'=>1,
+            'no_invoice'=> $code,
+            'tanggal'=> $tgl_input,
+            'tgl_jatuh_tempo'=> $this->input->post('tanggal_jatuh'),
+            'id_customer'=> $this->input->post('customer_id'),
+            'id_retur'=> $this->input->post('id_retur'),
+            'keterangan'=> $this->input->post('remarks'),
+            'created_at'=> $tanggal,
+            'created_by'=> $user_id
+        );
+        $this->db->insert('f_invoice', $data);
+        $id_new=$this->db->insert_id();
+
+        $details = $this->input->post('details');
+        foreach ($details as $v) {
+            $this->db->insert('f_invoice_detail', array(
+                'id_invoice'=>$id_new,
+                'jenis_barang_id'=>$v['jenis_barang_id'],
+                'qty'=>1,
+                'netto'=>$v['netto'],
+                'harga'=>str_replace('.', '', $v['amount']),
+                'total_harga'=>str_replace('.', '', $v['total']),
+                'keterangan'=>$v['line_remarks']
+            ));
+        }
+
+        $this->db->where('id',$this->input->post('id_retur'));
+        $this->db->update('retur', array(
+            'flag_taken'=>1
+        ));
+
+        if($this->db->trans_complete()){
+            redirect(base_url('index.php/Finance/view_invoice/'.$id_new));
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Uang Masuk gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/Finance');  
+        }            
+    }
 }

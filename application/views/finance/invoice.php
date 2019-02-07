@@ -35,13 +35,15 @@
                 <table class="table table-striped table-bordered table-hover" id="sample_6">
                 <thead>
                 <tr>
-                    <th style="width:50px;">No</th>
+                    <th>No</th>
+                    <th>Trx</th>
                     <th>Nomor Invoice</th>
                     <th>Nomor Sales Order</th>
                     <th>Nomor Surat Jalan</th>
                     <th>Nama Customer</th>
                     <th>Tanggal</th>
                     <th>Keterangan</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -53,12 +55,14 @@
                     ?>
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
+                        <?php ($data->jenis_trx == 0) ? print('<td style="background-color:green; color: white;"><i class="fa fa-arrow-circle-up fa-2x" style="padding-top: 10px;"></i></td>'): print('<td style="background-color:red; color: white;"><i class="fa fa-arrow-circle-down fa-2x" style="padding-top: 10px;"></i></td>');?>
                         <td><?php echo $data->no_invoice; ?></td>
                         <td><?php echo $data->no_sales_order; ?></td>
                         <td><?php echo $data->no_surat_jalan; ?></td>
                         <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->tanggal;?></td>
                         <td><?php echo $data->keterangan;?></td>
+                        <td><?= ($data->flag_matching > 0) ? '<div style="background-color:green; color:#fff; padding:3px">Sudah Matching</div>' : '<div style="background-color:darkkhaki; padding:3px">Belum Matching</div>';?></td>
                         <td style="text-align:center"> 
                             <?php
                                 if($group_id==1 || $hak_akses['view_spb']==1){

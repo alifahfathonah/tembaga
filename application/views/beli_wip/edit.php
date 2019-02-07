@@ -13,7 +13,7 @@
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12"> 
-        <h3 align="center"><b> Konfirmasi Close PO WIP</b></h3>
+        <h3 align="center"><b> Edit PO WIP</b></h3>
         <hr class="divider" />
         <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog">
@@ -190,7 +190,7 @@
                                 <select id="wip_id" name="wip_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
                                     <option value=""></option><?php
                                     foreach ($list_wip as $value){
-                                        echo "<option value='".$value->id."'>".$value->kode.' - '.$value->jenis_barang."</option>";
+                                        echo "<option value='".$value->id."'>".$value->jenis_barang."</option>";
                                     }?>
                                 </select>
                                 </td>
@@ -379,7 +379,6 @@ function loadDetail(id){
         url:'<?php echo base_url('index.php/BeliWIP/load_detail'); ?>',
         data:"id="+ id,
         success:function(result){
-            console.log(result);
             $('#boxDetail').html(result);   
         }
     });
@@ -417,10 +416,12 @@ function saveDetail(){
                 total_harga:$('#total_harga').val()
             },
             success:function(result){
+                console.log(result);
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
-                    $("#fg_id").select2("val", "");
-                    $('#fg_id').val('');
+                    $("#wip_id").select2("val", "");
+                    $('#wip_id').val('');
+                    $('#uom').val('');
                     $('#harga').val('');
                     $('#qty').val('');
                     $('#total_harga').val('');

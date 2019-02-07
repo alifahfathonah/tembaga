@@ -11,7 +11,7 @@
   <div class="col-md-12" style="margin-top: 10px;"> 
     <div class="collapse well" id="form_add" >
     <form class="eventInsForm" method="post" target="_self" name="formku" 
-    id="formku" action="<?php echo base_url('index.php/GudangBobbin/save_surat_peminjaman'); ?>">                            
+    id="formku" action="<?php echo base_url('index.php/GudangBobbin/save_surat_peminjaman'); ?>">
         <div class="row">
             <div class="col-md-12">
                 <div class="row">

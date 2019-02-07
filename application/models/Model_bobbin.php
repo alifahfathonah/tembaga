@@ -10,6 +10,17 @@ class Model_bobbin extends CI_Model{
         return $data;
     }
 
+    function view_bobbin($id){
+        $data = $this->db->query("select mb.*, mjp.jenis_packing, mbs.bobbin_size, COALESCE(mc.nama_customer, s.nama_supplier) as peminjam, o.nama_owner from m_bobbin mb
+            left join m_jenis_packing mjp on mjp.id = mb.m_jenis_packing_id
+            left join m_bobbin_size mbs on mbs.id = mb.m_bobbin_size_id
+            left join m_customers mc on mb.borrowed_by != 0 and mc.id = mb.borrowed_by
+            left join supplier s on mb.borrowed_by_supplier != 0 and s.id = mb.borrowed_by_supplier
+            left join owner o on (o.id = mb.owner_id)
+            where mb.id =".$id);
+        return $data;
+    }
+
     function cek_data($code){
         $data = $this->db->query("Select * From bobin Where nama_bobin='".$code."'");        
         return $data;
@@ -58,6 +69,7 @@ class Model_bobbin extends CI_Model{
         $data = $this->db->query("select mbs.*, aprv.realname as approved_name, rjct.realname as rejected_name, (select count(mbsd.id) from m_bobbin_spb_detail mbsd where mbsd.id_spb_bobbin = mbs.id) as jumlah_item from m_bobbin_spb mbs
             left join users aprv on (aprv.id = mbs.approved_by)
             left join users rjct on (rjct.id = mbs.rejected_by)
+            order by id desc
             ");
         return $data;
     }
@@ -130,7 +142,7 @@ class Model_bobbin extends CI_Model{
     }
 
     function list_peminjam(){
-        $data = $this->db->query("select mbp.*, tsj.no_surat_jalan, mc.nama_customer, supp.nama_supplier, (select count(tsjd.id) as jumlah_item from t_surat_jalan_detail tsjd where tsjd.t_sj_id = tsj.id) as jumlah_item
+        $data = $this->db->query("select mbp.*, tsj.no_surat_jalan, mc.nama_customer, supp.nama_supplier, (select count(mbpd.id) as jumlah_item from m_bobbin_peminjaman_detail mbpd where mbpd.id_peminjaman = mbp.id) as jumlah_item
             from m_bobbin_peminjaman mbp left join t_surat_jalan tsj on (mbp.id_surat_jalan = tsj.id)
             left join m_customers mc on (mbp.id_customer = mc.id)
             left join supplier supp on (mbp.supplier_id = supp.id)
@@ -171,26 +183,38 @@ class Model_bobbin extends CI_Model{
         return $data;
     }
 
+    function supplier_list(){
+        $this->db->order_by('nama_supplier', 'asc');
+        $data = $this->db->get('supplier');
+        return $data;
+    }
+
     function get_sj_list($id){
-        $data = $this->db->query("Select * From m_bobbin_peminjaman mbp Where mbp.id_customer=".$id." and status = 0");
+        $data = $this->db->query("Select mbp.*, tsj.no_surat_jalan From m_bobbin_peminjaman mbp 
+            left join t_surat_jalan tsj on tsj.id = mbp.id_surat_jalan
+            Where mbp.id_customer=".$id." and mbp.status = 0");
+        return $data;
+    }
+
+    function get_sj_list_supplier($id){
+        $data = $this->db->query("Select * From m_bobbin_peminjaman mbp Where mbp.supplier_id=".$id." and status = 0");
         return $data;
     }
 
     function show_header_penerimaan($id){
-        $data = $this->db->query("select mbt.*, mbp.no_surat_peminjaman, mbp.id_customer, mc.nama_customer, u.realname
+        $data = $this->db->query("select mbt.*, mbp.no_surat_peminjaman, mbp.id_customer, COALESCE(mc.nama_customer, s.nama_supplier) as pengirim, u.realname
             from m_bobbin_penerimaan mbt
             left join m_bobbin_peminjaman mbp on (mbt.id_peminjaman = mbp.id)
-            left join m_customers mc on (mbp.id_customer = mc.id)
+            left join m_customers mc on (mbp.id_customer != 0 and mbp.id_customer = mc.id)
+            left join supplier s on (mbp.supplier_id != 0 and mbp.supplier_id = s.id)
             left join users u on (u.id = mbt.created_by)
             where mbt.id = ".$id);
         return $data;
     }
 
     function load_list_bobbin_penerimaan($id_peminjaman){
-        $data = $this->db->query("select mbp.*, mbpd.nomor_bobbin
-            from m_bobbin_peminjaman mbp
-            left join m_bobbin_peminjaman_detail mbpd on (mbpd.id_peminjaman = mbp.id)
-            where mbp.id = ".$id_peminjaman." and mbpd.id_penerimaan = 0");
+        $data = $this->db->query("select * from m_bobbin_peminjaman_detail mbpd
+            where mbpd.id_peminjaman =".$id_peminjaman);
 
         // $data = $this->db->query("select mbt.*, mbp.id_surat_jalan, tsjd.nomor_bobbin, mb.id
         //     from m_bobbin_penerimaan mbt

@@ -59,7 +59,7 @@ class SalesOrder extends CI_Controller{
         $this->load->model('Model_sales_order');
         $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
         $data['marketing_list'] = $this->Model_sales_order->marketing_list()->result();
-        $data['option_jenis_barang'] = $this->Model_sales_order->jenis_barang_list()->result();
+        // $data['option_jenis_barang'] = $this->Model_sales_order->jenis_barang_list()->result();
         $this->load->view('layout', $data);
     }
 
@@ -106,6 +106,21 @@ class SalesOrder extends CI_Controller{
         
         header('Content-Type: application/json');
         echo json_encode($rongsok); 
+    }
+
+    function get_uom_so(){
+        $id = $this->input->post('id');
+        $jenis = $this->input->post('jenis');
+        $this->load->model('Model_sales_order');
+        
+        if($jenis == 'RONGSOK'){
+            $jenis_barang= $this->Model_sales_order->get_uom_so($id)->row_array();
+        }else{
+            $jenis_barang= $this->Model_sales_order->show_data($id)->row_array();
+        }
+        
+        header('Content-Type: application/json');
+        echo json_encode($jenis_barang); 
     }
 
     function print_so(){
@@ -183,6 +198,108 @@ class SalesOrder extends CI_Controller{
         
         header('Content-Type: application/json');
         echo json_encode($tabel); 
+    }
+
+    function load_detail_so_edit(){
+        $id = $this->input->post('id');
+        $jenis = $this->input->post('jenis');
+
+        $no = 1;
+        $total = 0;
+        $qty = 0;
+        $amount = 0;
+        $netto = 0;
+        $tabel = "";
+        $this->load->model('Model_sales_order'); 
+        if($jenis == 'RONGSOK'){
+            $myDetail = $this->Model_sales_order->load_detail_so_rongsok($id)->result();
+        }else{
+            $myDetail = $this->Model_sales_order->load_detail_so($id)->result();
+        }
+        foreach ($myDetail as $row) {
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align: center;">'.$no.'</td>';
+            $tabel .= '<td><label id="lbl_jenis_barang_'.$no.'">'.$row->nama_barang.'</label>';
+            $tabel .= '<input typed="text" id="jenis_barang_id_'.$no.'" name="jenis_barang_id_'.$no.'" class="form-control select2me myline" readonly="readonly" value="'.$row->nama_barang.'"';
+            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px; display:none">';
+            $tabel .= '<input type="hidden" id="detail_id_'.$no.'" name="detail_id_'.$no.'" value="'.$row->id.'">';
+            $tabel .= '</td>';
+            $tabel .= '<td><label id="lbl_uom_'.$no.'">'.$row->uom.'</label>';
+            $tabel .= '<input type="text" id="uom_'.$no.'" name="uom_'.$no.'" class="form-control myline" value="'.$row->uom.'" readonly  style="display:none;"/></td>';
+            $tabel .= '<td style="text-align:right;"><label id="lbl_amount_'.$no.'">'.number_format($row->amount,0,',','.').'</label>';
+            $tabel .= '<input type="text" id="amount_'.$no.'" name="amount_'.$no.'" class="form-control myline" value="'.$row->amount.'" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id,'.$no.');"  style="display:none;"/></td>';
+            if($jenis=='RONGSOK'){
+            $tabel .= '<td style="text-align:right;"><label id="lbl_netto_'.$no.'">'.number_format($row->qty,0,',','.').'</label>';
+            $tabel .= '<input type="text" id="netto_'.$no.'" name="netto_'.$no.'" class="form-control myline" value="'.number_format($row->qty,0,',','.').'"  style="display:none;" maxlength="10" value="0" readonly="readonly"/></td>';
+            $netto += $row->qty;
+            }else if($jenis=='WIP'){
+            $tabel .= '<td style="text-align:right;"><label id="lbl_qty_'.$no.'">'.number_format($row->qty,0,',','.').'</label>';
+            $tabel .= '<input type="text" id="qty_'.$no.'" name="qty_'.$no.'" class="form-control myline" value="'.number_format($row->qty,0,',','.').'"  style="display:none;" maxlength="10" value="0" readonly="readonly"/></td>';
+            $tabel .= '<td style="text-align:right;"><label id="lbl_netto_'.$no.'">'.number_format($row->netto,0,',','.').'</label>';
+            $tabel .= '<input type="text" id="netto_'.$no.'" name="netto_'.$no.'" class="form-control myline" value="'.number_format($row->netto,0,',','.').'"  style="display:none;" maxlength="10" value="0" readonly="readonly"/></td>';
+            $qty += $row->qty;
+            $netto += $row->netto;
+            }else{
+            $tabel .= '<td style="text-align:right;"><label id="lbl_netto_'.$no.'">'.number_format($row->netto,0,',','.').'</label>';
+            $tabel .= '<input type="text" id="netto_'.$no.'" name="netto_'.$no.'" class="form-control myline" value="'.number_format($row->netto,0,',','.').'"  style="display:none;" maxlength="10" value="0" readonly="readonly"/></td>';
+            $netto += $row->netto;
+            }
+            $tabel .= '<td style="text-align:right;"><label id="lbl_total_amount_'.$no.'">'.number_format($row->total_amount,0,',','.').'</label>';
+            $tabel .= '<input type="text" id="total_amount_'.$no.'" name="total_amount_'.$no.'" class="form-control myline" value="'.number_format($row->total_amount,0,',','.').'" style="display:none;" readonly /></td>';
+            $tabel .= '<td style="text-align:center;"><a id="btnEdit_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'green" onclick="editDetail('.$no.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-pencil"></i> Edit </a>';
+            $tabel .= '<a id="btnUpdate_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'green-seagreen" onclick="updateDetail('.$no.');" style="margin-top:5px; display:none;"> '
+                    . '<i class="fa fa-save"></i> Update </a>';
+            $tabel .= '</tr>';
+            $amount += $row->amount;
+            $total += $row->total_amount;
+            $no++;
+        }
+        $tabel .= '<tr>';
+        $tabel .= '<td colspan="3" style="text-align:right"><strong>Total </strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($amount,0,',','.').'</strong></td>';
+        if($jenis == 'WIP'){
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($qty,0,',','.').'</strong></td>';
+        }
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
+        $tabel .= '<td></td>';
+        $tabel .= '</tr>';
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function update_detail_so(){
+        $return_data = array();
+        $tanggal  = date('Y-m-d h:m:s');
+        $user_id  = $this->session->userdata('user_id');
+        $jenis = $this->input->post('jenis');
+        
+        if($jenis == 'RONGSOK'){
+            $data = array(
+                'amount'=>str_replace('.', '', $this->input->post('amount')),
+                'total_amount'=>str_replace('.', '', $this->input->post('total_amount')),
+                'qty'=>str_replace('.', '', $this->input->post('netto'))
+            );
+        }else{
+            $data = array(
+                'amount'=>str_replace('.', '', $this->input->post('amount')),
+                'total_amount'=>str_replace('.', '', $this->input->post('total_amount')),
+                'netto'=>str_replace('.', '', $this->input->post('netto'))
+            );
+        }
+        $this->db->where('id', $this->input->post('detail_id'));
+        if($this->db->update('t_sales_order_detail', $data)){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal meng-update item finish good! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data);     
     }
 
     function save(){
@@ -361,25 +478,39 @@ class SalesOrder extends CI_Controller{
             $dataC = array(
                 'spb_id'=> $spb,
                 'rongsok_id'=> $this->input->post('barang_id'),
-                'qty'=> $this->input->post('qty'),
+                'qty'=> $this->input->post('netto'),
                 'line_remarks'=> 'SALES ORDER',
                 'created'=> $tanggal,
                 'created_by'=> $user_id
             );
+
             $this->db->insert('spb_detail', $dataC);
             $insert_id = $this->db->insert_id();
         }
 
-        if($this->db->insert('t_sales_order_detail', array(
-            't_so_id'=>$this->input->post('id'),
-            'no_spb_detail'=>$insert_id,
-            'jenis_barang_id'=>$this->input->post('barang_id'),
-            'amount'=>str_replace('.', '', $this->input->post('harga')),
-            'qty'=>str_replace('.', '', $this->input->post('qty')),
-            'total_amount'=>str_replace('.', '', $this->input->post('total_harga')),
-            'bruto'=>str_replace('.', '', $this->input->post('bruto')),
-            'netto'=>str_replace('.', '', $this->input->post('netto'))
-        ))){
+        if($jenis == 'RONGSOK'){
+            $data_so_detail = array(
+                't_so_id'=>$this->input->post('id'),
+                'no_spb_detail'=>$insert_id,
+                'jenis_barang_id'=>$this->input->post('barang_id'),
+                'amount'=>str_replace('.', '', $this->input->post('harga')),
+                'qty'=>str_replace('.', '', $this->input->post('netto')),
+                'total_amount'=>str_replace('.', '', $this->input->post('total_harga'))
+            );
+        }else {
+            $data_so_detail = array(
+                't_so_id'=>$this->input->post('id'),
+                'no_spb_detail'=>$insert_id,
+                'jenis_barang_id'=>$this->input->post('barang_id'),
+                'amount'=>str_replace('.', '', $this->input->post('harga')),
+                'qty'=>str_replace('.', '', $this->input->post('qty')),
+                'total_amount'=>str_replace('.', '', $this->input->post('total_harga')),
+                'bruto'=>str_replace('.', '', $this->input->post('bruto')),
+                'netto'=>str_replace('.', '', $this->input->post('netto'))
+            );
+        }
+
+        if($this->db->insert('t_sales_order_detail',$data_so_detail)){
             $return_data['message_type']= "sukses";
         }else{
             $return_data['message_type']= "error";
@@ -426,6 +557,7 @@ class SalesOrder extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tanggal_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
         
         $data = array(
                 'tanggal'=> $tgl_input,
@@ -441,7 +573,10 @@ class SalesOrder extends CI_Controller{
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('t_sales_order', array(
                 'alias'=> $this->input->post('alias'),
-                'no_po'=> $this->input->post('no_po')
+                'no_po'=> $this->input->post('no_po'),
+                'tgl_po'=> $tanggal_po,
+                'modified_at'=> $tanggal,
+                'modified_by'=> $user_id
             ));
         
         $this->session->set_flashdata('flash_msg', 'Data sales order berhasil disimpan');
@@ -647,7 +782,6 @@ class SalesOrder extends CI_Controller{
                 $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_wip()->result();
             }else{
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_rsk($soid)->result();
-                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_rsk()->result();
             }
             $this->load->view('layout', $data);   
         }else{
@@ -770,9 +904,9 @@ class SalesOrder extends CI_Controller{
             if($jenis == 'FG'){
                 $data['list_sj'] = $this->Model_sales_order->load_view_sjd($id)->result();
             }else if($jenis == 'WIP'){
-                $data['list_sj'] = $this->Model_sales_order->list_item_sj_wip($id)->result();
+                $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
             }else{
-                $data['list_sj'] = $this->Model_sales_order->list_item_sj_rsk($id)->result();
+                $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id)->result();
             }
             $this->load->view('layout', $data);   
         }else{
@@ -810,7 +944,7 @@ class SalesOrder extends CI_Controller{
             }
         }
 
-         $this->load->model('Model_sales_order');
+        $this->load->model('Model_sales_order');
         #cek jika surat jalan sudah di kirim semua atau belum
         if($jenis == 'FG'){
             $list_produksi = $this->Model_sales_order->list_item_sj_fg($so_id)->result();
@@ -825,7 +959,7 @@ class SalesOrder extends CI_Controller{
             'flag_invoice'=>0
         ));
 
-        if(empty($list_produksi)){
+        if(empty($list_produksi) && $this->input->post('status_spb') == 1){
             $this->db->where('id',$so_id);
             $this->db->update('sales_order', array(
                 'flag_sj'=>1

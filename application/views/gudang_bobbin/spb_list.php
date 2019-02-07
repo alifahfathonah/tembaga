@@ -40,6 +40,7 @@
                     <th>Tanggal</th>
                     <th>Pemohon</th>
                     <th>Jumlah <br>Items</th>
+                    <th>Keperluan</th>
                     <th>Remarks</th>
                     <th>Status</th>
                     <th>Approve/<br>Reject Oleh</th> 
@@ -58,6 +59,12 @@
                         <td><?php echo date('d-m-Y', strtotime($data->created_at)); ?></td>
                         <td><?php echo $data->pemohon; ?></td>                            
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
+                        <td><?php
+                                if($data->keperluan==0){
+                                    echo 'Internal';
+                                }else if($data->keperluan==(1||2)){
+                                    echo 'Eksternal';}?>
+                        </td>
                         <td><?php echo $data->keterangan; ?></td>
                         <td style="text-align:center">
                             <?php

@@ -183,8 +183,8 @@
                                     <td style="text-align:center"><?php echo $no; ?></td>
                                     <td><?php echo $row->jenis_barang; ?></td>
                                     <td><?php echo $row->no_packing; ?></td>
-                                    <td style="text-align:right"><?php echo number_format($row->bruto,0,',','.'); ?></td>
-                                    <td style="text-align:right"><?php echo number_format($row->netto,0,',','.'); ?></td>
+                                    <td style="text-align:right"><?php echo $row->bruto; ?></td>
+                                    <td style="text-align:right"><?php echo $row->netto; ?></td>
                                     <td><?php echo $row->nomor_bobbin; ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
                                 </tr>

@@ -76,11 +76,39 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Peminjaman Oleh
+                        </div>
+                        <div class="col-md-8">
+                            <select id="peminjaman" name="peminjaman" placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom:5px;" onchange="pilih_data(this.value);">
+                                <option></option>
+                                <option value="Customer">Customer</option>
+                                <option value="Supplier">Supplier</option> 
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row hidden disabled" id="show_supplier">
+                        <div class="col-md-4">
+                            Supplier
+                        </div>
+                        <div class="col-md-8">
+                            <select id="supplier_id" name="supplier_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_surat_jalan_supplier(this.value);">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($supplier_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->nama_supplier.'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row hidden disabled" id="show_customer">
+                        <div class="col-md-4">
                             Customer
                         </div>
                         <div class="col-md-8">
                             <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_surat_jalan(this.value);">
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_surat_jalan_customer(this.value);">
                                 <option value=""></option>
                                 <?php
                                     foreach ($customer_list as $row){
@@ -127,11 +155,24 @@
     </div>
 </div> 
 <script>
-function get_surat_jalan(id){
+function pilih_data(id){
+    if(id == 'Supplier'){
+        $('#show_supplier').removeClass('hidden disabled');
+        $('#supplier_id').removeClass('disabled');
+        $('#m_customer_id').addClass('disabled');
+        $('#show_customer').addClass('hidden disabled');
+    }else if(id == 'Customer'){
+        $('#show_supplier').addClass('hidden disabled');
+        $('#supplier_id').addClass('disabled');
+        $('#m_customer_id').removeClass('disabled');
+        $('#show_customer').removeClass('hidden disabled');
+    }
+}
+
+function get_surat_jalan_supplier(id){
     $.ajax({
         type: "POST",
-        url: "<?php echo base_url('index.php/GudangBobbin/get_sj_list'); ?>",
-        async: false,
+        url: "<?php echo base_url('index.php/GudangBobbin/get_sj_list_supplier'); ?>",
         data: "id="+id,
         dataType: "html",
         success: function(result) {
@@ -139,6 +180,19 @@ function get_surat_jalan(id){
         }
     });
 }
+
+function get_surat_jalan_customer(id){
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url('index.php/GudangBobbin/get_sj_list'); ?>",
+        data: "id="+id,
+        dataType: "html",
+        success: function(result) {
+            $('#surat_peminjaman_id').html(result);
+        }
+    });
+}
+
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");

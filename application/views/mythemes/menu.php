@@ -224,46 +224,78 @@
                     <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/Tolling">
-                            <i class="fa fa-truck"></i>
-                            Sales Order</a>
-                        </li>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/Tolling/po_list">
-                            <i class="fa fa-cubes"></i>
-                            PO List </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/Tolling/dtr_list">
-                            <i class="fa fa-file-excel-o"></i>
-                            DTR List </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/Tolling/ttr_list">
-                            <i class="fa fa-file-powerpoint-o"></i>
-                            TTR List </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo base_url();?>index.php/Tolling/tolling_fg">
-                            <i class="fa fa-trash"></i>
-                            Tolling Finish Good
+                        <li <?php if($module_name=="Tolling") echo 'class="start active open"'; ?>>
+                            <a href="javascript:;">
+                            <i class="fa fa-cogs"></i>
+                            <span class="title">Tolling Dari Customer</span>
+                            <span class="arrow "></span>
                             </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling">
+                                    <i class="fa fa-truck"></i>
+                                    Sales Order</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/dtr_list">
+                                    <i class="fa fa-file-excel-o"></i>
+                                    DTR List </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/ttr_list">
+                                    <i class="fa fa-file-powerpoint-o"></i>
+                                    TTR List </a>
+                                </li>
+                                <!-- <li>
+                                    <a href="<?php //echo base_url(); ?>index.php/Tolling/produksi_ampas">
+                                    <i class="fa fa-trash"></i>
+                                    Produksi Ampas </a>
+                                </li> -->
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/surat_jalan">
+                                    <i class="fa fa-truck"></i>
+                                    Surat Jalan </a>
+                                </li>
+                            </ul>
                         </li>
-                        <!-- <li>
-                            <a href="<?php //echo base_url(); ?>index.php/Tolling/produksi_ampas">
-                            <i class="fa fa-trash"></i>
-                            Produksi Ampas </a>
-                        </li> -->
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/Tolling/surat_jalan">
-                            <i class="fa fa-truck"></i>
-                            Surat Jalan </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/Tolling/cek_balance">
-                            <i class="fa fa-truck"></i>
-                            Cek Balance </a>
+                        <li <?php if($module_name=="Tolling") echo 'class="start active open"'; ?>>
+                            <a href="javascript:;">
+                            <i class="fa fa-rocket"></i>
+                            <span class="title">Tolling Ke Customer</span>
+                            <span class="arrow "></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/spb_list">
+                                    <i class="fa fa-file-word-o"></i>
+                                    SPB Keluar </a>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/surat_jalan_keluar">
+                                    <i class="fa fa-truck"></i>
+                                    Surat Jalan Keluar </a>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/po_list">
+                                    <i class="fa fa-cubes"></i>
+                                    PO List </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/dtt_list">
+                                        <i class="fa fa-book"></i>
+                                        DTT LIST
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/matching">
+                                        <i class="fa fa-file-text-o"></i>
+                                        Matching Tolling
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/cek_balance">
+                                    <i class="fa fa-truck"></i>
+                                    Cek Balance </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </li>

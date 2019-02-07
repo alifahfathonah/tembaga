@@ -2,11 +2,11 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Retur 
+            <i class="fa fa-angle-right"></i> Tolling
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Retur/surat_jalan'); ?>"> Surat Jalan </a> 
+            <a href="<?php echo base_url('index.php/Tolling/surat_jalan_keluar'); ?>"> Surat Jalan Keluar</a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Retur/add_surat_jalan'); ?>"> Input Surat Jalan </a> 
+            <a href="<?php echo base_url('index.php/Tolling/add_surat_jalan_keluar'); ?>"> Input Surat Jalan Keluar </a> 
         </h5>          
     </div>
 </div>
@@ -25,7 +25,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/Retur/save_surat_jalan'); ?>">
+              id="formku" action="<?php echo base_url('index.php/Tolling/save_surat_jalan_keluar'); ?>">                            
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
@@ -48,38 +48,6 @@
                                 value="<?php echo date('d-m-Y'); ?>">
                         </div>
                     </div> 
-                    <!-- <div class="row">
-                        <div class="col-md-4">
-                            Jenis Barang <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php
-                                    // foreach ($jenis_barang_list as $row){
-                                    //     echo '<option value="'.$row->jenis_barang.'">'.$row->jenis_barang.'</option>';
-                                    // }
-                                ?>
-                            </select>
-                        </div>
-                    </div> -->
-                    <!-- <div class="row">
-                        <div class="col-md-4">
-                            Jenis Barang <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($jenis_barang_list as $row){
-                                        echo '<option value="'.$row->jenis_barang.'">'.$row->jenis_barang.'</option>';
-                                    }
-                                ?>
-                            </select>
-                        </div>
-                    </div> -->
                     <div class="row">
                         <div class="col-md-4">
                             Customer <font color="#f00">*</font>
@@ -87,7 +55,7 @@
                         <div class="col-md-8">
                             <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
-                                onchange="get_alamat(this.value);">
+                                onclick="get_alamat(this.value);">
                                 <option value=""></option>
                                 <?php
                                     foreach ($customer_list as $row){
@@ -107,11 +75,32 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            No. Retur <font color="#f00">*</font>
+                            PO Tolling <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="retur_id" name="retur_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                            <select id="po_id" name="po_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_no_spb(this.value);">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Barang <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_no_spb(this.value);">
                                 <option value=""></option>
+                                <option value="RONGSOK">Rongsok</option>
+                                <option value="WIP">WIP</option>
+                                <option value="FG">FinishGood</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. SPB <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="no_spb" name="no_spb" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                             </select>
                         </div>
                     </div>
@@ -125,16 +114,7 @@
                     </div>
                 </div>
                 <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-5">
-                    <div class="row">
-                        <div class="col-md-4">
-                            Jenis Barang
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" name="jenis_barang" id="jenis_barang" class="form-control myline" 
-                                   style="margin-bottom:5px" readonly="readonly" value="RETUR">
-                        </div>
-                    </div>                   
+                <div class="col-md-5">              
                     <div class="row">
                         <div class="col-md-4">
                             Type Kendaraan
@@ -203,9 +183,9 @@ function simpanData(){
     }else if($.trim($("#m_customer_id").val()) == ""){
         $('#message').html("Silahkan pilih customer");
         $('.alert-danger').show(); 
-    }else if($.trim($("#retur_id").val()) == ""){
-        $('#message').html("Silahkan pilih nomor retur");
-        $('.alert-danger').show(); 
+    }else if($.trim($("#no_spb").val()) == ""){
+        $('#message').html("Silahkan pilih no. sales order");
+        $('.alert-danger').show();
     }else{     
         $('#formku').submit(); 
     };
@@ -214,7 +194,7 @@ function simpanData(){
 function get_type_kendaraan(id){
     $.ajax({
         type: "POST",
-        url: "<?php echo base_url('index.php/SalesOrder/get_type_kendaraan'); ?>",
+        url: "<?php echo base_url('index.php/Tolling/get_type_kendaraan'); ?>",
         data: {id: id},
         cache: false,
         success: function(result) {
@@ -226,33 +206,33 @@ function get_type_kendaraan(id){
 function get_alamat(id){
     $.ajax({
         type: "POST",
-        url: "<?php echo base_url('index.php/SalesOrder/get_alamat'); ?>",
+        url: "<?php echo base_url('index.php/Tolling/get_alamat'); ?>",
         data: {id: id},
         cache: false,
         success: function(result) {
             $("#alamat").val(result['alamat']);           
         } 
     });
-    
+
+
     $.ajax({
-        url: "<?php echo base_url('index.php/Retur/get_retur_list'); ?>",
-        async: false,
         type: "POST",
-        data: "id="+id,
-        dataType: "html",
+        url: "<?php echo base_url('index.php/Tolling/get_po_tolling'); ?>",
+        data: {id: id},
+        cache: false,
         success: function(result) {
-            $('#retur_id').html(result);
-        }
-    })
+            $("#po_id").html(result);           
+        } 
+    });
 }
 
-function get_jenis_barang(id){
+function get_no_spb(id){
     $.ajax({
         type: "POST",
-        url: "<?php echo base_url('index.php/SalesOrder/get_jenis_barang'); ?>",
+        url: "<?php echo base_url('index.php/Tolling/get_no_spb'); ?>",
         data: {id: id},
         success: function(result) {
-            $("#jenis_barang").val(result['jenis_barang']);  
+            $("#no_spb").html(result); 
         } 
     });
 }
@@ -274,4 +254,3 @@ $(function(){
     });       
 });
 </script>
-      
