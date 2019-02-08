@@ -50,4 +50,15 @@ class Model_purchase_order extends CI_Model{
 			where rpod.po_id =".$id);
 		return $data;
 	}
+
+	function load_detail_po_sj($id){
+		$data = $this->db->query("select rpod.*, tsjd.bruto as bruto_tsjd, tsjd.netto as netto_tsjd, tsjd.no_packing, jb.jenis_barang, jb.uom, jb.kode
+			from r_t_po_detail rpod
+            left join r_t_po rpo on (rpo.id = rpod.po_id)
+			left join f_invoice fi on (rpo.f_invoice_id = fi.id)
+			left join t_surat_jalan_detail tsjd on (fi.id_surat_jalan = tsjd.t_sj_id)
+			left join jenis_barang jb on jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
+			where rpod.po_id =".$id);
+		return $data;
+	}
 }
