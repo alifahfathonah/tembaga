@@ -99,6 +99,25 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
+                            Status SPB <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <?php
+                                if($header['status_spb']==0){
+                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Approval</div>';
+                                }else if($header['status_spb']==1){
+                                    echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
+                                }else if($header['status_spb']==2 || $header['status_spb']==4){
+                                    echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
+                                }else if($header['status_spb']==9){
+                                    echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
+                                }
+                            ?>
+                            <input type="hidden" name="status_spb" value="<?php echo $header['status_spb'];?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Jenis Barang <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -204,6 +223,7 @@
                                     <td style="text-align:center">
                                         <a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input(1);" style="margin-top:5px" id="save_1"><i class="fa fa-plus"></i> Tambah </a>
                                         <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
+                                        <a id="print_1" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(1);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -247,8 +267,11 @@ function simpanData(){
 
 function create_new_input(id){
     $("#barang_id_"+id).attr('disabled','disabled');
-    $("#save_"+id).attr('disabled','disabled');
+    $("#save_"+id).attr('disabled','disabled').hide();
     $("#delete_"+id).removeClass('disabled');
+        if($('#barang_alias_id_'+id).val() > 0){
+           $('#print_'+id).show();
+        }
     var new_id = id+1; 
     $("#tabel_barang>tbody").append(
     '<tr>'+
@@ -275,7 +298,8 @@ function create_new_input(id){
         '<td><input type="text" id="bobbin_'+new_id+'" name="details['+new_id+'][bobbin]" class="form-control myline" readonly="readonly"></td>'+
         '<td><input type="text" id="line_remarks_'+new_id+'" name="details['+new_id+'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
         '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input('+new_id+');" style="margin-top:5px" id="save_'+new_id+'"><i class="fa fa-plus"></i> Tambah </a>'+
-        '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
+        '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>'+
+        '<a id="print_'+new_id+'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('+new_id+');" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a></td>'+
     '</tr>');
     $('#barang_id_'+new_id).select2();
     $('#barang_alias_id_'+new_id).select2();
@@ -330,6 +354,17 @@ function get_data(id){
             $("#barang_id_"+id).val('');
         }
     }
+}
+
+function printBarcode(id){
+    const fg = $('#barang_alias_id_'+id).val();
+    const b = $('#bruto_'+id).val();
+    const n = $('#netto_'+id).val();
+    const bp = b - n;
+    const bb = bp.toFixed(2);
+    const np = $('#no_packing_'+id).val();
+    console.log(id+' | '+fg+' | '+b+' | '+bb+' | '+n+' | '+np);
+    window.open('<?php echo base_url();?>index.php/SalesOrder/print_barcode_fg?fg='+fg+'&b='+b+'&bb='+bb+'&n='+n+'&np='+np,'_blank');
 }
 </script>
 

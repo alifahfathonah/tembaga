@@ -71,7 +71,7 @@
                         <td style="text-align:center"> 
                             <?php
                                 if($data->ttr_status==0){
-                                    if ($group_id==1 || $hak_akses['review_ttr']==1){
+                                    if ($group_id==1 || $hak_akses['create_ttr']==1){
                                     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliRongsok/review_ttr/'.$data->id.'" 
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-edit"></i> Review &nbsp; </a>';
                                     }

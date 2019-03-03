@@ -27,8 +27,12 @@
                 <div class="caption">
                     <i class="fa fa-file-word-o"></i>SPB Bobbin List
                 </div> 
-                <div class="tools">    
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/GudangBobbin/add_spb"> <i class="fa fa-plus"></i> Ajukan SPB Bobbin</a>              
+                <div class="tools">
+                <?php
+                    if( ($group_id==1)||($hak_akses['add_spb']==1) ){
+                ?> 
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/GudangBobbin/add_spb"> <i class="fa fa-plus"></i> Ajukan SPB Bobbin</a>
+                <?php } ?>
                 </div>               
             </div>
             <div class="portlet-body">
@@ -94,7 +98,7 @@
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
                             <?php
                                 }
-                                if($group_id==1 || $hak_akses['print_spb']==1){
+                                if($group_id==1 || $hak_akses['print']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangBobbin/print_spb_bobbin/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }

@@ -16,7 +16,8 @@ class Model_sales_order extends CI_Model{
     }
 
     function filter_so_list($id){
-        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, so.flag_ppn, so.flag_sj, usr.realname As nama_marketing, cust.nama_customer, cust.pic, COALESCE(tsf.status,tsw.status,spb.status) as status_spb,
+        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, so.flag_ppn, so.flag_sj, so.flag_invoice, usr.realname As nama_marketing, cust.nama_customer, cust.pic, COALESCE(tsf.status,tsw.status,spb.status) as status_spb,
+            (Select count(fi.id) from f_invoice fi where fi.id_sales_order = so.id) as invoice,
             (Select count(tsod.id)As jumlah_item From t_sales_order_detail tsod Where tsod.t_so_id = tso.id)As jumlah_item From t_sales_order tso
             Left Join sales_order so on (so.id = tso.so_id)
             Left Join m_customers cust On (so.m_customer_id = cust.id) 
@@ -149,7 +150,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function list_item_sj_fg($soid){
-        $data = $this->db->query("select tgf.id, jb.jenis_barang, jb.uom from t_sales_order tso
+        $data = $this->db->query("select tgf.id, tgf.no_packing, jb.jenis_barang, jb.uom, jb.ukuran from t_sales_order tso
                 left join t_gudang_fg tgf on tgf.t_spb_fg_id = tso.no_spb
                 left join jenis_barang jb on jb.id = tgf.jenis_barang_id
                 where tso.so_id = ".$soid." and flag_taken = 0");
@@ -344,7 +345,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function show_header_sj($id){
-        $data = $this->db->query("Select tsj.*, cust.id as id_customer, cust.nama_customer, cust.alamat, 
+        $data = $this->db->query("Select tsj.*, cust.id as id_customer, cust.nama_customer, cust.alamat, so.tanggal as tanggal_so, 
                     COALESCE(tsf.no_spb, tsw.no_spb_wip, s.no_spb) as nomor_spb,
                     COALESCE(tsf.status, tsw.status, s.status) as status_spb,
                     tso.no_spb, so.no_sales_order, tso.no_po,
@@ -368,9 +369,17 @@ class Model_sales_order extends CI_Model{
     }
 
     function jenis_barang_in_so($id){
-        $data = $this->db->query("select jb.id,jb.jenis_barang from t_sales_order_detail tsod 
+        $data = $this->db->query("select jb.id,jb.jenis_barang, jb.ukuran from t_sales_order_detail tsod 
             left join t_sales_order tso on tso.id = tsod.t_so_id
             left join jenis_barang jb on jb.id = tsod.jenis_barang_id
+            where tso.so_id =".$id);
+        return $data;
+    }
+
+    function rongsok_in_so($id){
+        $data = $this->db->query("select r.id, r.nama_item as jenis_barang, r.kode_rongsok from t_sales_order_detail tsod 
+            left join t_sales_order tso on tso.id = tsod.t_so_id
+            left join rongsok r on r.id = tsod.jenis_barang_id
             where tso.so_id =".$id);
         return $data;
     }
@@ -413,6 +422,16 @@ class Model_sales_order extends CI_Model{
                 left join jenis_barang jb on jb.id= tsjd.jenis_barang_id
                 left join jenis_barang jba on tsjd.jenis_barang_alias != 0 and jba.id = tsjd.jenis_barang_alias
                 where tsjd.t_sj_id = ".$id);
+        return $data;
+    }
+
+    function get_jb($id){
+        $data = $this->db->query("select id, jenis_barang, kode from jenis_barang where id =".$id);
+        return $data;
+    }
+
+    function get_rsk($id){
+        $data = $this->db->query("Select * from rongsok where id =".$id);
         return $data;
     }
 }

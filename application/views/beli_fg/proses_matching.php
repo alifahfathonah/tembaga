@@ -190,7 +190,7 @@
                                         Jenis Barang
                                     </div>
                                     <div class="col-md-8">
-                                        : <?php echo $row->jenis_barang; ?>
+                                        : FG ?>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -317,7 +317,7 @@
                                         Jenis Barang
                                     </div>
                                     <div class="col-md-8">
-                                        : <?php echo $row->jenis_barang; ?>
+                                        : FG
                                     </div>
                                 </div>
                                 <div class="row">

@@ -38,9 +38,10 @@ class Model_gudang_wip extends CI_Model{
     function show_header_bpb($id){
         $data = $this->db->query("Select bpbwip.*, tsw.no_spb_wip, 
                 (pi.no_produksi) as no_produksi_ingot,
-                    usr.realname As pengirim
+                    usr.realname As pengirim, us.realname As penerima
                     From t_bpb_wip bpbwip
-                        Left Join users usr On (bpbwip.created_by = usr.id) 
+                        left Join users usr On (bpbwip.created_by = usr.id)
+                        left join users us On (bpbwip.approved_by = us.id) 
                         left join t_spb_wip tsw on (tsw.id = bpbwip.spb_wip_id)
                         left join t_hasil_wip hslwip on (hslwip.id = bpbwip.hasil_wip_id)
                         left join t_hasil_masak hslmsk on (hslmsk.id = hslwip.hasil_masak_id)
@@ -133,7 +134,7 @@ class Model_gudang_wip extends CI_Model{
         return $data;
     }
 
-    function show_detail_spb_fulfilment($id){
+    function show_detail_wip_fulfilment($id){
        $data = $this->db->query("select tgw.*, jb.jenis_barang 
                 from t_gudang_wip tgw
                 left join jenis_barang jb on (jb.id = tgw.jenis_barang_id)
@@ -141,6 +142,22 @@ class Model_gudang_wip extends CI_Model{
                 left join t_spb_wip tsw on (tsw.id = tswd.t_spb_wip_id) 
                 where tsw.id =".$id
                 );
+        return $data;
+    }
+
+    function show_detail_spb_fulfilment($id){
+        $data = $this->db->query("select tswf.*, jb.jenis_barang, jb.uom from t_spb_wip_fulfilment tswf
+                left join jenis_barang jb on jb.id = tswf.jenis_barang_id
+                where tswf.approved_by = 0 and tswf.t_spb_wip_id =".$id);
+        return $data;
+    }
+
+    function check_spb($id){
+        $data = $this->db->query("select tsw.id, 
+                (select sum(tswd.berat) from t_spb_wip_detail tswd where tswd.t_spb_wip_id=tsw.id) as tot_spb,
+                (select sum(tswf.berat) from t_spb_wip_fulfilment tswf where tswf.approved_by=1 and tswf.t_spb_wip_id =tsw.id) as tot_fulfilment
+                from t_spb_wip tsw
+                where tsw.id =".$id);
         return $data;
     }
 
@@ -206,6 +223,42 @@ class Model_gudang_wip extends CI_Model{
 
     function stok_keras(){
         $data = $this->db->query("select * from stok_keras");
+        return $data;
+    }
+
+    function show_laporan(){
+        $data = $this->db->query("select DATE_FORMAT(t_gudang_wip.tanggal,'%M %Y') as showdate, 
+            EXTRACT(YEAR_MONTH from t_gudang_wip.tanggal) as tanggal,
+            count(t_gudang_wip.id) as jumlah,
+                sum(CASE WHEN jenis_trx = 0 THEN qty ELSE 0 END) as qty_masuk,
+                sum(CASE WHEN jenis_trx = 1 THEN qty ELSE 0 END) as qty_keluar,
+                sum(CASE WHEN jenis_trx = 0 THEN berat ELSE 0 END) as berat_masuk,
+                sum(CASE WHEN jenis_trx = 1 THEN berat ELSE 0 END) as berat_keluar
+                from t_gudang_wip
+                LEFT join jenis_barang jb on (jb.id = t_gudang_wip.jenis_barang_id)
+                GROUP by month(t_gudang_wip.tanggal)");
+        return $data;
+    }
+
+    function show_view_laporan($bulan,$tahun){
+        $data = $this->db->query("select jenis_barang_id, jb.jenis_barang, count(t_gudang_wip.id) as jumlah,
+                sum(CASE WHEN jenis_trx = 0 THEN qty ELSE 0 END) as qty_masuk,
+                sum(CASE WHEN jenis_trx = 1 THEN qty ELSE 0 END) as qty_keluar,
+                sum(CASE WHEN jenis_trx = 0 THEN berat ELSE 0 END) as berat_masuk,
+                sum(CASE WHEN jenis_trx = 1 THEN berat ELSE 0 END) as berat_keluar
+                from t_gudang_wip
+                LEFT join jenis_barang jb on (jb.id = t_gudang_wip.jenis_barang_id)
+                Where month(t_gudang_wip.tanggal) =".$bulan." and year(t_gudang_wip.tanggal) =".$tahun."
+                GROUP by t_gudang_wip.jenis_barang_id");
+        return $data;
+    }
+
+    function show_laporan_detail($bulan,$tahun,$id){
+        $data = $this->db->query("Select tgw.*, jb.jenis_barang
+                From t_gudang_wip tgw
+                    left join jenis_barang jb on (jb.id = tgw.jenis_barang_id)
+                Where month(tgw.tanggal) =".$bulan." and year(tgw.tanggal) =".$tahun." 
+                and tgw.jenis_barang_id =".$id);
         return $data;
     }
     /*

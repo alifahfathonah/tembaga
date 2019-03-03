@@ -129,7 +129,6 @@ class PengirimanAmpas extends CI_Controller{
         $tabel = "";
         $no    = 1;
         $total = 0;
-        $bruto = 0;
         $netto = 0;
         $this->load->model('Model_ampas');
         $list_ampas = $this->Model_ampas->list_data()->result();
@@ -142,16 +141,13 @@ class PengirimanAmpas extends CI_Controller{
             $tabel .= '<td>'.$row->nama_item.'</td>';
             $tabel .= '<td>'.$row->uom.'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->amount,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->total_amount,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->bruto,0,',','.').'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->total_amount,0,',','.').'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';
             $total += $row->total_amount;
-            $bruto += $row->bruto;
             $netto += $row->netto;
             $no++;
         }
@@ -170,26 +166,19 @@ class PengirimanAmpas extends CI_Controller{
         $tabel .= '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>';
         $tabel .= '<td><input type="text" id="harga" name="qty" class="form-control myline" '
                 . 'onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-        $tabel .= '<td><input type="text" id="qty" name="qty" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="5" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-        $tabel .= '<td><input type="text" id="total_harga" name="total_harga" class="form-control myline" '
-                . 'readonly="readonly" value="0"></td>';
-        
-        $tabel .= '<td><input type="text" id="bruto" name="bruto" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';
         $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" '
                 . 'onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-        
+        $tabel .= '<td><input type="text" id="total_harga" name="total_harga" class="form-control myline" '
+                . 'readonly="readonly" value="0"></td>';
         $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                 . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
                 . '<i class="fa fa-plus"></i> Tambah </a></td>';
         $tabel .= '</tr>';
         
         $tabel .= '<tr>';
-        $tabel .= '<td colspan="5" style="text-align:right"><strong>Total (Rp) </strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($bruto,0,',','.').'</strong></td>';
+        $tabel .= '<td colspan="4" style="text-align:right"><strong>Total (Rp) </strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
         $tabel .= '</tr>';
        
         

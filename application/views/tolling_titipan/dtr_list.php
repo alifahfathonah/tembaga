@@ -29,7 +29,7 @@
                 </div>
                 <div class="tools">    
                 <?php
-                    if( ($group_id==1)||($hak_akses['add']==1) ){
+                    if( ($group_id==1)||($hak_akses['create_dtr']==1) ){
                         echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/Tolling/create_dtr').'"> '
                         .'<i class="fa fa-plus"></i> Create DTR Tolling</a>';
                     }

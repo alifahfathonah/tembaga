@@ -48,38 +48,63 @@
                     <table border="0" cellpadding="4" cellspacing="0" width="100%">
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
-                            <td style="text-align:center; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nomor Bobbin</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nomor Bobbin</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Berat Bobbin</strong></td>
                         </tr>
                         <?php
                             $no = 1;
+                            $berat = 0;
                             foreach ($details as $row){
                                 echo '<tr>';
                                 echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
-                                echo '<td style="text-align:center; border-left:1px solid #000; border-right:1px solid #000;">'.$row->nomor_bobbin.'</td>';
+                                echo '<td style="text-align:center; border-left:1px solid #000">'.$row->nomor_bobbin.'</td>';
+                                echo '<td style="text-align:center; border-left:1px solid #000; border-right:1px solid #000;">'.$row->berat.'</td>';
                                 echo '</tr>';
+                                $berat += $row->berat;
                                 $no++;
                             }
                         ?>
                         <tr style="height:100px">
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                        </tr>    
-              
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align:right;"><strong>Total</strong></td>
+                            <td style="text-align: center; border-bottom: 1px solid #000;"><?= $berat ;?></td>
+                        </tr>
                     </table>
                 </td>
             </tr>
             <tr><td colspan="3">
-                    <p>&nbsp;</p>
-                    <table width="30%" align="right" border="0">
-                        <tr>
-                            <td style="text-align:center">
-                                Yang Membuat,<br>
-                                <p>&nbsp;</p>
-                                <p>&nbsp;</p>
-                                <?php echo $header['realname']; ?>
-                            </td>
-                        </tr>
-                    </table>
+                <table border="0" cellpadding="4" cellspacing="0" width="100%">
+                    <tr>
+                        <td style="text-align:center">
+                            Tanda Terima<br>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                            <p>(____________)</p>
+                        </td>
+                        <td style="text-align:center">
+                            Diperiksa<br>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                            <p>(____________)</p>
+                        </td>
+                        <td style="text-align:center">
+                            Mengetahui<br>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                            <p>(____________)</p>
+                        </td>
+                        <td style="text-align:center">
+                            Yang Membuat,<br>
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                            <?php echo $header['realname']; ?>
+                        </td>
+                    </tr>
+                </table>
                 </td>
             </tr>
         </table>

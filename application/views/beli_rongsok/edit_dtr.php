@@ -17,7 +17,7 @@
             if( ($group_id==1)||($hak_akses['edit_dtr']==1) ){
         ?>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/BeliRongsok/update_dtr'); ?>">  
+              id="formku" action="<?php echo base_url('index.php/BeliRongsok/re_dtr'); ?>">  
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -28,6 +28,8 @@
                             <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_dtr']; ?>">
+
+                            <input type="hidden" name="id" value="<?php echo $header['id'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -126,9 +128,11 @@
                                 <th>Jumlah</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
+                                <th>Berat Pallete</th>
                                 <th></th>
-                                <th>No. Pallete</th>
+                                <th width="15%">No. Pallete</th>
                                 <th>Keterangan</th>
+                                <th>Print</th>
                             </thead>
                             <tbody>
                             <?php
@@ -140,29 +144,29 @@
                                             . 'class="form-control myline" value="'.$row->nama_item.'" '
                                             . 'readonly="readonly">';
                                     
-                                    echo '<input type="hidden" name="myDetails['.$no.'][id]" value="'.$row->id.'">';                                    
+                                    echo '<input type="hidden" name="myDetails['.$no.'][id]" value="'.$row->id.'">';
+                                    echo '<input type="hidden" id="rongsok_id_'.$no.'" value="'.$row->rongsok_id.'";?>';                                    
                                     echo '</td>';
                                     echo '<td><input type="text" name="myDetails['.$no.'][uom]" '
                                             . 'class="form-control myline" value="'.$row->uom.'" '
                                             . 'readonly="readonly"></td>';                                    
-                                    echo '<td><input type="text" name="myDetails['.$no.'][qty]" '
-                                            . 'class="form-control myline" value="'.$row->qty.'" '
-                                            . 'readonly="readonly"></td>';
-                                    
-                                    echo '<td><input type="text" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->bruto,0,',','.').'" '
-                                            . 'onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>';
+                                    echo '<td><input type="text" id="qty_'.$no.'" name="myDetails['.$no.'][qty]" '
+                                            . 'class="form-control myline" value="'.number_format($row->qty,0,',','.').'" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);"></td>';
+                                    echo '<td><input type="number" id="bruto_'.$no.'" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
+                                            . 'class="form-control myline" maxlength="10" value="'.$row->bruto.'"></td>';
                                     
                                     echo '<td><input type="text" id="netto_'.$no.'" name="myDetails['.$no.'][netto]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->netto,0,',','.').'" '
-                                            . 'onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>';
+                                            . 'class="form-control myline" maxlength="10" value="'.$row->netto.'" readonly="readonly"></td>';
+                                    echo '<td><input type="text" id="berat_palette_'.$no.'" name="myDetails['.$no.'][berat_palette]" '
+                                            . 'class="form-control myline" maxlength="10" value="'.$row->berat_palette.'"></td>';
                                     
-                                    echo '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen"> <i class="fa fa-dashboard"></i> Timbang </a></td>';
+                                    echo '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('.$no.');"> <i class="fa fa-dashboard"></i> Timbang </a></td>';
                                     
-                                    echo '<td><input type="text" name="myDetails['.$no.'][no_pallete]" value="'.$row->no_pallete.'" '
+                                    echo '<td><input type="text" id="no_pallete_'.$no.'" name="myDetails['.$no.'][no_pallete]" value="'.$row->no_pallete.'" '
                                             . 'class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';
                                     echo '<td><input type="text" name="myDetails['.$no.'][line_remarks]" value="'.$row->line_remarks.'"'
                                             . 'class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';
+                                    echo '<td style="text-align:center"><a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Print </a></td>';
                                     echo '</tr>';
                                     $no++;
                                 }
@@ -196,6 +200,14 @@
     </div>
 </div> 
 <script>
+function timbang_netto(id){
+    var bruto = $("#bruto_"+id).val();
+    var berat_palette = $("#berat_palette_"+id).val();
+    var total_netto = bruto - berat_palette;
+    const netto = total_netto.toFixed(2);
+    $("#netto_"+id).val(netto);
+}
+
 function myCurrency(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
@@ -211,5 +223,15 @@ function getComa(value, id){
 function simpanData(){
     $('#formku').submit(); 
 };
+
+function printBarcode(id){
+    const r = $('#rongsok_id_'+id).val();
+    const b = $('#bruto_'+id).val();
+    const bp = $('#berat_palette_'+id).val();
+    const n = $('#netto_'+id).val();
+    const np = $('#no_pallete_'+id).val();
+    console.log(id+' | '+r+' | '+b+' | '+bp+' | '+n+' | '+np);
+    window.open('<?php echo base_url();?>index.php/BeliRongsok/print_barcode_rongsok?r='+r+'&b='+b+'&bp='+bp+'&n='+n+'&np='+np,'_blank');
+}
 </script>
       

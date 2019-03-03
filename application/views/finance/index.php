@@ -56,7 +56,11 @@
                 </div> 
                 <div class="tools">
                 <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter"><i class="fa fa-search"></i> Filter Cek</a>
+                <?php
+                    if( ($group_id==1)||($hak_akses['add_um']==1) ){
+                ?>
                 <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Finance/add"> <i class="fa fa-plus"></i> Input Uang Masuk</a>
+                <?php } ?>
                 </div>               
             </div>
             <div class="portlet-body">
@@ -105,14 +109,14 @@
                         </td>
                         <td style="text-align:center"> 
                             <?php
-                                if($group_id==1 || $hak_akses['view_spb']==1){
+                                if($group_id==1 || $hak_akses['view_um']==1){
                             ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/view_um/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
                                
                             <?php
                                 }
-                                if($group_id==1 || $hak_akses['print_spb']==1){
+                                if($group_id==1 || $hak_akses['print_um']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Finance/print_um/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }
@@ -144,6 +148,6 @@
 <script>
 function filterData(){
     var id=$('#customer').val();
-    window.location = 'Finance/filter_cek/'+id;
+    window.location = 'filter_cek/'+id;
 }
 </script>         

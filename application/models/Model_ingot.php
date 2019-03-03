@@ -2,7 +2,7 @@
 class Model_ingot extends CI_Model{
     function list_data(){
         $data = $this->db->query("Select pi.*, jb.jenis_barang,
-                    usr.realname As pic, a.tipe_apolo,
+                    usr.realname As pic, a.tipe_apolo, s.status,
                     (Select count(pid.id)As jumlah_item From produksi_ingot_detail pid Where pid.produksi_ingot_id = pi.id)As jumlah_item,
                     (Select Count(pid.id)As ready_to_spb From produksi_ingot_detail pid Where 
                     pid.produksi_ingot_id = pi.id And pid.flag_spb=0)As ready_to_spb
@@ -10,6 +10,7 @@ class Model_ingot extends CI_Model{
                     Left Join users usr On (pi.created_by = usr.id) 
                     Left Join jenis_barang jb On (pi.jenis_barang_id = jb.id)
                     Left Join apolo a On (a.id = pi.id_apolo)
+                    Left Join spb s On (s.produksi_ingot_id = pi.id)
                 Order By pi.id Desc");
         return $data;
     }
@@ -74,8 +75,7 @@ class Model_ingot extends CI_Model{
                     pi.no_produksi, 
                     usr.realname As pic,
                     aprv.realname As approved_name,
-                    rjt.realname As rejected_name,
-                (Select count(spbd.id)As jumlah_item From spb_detail spbd Where spbd.spb_id = spb.id)As jumlah_item
+                    rjt.realname As rejected_name
                 From spb
                     Left Join produksi_ingot pi On (spb.produksi_ingot_id = pi.id) 
                     Left Join users usr On (spb.created_by = usr.id) 
@@ -252,6 +252,15 @@ class Model_ingot extends CI_Model{
                 where no_pallete='".$no_pallete."' and flag_taken=0"
                 );
         return $data;
-    }    
+    }
+
+    function check_spb($id){
+        $data = $this->db->query("select spb.id, 
+                (select sum(sd.qty) from spb_detail sd where sd.spb_id=spb.id) as tot_spb,
+                (select sum(dd.netto) from spb_detail_fulfilment sdf left join dtr_detail dd on dd.id = sdf.dtr_detail_id where sdf.spb_id =spb.id) as tot_so
+                from spb
+                where spb.id =".$id);
+        return $data;
+    }
     
 }

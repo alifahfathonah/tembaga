@@ -102,10 +102,8 @@
                                 <th>Nama Item Ampas</th>
                                 <th>Unit of Measure</th>
                                 <th>Harga (Rp)</th>
-                                <th>Jumlah</th>
-                                <th>Sub Total (Rp)</th>
-                                <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
+                                <th>Sub Total (Rp)</th>
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
@@ -156,7 +154,7 @@ function getComa(value, id){
 
 function hitungSubTotal(){
     harga = $('#harga').val().toString().replace(/\./g, "");
-    qty   = $('#qty').val().toString().replace(/\./g, "");
+    qty   = $('#netto').val().toString().replace(/\./g, "");
     total_harga = Number(harga)* Number(qty);
     $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
@@ -204,15 +202,9 @@ function saveDetail(){
     if($.trim($("#ampas_id").val()) == ""){
         $('#message').html("Silahkan pilih item ampas!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#qty").val()) == ""){
-        $('#message').html("Jumlah item ampas tidak boleh kosong!");
-        $('.alert-danger').show(); 
     }else if($.trim($("#harga").val()) == ""){
         $('#message').html("Harga item ampas tidak boleh kosong!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#bruto").val()) == ""){
-        $('#message').html("Berat bruto tidak boleh kosong!");
-        $('.alert-danger').show(); 
+        $('.alert-danger').show();
     }else if($.trim($("#netto").val()) == ""){
         $('#message').html("Netto tidak boleh kosong!");
         $('.alert-danger').show(); 
@@ -224,9 +216,7 @@ function saveDetail(){
                 id:$('#id').val(),
                 ampas_id:$('#ampas_id').val(),
                 harga:$('#harga').val(),
-                qty:$('#qty').val(),
                 total_harga:$('#total_harga').val(),
-                bruto:$('#bruto').val(),
                 netto:$('#netto').val()
             },
             success:function(result){

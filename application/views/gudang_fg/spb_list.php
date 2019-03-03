@@ -28,7 +28,7 @@
                     <i class="fa fa-file-word-o"></i>SPB FG List
                 </div> 
                 <div class="tools">    
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/GudangFG/add_spb"> <i class="fa fa-plus"></i> Ajukan SPB FG</a>              
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/GudangFG/add_spb"> <i class="fa fa-plus"></i> Ajukan SPB FG</a>
                 </div>               
             </div>
             <div class="portlet-body">
@@ -62,10 +62,14 @@
                         <td style="text-align:center">
                             <?php
                                 if($data->status==0){
-                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Approval</div>';
+                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Review</div>';
                                 }else if($data->status==1){
                                     echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
                                 }else if($data->status==2){
+                                    echo '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
+                                }else if($data->status==3){
+                                    echo '<div style="background-color:blue; color:#fff; padding:3px">Waiting Approval</div>';
+                                }else if($data->status==4){
                                     echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
                                 }else if($data->status==9){
                                     echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
@@ -92,8 +96,8 @@
                                 }
                                 #if($group_id==1 || $hak_akses['edit_spb']==1 && $hak_akses['status']!=1 ){
                             ?>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangFG/print_barcode/<?php echo $data->id; ?>" 
-                               style="margin-bottom:4px"> &nbsp; <i class="fa  fa-print"></i> Print Barcode </a>
+                            <!-- <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangFG/print_barcode/<?php echo $data->id; ?>" 
+                               style="margin-bottom:4px"> &nbsp; <i class="fa  fa-print"></i> Print Barcode </a> -->
                             <!--a class="btn btn-circle btn-xs green" href="<?php //echo base_url(); ?>index.php/Ingot/edit_spb/<?php// echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a-->
                             <?php   

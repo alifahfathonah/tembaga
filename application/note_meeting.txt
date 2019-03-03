@@ -50,7 +50,58 @@ Gudang FG index perlu di cek lagi (Done)
 Kirim rongsok gudang fg (Done)
 
 Bikin Invoice hutang bernomor retur, nanti di matching sebagai nilai yang mengurangi
-harga invoice. dan nanti milihnya ada dalam modal
+harga invoice. dan nanti milihnya ada dalam modal (Done)
 
 Slip setoran kalau sudah cair pembayarannya, bisa diproses slip setorannya mau masuk
-bank di uang kas mana
+bank di uang kas mana (Done)
+
+Pengiriman Sample, WIP/FG doang. Kayak kirim rongsok di Tolling
+
+MASTER MASTER BULINGLING
+Bu LingLing - Pembelian + Voucher SP (Done)
+	Pak Sparepart - Buat PPS, LPB (Done)
+
+Bu War - Produksi Ingot (Done)
+Bu Nova - Finance
+Bu Linda - Gudang ALL (Done)
+	User Surat Jalan - Semua Surat Jalan
+	User SDM - FINISH GOOD
+	User Gudang Bobbin
+	User WIP - WIP
+Marketing - Bikin SO
+	  - SO Tolling
+Pak Namin - Timbang DTR aja
+Checker Gudang - yang Approve
+
+Select a.id as id_roles, g.name, a.group_id, a.module_id, b.alias From roles a 
+			Left Join modules b ON (a.module_id=b.id) 
+            Left Join groups g ON (g.id=a.group_id)
+            Where a.group_id=3 And a.module_id IN(54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71)
+
+Parent Id = Select m1.id, m1.alias, (select m2.alias from modules m2 where m2.id = m1.parent_id) as alias_parent From modules m1
+    Where m1.parent_id=18 Order By id
+
+Cara create hak_akses, create modules untuk membuat hak akses dan juga 
+masukin parent_id yang mau dilink, create roles untuk masukin parent_id baru 
+ke group_id nya dan mengaktifkan hak akses (Done)
+
+Yang muncul di module id hanya per parent_id modules. Sedangkan role menggabungkan (Done)
+
+No packing masih bermasalah di DTBJ DTT DAN PRODUKSI nomor urutnya, karena bobbin dan ukuran
+bisa sangat mungkin sama, dan nomor urut tidak sama setiap timbangnya(Clear)
+
+Edit surat jalan belum dibenerin FG print di Dynamic Appendnya
+
+SPB Bobbin perlu dipisahin jenis packingnya atau boleh campur ?(Clear)
+
+Pemenuhan Gudang FG belum jadi scan (Done)
+
+Nambah Class di assets/admin/layout/css/layout.css
+
+Create Invoice tambah Diskon dan Input harga lain-lainm dan Materai input harga manual(di PO ubah gini materai manual juga)
+
+Sales Order Tolling dari Customer belum bisa bikin invoice, karena masalah sama Surat Jalan
+Keluar yang ada di Tolling ke Customer
+
+Invoice Sales Order Tolling dari Customer masih bermasalah, harus diberikan if jika
+sales order tolling, ngambil harga dari tabel sales_order_detail bukan tadi t_sales_order_detail yang biasa

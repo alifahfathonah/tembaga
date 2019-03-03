@@ -24,7 +24,7 @@
                 <table class="table table-bordered table-stripped table-hover">
                     <thead>
                         <th>Alias</th>
-                        <th>Administrator</th>
+                        <th>Admin</th>
                         <?php 
                             foreach ($groups as $value){
                                 echo "<th>".$value->group_name."</th>";

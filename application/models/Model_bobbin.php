@@ -1,9 +1,10 @@
 <?php
 class Model_bobbin extends CI_Model{
     function list_data(){
-        $data = $this->db->query("Select b.*, mbs.bobbin_size, mbs.keterangan, o.nama_owner
+        $data = $this->db->query("Select b.*, mjp.jenis_packing, mbs.bobbin_size, mbs.keterangan, o.nama_owner
             From m_bobbin b
             left join m_bobbin_size mbs on (mbs.id = b.m_bobbin_size_id)
+            left join m_jenis_packing mjp on (mjp.id = b.m_jenis_packing_id)
             left join owner o on (o.id = b.owner_id)
             order by b.id desc
             ");
@@ -167,7 +168,9 @@ class Model_bobbin extends CI_Model{
         return $data;
     }
     function show_detail_peminjam($id){
-        $data = $this->db->query("select *from m_bobbin_peminjaman_detail left join m_bobbin_peminjaman on (m_bobbin_peminjaman_detail.id_peminjaman = m_bobbin_peminjaman.id) where m_bobbin_peminjaman.id = ".$id);
+        $data = $this->db->query("select mbpd.*, mb.berat from m_bobbin_peminjaman_detail mbpd
+            left join m_bobbin mb on (mb.nomor_bobbin = mbpd.nomor_bobbin)
+            where mbpd.id_peminjaman = ".$id);
         return $data;
     }
 
@@ -244,7 +247,12 @@ class Model_bobbin extends CI_Model{
     }
 
     function list_supplier(){
-        $data = $this->db->query("select *from supplier order by nama_supplier");
+        $data = $this->db->query("select * from supplier order by nama_supplier");
+        return $data;
+    }
+
+    function get_bobbin($id){
+        $data = $this->db->query("select id, berat from m_bobbin where status = 0 and nomor_bobbin ='".$id."'");
         return $data;
     }
 
@@ -252,6 +260,17 @@ class Model_bobbin extends CI_Model{
         $data = $this->db->query("select *from m_bobbin where status = 3");
         return $data;
     }
+
+    function get_dtr_detail_by_no_pallete($no_pallete){
+        $data = $this->db->query(
+                "select dtr_detail.id,(ttr.id)as 'ttr_id' ,bruto, netto,no_pallete,line_remarks,rongsok.id as id_rongsok, (rongsok.nama_item)as rongsokname,rongsok.uom
+                from dtr_detail
+                left join rongsok on rongsok.id = dtr_detail.rongsok_id
+                left join ttr on ttr.dtr_id = dtr_detail.dtr_id
+                where no_bobbin='".$no_pallete."' and flag_taken=0"
+                );
+        return $data;
+    }    
 
     function list_spb(){
         $data = $this->db->query("select *from m_bobbin_spb where keperluan = 1");
@@ -276,6 +295,13 @@ class Model_bobbin extends CI_Model{
             from m_bobbin_spb mbs
             left join users u on (mbs.created_by = u.id)
             where mbs.id = ".$id);
+        return $data;
+    }
+
+    function get_bobbin_print($id){
+        $data = $this->db->query("select mb.nomor_bobbin, mb.berat, o.kode_owner from m_bobbin mb
+            left join owner o on o.id = mb.owner_id
+            where mb.id =".$id);
         return $data;
     }
 }

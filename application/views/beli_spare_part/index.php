@@ -33,6 +33,10 @@
                         echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/BeliSparePart/add').'"> '
                         .'<i class="fa fa-plus"></i> Pengajuan Baru </a>';
                     }
+                    // foreach ($hak_akses as $v => $c) {
+                    //      print "$v: $c\t";
+                    // }
+                    // print "\r\n";
                 ?>                    
                 </div>
             </div>

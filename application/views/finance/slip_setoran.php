@@ -27,6 +27,13 @@
                 <div class="caption">
                     <i class="fa fa-file-word-o"></i>Data Slip Setoran
                 </div>
+                <div class="tools">
+                <?php
+                    if( ($group_id==1)||($hak_akses['add_kas']==1) ){
+                ?>
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Finance/add_slip_setoran"> <i class="fa fa-plus"></i> Transfer Slip Setoran</a>
+                <?php } ?>
+                </div>
             </div>
             <div class="portlet-body">
                 <table class="table table-striped table-bordered table-hover" id="sample_6">
@@ -36,6 +43,7 @@
                     <th>No. Pembayaran</th> 
                     <th>Tanggal</th>
                     <th>Nominal</th>
+                    <th>Bank</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -49,6 +57,7 @@
                         <td><?php echo $data->no_pembayaran; ?></td>
                         <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo number_format($data->nominal,0,',','.'); ?></td>
+                        <td><?php echo $data->nama_bank; ?></td>
                     </tr>
                     <?php
                         }

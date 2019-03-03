@@ -16,7 +16,7 @@
                         </tr>
                         <tr>
                             <td>Tanggal</td>
-                            <td>: <?php echo date('d-m-Y', strtotime($header['tanggal'])); ?></td>
+                            <td>: <?php echo tanggal_indo($header['tanggal']); ?></td>
                         </tr>                 
                     </table>
                 </td>
@@ -26,6 +26,19 @@
                         <tr>
                             <td>Jenis Barang</td>
                             <td>: WIP</td>
+                        </tr>
+                        <tr>
+                            <td>Keperluan</td>
+                            <?php if($header['flag_produksi']==2){
+                                $flag_produksi = 'ROLLING';
+                            }else if($header['flag_produksi']==3){
+                                $flag_produksi = 'CUCI';
+                            }else if($header['flag_produksi']==5){
+                                $flag_produksi = 'KIRIM KE RONGSOK';
+                            }else{
+                                $flag_produksi = 'LAINNYA';
+                            } ?>
+                            <td>: <?=$flag_produksi;?></td>
                         </tr>
                     <?php
                         if($header['status'] == '9'){
@@ -64,15 +77,19 @@
                         </tr>
                         <?php
                             $no = 1;
+                            $jumlah = 0;
+                            $berat = 0;
                             foreach ($details as $row){
                                 echo '<tr>';
                                 echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->jenis_barang.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->uom.'</td>';                                
-                                echo '<td style="border-left:1px solid #000">'.$row->qty.'</td>';
-                                echo '<td style="border-left:1px solid #000">'.$row->berat.'</td>';
+                                echo '<td style="border-left:1px solid #000">'.number_format($row->qty,0,',', '.').'</td>';
+                                echo '<td style="border-left:1px solid #000">'.number_format($row->berat,0,',', '.').'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->keterangan.'</td>';
                                 echo '</tr>';
+                                $jumlah = $row->qty;
+                                $berat = $row->berat;
                                 $no++;
                             }
                         ?>
@@ -83,6 +100,11 @@
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"></td>
+                            <td style="border-left: 1px solid #000; border-bottom: 1px solid #000;"><?=number_format($jumlah,0,',', '.');?></td>
+                            <td style="border-left: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;"><?=number_format($berat,0,',', '.');?></td>
                         </tr>
                     </table>
                 </td>

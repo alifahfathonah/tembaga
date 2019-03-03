@@ -75,11 +75,15 @@
     <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-beer"></i>  Bobbin Request
+                    <i class="fa fa-beer"></i>Bobbin Request
                 </div> 
-                <div class="tools">    
+                <div class="tools">
+                <?php
+                    if( ($group_id==1)||($hak_akses['add']==1) ){
+                ?>
                     <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_add" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_add">
                     <i class="fa fa-plus"></i> Buat Surat Peminjaman</a>
+                <?php } ?>
                 </div>                
             </div> 
    <div class="portlet-body"> 
@@ -110,7 +114,7 @@
             <td style="text-align: center"><?php echo $row->jumlah_item; ?></td>
             <td style="text-align:center">
               <?php
-                if($group_id==1 || $hak_akses['print_spb']==1){
+                if($group_id==1 || $hak_akses['print']==1){
                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangBobbin/print_bobbin_request/'.$row->id.'" 
                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                 }
@@ -121,9 +125,6 @@
 
           }
         ?>
-
-
-
      </tbody>   
    </table>
 </div>

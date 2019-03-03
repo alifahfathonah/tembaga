@@ -11,7 +11,6 @@
     </div>
 </div>
 
-
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12">
@@ -110,10 +109,8 @@
                                 value="<?php echo $this->session->userdata('realname'); ?>">
                         </div>
                     </div>
-                    
                 </div>              
             </div>
-            
            
             <div class="row">
                 <div class="col-md-12">
@@ -148,14 +145,17 @@
                                 </td>
                                 <td><input type="text" id="uom_1" name="myDetails[1][uom]" class="form-control myline" readonly="readonly"></td>
                                 <td><input type="text" id="qty_1" name="myDetails[1][qty]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
-                                <td><input type="text" id="bruto_1" name="myDetails[1][bruto]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
-                                <td><input type="text" id="berat_palette_1" name="myDetails[1][berat_palette]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
+                                <td><input type="number" id="bruto_1" name="myDetails[1][bruto]" class="form-control myline" value="0" maxlength="10"></td>
+                                <td><input type="number" id="berat_palette_1" name="myDetails[1][berat_palette]" class="form-control myline" value="0" maxlength="10"></td>
                                 <td><input type="text" id="netto_1" name="myDetails[1][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
                                 <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(1);"> <i class="fa fa-dashboard"></i> Timbang </a></td>                          
-                                <td><input type="text" name="myDetails[1][no_pallete]" id="no_pallete_1"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
+                                <td><input type="text" name="myDetails[1][no_pallete]" id="no_pallete_1"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly"></td>
                                 <td><input type="text" name="myDetails[1][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
-                                <td style="text-align:center"><a id="save_1" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(1);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
-                                    <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
+                                <td style="text-align:center">
+                                    <a id="save_1" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(1);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
+                                    <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
+                                    <a id="print_1" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(1);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -190,7 +190,8 @@ function timbang_netto(id){
     var bruto = $("#bruto_"+id).val();
     var berat_palette = $("#berat_palette_"+id).val();
     var total_netto = bruto - berat_palette;
-    $("#netto_"+id).val(total_netto);
+    const netto = total_netto.toFixed(2);
+    $("#netto_"+id).val(netto);
 }
 
 function loadTimbangan(id){
@@ -276,12 +277,17 @@ function saveDetail(id){
     }else if($.trim($("#bruto_"+id).val()) == "" || 0){
         $('#message').html("Jumlah bruto tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#netto_"+id).val()) == ""){
+    }else if($.trim($("#netto_"+id).val()) == ("" || 0)){
         $('#message').html("Jumlah netto tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else{
         $("#name_rongsok_"+id).attr('disabled','disabled');
-        $("#save_"+id).attr('disabled','disabled');
+        $("#save_"+id).hide();
+        $('#qty_'+id).attr('readonly','readonly');
+        $('#bruto_'+id).attr('readonly','readonly');
+        $('#berat_palette_'+id).attr('readonly','readonly');
+        $('#no_pallete_'+id).attr('readonly','readonly');
+        $("#print_"+id).show();
         $("#delete_"+id).removeClass('disabled');
         var new_id = id+1; 
         $("#tabel_dtr>tbody").append(
@@ -296,14 +302,16 @@ function saveDetail(id){
                 '</td>'+
                 '<td><input type="text" id="uom_'+new_id+'" name="myDetails['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
                 '<td><input type="text" id="qty_'+new_id+'" name="myDetails['+new_id+'][qty]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
-                '<td><input type="text" id="bruto_'+new_id+'" name="myDetails['+new_id+'][bruto]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
-                '<td><input type="text" id="berat_palette_'+new_id+'" name="myDetails['+new_id+'][berat_palette]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
+                '<td><input type="number" id="bruto_'+new_id+'" name="myDetails['+new_id+'][bruto]" class="form-control myline" value="0" maxlength="10"></td>'+
+                '<td><input type="text" id="berat_palette_'+new_id+'" name="myDetails['+new_id+'][berat_palette]" class="form-control myline" value="0" maxlength="10"></td>'+
                 '<td><input type="text" id="netto_'+new_id+'" name="myDetails['+new_id+'][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
                 '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('+new_id+');"> <i class="fa fa-dashboard"></i> Timbang </a></td>'+
-                '<td><input type="text" name="myDetails['+new_id+'][no_pallete]" id="no_pallete_'+new_id+'"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
+                '<td><input type="text" name="myDetails['+new_id+'][no_pallete]" id="no_pallete_'+new_id+'"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly"></td>'+
                 '<td><input type="text" name="myDetails['+new_id+'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
                 '<td style="text-align:center"><a id="save_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail('+new_id+');" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>'+
-                    '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
+                    '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>'+
+                ' <a id="print_'+new_id+'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('+new_id+');" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>'+
+                '</td>'+
             '</tr>'
         );
         $('#name_rongsok_'+new_id).select2();
@@ -315,6 +323,16 @@ function deleteDetail(id){
     if (r==true){
         $('#no_tabel_'+id).closest('tr').remove();
         }
+}
+
+function printBarcode(id){
+    const r = $('#rongsok_id_'+id).val();
+    const b = $('#bruto_'+id).val();
+    const bp = $('#berat_palette_'+id).val();
+    const n = $('#netto_'+id).val();
+    const np = $('#no_pallete_'+id).val();
+    console.log(id+' | '+r+' | '+b+' | '+bp+' | '+n+' | '+np);
+    window.open('<?php echo base_url();?>index.php/BeliRongsok/print_barcode_rongsok?r='+r+'&b='+b+'&bp='+bp+'&n='+n+'&np='+np,'_blank');
 }
 </script>
 
@@ -332,6 +350,8 @@ $(function(){
         changeYear: true,
         dateFormat: 'yy-mm-dd'
     });
+    window.onbeforeunload = function() {
+      return "Data Akan Terhapus Bila Page di Refresh, Anda Yakin?";
+    };
 });
 </script>
-      

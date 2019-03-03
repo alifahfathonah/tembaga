@@ -376,6 +376,10 @@
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
                         }
+                        if($myData['status']==9){
+                            echo '<a href="javascript:;" class="btn blue-ebonyclay" onclick="inputUlang();">'
+                                .'<i class="fa fa-refresh"></i> Input Ulang </a>';
+                        }
                     ?>
 
                     <a href="<?php echo base_url('index.php/GudangFG/spb_list'); ?>" class="btn blue-hoki"> 
@@ -413,6 +417,11 @@ function approveData(){
         $('#formku').submit(); 
     }
 };
+
+function inputUlang(){
+    $('#formku').attr("action", "<?php echo base_url();?>index.php/GudangFG/input_ulang_spb");
+    $('#formku').submit();
+}
 
 function showRejectBox(){
     var r=confirm("Anda yakin me-reject permintaan barang ini?");

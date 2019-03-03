@@ -82,6 +82,7 @@
                                 value="<?php echo date('d-m-Y', strtotime($myData['tanggal'])); ?>">
                         </div>
                     </div>
+                <?php if($myData['no_produksi'] != ''){ ?>
                     <div class="row">
                         <div class="col-md-4">
                             No. Produksi <font color="#f00">*</font>
@@ -91,8 +92,17 @@
                                    style="margin-bottom:5px" readonly="readonly" 
                                    value="<?php echo $myData['no_produksi']; ?>">
                         </div>
-                        
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jumlah Rongsok yang Dibutuhkan
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jumlah" name="jumlah" 
+                                class="form-control myline" style="margin-bottom:5px; background: green; color: white;" readonly="readonly" value="<?php echo $myData['jumlah']; ?> KG">
+                        </div>
+                    </div>
+                <?php } ?>
                     <div class="row">&nbsp;</div>
 
                 </div>
@@ -173,6 +183,8 @@
                                         <tbody>
                                         <?php
                                             $no = 1;
+                                            $total = 0;
+                                            $stok = 0;
                                             foreach ($myDetail as $row){
                                             ($row->qty <= $row->stok) ? $stat = '<div style="background:green;color:white;"><span class="fa fa-check"></span> OK </div>' : $stat = '<div style="background:red;color:white;"> <span class="fa fa-times"></span> NOK</div>';
                                                 echo '<tr>';
@@ -185,15 +197,61 @@
                                                 echo '<td>'.$row->stok.'</td>'; 
                                                 echo '</tr>';
                                                 $no++;
+                                                $total += $row->qty;
+                                                $stok += $row->stok;
                                             }
                                         ?>
+                                        <tr>
+                                            <td colspan="3" style="text-align: right;"><strong>Total Permintaan</strong></td>
+                                            <td><?=$total;?></td>
+                                            <td colspan="2" style="text-align: right;"></td>
+                                            <td><strong><?=$stok;?></strong></td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
                         </div>
                     </div>
                     <hr class="divider"/>
-                    <?php if ($myData['status']==0) { ?>
+                    <?php if ($myData['status']==0 || $myData['status']==4) { ?>
+                        <?php if($myData['status']==4){?>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 align="center">Pemenuhan SPB</h4>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-striped table-hover">
+                                        <thead>
+                                            <th style="width:40px">No</th>
+                                            <th>Nama Item</th>
+                                            <th>No Pallete</th>
+                                            <th>Netto</th>
+                                            <th>UOM</th>
+                                            <th>Keterangan</th>
+                                        </thead>
+                                        <tbody>
+                                            <?php $no=1; $total_netto = 0; foreach($detailSPB as $v) { ?>
+                                            <tr>
+                                                <td><?=$no;?></td>
+                                                <td><?=$v->nama_item;?></td>
+                                                <td><?=$v->no_pallete;?></td>
+                                                <td><?=$v->netto;?></td>
+                                                <td><?=$v->uom;?></td>
+                                                <td><?=$v->line_remarks;?></td>
+                                            </tr>
+                                            <?php 
+                                            $total_netto += $v->netto;
+                                            $no++; } ?>
+                                            <tr>
+                                                <td colspan="3"> Total</td>
+                                                <td><?=$total_netto;?></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                        </div>
+                    </div>
+                    <?php } ?>
                     <div class="row">
                         <div class="col-md-12">
                             <h4 align="center">Pemilihan Pallete</h4>
@@ -211,15 +269,19 @@
                                         <tbody>
                                             <tr>
                                                 <td><div id="no_tabel_1">1</div><input type="hidden" id="ttr_id_1" name="details[1][ttr_id]"/><input type="hidden" id="dtr_id_1" name="details[1][dtr_id]"/><input type="hidden" id="id_rongsok_1" name="details[1][id_rongsok]"></td>
-                                                <td><input type="text" id="no_pallete_1" name="details[1][no_pallete]" class="form-control myline" onchange="getRongsok(1);"></td>
+                                                <td><input type="text" id="no_pallete_1" name="details[1][no_pallete]" class="form-control myline" onchange="getRongsok(1);"  autofocus onfocus="this.value = this.value;"></td>
                                                 <td><input type="text" id="nama_item_1" name="details[1][nama_item]" class="form-control myline" readonly="readonly" /></td>
                                                 <td><input type="text" id="netto_1" name="details[1][netto]" class="form-control myline" readonly="readonly" /></td>
                                                 <td><input type="text" id="uom_1" name="details[1][uom]" class="form-control myline" readonly="readonly"></td>
                                                 <td><input type="text" id="keterangan_1" name="details[1][keterangan]" class="form-control myline" readonly="readonly"></td>
                                                 <td style="text-align:center"><a id="btn_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
                                             </tr>
-
                                         </tbody>
+                                            <thead>
+                                                <th colspan="3">Total Netto</th>
+                                                <th><input type="text" id="total_netto" class="form-control" readonly="readonly" value="0"></th>
+                                                <th colspan="3"></th>
+                                            </thead>
                                     </table>
                                 </div>
 
@@ -240,31 +302,36 @@
                                             <th>Keterangan</th>
                                         </thead>
                                         <tbody>
-                                            <?php $no=1; foreach($detailSPB as $v) { ?>
+                                            <?php $no=1; $total_netto = 0; foreach($detailSPB as $v) { ?>
                                             <tr>
                                                 <td><div id="no_tabel_1"><?=$no;?></div></td>
-                                                <td><input type="text" name="details[1][nama_item]" class="form-control myline" readonly="readonly" value="<?=$v->nama_item;?>" /></td>
-                                                <td><input type="text" name="details[1][no_pallete]" class="form-control myline" readonly="readonly" value="<?=$v->no_pallete;?>"></td>
-                                                <td><input type="text" name="details[1][netto]" class="form-control myline" readonly="readonly" value="<?=$v->netto;?>"/></td>
-                                                <td><input type="text" name="details[1][uom]" class="form-control myline" readonly="readonly" value="<?=$v->uom;?>"></td>
-                                                <td><input type="text" name="details[1][keterangan]" class="form-control myline" readonly="readonly" value="<?=$v->line_remarks;?>"></td>
+                                                <td><input type="text" name="details[1][nama_item]" class="form-control" readonly="readonly" value="<?=$v->nama_item;?>" /></td>
+                                                <td><input type="text" name="details[1][no_pallete]" class="form-control" readonly="readonly" value="<?=$v->no_pallete;?>"></td>
+                                                <td><input type="text" name="details[1][netto]" class="form-control" readonly="readonly" value="<?=$v->netto;?>"/></td>
+                                                <td><input type="text" name="details[1][uom]" class="form-control" readonly="readonly" value="<?=$v->uom;?>"></td>
+                                                <td><input type="text" name="details[1][keterangan]" class="form-control" readonly="readonly" value="<?=$v->line_remarks;?>"></td>
                                             </tr>
-                                            <?php $no++; } ?>
+                                            <?php 
+                                            $total_netto += $v->netto;
+                                            $no++; } ?>
+                                            <tr>
+                                                <td colspan="3"> Total</td>
+                                                <td><input type="text" class="form-control" readonly="readonly" value="<?=$total_netto;?>"></td>
+                                                <td colspan="2"></td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
-
                         </div>
                     </div>
                 <?php } ?>
-
                 </div>
             </div>
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
                     <?php
-                        if( ($group_id==1 || $hak_akses['save_spb']==1) && $myData['status']=="0"){
+                        if( ($group_id==1 || $hak_akses['save_spb']==1) && ($myData['status']=="0" || $myData['status']=="4")){
                             echo '<a href="javascript:;" class="btn green" onclick="saveFulfilment();"> '
                                 .'<i class="fa fa-check"></i> Save </a> ';
                         }
@@ -350,6 +417,7 @@ function check_duplicate(id){
 
 function getRongsok(id){
     var no = $("#no_pallete_"+id).val();
+    const new_id = id + 1;
     if(no!=''){    
         var check = check_duplicate();
         if(check){
@@ -367,7 +435,10 @@ function getRongsok(id){
                         $("#netto_"+id).val(result['netto']);
                         $("#keterangan_"+id).val(result['line_remarks']);
                         $("#btn_"+id).removeClass('disabled');
+                        const total = (parseInt($('#total_netto').val()) + parseInt(result['netto']));
+                        $('#total_netto').val(total);
                         create_new_input(id);
+                        $('#no_pallete_'+new_id).focus();
                     } else {
                         alert('No pallete tidak ditemukan, silahkan ulangi kembali');
                         $("#no_pallete_"+id).val('');
@@ -375,7 +446,7 @@ function getRongsok(id){
                 }
             });
         } else {
-            alert('Inputan pallete tidak boleh sama dengan inputan sebelumnya!');
+            //alert('Inputan pallete tidak boleh sama dengan inputan sebelumnya!');
             $("#no_pallete_"+id).val('');
         }
     }
@@ -390,9 +461,13 @@ function create_new_input(id){
 function hapusDetail(id){
     var r=confirm("Anda yakin menghapus item pallete ini?");
     if (r==true){
+        const total = $('#total_netto').val();
+        $('#total_netto').val(parseInt(total) - parseInt($('#netto_'+id).val()));
         $('#no_pallete_'+id).closest('tr').remove();
         }
 }
 
+// $(window).load(function() {
+//     $('#no_pallete_1').focus();
+// });
 </script>
-      

@@ -770,16 +770,24 @@ class GudangBobbin extends CI_Controller{
         }
     }
 
-    function get_bobbin(){ 
+    // function get_bobbin(){ 
+    //     $this->load->model('Model_bobbin');
+    //     $id = $this->input->post('id');
+    //     $id_jenis = $this->input->post('id_jenis');
+    //     $data = $this->Model_bobbin->bobbin_list($id_jenis, $id)->result();
+    //     $arr_so[] = "Silahkan pilih....";
+    //     foreach ($data as $row) {
+    //         $arr_so[$row->id] = $row->nomor_bobbin;
+    //     } 
+    //     print form_dropdown('id_bobbin', $arr_so);
+    // }
+
+    function get_bobbin(){
         $this->load->model('Model_bobbin');
-        $id = $this->input->post('id');
-        $id_jenis = $this->input->post('id_jenis');
-        $data = $this->Model_bobbin->bobbin_list($id_jenis, $id)->result();
-        $arr_so[] = "Silahkan pilih....";
-        foreach ($data as $row) {
-            $arr_so[$row->id] = $row->nomor_bobbin;
-        } 
-        print form_dropdown('id_bobbin', $arr_so);
+        $nomor_bobbin = $this->input->post('nomor_bobbin');
+        $result = $this->Model_bobbin->get_bobbin($nomor_bobbin)->row_array();
+        header('Content-Type: application/json');
+        echo json_encode($result);
     }
 
     function load_detail_edit_spb(){
@@ -814,42 +822,22 @@ class GudangBobbin extends CI_Controller{
         echo json_encode($berat);
     }
 
-    function save_spb_bb_detail(){
-        $return_data = array();
-        $tgl_input = date("Y-m-d");
-        
-        if($this->db->insert('m_bobbin_spb_detail', array(
-            'id_spb_bobbin'=>$this->input->post('id_spb_bobbin'),
-            'id_bobbin'=>$this->input->post('id_bobbin')
-        ))){
-            $return_data['message_type']= "sukses";
-        }else{
-            $return_data['message_type']= "error";
-            $return_data['message']= "Gagal menambahkan bobbin! Silahkan coba kembali";
-        }
-        header('Content-Type: application/json');
-        echo json_encode($return_data);
-    }
-
-    function delete_detail(){
-        $id = $this->input->post('id');
-        $return_data = array();
-        $this->db->where('id', $id);
-        if($this->db->delete('m_bobbin_spb_detail')){
-            $return_data['message_type']= "sukses";
-        }else{
-            $return_data['message_type']= "error";
-            $return_data['message']= "Gagal menghapus item barang! Silahkan coba kembali";
-        }           
-        header('Content-Type: application/json');
-        echo json_encode($return_data);
-    }
-
     function update_spb(){
         // $user_id  = $this->session->userdata('user_id');
         // $tanggal  = date('Y-m-d h:m:s');        
         // $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
+        #Create SPB fulfilment
+        $details = $this->input->post('details');
+        foreach ($details as $v) {
+            if($v['id_bobbin']!=''){   
+                $this->db->insert('m_bobbin_spb_detail', array(
+                        'id_spb_bobbin'=>$this->input->post('id'),
+                        'id_bobbin'=>$v['id_bobbin']
+                            ));
+            }   
+        }
+
         $data = array(
                 'keterangan'=>$this->input->post('remarks'),
             );
@@ -989,6 +977,35 @@ class GudangBobbin extends CI_Controller{
             $this->load->view('gudang_bobbin/print_bobbin_terima', $data);
         }else{
             redirect('index.php'); 
+        }
+    }
+
+    function print_barcode_bobbin(){
+        $id = $_GET['id'];
+        if($id){
+
+        $this->load->model('Model_bobbin');
+        $data = $this->Model_bobbin->get_bobbin_print($id)->row_array();
+
+        $current = '';
+        $data_printer = $this->db->query("select * from m_print_barcode_line where m_print_barcode_id = 2")->result_array();
+
+        $data_printer[12]['string1'] = 'BARCODE 518,319,"39",78,0,180,3,9,"'.$data['nomor_bobbin'].'"';
+        $data_printer[14]['string1'] = 'TEXT 382,237,"ROMAN.TTF",180,1,8,"'.$data['nomor_bobbin'].'"';
+        $data_printer[16]['string1'] = 'TEXT 383,164,"ROMAN.TTF",180,1,16,"'.$data['kode_owner'].'"';
+        $data_printer[17]['string1'] = 'TEXT 381,104,"ROMAN.TTF",180,1,16,"'.$data['berat'].'"';
+        $data_printer[19]['string1'] = 'TEXT 472,417,"ROMAN.TTF",180,1,31,"'.$data['nomor_bobbin'].'"';
+
+        $jumlah = count($data_printer);
+        for($i=0;$i<$jumlah;$i++){
+        $current .= $data_printer[$i]['string1']."\n";
+        }
+        echo "<form method='post' id=\"coba\" action=\"http://localhost/print/print.php\">";
+        echo "<input type='hidden' id='nospb' name='nospb' value='".$current."'>";
+        echo "</form>";
+        echo '<script type="text/javascript">document.getElementById(\'coba\').submit();</script>';
+        }else{
+            'GAGAL';
         }
     }
 }

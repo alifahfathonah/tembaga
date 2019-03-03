@@ -103,7 +103,7 @@
                                 <th></th>
                                 <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
-                                <th>ID Bobbin / Keranjang</th>
+                                <th>ID Keranjang</th>
                                 <th>Berat Bobbin</th>
                                 <th>Pemilik</th>
                                 <th>Keterangan</th>
@@ -225,7 +225,9 @@ function get_bobbin(id){
                 $('#berat_bobbin').val(result['berat']);
                 $('#pemilik').val(result['nama_owner']);
                 $('#id_bobbin').val(result['id']);
-                $('#netto').val(($('#bruto').val() - result['berat']));
+                const net = $('#bruto').val() - result['berat'];
+                const netto = net.toFixed(2);
+                $('#netto').val(netto);
             } else {
                 alert('Bobbin/Keranjang tidak ditemukan, coba lagi');
                 $('#no_bobbin').val('');
@@ -295,6 +297,9 @@ function hapusDetail(id){
     }
 }
 
+function printBarcode(id){
+    window.open('<?php echo base_url('index.php/GudangFG/print_barcode_kardus?id=');?>'+id,'_blank');
+}
 </script>
 
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>

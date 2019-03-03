@@ -68,8 +68,10 @@
                                     echo '<div style="background-color:darkkhaki; padding:3px">Waiting Approval</div>';
                                 }else if($data->status==1){
                                     echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
-                                }else if($data->status==2){
+                                }else if($data->status==2 || $data->status ==4){
                                     echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
+                                }else if($data->status==3){
+                                    echo '<div style="background-color:blue; color:#fff; padding:3px">Waiting Approval</div>';
                                 }else if($data->status==9){
                                     echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
                                 }

@@ -38,13 +38,12 @@
                     <table width="100%" class="table table-striped table-bordered table-hover" id="sample_6">
                         <thead>
                             <th style="width:40px">No</th>
+                            <th>Jenis Trx</th>
                             <th>Tanggal</th>
                             <th>Nama Item</th>
-                            <th>bruto_masuk</th>
-                            <th>netto_masuk</th>
-                            <th>bruto_keluar</th>
-                            <th>netto_keluar</th>
-                            <th>Keterangan</th>
+                            <th>No Palette</th>
+                            <th>Bruto</th>
+                            <th>Netto</th>
                         </thead>
                         <tbody>
                         <?php
@@ -52,13 +51,12 @@
                         foreach ($detailLaporan as $row){
                             echo '<tr>';
                             echo '<td style="text-align:center">'.$no.'</td>';
-                            echo '<td>'.$row->tanggal.'</td>';
-                            echo '<td>'.$row->nama_produk.'</td>';
-                            echo '<td>'.$row->bruto_masuk.'</td>';
-                            echo '<td>'.$row->netto_masuk.'</td>';
-                            echo '<td>'.$row->bruto_keluar.'</td>';
-                            echo '<td>'.$row->netto_keluar.'</td>';
-                            echo '<td>'.$row->remarks.'</td>';
+                            echo ($row->tanggal_masuk != NULL) ? "<td><i class='fa fa-arrow-circle-down'></i> Masuk</td>" : "<td><i class='fa fa-arrow-circle-up'></i> Keluar</td>";
+                            echo '<td>'.$row->tanggal_masuk.$row->tanggal_keluar.'</td>';
+                            echo '<td>'.$row->nama_item.'</td>';
+                            echo '<td>'.$row->no_pallete.'</td>';
+                            echo '<td>'.$row->bruto.'</td>';
+                            echo '<td>'.$row->netto.'</td>';
                             echo '</tr>';
                             $no++;
                         }

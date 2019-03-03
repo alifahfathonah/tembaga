@@ -198,6 +198,11 @@ class Model_beli_rongsok extends CI_Model{
                     Where ttr.id=".$id);
         return $data;
     }
+
+    function all_rsk(){
+        $data = $this->db->query("Select * from rongsok order by nama_item");
+        return $data;
+    }
     
     // function get_po_list(){
     //     $data = $this->db->query("Select po.id, po.no_po                   
@@ -273,8 +278,7 @@ class Model_beli_rongsok extends CI_Model{
                 From ttr 
                     Left Join dtr On (ttr.dtr_id = dtr.id) 
                     Left Join po On (dtr.po_id = po.id) 
-                    Left Join supplier spl On (po.supplier_id = spl.id) 
-                Where dtr.po_id>0 And po.jenis_po='Rongsok'
+                    Left Join supplier spl On (po.supplier_id = spl.id)
                 Order By dtr.id Desc");
         return $data;
     }
@@ -283,6 +287,7 @@ class Model_beli_rongsok extends CI_Model{
         $data = $this->db->query("Select ttr.*, 
                     dtr.no_dtr,
                     po.no_po,
+                    po.tanggal as tanggal_po,
                     spl.nama_supplier,
                     app.realname As approved_name,
                     rjct.realname As rejected_name
@@ -357,7 +362,7 @@ class Model_beli_rongsok extends CI_Model{
     }
 
     function show_data_rongsok_detail($iditem){
-        $data = $this->db->query("Select id, uom From rongsok Where id=".$iditem);        
+        $data = $this->db->query("Select id, kode_rongsok, nama_item, uom From rongsok Where id=".$iditem);        
         return $data;
     }
 
@@ -381,51 +386,76 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
 
-     function show_laporan(){
-        $data = $this->db->query("select DATE_FORMAT(tid.tanggal,'%M %Y') as showdate, 
-            EXTRACT(YEAR_MONTH from tid.tanggal) as tanggal, 
-            count(tid.t_inventory_id) as jumlah, 
-            sum(tid.bruto_masuk) as bruto_masuk, 
-            sum(tid.netto_masuk) as netto_masuk, 
-            sum(tid.bruto_keluar) as bruto_keluar, 
-            sum(tid.netto_keluar) as netto_keluar from t_inventory_detail tid
-            left join t_inventory ti on ti.id = tid.t_inventory_id 
-            where ti.jenis_item = 'RONGSOK'
-            group by month(tanggal)");
+    function show_detail_laporan(){
+        $data = $this->db->query("select dd.rongsok_id, rsk.nama_item, count(dd.id) as id, 
+                (select sum(bruto) from dtr_detail dd where dd.tanggal_masuk is not null and dd.rongsok_id=rsk.id) as bruto_masuk,
+                (select sum(netto) from dtr_detail dd where dd.tanggal_masuk is not null and dd.rongsok_id=rsk.id) as netto_masuk,
+                COALESCE((select sum(bruto) from dtr_detail dd where dd.tanggal_keluar is not null and dd.rongsok_id=rsk.id),0)as bruto_keluar,
+                COALESCE((select sum(netto) from dtr_detail dd where dd.tanggal_keluar is not null and dd.rongsok_id=rsk.id),0)as netto_keluar
+                from dtr_detail dd
+                    left join rongsok rsk on rsk.id = dd.rongsok_id
+                        where rsk.type_barang = 'Rongsok'
+                        group by dd.rongsok_id");
+        return $data;
+    }
+
+    function show_laporan(){
+        $data = $this->db->query("select DATE_FORMAT(d.tanggal,'%M %Y') as showdate, 
+            EXTRACT(YEAR_MONTH from d.tanggal) as tanggal, count(dd.id) as id, 
+            (select sum(qty) from dtr_detail dd where month(dd.tanggal_masuk) = month(d.tanggal)) as jumlah,
+            (select sum(bruto) from dtr_detail dd where month(dd.tanggal_masuk) = month(d.tanggal)) as bruto_masuk,
+            (select sum(netto) from dtr_detail dd where month(dd.tanggal_masuk) = month(d.tanggal)) as netto_masuk,
+            COALESCE((select sum(bruto) from dtr_detail dd where month(dd.tanggal_keluar) = month(d.tanggal)),0)as bruto_keluar,
+            COALESCE((select sum(netto) from dtr_detail dd where month(dd.tanggal_keluar) = month(d.tanggal)),0)as netto_keluar
+            from dtr_detail dd
+            left join dtr d on d.id = dd.dtr_id
+                    group by month(d.tanggal)");
         return $data;
     }
 
     function show_laporan_after($tahun,$bulan){
-        $data = $this->db->query("select count(tid.t_inventory_id) as jumlah, 
-            sum(tid.bruto_masuk) as bruto_masuk, 
-            sum(tid.netto_masuk) as netto_masuk, 
-            sum(tid.bruto_keluar) as bruto_keluar, 
-            sum(tid.netto_keluar) as netto_keluar from t_inventory_detail tid
-            left join t_inventory ti on ti.id = tid.t_inventory_id 
-            where ti.jenis_item = 'RONGSOK' and tid.tanggal < '".$tahun."-".$bulan."-01'");
+        $data = $this->db->query("select EXTRACT(YEAR_MONTH from d.tanggal) as tanggal,
+            (select sum(qty) from dtr_detail dd where month(dd.tanggal_masuk) = month(d.tanggal)) as jumlah,
+            (select sum(bruto) from dtr_detail dd where month(dd.tanggal_masuk) = month(d.tanggal)) as bruto_masuk,
+            (select sum(netto) from dtr_detail dd where month(dd.tanggal_masuk) = month(d.tanggal)) as netto_masuk,
+            COALESCE((select sum(bruto) from dtr_detail dd where month(dd.tanggal_keluar) = month(d.tanggal)),0)as bruto_keluar,
+            COALESCE((select sum(netto) from dtr_detail dd where month(dd.tanggal_keluar) = month(d.tanggal)),0)as netto_keluar
+            from dtr_detail dd
+            left join dtr d on d.id = dd.dtr_id
+            where d.tanggal <'".$tahun."-".$bulan."-01'
+            group by month(d.tanggal)");
         return $data;
     }
 
     function show_view_laporan($bulan, $tahun){
-        $data = $this->db->query("select ti.id, ti.nama_produk, DATE_FORMAT(tid.tanggal,'%M %Y') as showdate, 
-            EXTRACT(YEAR_MONTH from tid.tanggal) as tanggal,
-            count(tid.t_inventory_id) as jumlah, 
-            sum(tid.bruto_masuk) as bruto_masuk, 
-            sum(tid.netto_masuk) as netto_masuk, 
-            sum(tid.bruto_keluar) as bruto_keluar, 
-            sum(tid.netto_keluar) as netto_keluar from t_inventory_detail tid
-            left join t_inventory ti on ti.id = tid.t_inventory_id 
-            where ti.jenis_item = 'RONGSOK' and month(tid.tanggal) =".$bulan." and year(tid.tanggal) =".$tahun."
-            group by ti.id");
+        $data = $this->db->query("select dd.rongsok_id, rsk.nama_item, count(dd.id) as jumlah, 
+                (select sum(bruto) from dtr_detail dd where month(dd.tanggal_masuk) =".$bulan." and year(dd.tanggal_masuk) =".$tahun." and dd.rongsok_id=rsk.id) as bruto_masuk,
+                (select sum(netto) from dtr_detail dd where month(dd.tanggal_masuk) =".$bulan." and year(dd.tanggal_masuk) =".$tahun." and dd.rongsok_id=rsk.id) as netto_masuk,
+                (select sum(bruto) from dtr_detail dd where month(dd.tanggal_keluar) =".$bulan." and year(dd.tanggal_keluar) =".$tahun." and dd.rongsok_id=rsk.id) as bruto_keluar,
+                (select sum(netto) from dtr_detail dd where month(dd.tanggal_keluar) =".$bulan." and year(dd.tanggal_keluar) =".$tahun." and dd.rongsok_id=rsk.id) as netto_keluar
+                from dtr_detail dd
+                    left join dtr d on d.id = dd.dtr_id
+                    left join rongsok rsk on rsk.id = dd.rongsok_id
+                where rsk.type_barang = 'Rongsok' and month(d.tanggal) =".$bulan." and year(d.tanggal) =".$tahun."
+            group by dd.rongsok_id");
         return $data;
     }
 
     function show_laporan_detail($bulan,$tahun,$id_barang){
-        $data = $this->db->query("select tid.*, ti.nama_produk from t_inventory_detail tid
-            left join t_inventory ti on ti.id = tid.t_inventory_id 
-            where ti.jenis_item = 'RONGSOK' and 
-            month(tid.tanggal) =".$bulan." and year(tid.tanggal) =".$tahun." and ti.id =".$id_barang."
-            order by tid.tanggal asc");
+        $data = $this->db->query("(SELECT
+                    dd.id, dd.rongsok_id, dd.no_pallete, r.nama_item, dd.bruto, dd.netto, dd.tanggal_masuk, dd.tanggal_keluar = null as tanggal_keluar, dd.tanggal_masuk as tanggal
+                FROM
+                    dtr_detail dd 
+                    left join rongsok r on r.id = dd.rongsok_id
+                    where dd.rongsok_id =".$id_barang." and month(dd.tanggal_masuk) =".$bulan." and year(dd.tanggal_masuk) =".$tahun.")
+                UNION ALL
+                (SELECT 
+                    dtd.id, dtd.rongsok_id, dtd.no_pallete, rsk.nama_item, dtd.bruto, dtd.netto, dtd.tanggal_masuk = null, dtd.tanggal_keluar, dtd.tanggal_keluar as tanggal
+                FROM
+                    dtr_detail dtd 
+                    left join rongsok rsk on rsk.id = dtd.rongsok_id
+                    where dtd.rongsok_id =".$id_barang." and month(dtd.tanggal_keluar) =".$bulan." and year(dtd.tanggal_keluar) =".$tahun.") Order By tanggal asc
+                    ");
         return $data;
     }
 
@@ -433,6 +463,11 @@ class Model_beli_rongsok extends CI_Model{
         $data = $this->db->query("select rsk.*, sr.jumlah_packing, sr.stok as stok_rsk, (select sum(dd.netto) from dtr_detail dd where dd.rongsok_id = rsk.id and dd.tanggal_masuk != 0) as stok_masuk, (select sum(dd.netto) from dtr_detail dd where dd.rongsok_id = rsk.id and dd.tanggal_keluar != 0) as stok_keluar from rongsok rsk
             left join stok_rsk sr on sr.rongsok_id = rsk.id
             where type_barang = 'Rongsok' and sr.jumlah_packing > 0");
+        return $data;
+    }
+
+    function check_urut(){
+        $data = $this->db->query("select count(id) as no_urut from dtr_detail;");
         return $data;
     }
 }

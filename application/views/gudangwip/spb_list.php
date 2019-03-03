@@ -27,8 +27,10 @@
                 <div class="caption">
                     <i class="fa fa-file-word-o"></i>SPB WIP List
                 </div> 
-                <div class="tools">    
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/GudangWIP/add_spb"> <i class="fa fa-plus"></i> Ajukan SPB WIP</a>              
+                <div class="tools"> 
+                <?php if( ($group_id==1)||($hak_akses['add_spb']==1) ){?>
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/GudangWIP/add_spb"> <i class="fa fa-plus"></i> Ajukan SPB WIP</a>  
+                <?php } ?>            
                 </div>               
             </div>
             <div class="portlet-body">
@@ -39,6 +41,7 @@
                     <th>No. SPB WIP</th>
                     <th>Tanggal</th>
                     <th>Pemohon</th>
+                    <th>Keperluan</th>
                     <th>Jumlah <br>Items</th>
                     <th>Remarks</th>
                     <th>Status</th>
@@ -56,17 +59,31 @@
                         <td style="text-align:center;"><?php echo $no; ?></td>
                         <td style="background-color: "><?php echo $data->no_spb_wip; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <td><?php echo $data->pic; ?></td>                            
+                        <td><?php echo $data->pic; ?></td>
+                        <?php if($data->flag_produksi==2){
+                                $flag_produksi = 'ROLLING';
+                            }else if($data->flag_produksi==3){
+                                $flag_produksi = 'CUCI';
+                            }else if($data->flag_produksi==5){
+                                $flag_produksi = 'KIRIM KE RONGSOK';
+                            }else{
+                                $flag_produksi = 'LAINNYA';
+                            } ?>
+                        <td><?=$flag_produksi;?></td>
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td><?php echo $data->keterangan; ?></td>
                         <td style="text-align:center">
                             <?php
                                 if($data->status==0){
-                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Approval</div>';
+                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Review</div>';
                                 }else if($data->status==1){
                                     echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
                                 }else if($data->status==2){
                                     echo '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
+                                }else if($data->status==3){
+                                    echo '<div style="background-color:blue; color:#fff; padding:3px">Waiting Approval</div>';
+                                }else if($data->status==4){
+                                    echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
                                 }else if($data->status==9){
                                     echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
                                 }

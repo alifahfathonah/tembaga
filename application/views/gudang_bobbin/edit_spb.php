@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['edit']==1) ){
+            if( ($group_id==1)||($hak_akses['add_spb']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -95,7 +95,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
-                        <table class="table table-bordered table-striped table-hover">
+                        <table class="table table-bordered table-striped table-hover" id="tabel_bobbin">
                             <thead>
                                 <th>No</th>
                                 <th>Nomor Bobbin</th>
@@ -103,18 +103,14 @@
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
-
-                            </tbody>
                             <tr>
-                                <td style="text-align:center">+</td>
-                                <td>
-                                <select id="id_bobbin" name="id_bobbin" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_berat(this.value);">
-                                    <option value=""></option>
-                                </select>
-                                </td>
-                                <td><input type="text" id="berat" name="berat" class="form-control myline" readonly="readonly"></td>
-                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
+                                <td style="text-align:center"><div id="no_tabel_1">1</div></td>
+                                <input type="hidden" id="id_bobbin_1" name="details[1][id_bobbin]">
+                                <td><input type="text" id="nomor_bobbin_1" name="details[1][nomor_bobbin]" class="form-control myline" onchange="getBobbin(1);"  autofocus onfocus="this.value = this.value;" onkeyup="this.value = this.value.toUpperCase()"></td>
+                                <td><input type="text" id="berat_1" name="details[1][berat]" class="form-control myline" readonly="readonly"></td>
+                                <td style="text-align:center"><a id="btn_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
                             </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -145,6 +141,49 @@
     </div>
 </div> 
 <script>
+function check_duplicate(id){
+    var valid = true;
+        $.each($("input[name$='[nomor_bobbin]']"), function (index1, item1) {
+            $.each($("input[name$='[nomor_bobbin]']").not(this), function (index2, item2) {
+                if ($(item1).val() == $(item2).val()) {
+                    valid = false;
+                }
+            });
+        });
+    return valid;
+}
+
+function getBobbin(id){
+    var no = $("#nomor_bobbin_"+id).val();
+    const new_id = id + 1;
+    if(no!=''){    
+        var check = check_duplicate();
+        if(check){
+            $.ajax({
+                url: "<?php echo base_url('index.php/GudangBobbin/get_bobbin'); ?>",
+                type: "POST",
+                data : {nomor_bobbin: no},
+                success: function (result){
+                    if (result!=null){
+                        $("#id_bobbin_"+id).val(result['id']);
+                        $("#berat_"+id).val(result['berat']);
+                        $("#btn_"+id).removeClass('disabled');
+                        $("#nomor_bobbin_"+id).prop('readonly', true);
+                        create_new_input(id);
+                        $('#nomor_bobbin_'+new_id).focus();
+                    } else {
+                        alert('Nomor Bobbin tidak ditemukan, silahkan ulangi kembali');
+                        $("#nomor_bobbin_"+id).val('');
+                    }
+                }
+            });
+        } else {
+            //alert('Inputan pallete tidak boleh sama dengan inputan sebelumnya!');
+            $("#nomor_bobbin_"+id).val('');
+        }
+    }
+}
+
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
@@ -154,98 +193,24 @@ function simpanData(){
     };
 };
 
-function loadDetail(id){
-    $.ajax({
-        type:"POST",
-        url:'<?php echo base_url('index.php/GudangBobbin/load_detail_edit_spb'); ?>',
-        data:{
-            id: id
-        },
-        success:function(result){
-            $('#boxDetail').html(result);     
-        }
-    });
-}
-
-function load_vc(id_jenis){
-    var id = $("#id").val();
-    $.ajax({
-        url: "<?php echo base_url('index.php/GudangBobbin/get_bobbin'); ?>",
-        type: "POST",
-        data: {
-            id:id,
-            id_jenis:id_jenis
-        },
-        dataType: "html",
-        success: function(result) {
-            $('#id_bobbin').html(result);
-        }
-    })
-}
-
-function get_berat(id){
-    if(''!=id){
-    $.ajax({
-        url: "<?php echo base_url('index.php/GudangBobbin/get_berat'); ?>",
-        async: false,
-        type: "POST",
-        data: "id="+id,
-        dataType: "json",
-        success: function(result) {
-            $('#berat').val(result['berat']);
-        }
-    });
-    }
-}
-
-function saveDetail(){
-    if($.trim($("#id_bobbin").val()) == ""){
-        $('#message').html("Silahkan pilih nomor bobbin!");
-        $('.alert-danger').show(); 
-    }else{
-        $.ajax({
-            type:"POST",
-            url:'<?php echo base_url('index.php/GudangBobbin/save_spb_bb_detail'); ?>',
-            data:{
-                id_spb_bobbin:$('#id').val(),
-                id_bobbin:$('#id_bobbin').val()
-            },
-            success:function(result){
-                if(result['message_type']=="sukses"){
-                    loadDetail($('#id').val());
-                    $("#id_bobbin").select2("val", "");
-                    $("#berat").val('');
-                    load_vc(<?php echo $header['jenis_packing'];?>);
-                    $('#message').html("");
-                    $('.alert-danger').hide(); 
-                }else{
-                    $('#message').html(result['message']);
-                    $('.alert-danger').show(); 
-                }            
-            }
-        });
-    }
-}
-
 function hapusDetail(id){
-    var r=confirm("Anda yakin menghapus item barang ini?");
+    var r=confirm("Anda yakin menghapus item bobbin ini?");
     if (r==true){
-        $.ajax({
-            type:"POST",
-            url:'<?php echo base_url('index.php/GudangBobbin/delete_detail'); ?>',
-            data:"id="+ id,
-            success:function(result){
-                if(result['message_type']=="sukses"){
-                    loadDetail($('#id').val());
-                    load_vc(<?php echo $header['jenis_packing'];?>);
-                }else{
-                    alert(result['message']);
-                }     
-            }
-        });
-    }
+        $('#nomor_bobbin_'+id).closest('tr').remove();
+        }
 }
 
+function create_new_input(id){
+       var new_id = id+1;
+        $("#tabel_bobbin>tbody").append('<tr>'+
+            '<tr>'+
+                '<td style="text-align:center"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
+                '<input type="hidden" id="id_bobbin_'+new_id+'" name="details['+new_id+'][id_bobbin]">'+
+                '<td><input type="text" id="nomor_bobbin_'+new_id+'" name="details['+new_id+'][nomor_bobbin]" class="form-control myline" onchange="getBobbin('+new_id+');"  autofocus onfocus="this.value = this.value;" onkeyup="this.value = this.value.toUpperCase()"></td>'+
+                '<td><input type="text" id="berat_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline" readonly="readonly"></td>'+
+                '<td style="text-align:center"><a id="btn_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
+            '</tr>');
+}
 </script>
 
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
@@ -262,8 +227,6 @@ $(function(){
         changeYear: true,
         dateFormat: 'dd-mm-yy'
     }); 
-    loadDetail(<?php echo $header['id'];?>);
-    load_vc(<?php echo $header['jenis_packing'];?>);
 });
 </script>
       

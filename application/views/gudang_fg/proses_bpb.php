@@ -56,7 +56,7 @@
 <div class="row">                            
     <div class="col-md-12">
         <?php
-            if( ($group_id==1)||($hak_akses['proses_bpb']==1) ){
+            if( ($group_id==1)||($hak_akses['edit_bpb']==1) ){
         ?>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku" action="<?php echo base_url('index.php/GudangFG/approve_bpb'); ?>">  
@@ -141,29 +141,34 @@
                             <thead>
                                     <th>No</th>
                                     <th>Nama Barang</th>
-                                <?php
+                                    <th>No Produksi</th>
+                                    <th>No Packing</th>
+                                    <th>Bruto (kg)</th>
+                                    <th>Netto (kg)</th>
+                                    <th>Berat Bobbin</th>
+                                    <th>ID bobbin</th>
+                                <!-- <?php
                                 if($packing=="KARDUS") {
                                 ?>
+                                    <th>No Produksi</th>
+                                    <th>Bruto</th>
                                     <th>Netto (kg)</th>
-                                    <th>Nomor Packing</th>
+                                    <th>Berat Bobbin</th>
                                         
                                 <?php 
                                     } else if ($packing == "ROLL") {
                                 ?> 
                                     <th>No Produksi</th>
+                                    <th>Bruto</th>
                                     <th>Netto (kg)</th>
+                                    <th>Berat Bobbin</th>
                                     <th>No Packing</th>      
                                 
                                 <?php 
                                     } else { //KARDUS
-                                ?>           
-                                    <th>No Produksi</th>
-                                    <th>No Packing</th>
-                                    <th>Bruto (kg)</th>
-                                    <th>Netto (kg)</th>
-                                    <th>ID bobbin</th>
+                                ?>        -->    
                                 
-                                <?php } ?>
+                                <!-- <?php } ?> -->
                                 
                             </thead>
                             <tbody>
@@ -174,37 +179,49 @@
                                     echo '<td style="text-align:center">'.$no.'
                                             <input type="hidden" name="details['.$no.'][id_bpb_fg_detail]" value="'.$row->id.'"</td>';
                                     
-                                    if($packing == 'KARDUS') {
-                                            echo '<td><input type="text" name="details['.$no.'][jenis_barang]" '
-                                                    . 'class="form-control myline" value="'.$row->jenis_barang.'" '
-                                                    . 'readonly="readonly"><input type="hidden" name="details['.$no.'][id_jenis_barang]" value="'.$row->jenis_barang_id.'">';
+                                    // if($packing == 'KARDUS') {
+                                    //         echo '<td><input type="text" name="details['.$no.'][jenis_barang]" '
+                                    //                 . 'class="form-control myline" value="'.$row->jenis_barang.'" '
+                                    //                 . 'readonly="readonly"><input type="hidden" name="details['.$no.'][id_jenis_barang]" value="'.$row->jenis_barang_id.'">';
 
-                                            echo '<td><input type="text" name="details['.$no.'][netto]" '
-                                                    . 'class="form-control myline" value="'.$row->netto.'" '
-                                                    . 'readonly="readonly"></td>';
+                                    //         echo '<td><input type="text" name="details['.$no.'][bruto]" '
+                                    //                 . 'class="form-control myline" value="'.$row->bruto.'" '
+                                    //                 . 'readonly="readonly"></td>';   
 
-                                            echo '<td><input type="text" name="details['.$no.'][no_packing]" '
-                                                    . 'class="form-control myline" value="'.$row->no_packing_barcode.'" '
-                                                    . 'readonly="readonly"></td>';
+                                    //         echo '<td><input type="text" name="details['.$no.'][netto]" '
+                                    //                 . 'class="form-control myline" value="'.$row->netto.'" '
+                                    //                 . 'readonly="readonly"></td>';
+
+                                    //         echo '<td><input type="text" name="details['.$no.'][berat_bobbin]" '
+                                    //                 . 'class="form-control myline" value="'.$row->berat_bobbin.'" '
+                                    //                 . 'readonly="readonly"></td>';
+
+                                    //         echo '<td><input type="text" name="details['.$no.'][no_packing]" '
+                                    //                 . 'class="form-control myline" value="'.$row->no_packing_barcode.'" '
+                                    //                 . 'readonly="readonly"></td>';
                                     
-                                    } else if ($packing == "ROLL") {
-                                            echo '<td><input type="text" name="details['.$no.'][jenis_barang]" '
-                                                    . 'class="form-control myline" value="'.$row->jenis_barang.'" '
-                                                    . 'readonly="readonly"><input type="hidden" name="details['.$no.'][id_jenis_barang]" value="'.$row->jenis_barang_id.'">';
+                                    // } else if ($packing == "ROLL") {
+                                    //         echo '<td><input type="text" name="details['.$no.'][jenis_barang]" '
+                                    //                 . 'class="form-control myline" value="'.$row->jenis_barang.'" '
+                                    //                 . 'readonly="readonly"><input type="hidden" name="details['.$no.'][id_jenis_barang]" value="'.$row->jenis_barang_id.'">';
 
-                                            echo '<td><input type="text" name="details['.$no.'][no_produksi]" '
-                                                    . 'class="form-control myline" value="'.$row->no_produksi.'" '
-                                                    . 'readonly="readonly"></td>';
+                                    //         echo '<td><input type="text" name="details['.$no.'][no_produksi]" '
+                                    //                 . 'class="form-control myline" value="'.$row->no_produksi.'" '
+                                    //                 . 'readonly="readonly"></td>';
 
-                                            echo '<td><input type="text" name="details['.$no.'][netto]" '
-                                                    . 'class="form-control myline" value="'.$row->netto.'" '
-                                                    . 'readonly="readonly"></td>';
+                                    //         echo '<td><input type="text" name="details['.$no.'][netto]" '
+                                    //                 . 'class="form-control myline" value="'.$row->netto.'" '
+                                    //                 . 'readonly="readonly"></td>';
+
+                                    //         echo '<td><input type="text" name="details['.$no.'][berat_bobbin]" '
+                                    //                 . 'class="form-control myline" value="'.$row->berat_bobbin.'" '
+                                    //                 . 'readonly="readonly"></td>';
                                             
-                                            echo '<td><input type="text" name="details['.$no.'][no_packing]" '
-                                                    . 'class="form-control myline" value="'.$row->no_packing_barcode.'" '
-                                                    . 'readonly="readonly"></td>';
+                                    //         echo '<td><input type="text" name="details['.$no.'][no_packing]" '
+                                    //                 . 'class="form-control myline" value="'.$row->no_packing_barcode.'" '
+                                    //                 . 'readonly="readonly"></td>';
                                             
-                                    } else {
+                                    // } else {
 
                                             echo '<td><input type="text" name="details['.$no.'][jenis_barang]" '
                                                     . 'class="form-control myline" value="'.$row->jenis_barang.'" '
@@ -228,12 +245,16 @@
                                             echo '<td><input type="text" name="details['.$no.'][netto]" '
                                                     . 'class="form-control myline" value="'.$row->netto.'" '
                                                     . 'readonly="readonly"></td>';
+
+                                            echo '<td><input type="text" name="details['.$no.'][berat_bobbin]" '
+                                                    . 'class="form-control myline" value="'.$row->berat_bobbin.'" '
+                                                    . 'readonly="readonly"></td>';
                                             
                                             echo '<td><input type="text" id="no_bobbin_'.$no.'" name="details['.$no.'][no_bobbin]" '
                                                     . 'class="form-control myline" maxlength="20" value="'.$row->nomor_bobbin.'" readonly="readonly"><input type="hidden" name="details['.$no.'][id_bobbin]" value="'.$row->id_bobbin.'"></td>';
                                                
 
-                                        }
+                                        //}
                                    
                                     echo '</tr>';
                                     $no++;

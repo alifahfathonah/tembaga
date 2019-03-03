@@ -121,12 +121,29 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    &nbsp;
+                                    Jenis User <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="checkbox" id="user_ppn" name="user_ppn" value="1"> User PPN 
+                                    <select id="user_ppn" name="user_ppn" class="form-control select2me myline" 
+                                        data-placeholder="Select..." style="margin-bottom:5px">
+                                        <option value=""></option>
+                                        <option value="0">User Non-PPN</option>
+                                        <option value="1">User PPN</option>
+                                        <option value="2">User Resmi</option>
+                                    </select>
                                 </div>
                             </div>
+                            <!-- <div class="row">
+                                <div class="col-md-4">
+                                    &nbsp;
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="radio" id="user_ppn" name="user_ppn" value="1"/> User PPN 
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="radio" id="user_resmi" name="user_ppn" value="2"/> User Resmi 
+                                </div>
+                            </div> -->
                         </form>
                     </div>
                     <div class="modal-footer">                        
@@ -302,12 +319,15 @@ function editData(id){
             $('#realname').val(result['realname']);           
             $('#password').val(result['password']);
             $('#group_id').select2('val', result['group_id']);
+            $('#user_ppn').select2('val', result['user_ppn']);
             $("#active").bootstrapSwitch('state', result['active']);
-            if(result['user_ppn']==1){
-                $('#user_ppn').attr('checked', true);
-            }else{
-                $('#user_ppn').attr('checked', false);
-            }
+            // if(result['user_ppn']==1){
+            //     $('#user_ppn').prop('checked', true);
+            // }else if(result['user_ppn']==2){
+            //     $('#user_resmi').prop('checked', true);
+            // }else{
+            //     $('#user_ppn').prop('checked', false);
+            // }
             $('#id').val(result['id']);
 
             $('#photo_url').val(result['photo_profile_url']);

@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['add_spb']==1) ){
+            if( ($group_id==1)||($hak_akses['add_um']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -278,8 +278,8 @@ function simpanData(){
             $('.alert-danger').show();
         }else if($('#jenis_id').val() == "Cek Mundur"){
             if($.trim($("#tanggal_cek").val()) == ""){
-            $('#message').html("Tanggal Cek Mundur harus diisi, tidak boleh kosong!");
-            $('.alert-danger').show();
+                $('#message').html("Tanggal Cek Mundur harus diisi, tidak boleh kosong!");
+                $('.alert-danger').show();
             }else{
                 $('#formku').submit();
             }

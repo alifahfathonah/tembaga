@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['index']==1) ){
+            if( ($group_id==1)||($hak_akses['matching']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -57,10 +57,13 @@
                         <td><?php echo $data->jumlah_sj; ?></td>
                         <td><?php echo $data->jumlah_invoice; ?></td>
                         <td>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/view_matching/<?php echo $data->id; ?>" 
-                               style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
-                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/Finance/matching_invoice/<?php echo $data->id; ?>" 
-                               style="margin-bottom:4px"> &nbsp; <i class="fa  fa-files-o"></i> Matching &nbsp; </a>
+                            <!-- <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/view_matching/<?php echo $data->id; ?>" 
+                               style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a> -->
+                        <?php
+                            if( ($group_id==1)||($hak_akses['matching']==1) ){
+                        ?>
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/Finance/matching_invoice/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-files-o"></i> Matching &nbsp; </a>
+                        <?php } ?>
                         </td>
                     </tr>
                     <?php

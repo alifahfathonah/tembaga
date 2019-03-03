@@ -50,6 +50,8 @@
                     <th>Marketing</th>
                     <th>Jumlah <br>Items</th>
                     <th>DTR</th>
+                    <th>Status SPB</th>
+                    <th>Invoice</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -74,13 +76,39 @@
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td style="text-align:center">
                             <?php
-                                if( ($group_id==1 || $hak_akses['create_dtr']==1) && $data->flag_tolling==1){
-                                    echo '<a class="btn btn-circle btn-xs green-seagreen" href="'.base_url().'index.php/Tolling/matching/'.$data->id.'" 
+                                if( ($group_id==1 || $hak_akses['matching']==1) && $data->flag_tolling==1){
+                                    echo '<a class="btn btn-circle btn-xs green-seagreen" href="'.base_url().'index.php/Tolling/matching_so/'.$data->id.'" 
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Matching &nbsp; </a>';
                                 }else{
                                     echo '<div class="bg-green">Received</div>';
                                 }
                             ?>
+                        </td>
+                        <td><?php
+                                if($data->status_spb==0){
+                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Review</div>';
+                                }else if($data->status_spb==1){
+                                    echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
+                                }else if($data->status_spb==2){
+                                    echo '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
+                                }else if($data->status_spb==3){
+                                    echo '<div style="background-color:blue; color:#fff; padding:3px">Waiting Approval</div>';
+                                }else if($data->status_spb==4){
+                                    echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
+                                }else if($data->status_spb==9){
+                                    echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
+                                }
+                            ?>
+                        </td>
+                        <td>
+                        <?php 
+                           if($data->invoice==1){ echo '<div style="background-color:green; padding:3px; color:white; text-align: center;">Invoice Lengkap</div>';
+                            }else if($data->invoice==2){
+                                echo '<div style="background-color:orange; padding:3px; color:white; text-align: center;">Invoice Sudah Ada</div>';
+                            }else{
+                                echo '<div style="background-color:darkkhaki; padding:3px; text-align: center;">Invoice Belum Semua</div>';
+                            }
+                        ?>
                         </td>
                         <td style="text-align:center"> 
                             <?php
@@ -89,7 +117,7 @@
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/Tolling/print_so/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
-                                }if($data->invoice == 0){
+                                }if($group_id==1 || ($data->invoice == 0 && $hak_akses['edit']==1)){
                             ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Tolling/edit/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
                             <?php

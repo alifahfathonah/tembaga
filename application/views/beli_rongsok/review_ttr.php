@@ -14,7 +14,7 @@
 <div class="row">                            
     <div class="col-md-12">
         <?php
-            if( ($group_id==1)||($hak_akses['review_dtr']==1) ){
+            if( ($group_id==1)||($hak_akses['review_ttr']==1) ){
         ?>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku" action="#">  

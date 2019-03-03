@@ -53,7 +53,7 @@
             </div>
         </div>
         <?php
-            if( ($group_id==1)||($hak_akses['view_spb']==1) ){
+            if( ($group_id==1)||($hak_akses['view_invoice']==1) ){
         ?>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku">  
@@ -163,6 +163,26 @@
                             <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px" readonly="readonly"><?php echo $header['keterangan']; ?></textarea>                           
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nama Bank <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_bank" name="nama_bank" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['nama_bank']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nomor Rekening <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_rek" name="no_rek" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['nomor_rekening']; ?>">
+                        </div>
+                    </div>
                 </div>              
             </div>
             <div class="panel panel-default">
@@ -184,6 +204,8 @@
                                         <tbody>
                                         <?php
                                             $no = 1;
+                                            $ppn = 0;
+                                            $ppn1 = 0;
                                             $total_all = 0;
                                             foreach ($detailInvoice as $row){
                                                 echo '<tr>';
@@ -198,6 +220,10 @@
                                                 $no++;
                                                 $total_all += $row->total_harga;
                                             }
+                                            if($header['flag_ppn']==1){
+                                                $ppn1 = $total_all - $header['diskon'];
+                                                $ppn = $ppn1*10/100;
+                                            }
                                         ?>
                                         <tr>
                                             <td colspan="5" style="text-align: right; font-weight: bold;">Total</td>
@@ -208,8 +234,94 @@
                                     </table>
                                 </div>
                         </div>
+                        <div class="col-md-12">
+                                <h4 align="center" style="font-weight: bold;">Detail Biaya</h4>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-striped table-hover">
+                                        <tr>
+                                            <td>Harga Total Invoice</td>
+                                            <td>Rp. <?=number_format($total_all,0,',','.');?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Diskon</td>
+                                            <td>(<i class="fa fa-minus"></i>) <?=number_format($header['diskon'],0,',','.');?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Biaya Tambahan</td>
+                                            <td>(<i class="fa fa-plus"></i>) <?=number_format($header['add_cost'],0,',','.');?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Materai</td>
+                                            <td>(<i class="fa fa-plus"></i>) <?=number_format($header['materai'],0,',','.');?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pajak</td>
+                                            <td>(<i class="fa fa-plus"></i>) <?=number_format($ppn,0,',','.');?></td>
+                                        </tr>
+                                        <?php 
+                                        $total_bersih = 0;
+                                        $total_bersih = $total_all - $header['diskon'] + $header['add_cost'] + $header['materai'] + $ppn;
+                                        ?>
+                                        <tr>
+                                            <td style="text-align: right;"><strong>Total Bersih</strong></td>
+                                            <td style="background-color: green; color: white;">Rp. <?=number_format($total_bersih,0,',','.');?></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                        </div>
                     </div>
                 </div>
+                <?php if($header['id_retur']==0){?>
+                <hr class="divider">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                                <h4 align="center" style="font-weight: bold;">Detail Matching Uang Masuk</h4>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-striped table-hover">
+                                        <thead>
+                                            <th style="width:40px">No</th>
+                                            <th>No Uang Masuk</th>
+                                            <th>Jenis<br>Pembayaran</th>
+                                            <th>Bank<br>Pembayaran</th>
+                                            <th>Rekening Pembayaran /<br>Nomor Cek</th>
+                                            <th>Currency</th>
+                                            <th>Nominal</th>
+                                            <th>Yang Digunakan</th>
+                                            <th>Keterangan</th>
+                                        </thead>
+                                        <tbody>
+                                        <?php
+                                            $no = 1;
+                                            $total_all = 0;
+                                            foreach ($matching as $row){
+                                                echo '<tr>';
+                                                echo '<td style="text-align:center">'.$no.'</td>';
+                                                echo '<td>'.$row->no_uang_masuk.'</td>';
+                                                echo '<td>'.$row->jenis_pembayaran.'</td>';
+                                                echo '<td>'.$row->bank_pembayaran.'</td>';
+                                                echo '<td>'.$row->rekening_pembayaran.$row->nomor_cek.'</td>';
+                                                echo '<td>'.$row->currency.'</td>';
+                                                echo '<td>'.number_format($row->nominal,0,',','.').'</td>';
+                                                echo '<td>'.number_format($row->paid,0,',','.').'</td>';
+                                                echo '<td>'.$row->keterangan.'</td>';
+                                                echo '</tr>';
+                                                $no++;
+                                                $total_all += $row->paid;
+                                            }
+                                        ?>
+                                        <tr>
+                                            <td colspan="7" style="text-align: right; font-weight: bold;">Total</td>
+                                            <td style="background-color: green; color: white;"><?php echo number_format($total_all,0,',','.');?></td>
+                                            <td></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                <?php } ?>
             </div>
         <a href="<?php echo base_url('index.php/Finance/invoice'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>

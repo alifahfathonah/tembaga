@@ -11,12 +11,16 @@
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
+                            <td>Supplier</td>
+                            <td>: <?php echo $header['nama_supplier']; ?></td>
+                        </tr>
+                        <tr>
                             <td>No. TTR</td>
                             <td>: <?php echo $header['no_ttr']; ?></td>
                         </tr>
                         <tr>
                             <td>Tanggal</td>
-                            <td>: <?php echo date('d-m-Y', strtotime($header['tanggal'])); ?></td>
+                            <td>: <?php echo tanggal_indo($header['tanggal']); ?></td>
                         </tr>                        
                         <tr>
                             <td>Catatan</td>
@@ -28,16 +32,20 @@
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
-                            <td>Supplier</td>
-                            <td>: <?php echo $header['nama_supplier']; ?></td>
-                        </tr>
-                        <tr>
                             <td>No. PO</td>
                             <td>: <?php echo $header['no_po']; ?></td>
                         </tr>
                         <tr>
+                            <td>Tanggal PO</td>
+                            <td>: <?php echo tanggal_indo($header['tanggal_po']); ?></td>
+                        </tr>
+                        <tr>
                             <td>No. Reff/ DTR</td>
                             <td>: <?php echo $header['no_dtr']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
                         </tr>
                     </table>
                 </td>
@@ -65,8 +73,8 @@
                                 echo '<td style="border-left:1px solid #000">'.$row->nama_item.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->uom.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->qty,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->bruto,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->netto,0,',', '.').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->bruto, 2, '.', ',').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->netto, 2, '.', ',').'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->line_remarks.'</td>';
                                 echo '</tr>';
                                 $bruto += $row->bruto;
@@ -85,8 +93,8 @@
                         </tr>    
                         <tr>
                             <td colspan="4" style="text-align:right"><strong>Total (Kg) </strong></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000"><strong><?php echo number_format($bruto,0,',', '.'); ?></strong></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000"><strong><?php echo number_format($netto,0,',', '.'); ?></strong></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000"><strong><?php echo number_format($bruto, 2, '.', ','); ?></strong></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000"><strong><?php echo number_format($netto, 2, '.', ','); ?></strong></td>
                             <td>&nbsp;</td>
                         </tr>
                     </table>
@@ -100,7 +108,7 @@
                             <td width="400px" style="text-align:center">Diterima Oleh </td>
                             <td>Jumlah Pengepakan</td>
                             <td>:</td>
-                            <td style="text-align:right"><?php echo number_format($header['jmlh_pengepakan'],0,',','.'); ?></td>
+                            <td style="text-align:right"><?php echo $bruto-$netto; ?></td>
                         </tr>
                         <tr>
                             <td width="400px" style="text-align:center"></td>

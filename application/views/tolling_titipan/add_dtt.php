@@ -14,7 +14,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['add']==1) ){
+            if( ($group_id==1)||($hak_akses['create_dtr']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -87,11 +87,25 @@
                             Jenis Barang<font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                            <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="getBobbin(this.value);">
                                 <option value=""></option>
                                 <option value="WIP">WIP</option>
                                 <option value="FG">Finish Good</option>
                             </select>   
+                        </div>
+                    </div>
+                    <div class="row hidden" id="show_packing">
+                        <div class="col-md-4">
+                            Jenis Packing<font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select  id="packing" name="packing" disabled placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom:5px">
+                                <?php 
+                                foreach($packing as $p){
+                                ?>
+                                <option value="<?=$p->id;?>"><?=$p->jenis_packing;?></option>
+                                <?php } ?>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -120,6 +134,15 @@
     </div>
 </div> 
 <script>
+function getBobbin(id){
+    if(id == 'FG'){
+        $('#show_packing').removeClass('hidden');
+        $('#packing').prop("disabled", false);
+    }else{
+        $('#show_packing').addClass('hidden');
+        $('#packing').prop("disabled", true);
+    }
+}
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");

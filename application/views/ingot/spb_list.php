@@ -40,7 +40,6 @@
                     <th>Tanggal</th>
                     <th>No. Produksi</th>
                     <th>Pemohon</th>
-                    <th>Jumlah <br>Items</th>
                     <th>Remarks</th>
                     <th>Status</th>
                     <th>Approve/<br>Reject Oleh</th> 
@@ -59,7 +58,6 @@
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->no_produksi; ?></td>
                         <td><?php echo $data->pic; ?></td>                            
-                        <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td><?php echo $data->remarks; ?></td>
                         <td style="text-align:center">
                             <?php
@@ -71,6 +69,8 @@
                                     echo '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
                                 }else if($data->status==3){
                                     echo '<div style="background-color:blue; color:#fff; padding:3px">Waiting Approval</div>';
+                                }else if($data->status==4){
+                                    echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
                                 }else if($data->status==9){
                                     echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
                                 }

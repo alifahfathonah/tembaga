@@ -105,7 +105,7 @@
                                 <th></th>
                                 <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
-                                <th>ID Bobbin / Keranjang</th>
+                                <th>ID Bobbin</th>
                                 <th>Berat Bobbin</th>
                                 <th>Pemilik</th>
                                 <th>Keterangan</th>
@@ -265,6 +265,7 @@ function saveDetail(){
                 berat: $('#berat').val(),
                 id_bobbin: $('#id_bobbin').val(),
                 no_bobbin: $('#no_bobbin').val(),
+                berat_bobbin: $('#berat_bobbin').val(),
                 ukuran: $('#ukuran').val(),
                 keterangan:$('#keterangan').val()
             },
@@ -300,6 +301,9 @@ function hapusDetail(id){
     }
 }
 
+function printBarcode(id){
+    window.open('<?php echo base_url('index.php/GudangFG/print_barcode_kardus?id=');?>'+id,'_blank');
+}
 </script>
 
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
@@ -308,4 +312,3 @@ function hapusDetail(id){
 <script>    
     loadDetail(<?php echo $header['id']; ?>);
 </script>
-      

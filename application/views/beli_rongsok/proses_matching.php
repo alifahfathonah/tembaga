@@ -227,8 +227,8 @@
                                         echo '<td>'.$value->nama_item.'</td>';
                                         echo '<td>'.$value->uom.'</td>';
                                         echo '<td style="text-align:right;">'.number_format($value->qty,0,',', '.').'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($value->bruto,0,',', '.').'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($value->netto,0,',', '.').'</td>';
+                                        echo '<td style="text-align:right;">'.$value->bruto.'</td>';
+                                        echo '<td style="text-align:right;">'.$value->netto.'</td>';
                                         echo '<td>'.$value->no_pallete.'</td>';
                                         echo '</tr>';
                                         $bruto += $value->bruto;
@@ -354,8 +354,8 @@
                                         echo '<td>'.$value->nama_item.'</td>';
                                         echo '<td>'.$value->uom.'</td>';
                                         echo '<td style="text-align:right;">'.number_format($value->qty,0,',', '.').'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($value->bruto,0,',', '.').'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($value->netto,0,',', '.').'</td>';
+                                        echo '<td style="text-align:right;">'.$value->bruto.'</td>';
+                                        echo '<td style="text-align:right;">'.$value->netto.'</td>';
                                         echo '<td>'.$value->no_pallete.'</td>';
                                         echo '</tr>';
                                         $bruto += $value->bruto;

@@ -107,16 +107,11 @@
                                 }
                             ?>
                         </td>
-                        <td style="text-align:center"> 
-                            <?php
-                                if($group_id==1 || $hak_akses['view_spb']==1){
-                            ?>
+                        <td style="text-align:center">
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangFG/view_spb/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
-                               
                             <?php
-                                }
-                                if($group_id==1 || $hak_akses['print_spb']==1){
+                                if($group_id==1 || $hak_akses['print_po']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangFG/print_spb/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }

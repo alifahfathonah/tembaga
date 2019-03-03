@@ -3,13 +3,15 @@ class Model_tolling_titipan extends CI_Model{
     function so_list(){
         $data = $this->db->query("Select so.*, 
                     usr.realname As nama_marketing,
-                    cust.nama_customer, cust.pic,
+                    cust.nama_customer, cust.pic, tsf.status as status_spb,
                 (Select count(fi.id) from f_invoice fi where fi.id_sales_order = so.id) as invoice,
                 (Select count(sod.id)As jumlah_item From sales_order_detail sod Where sod.sales_order_id = so.id)As jumlah_item
                 From sales_order so
                     Left Join m_customers cust On (so.m_customer_id = cust.id) 
                     Left Join users usr on (usr.id = so.marketing_id)
-                Where flag_tolling > 0
+                    Left Join t_sales_order tso on (tso.so_id = so.id)
+                    Left Join t_spb_fg tsf on (tsf.id = tso.no_spb)
+                Where so.flag_tolling > 0
                 Order By so.id Desc");
         return $data;
     }
@@ -45,6 +47,20 @@ class Model_tolling_titipan extends CI_Model{
         return $data;
     }
     
+    function get_detail_dtt($id){
+        $data = $this->db->query("select dd.*, jb.jenis_barang, jb.uom, jb.kode from dtt_detail dd
+                    left join jenis_barang jb on jb.id = dd.jenis_barang_id
+                    where dd.id =".$id);
+        return $data;
+    }
+
+    function load_detail_dtt($id){
+        $data = $this->db->query("select dd.*, jb.jenis_barang, jb.uom from dtt_detail dd
+                    left join jenis_barang jb on jb.id = dd.jenis_barang_id
+                    where dd.dtt_id =".$id);
+        return $data;
+    }
+
     function load_detail($id){
         $data = $this->db->query("Select dtrd.*, rsk.nama_item, rsk.uom
                     From dtr_detail dtrd 
@@ -310,7 +326,7 @@ class Model_tolling_titipan extends CI_Model{
     
     function get_so_list($id){
         $data = $this->db->query("Select so.* From sales_order so
-                Where so.flag_tolling > 0 and so.m_customer_id=".$id);
+                Where so.flag_tolling > 0 and so.m_customer_id=".$id." and so.flag_sj = 0");
         return $data;
     }
 
@@ -332,7 +348,7 @@ class Model_tolling_titipan extends CI_Model{
     function show_header_sj($id){
         $data = $this->db->query("Select tsj.*, cust.id as id_customer,
                     cust.nama_customer, cust.alamat,
-                    tso.no_spb, so.no_sales_order, tso.no_po, tsf.no_spb as nomor_spb,
+                    tso.no_spb, so.no_sales_order, tso.no_po, tsf.no_spb as nomor_spb, tsf.status as status_spb,
                     tkdr.type_kendaraan,
                     usr.realname,
                     aprv.realname as approved_name,
@@ -614,11 +630,13 @@ class Model_tolling_titipan extends CI_Model{
         $data = $this->db->query("Select dtt.*, 
                     mc.nama_customer,
                     usr.realname As penimbang,
-                    rjct.realname As rejected_name
+                    rjct.realname As rejected_name,
+                    mjp.jenis_packing
                     From dtt
                         Left Join m_customers mc On (dtt.customer_id = mc.id) 
                         Left Join users usr On (dtt.created_by = usr.id) 
                         Left Join users rjct On (dtt.rejected_by = rjct.id) 
+                        Left Join m_jenis_packing mjp On (dtt.jenis_packing = mjp.id)
                     Where dtt.id=".$id);
         return $data;
     }
@@ -826,6 +844,14 @@ class Model_tolling_titipan extends CI_Model{
             inner join po_detail pd on pd.id = dttd.po_detail_id
             inner join m_customers mc on mc.id = po.customer_id
             Where dtt.po_id =".$id." and dtt.status=1");
+        return $data;
+    }
+
+    function check_urut(){
+        $data = $this->db->query("
+                select count(id) as no_urut from dtt_detail
+                where no_bobbin != ''
+            ");
         return $data;
     }
 }

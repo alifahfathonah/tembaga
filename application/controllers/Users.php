@@ -51,14 +51,14 @@ class Users extends CI_Controller{
         }else{
             $file_url = "";
         }
-        
+
         $data = array(
                         'username'=> $this->input->post('username'),
                         'realname'=> $this->input->post('realname'),
                         'password'=> base64_encode($this->input->post('password')),
                         'group_id'=> $this->input->post('group_id'),
                         'active'=> ($this->input->post('active')=="on")? 1: 0,
-                        'user_ppn'=> (!empty($this->input->post('user_ppn'))? 1: 0),
+                        'user_ppn'=> $this->input->post('user_ppn'),
                         'created'=> $tanggal,
                         'created_by'=> $user_id,
                         'modified'=> $tanggal,
@@ -120,7 +120,7 @@ class Users extends CI_Controller{
                 'password'=> base64_encode($this->input->post('password')),
                 'group_id'=> $this->input->post('group_id'),
                 'active'=> ($this->input->post('active')=="on")? 1: 0,
-                'user_ppn'=> (!empty($this->input->post('user_ppn'))? 1: 0),
+                'user_ppn'=> $this->input->post('user_ppn'),
                 'modified'=> $tanggal,
                 'modified_by'=> $user_id,
                 'photo_profile_url'=>$file_url

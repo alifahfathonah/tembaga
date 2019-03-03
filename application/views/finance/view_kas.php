@@ -53,15 +53,28 @@
                                 value="<?php echo date('Y-m-d', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
-                    <?php if($header['id_um']==0){?>
+                    <?php if($header['id_um']==0 && $header['id_slip_setoran'] == 0){?>
                     <div class="row">
                         <div class="col-md-4">
                             Nomor Rekening
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_po" name="no_po" readonly="readonly"
+                            <input type="text" id="no_rek" name="no_rek" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_giro']; ?>">
+                        </div>
+                    </div>
+                    <?php
+                    }else if($header['id_slip_setoran']!=0){
+                    ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nomor Pembayaran
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_pembayaran" name="no_pembayaran" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['no_pembayaran']; ?>">
                         </div>
                     </div>
                     <?php

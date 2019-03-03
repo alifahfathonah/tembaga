@@ -49,6 +49,7 @@ class Ingot extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
+        $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('PRD', $tgl_input); 
         
@@ -67,13 +68,30 @@ class Ingot extends CI_Controller{
 
             $detail = array(
                 'produksi_ingot_id'=> $insert_id,
-                'rongsok_id'=>0,
+                'rongsok_id'=>$this->input->post('jenis_barang'),
                 'qty'=>$this->input->post('qty'),
+                'flag_spb'=>1,
                 'created'=>$user_id,
                 'created_by'=>$tanggal
             );
+            $this->db->insert('produksi_ingot_detail', $detail);
 
-            if($this->db->insert('produksi_ingot_detail', $detail)){
+            $code_spb = $this->Model_m_numberings->getNumbering('SPB', $tgl_input);
+            $data_spb = array(
+                        'no_spb'=> $code_spb,
+                        'tanggal'=> $tgl_input,
+                        'produksi_ingot_id'=> $insert_id,
+                        'jenis_barang'=> $this->input->post('jenis_barang'),
+                        'jumlah'=> $this->input->post('qty'),
+                        'remarks'=> $this->input->post('remarks'),
+                        'created'=> $tanggal,
+                        'created_by'=> $user_id,
+                        'modified'=> $tanggal,
+                        'modified_by'=> $user_id
+                    );
+            $this->db->insert('spb', $data_spb);
+
+            if($this->db->trans_complete()){
                 $this->session->set_flashdata('flash_msg', 'Data produksi berhasil di simpan dengan nomor '.$code);
                 redirect('index.php/Ingot');  
             }else{
@@ -1143,21 +1161,27 @@ class Ingot extends CI_Controller{
         $spb_id = $this->input->post('id');
         
         $this->db->trans_start();
-        
+        $this->load->model('Model_ingot');
+        $data['check'] = $this->Model_ingot->check_spb($spb_id)->row_array();
+        if(((int)$data['check']['tot_so']) >= (0.9*((int)$data['check']['tot_spb']))){
+            $status = 1;
+        }else{
+            $status = 4;
+        }
         #Update status SPB
         $this->db->where('id', $spb_id);
         $this->db->update('spb', array(
-                        'status'=> 1,
+                        'status'=> $status,
                         'approved'=> $tanggal,
                         'approved_by'=>$user_id
         ));
 
         #loop SPB fulfilment
-        $this->load->model('Model_ingot');
         $details = $this->Model_ingot->approve_loop($spb_id)->result();
         foreach ($details as $v) {
         	#update dtr_detail flag_taken
         	$this->db->where('id',$v->dtr_detail_id);
+            $this->db->where('flag_taken', 0);
         	$this->db->update('dtr_detail',array(
         					'flag_taken' => 1,
                             'tanggal_keluar' => $tgl_input

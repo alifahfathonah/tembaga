@@ -31,7 +31,7 @@
                             No. Laporan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_produksi" name="no_produksi" readonly="readonly"
+                            <input type="text" id="no_prd" name="no_prd" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_laporan_produksi']; ?>">
                             
@@ -106,8 +106,6 @@
                             <input type="hidden" name="id_packing" id="id_packing">                       
                         </div>
                     </div>
-                   
-
                 </div>              
             </div>
             <hr class="divider"/>
@@ -119,14 +117,27 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th>No</th>
+                                <th>No Produksi</th>
                                 <th></th>
+                                <th>Bruto</th>
+                                <th>Berat Packing</th>
                                 <th>Netto (Kg)</th>
                                 <th>Nomor Packing / Barcode</th>
-                                <th>Actions</th>
+                                <th width="20%">Actions</th>
                             </thead>
                             <tbody id="boxDetail">
 
                             </tbody>
+                            <tr>
+                                <td style="text-align:center"><i class="fa fa-plus"></td>
+                                <td><input type="text" id="no_produksi" name="no_produksi" class="form-control myline"></td>
+                                <td><a href="javascript:;" onclick="timbang_netto()" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>
+                                <td><input type="number" id="bruto" name="bruto" class="form-control myline"/></td>
+                                <td><input type="number" id="berat_bobbin" = name="berat_bobbin" class="form-control myline"/></td>
+                                <td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"/></td>
+                                <td><input type="text" value="Auto" class="form-control myline" readonly="readonly"></td>
+                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -155,6 +166,7 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th>No</th>
+                                <th>Bruto</th>
                                 <th>Netto (Kg)</th>
                                 <th>Nomor Packing / Barcode</th>
                                 <th>Keterangan</th>
@@ -167,6 +179,7 @@
                             ?>
                             <tr>
                                 <td style="text-align:center;"><?php echo $no; ?></td>
+                                <td><?php echo $row->bruto; ?></td>
                                 <td><?php echo $row->netto; ?></td>       
                                 <td><?php echo $row->no_packing_barcode; ?></td>
                                 <td><?php echo $row->keterangan; ?></td>
@@ -200,6 +213,14 @@
     </div>
 </div> 
 <script>
+function timbang_netto(){
+    var bruto = $("#bruto").val();
+    var berat_palette = $("#berat_bobbin").val();
+    var total_netto = bruto - berat_palette;
+    const total = total_netto.toFixed(2);
+    $("#netto").val(total);
+}
+
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
@@ -208,8 +229,6 @@ function simpanData(){
         $('#formku').submit(); 
     };
 };
-
-
 
 function loadDetail(id){
     $.ajax({
@@ -250,19 +269,27 @@ function saveDetail(){
         $('#message').html("Silahkan pilih packing barang!");
         $('.alert-danger').show(); 
     } else{
+        console.log($('#no_produksi').val());
         $.ajax({
             type:"POST",
             url:'<?php echo base_url('index.php/GudangFG/save_detail_rambut'); ?>',
             data:{
                 id:$('#id').val(),
+                no_produksi: $('#no_produksi').val(),
+                bruto:$('#bruto').val(),
                 netto: $('#netto').val(),
                 ukuran: $('#ukuran').val(),
+                berat_bobbin: $('#berat_bobbin').val(),
                 no_packing: $('#no_packing').val(),
                 id_packing: $('#id_packing').val()
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
+                    $('#no_produksi').val('');
+                    $('#bruto').val('');
+                    $('#berat_bobbin').val('');
+                    $('#netto').val('');
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{
@@ -273,8 +300,6 @@ function saveDetail(){
         });
     }
 }
-
-
 
 function hapusDetail(id){
     var r=confirm("Anda yakin menghapus item barang ini?");
@@ -294,6 +319,9 @@ function hapusDetail(id){
     }
 }
 
+function printBarcode(id){
+    window.open('<?php echo base_url('index.php/GudangFG/print_barcode_kardus?id=');?>'+id,'_blank');
+}
 </script>
 
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
@@ -302,4 +330,3 @@ function hapusDetail(id){
 <script>    
     loadDetail(<?php echo $header['id']; ?>);
 </script>
-      

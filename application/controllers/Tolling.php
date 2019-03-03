@@ -473,6 +473,37 @@ class Tolling extends CI_Controller{
         redirect('index.php/BeliFinishGood/proses_matching/'.$this->input->post('po_id'));
     }
 
+    function matching_so(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $so_id = $this->uri->segment(3);
+        
+        $data['content']= "tolling_titipan/matching_so";
+        $this->load->model('Model_tolling_titipan');
+        $data['header_so']  = $this->Model_tolling_titipan->show_header_so($so_id)->row_array();
+        $data['details_so'] = $this->Model_tolling_titipan->show_detail_so($so_id)->result();
+
+        $dtr_app = $this->Model_tolling_titipan->get_dtr_approve($so_id)->result();
+        foreach ($dtr_app as $index=>$row){
+            $dtr_app[$index]->details = $this->Model_tolling_titipan->show_detail_dtr($row->id)->result();
+        }
+        $data['dtr_app'] = $dtr_app;
+        $c_id = $data['header_so']['m_customer_id'];
+        $dtr = $this->Model_tolling_titipan->get_dtr($c_id)->result();
+        foreach ($dtr as $index=>$row){
+            $dtr[$index]->details = $this->Model_tolling_titipan->show_detail_dtr($row->id)->result();
+        }
+        $data['dtr'] = $dtr;
+        $this->load->view('layout', $data);
+    }
+
     function approve_matching(){
         $dtr_id = $this->input->post('dtr_id');
         $so_id = $this->input->post('so_id');
@@ -1801,7 +1832,7 @@ class Tolling extends CI_Controller{
             'flag_invoice'=>0
         ));
 
-        if(empty($list_produksi)){
+        if(empty($list_produksi) && $this->input->post('status_spb') == 1){
             $this->db->where('id',$so_id);
             $this->db->update('sales_order', array(
                 'flag_sj'=>1
@@ -2345,6 +2376,8 @@ class Tolling extends CI_Controller{
         
         $this->load->model('Model_tolling_titipan');
         $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
+        $this->load->model('Model_gudang_fg');
+        $data['packing'] = $this->Model_gudang_fg->packing_fg_list()->result();
         $this->load->view('layout', $data);
     }
 
@@ -2365,6 +2398,7 @@ class Tolling extends CI_Controller{
                 'tanggal'=> $tgl_input,
                 'customer_id'=>$this->input->post('customer_id'),
                 'jenis_barang'=>$this->input->post('jenis_barang'),
+                'jenis_packing'=>$this->input->post('packing'),
                 'remarks'=>$this->input->post('remarks'),
                 'created'=> $tanggal,
                 'created_by'=> $user_id,
@@ -2396,9 +2430,15 @@ class Tolling extends CI_Controller{
             }
             $data['group_id']  = $group_id;
 
-            $data['content']= "tolling_titipan/edit_dtt";
             $this->load->model('Model_tolling_titipan');
-            $data['header'] = $this->Model_tolling_titipan->show_header_dtt($id)->row_array();  
+            $data['header'] = $this->Model_tolling_titipan->show_header_dtt($id)->row_array();
+            if($data['header']['jenis_packing']=='KARDUS'){
+                $data['content']= "tolling_titipan/edit_dtt_kardus";
+                $this->load->model('Model_gudang_fg');
+                $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('KARDUS')->result();
+            }else{
+                $data['content']= "tolling_titipan/edit_dtt";
+            }
             $jenis = $data['header']['jenis_barang'];
             $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
             $data['list_barang'] = $this->Model_tolling_titipan->jenis_barang($jenis)->result();
@@ -2406,6 +2446,52 @@ class Tolling extends CI_Controller{
         }else{
             redirect('index.php/Tolling');
         }
+    }
+
+    function delete_detail_rambut(){
+        $id = $this->input->post('id');
+        $return_data = array();
+
+        $this->db->where('id', $id);
+        if($this->db->delete('dtt_detail')){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menghapus item barang! Silahkan coba kembali";
+        }           
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
+
+    function save_detail_rambut(){
+        $return_data = array();
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $user_id  = $this->session->userdata('user_id');
+
+        $this->db->trans_start();
+
+        $this->db->insert('dtt_detail', array(
+            'dtt_id'=>$this->input->post('id'),
+            'jenis_barang_id' => $this->input->post('jb'),
+            'bruto' => $this->input->post('bruto'),
+            'berat_bobbin' => $this->input->post('berat'),
+            'netto' => $this->input->post('netto'),
+            'no_bobbin' => $this->input->post('no_bobbin'),
+            'no_packing' => $this->input->post('no_packing'),
+            'line_remarks' => $this->input->post('keterangan'),
+            'created' => $tanggal,
+            'created_by' => $user_id,
+            'tanggal_masuk'=> $tgl_input
+        ));
+        if($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
     }
 
     function save_dtt_detail(){
@@ -2460,6 +2546,38 @@ class Tolling extends CI_Controller{
             $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTT, silahkan coba kembali!');
         }
         redirect('index.php/Tolling/dtt_list');
+    }
+
+    function load_detail_rambut(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $no    = 1;
+        $this->load->model('Model_tolling_titipan');
+        $myDetail = $this->Model_tolling_titipan->load_detail_dtt($id)->result(); 
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->jenis_barang.'</td>';
+            $tabel .= '<td>'.$row->uom.'</td>';
+            $tabel .= '<td><a href="javascript:;" onclick="timbang(this)" class="btn btn-xs btn-circle blue disabled"><i class="fa fa-dashboard"></i> Timbang</a></td>';
+            $tabel .= '<td>'.$row->bruto.'</td>';
+            $tabel .= '<td>'.$row->berat_bobbin.'</td>';
+            $tabel .= '<td>'.$row->netto.'</td>';
+            $tabel .= '<td>'.$row->no_packing.'</td>';
+            $tabel .= '<td>'.$row->line_remarks.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a>'
+                    . '<a href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay"'
+                    . 'onclick="printBarcode('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Print Barcode </a></td>';
+            $tabel .= '</tr>';            
+            $no++;
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
     }
 
     function spb_list(){
@@ -2743,6 +2861,105 @@ class Tolling extends CI_Controller{
         }else{
             $this->session->set_flashdata('flash_msg', 'Pembuatan voucher finish good gagal, penomoran belum disetup!');
             redirect('index.php/Tolling/po_list');
+        }
+    }
+
+    function print_barcode_dtt(){
+        $fg_id = $_GET['fg'];
+        $bruto = $_GET['b'];
+        $berat_bobbin = $_GET['bp'];
+        $netto = $_GET['n'];
+        $no_packing = $_GET['np'];
+        if($netto){
+
+        $this->load->model('Model_sales_order');
+        $data = $this->Model_sales_order->get_jb($fg_id)->row_array();
+
+        $current = '';
+        $data_printer = $this->db->query("select * from m_print_barcode_line")->result_array();
+        $data_printer[17]['string1'] = 'BARCODE 488,335,"39",41,0,180,2,6,"'.$data['kode'].'"';
+        $data_printer[18]['string1'] = 'TEXT 386,289,"ROMAN.TTF",180,1,8,"'.$data['kode'].'"';
+        $data_printer[22]['string1'] = 'BARCODE 612,101,"39",41,0,180,2,6,"'.$no_packing.'"';
+        $data_printer[23]['string1'] = 'TEXT 426,55,"ROMAN.TTF",180,1,8,"'.$no_packing.'"';
+        $data_printer[24]['string1'] = 'TEXT 499,260,"4",180,1,1,"'.$no_packing.'"';
+        $data_printer[25]['string1'] = 'TEXT 495,226,"ROMAN.TTF",180,1,14,"'.$bruto.'"';
+        $data_printer[26]['string1'] = 'TEXT 495,188,"ROMAN.TTF",180,1,14,"'.$berat_bobbin.'"';
+        $data_printer[27]['string1'] = 'TEXT 495,147,"0",180,14,14,"'.$netto.'"';
+        $data_printer[31]['string1'] = 'TEXT 496,373,"2",180,1,1,"'.$data['jenis_barang'].'"';
+        $data_printer[32]['string1'] = 'TEXT 497,407,"4",180,1,1,"'.$data['kode'].'"';
+        $jumlah = count($data_printer);
+        for($i=0;$i<$jumlah;$i++){
+        $current .= $data_printer[$i]['string1']."\n";
+        }
+        echo "<form method='post' id=\"coba\" action=\"http://localhost/print/print.php\">";
+        echo "<input type='hidden' id='nospb' name='nospb' value='".$current."'>";
+        echo "</form>";
+        echo '<script type="text/javascript">document.getElementById(\'coba\').submit();</script>';
+        }else{
+            'GAGAL';
+        }
+    }
+
+    function get_bobbin(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_beli_fg');
+        $barang= $this->Model_beli_fg->show_data_bobbin($id)->row_array();
+        // $this->load->model('Model_tolling_titipan');
+        // $check = $this->Model_tolling_titipan->check_urut()->row_array();
+        // $no_urut = $check['no_urut'];
+        // $no_urut = $no_urut + 1;
+        // switch (strlen($no_urut)) {
+        //     case 1 : $urutan = "000".$no_urut;
+        //         break;
+        //     case 2 : $urutan = "00".$no_urut;
+        //         break;
+        //     case 3 : $urutan = "0".$no_urut;
+        //         break;
+            
+        //     default:
+        //         $urutan = $no_urut;
+        //         break;
+        // }
+
+        $no_bobbin = $barang['nomor_bobbin'];
+        $kode_bobbin = substr($no_bobbin, 0,1);
+        $urut_bobbin = substr($no_bobbin, 1,4);
+        $ukuran = $this->input->post('ukuran');
+        $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin;
+        header('Content-Type: application/json');
+        echo json_encode($barang); 
+    }
+
+    function print_barcode_kardus(){
+        $id = $_GET['id'];
+        if($id){
+
+        $this->load->model('Model_tolling_titipan');
+        $data = $this->Model_tolling_titipan->get_detail_dtt($id)->row_array();
+        $berat = $data['bruto'] - $data['netto'];
+
+        $current = '';
+        $data_printer = $this->db->query("select * from m_print_barcode_line")->result_array();
+        $data_printer[17]['string1'] = 'BARCODE 488,335,"39",41,0,180,2,6,"'.$data['kode'].'"';
+        $data_printer[18]['string1'] = 'TEXT 386,289,"ROMAN.TTF",180,1,8,"'.$data['kode'].'"';
+        $data_printer[22]['string1'] = 'BARCODE 612,101,"39",41,0,180,2,6,"'.$data['no_packing'].'"';
+        $data_printer[23]['string1'] = 'TEXT 426,55,"ROMAN.TTF",180,1,8,"'.$data['no_packing'].'"';
+        $data_printer[24]['string1'] = 'TEXT 499,260,"4",180,1,1,"'.$data['no_packing'].'"';
+        $data_printer[25]['string1'] = 'TEXT 495,226,"ROMAN.TTF",180,1,14,"'.$data['bruto'].'"';
+        $data_printer[26]['string1'] = 'TEXT 495,188,"ROMAN.TTF",180,1,14,"'.$berat.'"';
+        $data_printer[27]['string1'] = 'TEXT 495,147,"0",180,14,14,"'.$data['netto'].'"';
+        $data_printer[31]['string1'] = 'TEXT 496,373,"2",180,1,1,"'.$data['jenis_barang'].'"';
+        $data_printer[32]['string1'] = 'TEXT 497,407,"4",180,1,1,"'.$data['kode'].'"';
+        $jumlah = count($data_printer);
+        for($i=0;$i<$jumlah;$i++){
+        $current .= $data_printer[$i]['string1']."\n";
+        }
+        echo "<form method='post' id=\"coba\" action=\"http://localhost/print/print.php\">";
+        echo "<input type='hidden' id='nospb' name='nospb' value='".$current."'>";
+        echo "</form>";
+        echo '<script type="text/javascript">document.getElementById(\'coba\').submit();</script>';
+        }else{
+            'GAGAL';
         }
     }
 }

@@ -27,8 +27,12 @@
                 <div class="caption">
                     <i class="fa fa-file-word-o"></i>Data Pembayaran
                 </div> 
-                <div class="tools">    
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Finance/add_pembayaran"> <i class="fa fa-plus"></i> Input Pembayaran</a>              
+                <div class="tools">
+                <?php
+                    if( ($group_id==1)||($hak_akses['add_pmb']==1) ){
+                ?>
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Finance/add_pembayaran"> <i class="fa fa-plus"></i> Input Pembayaran</a>
+                <?php } ?>      
                 </div>        
             </div>
             <div class="portlet-body">
@@ -70,9 +74,11 @@
                             ?>
                         </td>
                         <td>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/view_pmb/<?php echo $data->id; ?>" 
-                               style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
-                        <?php if($data->status==0 || $data->status==3){ ?>
+                        <?php
+                            if( ($group_id==1)||($hak_akses['view_pmb']==1) ){
+                        ?>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/view_pmb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                        <?php } if($data->status==0 || $data->status==3){ ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/Finance/matching_pmb/<?php echo $data->id; ?>"
                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                         <?php } ?>

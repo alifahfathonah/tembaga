@@ -195,7 +195,7 @@
 <script>
 function hitung_susut(){
     var susut = Number(Number($('#total_rongsok').val()) - (Number($('#ingot_berat').val()) + Number($('#bs').val()) + Number($('#ampas').val()) + Number($('#serbuk').val())));
-    $('#susut').val(susut);
+    $('#susut').val(susut.toFixed(2));
 }
 
 function get_detail_produksi(id){
@@ -206,9 +206,9 @@ function get_detail_produksi(id){
         cache: false,
         success: function(result) {
             $("#no_spb").val(result['no_spb']);
-            $("#total_rongsok").val(Number(result['total_rongsok'])); 
+
+            $("#total_rongsok").val(Number(result['total_rongsok']).toFixed(2)); 
             hitung_susut();
-            
         } 
     });
 }

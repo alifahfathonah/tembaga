@@ -37,7 +37,7 @@
                         </tr>
                         <tr>
                             <td>Jenis Barang</td>
-                            <td>: <?php echo $header['jenis_barang']; ?></td>
+                            <td>: Finish Good</td>
                         </tr>
                         <tr>
                             <td>Penimbang</td>
@@ -68,8 +68,8 @@
                                 echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->jenis_barang.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->uom.'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->bruto,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->netto,0,',', '.').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.$row->bruto.'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.$row->netto.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000">'.$row->no_bobbin.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->no_packing.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->line_remarks.'</td>';

@@ -93,10 +93,26 @@
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
-
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-5">
+                    <div class="row">
+                        <?php if($myData['flag_produksi']==2){
+                                $flag_produksi = 'ROLLING';
+                            }else if($myData['flag_produksi']==3){
+                                $flag_produksi = 'CUCI';
+                            }else if($myData['flag_produksi']==5){
+                                $flag_produksi = 'KIRIM KE RONGSOK';
+                            }else{
+                                $flag_produksi = 'LAINNYA';
+                            } ?>
+                        <div class="col-md-4">
+                            Keperluan
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="keperluan" class="form-control myline" style="margin-bottom:5px" readonly="readonly"  value="<?=$flag_produksi;?>">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
@@ -177,7 +193,37 @@
                         </div>
                     </div>
                     <hr class="divider"/>
-                    <?php if ($myData['status']==0) { ?>
+                    <?php if ($myData['status']==0 || $myData['status']==4) { ?>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 align="center">SPB WIP yang Sudah Di Penuhi</h4>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
+                                        <thead>
+                                            <th style="width:40px">No</th>
+                                            <th>Nama Barang</th>
+                                            <th>UOM</th>
+                                            <th>Quantity</th>
+                                            <th>Berat (kg)</th>
+                                            <th>Keterangan</th>
+                                        </thead>
+                                        <tbody>
+                                            <?php $no=1; foreach($detailSPB as $v) { ?>
+                                            <tr>
+                                                <td><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
+                                                <td><?=$v->jenis_barang;?></td>
+                                                <td><?=$v->uom;?></td>
+                                                <td><?=$v->qty;?></td>
+                                                <td><?=$v->berat;?></td>
+                                                <td><?=$v->keterangan;?></td>
+                                            </tr>
+                                            <?php $no++; } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                        </div>
+                    </div>
+                    <hr class="divider"/>
                     <div class="row">
                         <div class="col-md-12">
                             <h4 align="center">Pemenuhan SPB WIP</h4>
@@ -215,10 +261,10 @@
 
                         </div>
                     </div>
-                <?php } else { ?>
+                <?php }else if($myData['status']==3){ ?>
                     <div class="row">
                         <div class="col-md-12">
-                            <h4 align="center">Pemenuhan SPB WIP</h4>
+                            <h4 align="center">SPB WIP yang Sudah Di Penuhi</h4>
                                 <div class="table-scrollable">
                                     <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
                                         <thead>
@@ -243,7 +289,76 @@
                                         </tbody>
                                     </table>
                                 </div>
-
+                        </div>
+                    </div>
+                    <hr class="divider"/>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 align="center">Pemenuhan SPB WIP</h4>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
+                                        <thead>
+                                            <th style="width:40px">No</th>
+                                            <th>Nama Barang</th>
+                                            <th>UOM</th>
+                                            <th>Quantity</th>
+                                            <th>Berat (kg)</th>
+                                            <th>Keterangan</th>
+                                        </thead>
+                                        <tbody>
+                                            <?php $no=1; foreach($detailFulfilment as $v) { ?>
+                                            <tr>
+                                                <td><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
+                                                <td><?=$v->jenis_barang;?></td>
+                                                <td><?=$v->uom;?></td>
+                                                <td><?=$v->qty;?></td>
+                                                <td><?=$v->berat;?></td>
+                                                <td><?=$v->keterangan;?></td>
+                                            </tr>
+                                            <?php $no++; } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                        </div>
+                    </div>
+                <?php }else if($myData['status']==1){ ?>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 align="center">SPB WIP yang Di Penuhi</h4>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
+                                        <thead>
+                                            <th style="width:40px">No</th>
+                                            <th>Nama Barang</th>
+                                            <th>UOM</th>
+                                            <th>Quantity</th>
+                                            <th>Berat (kg)</th>
+                                            <th>Keterangan</th>
+                                        </thead>
+                                        <tbody>
+                                            <?php $no=1; $qty = 0; $berat = 0; foreach($detailSPB as $v) { ?>
+                                            <tr>
+                                                <td><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
+                                                <td><?=$v->jenis_barang;?></td>
+                                                <td><?=$v->uom;?></td>
+                                                <td><?=$v->qty;?></td>
+                                                <td><?=$v->berat;?></td>
+                                                <td><?=$v->keterangan;?></td>
+                                            </tr>
+                                            <?php 
+                                            $no++; 
+                                            $qty += $v->qty;
+                                            $berat += $v->berat;
+                                            } ?>
+                                            <tr>
+                                                <td colspan="3" style="text-align: right;"><strong>Total</strong></td>
+                                                <td><?=number_format($qty,0,',', '.');?></td>
+                                                <td><?=number_format($berat,0,',', '.');?></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                         </div>
                     </div>
                 <?php } ?>
@@ -254,18 +369,24 @@
             <div class="row">
                 <div class="col-md-12">
                     <?php
-                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && $myData['status']=="0"){
+                        if( ($group_id==1 || $hak_akses['save_spb']==1) && ($myData['status']=="0" || $myData['status']=="4")){
+                            echo '<a href="javascript:;" class="btn green" onclick="saveData();"> '
+                                .'<i class="fa fa-check"></i> Save </a> ';
+                        }
+                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && $myData['status']=="3"){
                             echo '<a href="javascript:;" class="btn green" onclick="approveData();"> '
                                 .'<i class="fa fa-check"></i> Approve </a> ';
                         }
-                        if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="0"){
+                        if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="3"){
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
                         }
                     ?>
-
                     <a href="<?php echo base_url('index.php/GudangWIP/spb_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
+                    <?php if($group_id==1 || $hak_akses['print_spb']==1){ ?>
+                    <a class="btn btn-circle blue-ebonyclay" href="<?php echo base_url('index.php/GudangWIP/print_spb_fulfilment/').$myData['id'];?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
+                    <?php } ?>
                 </div>    
             </div>
         </form>
@@ -286,6 +407,14 @@ function approveData(){
     var r=confirm("Anda yakin meng-approve permintaan barang ini?");
     if (r==true){
         $('#formku').attr("action", "<?php echo base_url(); ?>index.php/GudangWIP/approve_spb");    
+        $('#formku').submit(); 
+    }
+};
+
+function saveData(){
+    var r=confirm("Anda yakin menyimpan permintaan barang ini?");
+    if (r==true){
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/GudangWIP/save_spb_fulfilment");    
         $('#formku').submit(); 
     }
 };

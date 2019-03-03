@@ -48,25 +48,29 @@
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Packing</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Bruto</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Netto</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Berat Bobbin</strong></td>
                             <td style="text-align:center; border:1px solid #000"><strong>Keterangan</strong></td>
                         </tr>
                         <?php
                             $no = 1;
                             $netto = 0;
                             $bruto = 0;
+                            $berat = 0;
                             foreach ($details as $row){
                                 echo '<tr>';
                                 echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->jenis_barang.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->nomor_bobbin.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->no_packing_barcode.'</td>';
-                                echo '<td style="text-align: right; border-left:1px solid #000">'.number_format($row->bruto,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->netto,0,',', '.').'</td>';
+                                echo '<td style="text-align: right; border-left:1px solid #000">'.$row->bruto.'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.$row->netto.'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.$row->berat_bobbin.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000"></td>';
                                 echo '</tr>';
                                 $no++;
                                 $netto += $row->netto;
                                 $bruto += $row->bruto;
+                                $berat += $row->berat_bobbin;
                             }
                         ?>
                         <tr style="height:100px">
@@ -76,12 +80,14 @@
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                         </tr>
                         <tr>
                             <td style="text-align: right;" colspan="4"><strong>Total</strong></td>
-                            <td style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000;"><strong><?php echo number_format($bruto,0,',','.') ?></strong></td>
-                            <td style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000; border-right: :1px solid #000;"><strong><?php echo number_format($netto,0,',','.') ?></strong></td>
+                            <td style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000;"><strong><?php echo $bruto ?></strong></td>
+                            <td style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000; border-right: :1px solid #000;"><strong><?php echo $netto ?></strong></td>
+                            <td style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000; border-right: :1px solid #000;"><strong><?php echo $berat ?></strong></td>
                             <td style="border-left:1px solid #000;"></td>
                         </tr>
                     </table>

@@ -109,7 +109,7 @@ class BeliFinishGood extends CI_Controller{
             $this->load->model('Model_beli_fg');
             $data['header'] = $this->Model_beli_fg->show_header_po($id)->row_array();  
             $data['list_data'] = $this->Model_beli_fg->load_detail_po($id)->result();
-            $data['list_detail'] = $this->Model_beli_fg->show_data_po($id)->result();
+            $data['list_detail'] = $this->Model_beli_fg->get_jb($id)->result();
             $data['list_fg'] = $this->Model_beli_fg->list_fg()->result();
 
             $this->load->model('Model_beli_sparepart');
@@ -123,7 +123,7 @@ class BeliFinishGood extends CI_Controller{
     function get_uom(){
         $id = $this->input->post('id');
         $this->load->model('Model_beli_fg');
-        $fg = $this->Model_beli_fg->show_data_po($id)->row_array();
+        $fg = $this->Model_beli_fg->get_jb($id)->row_array();
         
         header('Content-Type: application/json');
         echo json_encode($fg); 
@@ -261,47 +261,18 @@ class BeliFinishGood extends CI_Controller{
 
         $data['content']= "beli_fg/dtbj_list";
         $this->load->model('Model_beli_fg');
+        $this->load->model('Model_beli_rongsok');
+        $this->load->model('Model_gudang_fg');
         $data['list_data'] = $this->Model_beli_fg->dtbj_list()->result();
+        $data['supplier_list'] = $this->Model_beli_rongsok->supplier_list()->result();
+        $data['packing'] = $this->Model_gudang_fg->packing_fg_list()->result();
 
         $this->load->view('layout', $data);
     }
 
-    function create_dtbj(){
-        $module_name = $this->uri->segment(1);
-        // $id = $this->uri->segment(3);
-        // if($id){
-            $group_id    = $this->session->userdata('group_id');        
-            if($group_id != 1){
-                $this->load->model('Model_modules');
-                $roles = $this->Model_modules->get_akses($module_name, $group_id);
-                $data['hak_akses'] = $roles;
-            }
-            $data['group_id']  = $group_id;
-
-            $data['content']= "beli_fg/create_dtbj";
-            $this->load->model('Model_beli_fg');
-            $data['list_fg_on_po'] = $this->Model_beli_fg->list_fg()->result();
-            
-            $this->load->model('Model_beli_rongsok');
-            $data['list_rongsok_on_po'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
-            $data['supplier_list'] = $this->Model_beli_rongsok->supplier_list()->result();
-            // $data['header'] = $this->Model_beli_rongsok->show_header_po($id)->row_array();           
-            // $data['po_id'] = $id;
-            // $this->load->model('Model_rongsok');
-            // $list_rongsok_on_po = $this->Model_rongsok->list_data_on_po($id)->result();
-            // $opt_rongsok = '';
-            // foreach ($list_rongsok_on_po as $value){
-            //     $opt_rongsok .= "<option value='".$value->id."'>".$value->nama_item."</option>";
-            // }
-            // $data['option_rongsok'] = $opt_rongsok;
-            $this->load->view('layout', $data);   
-        // }else{
-        //     redirect('index.php/BeliRongsok');
-        // }
-    }
-
     function get_bobbin(){
         $id = $this->input->post('id');
+        $jp = $this->input->post('jp');
         $this->load->model('Model_beli_fg');
         $barang= $this->Model_beli_fg->show_data_bobbin($id)->row_array();
         // $barang['berat_bobbin']=number_format($barang['berat'],2);
@@ -350,7 +321,7 @@ class BeliFinishGood extends CI_Controller{
         //     $ukuran = substr($no_bobbin, 0,1);
         //     $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin;
         // }
-        $check = $this->Model_beli_fg->check_urut()->row_array();
+        $check = $this->Model_beli_fg->check_urut($jp)->row_array();
         $no_urut = $check['no_urut'];
         $no_urut = $no_urut + 1;
         switch (strlen($no_urut)) {
@@ -368,39 +339,101 @@ class BeliFinishGood extends CI_Controller{
 
         $no_bobbin = $barang['nomor_bobbin'];
         $kode_bobbin = substr($no_bobbin, 0,1);
-        $urut_bobbin = substr($no_bobbin, 1,4);
-        $ukuran = substr($no_bobbin, 0,1);
-        $barang['no_packing'] = date("ymd").$ukuran.$urut_bobbin.$urutan;
+        $ukuran = $this->input->post('ukuran');
+        $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urutan;
         header('Content-Type: application/json');
         echo json_encode($barang); 
+    }
+
+    function save_header_dtbj(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('DTBJ', $tgl_input); 
+        $data = array(
+                        'no_dtbj'=> $code,
+                        'tanggal'=> $tgl_input,
+                        'supplier_id'=> $this->input->post('supplier_id'),
+                        'jenis_packing'=> $this->input->post('packing'),
+                        'created'=> $tanggal,
+                        'created_by'=> $user_id
+                    );
+
+        if($this->db->insert('dtbj', $data)){
+            redirect(base_url('index.php/BeliFinishGood/create_dtbj/'.$this->db->insert_id()));
+        } else {
+            $this->session->set_flashdata('flash_msg', 'Laporan Produksi Finish Good gagal disimpan, silahkan dicoba kembali!');
+            redirect(base_url('index.php/BeliFinishGood/dtbj_list'));
+        }
+    }
+
+    function create_dtbj(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Create DTBJ";
+
+            $this->load->model('Model_beli_fg');
+            $data['list_fg_on_po'] = $this->Model_beli_fg->list_fg()->result();
+            $data['header'] = $this->Model_beli_fg->show_header_dtbj($id)->row_array();
+            echo $data['header']['jenis_packing'];
+            $this->load->model('Model_gudang_fg');
+            $packing = $this->Model_gudang_fg->show_data_packing($data['header']['jenis_packing'])->row_array()['packing'];
+            if($packing=="BOBBIN"){
+                $data['content']   = "beli_fg/create_dtbj_bobbin";
+                $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result();
+            } else if ($packing == "KERANJANG") {
+                $data['content'] = "beli_fg/create_dtbj_keranjang";
+                $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('KERANJANG')->result();
+                $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result(); 
+            } else if ($packing == "ROLL") {
+                $data['content'] = "beli_fg/create_dtbj_roll";
+                $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('ROLL')->row_array();
+                $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result(); 
+            } else {
+                $data['content'] = "beli_fg/create_dtbj_rambut";
+                $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('KARDUS')->result();
+                $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result();
+            }
+            $this->load->model('Model_beli_rongsok');
+            $data['list_rongsok_on_po'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
+            $data['supplier_list'] = $this->Model_beli_rongsok->supplier_list()->result();
+
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/BeliRongsok');
+        }
     }
 
     function save_dtbj(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-
+ 
         $this->db->trans_start();
-        $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('DTBJ', $tgl_input); 
-        
-        if($code){        
-            $data = array(
-                        'no_dtbj'=> $code,
-                        'tanggal'=> $tgl_input,
-                        'supplier_id'=> $this->input->post('supplier_id'),
-                        'jenis_barang'=> $this->input->post('jenis_barang'),
-                        'remarks'=> $this->input->post('remarks'),
-                        'created'=> $tanggal,
-                        'created_by'=> $user_id
-                    );
-            $this->db->insert('dtbj', $data);
-            $dtbj_id = $this->db->insert_id();
+
+            $this->db->where('id', $this->input->post('id'));
+            $this->db->update('dtbj', array(
+                'remarks'=>$this->input->post('remarks'),
+                'supplier_id'=>$this->input->post('supplier_id'),
+                'modified'=>$tanggal,
+                'modified_by'=>$user_id
+            ));
+
             $details = $this->input->post('myDetails');
             foreach ($details as $row){
                 if($row['fg_id']!=0){
                     $this->db->insert('dtbj_detail', array(
-                        'dtbj_id'=>$dtbj_id,
+                        'dtbj_id'=>$this->input->post('id'),
                         'jenis_barang_id'=>$row['fg_id'],
                         'bruto'=>$row['bruto'],
                         'berat_bobbin'=>$row['berat_bobbin'],
@@ -413,9 +446,11 @@ class BeliFinishGood extends CI_Controller{
                         'tanggal_masuk'=>$tgl_input
                     ));
 
-                    $updatebobbin = array('status'=>1);
-                    $this->db->where('nomor_bobbin', $row['no_bobbin']);
-                    $this->db->update('m_bobbin', $updatebobbin);
+                    if(isset($row['bobbin'])){
+                        $updatebobbin = array('status'=>1);
+                        $this->db->where('nomor_bobbin', $row['no_bobbin']);
+                        $this->db->update('m_bobbin', $updatebobbin);
+                    }
                 }
             }
             
@@ -424,15 +459,11 @@ class BeliFinishGood extends CI_Controller{
             // $this->db->update('po', array('status'=>2, 'modified'=>$tanggal, 'modified_by'=>$user_id));
                     
             if($this->db->trans_complete()){    
-                $this->session->set_flashdata('flash_msg', 'DTBJ berhasil di-create dengan nomor : '.$code);                 
+                $this->session->set_flashdata('flash_msg', 'DTBJ berhasil di-create dengan nomor : '.$this->input->post('no_dtr'));                 
             }else{
                 $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTBJ, silahkan coba kembali!');
             }
-            redirect('index.php/BeliFinishGood/dtbj_list');           
-        }else{
-            $this->session->set_flashdata('flash_msg', 'Pembuatan DTBJ gagal, penomoran belum disetup!');
             redirect('index.php/BeliFinishGood/dtbj_list');
-        }
     }
 
     // function edit_dtbj(){
@@ -543,7 +574,7 @@ class BeliFinishGood extends CI_Controller{
                     #penghitungan +- 10 % PO ke DTR
                     if(((int)$v->tot_netto) >= (0.9*((int)$v->qty))){
                         #update po_detail flag_dtr
-                        $this->Model_beli_fg->update_flag_dtbj_po_detail($po_id,$v->fg_id);
+                        $this->Model_beli_fg->update_flag_dtbj_po_detail($po_id,$v->jenis_barang_id);
                     }
                     $total_qty += $v->qty;
                     $total_netto_dtbj += $v->tot_netto;
@@ -552,7 +583,8 @@ class BeliFinishGood extends CI_Controller{
                if(((int)$total_netto_dtbj) >= (0.9*((int)$total_qty))){
                     $this->db->where('id',$po_id);
                     $this->db->update('po',array(
-                                    'status'=>3));
+                                    'status'=>3,
+                                    'flag_pelunasan'=>0));
                }else {
                     $this->db->where('id',$po_id);
                     $this->db->update('po',array(
@@ -753,6 +785,42 @@ class BeliFinishGood extends CI_Controller{
             $this->load->view('beli_fg/print_voucher', $data);   
         }else{
             redirect('index.php/BeliFinishGood');
+        }
+    }
+
+    function print_barcode(){
+        $jb_id = $_GET['fg'];
+        $bruto = $_GET['b'];
+        $berat_bobbin = $_GET['bb'];
+        $netto = $_GET['n'];
+        $no_packing = $_GET['np'];
+        if($netto){
+
+        $this->load->model('Model_beli_fg');
+        $data = $this->Model_beli_fg->get_jb($jb_id)->row_array();
+
+        $current = '';
+        $data_printer = $this->db->query("select * from m_print_barcode_line where m_print_barcode_id = 1")->result_array();
+        $data_printer[17]['string1'] = 'BARCODE 488,335,"39",41,0,180,2,6,"'.$data['kode'].'"';
+        $data_printer[18]['string1'] = 'TEXT 386,289,"ROMAN.TTF",180,1,8,"'.$data['kode'].'"';
+        $data_printer[22]['string1'] = 'BARCODE 612,101,"39",41,0,180,2,6,"'.$no_packing.'"';
+        $data_printer[23]['string1'] = 'TEXT 426,55,"ROMAN.TTF",180,1,8,"'.$no_packing.'"';
+        $data_printer[24]['string1'] = 'TEXT 499,260,"4",180,1,1,"'.$no_packing.'"';
+        $data_printer[25]['string1'] = 'TEXT 495,226,"ROMAN.TTF",180,1,14,"'.$bruto.'"';
+        $data_printer[26]['string1'] = 'TEXT 495,188,"ROMAN.TTF",180,1,14,"'.$berat_bobbin.'"';
+        $data_printer[27]['string1'] = 'TEXT 495,147,"0",180,14,14,"'.$netto.'"';
+        $data_printer[31]['string1'] = 'TEXT 496,373,"2",180,1,1,"'.$data['jenis_barang'].'"';
+        $data_printer[32]['string1'] = 'TEXT 497,407,"4",180,1,1,"'.$data['kode'].'"';
+        $jumlah = count($data_printer);
+        for($i=0;$i<$jumlah;$i++){
+        $current .= $data_printer[$i]['string1']."\n";
+        }
+        echo "<form method='post' id=\"coba\" action=\"http://localhost/print/print.php\">";
+        echo "<input type='hidden' id='nospb' name='nospb' value='".$current."'>";
+        echo "</form>";
+        echo '<script type="text/javascript">document.getElementById(\'coba\').submit();</script>';
+        }else{
+            'GAGAL';
         }
     }
 }

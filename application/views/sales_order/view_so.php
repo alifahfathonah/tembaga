@@ -22,7 +22,7 @@
             </div>
         </div>
         <?php
-            if( ($group_id==1)||($hak_akses['view_spb']==1) ){
+            if( ($group_id==1)||($hak_akses['view_so']==1) ){
         ?> 
             <div class="row">
                 <div class="col-md-6">

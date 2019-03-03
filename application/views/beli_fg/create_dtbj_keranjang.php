@@ -11,7 +11,6 @@
     </div>
 </div>
 
-
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12">
@@ -37,7 +36,9 @@
                         <div class="col-md-8">
                             <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="Auto Generate">
+                                value="<?= $header['no_dtbj'];?>">
+
+                            <input type="hidden" id="id" name="id" value="<?= $header['id'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -47,7 +48,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('Y-m-d'); ?>">
+                                value="<?= $header['tanggal'];?>">
                         </div>
                     </div>
                     <!-- <div class="row">
@@ -84,7 +85,7 @@
                                 <option value=""></option>
                                 <?php
                                     foreach ($supplier_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_supplier.'</option>';
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['supplier_id'])? 'selected="selected"': '').'>'.$row->nama_supplier.'</option>';
                                     }
                                 ?>
                             </select>
@@ -92,12 +93,12 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Jenis Barang
+                            Jenis Packing
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="jenis_barang" name="jenis_barang" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="FG">
+                                value="KERANJANG">
                         </div>
                     </div> 
                     <div class="row">
@@ -264,8 +265,6 @@ function check_duplicate(){
 function get_uom_po(id, nmr){
     // var idpo = $('#po_id').val();
     if($.trim($('#name_rongsok_'+nmr).val())!=''){    
-    var check = check_duplicate();
-        if(check){
             $.ajax({
                 url: "<?php echo base_url('index.php/BeliFinishGood/get_uom'); ?>",
                 type: "POST",
@@ -276,10 +275,6 @@ function get_uom_po(id, nmr){
                     $('#fg_id_'+nmr).val(id);
                 }
             });
-        }else{
-            $('#message').html("Item tidak boleh sama!");
-            $('.alert-danger').show();
-        }
     }
 }
 
@@ -318,7 +313,7 @@ function saveDetail(id){
                 '</td>'+
                 '<td><input type="text" id="uom_'+new_id+'" name="myDetails['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
                 '<td><input type="text" id="bruto_'+new_id+'" name="myDetails['+new_id+'][bruto]" class="form-control myline" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
-                '<td><input type="text" id="berat_bobbin_'+new_id+'" name="myDetails['+new_id+'][berat_bobbin]" class="form-control myline" value="0" maxlength="10"></td>'+
+                '<td><input type="text" id="berat_bobbin_'+new_id+'" name="myDetails['+new_id+'][berat_bobbin]" class="form-control myline" value="0" maxlength="10" readonly="readonly"></td>'+
                 '<td><input type="text" id="netto_v_'+new_id+'" name="myDetails['+new_id+'][netto_v]" class="form-control myline" value="0" maxlength="10" readonly="readonly"></td>'+
                 '<input type="hidden" name="myDetails['+new_id+'][netto]" id="netto_'+new_id+'">'+
                 '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('+new_id+');" id="timbang_'+new_id+'"> <i class="fa fa-dashboard"></i> Timbang </a></td>'+
@@ -329,7 +324,7 @@ function saveDetail(id){
                     '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
             '</tr>'
         );
-    }
+    }$('#name_rongsok_'+new_id).select2();
 }
 
 function deleteDetail(id){
@@ -356,4 +351,3 @@ $(function(){
     });
 });
 </script>
-      

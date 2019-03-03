@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['add_spb']==1) ){
+            if( ($group_id==1)||($hak_akses['add_invoice']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -66,15 +66,6 @@
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
-                    <div class="row">
-                        <div class="col-md-4">&nbsp;</div>
-                        <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                                <i class="fa fa-floppy-o"></i> Input Details </a>
-                            <a href="<?php echo base_url('index.php/Finance/invoice'); ?>" class="btn blue-hoki"> 
-                            <i class="fa fa-angle-left"></i> Kembali </a>
-                        </div>
-                    </div>
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-5">
@@ -115,6 +106,7 @@
                             </select>
                         </div>
                     </div>
+                    <input type="hidden" id="flag_tolling" name="flag_tolling">
                     <div class="row">
                         <div class="col-md-4">
                             Tanggal Jatuh Tempo<font color="#f00">*</font>
@@ -124,8 +116,63 @@
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;"
                                 value="<?php echo date('Y-m-d'); ?>">
                         </div>
-                    </div>  
+                    </div>
                 </div>         
+            </div>
+            <hr class="divider">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4">
+                            Bank <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="bank_id" name="bank_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($bank_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->kode_bank.' ('.$row->nomor_rekening.')'.'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Diskon
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="diskon" name="diskon" class="form-control myline" style="margin-bottom:5px" value="0" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id)">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Biaya Tambahan
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="add_cost" name="add_cost" class="form-control myline" style="margin-bottom:5px" value="0" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id)">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Materai
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="materai" name="materai" class="form-control myline" style="margin-bottom:5px" value="0" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id)">
+                        </div>
+                    </div>
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <div class="col-md-4">&nbsp;</div>
+                        <div class="col-md-8">
+                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                                <i class="fa fa-floppy-o"></i> Input Details </a>
+                            <a href="<?php echo base_url('index.php/Finance/invoice'); ?>" class="btn blue-hoki"> 
+                            <i class="fa fa-angle-left"></i> Kembali </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
         
@@ -142,6 +189,19 @@
     </div>
 </div> 
 <script>
+function myCurrency(evt) {
+    var charCode = (evt.which) ? evt.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
+        return false;
+    return true;
+}
+
+function getComa(value, id){
+    angka = value.toString().replace(/\./g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    hitungSubTotal();
+}
+
 function get_no_so(id){
     $.ajax({
         url: "<?php echo base_url('index.php/Finance/get_so_list'); ?>",
@@ -169,13 +229,30 @@ function get_no_sj(id){
             $('#surat_jalan_id').select2('val','');
         }
     });
+
+    $.ajax({
+        url: "<?php echo base_url('index.php/Finance/get_flag');?>",
+        type: "POST",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result) {
+            $('#flag_tolling').val(result['flag_tolling']);
+            console.log($('#flag_tolling').val());
+        }
+    });
 }
 
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else{     
+    }else if($.trim($("#surat_jalan_id").val()) == ""){
+        $('#message').html("Silahkan pilih Surat Jalan");
+        $('.alert-danger').show();
+    }else if($.trim($("#bank_id").val()) == ""){
+        $('#message').html("Bank harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{
         $('#formku').submit(); 
     };
 };

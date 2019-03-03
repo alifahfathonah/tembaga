@@ -502,7 +502,7 @@ class BeliWIP extends CI_Controller{
                 #penghitungan +- 10 % PO ke DTR
                 if(((int)$v->tot_berat) >= (0.9*((int)$v->qty))){
                     #update po_detail flag_dtr
-                    $this->Model_beli_wip->update_flag_dtwip_po_detail($po_id,$v->wip_id);
+                    $this->Model_beli_wip->update_flag_dtwip_po_detail($po_id,$v->jenis_barang_id);
                 }
                 $total_qty += $v->qty;
                 $total_berat_dtwip += $v->tot_berat;

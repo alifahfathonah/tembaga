@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['index']==1) ){
+            if( ($group_id==1)||($hak_akses['add_invoice']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -65,14 +65,14 @@
                         <td><?= ($data->flag_matching > 0) ? '<div style="background-color:green; color:#fff; padding:3px">Sudah Matching</div>' : '<div style="background-color:darkkhaki; padding:3px">Belum Matching</div>';?></td>
                         <td style="text-align:center"> 
                             <?php
-                                if($group_id==1 || $hak_akses['view_spb']==1){
+                                if($group_id==1 || $hak_akses['view_invoice']==1){
                             ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/view_invoice/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
                                
                             <?php
                                 }
-                                if($group_id==1 || $hak_akses['print_spb']==1){
+                                if($group_id==1 || $hak_akses['print_invoice']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Finance/print_invoice/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }

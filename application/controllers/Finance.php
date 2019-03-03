@@ -936,7 +936,17 @@ class Finance extends CI_Controller{
         
         $this->load->model('Model_finance');
         $data['customer_list'] = $this->Model_finance->customer_list()->result();
+        $data['bank_list'] = $this->Model_finance->bank_list()->result();
         $this->load->view('layout', $data); 
+    }
+
+    function get_flag(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_finance');
+        $data = $this->Model_finance->get_flag($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($data);
     }
 
     function get_so_list(){ 
@@ -975,6 +985,10 @@ class Finance extends CI_Controller{
 
         $data = array(
             'no_invoice'=> $code,
+            'bank_id'=> $this->input->post('bank_id'),
+            'diskon'=> str_replace('.', '', $this->input->post('diskon')),
+            'add_cost'=> str_replace('.', '', $this->input->post('add_cost')),
+            'materai'=> str_replace('.', '', $this->input->post('materai')),
             'tanggal'=> $tgl_input,
             'tgl_jatuh_tempo'=> $this->input->post('tanggal_jatuh'),
             'id_customer'=> $this->input->post('m_customer_id'),
@@ -988,7 +1002,12 @@ class Finance extends CI_Controller{
         $id_new=$this->db->insert_id();
 
         $this->load->model('Model_finance');
-        $loop_detail = $this->Model_finance->load_detail_invoice($id_sj)->result();
+        if($this->input->post('flag_tolling') == 1){
+            $loop_detail = $this->Model_finance->load_detail_invoice_tolling($id_sj)->result();
+        }else{
+            $loop_detail = $this->Model_finance->load_detail_invoice($id_sj)->result();
+        }
+
         foreach($loop_detail as $row){
             $total = $row->amount * $row->netto;
                 if($row->jenis_barang_alias>0){
@@ -1046,6 +1065,7 @@ class Finance extends CI_Controller{
             $data['header'] = $this->Model_finance->show_header_invoice($id)->row_array();
             if($data['header']['id_retur']==0){
                 $data['detailInvoice'] = $this->Model_finance->show_detail_invoice($id)->result();
+                $data['matching'] = $this->Model_finance->show_detail_matching_um($id)->result();
             }else{
                 $data['detailInvoice'] = $this->Model_finance->show_invoice_detail($id)->result();
             }
@@ -1087,7 +1107,7 @@ class Finance extends CI_Controller{
 
             $data['total'] = $total;
 
-            $this->load->view('finance/print_invoice', $data);
+            $this->load->view('finance/print_faktur', $data);
         }else{
             redirect('index.php'); 
         }
@@ -1161,8 +1181,9 @@ class Finance extends CI_Controller{
         $data = $this->Model_finance->list_invoice_matching_minus($this->input->post('id'))->result();
         $arr_so[] = "Silahkan pilih....";
         foreach ($data as $row) {
-            $arr_so[$row_id] = $row->no_invoice;
+            $arr_so[$row->id] = $row->no_invoice;
         }
+        print form_dropdown('invoice_id', $arr_so);
     }
 
     function get_um_list(){ 
@@ -1185,6 +1206,16 @@ class Finance extends CI_Controller{
         echo json_encode($result);
     }
 
+    function get_data_hutang(){
+        $id = $this->input->post('id');
+
+        $this->load->model('Model_finance');
+        $result= $this->Model_finance->get_data_hutang($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
+
     function add_matching(){
         $user_id = $this->session->userdata('user_id');
         $tanggal = date('Y-m-d');
@@ -1195,18 +1226,24 @@ class Finance extends CI_Controller{
         $id = $this->input->post('id_modal');
         $id_invoice = $this->input->post('invoice_id');
         $id_um = $this->input->post('um_id');
+        $id_hutang = $this->input->post('invoice_min');
         $sisa_invoice = str_replace('.', '', $this->input->post('sisa_invoice'));
         $sisa_um = str_replace('.', '', $this->input->post('sisa_um'));
+        $sisa_hutang = str_replace('.', '', $this->input->post('sisa_hutang'));
         $harga_um = str_replace('.', '', $this->input->post('harga_um'));
         $harga_invoice = str_replace('.', '', $this->input->post('harga_invoice'));
+        $harga_hutang = str_replace('.', '', $this->input->post('hutang'));
         $this->load->model('Model_finance');
 
         $paid = $harga_um - $sisa_um;
+        $hutang = $harga_hutang - $sisa_hutang;
             $data = array(
                 'customer_id'=>$id,
                 'id_invoice'=> $id_invoice,
                 'id_um'=> $id_um,
+                'id_hutang'=> $id_hutang,
                 'paid'=>$paid,
+                'used_hutang'=> $hutang,
                 'sisa_um'=>$sisa_um,
                 'sisa_invoice'=>$sisa_invoice,
                 'created_at'=> $tanggal_input,
@@ -1234,6 +1271,16 @@ class Finance extends CI_Controller{
                 );
                 $this->db->where('id', $id_um);
                 $this->db->update('f_uang_masuk', $data);
+            }
+
+            if($sisa_hutang == 0){
+                $data = array(
+                    'flag_matching'=> 1,
+                    'modified_at'=> $tanggal_input,
+                    'modified_by'=> $user_id
+                );
+                $this->db->where('id', $id_hutang);
+                $this->db->update('f_invoice', $data);
             }
 
             if($this->db->trans_complete()){    
@@ -1361,5 +1408,60 @@ class Finance extends CI_Controller{
         }else{
             redirect('index.php/Finance');
         }
+    }
+
+    function add_slip_setoran(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Finance";
+        $data['content']   = "finance/add_slip_setoran";
+        
+        $this->load->model('Model_finance');
+        $data['data_slip'] = $this->Model_finance->slip_setoran_list()->result();
+        $data['bank_list'] = $this->Model_finance->bank_list()->result();
+        $this->load->view('layout', $data); 
+    }
+
+    function save_slip_setoran(){
+        $user_id   = $this->session->userdata('user_id');
+        $tanggal   = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+
+        $this->db->trans_start();
+
+        $data = array(
+            'jenis_trx'=>0,
+            'tanggal'=> $tgl_input,
+            'id_bank'=> $this->input->post('bank_id'),
+            'id_slip_setoran'=> $this->input->post('slip_id'),
+            'currency'=> 'IDR',
+            'nominal'=> str_replace('.', '', $this->input->post('nominal')),
+            'keterangan'=> $this->input->post('remarks'),
+            'created_at'=> $tanggal,
+            'created_by'=> $user_id
+        );
+        $this->db->insert('f_kas', $data);
+        $insert_id = $this->db->insert_id();
+
+        $this->db->where('id', $this->input->post('slip_id'));
+        $this->db->update('f_slip_setoran', array(
+            'id_kas'=>$insert_id,
+            'modified_at'=>$tanggal,
+            'modified_by'=>$user_id
+        ));
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Uang Kas Berhasil disimpan!');
+            redirect(base_url('index.php/Finance/slip_setoran'));
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Uang Masuk gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/Finance');  
+        }            
     }
 }

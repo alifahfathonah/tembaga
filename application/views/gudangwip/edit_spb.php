@@ -70,6 +70,8 @@
                             $jenis='CUCI (KAWAT HITAM)';
                         }else if($header['flag_produksi']==4){
                             $jenis='TOLLING';
+                        }else if($header['flag_produksi']==5){
+                            $jenis='KIRIM KE RONGSOK';
                         }
                     ?>
                     <div class="row">
@@ -77,8 +79,10 @@
                             Keperluan
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                            <input type="text" id="keperluan" name="keperluan" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $jenis; ?>">
+                                
+                            <input type="hidden" name="flag_produksi" value="<?php echo $header['flag_produksi'];?>">
                         </div>
                     </div>
                     <?php } ?>

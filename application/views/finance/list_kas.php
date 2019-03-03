@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['index']==1) ){
+            if( ($group_id==1)||($hak_akses['list_kas']==1) ){
         ?>
     <div class="collapse well" id="form_filter" >
         <form class="eventInsForm" method="post" target="_self" name="formku" 
@@ -53,7 +53,11 @@
                 </div>
                 <div class="tools">
                     <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter"><i class="fa fa-search"></i> Filter Cek</a>
+                <?php
+                    if( ($group_id==1)||($hak_akses['add_kas']==1) ){
+                ?>
                     <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Finance/add_kas"> <i class="fa fa-plus"></i> Input Kas</a>
+                <?php } ?>
                 </div>
             </div>
             <div class="portlet-body">
@@ -63,7 +67,7 @@
                     <th style="width:50px;">No</th>
                     <th>Jenis Transaksi</th> 
                     <th>Bank</th> 
-                    <th>No. Uang Masuk/<br>No. Giro</th>
+                    <th>No. Uang Masuk/<br>No. Giro/ No. Pembayaran</th>
                     <th>Nama Customer</th>
                     <th>Nominal</th>
                     <th>Keterangan</th>
@@ -80,13 +84,16 @@
                         <td style="text-align:center"><?php echo $no; ?></td>
                         <td><?php ($data->jenis_trx) ? print('<i class="fa fa-arrow-circle-up"></i> Keluar'): print('<i class="fa fa-arrow-circle-down"></i> Masuk');?></td>
                         <td><?php echo $data->kode_bank; ?></td>
-                        <td><?php echo $data->no_uang_masuk.$data->no_giro; ?></td>
+                        <td><?php echo $data->no_uang_masuk.$data->no_giro.$data->no_pembayaran; ?></td>
                         <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->currency.' '.number_format($data->nominal,0,',','.') ?></td>
                         <td><?php echo $data->keterangan; ?></td>
-                        <td>
+                        <td><?php
+                                if( ($group_id==1)||($hak_akses['view_kas']==1) ){
+                            ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/view_kas/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                            <?php } ?>
                         </td>
                     </tr>
                     <?php

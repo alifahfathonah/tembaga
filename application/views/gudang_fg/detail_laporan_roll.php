@@ -83,7 +83,7 @@
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $header['jenis_packing']; ?>"> 
                             <input type="hidden" name="id_jenis_packing" value="<?=$packing['id']?>" id="id_jenis_packing">
-                            <input type="hidden" name="no_jenis_packing" value="<?=$packing['nomor_bobbin']?>" id="no_jenis_packing">                        
+                            <input type="hidden" name="no_jenis_packing" value="<?=$packing['nomor_bobbin']?>" id="no_jenis_packing">
                         </div>
                     </div>
 
@@ -126,7 +126,6 @@
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
-            
         </form>
         
         <?php

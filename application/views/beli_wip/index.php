@@ -236,7 +236,7 @@
                         <td style="text-align:center">
                             <?php
                                 if($data->tot_voucher>0){print('Ada <b>'.$data->tot_voucher.'</b> Voucher<br/>');}
-                                if( ($group_id==1 || $hak_akses['create_voucher_dp']==1) && $data->flag_pelunasan==0 && $data->status==3){
+                                if( ($group_id==1 || $hak_akses['create_voucher_dp']==1) && $data->flag_pelunasan==0 && $data->status==(2 || 3)){
                                     echo '<a class="btn btn-circle btn-xs green" href="javascript:;" onclick="createVoucher('.$data->id.');"
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Create &nbsp; </a>';
                                 }

@@ -242,7 +242,7 @@ class BeliRongsok extends CI_Controller{
         echo json_encode($rongsok); 
     }
 
-     function get_uom_po(){
+    function get_uom_po(){
         // $idpo = $this->input->post('idpo');
         $iditem = $this->input->post('iditem');
         $this->load->model('Model_beli_rongsok');
@@ -423,9 +423,9 @@ class BeliRongsok extends CI_Controller{
                         //'po_detail_id'=>$row['po_detail_id'],
                         'rongsok_id'=>$row['rongsok_id'],
                         'qty'=>str_replace('.', '', $row['qty']),
-                        'bruto'=>str_replace('.', '', $row['bruto']),
-                        'berat_palette'=>str_replace('.', '', $row['berat_palette']),
-                        'netto'=>str_replace('.', '', $row['netto']),
+                        'bruto'=>$row['bruto'],
+                        'berat_palette'=>$row['berat_palette'],
+                        'netto'=>$row['netto'],
                         'no_pallete'=>$row['no_pallete'],
                         'line_remarks'=>$row['line_remarks'],
                         'created'=>$tanggal,
@@ -451,6 +451,49 @@ class BeliRongsok extends CI_Controller{
         }
     }
     
+    function re_dtr(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+
+        $this->db->trans_start();
+
+            $details = $this->input->post('myDetails');
+            foreach ($details as $row){
+                $this->db->where('id', $row['id']);
+                $this->db->update('dtr_detail', array(
+                    'qty'=>str_replace('.', '', $row['qty']),
+                    'bruto'=>$row['bruto'],
+                    'berat_palette'=>$row['berat_palette'],
+                    'netto'=>$row['netto'],
+                    'no_pallete'=>$row['no_pallete'],
+                    'line_remarks'=>$row['line_remarks'],
+                    'modified'=>$tanggal,
+                    'modified_by'=>$user_id,
+                    'tanggal_masuk'=>$tgl_input
+                ));
+            }
+
+            $this->db->where('id', $this->input->post('id'));
+            $this->db->update('dtr', array(
+                        'status'=>0,
+                        'remarks'=>$this->input->post('remarks'),
+                        'modified'=>$tanggal,
+                        'modified_by'=>$user_id
+            ));
+            
+            // #Update status PO
+            // $this->db->where('id', $this->input->post('po_id'));
+            // $this->db->update('po', array('status'=>2, 'modified'=>$tanggal, 'modified_by'=>$user_id));
+                    
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'DTR berhasil di-create dengan nomor : '.$code);                 
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTR, silahkan coba kembali!');
+            }
+            redirect('index.php/BeliRongsok/dtr_list');
+    }
+
     function test_dtr(){
         $this->load->model('Model_m_numberings');
         $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
@@ -763,7 +806,7 @@ class BeliRongsok extends CI_Controller{
             $data['header']  = $this->Model_beli_rongsok->show_header_dtr($id)->row_array(); 
             $data['details'] = $this->Model_beli_rongsok->show_detail_dtr($id)->result();
             $this->load->model('Model_rongsok');
-            $data['list_rongsok'] = $this->Model_rongsok->list_data()->result();
+            $data['list_rongsok'] = $this->Model_beli_rongsok->all_rsk()->result();
             
             $this->load->view('layout', $data);   
         }else{
@@ -835,6 +878,7 @@ class BeliRongsok extends CI_Controller{
             $this->db->where('id', $row['id_dtr']);
             $this->db->update('dtr_detail', array(
                 'rongsok_id'=>$row['rongsok_id'],
+                'line_remarks'=>$row['line_remarks'],
                 'modified'=>$tanggal,
                 'modified_by'=>$user_id
             ));
@@ -859,27 +903,48 @@ class BeliRongsok extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d');
-        
+        $dtr_id = $this->input->post('id');
+
         $this->db->trans_start();
-        $this->db->where('id', $this->input->post('id'));
-        $this->db->update('dtr', array(
-                    'status'=>0,
-                    'remarks'=>$this->input->post('remarks'),
-                    'modified'=>$tanggal,
-                    'modified_by'=>$user_id
-        ));
         
-        $details = $this->input->post('myDetails');
-        foreach($details as $row){
-            $this->db->where('id', $row['id']);
-            $this->db->update('dtr_detail', array(
-                'bruto'=>str_replace('.','', $row['bruto']),
-                'netto'=>str_replace('.','', $row['netto']),
-                'line_remarks'=>$row['line_remarks'],
-                'no_pallete'=>$row['no_pallete'],
-                'tanggal_masuk'=>$tgl_input
+            $this->db->where('id', $dtr_id);
+            $this->db->update('dtr', array(
+                        'status'=>0,
+                        'remarks'=>$this->input->post('remarks'),
+                        'modified'=>$tanggal,
+                        'modified_by'=>$user_id
             ));
-        }
+
+            #Create TTR
+            $data = array(
+                    'tanggal'=> $tgl_input,
+                    'dtr_id'=> $dtr_id,
+                    'ttr_status' => 0,
+                    'created'=> $tanggal,
+                    'created_by'=> $user_id,
+                    'modified'=> $tanggal,
+                    'modified_by'=> $user_id
+            );
+            $this->db->insert('ttr', $data);
+            $ttr_id = $this->db->insert_id();
+            
+            $this->load->model('Model_beli_rongsok');
+            $details = $this->Model_beli_rongsok->show_detail_dtr($dtr_id)->result();
+            foreach ($details as $row){
+                $this->db->insert('ttr_detail', array(
+                    'ttr_id'=>$ttr_id,
+                    'dtr_detail_id'=>$row->id,
+                    'rongsok_id'=>$row->rongsok_id,
+                    'qty'=>$row->qty,
+                    'bruto'=>$row->bruto,
+                    'netto'=>$row->netto,
+                    'line_remarks'=>$row->line_remarks,
+                    'created'=>$tanggal,
+                    'created_by'=> $user_id,
+                    'modified'=> $tanggal,
+                    'modified_by'=> $user_id
+                ));
+            }
         
         if($this->db->trans_complete()){    
             $this->session->set_flashdata('flash_msg', 'DTR dengan nomor : '.$this->input->post('no_dtr').' berhasil diupdate...');                 
@@ -1003,6 +1068,7 @@ class BeliRongsok extends CI_Controller{
     }
     
     function review_ttr(){
+        $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
         if($id){    
             $group_id = $this->session->userdata('group_id');        
@@ -1027,6 +1093,7 @@ class BeliRongsok extends CI_Controller{
         $id = $this->uri->segment(3);
         if($id){        
             $this->load->model('Model_beli_rongsok');
+            $this->load->helper('tanggal_indo');
             $data['header']  = $this->Model_beli_rongsok->show_header_ttr($id)->row_array();
             $data['details'] = $this->Model_beli_rongsok->show_detail_ttr($id)->result();
 
@@ -1177,19 +1244,19 @@ class BeliRongsok extends CI_Controller{
                         }
 
                         // Get user details from user table
-                        $before=$this->Model_beli_rongsok->show_laporan_after($tahun,$bulan);
-                        if($before->num_rows() > 0)
-                        {
-                            foreach ($before->result() as $row)
-                            {
-                                // user details whatever you have in your db.
-                                $data['reg'][$i]['jumlah_b']=$row->jumlah;
-                                $data['reg'][$i]['bruto_masuk_b']=$row->bruto_masuk;
-                                $data['reg'][$i]['netto_masuk_b']=$row->netto_masuk;
-                                $data['reg'][$i]['bruto_keluar_b']=$row->bruto_keluar;
-                                $data['reg'][$i]['netto_keluar_b']=$row->netto_keluar;
-                            }
-                        }
+                        // $before=$this->Model_beli_rongsok->show_laporan_after($tahun,$bulan);
+                        // if($before->num_rows() > 0)
+                        // {
+                        //     foreach ($before->result() as $row)
+                        //     {
+                        //         // user details whatever you have in your db.
+                        //         $data['reg'][$i]['jumlah_b']=$row->jumlah;
+                        //         $data['reg'][$i]['bruto_masuk_b']=$row->bruto_masuk;
+                        //         $data['reg'][$i]['netto_masuk_b']=$row->netto_masuk;
+                        //         $data['reg'][$i]['bruto_keluar_b']=$row->bruto_keluar;
+                        //         $data['reg'][$i]['netto_keluar_b']=$row->netto_keluar;
+                        //     }
+                        // }
                         $i++;
                     }
                 }
@@ -1232,7 +1299,7 @@ class BeliRongsok extends CI_Controller{
         $id = $this->uri->segment(3);
         $id_barang = $this->uri->segment(4);
         if($id){
-            $group_id    = $this->session->userdata('group_id');        
+            $group_id    = $this->session->userdata('group_id');
             if($group_id != 1){
                 $this->load->model('Model_modules');
                 $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -1303,6 +1370,42 @@ class BeliRongsok extends CI_Controller{
             $this->load->view('beli_rongsok/print_voucher', $data);   
         }else{
             redirect('index.php/BeliRongsok');
+        }
+    }
+
+    function print_barcode_rongsok(){
+        $rongsok_id = $_GET['r'];
+        $bruto = $_GET['b'];
+        $berat_palette = $_GET['bp'];
+        $netto = $_GET['n'];
+        $no_pallete = $_GET['np'];
+        if($netto){
+
+        $this->load->model('Model_beli_rongsok');
+        $data = $this->Model_beli_rongsok->show_data_rongsok_detail($rongsok_id)->row_array();
+
+        $current = '';
+        $data_printer = $this->db->query("select * from m_print_barcode_line where m_print_barcode_id = 1")->result_array();
+        $data_printer[17]['string1'] = 'BARCODE 488,335,"39",41,0,180,2,6,"'.$data['kode_rongsok'].'"';
+        $data_printer[18]['string1'] = 'TEXT 386,289,"ROMAN.TTF",180,1,8,"'.$data['kode_rongsok'].'"';
+        $data_printer[22]['string1'] = 'BARCODE 612,101,"39",41,0,180,2,6,"'.$no_pallete.'"';
+        $data_printer[23]['string1'] = 'TEXT 426,55,"ROMAN.TTF",180,1,8,"'.$no_pallete.'"';
+        $data_printer[24]['string1'] = 'TEXT 499,260,"4",180,1,1,"'.$no_pallete.'"';
+        $data_printer[25]['string1'] = 'TEXT 495,226,"ROMAN.TTF",180,1,14,"'.$bruto.'"';
+        $data_printer[26]['string1'] = 'TEXT 495,188,"ROMAN.TTF",180,1,14,"'.$berat_palette.'"';
+        $data_printer[27]['string1'] = 'TEXT 495,147,"0",180,14,14,"'.$netto.'"';
+        $data_printer[31]['string1'] = 'TEXT 496,373,"2",180,1,1,"'.$data['nama_item'].'"';
+        $data_printer[32]['string1'] = 'TEXT 497,407,"4",180,1,1,"'.$data['kode_rongsok'].'"';
+        $jumlah = count($data_printer);
+        for($i=0;$i<$jumlah;$i++){
+        $current .= $data_printer[$i]['string1']."\n";
+        }
+        echo "<form method='post' id=\"coba\" action=\"http://localhost/print/print.php\">";
+        echo "<input type='hidden' id='nospb' name='nospb' value='".$current."'>";
+        echo "</form>";
+        echo '<script type="text/javascript">document.getElementById(\'coba\').submit();</script>';
+        }else{
+            'GAGAL';
         }
     }
 }

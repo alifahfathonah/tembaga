@@ -48,7 +48,6 @@
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nama Item</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>UOM</strong></td>
-                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Bruto</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Netto</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Harga (Rp)</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Qty</strong></td>
@@ -56,18 +55,19 @@
                         </tr>
                         <?php
                             $no = 1;
+                            $netto = 0;
                             $total = 0;
                             foreach ($details as $row){
                                 echo '<tr>';
                                 echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
-                                echo '<td style="border-left:1px solid #000">'.$row->nama_item.'</td>';
+                                echo '<td style="border-left:1px solid #000">'.$row->jenis_barang.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->uom.'</td>';
-                                echo '<td style="border-left:1px solid #000">'.$row->bruto.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->netto.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->amount,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->qty,0,',', '.').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->netto,0,',', '.').'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.number_format($row->total_amount,0,',', '.').'</td>';
                                 echo '</tr>';
+                                $netto += $row->netto;
                                 $total += $row->total_amount;
                                 $no++;
                             }
@@ -79,11 +79,11 @@
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                         </tr>
                         <tr>
-                            <td style="text-align:right;" colspan="7"><strong>Total Harga (Rp) </strong></td>
+                            <td style="text-align:right;" colspan="5"><strong>Total </strong></td>
+                            <td style="text-align: right; border-left:1px solid #000; border-bottom: 1px solid #000;"><strong><?php echo number_format($netto,0,',','.');?></strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">
                                 <strong><?php echo number_format($total,0,',','.'); ?></strong>
                             </td>

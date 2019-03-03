@@ -16,7 +16,7 @@
                         </tr>
                         <tr>
                             <td>Tanggal</td>
-                            <td>: <?php echo date('d-m-Y', strtotime($header['created'])); ?></td>
+                            <td>: <?php echo tanggal_indo(date('Y-m-d', strtotime($header['created']))); ?></td>
                         </tr>
                     </table>
                 </td>
@@ -24,14 +24,14 @@
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
-                            <td>No. PO</td>
-                            <td>: <?php echo $header['no_po']; ?></td>
+                            <td>No. Produksi</td>
+                            <td>: <?php echo $header['no_produksi_ingot']; ?></td>
                         </tr>
                         
-                        <tr>
+                        <!-- <tr>
                             <td>Supplier</td>
                             <td>: <?php echo $header['nama_supplier']; ?></td>
-                        </tr>
+                        </tr> -->
                     </table>
                 </td>
             </tr>
@@ -43,6 +43,7 @@
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nama Item</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>UOM</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Jumlah</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Berat</strong></td>
                             <td style="text-align:center; border:1px solid #000"><strong>Keterangan</strong></td>
                         </tr>
                         <?php
@@ -53,6 +54,7 @@
                                 echo '<td style="border-left:1px solid #000">'.$row->jenis_barang.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->uom.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->qty,0,',', '.').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->berat,0,',', '.').'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->keterangan.'</td>';
                                 echo '</tr>';
                                 $no++;
@@ -62,6 +64,7 @@
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                         </tr>                        

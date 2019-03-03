@@ -177,14 +177,6 @@ class Model_gudang_fg extends CI_Model{
         return $data;
     }
 
-    function show_detail_spb_saved($id){
-        $data = $this->db->query("select jb.jenis_barang, jb.uom, tgf.* from  t_gudang_fg tgf
-            left join jenis_barang jb on jb.id = tgf.jenis_barang_id 
-            where tgf.t_spb_fg_id =".$id." and tgf.jenis_trx=1
-            order by tgf.jenis_barang_id");
-        return $data;
-    }
-
     function load_detail_saved_item($id){
         $data = $this->db->query("select jb.jenis_barang, jb.uom, tgf.* from  t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id 
@@ -192,8 +184,9 @@ class Model_gudang_fg extends CI_Model{
             order by tgf.jenis_barang_id");
         return $data;
     }
+
     function load_detail($id){
-        $data = $this->db->query("Select pfd.*,pf.jenis_barang_id,jb.jenis_barang, (mb.berat)as berat_bobbin, mb.nomor_bobbin, o.nama_owner
+        $data = $this->db->query("Select pfd.*,pf.jenis_barang_id,jb.jenis_barang, mb.nomor_bobbin, o.nama_owner
                 From produksi_fg_detail pfd 
                 Left Join m_bobbin mb On(mb.id = pfd.bobbin_id)
                 Left Join owner o On(o.id = mb.owner_id) 
@@ -264,6 +257,13 @@ class Model_gudang_fg extends CI_Model{
         return $data;
     }
 
+    function get_packing($id){
+        $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.uom from t_gudang_fg tgf 
+                left JOIN jenis_barang jb on jb.id = tgf.jenis_barang_id
+                WHERE tgf.t_spb_fg_id is NULL and tgf.no_packing='".$id."'");
+        return $data;
+    }
+
     function get_detail_spb($id,$jb){
         $data = $this->db->query("select * from t_spb_fg_detail tsfd where tsfd.t_spb_fg_id =".$id." and tsfd.jenis_barang_id =".$jb);
         return $data;
@@ -277,16 +277,26 @@ class Model_gudang_fg extends CI_Model{
         return $data;
     }
     function show_detail_spb_fulfilment($id){
-       /*$data = $this->db->query("select tgf.*, jb.jenis_barang 
-                from t_gudang_fg tgf
-                left join jenis_barang jb on (jb.id = tgf.jenis_barang_id)
-                left join t_spb_fg_detail tsfd on (tsfd.id = tgf.t_spb_fg_detail_id)
-                left join t_spb_fg tsf on (tsf.id = tsfd.t_spb_fg_id) 
-                where tsf.id =".$id
-                );*/
         $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.uom from t_gudang_fg tgf 
                 left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-                where tgf.t_spb_fg_id =".$id." and tgf.jenis_trx = 1
+                where tgf.t_spb_fg_id =".$id." and tgf.jenis_trx = 0
+                order by tgf.jenis_barang_id");
+        return $data;
+    }
+
+
+    function show_detail_spb_saved($id){
+        $data = $this->db->query("select jb.jenis_barang, jb.uom, tgf.* from  t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id 
+            where tgf.t_spb_fg_id =".$id." and tgf.jenis_trx=1
+            order by tgf.jenis_barang_id");
+        return $data;
+    }
+
+    function show_detail_spb_print_fulfilment($id){
+        $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.uom from t_gudang_fg tgf 
+                left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tgf.t_spb_fg_id =".$id."
                 order by tgf.jenis_barang_id");
         return $data;
     }
@@ -300,6 +310,60 @@ class Model_gudang_fg extends CI_Model{
         return $data;
     }
 
+    function check_urut($id){
+        $data = $this->db->query("select count(pfd.id) as no_urut from produksi_fg_detail pfd
+                left join produksi_fg pf on pf.id = pfd.produksi_fg_id
+                where pf.jenis_packing_id =".$id);
+        return $data;
+    }
+
+    function get_pfd_id($id){
+        $data = $this->db->query("select pfd.*, jb.kode, jb.jenis_barang from produksi_fg_detail pfd 
+                left join produksi_fg pf on pf.id = pfd.produksi_fg_id
+                left join jenis_barang jb on jb.id = pf.jenis_barang_id where pfd.id =".$id);
+        return $data;
+    }
+
+    function show_laporan(){
+        $data = $this->db->query("select DATE_FORMAT(tg.tanggal,'%M %Y') as showdate, 
+            EXTRACT(YEAR_MONTH from tg.tanggal) as tanggal, count(tg.id) as jumlah, 
+            (select sum(bruto) from t_gudang_fg tgf where month(tgf.tanggal_masuk) = month(tg.tanggal)) as bruto_masuk,
+            (select sum(netto) from t_gudang_fg tgf where month(tgf.tanggal_masuk) = month(tg.tanggal)) as netto_masuk,
+            COALESCE((select sum(bruto) from t_gudang_fg tgf where month(tgf.tanggal_keluar) = month(tg.tanggal)),0)as bruto_keluar,
+            COALESCE((select sum(netto) from t_gudang_fg tgf where month(tgf.tanggal_keluar) = month(tg.tanggal)),0)as netto_keluar
+            from t_gudang_fg tg
+            group by month(tg.tanggal)");
+        return $data;
+    }
+
+    function show_view_laporan($bulan, $tahun){
+        $data = $this->db->query("select tg.jenis_barang_id, jb.jenis_barang, count(tg.id) as jumlah, 
+                (select sum(bruto) from t_gudang_fg tgf where month(tgf.tanggal_masuk) = ".$bulan." and year(tgf.tanggal_masuk) =".$tahun." and tgf.jenis_barang_id=jb.id) as bruto_masuk,
+                (select sum(netto) from t_gudang_fg tgf where month(tgf.tanggal_masuk) =".$bulan." and year(tgf.tanggal_masuk) =".$tahun." and tgf.jenis_barang_id=jb.id) as netto_masuk,
+                (select sum(bruto) from t_gudang_fg tgf where month(tgf.tanggal_keluar) =".$bulan." and year(tgf.tanggal_keluar) =".$tahun." and tgf.jenis_barang_id=jb.id) as bruto_keluar,
+                (select sum(netto) from t_gudang_fg tgf where month(tgf.tanggal_keluar) =".$bulan." and year(tgf.tanggal_keluar) =".$tahun." and tgf.jenis_barang_id=jb.id) as netto_keluar
+                from t_gudang_fg tg
+                    left join jenis_barang jb on jb.id = tg.jenis_barang_id
+                where month(tg.tanggal) =".$bulan." and year(tg.tanggal) =".$tahun."
+            group by tg.jenis_barang_id");
+        return $data;
+    }
+
+    function show_laporan_detail($bulan,$tahun,$id_barang){
+        $data = $this->db->query("(SELECT
+                    tg.id, tg.jenis_barang_id, tg.no_packing, jb.jenis_barang, tg.bruto, tg.netto, tg.tanggal_masuk, tg.tanggal_keluar = null as tanggal_keluar, tg.tanggal_masuk as tanggal
+                FROM t_gudang_fg tg
+                    left join jenis_barang jb on jb.id = tg.jenis_barang_id
+                    where tg.jenis_barang_id =".$id_barang." and month(tg.tanggal_masuk) =".$bulan." and year(tg.tanggal_masuk) =".$tahun.")
+                UNION ALL
+                (SELECT 
+                    tgf.id, tgf.jenis_barang_id, tgf.no_packing, jb.jenis_barang, tgf.bruto, tgf.netto, tgf.tanggal_masuk = null, tgf.tanggal_keluar, tgf.tanggal_keluar as tanggal
+                FROM t_gudang_fg tgf
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                    where tgf.jenis_barang_id =".$id_barang." and month(tgf.tanggal_keluar) =".$bulan." and year(tgf.tanggal_keluar) =".$tahun.") Order By tanggal asc
+                    ");
+        return $data;
+    }
     /*
     cara membuat view stok fg
     CREATE OR REPLACE VIEW stok_fg(jenis_barang_id, jenis_barang, total_qty, total_netto)

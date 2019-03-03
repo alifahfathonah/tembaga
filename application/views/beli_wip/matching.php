@@ -39,7 +39,7 @@
             </div>
             <div class="col-md-3">
                 <select id="po_id" name="po_id" class="form-control myline select2me" 
-                    data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
+                    data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                     <option value=""></option>
                     <?php
                         foreach ($po_list as $row){

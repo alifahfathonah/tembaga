@@ -16,6 +16,73 @@
         <?php
             if( ($group_id==1)||($hak_akses['dtbj_list']==1) ){
         ?>
+        <div class="collapse well" id="form_add" >
+    <form class="eventInsForm" method="post" target="_self" name="formku" id="formku" action="<?php echo base_url('index.php/BeliFinishGood/save_header_dtbj'); ?>">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="col-md-12">
+                            Tanggal 
+                            <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-12">
+                            <input type="text" id="tanggal" name="tanggal" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('d-m-Y'); ?>">
+                            </div>
+                            <div class="col-md-12">
+                            Supplier 
+                                <font color="#f00">*</font>
+                            </div>
+                            <div class="col-md-12">
+                                <select  id="supplier_id" name="supplier_id" placeholder="Silahkan pilih..."
+                                class="form-control myline select2me" style="margin-bottom:5px">
+                                    <option value=""></option>
+                                    <?php 
+                                        foreach($supplier_list as $jb){
+                                    ?>
+                                    <option value="<?=$jb->id;?>"><?=$jb->nama_supplier;?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-12">
+                            No DTBJ
+                                <font color="#f00">*</font>
+                            </div>
+                            <div class="col-md-12">
+                                <input type="text" id="no" name="no" readonly="readonly" value="Auto Generate" 
+                                class="form-control myline" style="margin-bottom:5px;">
+                                </div>
+                                <div class="col-md-12">
+                            Packing 
+                                    <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-12">
+                                    <select  id="packing" name="packing" placeholder="Silahkan pilih..."
+                                class="form-control myline select2me" style="margin-bottom:5px">
+                                        <option value=""></option>
+                                        <?php 
+                                        foreach($packing as $p){
+                                        ?>
+                                        <option value="<?=$p->id;?>"><?=$p->jenis_packing;?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-12 text-right">
+                            &nbsp; &nbsp; 
+                                    <a href="javascript:;" onclick="simpanData()" class="btn green" >
+                                        <i class="fa fa-floppy-o"></i> Create DTBJ 
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
@@ -29,8 +96,12 @@
                 <div class="caption">
                     <i class="fa fa-beer"></i>Data Timbang Barang Jadi (DTBJ) List
                 </div>
-                <div class="tools">    
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliFinishGood/create_dtbj"> <i class="fa fa-plus"></i> Create DTBJ</a>
+                <div class="tools">  
+                <?php if(($group_id==1)||($hak_akses['create_dtbj']==1)){
+                    // echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/BeliFinishGood/create_dtbj').'"> <i class="fa fa-plus"></i> Create DTBJ</a>';
+                    echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_add" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_add"><i class="fa fa-plus"></i> Create DTBJ</a>';
+                }
+                ?>
                 </div>           
             </div>
             <div class="portlet-body">
@@ -114,7 +185,21 @@
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
+function simpanData(){
+    $('#formku').submit();
+};
 $(function(){    
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
+});
+$(function(){        
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });       
 });
 </script>         

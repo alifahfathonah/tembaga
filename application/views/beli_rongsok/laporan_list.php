@@ -45,25 +45,32 @@
                  </thead>
                  <tbody>
                 <?php $no=0;
-                if(isset($reg)) { foreach ($reg as $data){ ?>
+                $arr = array();
+                $arr['bruto_awal'][$no]=0;
+                $arr['netto_awal'][$no]=0;
+                if(isset($reg)) { foreach ($reg as $data){ 
+                    ?>
                     <tr>
-                        <td><?= $no;?></td>
+                        <td></td>
                         <td><?= $data['showdate'] ;?></td>
                         <td><?= $data['jumlah'] ;?></td>
-                        <td style="background-color: powderblue;"><?= ($data['bruto_masuk_b'] - $data['bruto_keluar_b']) - ($data['bruto_masuk'] - $data['bruto_keluar']) ;?></td>
-                        <td style="background-color: powderblue;"><?= ($data['netto_masuk_b'] - $data['netto_keluar_b']) - ($data['netto_masuk'] -$data['netto_keluar']) ;?></td>
-                        <td><?= $data['bruto_masuk'] ;?></td>
-                        <td><?= $data['netto_masuk'] ;?></td>
-                        <td><?= $data['bruto_keluar'] ;?></td>
-                        <td><?= $data['netto_keluar'] ;?></td>
-                        <td style="background-color: turquoise;"><?= ($data['bruto_masuk_b'] - $data['bruto_keluar_b']) ;?></td>
-                        <td style="background-color: turquoise;"><?= ($data['netto_masuk_b'] - $data['netto_keluar_b']) ;?></td>
+                        <td style="background-color: powderblue;"><?=number_format($arr['bruto_awal'][$no], 2, '.', ',');?></td>
+                        <td style="background-color: powderblue;"><?=number_format($arr['netto_awal'][$no], 2, '.', ',');?></td>
+                        <td><?= number_format($data['bruto_masuk'], 2, '.', ',') ;?></td>
+                        <td><?= number_format($data['netto_masuk'], 2, '.', ',') ;?></td>
+                        <td><?= number_format($data['bruto_keluar'], 2, '.', ',') ;?></td>
+                        <td><?= number_format($data['netto_keluar'], 2, '.', ',') ;?></td>
+                        <td style="background-color: turquoise;"><?=number_format($arr['bruto_awal'][$no] + ($data['bruto_masuk'] - $data['bruto_keluar']), 2, '.', ',') ;?></td>
+                        <td style="background-color: turquoise;"><?=number_format($arr['netto_awal'][$no] + ($data['netto_masuk'] - $data['netto_keluar']), 2, '.', ',') ;?></td>
                         <td><?php
                         if($group_id==1 || $hak_akses['view_spb']==1){
                         ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/BeliRongsok/view_laporan/<?php echo $data['tanggal']; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
                         <?php
                             }//if group
+                            $no++;
+                        $arr['bruto_awal'][$no] = $data['bruto_masuk'] - $data['bruto_keluar'];
+                        $arr['netto_awal'][$no] = $data['netto_masuk'] - $data['netto_keluar'];
                         }//foreach
                     echo '</tr>';
                     }//if ?>

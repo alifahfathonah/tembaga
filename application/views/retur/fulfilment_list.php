@@ -66,7 +66,7 @@
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td style="text-align:center">
                             <?php 
-                               echo (($data->flag_sj==1)? '<div style="background-color:green; padding:3px; color:white; text-align: center;">Sudah Dikirim Semua</div>':'<div style="background-color:darkkhaki; padding:3px; text-align: center;">Belum Dikirim Semua</div>');
+                               echo (($data->flag_taken==1)? '<div style="background-color:green; padding:3px; color:white; text-align: center;">Sudah Dikirim Semua</div>':'<div style="background-color:darkkhaki; padding:3px; text-align: center;">Belum Dikirim Semua</div>');
                             ?>
                         </td>
                         <td style="text-align:center">

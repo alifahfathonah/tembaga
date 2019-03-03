@@ -72,8 +72,8 @@ class Model_beli_fg extends CI_Model
 		return $data;
 	}
 
-	function show_data_po($id){
-		$data = $this->db->query("select *from jenis_barang where id = ".$id);
+	function get_jb($id){
+		$data = $this->db->query("select * from jenis_barang where id = ".$id);
 		return $data;
 	}
 
@@ -102,7 +102,7 @@ class Model_beli_fg extends CI_Model
 
     function get_po_list(){
     	$data = $this->db->query("Select id, no_po, jenis_po From po 
-            Where jenis_po= 'FG' And (status= 0 or status = 2)");
+            Where jenis_po= 'FG' And status != 1 And customer_id = 0");
     	return $data;
     }
 
@@ -220,10 +220,11 @@ class Model_beli_fg extends CI_Model
         return $data;
     }
 
-    function check_urut(){
+    function check_urut($id){
         $data = $this->db->query("
-                select count(id) as no_urut from dtbj_detail;
-            ");
+                select count(dd.id) as no_urut from dtbj_detail dd
+                left join dtbj d on d.id = dd.dtbj_id
+                where d.jenis_packing =".$id);
         return $data;
     }
 }

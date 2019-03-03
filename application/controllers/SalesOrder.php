@@ -782,6 +782,7 @@ class SalesOrder extends CI_Controller{
                 $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_wip()->result();
             }else{
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_rsk($soid)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->rongsok_in_so($soid)->result();
             }
             $this->load->view('layout', $data);   
         }else{
@@ -850,6 +851,7 @@ class SalesOrder extends CI_Controller{
                         't_sj_id'=>$this->input->post('id'),
                         'gudang_id'=>$v['id_barang'],
                         'jenis_barang_id'=>$v['jenis_barang_id'],
+                        'jenis_barang_alias'=>$v['barang_alias_id'],
                         'no_packing'=>$v['no_palette'],
                         'qty'=>$v['qty'],
                         'bruto'=>$v['bruto'],
@@ -1038,16 +1040,19 @@ class SalesOrder extends CI_Controller{
         $id = $this->uri->segment(3);
         if($id){        
             $this->load->model('Model_sales_order');
+            $this->load->helper('tanggal_indo');
             $data['header']  = $this->Model_sales_order->show_header_sj($id)->row_array();
             $jenis = $data['header']['jenis_barang'];
             if($jenis=='FG'){
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_fg($id)->result();
+                $this->load->view('sales_order/print_sj', $data);
             }else if($jenis=='WIP'){
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
+                $this->load->view('sales_order/print_sj_wip', $data);
             }else{
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id)->result();
+                $this->load->view('sales_order/print_sj_rsk', $data);
             }
-            $this->load->view('sales_order/print_sj', $data);
         }else{
             redirect('index.php'); 
         }
@@ -1103,5 +1108,77 @@ class SalesOrder extends CI_Controller{
         
         $this->session->set_flashdata('flash_msg', 'Data sales order berhasil disimpan');
         redirect('index.php/SalesOrder/surat_jalan');
+    }
+
+    function print_barcode_fg(){
+        $fg_id = $_GET['fg'];
+        $bruto = $_GET['b'];
+        $berat_bobbin = $_GET['bb'];
+        $netto = $_GET['n'];
+        $no_packing = $_GET['np'];
+        if($netto){
+
+        $this->load->model('Model_sales_order');
+        $data = $this->Model_sales_order->get_jb($fg_id)->row_array();
+
+        $current = '';
+        $data_printer = $this->db->query("select * from m_print_barcode_line where m_print_barcode_id = 1")->result_array();
+        $data_printer[17]['string1'] = 'BARCODE 488,335,"39",41,0,180,2,6,"'.$data['kode'].'"';
+        $data_printer[18]['string1'] = 'TEXT 386,289,"ROMAN.TTF",180,1,8,"'.$data['kode'].'"';
+        $data_printer[22]['string1'] = 'BARCODE 612,101,"39",41,0,180,2,6,"'.$no_packing.'"';
+        $data_printer[23]['string1'] = 'TEXT 426,55,"ROMAN.TTF",180,1,8,"'.$no_packing.'"';
+        $data_printer[24]['string1'] = 'TEXT 499,260,"4",180,1,1,"'.$no_packing.'"';
+        $data_printer[25]['string1'] = 'TEXT 495,226,"ROMAN.TTF",180,1,14,"'.$bruto.'"';
+        $data_printer[26]['string1'] = 'TEXT 495,188,"ROMAN.TTF",180,1,14,"'.$berat_bobbin.'"';
+        $data_printer[27]['string1'] = 'TEXT 495,147,"0",180,14,14,"'.$netto.'"';
+        $data_printer[31]['string1'] = 'TEXT 496,373,"2",180,1,1,"'.$data['jenis_barang'].'"';
+        $data_printer[32]['string1'] = 'TEXT 497,407,"4",180,1,1,"'.$data['kode'].'"';
+        $jumlah = count($data_printer);
+        for($i=0;$i<$jumlah;$i++){
+        $current .= $data_printer[$i]['string1']."\n";
+        }
+        echo "<form method='post' id=\"coba\" action=\"http://localhost/print/print.php\">";
+        echo "<input type='hidden' id='nospb' name='nospb' value='".$current."'>";
+        echo "</form>";
+        echo '<script type="text/javascript">document.getElementById(\'coba\').submit();</script>';
+        }else{
+            'GAGAL';
+        }
+    }
+
+    function print_barcode_rsk(){
+        $rsk_id = $_GET['rsk'];
+        $bruto = $_GET['b'];
+        $berat_bobbin = $_GET['bb'];
+        $netto = $_GET['n'];
+        $no_packing = $_GET['np'];
+        if($netto){
+
+        $this->load->model('Model_sales_order');
+        $data = $this->Model_sales_order->get_rsk($rsk_id)->row_array();
+
+        $current = '';
+        $data_printer = $this->db->query("select * from m_print_barcode_line where m_print_barcode_id = 1")->result_array();
+        $data_printer[17]['string1'] = 'BARCODE 488,335,"39",41,0,180,2,6,"'.$data['kode_rongsok'].'"';
+        $data_printer[18]['string1'] = 'TEXT 386,289,"ROMAN.TTF",180,1,8,"'.$data['kode_rongsok'].'"';
+        $data_printer[22]['string1'] = 'BARCODE 612,101,"39",41,0,180,2,6,"'.$no_packing.'"';
+        $data_printer[23]['string1'] = 'TEXT 426,55,"ROMAN.TTF",180,1,8,"'.$no_packing.'"';
+        $data_printer[24]['string1'] = 'TEXT 499,260,"4",180,1,1,"'.$no_packing.'"';
+        $data_printer[25]['string1'] = 'TEXT 495,226,"ROMAN.TTF",180,1,14,"'.$bruto.'"';
+        $data_printer[26]['string1'] = 'TEXT 495,188,"ROMAN.TTF",180,1,14,"'.$berat_bobbin.'"';
+        $data_printer[27]['string1'] = 'TEXT 495,147,"0",180,14,14,"'.$netto.'"';
+        $data_printer[31]['string1'] = 'TEXT 496,373,"2",180,1,1,"'.$data['nama_item'].'"';
+        $data_printer[32]['string1'] = 'TEXT 497,407,"4",180,1,1,"'.$data['kode_rongsok'].'"';
+        $jumlah = count($data_printer);
+        for($i=0;$i<$jumlah;$i++){
+        $current .= $data_printer[$i]['string1']."\n";
+        }
+        echo "<form method='post' id=\"coba\" action=\"http://localhost/print/print.php\">";
+        echo "<input type='hidden' id='nospb' name='nospb' value='".$current."'>";
+        echo "</form>";
+        echo '<script type="text/javascript">document.getElementById(\'coba\').submit();</script>';
+        }else{
+            'GAGAL';
+        }
     }
 }

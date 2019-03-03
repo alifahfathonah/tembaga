@@ -16,7 +16,7 @@
                         </tr>
                         <tr>
                             <td>Tanggal</td>
-                            <td>: <?php echo date('d-m-Y', strtotime($header['tanggal'])); ?></td>
+                            <td>: <?php echo tanggal_indo($header['tanggal']); ?></td>
                         </tr>                 
                     </table>
                 </td>
@@ -63,6 +63,7 @@
                         </tr>
                         <?php
                             $no = 1;
+                            $netto = 0;
                             foreach ($details as $row){
                                 echo '<tr>';
                                 echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
@@ -71,6 +72,7 @@
                                 echo '<td style="border-left:1px solid #000">'.$row->netto.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->keterangan.'</td>';
                                 echo '</tr>';
+                                $netto += $row->netto;
                                 $no++;
                             }
                         ?>
@@ -80,6 +82,13 @@
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right;" colspan="3"><strong>Total</strong></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
+                                <strong><?php echo number_format($netto, 2, '.', ','); ?></strong>
+                            </td>
+                            <td style="border-left:1px solid #000; "></td>
                         </tr>
                     </table>
                 </td>

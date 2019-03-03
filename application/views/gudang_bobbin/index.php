@@ -50,9 +50,6 @@
                                             echo '<option value="'.$v->id.'">'.$v->bobbin_size.' ('.$v->jenis_packing.')</option>';
                                         }?>
                                     </select>
-
-                                    
-                                    
                                 </div>
                             </div> 
                             <div class="row">
@@ -77,8 +74,7 @@
                                 </div>
                                 <div class="col-md-7">
                                     <input type="text" id="berat_edit" name="berat" maxlength="10"
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);">
+                                        class="form-control myline" style="margin-bottom:5px">
                                 </div>
                             </div>                            
                         </form>
@@ -154,7 +150,7 @@
                             <a href="javascript:;" class="btn btn-circle btn-sm blue" onclick="hitung_berat()"><i class="fa fa-dashboard"></i> Hitung </a>
                         </div>
                         <div class="col-md-8">
-                            <input required="required" type="text" id="berat" name="berat" placeholder="Berat Bobbin/Keranjang" 
+                            <input required="required" type="number" id="berat" name="berat" placeholder="Berat Bobbin/Keranjang" 
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="">
                         </div>
@@ -176,9 +172,15 @@
                 <div class="caption">
                     <i class="fa fa-beer"></i>Data Bobin
                 </div>
-                <div class="tools">    
+                <div class="tools">
+                <?php
+                    if( ($group_id==1)||($hak_akses['add']==1) ){
+                ?>
                     <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_add" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_add">
                         <i class="fa fa-plus"></i> Tambah</a>
+                <?php
+                    }  
+                ?>
                 </div>
             </div>
             <div class="portlet-body">
@@ -186,7 +188,8 @@
                 <thead>
                 <tr>
                     <th style="width:50px;">No</th>
-                    <th>Nomor Bobin</th>   
+                    <th>Nomor Bobin</th>
+                    <th>Jenis Packing</th>   
                     <th>Ukuran</th>
                     <th>Berat (Kg)</th>
                     <th>Pemilik</th>
@@ -203,6 +206,7 @@
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
                         <td><?php echo $data->nomor_bobbin; ?></td>
+                        <td><?php echo $data->jenis_packing; ?></td>
                         <td><?php echo $data->bobbin_size; ?></td>
                         <td style="text-align:right"><?php echo $data->berat; ?></td>
                         <td><?php echo $data->nama_owner; ?></td>
@@ -227,16 +231,19 @@
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                             <?php 
                                 }
-                                if( ($group_id==1)||($hak_akses['delete']==1) ){
+                                if( ($group_id==1)||($hak_akses['view']==1) ){
                             ?>
                             <a href="<?php echo base_url(); ?>index.php/GudangBobbin/view/<?php echo $data->id; ?>" 
                                class="btn btn-circle btn-xs blue" style="margin-bottom:4px">
                                 <i class="fa fa-book"></i> View </a>
-                            <?php }if( ($group_id==1)||($hak_akses['view']==1) ){
+                            <?php }if( ($group_id==1)||($hak_akses['delete']==1) ){
                             ?>
                             <a href="<?php echo base_url(); ?>index.php/GudangBobbin/delete/<?php echo $data->id; ?>" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus data ini?');">
                                 <i class="fa fa-trash-o"></i> Hapus </a>
-                            <?php }?>
+                            <?php } if( ($group_id==1)||($hak_akses['delete']==1) ){
+                            ?>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangBobbin/print_barcode_bobbin?id=<?php echo $data->id; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
+                            <?php } ?>
                         </td>
                     </tr>
                     <?php

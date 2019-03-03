@@ -87,7 +87,7 @@
             </div>
         </div>
         <?php
-            if( ($group_id==1)||($hak_akses['view_spb']==1) ){
+            if( ($group_id==1)||($hak_akses['view_um']==1) ){
                         if($myData['status']=="9"){
                     ?>
                     <div class="row">

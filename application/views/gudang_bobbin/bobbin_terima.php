@@ -82,8 +82,12 @@
                 <div class="caption">
                     <i class="fa fa-beer"></i> Bobbin Terima Barang 
                 </div>
-                <div class="tools">    
-                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/GudangBobbin/add_penerimaan_bobbin"> <i class="fa fa-plus"></i> Ajukan Terima Bobbin</a>              
+                <div class="tools">
+                <?php
+                    if( ($group_id==1)||($hak_akses['add']==1) ){
+                ?>
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/GudangBobbin/add_penerimaan_bobbin"> <i class="fa fa-plus"></i> Ajukan Terima Bobbin</a>  
+                <?php } ?>            
                 </div>             
             </div> 
    <div class="portlet-body"> 
@@ -120,7 +124,7 @@
                            
                             <?php   
                                 }
-                                if($group_id==1 || $hak_akses['print_spb']==1){
+                                if($group_id==1 || $hak_akses['print']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangBobbin/print_bobbin_terima/'.$row->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }

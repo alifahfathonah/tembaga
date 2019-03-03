@@ -15,53 +15,55 @@
                             <td>: <?php echo $header['no_surat_jalan']; ?></td>
                         </tr>
                         <tr>
-                            <td>Tanggal</td>
-                            <td>: <?php echo date('d-m-Y', strtotime($header['tanggal'])); ?></td>
+                            <td>No. Sales Order</td>
+                            <td>: <?php echo $header['no_sales_order']; ?></td>
                         </tr>
                         <tr>
-                            <td>Jenis Barang</td>
-                            <td>: <?php echo $header['jenis_barang']; ?></td>
+                            <td>No. PO</td>
+                            <td>: <?php echo $header['no_po']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>Tanggal</td>
+                            <td>: <?php echo tanggal_indo($header['tanggal']); ?></td>
                         </tr>
                         <tr>
                             <td>Customer</td>
                             <td>: <?php echo $header['nama_customer']; ?></td>
                         </tr>
                         <tr>
-                            <td>Alamat</td>
-                            <td>: <?php echo $header['alamat']; ?></td>
+                            <td>Jenis Barang</td>
+                            <td>: <?php echo $header['jenis_barang']; ?></td>
                         </tr>
-                        
                     </table>
                 </td>
                 <td>&nbsp;</td>
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
-                            <td>No. Sales Order</td>
-                            <td>: <?php echo $header['no_sales_order']; ?></td>
-                        </tr> 
-                        <tr>
-                            <td>No. PO</td>
-                            <td>: <?php echo $header['no_po']; ?></td>
+                            <td>Tanggal SJ</td>
+                            <td>: <?php echo tanggal_indo($header['tanggal']); ?></td>
                         </tr>
                         <tr>
-                            <td>No. Kendaraan</td>
-                            <td>: <?php echo $header['no_kendaraan']; ?></td>
+                            <td>Tanggal SO</td>
+                            <td>: <?php echo tanggal_indo($header['tanggal_so']); ?></td>
                         </tr>
                         <tr>
-                            <td>Type Kendaraan</td>
-                            <td>: <?php echo $header['type_kendaraan']; ?></td>
-                        </tr>                         
+                            <td>Alamat</td>
+                            <td>:</td>
+                        </tr>
                         <tr>
-                            <td>Catatan</td>
-                            <td>: <?php echo $header['remarks']; ?></td>
+                            <td colspan="2"><?php echo $header['alamat'];?></td>
                         </tr>
                     </table>
                 </td>
             </tr>
-            <tr><td colspan="3">&nbsp;</td></tr>
             <tr><td colspan="3">
                     <table border="0" cellpadding="4" cellspacing="0" width="100%">
+                        <tr>
+                            <td colspan="3">No. Kendaraan: <?php echo $header['no_kendaraan']; ?></td>
+                            <td colspan="3">Type Kendaraan: <?php echo $header['type_kendaraan']; ?></td>
+                            <td colspan="3">Catatan: <?php echo $header['remarks']; ?></td>
+                        </tr>
                         <tr>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nama Item</strong></td>
@@ -91,9 +93,9 @@
                                 echo '<td style="border-left:1px solid #000">'.$row->no_produksi.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->no_packing.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->nomor_bobbin.'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->bruto,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->berat,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->netto,0,',', '.').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->bruto, 2, '.', ',').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->berat, 2, '.', ',').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->netto, 2, '.', ',').'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->line_remarks.'</td>';
                                 echo '</tr>';
                                 $bruto += $row->bruto;
@@ -117,13 +119,13 @@
                         <tr>
                             <td style="text-align:right;" colspan="6"><strong>Total</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
-                                <strong><?php echo number_format($bruto,0,',','.'); ?></strong>
+                                <strong><?php echo number_format($bruto, 2, '.', ','); ?></strong>
                             </td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
-                                <strong><?php echo number_format($bobin,0,',','.'); ?></strong>
+                                <strong><?php echo number_format($bobin, 2, '.', ','); ?></strong>
                             </td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
-                                <strong><?php echo number_format($netto,0,',','.'); ?></strong>
+                                <strong><?php echo number_format($netto, 2, '.', ','); ?></strong>
                             </td>
                             <td style="border-left:1px solid #000; "></td>
                         </tr>
@@ -138,8 +140,10 @@
                             <td style="text-align:center">Diperiksa</td>
                             <td style="text-align:center">Mengetahui</td>
                             <td style="text-align:center">Hormat Kami</td>
+                            <td style="text-align:center">Tanda Terima</td>
                         </tr>
                         <tr style="height:35">
+                            <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
@@ -147,9 +151,10 @@
                         </tr>
                         <tr>
                             <td style="text-align:center"><?php echo $header['supir']; ?></td>
-                            <td style="text-align:center">&nbsp;</td>
-                            <td style="text-align:center">&nbsp;</td>
+                            <td style="text-align:center">(_____________)</td>
+                            <td style="text-align:center">(_____________)</td>
                             <td style="text-align:center"><?php echo $header['realname']; ?></td>
+                            <td style="text-align:center">(_____________)</td>
                         </tr>
                     </table>
                 </td>

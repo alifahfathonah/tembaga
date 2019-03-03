@@ -84,8 +84,17 @@
                                     Pilih Invoice Hutang <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-8">
-                                    <select id="invoice_id" name="invoice_id" class="form-control select2me myline"  style="margin-bottom:5px;" onchange="get_data_invoice(this.value);">
+                                    <select id="invoice_min" name="invoice_min" class="form-control select2me myline"  style="margin-bottom:5px;" onchange="get_data_invoice_min(this.value);">
                                     </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Nominal Hutang<font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="hutang" name="hutang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
                                 </div>
                             </div>
                             <div class="row">
@@ -103,6 +112,15 @@
                                 </div>
                                 <div class="col-md-8">
                                     <input type="text" id="sisa_um" name="sisa_um" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Sisa Hutang
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="sisa_hutang" name="sisa_hutang" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly">
                                 </div>
                             </div>
@@ -155,14 +173,18 @@
                 </div>
             </div>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <div class="portlet box yellow-gold">
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="fa fa-file-word-o"></i>Data Invoice
                         </div>
-                        <div class="tools">    
+                        <div class="tools">
+                        <?php
+                            if( ($group_id==1)||($hak_akses['input_invoice']==1) ){
+                        ?>
                         <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="javascript:;" onclick="input();"> <i class="fa fa-plus"></i> Input Invoice</a>
+                        <?php } ?>
                         </div>    
                     </div>
                     <div class="portlet-body">
@@ -185,12 +207,13 @@
                                     foreach ($details_invoice as $row){
                                         echo '<tr>';
                                         echo '<td style="text-align:center;">'.$no.'</td>';
-                                        $sisa = $row->total - $row->paid;
                                         if($row->jenis_trx == 0){
+                                        $sisa = $row->total - $row->paid;
                                             echo '<td style="background-color: green; color: white;"><i class="fa fa-arrow-circle-up"></i></td>';
                                         $total_invoice += $row->total;
                                         $total_sisa += $sisa;    
                                         }else{
+                                        $sisa = $row->total - $row->used_hutang;
                                             echo '<td style="background-color: red; color: white;"><i class="fa fa-arrow-circle-down"></i></td>';
                                         $total_invoice += -$row->total;
                                         $total_sisa += -$sisa;
@@ -214,7 +237,7 @@
                     </div> 
                 </div>
             </div>
-            <div class="col-md-6">                
+            <div class="col-md-7">                
                 <div class="portlet box green-seagreen">
                     <div class="portlet-title">
                         <div class="caption">
@@ -283,21 +306,25 @@
                     <div class="portlet-body">
                         <div class="table-scrollable">
                             <table class="table table-bordered table-striped table-hover">
-                                <thead style="border: 2px solid #000;">
-                                    <th colspan="3" style="text-align: center; border-right: 2px solid #000;">Invoice</th>
-                                    <th colspan="3" style="text-align: center;">Uang Masuk</th>
-                                    <th colspan="3" style="text-align: center; border-left: 2px solid #000;">Details</th>
+                                <thead style="border: 1px solid #000;">
+                                    <th colspan="3" style="text-align: center; border-right: 1px solid #000;">Invoice</th>
+                                    <th colspan="3" style="text-align: center; border-right: 1px solid #000;">Uang Masuk</th>
+                                    <th colspan="3" style="text-align: center; border-right: 1px solid #000;" >Hutang</th>
+                                    <th colspan="3" style="text-align: center;">Details</th>
                                 </thead>
                                 <thead>
                                     <th>No</th>
                                     <th>No. Invoice</th>
-                                    <th style="border-right:2px solid #000;">Total Invoice</th>
+                                    <th style="border-right:1px solid #000;">Total<br>Invoice</th>
                                     <th>Jenis<br>Pembayaran</th>
                                     <th>Nomor Cek<br>/Rekening</th>
-                                    <th style="border-right:2px solid #000;">Total Nominal</th>
-                                    <th>UM Digunakan</th>
-                                    <th>Sisa Invoice</th>
-                                    <th>Sisa UM</th>
+                                    <th style="border-right:1px solid #000;">Total<br>Nominal</th>
+                                    <th>No.<br>Invoice Hutang</th>
+                                    <th>Nominal<br>Hutang</th>
+                                    <th style="border-right:1px solid #000;">Hutang<br>Dipotong</th>
+                                    <th>UM<br>Digunakan</th>
+                                    <th>Sisa<br>Invoice</th>
+                                    <th>Sisa<br>UM</th>
                                 </thead>
                                 <tbody id="boxDetailUm">
                                     <?php
@@ -306,10 +333,13 @@
                                             echo '<tr>';
                                             echo '<td style="text-align:center;">'.$no.'</td>';
                                             echo '<td>'.$row->no_invoice.'</td>';
-                                            echo '<td style="border-right:2px solid #000;">'.number_format($row->total,0,',', '.').'</td>';
+                                            echo '<td style="border-right:1px solid #000;">'.number_format($row->total,0,',', '.').'</td>';
                                             echo '<td>'.$row->jenis_pembayaran.'</td>';
                                             echo '<td>'.$row->nomor.'</td>';
-                                            echo '<td style="border-right:2px solid #000;">'.number_format($row->nominal,0,',', '.').'</td>';
+                                            echo '<td style="border-right:1px solid #000;">'.number_format($row->nominal,0,',', '.').'</td>';
+                                            echo '<td>'.$row->no_hutang.'</td>';
+                                            echo '<td>'.number_format($row->total_hutang,0,',','.').'</td>';
+                                            echo '<td style="border-right:1px solid #000;">'.number_format($row->used_hutang,0,',', '.').'</td>';
                                             echo '<td style="text-align:right;">'.number_format($row->paid,0,',', '.').'</td>';
                                             echo '<td style="text-align:right;">'.number_format($row->sisa_invoice,0,',', '.').'</td>';
                                             echo '<td style="text-align:right;">'.number_format($row->sisa_um,0,',', '.').'</td>';
@@ -376,18 +406,63 @@ function get_data_invoice(id){
             dataType: "json",
             success: function(result) {
                 $('#harga_invoice').val(numberWithCommas(result['total']-result['paid']));
-                var myInv = $('#harga_invoice').val();
-                var newInv = myInv.replace(/\./g, '');
-                var myUm = $('#harga_um').val();
-                var newUm = myUm.replace(/\./g, '');
-                var sisa  = (newInv-newUm);
+                const myHutang = $('#hutang').val();
+                const newHutang = myHutang.replace(/\./g, '');
+                const myInv = $('#harga_invoice').val();
+                const Inv = myInv.replace(/\./g, '');
+                const newInv = (Inv - newHutang);
+                const myUm = $('#harga_um').val();
+                const newUm = myUm.replace(/\./g, '');
+                const sisa  = (newInv-newUm);
                 if(sisa>0){
                     $('#sisa_invoice').val(numberWithCommas(sisa));
                     $('#sisa_um').val(0);
+                    $('#sisa_hutang').val(0);
                 }else{
                     var sisa1 = (newUm-newInv);
-                    $('#sisa_um').val(numberWithCommas(sisa1));
-                    $('#sisa_invoice').val(0);
+                    if(sisa1 > newUm){
+                        const hutang = (sisa1 - newUm);
+                        $('#sisa_hutang').val(numberWithCommas(hutang));
+                    }else{
+                        $('#sisa_um').val(numberWithCommas(sisa1));
+                        $('#sisa_invoice').val(0);
+                    }
+                }
+            }
+        });
+    }
+}
+
+function get_data_invoice_min(id){
+    if(''!=id){
+        $.ajax({
+            url: "<?php echo base_url('index.php/Finance/get_data_hutang'); ?>",
+            type: "POST",
+            data: "id="+id,
+            dataType: "json",
+            success: function(result){
+                $('#hutang').val(numberWithCommas(result['total']-result['used_hutang']));
+                const myHutang = $('#hutang').val();
+                const newHutang = myHutang.replace(/\./g, '');
+                const myInv = $('#harga_invoice').val();
+                const Inv = myInv.replace(/\./g, '');
+                const newInv = (Inv - newHutang);
+                const myUm = $('#harga_um').val();
+                const newUm = myUm.replace(/\./g, '');
+                const sisa  = (newInv-newUm);
+                if(sisa>0){
+                    $('#sisa_invoice').val(numberWithCommas(sisa));
+                    $('#sisa_um').val(0);
+                    $('#sisa_hutang').val(0);
+                }else{
+                    var sisa1 = (newUm-newInv);
+                    if(sisa1 > newUm){
+                        const hutang = (sisa1 - newUm);
+                        $('#sisa_hutang').val(numberWithCommas(hutang));
+                    }else{
+                        $('#sisa_um').val(numberWithCommas(sisa1));
+                        $('#sisa_invoice').val(0);
+                    }
                 }
             }
         });
@@ -416,18 +491,27 @@ function get_data_um(id){
             dataType: "json",
             success: function(result) {
                 $('#harga_um').val(numberWithCommas(result['nominal']-result['paid']));
-                var myInv = $('#harga_invoice').val();
-                var newInv = myInv.replace(/\./g, '');
-                var myUm = $('#harga_um').val();
-                var newUm = myUm.replace(/\./g, '');
-                var sisa  = (newInv-newUm);
+                const myHutang = $('#hutang').val();
+                const newHutang = myHutang.replace(/\./g, '');
+                const myInv = $('#harga_invoice').val();
+                const Inv = myInv.replace(/\./g, '');
+                const newInv = (Inv - newHutang);
+                const myUm = $('#harga_um').val();
+                const newUm = myUm.replace(/\./g, '');
+                const sisa  = (newInv-newUm);
                 if(sisa>0){
                     $('#sisa_invoice').val(numberWithCommas(sisa));
                     $('#sisa_um').val(0);
+                    $('#sisa_hutang').val(0);
                 }else{
                     var sisa1 = (newUm-newInv);
-                    $('#sisa_um').val(numberWithCommas(sisa1));
-                    $('#sisa_invoice').val(0);
+                    if(sisa1 > newUm){
+                        const hutang = (sisa1 - newUm);
+                        $('#sisa_hutang').val(numberWithCommas(hutang));
+                    }else{
+                        $('#sisa_um').val(numberWithCommas(sisa1));
+                        $('#sisa_invoice').val(0);
+                    }
                 }
             }
         });
@@ -454,7 +538,8 @@ function input(){
     $("#myModal").find('.modal-title').text('Input Matching');
     $("#myModal").modal('show',{backdrop: 'true'});
     $("#id_modal").val(<?php echo $header['id'];?>);
-    load_invoice(<?php echo $header['id'];?>);
+    load_invoice_plus(<?php echo $header['id'];?>);
+    load_invoice_minus(<?php echo $header['id'];?>);
     load_um(<?php echo $header['id'];?>);
 }
 
