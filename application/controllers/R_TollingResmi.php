@@ -1,7 +1,7 @@
 <?php
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class TollingResmi extends CI_Controller{
+class R_TollingResmi extends CI_Controller{
     function __construct(){
         parent::__construct();
 
@@ -130,10 +130,10 @@ class TollingResmi extends CI_Controller{
             }
 
             if($this->db->trans_complete()){
-                redirect('index.php/TollingResmi');  
+                redirect('index.php/R_TollingResmi');  
             }else{
                 $this->session->set_flashdata('flash_msg', 'Data surat jalan gagal disimpan, silahkan dicoba kembali!');
-                redirect('index.php/TollingResmi');  
+                redirect('index.php/R_TollingResmi');  
             }
     }
 
@@ -159,7 +159,7 @@ class TollingResmi extends CI_Controller{
 
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/Finance');
+            redirect('index.php/R_TollingResmi');
         }
     }
 }

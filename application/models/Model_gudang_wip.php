@@ -261,6 +261,11 @@ class Model_gudang_wip extends CI_Model{
                 and tgw.jenis_barang_id =".$id);
         return $data;
     }
+
+    function stok_wip(){
+        $data = $this->db->query("select * from stok_wip");
+        return $data;
+    }
     /*
     cara membuat view stok wip
     

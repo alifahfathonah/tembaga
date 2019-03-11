@@ -419,6 +419,12 @@
                                 <i class="fa fa-briefcase"></i>
                                 Laporan WIP </a>
                             </li>
+                        <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/GudangWIP/stok_wip">
+                                <i class="fa fa-inbox"></i>
+                                Stok WIP </a>
+                            </li>
                         <?php } ?>
                         </ul>
                         </li>
@@ -942,6 +948,14 @@
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/Modules/controller_index">
                             Controller Module Management</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/Modules/module_resmi">
+                            Module Management (RESMI)</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/Modules/controller_index_resmi">
+                            Controller Module Management (RESMI)</a>
                         </li>
                     <?php } ?>
                     </ul>

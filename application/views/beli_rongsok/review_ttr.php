@@ -74,6 +74,24 @@
                                 value="auto generate if approved">
                         </div>
                     </div> 
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jumlah Afkir
+                        </div>
+                        <div class="col-md-8">
+                            <input type="number" id="jumlah_afkir" name="jumlah_afkir" 
+                                class="form-control myline" style="margin-bottom:5px" value="0">
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jumlah Lain Lain
+                        </div>
+                        <div class="col-md-8">
+                            <input type="number" id="jumlah_lain" name="jumlah_lain" 
+                                class="form-control myline" style="margin-bottom:5px" value="0">
+                        </div>
+                    </div>
                     
                 </div>              
             </div>
@@ -87,6 +105,7 @@
                                 <th>UOM</th>
                                 <th>Jumlah</th>
                                 <th>Bruto (Kg)</th>
+                                <th>Berat Palette</th>
                                 <th>Netto (Kg)</th>
                                 <th>No. Pallete</th>
                                 <th>Keterangan</th>
@@ -94,6 +113,7 @@
                             <tbody>
                             <?php
                                 $no = 1;
+                                $jumlah_packing = 0;
                                 foreach ($details as $row){
                                     echo '<tr>';
                                     echo '<td style="text-align:center">'.$no.'</td>';
@@ -111,22 +131,31 @@
                                             . 'readonly="readonly"></td>';
                                     
                                     echo '<td><input type="text" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->bruto,0,',','.').'" '
+                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->bruto,2,'.',',').'" '
+                                            . 'readonly="readonly"></td>';
+
+                                    echo '<td><input type="text" id="berat_'.$no.'" name="myDetails['.$no.'][berat]" '
+                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->berat_palette,2,'.',',').'" '
                                             . 'readonly="readonly"></td>';
                                     
                                     echo '<td><input type="text" id="netto_'.$no.'" name="myDetails['.$no.'][netto]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->netto,0,',','.').'" '
+                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->netto,2,'.',',').'" '
                                             . 'readonly="readonly"></td>';
-                                    
                                     
                                     echo '<td><input type="text" name="myDetails['.$no.'][no_pallete]" value="'.$row->no_pallete.'" '
                                             . 'class="form-control myline" readonly="readonly"></td>';
                                     echo '<td><input type="text" name="myDetails['.$no.'][line_remarks]" value="'.$row->line_remarks.'"'
                                             . 'class="form-control myline" readonly="readonly"></td>';
                                     echo '</tr>';
+                                    $jumlah_packing += $row->berat_palette;
                                     $no++;
                                 }
                             ?>
+                            <tr>
+                                <td colspan="5" style="text-align: right;"><strong>Jumlah Pengepakan</strong></td>
+                                <td><input type="text" class="form-control" id="jumlah_packing" name="jumlah_packing" value="<?=$jumlah_packing;?>" readonly="readonly"></td>
+                                <td colspan="3"></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -163,10 +192,18 @@
 </div> 
 <script>
 function approveTTR(id_ttr){
+    const jumlah_afkir = $('#jumlah_afkir').val();
+    const jumlah_packing = $('#jumlah_packing').val();
+    const jumlah_lain = $('#jumlah_lain').val();
     $.ajax({
         url: "<?php echo base_url('index.php/BeliRongsok/approve_ttr'); ?>",
         type: "POST",
-        data : {id: id_ttr},
+        data : {
+            id: id_ttr,
+            jumlah_afkir: jumlah_afkir,
+            jumlah_packing: jumlah_packing,
+            jumlah_lain: jumlah_lain
+        },
         success: function (result){
             if(result['status']){
                 alert(result['message']);

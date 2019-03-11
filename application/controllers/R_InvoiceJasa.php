@@ -1,7 +1,7 @@
 <?php
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class InvoiceJasa extends CI_Controller{
+class R_InvoiceJasa extends CI_Controller{
     function __construct(){
         parent::__construct();
 
@@ -95,10 +95,10 @@ class InvoiceJasa extends CI_Controller{
             }
 
             if($this->db->trans_complete()){
-                redirect('index.php/InvoiceJasa/edit_inv_jasa/'.$inv_jasa_id);  
+                redirect('index.php/R_InvoiceJasa/edit_inv_jasa/'.$inv_jasa_id);  
             }else{
                 $this->session->set_flashdata('flash_msg', 'Data surat jalan gagal disimpan, silahkan dicoba kembali!');
-                redirect('index.php/InvoiceJasa/');  
+                redirect('index.php/R_InvoiceJasa/');  
             }
     }
 
@@ -122,7 +122,7 @@ class InvoiceJasa extends CI_Controller{
 
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/SuratJalan/surat_jalan');
+            redirect('index.php/R_SuratJalan/surat_jalan');
         }
     }
 
@@ -163,10 +163,10 @@ class InvoiceJasa extends CI_Controller{
         $this->db->update('r_t_inv_jasa', $data);
 
         if($this->db->trans_complete()){
-            redirect(base_url('index.php/InvoiceJasa/'));
+            redirect(base_url('index.php/R_InvoiceJasa/'));
         }else{
             $this->session->set_flashdata('flash_msg', 'Surat Jalan gagal disimpan, silahkan dicoba kembali!');
-            redirect('index.php/InvoiceJasa/edit_inv_jasa/'.$this->input->post('id'));  
+            redirect('index.php/R_InvoiceJasa/edit_inv_jasa/'.$this->input->post('id'));  
         }   
     }
 
@@ -189,7 +189,7 @@ class InvoiceJasa extends CI_Controller{
 
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/Finance');
+            redirect('index.php/R_InvoiceJasa');
         }
     }
 }

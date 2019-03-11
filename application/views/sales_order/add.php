@@ -74,7 +74,7 @@
                                 <option value="FG">FINISH GOOD</option>
                                 <option value="WIP">WIP</option>
                                 <option value="RONGSOK">RONGSOK</option>
-                                <option value="AMPAS">AMPAS</option>
+                                <!-- <option value="AMPAS">AMPAS</option> -->
                             </select>
                         </div>
                     </div>

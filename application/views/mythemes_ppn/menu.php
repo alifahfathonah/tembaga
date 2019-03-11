@@ -401,6 +401,12 @@
                                 <i class="fa fa-hourglass"></i>
                                 Produksi WIP </a>
                             </li>
+                        <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/GudangWIP/stok_wip">
+                                <i class="fa fa-inbox"></i>
+                                Stok WIP </a>
+                            </li>
                         <?php } ?>
                         </ul>
                         </li>

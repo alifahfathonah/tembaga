@@ -217,7 +217,7 @@ class Model_bobbin extends CI_Model{
 
     function load_list_bobbin_penerimaan($id_peminjaman){
         $data = $this->db->query("select * from m_bobbin_peminjaman_detail mbpd
-            where mbpd.id_peminjaman =".$id_peminjaman);
+            where mbpd.id_penerimaan = 0 and mbpd.id_peminjaman =".$id_peminjaman);
 
         // $data = $this->db->query("select mbt.*, mbp.id_surat_jalan, tsjd.nomor_bobbin, mb.id
         //     from m_bobbin_penerimaan mbt

@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> 
             <a href="<?php echo base_url('index.php/R_SO'); ?>"> Sales Order </a> 
-            <i class="fa fa-angle-right"></i> Input Sales Order
+            <i class="fa fa-angle-right"></i> Edit Sales Order
         </h5>          
     </div>
 </div>
@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==9)||($hak_akses['add']==1) ){
+            if( ($group_id==9)||($hak_akses['view']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -23,7 +23,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/R_SO/save_so'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/R_SO/update_so'); ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
@@ -31,8 +31,9 @@
                             No. Sales Order <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_so" name="no_so" maxlength="25" 
-                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
+                            <input type="text" id="no_so" name="no_so" maxlength="25"
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $header['no_so']; ?>" readonly>
+                            <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -42,7 +43,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal']))?>" readonly>
                         </div>
                     </div>  
                     <div class="row">
@@ -50,34 +51,21 @@
                             Marketing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="marketing_id" name="marketing_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($marketing_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->realname.'</option>';
-                                    }
-                                ?>
-                            </select>
+                            <input type="text" id="contact_person" name="contact_person" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_marketing']; ?>">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Jenis Barang <font color="#f00">*</font>
+                            Keterangan
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang"
-                                class="form-control myline" style="margin-bottom:5px" value="FinishGood" readonly="readonly">
+                            <textarea id="remarks" name="remarks" rows="3"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                onkeyup="this.value = this.value.toUpperCase()"><?php echo $header['remarks']; ?></textarea>
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
-                    <div class="row">
-                        <div class="col-md-4">&nbsp;</div>
-                        <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                                <i class="fa fa-floppy-o"></i> Input Details Sales Order </a>
-                        </div>    
-                    </div>
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-5">
@@ -87,9 +75,9 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_po" name="no_po"
-                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_po']?>" readonly="readonly">
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $header['no_so']; ?>" readonly="readonly">
 
-                            <input type="hidden" name="po_id" value="<?php echo $header['id'];?>">
+                            <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['id']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -99,7 +87,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal_po" name="tanggal_po" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>" readonly="readonly">
+                                value="<?php echo date('d-m-Y', strtotime($header['tgl_po'])); ?>" readonly="readonly">
                         </div>
                     </div>
                     <div class="row">
@@ -107,10 +95,8 @@
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_customer" name="nama_customer"
-                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_cv'];?>" readonly="readonly">
-
-                            <input type="hidden" name="customer_id" value="<?php echo $header['customer_id'];?>">
+                            <input type="text" id="contact_person" name="contact_person" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_cv']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -119,12 +105,50 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['pic'] ?>">
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['pic']; ?>">
                         </div>
                     </div>                   
                 </div>              
             </div>
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-scrollable">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <th>No</th>
+                                <th style="width: 20%;">Nama Item</th>
+                                <th>Unit of Measure</th>
+                                <th>Harga (Rp)</th>
+                                <th>Netto (Kg)</th>
+                                <th>Sub Total(Rp)</th>
+                            </thead>
+                            <tbody>
+                                <?php $no= 0; foreach($myDetails as $row){ $no++;?>
+                                    <tr>
+                                        <td><?=$no;?></td>
+                                        <td><?=$row->jenis_barang;?></td>
+                                        <td><?=$row->uom;?></td>
+                                        <td><?=number_format($row->amount,0,',','.');?></td>
+                                        <td><?=$row->netto;?></td>
+                                        <td><?=number_format($row->total_amount,0,',','.');?></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="<?php echo base_url('index.php/R_SO'); ?>" class="btn blue-hoki"> 
+                        <i class="fa fa-angle-left"></i> Kembali </a>
+                </div>    
+            </div>
+            
         </form>
+        
         <?php
             }else{
         ?>
@@ -137,62 +161,7 @@
         ?>
     </div>
 </div> 
-<script>
-function simpanData(){
-    if($.trim($("#no_so").val()) == ""){
-        $('#message').html("Nomor SO harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show();
-    }else if($.trim($("#tanggal").val()) == ""){
-        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#marketing_id").val()) == ""){
-        $('#message').html("Silahkan pilih marketing!");
-        $('.alert-danger').show();
-    }else{   
-        $('#formku').submit(); 
-    };
-};
-
-function get_tanggal(id){
-    $.ajax({
-        type: "POST",
-        url: "<?php echo base_url('index.php/R_SO/get_tanggal_po'); ?>",
-        data: {id: id},
-        cache: false,
-        success: function(result) {
-            console.log(result);
-            $("#tanggal_po").val(result['tanggal']);
-        } 
-    });
-}
-
-function get_contact(id){
-    $.ajax({
-        type: "POST",
-        url: "<?php echo base_url('index.php/SalesOrder/get_contact_name'); ?>",
-        data: {id: id},
-        cache: false,
-        success: function(result) {
-            $("#contact_person").val(result['pic']);
-        } 
-    });
-}
-</script>
-
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
-<script>
-$(function(){        
-    $("#tanggal").datepicker({
-        showOn: "button",
-        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
-        buttonImageOnly: true,
-        buttonText: "Select date",
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'dd-mm-yy'
-    });       
-});
-</script>
       

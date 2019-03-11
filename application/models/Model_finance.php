@@ -157,7 +157,7 @@ class Model_finance extends CI_Model{
     }
 
     function list_invoice(){
-        $data = $this->db->query("Select fi.*, mc.nama_customer, so.no_sales_order, tsj.no_surat_jalan,
+        $data = $this->db->query("Select fi.*, mc.nama_customer, so.no_sales_order, tsj.no_surat_jalan, so.flag_ppn,
             (select count(fid.id) from f_invoice_detail fid where fid.id_invoice = fi.id) as jumlah 
             From f_invoice fi
             left join sales_order so on so.id = fi.id_sales_order

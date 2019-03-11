@@ -11,7 +11,7 @@ class Model_matching extends CI_Model{
         $data = $this->db->query("select fi.*,tso.jenis_barang from f_invoice fi
             left join sales_order so on so.id = fi.id_sales_order
             left join t_sales_order tso on tso.so_id = so.id
-            where tso.jenis_barang ='FG' and flag_resmi = 0");
+            where tso.jenis_barang ='FG' and so.flag_ppn = 0 and fi.flag_resmi = 0");
         return $data;
     }
 
@@ -65,6 +65,21 @@ class Model_matching extends CI_Model{
             left join dtr on (dtrd.dtr_id = dtr.id)
             left join rongsok r on (dtrd.rongsok_id = r.id)
             where ird.invoice_resmi_id = ".$id);
+        return $data;
+    }
+
+    function cv_list(){
+        $data = $this->db->query("select id, nama_cv as nama_customer from m_cv");
+        return $data;
+    }
+
+    function po_free(){
+        $data = $this->db->query("select * from r_t_po where flag_sj = 0");
+        return $data;
+    }
+
+    function po_free_edit($id){
+        $data = $this->db->query("select * from r_t_po where flag_sj = 0 or flag_sj =".$id);
         return $data;
     }
 }

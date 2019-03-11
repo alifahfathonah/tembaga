@@ -149,7 +149,7 @@
                             <tr>
                                 <td style="text-align:center"><i class="fa fa-plus"></i></td>
                                 <td>
-                                <select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
+                                <select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
                                 <option value=""></option>
                                 <?php
                                     foreach ($jenis_barang_list as $value){
@@ -210,7 +210,8 @@ function get_bobbin(id){
                 $('#berat_bobbin').val(result['berat']);
                 $('#pemilik').val(result['nama_owner']);
                 $('#id_bobbin').val(result['id']);
-                $('#netto').val(($('#bruto').val() - result['berat']));
+                const netto = ($('#bruto').val() - result['berat']);
+                $('#netto').val(Math.round(netto*100)/100);
             } else {
                 alert('Bobbin/Keranjang tidak ditemukan atau belum dipesan, coba lagi');
                 $('#no_bobbin').val('');

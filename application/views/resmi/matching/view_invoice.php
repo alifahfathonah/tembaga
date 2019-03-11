@@ -2,7 +2,7 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <a href="<?php echo base_url('index.php/Matching'); ?>"><i class="fa fa-angle-right"></i> Matching Invoice</a>
+            <a href="<?php echo base_url('index.php/R_Matching'); ?>"><i class="fa fa-angle-right"></i> Matching Invoice</a>
             <i class="fa fa-angle-right"></i> 
             View Invoice 
         </h5>          
@@ -30,7 +30,7 @@
             </div>
         </div>
         <?php
-            if( ($group_id==9)||($hak_akses['view_spb']==1) ){
+            if( ($group_id==9)||($hak_akses['view']==1) ){
         ?>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku">  
@@ -147,7 +147,7 @@
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
-                    <a href="<?php echo base_url('index.php/Matching/'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/R_Matching/'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>

@@ -1,7 +1,7 @@
 <?php
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class PurchaseOrder extends CI_Controller{
+class R_PurchaseOrder extends CI_Controller{
     function __construct(){
         parent::__construct();
 
@@ -40,7 +40,7 @@ class PurchaseOrder extends CI_Controller{
 
         $data['content']= "resmi/purchase_order/add_po";
         $data['header'] = $this->Model_purchase_order->invoice_list($id)->row_array();
-        $data['customer_list'] = $this->Model_purchase_order->customer_list()->result();
+        $data['cv_list'] = $this->Model_purchase_order->cv_list()->result();
 
         $this->load->view('layout', $data);
     }
@@ -87,16 +87,15 @@ class PurchaseOrder extends CI_Controller{
                     'netto' => $row->netto,
                     'amount' => $row->harga,
                     'total_amount' => $row->total_harga,
-                    'line_remarks' => $row->keterangan
                 );
             $this->db->insert('r_t_po_detail', $detail);
         }
 
         if($this->db->trans_complete()){
-            redirect('index.php/PurchaseOrder/edit_po/'.$po_id);  
+            redirect('index.php/R_PurchaseOrder/edit_po/'.$po_id);  
         }else{
             $this->session->set_flashdata('flash_msg', 'PO JASA gagal disimpan, silahkan dicoba kembali!');
-            redirect('index.php/PurchaseOrder');  
+            redirect('index.php/R_PurchaseOrder');  
         }  
     }
 
@@ -119,10 +118,10 @@ class PurchaseOrder extends CI_Controller{
             $data['myDetail'] = $this->Model_purchase_order->load_detail_po($id)->result();
             $data['list_fg'] = $this->Model_beli_fg->list_fg()->result();
 
-        	$data['customer_list'] = $this->Model_purchase_order->customer_list()->result();
+        	$data['cv_list'] = $this->Model_purchase_order->cv_list()->result();
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/BeliFinishGood');
+            redirect('index.php/R_PurchaseOrder');
         }
     }
 
@@ -169,7 +168,7 @@ class PurchaseOrder extends CI_Controller{
             if($v['id']!=''){
                 $data = array(
                         'jenis_barang_id'=> $v['barang_id'],
-                        'netto'=> str_replace('.', '', $v['netto']),
+                        'netto'=> $v['netto'],
                         'amount'=> str_replace('.', '', $v['amount']),
                         'total_amount'=> str_replace('.', '', $v['total_amount']),
                         'line_remarks'=> $v['line_remarks']
@@ -194,7 +193,7 @@ class PurchaseOrder extends CI_Controller{
         $this->db->update('r_t_po', $data);
         
         $this->session->set_flashdata('flash_msg', 'Data PO Jasa Finish Good berhasil disimpan');
-        redirect('index.php/PurchaseOrder');
+        redirect('index.php/R_PurchaseOrder');
     }
 
     function print_po(){

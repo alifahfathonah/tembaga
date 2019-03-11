@@ -90,7 +90,7 @@ Yang muncul di module id hanya per parent_id modules. Sedangkan role menggabungk
 No packing masih bermasalah di DTBJ DTT DAN PRODUKSI nomor urutnya, karena bobbin dan ukuran
 bisa sangat mungkin sama, dan nomor urut tidak sama setiap timbangnya(Clear)
 
-Edit surat jalan belum dibenerin FG print di Dynamic Appendnya
+Edit surat jalan belum dibenerin FG print di Dynamic Appendnya(Done)
 
 SPB Bobbin perlu dipisahin jenis packingnya atau boleh campur ?(Clear)
 
@@ -101,7 +101,23 @@ Nambah Class di assets/admin/layout/css/layout.css
 Create Invoice tambah Diskon dan Input harga lain-lainm dan Materai input harga manual(di PO ubah gini materai manual juga)
 
 Sales Order Tolling dari Customer belum bisa bikin invoice, karena masalah sama Surat Jalan
-Keluar yang ada di Tolling ke Customer
+Keluar yang ada di Tolling ke Customer (Done)
 
 Invoice Sales Order Tolling dari Customer masih bermasalah, harus diberikan if jika
-sales order tolling, ngambil harga dari tabel sales_order_detail bukan tadi t_sales_order_detail yang biasa
+sales order tolling, ngambil harga dari tabel sales_order_detail bukan tadi t_sales_order_detail yang biasa (Done)
+
+Resmi Create PO masih Dobel(Done)
+
+Jumlah Afkiran dan Lain lain input saat bikin TTR(Done)
+
+Print Matching Invoice belum ()
+
+Modules untuk Resmi SJ, dan Tolling Belum (Done)
+
+po_id di SO masih salah(Done)
+
+Pisahin List PPN dan Non-PPN sesuai dengan user login
+
+User / Group tidak boleh ada nama 'RESMI' nya (Done)
+
+Nomor matching pada resmi gaperlu di show

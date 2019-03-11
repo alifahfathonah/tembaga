@@ -7,6 +7,13 @@
             <?php
             $module_name = $this->uri->segment(1);
             $action_name = $this->uri->segment(2);
+            $group_id    = $this->session->userdata('group_id');
+            $CI =& get_instance();
+            if($group_id != 9){
+                $CI->load->model('Model_modules');
+                $akses_menu = $CI->Model_modules->akses_menu($group_id);
+                //print_r($akses_menu);
+            }
             ?>
             <ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">				
                 <li class="sidebar-toggler-wrapper">
@@ -27,42 +34,49 @@
                         </div>
                     </form>
                 </li>
+                <?php if($group_id==9 || (isset($akses_menu['R_Matching']) && $akses_menu['R_Matching']==1)){ ?>
                 <li <?php if ($module_name=="Matching") echo 'class="start active open"'; ?>>
-                    <a href="<?php echo base_url(); ?>index.php/Matching">
+                    <a href="<?php echo base_url(); ?>index.php/R_Matching">
                         <i class="fa fa-chain"></i>
                         <span class="title">MATCHING INVOICE</span>
                     </a>
                 </li>
+                <?php } if($group_id==9 || (isset($akses_menu['R_SuratJalan']) && $akses_menu['R_SuratJalan']==1)){ ?>
                 <li <?php if ($module_name=="SuratJalan") echo 'class="start active open"'; ?>>
-                    <a href="<?php echo base_url(); ?>index.php/SuratJalan">
+                    <a href="<?php echo base_url(); ?>index.php/R_SuratJalan">
                         <i class="fa fa-truck"></i>
                         <span class="title">SURAT JALAN</span>
                     </a>
                 </li>
+                <?php } if($group_id==9 || (isset($akses_menu['R_TollingResmi']) && $akses_menu['R_TollingResmi']==1)){ ?>
                 <li <?php if ($module_name=="TollingResmi") echo 'class="start active open"'; ?>>
-                    <a href="<?php echo base_url(); ?>index.php/TollingResmi">
+                    <a href="<?php echo base_url(); ?>index.php/R_TollingResmi">
                         <i class="fa fa-truck"></i>
                         <span class="title">Tolling Titipan</span>
                     </a>
                 </li>
+                <?php } if($group_id==9 || (isset($akses_menu['R_PurchaseOrder']) && $akses_menu['R_PurchaseOrder']==1)){ ?>
                 <li <?php if ($module_name=="PurchaseOrder") echo 'class="start active open"'; ?>>
-                    <a href="<?php echo base_url(); ?>index.php/PurchaseOrder">
+                    <a href="<?php echo base_url(); ?>index.php/R_PurchaseOrder">
                         <i class="fa fa-credit-card"></i>
                         <span class="title">PURCHASE ORDER</span>
                     </a>
                 </li>
+                <?php } if($group_id==9 || (isset($akses_menu['R_SO']) && $akses_menu['R_SO']==1)){ ?>
                 <li <?php if ($module_name=="SO") echo 'class="start active open"'; ?>>
-                    <a href="<?php echo base_url(); ?>index.php/SO">
+                    <a href="<?php echo base_url(); ?>index.php/R_SO">
                         <i class="fa fa-file-text-o"></i>
                         <span class="title">SALES ORDER</span>
                     </a>
                 </li>
+                <?php } if($group_id==9 || (isset($akses_menu['R_InvoiceJasa']) && $akses_menu['R_InvoiceJasa']==1)){ ?>
                 <li <?php if ($module_name=="InvoiceJasa") echo 'class="start active open"'; ?>>
-                    <a href="<?php echo base_url(); ?>index.php/InvoiceJasa">
+                    <a href="<?php echo base_url(); ?>index.php/R_InvoiceJasa">
                         <i class="fa fa-credit-card"></i>
                         <span class="title">Invoice Jasa</span>
                     </a>
                 </li>
+                <?php } if($group_id==9){ ?>
                 <li <?php if($module_name=="MNumberings" || $module_name=="Apolo"
                         || $module_name=="MProvinces" || $module_name=="MCities" 
                         || $module_name=="Customer" || $module_name=="Supplier" 
@@ -229,7 +243,7 @@
                         </li>                                             
                     </ul>
                 </li>
-
+                <?php } ?>
                 <!--li <?php if($module_name=="SalesOrder") echo 'class="start active open"'; ?>>
                     <a href="javascript:;">
                     <i class="fa fa-ge"></i>

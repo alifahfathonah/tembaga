@@ -3,7 +3,7 @@
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/SO'); ?>"> Sales Order </a> 
+            <a href="<?php echo base_url('index.php/R_SO'); ?>"> Sales Order </a> 
             <i class="fa fa-angle-right"></i> Edit Sales Order
         </h5>          
     </div>
@@ -23,7 +23,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/SO/update_so'); ?>">
+              id="formku" action="<?php echo base_url('index.php/R_SO/update_so'); ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
@@ -31,7 +31,7 @@
                             No. Sales Order <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_so" name="no_so"
+                            <input type="text" id="no_so" name="no_so" maxlength="25"
                                 class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $header['no_so']; ?>">
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
@@ -84,7 +84,7 @@
                             <input type="text" id="no_po" name="no_po"
                                 class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $header['no_so']; ?>" readonly="readonly">
 
-                            <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['id']; ?>">
+                            <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['po_id']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -94,7 +94,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal_po" name="tanggal_po" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y', strtotime($header['tgl_po'])); ?>">
+                                value="<?php echo date('d-m-Y', strtotime($header['tgl_po'])); ?>" readonly="readonly">
                         </div>
                     </div>
                     <div class="row">
@@ -107,7 +107,7 @@
                                 <option value=""></option>
                                 <?php
                                     foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'" '.(($row->nama_customer==$header['nama_customer'])? 'selected="selected"': '').'>'.$row->nama_customer.'</option>';
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['customer_id'])? 'selected="selected"': '').'>'.$row->nama_customer.'</option>';
                                     }
                                 ?>
                             </select>
@@ -134,7 +134,6 @@
                                 <th style="width: 20%;">Nama Item</th>
                                 <th>Unit of Measure</th>
                                 <th>Harga (Rp)</th>
-                                <th>Bruto</th>
                                 <th>Netto (Kg)</th>
                                 <th>Sub Total(Rp)</th>
                                 <th style="width: 15%; text-align: center">Actions</th>
@@ -152,7 +151,7 @@
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
                         
-                    <a href="<?php echo base_url('index.php/SO'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/R_SO'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -187,7 +186,7 @@ function getComa_a(value, id, no){
 
 function hitungSubTotal_a(id){
     harga = $('#amount_'+id).val().toString().replace(/\./g, "");
-    netto = $('#netto_'+id).val().toString().replace(/\./g, "");
+    netto = $('#netto_'+id).val();
     total_harga = Number(harga)* Number(netto);
     $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
@@ -210,7 +209,7 @@ function simpanData(){
 function loadDetail(id){
     $.ajax({
         type:"POST",
-        url:'<?php echo base_url('index.php/SO/load_detail_so'); ?>',
+        url:'<?php echo base_url('index.php/R_SO/load_detail_so'); ?>',
         data:{
             id: id,
         },
@@ -246,7 +245,7 @@ function saveDetail(){
     }else{
         $.ajax({
             type:"POST",
-            url:'<?php echo base_url('index.php/SO/save_detail_so'); ?>',
+            url:'<?php echo base_url('index.php/R_SO/save_detail_so'); ?>',
             data:{
                 id:$('#id').val(),
                 barang_id:$('#barang_id').val(),
@@ -306,7 +305,7 @@ function updateDetail(id){
     }else{
         $.ajax({
             type:"POST",
-            url:'<?php echo base_url('index.php/SO/update_detail_so'); ?>',
+            url:'<?php echo base_url('index.php/R_SO/update_detail_so'); ?>',
             data:{
                 detail_id:$('#detail_id_'+id).val(),
                 jenis_barang_id:$('#jenis_barang_id_'+id).val(),

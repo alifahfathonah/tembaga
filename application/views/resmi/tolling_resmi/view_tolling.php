@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Tolling Titipan
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Tolling/view_dtr'); ?>"> Review Data Timbang Rongsok (DTR) </a> 
+            <a href="<?php echo base_url('index.php/R_TollingResmi/view_tolling'); ?>"> Review Data Timbang Rongsok (DTR) </a> 
         </h5>          
     </div>
 </div>
@@ -46,7 +46,7 @@
                     <div class="col-md-8">
                         <input type="text" id="nama_customer" name="nama_customer" 
                             class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                            value="<?php echo $header['nama_customer']; ?>">
+                            value="<?php echo $header['nama_cv']; ?>">
                     </div>
                 </div> 
                 <div class="row">
@@ -173,7 +173,7 @@
         <div class="row">&nbsp;</div>
         <div class="row">
             <div class="col-md-12">
-                <a href="<?php echo base_url('index.php/Tolling/dtr_list'); ?>" class="btn blue-hoki"> 
+                <a href="<?php echo base_url('index.php/R_TollingResmi'); ?>" class="btn blue-hoki"> 
                     <i class="fa fa-angle-left"></i> Kembali </a>
             </div>    
         </div>

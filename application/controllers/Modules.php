@@ -263,4 +263,161 @@ class Modules extends CI_Controller{
         }
     }
 
+    function controller_index_resmi(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        
+        $data['judul'] = "Modules";
+        $data['content']= "modules/controller_index_resmi";
+        $this->load->model('Model_modules');
+        $data['groups'] = $this->Model_modules->list_group_resmi()->result();
+        $modules = $this->Model_modules->list_modules_c()->result();
+        $details = $this->Model_modules->modules_details_c_resmi()->result();
+        $konten = "";
+        foreach ($modules as $value){
+            if($value->parent_id==0){
+                $konten .= "<tr style='background-color:#E7FCC9'>";
+                $konten .= "<td>";
+                $konten .= "<a href='javascript:;' data-toggle='collapse' data-target='.".$value->id."collapsed'><i class='fa fa-folder-open-o'></i></a> ".$value->alias;
+                $konten .= "</td>";
+                $konten .= "<td></td>";
+                foreach ($data['groups'] as $row){
+                    $konten .= "<td></td>";
+                }
+                $konten .= "</tr>";
+                    foreach ($details as $key) {
+                        if($key->parent_id == $value->id){
+                            $konten .= "<tr class='collapse out ".$key->parent_id."collapsed'>";
+                            $konten .= "<td>";
+                            $konten .= "&nbsp; &nbsp; <i class='fa fa-plane'></i> ".$key->alias;
+                            $konten .= "</td>";
+                            $konten .= "<td style='text-align:center'><i class='fa fa-check-square-o'></i></td>";
+                            $id_module = $key->id;
+                            foreach ($data['groups'] as $row){
+                                $id_group = $row->id;
+                                $akses = $this->Model_modules->cek_akses($id_module, $id_group)->result();
+                                if($akses){
+                                    if($akses[0]->akses==1){
+                                        $konten .= "<td style='text-align:center'><input type='checkbox' "
+                                                . "id='chk_".$key->id."-".$row->id."' class='mycheck' checked onclick='update_roles(this.id)'></td>";
+                                    }else{
+                                        $konten .= "<td style='text-align:center'><input type='checkbox' "
+                                                . "id='chk_".$key->id."-".$row->id."' class='mycheck' onclick='update_roles(this.id)'></td>";
+                                    }
+                                }else{
+                                    $konten .= "<td style='text-align:center'><input type='checkbox' "
+                                            . "id='chk_".$key->id."-".$row->id."' class='mycheck' onclick='update_roles(this.id)'></td>";
+                                }
+                            }
+                        $konten .= "</tr>";
+                        }
+                }
+            }
+        }
+        $data['konten'] = $konten;
+        $this->load->view('layout', $data);                                 
+    }
+
+    function module_resmi(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        
+        $data['judul'] = "Modules";
+        $data['content']= "modules/module_resmi";
+        $this->load->model('Model_modules');
+        $data['groups'] = $this->Model_modules->list_group_resmi()->result();
+        $modules = $this->Model_modules->list_modules_resmi()->result();
+        $details = $this->Model_modules->modules_details()->result();
+        $konten = "";
+        foreach ($modules as $value){
+            if($value->parent_id==1){
+                $konten .= "<tr style='background-color:#E7FCC9'>";
+                $konten .= "<td>";
+                $konten .= "<a href='javascript:;' data-toggle='collapse' data-target='.".$value->id."collapsed'><i class='fa fa-folder-open-o'></i></a> ".$value->alias;
+                $konten .= "</td>";
+                $konten .= "<td></td>";
+                foreach ($data['groups'] as $row){
+                    $konten .= "<td></td>";
+                }
+                $konten .= "</tr>";
+                    foreach ($details as $key) {
+                        if($key->parent_id == $value->id){
+                            $konten .= "<tr class='collapse out ".$key->parent_id."collapsed'>";
+                            $konten .= "<td>";
+                            $konten .= "&nbsp; &nbsp; <i class='fa fa-plane'></i> ".$key->alias;
+                            $konten .= "</td>";
+                            $konten .= "<td style='text-align:center'><i class='fa fa-check-square-o'></i></td>";
+                            $id_module = $key->id;
+                            foreach ($data['groups'] as $row){
+                                $id_group = $row->id;
+                                $akses = $this->Model_modules->cek_akses($id_module, $id_group)->result();
+                                if($akses){
+                                    if($akses[0]->akses==1){
+                                        $konten .= "<td style='text-align:center'><input type='checkbox' "
+                                                . "id='chk_".$key->id."-".$row->id."' class='mycheck' checked onclick='update_roles(this.id)'></td>";
+                                    }else{
+                                        $konten .= "<td style='text-align:center'><input type='checkbox' "
+                                                . "id='chk_".$key->id."-".$row->id."' class='mycheck' onclick='update_roles(this.id)'></td>";
+                                    }
+                                }else{
+                                    $konten .= "<td style='text-align:center'><input type='checkbox' "
+                                            . "id='chk_".$key->id."-".$row->id."' class='mycheck' onclick='update_roles(this.id)'></td>";
+                                }
+                            }
+                        $konten .= "</tr>";
+                        }
+                }
+            }
+            // if($value->parent_id==1){
+            //     $konten .= "<tr style='background-color:#E7FCC9'>";
+            //     $konten .= "<td>";
+            //     $konten .= "<a href='javascript:;' data-toggle='collapse' data-target='.".$value->id."collapsed'><i class='fa fa-folder-open-o'></i></a> ".$value->alias;
+            //     $konten .= "</td>";
+            //     $konten .= "<td></td>";
+            //     foreach ($data['groups'] as $row){
+            //         $konten .= "<td></td>";
+            //     }
+            //     $konten .= "</tr>";
+            // }else{
+            //     $konten .= "<tr class='collapse out ".$value->parent_id."collapsed'>";
+            //     $konten .= "<td>";
+            //     $konten .= "&nbsp; &nbsp; <i class='fa fa-plane'></i> ".$value->alias;
+            //     $konten .= "</td>";
+            //     $konten .= "<td style='text-align:center'><i class='fa fa-check-square-o'></i></td>";
+            //     $id_module = $value->id;
+            //     foreach ($data['groups'] as $row){
+            //         $id_group = $row->id;
+            //         $akses = $this->Model_modules->cek_akses($id_module, $id_group)->result();
+            //         if($akses){
+            //             if($akses[0]->akses==1){
+            //                 $konten .= "<td style='text-align:center'><input type='checkbox' "
+            //                         . "id='chk_".$value->id."-".$row->id."' class='mycheck' checked onclick='update_roles(this.id)'></td>";
+            //             }else{
+            //                 $konten .= "<td style='text-align:center'><input type='checkbox' "
+            //                         . "id='chk_".$value->id."-".$row->id."' class='mycheck' onclick='update_roles(this.id)'></td>";
+            //             }
+            //         }else{
+            //             $konten .= "<td style='text-align:center'><input type='checkbox' "
+            //                     . "id='chk_".$value->id."-".$row->id."' class='mycheck' onclick='update_roles(this.id)'></td>";
+            //         }
+            //     }
+            //     $konten .= "</tr>";
+            // }
+        }
+        $data['konten'] = $konten;
+        $this->load->view('layout', $data);                                 
+    }
+
 }

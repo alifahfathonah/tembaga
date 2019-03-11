@@ -108,19 +108,19 @@
                             <td width="400px" style="text-align:center">Diterima Oleh </td>
                             <td>Jumlah Pengepakan</td>
                             <td>:</td>
-                            <td style="text-align:right"><?php echo $bruto-$netto; ?></td>
+                            <td style="text-align:right"><?php echo number_format($header['jmlh_pengepakan'],2,'.',','); ?></td>
                         </tr>
                         <tr>
                             <td width="400px" style="text-align:center"></td>
                             <td>Jumlah Afkiran</td>
                             <td>:</td>
-                            <td style="text-align:right"><?php echo number_format($header['jmlh_afkiran'],0,',','.'); ?></td>
+                            <td style="text-align:right"><?php echo number_format($header['jmlh_afkiran'],2,'.',','); ?></td>
                         </tr>
                         <tr>
                             <td style="text-align:center"><?php echo $header['approved_name']; ?></td>
                             <td>Jumlah Lain-lain</td>
                             <td>:</td>
-                            <td style="text-align:right"><?php echo number_format($header['jmlh_lain'],0,',','.'); ?></td>
+                            <td style="text-align:right"><?php echo number_format($header['jmlh_lain'],2,'.',','); ?></td>
                         </tr>
                     </table>
                 </td>

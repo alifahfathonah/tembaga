@@ -33,7 +33,7 @@
                 <tr>
                     <th style="width:50px;">No</th>
                     <th>No. Surat Jalan</th>
-                    <th>No. Invoice/<br>No. SO / No. PO</th>
+                    <th>No. SO / No. PO</th>
                     <th>Tanggal</th>
                     <th>Jenis<br>Barang</th>                     
                     <th>Customer</th>
@@ -50,7 +50,7 @@
                     <tr>
                         <td style="text-align: center;"><?php echo $no; ?></td>
                         <td><?php echo $row->no_sj_resmi; ?></td>
-                        <td><?php echo $row->no_invoice_resmi.$row->no_so.$row->no_po; ?></td>
+                        <td><?php echo $row->no_reff; ?></td>
                         <td><?php echo $row->tanggal; ?></td>
                         <td><?php echo $row->jenis_barang; ?></td>
                         <td><?php echo $row->nama_customer; ?></td>
@@ -58,22 +58,27 @@
                         <td><?php echo $row->remarks; ?></td>
                         <td style="text-align: center;">
                             <?php
-                                if( ($group_id==9)||($hak_akses['edit']==1)){
+                                if( ($group_id==9)||($hak_akses['edit_surat_jalan']==1)){
                             ?>
-                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/SuratJalan/edit_surat_jalan/<?php echo $row->id; ?>" 
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/R_SuratJalan/edit_surat_jalan/<?php echo $row->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
+                            <?php
+                                } if( ($group_id==9)||($hak_akses['view_surat_jalan']==1)){
+                            ?>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/R_SuratJalan/view_surat_jalan/<?php echo $row->id; ?>" 
+                               style="margin-bottom:4px"> &nbsp; <i class="fa fa-file-text-o"></i> View &nbsp; </a>
                             <?php 
                                 }if($group_id==9 || $hak_akses['print']==1){
                             ?><br>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/Matching/print_invoice/<?php echo $row->id; ?>" 
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_Matching/print_invoice/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
-                                }if($row->flag_tolling==0 && $row->r_invoice_id > 0){
+                                }if(($group_id==9 || $hak_akses['create_tolling']==1) && ($row->flag_tolling==0 && $row->r_invoice_id > 0)){
                             ?>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/TollingResmi/add/<?php echo $row->id; ?>" 
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_TollingResmi/add/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-truck"></i> Create Tolling &nbsp; </a>
-                            <?php }else if($row->flag_tolling==0 && ($row->r_so_id == 0 || $row->r_po_id == 0) && $row->r_inv_jasa_id == 0){ ?>
-                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/InvoiceJasa/add/<?php echo $row->id; ?>" 
+                            <?php }else if(($group_id==9 || $hak_akses['create_invoice_jasa']) && ($row->flag_tolling==0 && ($row->r_so_id == 0 || $row->r_po_id == 0) && $row->r_inv_jasa_id == 0)){ ?>
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/add/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-truck"></i> Create Invoice Jasa &nbsp; </a>
                             <?php } ?>
                         </td>

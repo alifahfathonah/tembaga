@@ -1,7 +1,7 @@
 <?php
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Matching extends CI_Controller{
+class R_Matching extends CI_Controller{
     function __construct(){
         parent::__construct();
 
@@ -77,10 +77,10 @@ class Matching extends CI_Controller{
         $id_new=$this->db->insert_id();
 
         if($this->db->trans_complete()){
-            redirect(base_url('index.php/Matching/matching_invoice/'.$id_new));
+            redirect(base_url('index.php/R_Matching/matching_invoice/'.$id_new));
         }else{
-            $this->session->set_flashdata('flash_msg', 'Uang Masuk gagal disimpan, silahkan dicoba kembali!');
-            redirect('index.php/Matching');  
+            $this->session->set_flashdata('flash_msg', 'Invoice gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/R_Matching');  
         }   
     }
 
@@ -105,7 +105,7 @@ class Matching extends CI_Controller{
 
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/Finance');
+            redirect('index.php/R_Matching');
         }
     }
 
@@ -191,7 +191,7 @@ class Matching extends CI_Controller{
         
         if ($total_netto < $qty) {
             $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan. Jumlah netto invoice kurang dari berat permintaan!');
-            redirect('index.php/Matching/matching_invoice/'.$id);
+            redirect('index.php/R_Matching/matching_invoice/'.$id);
         } else {
             $this->db->trans_start();
 
@@ -205,10 +205,10 @@ class Matching extends CI_Controller{
 
             if($this->db->trans_complete()){
                 $this->session->set_flashdata('flash_msg', 'Data invoice berhasil disimpan!');
-                redirect('index.php/Matching/'); 
+                redirect('index.php/R_Matching/'); 
             } else {
                 $this->session->set_flashdata('flash_msg', 'Data invoice gagal disimpan!');
-                redirect('index.php/Matching/matching_invoice/'.$id);
+                redirect('index.php/R_Matching/matching_invoice/'.$id);
             }
         }
     }
@@ -336,7 +336,7 @@ class Matching extends CI_Controller{
 
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/Finance');
+            redirect('index.php/R_Matching');
         }
     }
 

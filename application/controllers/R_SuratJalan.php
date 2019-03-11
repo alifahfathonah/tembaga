@@ -1,7 +1,7 @@
 <?php
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class SuratJalan extends CI_Controller{
+class R_SuratJalan extends CI_Controller{
     function __construct(){
         parent::__construct();
 
@@ -14,7 +14,7 @@ class SuratJalan extends CI_Controller{
     function index(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
-        if($group_id != 1){
+        if($group_id != 9){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
             $data['hak_akses'] = $roles;
@@ -22,8 +22,13 @@ class SuratJalan extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "resmi/surat_jalan/index";
-        $data['list_sj']= $this->Model_surat_jalan->list_sj()->result();
-
+        if($group_id == 14 || $group_id == 15){
+            $data['list_sj']= $this->Model_surat_jalan->list_sj_cv()->result();
+        }else if($group_id == 17){
+            $data['list_sj']= $this->Model_surat_jalan->list_sj_so()->result();
+        }else{
+            $data['list_sj']= $this->Model_surat_jalan->list_sj()->result();
+        }
         $this->load->view('layout', $data);
     }
 
@@ -43,16 +48,21 @@ class SuratJalan extends CI_Controller{
         $data['jenis'] = $jenis;
         $data['content']= "resmi/surat_jalan/add_surat_jalan";
         if($jenis == 'matching'){
+            $this->load->model('Model_matching');
             $data['header'] = $this->Model_surat_jalan->show_header_invoice($id)->row_array();
+            $data['customer_list'] = $this->Model_matching->cv_list($id)->result();
+            $data['po_list'] = $this->Model_matching->po_free()->result();
         }else if($jenis == 'so'){
             $this->load->model('Model_so');
+            $this->load->model('Model_matching');
             $data['header'] = $this->Model_so->show_header_so($id)->row_array();
-            $data['so_list'] = $this->Model_so->so_list()->result();
+            $data['customer_list'] = $this->Model_matching->cv_list()->result();
         }else if($jenis == 'po'){
             $this->load->model('Model_purchase_order');
             $data['header'] = $this->Model_purchase_order->show_header_po($id)->row_array();
+            $data['customer_list'] = $this->Model_surat_jalan->customer_list()->result();
         }
-        $data['customer_list'] = $this->Model_surat_jalan->customer_list()->result();
+        // $data['customer_list'] = $this->Model_surat_jalan->customer_list()->result();
         $data['tipe_kendaraan_list'] = $this->Model_surat_jalan->tipe_kendaraan_list()->result();
 
         $this->load->view('layout', $data);
@@ -106,6 +116,13 @@ class SuratJalan extends CI_Controller{
                 );
                 $this->db->insert('r_t_surat_jalan_detail', $detail);
             }
+
+            if($this->input->post('flag_po') != 0){
+                $this->db->where('id', $this->input->post('flag_po'));
+                $this->db->update('r_t_po', array(
+                    'flag_sj' => $sjr_id
+                ));
+            }
         }else if($jenis == 'so'){
             $this->db->where('id',$this->input->post('so_id'));
             $this->db->update('r_t_so', array(
@@ -113,13 +130,17 @@ class SuratJalan extends CI_Controller{
             ));
 
             $this->load->model('Model_so');
-            $list_so = $this->Model_so->list_detail_so($this->input->post('so_id'))->result();
+            $get_po = $this->input->post('get_po');
+            $list_so = $this->Model_so->list_detail_so($get_po)->result();
             foreach ($list_so as $row) {
                 $detail = array(
                     'sj_resmi_id' => $sjr_id,
-                    'so_detail_id' => $row->id,
+                    'so_detail_id' => $row->so_detail,
                     'jenis_barang_id' => $row->jenis_barang_id,
+                    'bruto' => $row->bruto,
                     'netto' => $row->netto,
+                    'no_packing' => $row->no_packing,
+                    'nomor_bobbin' => $row->nomor_bobbin,
                     'line_remarks' => $row->line_remarks
                 );
                 $this->db->insert('r_t_surat_jalan_detail', $detail);
@@ -135,22 +156,23 @@ class SuratJalan extends CI_Controller{
             foreach ($list_po as $row) {
                 $detail = array(
                     'sj_resmi_id' => $sjr_id,
-                    'po_detail_id' => $row->id,
+                    'po_detail_id' => $row->po_detail_id,
                     'jenis_barang_id' => $row->jenis_barang_id,
-                    'bruto' => $row->bruto_tsjd,
-                    'netto' => $row->netto_tsjd,
+                    'bruto' => $row->bruto,
+                    'netto' => $row->netto,
                     'no_packing' => $row->no_packing,
-                    'line_remarks' => $row->line_remarks
+                    'nomor_bobbin' => $row->nomor_bobbin,
+                    'line_remarks' => $row->keterangan
                 );
                 $this->db->insert('r_t_surat_jalan_detail', $detail);
             }
         }
 
             if($this->db->trans_complete()){
-                redirect('index.php/SuratJalan/edit_surat_jalan/'.$sjr_id);  
+                redirect('index.php/R_SuratJalan/edit_surat_jalan/'.$sjr_id);  
             }else{
                 $this->session->set_flashdata('flash_msg', 'Data surat jalan gagal disimpan, silahkan dicoba kembali!');
-                redirect('index.php/SuratJalan/surat_jalan');  
+                redirect('index.php/R_SuratJalan/surat_jalan');  
             }
     }
 
@@ -167,9 +189,15 @@ class SuratJalan extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $data['content']= "resmi/surat_jalan/edit_surat_jalan";
-            $data['header'] = $this->Model_surat_jalan->show_header_sj($id)->row_array();  
+            $data['header'] = $this->Model_surat_jalan->show_header_sj($id)->row_array();
             $this->load->model('Model_sales_order');
-            $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+            if($data['header']['r_invoice_id']>0){
+                $this->load->model('Model_matching');
+                $data['customer_list'] = $this->Model_matching->cv_list()->result();
+                $data['po_list'] = $this->Model_matching->po_free_edit($id)->result();
+            }else{
+                $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+            }
             $this->load->model('Model_so');
             $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
 
@@ -184,7 +212,7 @@ class SuratJalan extends CI_Controller{
 
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/SuratJalan/surat_jalan');
+            redirect('index.php/R_SuratJalan/surat_jalan');
         }
     }
 
@@ -194,7 +222,7 @@ class SuratJalan extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
-        $jenis = $this->input->jenis_barang;
+        $jenis = $this->input->post('jenis_barang');
 
         if($jenis == 'RONGSOK'){
             $details = $this->input->post('details');
@@ -213,6 +241,14 @@ class SuratJalan extends CI_Controller{
                     $this->db->update('r_t_surat_jalan_detail', $data);
                 }
             }
+
+            if($this->input->post('flag_po') != 0){
+                $this->db->where('id', $this->input->post('flag_po'));
+                $this->db->update('r_t_po', array(
+                    'flag_sj' => $this->input->post('id')
+                ));
+            }
+
         }else if($jenis == 'FG'){
             $details = $this->input->post('details');
             foreach ($details as $v) {
@@ -248,17 +284,60 @@ class SuratJalan extends CI_Controller{
         $this->db->update('r_t_surat_jalan', $data);
 
         if($this->db->trans_complete()){
-            redirect(base_url('index.php/SuratJalan/'));
+            redirect(base_url('index.php/R_SuratJalan/'));
         }else{
             $this->session->set_flashdata('flash_msg', 'Surat Jalan gagal disimpan, silahkan dicoba kembali!');
-            redirect('index.php/SuratJalan/edit_surat_jalan/'.$this->input->post('id'));  
+            redirect('index.php/R_SuratJalan/edit_surat_jalan/'.$this->input->post('id'));  
         }   
     }
 
+    function view_surat_jalan(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "resmi/surat_jalan/view_surat_jalan";
+            $data['header'] = $this->Model_surat_jalan->show_header_sj($id)->row_array();  
+            $this->load->model('Model_sales_order');
+            $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+            $this->load->model('Model_so');
+            $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
+
+            $data['list_sj_detail'] = $this->Model_surat_jalan->list_sj_detail($id)->result();
+            $jenis = $data['header']['jenis_barang'];
+            $this->load->model('Model_sales_order');
+            if($jenis == 'FG'){
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_fg()->result();
+            }else{
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_rsk()->result();
+            }
+
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/R_SuratJalan/surat_jalan');
+        }
+    }
+
+    // function get_alamat(){
+    //     $id = $this->input->post('id');
+    //     $this->load->model('Model_sales_order');
+    //     $customer = $this->Model_sales_order->get_alamat($id)->row_array();
+
+    //     header('Content-Type: application/json');
+    //     echo json_encode($customer); 
+    // }
+
     function get_alamat(){
         $id = $this->input->post('id');
-        $this->load->model('Model_sales_order');
-        $customer = $this->Model_sales_order->get_alamat($id)->row_array();
+        $this->load->model('Model_surat_jalan');
+        $customer = $this->Model_surat_jalan->get_alamat($id)->row_array();
 
         header('Content-Type: application/json');
         echo json_encode($customer); 
