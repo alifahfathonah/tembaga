@@ -2,7 +2,7 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <a href="<?php echo base_url('index.php/Matching'); ?>"><i class="fa fa-angle-right"></i> Matching Invoice</a>
+            <a href="<?php echo base_url('index.php/R_Matching'); ?>"><i class="fa fa-angle-right"></i> Matching Invoice</a>
             <i class="fa fa-angle-right"></i> 
             Edit Invoice 
         </h5>          
@@ -30,7 +30,7 @@
             </div>
         </div>
         <?php
-            if( ($group_id==9)||($hak_akses['view_spb']==1) ){
+            if( ($group_id==9)||($hak_akses['view']==1) ){
         ?>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku">  
@@ -218,7 +218,7 @@
                         }
                     ?> -->
                     <?php
-                        if( ($group_id==9 || $hak_akses['update_invoice']==1)){
+                        if( ($group_id==9 || $hak_akses['update']==1)){
                             echo '<a href="javascript:;" class="btn green" onclick="saveData();"> '
                                 .'<i class="fa fa-save"></i> Simpan </a> ';
                         }
@@ -243,7 +243,7 @@
 <script>
 function load_list_dtr(){
     $.ajax({
-        url:'<?php echo base_url('index.php/Matching/load_list_dtr'); ?>',
+        url:'<?php echo base_url('index.php/R_Matching/load_list_dtr'); ?>',
         success:function(result){
             $('#boxDetail0').html(result);     
         }
@@ -252,7 +252,7 @@ function load_list_dtr(){
 
 function load_dtr(){
     $.ajax({
-        url: "<?php echo base_url('index.php/Matching/get_dtr_list'); ?>",
+        url: "<?php echo base_url('index.php/R_Matching/get_dtr_list'); ?>",
         async: false,
         type: "POST",
         dataType: "html",
@@ -265,7 +265,7 @@ function load_dtr(){
 function loadDetail(id){
     $.ajax({
         type:"POST",
-        url:'<?php echo base_url('index.php/Matching/load_detail_dtr'); ?>',
+        url:'<?php echo base_url('index.php/R_Matching/load_detail_dtr'); ?>',
         data:"id="+ id,
         success:function(result){
             $('#boxDetail').html(result);     
@@ -276,14 +276,14 @@ function loadDetail(id){
 function saveData(){
     $('#message2').html("");
     $('#alert-danger2').hide(); 
-    $('#formku').attr('action','<?php echo base_url(); ?>index.php/Matching/saveData');
+    $('#formku').attr('action','<?php echo base_url(); ?>index.php/R_Matching/saveData');
     $('#formku').submit(); 
 }
 
 function saveDetail(id){
     $.ajax({
             type:"POST",
-            url:'<?php echo base_url('index.php/Matching/save_invoice_detail'); ?>',
+            url:'<?php echo base_url('index.php/R_Matching/save_invoice_detail'); ?>',
             data:{
                 id_dtr:$('#dtr_id_'+id).val(),
                 invoice_resmi_id:$('#id').val(),
@@ -323,7 +323,7 @@ function hapusDetail(id){
     if (r==true){
         $.ajax({
             type:"POST",
-            url:'<?php echo base_url('index.php/Matching/delete_invoice_detail'); ?>',
+            url:'<?php echo base_url('index.php/R_Matching/delete_invoice_detail'); ?>',
             data:{
                 id_dtr: dtr_id,
                 id_dtr_detail:id
@@ -348,7 +348,7 @@ function hapusDetail(id){
 function loadDetailInvoice(id){
     $.ajax({
         type:"POST",
-        url:'<?php echo base_url('index.php/Matching/load_detail_invoice'); ?>',
+        url:'<?php echo base_url('index.php/R_Matching/load_detail_invoice'); ?>',
         data:"id="+ id,
         success:function(result){
             $('#boxDetail2').html(result);     

@@ -47,7 +47,20 @@
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
                                 value="<?php echo date('d-m-Y'); ?>">
                         </div>
-                    </div>        
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Barang yang Dikirim <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jb_id" name="jb_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                <option value=""></option>
+                        <?php foreach ($rongsok as $value){ 
+                            echo "<option value='".$value->id."'>".$value->nama_item."</option>";
+                        }?>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-2">&nbsp;</div>
                 <div class="col-md-5">  
@@ -56,8 +69,7 @@
                             Jenis Barang
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                            <input type="text" class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="AMPAS">
                         </div>
                     </div> 
@@ -125,7 +137,7 @@
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Create DTR </a>
 
-                    <a href="<?php echo base_url('index.php/PengirimanAmpas'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/PengirimanAmpas/gudang_bs'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -216,7 +228,10 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else{   
+    }else if($.trim($("#jb_id").val()) == ""){
+        $('#message').html("Barang Yang Dikirim harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{
         $('#formku').submit(); 
     };
 };

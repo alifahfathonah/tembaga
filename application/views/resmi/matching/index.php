@@ -26,9 +26,13 @@
                 <div class="caption">
                     <i class="fa fa-beer"></i>List Invoice
                 </div>
-                <div class="tools">    
-                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?php echo base_url(); ?>index.php/Matching/add">
+                <div class="tools">
+                <?php
+                    if( ($group_id==9)||($hak_akses['add']==1) ){
+                ?>
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_Matching/add">
                         <i class="fa fa-plus"></i> Tambah</a>
+                <?php } ?>
                 </div>
             </div>
             <div class="portlet-body">
@@ -60,27 +64,27 @@
                              <?php
                                 if( ($group_id==9 || $hak_akses['view']==1)){
                             ?>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Matching/view_invoice/<?php echo $row->id; ?>" style="margin-bottom:4px">
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/R_Matching/view_invoice/<?php echo $row->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-book"></i> View &nbsp; </a>
                             <?php
                                 } if( ($group_id==9)||($hak_akses['edit']==1)){
                             ?>
-                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/Matching/matching_invoice/<?php echo $row->id; ?>" 
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/R_Matching/matching_invoice/<?php echo $row->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                             <?php 
                                 }if($group_id==9 || $hak_akses['print']==1){
                             ?><br>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/Matching/print_invoice/<?php echo $row->id; ?>" 
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_Matching/print_invoice/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
                                 }if(($group_id==9 || $hak_akses['create_sj']==1) && $row->sjr_id ==0){
                             ?>
-                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/SuratJalan/add_surat_jalan/matching/<?php echo $row->id; ?>" 
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_SuratJalan/add_surat_jalan/matching/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px"><i class="fa fa-car"></i> Create Surat Jalan &nbsp; </a>
                             <?php 
                                 }if(($group_id==9 || $hak_akses['create_po']==1) && $row->r_po_id == 0){
                             ?>
-                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/PurchaseOrder/add_po/<?php echo $row->id; ?>" 
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_PurchaseOrder/add_po/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-cube"></i> Create PO &nbsp; </a>
                             <?php } ?>
                         </td>

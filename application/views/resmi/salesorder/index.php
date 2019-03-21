@@ -60,7 +60,7 @@
                         <?php
                         }
                         ?>
-                        <td><?php echo $data->nama_customer; ?></td>
+                        <td><?php echo $data->nama_cv; ?></td>
                         <td><?php echo $data->pic; ?></td>
                         </td>
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
@@ -69,19 +69,23 @@
                             <?php
                                 if( ($group_id==9 || $hak_akses['create_sj_so']==1) && $data->sjr_id == 0){
                             ?>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/SuratJalan/add_surat_jalan/so/<?php echo $data->id; ?>" style="margin-bottom:4px">
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_SuratJalan/add_surat_jalan/so/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-truck"></i> Create SJ &nbsp; </a>
+                            <?php }if( ($group_id==9)||($hak_akses['view']==1)){
+                            ?>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/R_SO/view_so/<?php echo $data->id; ?>" 
+                               style="margin-bottom:4px"> &nbsp; <i class="fa fa-file-text-o"></i> View &nbsp; </a>
                             <?php
                                 }
                                 if( ($group_id==9 || $hak_akses['edit']==1)){
                             ?>
-                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/SO/edit_so/<?php echo $data->id; ?>" style="margin-bottom:4px">
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/R_SO/edit_so/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                             <?php
                                 }
-                                if($group_id==9 || $hak_akses['print_po']==1){
+                                if($group_id==9 || $hak_akses['print']==1){
                             ?>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/SO/print_po/<?php echo $data->id; ?>" 
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_SO/print_po/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
                                 }

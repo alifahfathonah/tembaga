@@ -47,7 +47,20 @@
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
                                 value="<?php echo date('d-m-Y'); ?>">
                         </div>
-                    </div>  
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Barang
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value=""></option>
+                                <option value="FG">Finish Good</option>
+                                <option value="WIP">WIP</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Marketing <font color="#f00">*</font>
@@ -119,13 +132,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
-                            Jenis Barang
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
-                                   class="form-control myline" style="margin-bottom:5px" value="FG">
-                        </div>
+
                     </div>                    
                 </div>              
             </div>
@@ -155,7 +162,10 @@ function simpanData(){
     }else if($.trim($("#marketing_id").val()) == ""){
         $('#message').html("Silahkan pilih marketing!");
         $('.alert-danger').show(); 
-    }else{     
+    }else if($.trim($("#jenis_barang").val()) == ""){
+        $('#message').html("Silahkan pilih jenis barang!");
+        $('.alert-danger').show(); 
+    }else{
         $('#formku').submit(); 
     };
 };

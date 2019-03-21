@@ -145,7 +145,7 @@
                                     echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
                                 }else if($data->status_spb==2 || $data->status_spb ==4){
                                     echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
-                                }else if($data->status==3){
+                                }else if($data->status_spb==3){
                                     echo '<div style="background-color:blue; color:#fff; padding:3px">Waiting Approval</div>';
                                 }else if($data->status_spb==9){
                                     echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';

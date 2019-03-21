@@ -50,7 +50,7 @@
             if( ($group_id==1)||($hak_akses['edit_dtr']==1) ){
         ?>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/BeliRongsok/update_dtr'); ?>">  
+              id="formku" action="<?php echo base_url('index.php/BeliRongsok/update_dtr_rsk'); ?>">  
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">

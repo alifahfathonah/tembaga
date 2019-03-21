@@ -2,7 +2,7 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h4 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <a href="<?php echo base_url('index.php/Matching'); ?>"><i class="fa fa-angle-right"></i> Matching Invoice</a>
+            <a href="<?php echo base_url('index.php/R_Matching'); ?>"><i class="fa fa-angle-right"></i> Matching Invoice</a>
             <i class="fa fa-angle-right"></i> 
             Create Invoice
         </h4>          
@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==9)||($hak_akses['add_spb']==1) ){
+            if( ($group_id==9)||($hak_akses['add']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -31,7 +31,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/Matching/save_invoice'); ?>">
+              id="formku" action="<?php echo base_url('index.php/R_Matching/save_invoice'); ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
@@ -126,7 +126,7 @@
 function get_jumlah(id){
     $.ajax({
         type:"POST",
-        url:'<?php echo base_url('index.php/Matching/get_jumlah'); ?>',
+        url:'<?php echo base_url('index.php/R_Matching/get_jumlah'); ?>',
         data:"id="+ id,
         success:function(result){
             $('#qty').val(result['netto_invoice']);     

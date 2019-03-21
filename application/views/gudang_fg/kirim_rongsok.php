@@ -65,8 +65,7 @@
                             Catatan
                         </div>
                         <div class="col-md-8">
-                            <textarea id="remarks" name="remarks" rows="2" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px">BARANG FG TRANSFER KE RONGSOK</textarea>                           
+                            <textarea id="remarks" name="remarks" rows="2" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()"></textarea>                           
                         </div>
                     </div>
                 </div>              
@@ -135,7 +134,10 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else{     
+    }else if($.trim($("#remarks").val()) == ""){
+        $('#message').html("Catatan harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{
         $('#formku').submit(); 
     };
 };

@@ -302,7 +302,7 @@ class Model_beli_rongsok extends CI_Model{
     }
     
     function show_detail_ttr($id){
-        $data = $this->db->query("Select ttrd.*, rsk.nama_item, rsk.uom, dtr_detail.no_pallete
+        $data = $this->db->query("Select ttrd.*, rsk.nama_item, rsk.uom, dtr_detail.no_pallete, dtr_detail.berat_palette
                     From ttr_detail ttrd 
                         Left Join rongsok rsk On (ttrd.rongsok_id = rsk.id)
                         left join dtr_detail on dtr_detail.id = ttrd.dtr_detail_id

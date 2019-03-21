@@ -52,7 +52,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function show_header_so($id){
-        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, so.flag_invoice, u.realname, cust.nama_customer, cust.pic, cust.alamat, cust.telepon as telepon, COALESCE(tsf.no_spb, tsw.no_spb_wip, spb.no_spb,tsa.no_spb_ampas) as no_spb_barang, COALESCE(tsf.status,tsw.status,spb.status) as status_spb
+        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, so.flag_invoice, so.keterangan, u.realname, cust.nama_customer, cust.pic, cust.alamat, cust.telepon as telepon, COALESCE(tsf.no_spb, tsw.no_spb_wip, spb.no_spb,tsa.no_spb_ampas) as no_spb_barang, COALESCE(tsf.status,tsw.status,spb.status) as status_spb
                     From t_sales_order tso
                         Left join sales_order so on (so.id = tso.so_id)
                         Left join m_customers cust On (so.m_customer_id = cust.id)

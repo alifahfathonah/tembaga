@@ -3,7 +3,7 @@
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/PurchaseOrder'); ?>"> Purchase Order </a> 
+            <a href="<?php echo base_url('index.php/R_PurchaseOrder'); ?>"> Purchase Order </a> 
             <i class="fa fa-angle-right"></i> Input PO
         </h5>          
     </div>
@@ -23,7 +23,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/PurchaseOrder/save_po'); ?>">
+              id="formku" action="<?php echo base_url('index.php/R_PurchaseOrder/save_po'); ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
@@ -31,7 +31,7 @@
                             No. PO <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_po" name="no_po" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" style="margin-bottom:5px">
+                            <input type="text" id="no_po" name="no_po" maxlength="25" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" style="margin-bottom:5px">
                         </div>
                     </div>
                     <div class="row">
@@ -77,20 +77,18 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
-                            Customer <font color="#f00">*</font>
+                            CV <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_customer" name="nama_customer" class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_customer'];?>" readonly="readonly">
-                            <input type="hidden" name="customer_id" value="<?php echo $header['customer_id'];?>">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Contact Person
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="contact_person" name="contact_person" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['pic'];?>">
+                            <select id="customer_id" name="customer_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
+                            <option value=""></option>
+                                <?php
+                                    foreach ($cv_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->nama_cv.'</option>';
+                                    }
+                                ?>
+                             </select>
                         </div>
                     </div>
                 </div>              
@@ -129,7 +127,7 @@ function simpanData(){
 function get_contact(id){
     $.ajax({
         type: "POST",
-        url: "<?php echo base_url('index.php/PurchaseOrder/get_contact_name'); ?>",
+        url: "<?php echo base_url('index.php/R_PurchaseOrder/get_contact_name'); ?>",
         data: {id: id},
         cache: false,
         success: function(result) {

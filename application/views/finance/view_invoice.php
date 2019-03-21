@@ -137,6 +137,16 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
+                            Term Of Payment <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="term_of_payment" name="term_of_payment" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['term_of_payment'];?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Tanggal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">

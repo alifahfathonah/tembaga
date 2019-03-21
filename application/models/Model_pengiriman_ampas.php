@@ -200,8 +200,9 @@ class Model_pengiriman_ampas extends CI_Model{
     }
 
     function gudang_bs(){
-        $data = $this->db->query("select tgb.*, pi.no_produksi
+        $data = $this->db->query("select tgb.*, pi.no_produksi, r.nama_item
             from t_gudang_bs tgb
+            left join rongsok r on (r.id = tgb.jenis_barang_id)
             left join produksi_ingot pi on (tgb.id_produksi = pi.id)");
         return $data;
     }
@@ -224,6 +225,10 @@ class Model_pengiriman_ampas extends CI_Model{
         return $data;
     }
 
+    function rongsok(){
+        $data = $this->db->query("select id, nama_item from rongsok");
+        return $data;
+    }
     /*function get_dtr($po_id){
         $data = $this->db->query("Select dtr.*, 
                     po.no_po, 

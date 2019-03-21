@@ -443,14 +443,13 @@ class GudangWIP extends CI_Controller{
                         't_bpb_wip_detail_id'=>$v['id'],
                         'qty' =>$v['qty'],
                         'uom' =>$v['uom'],
-                        'berat' =>$v['berat'],
+                        'berat' =>str_replace('.', '', $v['berat']),
                         'keterangan' =>null,
                         'created_by'=> $user_id
                 );
                 $this->db->insert('t_gudang_wip', $data);
             }
-                
-            
+        
             
         if($this->db->trans_complete()){  
                 
@@ -1132,5 +1131,23 @@ class GudangWIP extends CI_Controller{
         }else{
             redirect('index.php/GudangWIP/laporan_list');
         }
+    }
+
+    function stok_wip(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Gudang WIP";
+        $data['content']   = "gudangwip/stok_wip";
+        
+       $this->load->model('Model_gudang_wip');
+       $data['gudang_wip'] = $this->Model_gudang_wip->stok_wip()->result();
+        
+        $this->load->view('layout', $data);  
     }
 }

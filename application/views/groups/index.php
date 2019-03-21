@@ -29,6 +29,18 @@
                                     <input type="hidden" id="id" name="id">
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Tipe Group
+                                </div>
+                                <div class="col-md-8">
+                                    <select id="tipe_group" name="tipe_group" class="form-control myline select2me" 
+                                        data-placeholder="Silahkan pilih...">
+                                        <option value="0">Bukan Resmi</option>
+                                        <option value="1">Resmi</option>
+                                    </select>
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">                        
@@ -175,6 +187,7 @@ function editData(id){
            //console.log(result);
            $('#group_name').val(result['name']);
            $('#id').val(result['id']);
+           $('#tipe_group').select2('val', result['flag_group']);
            
            $("#myModal").find('.modal-title').text('Edit Group');
            $("#myModal").modal('show',{backdrop: 'true'});           

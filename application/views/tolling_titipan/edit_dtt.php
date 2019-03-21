@@ -283,10 +283,7 @@ function getComa(value, id){
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kososng!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#customer_id").val()) == ""){
-        $('#message').html("Customer harus diisi, tidak boleh kososng!");
-        $('.alert-danger').show(); 
+        $('.alert-danger').show();
     }else{   
         $('#message').html("");
         $('.alert-danger').hide(); 

@@ -16,11 +16,15 @@
                         </tr>
                         <tr>
                             <td>Tanggal</td>
-                            <td>: <?php echo date('d-m-Y', strtotime($header['created_at'])); ?></td>
+                            <td>: <?php echo tanggal_indo(date('Y-m-d', strtotime($header['created_at']))); ?></td>
                         </tr>
                         <tr>
                             <td>Jenis Barang</td>
                             <td>: FINISH GOOD</td>
+                        </tr>
+                        <tr>
+                            <td>Jenis Packing</td>
+                            <td>: <?=$header['jenis_packing'];?></td>
                         </tr>
                         <tr>
                             <td>Catatan</td>
@@ -70,8 +74,8 @@
                                 echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->jenis_barang.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->no_packing.'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->bruto,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->netto,0,',', '.').'</td>';                                
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->bruto,2,'.', ',').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->netto,2,'.', ',').'</td>';                                
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->line_remarks.'</td>';
                                 echo '</tr>';
                                 $bruto += $row->bruto;
@@ -89,8 +93,8 @@
                         </tr>    
                         <tr>
                             <td colspan="3" style="text-align:right"><strong>Total (Kg) </strong></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000"><strong><?php echo number_format($bruto,0,',', '.'); ?></strong></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000"><strong><?php echo number_format($netto,0,',', '.'); ?></strong></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000"><strong><?php echo number_format($bruto,2,'.', ','); ?></strong></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000"><strong><?php echo number_format($netto,2,'.', ','); ?></strong></td>
                             <td style="border-left:1px solid #000;">&nbsp;</td>
                         </tr>
                     </table>

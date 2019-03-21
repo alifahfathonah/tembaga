@@ -1,7 +1,7 @@
 <?php
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class SO extends CI_Controller{
+class R_SO extends CI_Controller{
     function __construct(){
         parent::__construct();
 
@@ -100,10 +100,10 @@ class SO extends CI_Controller{
         }
                   
         if ($this->db->trans_complete()) {
-            redirect('index.php/SO/edit_so/'.$so_id);  
+            redirect('index.php/R_SO/edit_so/'.$so_id);  
         } else {
             $this->session->set_flashdata('flash_msg', 'Sales order gagal disimpan, silahkan dicoba kembali!');
-            redirect('index.php/SO');  
+            redirect('index.php/R_SO');  
         }
     }
 
@@ -121,13 +121,36 @@ class SO extends CI_Controller{
 
             $data['content']= "resmi/salesorder/edit_so";
             $this->load->model('Model_sales_order');
-            $data['header'] = $this->Model_so->show_header_so($id)->row_array();  
-            $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+            $data['header'] = $this->Model_so->show_header_so($id)->row_array(); 
+            $this->load->model('Model_matching'); 
+            $data['customer_list'] = $this->Model_matching->cv_list()->result();
             $data['marketing_list'] = $this->Model_sales_order->marketing_list()->result();
             $data['jenis_barang'] = $this->Model_so->jenis_barang_list()->result();
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/SO');
+            redirect('index.php/R_SO');
+        }
+    }
+
+    function view_so(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "resmi/salesorder/view_so";
+            $this->load->model('Model_sales_order');
+            $data['header'] = $this->Model_so->show_header_so($id)->row_array();
+            $data['myDetails'] = $this->Model_so->load_detail_so($id)->result();
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/R_SO');
         }
     }
 
@@ -137,11 +160,10 @@ class SO extends CI_Controller{
         $no = 1;
         $total = 0;
         $netto = 0;
-        $bruto = 0;
         $tabel = "";
         $jenis_barang = $this->Model_so->jenis_barang_list()->result();
 
-        $myDetails = $this->Model_so->list_detail_so($id)->result();
+        $myDetails = $this->Model_so->load_detail_so($id)->result();
         foreach ($myDetails as $row) {
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align: center;">'.$no.'</td>';
@@ -159,10 +181,8 @@ class SO extends CI_Controller{
             $tabel .= '<input type="text" id="uom_'.$no.'" name="uom_'.$no.'" class="form-control myline" value="'.$row->uom.'" readonly  style="display:none;"/></td>';
             $tabel .= '<td style="text-align:right;"><label id="lbl_amount_'.$no.'">'.number_format($row->amount,0,',','.').'</label>';
             $tabel .= '<input type="text" id="amount_'.$no.'" name="amount_'.$no.'" class="form-control myline" value="'.$row->amount.'" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id,'.$no.');"  style="display:none;"/></td>';
-            $tabel .= '<td style="text-align:right;"><label id="lbl_bruto_'.$no.'">'.$row->bruto.'</label>';
-            $tabel .= '<input type="text" id="bruto_'.$no.'" name="bruto_'.$no.'" class="form-control myline" value="'.$row->bruto.'"  style="display:none;" maxlength="10" value="0"/></td>';
-            $tabel .= '<td style="text-align:right;"><label id="lbl_netto_'.$no.'">'.number_format($row->netto,0,',','.').'</label>';
-            $tabel .= '<input type="text" id="netto_'.$no.'" name="netto_'.$no.'" class="form-control myline" value="'.number_format($row->netto,0,',','.').'"  style="display:none;" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id, '.$no.');"/></td>';
+            $tabel .= '<td style="text-align:right;"><label id="lbl_netto_'.$no.'">'.number_format($row->netto,2,'.',',').'</label>';
+            $tabel .= '<input type="number" id="netto_'.$no.'" name="netto_'.$no.'" class="form-control myline" value="'.$row->netto.'"  style="display:none;" maxlength="10" value="0" onkeyup="hitungSubTotal_a('.$no.');"/></td>';
             $tabel .= '<td style="text-align:right;"><label id="lbl_total_amount_'.$no.'">'.number_format($row->total_amount,0,',','.').'</label>';
             $tabel .= '<input type="text" id="total_amount_'.$no.'" name="total_amount_'.$no.'" class="form-control myline" value="'.number_format($row->total_amount,0,',','.').'" style="display:none;" readonly /></td>';
             $tabel .= '<td style="text-align:center;"><a id="btnEdit_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle '
@@ -172,15 +192,13 @@ class SO extends CI_Controller{
                     . 'green-seagreen" onclick="updateDetail('.$no.');" style="margin-top:5px; display:none;"> '
                     . '<i class="fa fa-save"></i> Update </a>';
             $tabel .= '</tr>';
-            $bruto += $row->bruto;
             $netto += $row->netto;
             $total += $row->total_amount;
             $no++;
         }
         $tabel .= '<tr>';
         $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($bruto,0,',','.').'</strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,2,'.',',').'</strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
         $tabel .= '<td></td>';
         $tabel .= '</tr>';
@@ -220,8 +238,7 @@ class SO extends CI_Controller{
             'jenis_barang_id'=>$this->input->post('jenis_barang_id'),
             'amount'=>str_replace('.', '', $this->input->post('amount')),
             'total_amount'=>str_replace('.', '', $this->input->post('total_amount')),
-            'bruto'=>$this->input->post('bruto'),
-            'netto'=>str_replace('.', '', $this->input->post('netto'))
+            'netto'=> $this->input->post('netto')
         ))){
             $return_data['message_type']= "sukses";
         }else{
@@ -254,6 +271,6 @@ class SO extends CI_Controller{
         $this->db->update('r_t_so', $data);
         
         $this->session->set_flashdata('flash_msg', 'Data sales order jasa berhasil disimpan');
-        redirect('index.php/SO');
+        redirect('index.php/R_SO');
     }
 }

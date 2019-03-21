@@ -25,9 +25,32 @@ class GudangBobbin extends CI_Controller{
 
         $data['size_list'] = $this->Model_bobbin->get_size_list()->result();
         $data['owner_list'] = $this->Model_bobbin->get_owner_list()->result();
-        $data['list_data'] = $this->Model_bobbin->list_data()->result();
+        $data['list_data'] = $this->Model_bobbin->list_data(0)->result();
 
         $this->load->view('layout', $data);
+    }
+
+    function filter(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Finance";
+            $data['content']   = "gudang_bobbin/index";
+
+            $this->load->model('Model_bobbin');
+            $data['list_data'] = $this->Model_bobbin->list_data($id)->result();
+
+            $this->load->view('layout', $data);
+        }else{
+            redirect('index.php/GudangBobbin');
+        }
     }
 
     function view(){
@@ -91,6 +114,13 @@ class GudangBobbin extends CI_Controller{
 
         $code_bobbin = str_replace('.', '', $code_bobbin);
         $code_bobbin = str_replace('BB-FG', $format_penomoran['bobbin_size'], $code_bobbin);
+        if($format_penomoran['bobbin_size'] == 'K'){
+            $nomor = substr($code_bobbin, 2, 3);
+            $nomor_urut = 'A'.$nomor;
+            $code_bobbin = 'KA'.$nomor;
+        }else{
+            $nomor_urut = substr($code_bobbin, 1,4);
+        }
 
         $data = array(
                     'tanggal' => $tgl_input,
@@ -99,11 +129,11 @@ class GudangBobbin extends CI_Controller{
                     'm_bobbin_size_id'=> $this->input->post('tipe'),
                     'owner_id'=> $this->input->post('owner'),
                     'berat'=> $this->input->post('berat'),
+                    'nomor_urut'=> $nomor_urut,
                     'status' => 0, //ready
                     'created_at'=> $tanggal,
                     'created_by'=> $user_id,
                 );
-       
         $this->db->insert('m_bobbin', $data); 
         $this->session->set_flashdata('flash_msg', 'Data bobbin berhasil disimpan');
         redirect('index.php/GudangBobbin');       
@@ -990,11 +1020,13 @@ class GudangBobbin extends CI_Controller{
         $current = '';
         $data_printer = $this->db->query("select * from m_print_barcode_line where m_print_barcode_id = 2")->result_array();
 
-        $data_printer[12]['string1'] = 'BARCODE 518,319,"39",78,0,180,3,9,"'.$data['nomor_bobbin'].'"';
-        $data_printer[14]['string1'] = 'TEXT 382,237,"ROMAN.TTF",180,1,8,"'.$data['nomor_bobbin'].'"';
-        $data_printer[16]['string1'] = 'TEXT 383,164,"ROMAN.TTF",180,1,16,"'.$data['kode_owner'].'"';
-        $data_printer[17]['string1'] = 'TEXT 381,104,"ROMAN.TTF",180,1,16,"'.$data['berat'].'"';
-        $data_printer[19]['string1'] = 'TEXT 472,417,"ROMAN.TTF",180,1,31,"'.$data['nomor_bobbin'].'"';
+        $data_printer[17]['string1'] = 'BARCODE 576,324,"39",79,0,180,3,9,"'.$data['nomor_bobbin'].'"';
+        $data_printer[18]['string1'] = 'TEXT 403,240,"ROMAN.TTF",180,1,8,"'.$data['nomor_bobbin'].'"';
+        $data_printer[21]['string1'] = 'TEXT 398,144,"ROMAN.TTF",180,1,14,"'.$data['berat'].'"';
+        $data_printer[22]['string1'] = 'TEXT 400,90,"0",180,14,14,"'.date("m/d/Y", strtotime($data['tanggal'])).'"';
+        $data_printer[24]['string1'] = 'TEXT 446,368,"1",180,2,2,"'.$data['keterangan'].'"';
+        $data_printer[25]['string1'] = 'TEXT 446,409,"4",180,1,1,"'.$data['nomor_bobbin'].'"';
+        $data_printer[26]['string1'] = 'TEXT 399,196,"ROMAN.TTF",180,1,14,"'.$data['nomor_urut'].'"';
 
         $jumlah = count($data_printer);
         for($i=0;$i<$jumlah;$i++){

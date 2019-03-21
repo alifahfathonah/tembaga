@@ -3,7 +3,7 @@
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/SuratJalan/'); ?>"> Surat Jalan </a> 
+            <a href="<?php echo base_url('index.php/R_SuratJalan/'); ?>"> Surat Jalan </a> 
             <i class="fa fa-angle-right"></i> Input Surat Jalan
         </h5>          
     </div>
@@ -23,7 +23,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/SuratJalan/save_surat_jalan'); ?>">
+              id="formku" action="<?php echo base_url('index.php/R_SuratJalan/save_surat_jalan'); ?>">
             <div class="row">
                 <input type="hidden" name="jenis" value="<?php echo $jenis;?>">
                 <div class="col-md-6">
@@ -32,7 +32,7 @@
                             No. Surat Jalan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" 
+                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" maxlength="25"
                                 class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
                         </div>
                     </div>
@@ -71,6 +71,22 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            No. PO
+                        </div>
+                        <div class="col-md-8">
+                            <select id="flag_po" name="flag_po" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($po_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->no_po.'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-4">
                             Jenis Barang <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -80,7 +96,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Customer <font color="#f00">*</font>
+                            CV <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
@@ -99,6 +115,7 @@
                     <input type="hidden" name="so_id" value="<?php echo $header['id'];?>">
                     <input type="hidden" name="id_invoice_resmi" value="0">
                     <input type="hidden" name="po_id" value="0">
+                    <input type="hidden" name="get_po" value="<?php echo $header['po_id'];?>">
                     <div class="row">
                         <div class="col-md-4">
                             No. SO <font color="#f00">*</font>
@@ -119,7 +136,7 @@
                     </div>  
                     <div class="row">
                         <div class="col-md-4">
-                            Customer <font color="#f00">*</font>
+                            CV <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
@@ -281,7 +298,7 @@ function simpanData(){
 function get_alamat(id){
     $.ajax({
         type: "POST",
-        url: "<?php echo base_url('index.php/SalesOrder/get_alamat'); ?>",
+        url: "<?php echo base_url('index.php/R_SuratJalan/get_alamat'); ?>",
         data: {id: id},
         cache: false,
         success: function(result) {

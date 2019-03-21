@@ -2,7 +2,7 @@
 class Model_surat_jalan extends CI_Model{
 
 	function list_sj(){
-		$data = $this->db->query("select tsj.*, mc.nama_customer, ti.no_invoice_resmi, ts.no_so, tp.no_po,
+		$data = $this->db->query("select tsj.*, mc.nama_customer, '-' as no_reff, ts.no_so, tp.no_po,
 		(select count(tsjd.id) from r_t_surat_jalan_detail tsjd where tsjd.sj_resmi_id = tsj.id) as jumlah_item
     	from r_t_surat_jalan tsj
     	left join r_t_invoice ti on ti.id = tsj.r_invoice_id
@@ -10,6 +10,39 @@ class Model_surat_jalan extends CI_Model{
         left join r_t_po tp on tp.id = tsj.r_po_id
     	left join m_customers mc on mc.id = tsj.m_customer_id
     	order by id desc");
+		return $data;
+	}
+
+	function list_sj_cv(){
+		$data = $this->db->query("select tsj.*, mc.nama_cv as nama_customer, ti.no_invoice_resmi as no_reff, 
+			(select count(tsjd.id) from r_t_surat_jalan_detail tsjd where tsjd.sj_resmi_id = tsj.id) as jumlah_item
+			from r_t_surat_jalan tsj
+			left join r_t_invoice ti on ti.id = tsj.r_invoice_id
+			left join m_cv mc on mc.id = tsj.m_customer_id
+			where tsj.r_invoice_id > 0
+			order by id desc");
+    	return $data;
+	}
+
+	function list_sj_so(){
+		$data = $this->db->query("select tsj.*, mc.nama_cv as nama_customer, ts.no_so as no_reff, 
+			(select count(tsjd.id) from r_t_surat_jalan_detail tsjd where tsjd.sj_resmi_id = tsj.id) as jumlah_item
+			from r_t_surat_jalan tsj
+        	left join r_t_so ts on ts.id = tsj.r_so_id
+    		left join m_cv mc on mc.id = tsj.m_customer_id
+			where tsj.r_so_id > 0
+			order by id desc");
+		return $data;
+	}
+
+	function list_sj_po(){
+		$data = $this->db->query("select tsj.*, mc.nama_customer, tp.no_po as no_reff, 
+			(select count(tsjd.id) from r_t_surat_jalan_detail tsjd where tsjd.sj_resmi_id = tsj.id) as jumlah_item
+			from r_t_surat_jalan tsj
+        	left join r_t_po tp on tp.id = tsj.r_po_id
+    		left join m_customers mc on mc.id = tsj.m_customer_i
+			where tsj.r_invoice_id > 0
+			order by id desc");
 		return $data;
 	}
 
@@ -49,7 +82,7 @@ class Model_surat_jalan extends CI_Model{
 			from r_t_surat_jalan sjr
 			left join r_t_invoice tri on (tri.id = sjr.r_invoice_id)
             left join r_t_so ts on (ts.id = sjr.r_so_id)
-            left join r_t_po tp on (tp.id = sjr.r_po_id)
+            left join r_t_po tp on (sjr.r_invoice_id > 0 and tp.flag_sj = sjr.id)
 			left join m_customers c on (sjr.m_customer_id = c.id)
 			where sjr.id =".$id);
 		return $data;
@@ -65,7 +98,7 @@ class Model_surat_jalan extends CI_Model{
 	}
 
 	function get_alamat($id){
-        $data = $this->db->query("Select * From m_customers Where id=".$id);
+        $data = $this->db->query("Select * From m_cv Where id=".$id);
         return $data;
     }
 }

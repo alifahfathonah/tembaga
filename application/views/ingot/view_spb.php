@@ -81,9 +81,7 @@
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo date('d-m-Y', strtotime($myData['tanggal'])); ?>">
                         </div>
-                    </div>
-                <?php if($myData['no_produksi'] != ''){ ?>
-                    <div class="row">
+                    </div>                    <div class="row">
                         <div class="col-md-4">
                             No. Produksi <font color="#f00">*</font>
                         </div>
@@ -102,7 +100,6 @@
                                 class="form-control myline" style="margin-bottom:5px; background: green; color: white;" readonly="readonly" value="<?php echo $myData['jumlah']; ?> KG">
                         </div>
                     </div>
-                <?php } ?>
                     <div class="row">&nbsp;</div>
 
                 </div>

@@ -985,6 +985,7 @@ class Finance extends CI_Controller{
 
         $data = array(
             'no_invoice'=> $code,
+            'term_of_payment'=> $this->input->post('term_of_payment'),
             'bank_id'=> $this->input->post('bank_id'),
             'diskon'=> str_replace('.', '', $this->input->post('diskon')),
             'add_cost'=> str_replace('.', '', $this->input->post('add_cost')),
@@ -1002,27 +1003,22 @@ class Finance extends CI_Controller{
         $id_new=$this->db->insert_id();
 
         $this->load->model('Model_finance');
-        if($this->input->post('flag_tolling') == 1){
-            $loop_detail = $this->Model_finance->load_detail_invoice_tolling($id_sj)->result();
-        }else{
-            $loop_detail = $this->Model_finance->load_detail_invoice($id_sj)->result();
-        }
+        // if($this->input->post('flag_tolling') == 1){
+        //     $loop_detail = $this->Model_finance->load_detail_invoice_tolling($id_sj)->result();
+        // }else{
+            $loop_detail = $this->Model_finance->load_detail_invoice($id_sj)->result();//sudah group by
+        // }
 
         foreach($loop_detail as $row){
             $total = $row->amount * $row->netto;
-                if($row->jenis_barang_alias>0){
-                    $jenis_barang = $row->jenis_barang_alias;
-                }else{
-                    $jenis_barang = $row->jenis_barang_id;
-                }
             $this->db->insert('f_invoice_detail', array(
                     'id_invoice'=>$id_new,
-                    'jenis_barang_id'=>$jenis_barang,
+                    'sj_detail_id'=>$row->t_sj_id,
+                    'jenis_barang_id'=>$row->jbid,
                     'qty'=>$row->qty,
                     'netto'=>$row->netto,
                     'harga'=>$row->amount,
                     'total_harga'=>$total,
-                    'keterangan'=>$row->line_remarks
             ));
         }
 

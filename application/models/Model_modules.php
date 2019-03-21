@@ -1,15 +1,27 @@
 <?php
 class Model_modules extends CI_Model{    
     function list_group(){
-        $data = $this->db->query("Select id, name AS group_name From groups Where id>1 Order By id");   
+        $data = $this->db->query("Select id, name AS group_name From groups Where id>1 and flag_group = 0 Order By id");   
         // $data = $this->db->query("Select id, name AS group_name From groups Order By id");     
         return $data;
-    }  
+    }
+
+    function list_group_resmi(){
+        $data = $this->db->query("select id, name As group_name From groups Where id>1 and flag_group = 1 Order By id");
+        return $data;
+    }
     
     function list_modules(){
         // $data = $this->db->query("Select * From modules Where id>1 Order By id");
         // $data = $this->db->query("Select * From modules Order By parent_id ASC");   
         $data = $this->db->query("Select * From modules Where parent_id = 1 Order By id");     
+        return $data;
+    }
+
+    function list_modules_resmi(){
+        // $data = $this->db->query("Select * From modules Where id>1 Order By id");
+        // $data = $this->db->query("Select * From modules Order By parent_id ASC");   
+        $data = $this->db->query("select * from modules WHERE LEFT(modules.alias,2) = 'R_' and parent_id = 1 Order By Id");     
         return $data;
     }
 
@@ -25,6 +37,11 @@ class Model_modules extends CI_Model{
 
     function modules_details_c(){
         $data = $this->db->query("Select * From modules Where parent_id = 1 Order by Id");
+        return $data;
+    }
+
+    function modules_details_c_resmi(){
+        $data = $this->db->query("Select * From modules Where LEFT(modules.alias,2) = 'R_' and parent_id = 1 Order by Id");
         return $data;
     }
     

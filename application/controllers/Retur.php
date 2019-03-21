@@ -573,6 +573,7 @@ class Retur extends CI_Controller{
         $id = $this->uri->segment(3);
         if($id){        
             $this->load->model('Model_retur');
+            $this->load->helper('tanggal_indo_helper');
             $data['header']  = $this->Model_retur->show_header_retur($id)->row_array();
             $data['details'] = $this->Model_retur->load_detail($id)->result();
 

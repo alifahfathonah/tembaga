@@ -28,7 +28,6 @@ class GudangFG extends CI_Controller{
         $this->load->view('layout', $data);  
     }
 
-
     function produksi_fg(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
@@ -871,7 +870,7 @@ class GudangFG extends CI_Controller{
                         //'flag_result' => 1,
                         't_spb_fg_id'=> $spb_id,
                         'nomor_SPB'=> $this->input->post('no_spb'),
-                        'keterangan'=> $keterangan,
+                        // 'keterangan'=> $this->input->post('keterangan'),
                         'modified_date'=> $tanggal,
                         'modified_by'=> $user_id
                     );
@@ -1146,6 +1145,7 @@ class GudangFG extends CI_Controller{
             $data = array(
                 'no_spb'=> $code,
                 'tanggal'=> $tgl_input,
+                'status'=> 3,
                 'keterangan'=>$this->input->post('remarks'),
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id
@@ -1167,7 +1167,7 @@ class GudangFG extends CI_Controller{
             $id_spb_detail = $this->db->insert_id();
 
             $data_gudang = array(
-                'jenis_trx' => 1,
+                'flag_taken' => 1,
                 't_spb_fg_id'=> $id_spb,
                 't_spb_fg_detail_id'=> $id_spb_detail,
                 'nomor_SPB'=> $code,
@@ -1190,7 +1190,7 @@ class GudangFG extends CI_Controller{
                         'no_dtr'=> $code_DTR,
                         'tanggal'=> $tgl_input,
                         'jenis_barang'=> 'RONGSOK',
-                        'remarks'=> $this->input->post('remarks'),
+                        'remarks'=> 'BARANG FG TRANSFER KE RONGSOK ('.$this->input->post('remarks').')',
                         'created'=> $tanggal,
                         'created_by'=> $user_id,
                         'modified'=> $tanggal,
@@ -1205,8 +1205,9 @@ class GudangFG extends CI_Controller{
                         'dtr_id'=>$dtr_id,
                         //'spb_id'=>$id_spb,
                         //sisa WIP id 8
-                        'rongsok_id' => 8,
+                        'rongsok_id' => 1,
                         'qty'=> 0,
+                        'bruto'=>$this->input->post('bruto'),
                         'netto'=>$this->input->post('netto'),
                         'no_pallete'=>date("dmyHis").$rand,
                         'line_remarks'=>$this->input->post('keterangan')
@@ -1476,6 +1477,7 @@ class GudangFG extends CI_Controller{
         $id = $this->uri->segment(3);
         if($id){        
             $this->load->model('Model_gudang_fg');
+            $this->load->helper('tanggal_indo_helper');
             $data['header']  = $this->Model_gudang_fg->show_header_bpb($id)->row_array();
             $data['details'] = $this->Model_gudang_fg->show_detail_bpb($id)->result();
 

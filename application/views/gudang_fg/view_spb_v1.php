@@ -155,12 +155,12 @@
                                             foreach ($myDetail as $row){
                                             $total_qty = $row->total_qty;
                                             $total_netto = $row->total_netto;
-                                            $status = (($total_qty>0) && ($total_netto>0)) ? 1 : 0;
+                                            $status = ($row->total_netto > $row->netto) ? 1 : 0;
                                             ($status) ? $stat = '<div style="background:green;color:white;"><span class="fa fa-check"></span> OK </div>' : $stat = '<div style="background:red;color:white;"> <span class="fa fa-times"></span> NOK</div>';
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
                                                 echo '<td>'.$row->jenis_barang.'</td>';
-                                                echo '<td>'.$row->netto.' '.$row->uom.'</td>';
+                                                echo '<td>'.number_format($row->netto,2,',','.').' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
                                                 echo '<td>'.$stat.'</td>';
                                                 //total qty
@@ -173,7 +173,7 @@
                                                 if ($total_netto==0) {
                                                 echo '<td style="background:red;color:white;"> 0 '.$row->uom.'</td>';
                                                 } else {
-                                                echo '<td class="bg-primary">'.$total_netto.' '.$row->uom.'</td>';
+                                                echo '<td class="bg-primary">'.number_format($total_netto,2,',','.').' '.$row->uom.'</td>';
                                                 }
                                                 echo '</tr>';
                                                 $no++;

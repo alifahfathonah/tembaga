@@ -685,6 +685,9 @@ class BeliRongsok extends CI_Controller{
             $this->db->where('id',$ttr_id);
             $result = $this->db->update('ttr', array(
                     'no_ttr' => $code,
+                    'jmlh_afkiran' => $this->input->post('jumlah_afkir'),
+                    'jmlh_pengepakan' => $this->input->post('jumlah_packing'),
+                    'jmlh_lain'=> $this->input->post("jumlah_lain"),
                     'ttr_status'=>1,
                     'tgl_approve'=>$tanggal,
                     'approved_by'=>$user_id));
@@ -899,6 +902,61 @@ class BeliRongsok extends CI_Controller{
         redirect('index.php/BeliRongsok/dtr_list');
     }
     
+    function update_dtr_rsk(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $dtr_id = $this->input->post('id');
+
+        $this->db->trans_start();
+        
+            $this->db->where('id', $dtr_id);
+            $this->db->update('dtr', array(
+                        'status'=>1,
+                        'remarks'=>$this->input->post('remarks'),
+                        'modified'=>$tanggal,
+                        'modified_by'=>$user_id
+            ));
+
+            #Create TTR
+            $data = array(
+                    'tanggal'=> $tgl_input,
+                    'dtr_id'=> $dtr_id,
+                    'ttr_status' => 0,
+                    'created'=> $tanggal,
+                    'created_by'=> $user_id,
+                    'modified'=> $tanggal,
+                    'modified_by'=> $user_id
+            );
+            $this->db->insert('ttr', $data);
+            $ttr_id = $this->db->insert_id();
+            
+            $this->load->model('Model_beli_rongsok');
+            $details = $this->Model_beli_rongsok->show_detail_dtr($dtr_id)->result();
+            foreach ($details as $row){
+                $this->db->insert('ttr_detail', array(
+                    'ttr_id'=>$ttr_id,
+                    'dtr_detail_id'=>$row->id,
+                    'rongsok_id'=>$row->rongsok_id,
+                    'qty'=>$row->qty,
+                    'bruto'=>$row->bruto,
+                    'netto'=>$row->netto,
+                    'line_remarks'=>$row->line_remarks,
+                    'created'=>$tanggal,
+                    'created_by'=> $user_id,
+                    'modified'=> $tanggal,
+                    'modified_by'=> $user_id
+                ));
+            }
+        
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'DTR dengan nomor : '.$this->input->post('no_dtr').' berhasil diupdate...');                 
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat updates DTR, silahkan coba kembali!');
+        }
+        redirect('index.php/BeliRongsok/dtr_list');
+    }
+
     function update_dtr(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');

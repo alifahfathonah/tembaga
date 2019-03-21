@@ -3,9 +3,9 @@
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/SuratJalan/'); ?>"> Surat Jalan </a> 
+            <a href="<?php echo base_url('index.php/R_SuratJalan/'); ?>"> Surat Jalan </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/SuratJalan/edit_surat_jalan'); ?>"> Edit Surat Jalan </a> 
+            <a href="<?php echo base_url('index.php/R_SuratJalan/edit_surat_jalan'); ?>"> Edit Surat Jalan </a> 
         </h5>          
     </div>
 </div>
@@ -32,7 +32,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/SuratJalan/update_surat_jalan'); ?>">
+              id="formku" action="<?php echo base_url('index.php/R_SuratJalan/update_surat_jalan'); ?>">
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -40,7 +40,7 @@
                             No. Surat Jalan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" 
+                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" maxlength="25"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_sj_resmi']; ?>" onkeyup="this.value = this.value.toUpperCase()">
                             
@@ -70,6 +70,22 @@
                             <input type="hidden" id="id_inv" name="id_inv" value="<?php echo $header['r_invoice_id']; ?>">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. PO
+                        </div>
+                        <div class="col-md-8">
+                            <select id="flag_po" name="flag_po" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($po_list as $row){
+                                        echo '<option value="'.$row->id.'" '.(($row->flag_sj==$header['id'])? 'selected="selected"': '').'>'.$row->no_po.'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div> 
                 <?php } else if($header['r_so_id'] > 0){
                     ?>
                     <div class="row">
@@ -216,6 +232,7 @@
                                 <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
                                 <th style="width: 15%">No. Packing</th>
+                                <th>Nomor Bobbin</th>
                                 <th>Keterangan</th>
                             </thead>
                             <tbody id="boxDetail">
@@ -238,6 +255,7 @@
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][bruto]" value="'.$row->bruto.'">';?></td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][netto]" value="'.$row->netto.'">';?></td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][no_packing]" value="'.$row->no_packing.'">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][nomor_bobbin]" value="'.$row->nomor_bobbin.'">';?></td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][line_remarks]" value="'.$row->line_remarks.'">';?></td>
                                 </tr>
                                 <?php
@@ -298,7 +316,7 @@
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
-                    <a href="<?php echo base_url('index.php/SuratJalan/'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/R_SuratJalan/'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -336,7 +354,7 @@ function simpanData(){
 function get_alamat(id){
     $.ajax({
         type: "POST",
-        url: "<?php echo base_url('index.php/SuratJalan/get_alamat'); ?>",
+        url: "<?php echo base_url('index.php/R_SuratJalan/get_alamat'); ?>",
         data: {id: id},
         cache: false,
         success: function(result) {

@@ -258,6 +258,7 @@ class PengirimanAmpas extends CI_Controller{
         $this->load->model('Model_pengiriman_ampas');
         // $data['header'] = $this->Model_pengiriman_ampas->show_header_po($id)->row_array();           
         $data['list_bs'] = $this->Model_pengiriman_ampas->list_bs()->result(); 
+        $data['rongsok'] = $this->Model_pengiriman_ampas->rongsok()->result();
         
         $this->load->view('layout', $data); 
     }
@@ -310,7 +311,7 @@ class PengirimanAmpas extends CI_Controller{
             $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
             $this->db->insert('dtr_detail', array(
                 'dtr_id'=>$dtr_id,
-                'rongsok_id'=>7,
+                'rongsok_id'=>$this->input->post('jb_id'),
                 'qty'=>$sum,
                 'netto'=>$sum,
                 'line_remarks'=>'BARANG BS TRANSFER KE RONGSOK',

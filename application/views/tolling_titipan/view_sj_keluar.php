@@ -102,6 +102,8 @@
                             <input type="text" id="no_spb" name="no_spb" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_spb']; ?>">
+
+                            <input type="hidden" id="spb_id" name="spb_id" value="<?php echo $header['spb_id'];?>">
                         </div>
                     </div>
                     <div class="row">

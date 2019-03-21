@@ -3,7 +3,7 @@
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/SO'); ?>"> Sales Order </a> 
+            <a href="<?php echo base_url('index.php/R_SO'); ?>"> Sales Order </a> 
             <i class="fa fa-angle-right"></i> Input Sales Order
         </h5>          
     </div>
@@ -23,7 +23,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/SO/save_so'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/R_SO/save_so'); ?>">                            
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
@@ -31,7 +31,7 @@
                             No. Sales Order <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_so" name="no_so"
+                            <input type="text" id="no_so" name="no_so" maxlength="25" 
                                 class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
                         </div>
                     </div>
@@ -108,7 +108,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="nama_customer" name="nama_customer"
-                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_customer'];?>" readonly="readonly">
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_cv'];?>" readonly="readonly">
 
                             <input type="hidden" name="customer_id" value="<?php echo $header['customer_id'];?>">
                         </div>
@@ -124,9 +124,7 @@
                     </div>                   
                 </div>              
             </div>
-            
         </form>
-        
         <?php
             }else{
         ?>
@@ -158,7 +156,7 @@ function simpanData(){
 function get_tanggal(id){
     $.ajax({
         type: "POST",
-        url: "<?php echo base_url('index.php/SO/get_tanggal_po'); ?>",
+        url: "<?php echo base_url('index.php/R_SO/get_tanggal_po'); ?>",
         data: {id: id},
         cache: false,
         success: function(result) {

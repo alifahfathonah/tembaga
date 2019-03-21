@@ -2,7 +2,7 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h4 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <a href="<?php echo base_url('index.php/TollingResmi'); ?>"><i class="fa fa-angle-right"></i> Tolling Titipan</a>
+            <a href="<?php echo base_url('index.php/R_TollingResmi'); ?>"><i class="fa fa-angle-right"></i> Tolling Titipan</a>
             <i class="fa fa-angle-right"></i> 
             Create Tolling
         </h4>          
@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==9)||($hak_akses['add_spb']==1) ){
+            if( ($group_id==9)||($hak_akses['add']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -31,7 +31,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/TollingResmi/save'); ?>">
+              id="formku" action="<?php echo base_url('index.php/R_TollingResmi/save'); ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
@@ -39,7 +39,7 @@
                             No. Surat Jalan Rongsok <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="sj_id" name="sj_id" 
+                            <input type="text" id="sj_id" name="sj_id" maxlength="50"
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['no_sj_resmi'];?>">
 
                             <input type="hidden" id="sj_id" name="sj_id" value="<?php echo $header['id'];?>">
@@ -52,7 +52,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="nama_customer" name="nama_customer" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['nama_customer'];?>">
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['nama_cv'];?>">
                             <input type="hidden" id="customer_id" name="customer_id" value="<?php echo $header['m_customer_id'];?>">
                         </div>
                     </div>

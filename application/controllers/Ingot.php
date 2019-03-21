@@ -590,7 +590,7 @@ class Ingot extends CI_Controller{
             $data_bs = array(
                 'id_produksi' => $id_masak,
                 'jenis_produksi' => 'INGOT',
-                'jenis_barang_id' => 22,
+                'jenis_barang_id' => 22,//BS Ingot
                 'berat' => $this->input->post('bs'),
                 'tanggal' => $tgl_input,
                 'status' => 0,
@@ -602,29 +602,33 @@ class Ingot extends CI_Controller{
 
         if($this->input->post('serbuk') != 0){
             #insert serbuk ke gudang bs
-            $data_bs = array(
+            $data_serbuk = array(
                 'id_produksi' => $id_masak,
                 'jenis_produksi' => 'INGOT',
                 'berat' => $this->input->post('serbuk'),
-                'jenis_barang_id' => 31,
+                'jenis_barang_id' => 31,//Serbuk Drawing SDM
                 'tanggal' => $tgl_input,
                 'status' => 0,
                 'created_by' => $user_id,
                 'created_at' => $tanggal
             );
-            $this->db->insert('t_gudang_bs', $data_bs);
+            $this->db->insert('t_gudang_bs', $data_serbuk);
         }
-        
-        // #insert gudang ampas
-        // $data_ampas = array(
-        //     'id_produksi' => $id_masak,
-        //     'tanggal' => $tgl_input,
-        //     'berat' => $this->input->post('ampas'),
-        //     'status' => 0,
-        //     'created_by' => $user_id,
-        //     'created_at' => $tanggal
-        // );
-        // $this->db->insert('t_gudang_ampas', $data_ampas);
+
+        // if($this->input->post('ampas') != 0){
+        //     #insert ampas ke gudang bs
+        //     $data_ampas = array(
+        //         'id_produksi' => $id_masak,
+        //         'jenis_produksi' => 'INGOT',
+        //         'berat' => $this->input->post('ampas'),
+        //         'jenis_barang_id' => 28,//AMPAS APOLLO
+        //         'tanggal' => $tgl_input,
+        //         'status' => 0,
+        //         'created_by' => $user_id,
+        //         'created_at' => $tanggal
+        //     );
+        //     $this->db->insert('t_gudang_bs', $data_ampas);
+        // }
 
         #update status produksi
         $this->db->where('id',$this->input->post('no_masak'));
@@ -634,7 +638,7 @@ class Ingot extends CI_Controller{
         #Catat hasil WIP
         $data_wip = array(
                 'tanggal'=> $tgl_input,
-                'jenis_barang_id'=>2,
+                'jenis_barang_id'=>2,// INGOT
                 'jenis_masak' => 'INGOT',
                 'uom'=> 'BATANG',
                 'hasil_masak_id'=> $id_masak,

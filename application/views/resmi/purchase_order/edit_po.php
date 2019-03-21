@@ -3,7 +3,7 @@
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/PurchaseOrder'); ?>"> Purchase Order </a> 
+            <a href="<?php echo base_url('index.php/R_PurchaseOrder'); ?>"> Purchase Order </a> 
             <i class="fa fa-angle-right"></i> Edit Purchase Order
         </h5>          
     </div>
@@ -26,7 +26,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/PurchaseOrder/update_po'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/R_PurchaseOrder/update_po'); ?>">                            
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -35,8 +35,8 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_po" name="no_po"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['no_po']; ?>">
+                                class="form-control myline" style="margin-bottom:5px" maxlength="25"
+                                value="<?php echo $header['no_po']; ?>" onkeyup="this.value = this.value.toUpperCase()">
                             
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
@@ -74,8 +74,8 @@
                                 data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
                             <option value=""></option>
                                 <?php
-                                    foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['customer_id'])? 'selected="selected"': '').'>'.$row->nama_customer.'</option>';
+                                    foreach ($cv_list as $row){
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['customer_id'])? 'selected="selected"': '').'>'.$row->nama_cv.'</option>';
                                     }
                                 ?>
                              </select>
@@ -132,7 +132,7 @@
                                     <td><?php echo '<input type="text" class="form-control myline " style="margin-bottom:5px;" id="uom_'.$no.'" value="'.$row->uom.'" readonly="readonly">';?>
                                     </td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="amount_'.$no.'" name="details['.$no.'][amount]" value="'.number_format($row->amount,0,',','.').'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
-                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="netto_'.$no.'" name="details['.$no.'][netto]" value="'.$row->netto.'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
+                                    <td><?php echo '<input type="number" class="form-control myline" style="margin-bottom:5px;" id="netto_'.$no.'" name="details['.$no.'][netto]" value="'.$row->netto.'" onkeyup="hitungSubTotal('.$no.');">';?></td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="total_amount_'.$no.'" name="details['.$no.'][total_amount]" value="'.number_format($row->total_amount,0,',','.').'" readonly="readonly">';?></td>
                                      <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" name="details['.$no.'][line_remarks]" value="'.$row->line_remarks.'"  onkeyup="this.value = this.value.toUpperCase()">';?></td>
                                 </tr>
@@ -151,7 +151,7 @@
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
                         
-                    <a href="<?php echo base_url('index.php/PurchaseOrder'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/R_PurchaseOrder'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -173,7 +173,7 @@
 function get_contact(id){
     $.ajax({
         type: "POST",
-        url: "<?php echo base_url('index.php/PurchaseOrder/get_contact_name'); ?>",
+        url: "<?php echo base_url('index.php/R_PurchaseOrder/get_contact_name'); ?>",
         data: {id: id},
         cache: false,
         success: function(result) {
@@ -196,7 +196,7 @@ function getComa(value, id, no){
 
 function hitungSubTotal(id){
     harga = $('#amount_'+id).val().toString().replace(/\./g, "");
-    netto = $('#netto_'+id).val().toString().replace(/\./g, "");
+    netto = $('#netto_'+id).val();
     total_harga = Number(harga)* Number(netto);
     $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
@@ -229,7 +229,7 @@ function saveDetail(){
     }else{
         $.ajax({
             type:"POST",
-            url:'<?php echo base_url('index.php/PurchaseOrder/save_detail_po'); ?>',
+            url:'<?php echo base_url('index.php/R_PurchaseOrder/save_detail_po'); ?>',
             data:{
                 id:$('#id').val(),
                 fg_id:$('#fg_id').val(),
@@ -261,7 +261,7 @@ function hapusDetail(id){
     if (r==true){
         $.ajax({
             type:"POST",
-            url:'<?php echo base_url('index.php/PurchaseOrder/delete_detail_po'); ?>',
+            url:'<?php echo base_url('index.php/R_PurchaseOrder/delete_detail_po'); ?>',
             data:"id="+ id,
             success:function(result){
                 if(result['message_type']=="sukses"){

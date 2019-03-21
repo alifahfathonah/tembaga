@@ -68,11 +68,11 @@
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <?php ($data->ttr_status=='0') ? $status = '<div class="bg-yellow">Waiting Approval</div>': (($data->ttr_status <> '1') ? $status = '<div class="bg-red">Rejected</div>' :  $status = '<div class="bg-green">Approved</div>'); ?>
                         <td style="text-align:center"><?php echo $status; ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->bruto,0,',','.'); ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->netto,0,',','.'); ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->jmlh_afkiran,0,',','.'); ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->jmlh_pengepakan,0,',','.'); ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->jmlh_lain,0,',','.'); ?></td>
+                        <td style="text-align:right"><?php echo number_format($data->bruto,2,'.',','); ?></td>
+                        <td style="text-align:right"><?php echo number_format($data->netto,2,'.',','); ?></td>
+                        <td style="text-align:right"><?php echo number_format($data->jmlh_afkiran,2,'.',','); ?></td>
+                        <td style="text-align:right"><?php echo number_format($data->jmlh_pengepakan,2,'.',','); ?></td>
+                        <td style="text-align:right"><?php echo number_format($data->jmlh_lain,2,'.',','); ?></td>
                         <td style="text-align:center"> 
                             <?php                                
                                 if($data->ttr_status==0){

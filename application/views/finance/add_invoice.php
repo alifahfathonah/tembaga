@@ -58,6 +58,15 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Term Of Payment
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="term_of_payment" name="term_of_payment" 
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">
@@ -132,7 +141,7 @@
                                 <option value=""></option>
                                 <?php
                                     foreach ($bank_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->kode_bank.' ('.$row->nomor_rekening.')'.'</option>';
+                                        echo '<option value="'.$row->id.'">'.$row->nama_bank.'</option>';
                                     }
                                 ?>
                             </select>

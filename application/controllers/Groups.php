@@ -34,6 +34,7 @@ class Groups extends CI_Controller{
         
         $data = array(
                         'name'=> $this->input->post('group_name'),
+                        'flag_group'=> $this->input->post('tipe_group'),
                         'created'=> $tanggal,
                         'created_by'=> $user_id,
                         'modified'=> $tanggal,
@@ -68,6 +69,7 @@ class Groups extends CI_Controller{
                 
         $data = array(
                 'name'=> $this->input->post('group_name'),
+                'flag_group'=> $this->input->post('tipe_group'),
                 'modified'=> $tanggal,
                 'modified_by'=> $user_id
             );

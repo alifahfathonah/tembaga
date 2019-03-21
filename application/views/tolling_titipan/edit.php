@@ -47,7 +47,7 @@
                             No. PO <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_po" name="no_po" readonly="readonly"
+                            <input type="text" id="no_po" name="no_po"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_po']; ?>">
                         </div>
@@ -64,12 +64,22 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Tanggal <font color="#f00">*</font>
+                            Tanggal SO<font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
                                 class="form-control input-small myline" style="margin-bottom:5px; float:left;" 
                                 value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal PO<font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tanggal_po" name="tanggal_po" 
+                                class="form-control input-small myline" style="margin-bottom:5px; float:left;" 
+                                value="<?php echo date('d-m-Y', strtotime($header['tgl_po'])); ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -126,7 +136,15 @@
                             <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
                                    class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['jenis_barang']; ?>">
                         </div>
-                    </div>                    
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Keterangan
+                        </div>
+                        <div class="col-md-8">
+                            <textarea id="keterangan" name="keterangan" rows="2" onkeyup="this.value = this.value.toUpperCase()"
+                                class="form-control myline" style="margin-bottom:5px"><?php echo $header['keterangan'];?></textarea>
+                        </div>
                 </div>              
             </div>
             <div class="row">&nbsp;</div>
@@ -151,7 +169,7 @@
                                 <td>
                                 <select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
                                 <option value=""></option><?php
-                                    foreach ($list_fg as $value){
+                                    foreach ($list_barang as $value){
                                         echo "<option value='".$value->id."'>".$value->jenis_barang."</option>";
                                     }?>
                                 </select>
@@ -293,12 +311,14 @@ function saveDetail(){
 function hapusDetail(id,id_spb){
     var r=confirm("Anda yakin menghapus item ini?");
     if (r==true){
+        const jb = $('#jenis_barang').val();
         $.ajax({
             type:"POST",
             url:'<?php echo base_url('index.php/Tolling/delete_detail'); ?>',
             data:{
                 id: id,
-                id_spb: id_spb
+                id_spb: id_spb,
+                jb: jb
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
@@ -319,6 +339,16 @@ function hapusDetail(id,id_spb){
 <script>
 $(function(){        
     $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    }); 
+    
+    $("#tanggal_po").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,

@@ -3,7 +3,7 @@
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/InvoiceJasa/'); ?>"> Invoice Jasa </a> 
+            <a href="<?php echo base_url('index.php/R_InvoiceJasa/'); ?>"> Invoice Jasa </a> 
             <i class="fa fa-angle-right"></i> Input Invoice Jasa
         </h5>          
     </div>
@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==9)||($hak_akses['add_surat_jalan']==1) ){
+            if( ($group_id==9)||($hak_akses['add']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -23,7 +23,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/InvoiceJasa/save'); ?>">
+              id="formku" action="<?php echo base_url('index.php/R_InvoiceJasa/save'); ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
