@@ -131,14 +131,15 @@ class SuratJalan extends CI_Controller{
             ));
 
             $this->load->model('Model_purchase_order');
-            $list_po = $this->Model_purchase_order->load_detail_po($this->input->post('po_id'))->result();
+            $list_po = $this->Model_purchase_order->load_detail_po_sj($this->input->post('po_id'))->result();
             foreach ($list_po as $row) {
                 $detail = array(
                     'sj_resmi_id' => $sjr_id,
                     'po_detail_id' => $row->id,
                     'jenis_barang_id' => $row->jenis_barang_id,
-                    'bruto' => $row->bruto,
-                    'netto' => $row->netto,
+                    'bruto' => $row->bruto_tsjd,
+                    'netto' => $row->netto_tsjd,
+                    'no_packing' => $row->no_packing,
                     'line_remarks' => $row->line_remarks
                 );
                 $this->db->insert('r_t_surat_jalan_detail', $detail);
