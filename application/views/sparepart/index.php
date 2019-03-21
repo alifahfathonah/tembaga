@@ -28,7 +28,15 @@
                             </div>
                         </div>
                         <form class="eventInsForm" method="post" target="_self" name="formku" 
-                              id="formku">                            
+                              id="formku">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    ID
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="idd" class="form-control" style="margin-bottom:5px" readonly="readonly">
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-5">
                                     Nama Item <font color="#f00">*</font>
@@ -226,6 +234,7 @@ function editData(id){
             $('#description').val(result['description']);
             $('#alias').val(result['alias']);
             $('#id').val(result['id']);
+            $('#idd').val(result['id']);
             
             $("#myModal").find('.modal-title').text('Edit Sparepart');
             $("#myModal").modal('show',{backdrop: 'true'});           

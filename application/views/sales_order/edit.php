@@ -92,7 +92,17 @@
                             <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
                                    class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['jenis_barang']; ?>">
                         </div>
-                    </div> 
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Keterangan
+                        </div>
+                        <div class="col-md-8">
+                            <textarea id="keterangan" name="keterangan" rows="3"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                onkeyup="this.value = this.value.toUpperCase()"><?= $header['keterangan'];?></textarea>
+                        </div>
+                    </div>
                     <div class="row">&nbsp;</div>
                     
                 </div>

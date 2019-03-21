@@ -20,6 +20,7 @@ class Model_gudang_fg extends CI_Model{
     function gudang_fg_produksi_list(){
         $data = $this->db->query("Select pf.*, jb.jenis_barang, jp.jenis_packing,
                     (select count(pfd.id) from produksi_fg_detail pfd where pfd.produksi_fg_id = pf.id)as total_barang,
+                    (select sum(netto) from produksi_fg_detail pfd where pfd.produksi_fg_id = pf.id)as total_netto,
                     usr.realname As pembuat
                 From produksi_fg pf
                     Left Join users usr On (pf.created_by = usr.id)

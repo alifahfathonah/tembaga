@@ -121,6 +121,7 @@
                                 <th>Jenis Barang</th>
                                 <th>Jenis Packing</th>
                                 <th>Total Detail</th>
+                                <th>Total Netto</th>
                                 <th>PIC</th>
                                 <th>Actions</th>
                             </tr>
@@ -147,6 +148,9 @@
                                 </td>
                                 <td>
                                     <?= $data->total_barang; ?>
+                                </td>
+                                <td>
+                                    <?= number_format($data->total_netto,2,',','.'); ?>
                                 </td>
                                 <td>
                                     <?= $data->pembuat; ?>

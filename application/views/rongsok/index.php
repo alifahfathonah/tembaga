@@ -250,7 +250,7 @@ function editData(id){
             $('#nama_item').val(result['nama_item']);
             $('#uom').val(result['uom']);
             $('#description').val(result['description']);
-            $('#alias').val(result['alias']);
+            $('#alias').val(result['kode_rongsok']);
             $('#id').val(result['id']);
             
             $("#myModal").find('.modal-title').text('Edit Rongsok');

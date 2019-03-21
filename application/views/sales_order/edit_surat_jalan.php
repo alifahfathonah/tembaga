@@ -180,11 +180,11 @@
                             <thead>
                                 <th>No</th>
                                 <th width="15%">No Packing</th>
-                                <th style="width: 19%">Nama Item</th>
-                                <th style="width: 19%">Nama Item Alias</th>
+                                <th style="width: 20%">Nama Item</th>
+                                <th style="width: 15%">Nama Item Alias</th>
                                 <th style="width: 15%">No. Packing</th>
-                                <th>Bruto (Kg)</th>
-                                <th>Netto (Kg)</th>
+                                <th>Bruto</th>
+                                <th>Netto(Kg)</th>
                                 <th>Bobbin</th>
                                 <th>Keterangan</th>
                                 <th>Actions</th>
@@ -194,7 +194,7 @@
                                     <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
                                     <td>
                                         <select id="barang_id_1" name="details[1][barang_id]" class="form-control select2me myline scrollable" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="get_data(1);">
-                                            <option value=""></option>
+                                            <option value="0"></option>
                                         <?php foreach ($list_produksi as $value){ ?>
                                             <option value='<?=$value->id;?>' data-id='<?=$value->ukuran;?>'>
                                                 <?=$value->no_packing;?>
@@ -352,7 +352,7 @@ function genPacking(id){
     const res = str.substring(7, 11);
     var ukuran = $('#barang_alias_id_'+id).find(':selected').attr('data-id');
     console.log(ukuran);
-    if(ukuran==0){
+    if(ukuran==0 || ukuran==undefined){
         var ukuran = $('#barang_id_'+id).find(':selected').attr('data-id');
     }
     console.log(ukuran);
@@ -400,17 +400,17 @@ function create_new_input(id){
             '<td>'+
                 '<select id="barang_id_'+new_id+'" name="details['+new_id+'][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_data('+new_id+');">'+
                     '<option value=""></option>'+
-                    '<?php if($header["jenis_barang"]=="FG"){foreach($list_produksi as $v){ print('<option value="'.$v->id.'">'.$v->no_packing.'</option>');}}?>'+
+                    '<?php if($header["jenis_barang"]=="FG"){foreach($list_produksi as $v){ print('<option value="'.$v->id.'" data-id="'.$v->ukuran.'">'.$v->no_packing.'</option>');}}?>'+
                 '</select>' +
             '</td>'+
             '<input type="hidden" name="details['+new_id+'][id_barang]" id="id_barang_'+new_id+'">'+
             '<input type="hidden" id="jenis_barang_id_'+new_id+'" name="details['+new_id+'][jenis_barang_id]" class="form-control myline">'+
             '<td><input type="text" id="nama_barang_'+new_id+'" name="details['+new_id+'][nama_barang]" class="form-control myline" readonly="readonly"></td>'+
             '<td>'+
-                '<select id="barang_alias_id_'+new_id+'" name="details['+new_id+'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">'+
+                '<select id="barang_alias_id_'+new_id+'" name="details['+new_id+'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="genPacking('+new_id+');">'+
                     '<option value=""></option>'+
                     '<option value="0">TIDAK ADA ALIAS</option>'+
-                    '<?php if($header["jenis_barang"]=="FG"){foreach($jenis_barang as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}}?>'+
+                    '<?php if($header["jenis_barang"]=="FG"){foreach($jenis_barang as $v){ print('<option value="'.$v->id.'" data-id="'.$v->ukuran.'">'.$v->jenis_barang.'</option>');}}?>'+
                 '</select>'+
             '</td>'+
             '<td><input type="text" id="no_packing_'+new_id+'" name="details['+new_id+'][no_packing]" class="form-control myline" readonly="readonly"></td>'+

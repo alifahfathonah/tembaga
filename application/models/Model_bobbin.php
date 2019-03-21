@@ -1,11 +1,12 @@
 <?php
 class Model_bobbin extends CI_Model{
-    function list_data(){
+    function list_data($id){
         $data = $this->db->query("Select b.*, mjp.jenis_packing, mbs.bobbin_size, mbs.keterangan, o.nama_owner
             From m_bobbin b
             left join m_bobbin_size mbs on (mbs.id = b.m_bobbin_size_id)
             left join m_jenis_packing mjp on (mjp.id = b.m_jenis_packing_id)
             left join owner o on (o.id = b.owner_id)
+            where b.status =".$id."
             order by b.id desc
             ");
         return $data;
@@ -299,8 +300,8 @@ class Model_bobbin extends CI_Model{
     }
 
     function get_bobbin_print($id){
-        $data = $this->db->query("select mb.nomor_bobbin, mb.berat, o.kode_owner from m_bobbin mb
-            left join owner o on o.id = mb.owner_id
+        $data = $this->db->query("select mb.nomor_bobbin, mb.berat, mb.tanggal, mb.nomor_urut, mbz.keterangan from m_bobbin mb
+            left join m_bobbin_size mbz on mbz.id = mb.m_bobbin_size_id
             where mb.id =".$id);
         return $data;
     }

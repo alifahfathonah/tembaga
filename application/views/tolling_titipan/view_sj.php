@@ -217,6 +217,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
+                        <?php if($header['jenis_barang']=='FG'){ ?>
                         <table class="table table-bordered table-striped table-hover" id="tabel_barang">
                             <thead>
                                 <th>No</th>
@@ -252,6 +253,35 @@
                                 <?php $no++; } ?>
                             </tbody>
                         </table>
+                    <?php } else if($header['jenis_barang']=='WIP'){ ?>
+                        <table class="table table-bordered table-striped table-hover" id="tabel_barang">
+                            <thead>
+                                <th>No</th>
+                                <th>Nama Item</th>
+                                <th>UOM</th>
+                                <th>Qty</th>
+                                <th>Netto (Kg)</th>
+                                <th>Keterangan</th>
+                            </thead>
+                            <tbody id="boxDetail">
+                                <?php 
+                                    $no=1; 
+                                    foreach ($list_sj as $row) { 
+                                ?>
+                                <tr>
+                                    <td><?php echo $no; ?></td>
+                                    <td><?php echo $row->jenis_barang; ?></td>
+                                    <td><?php echo $row->uom; ?></td>
+                                    <td><?php echo $row->qty; ?></td>
+                                    <td><?php echo $row->netto; ?></td>
+                                    <td><?php echo $row->line_remarks; ?></td>
+                                </tr>
+                                <?php $no++; } ?>
+                            </tbody>
+                        </table>
+                    <?php
+                    }
+                    ?>
                     </div>
                 </div>
             </div>

@@ -167,12 +167,39 @@
         </form>
         <hr class="divider"/>
         </div>
+    <div class="collapse well" id="form_filter" >
+        <form class="eventInsForm" method="post" target="_self" name="formku" 
+        id="formku">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="col-md-8">
+                                <select  id="jb" name="jb" placeholder="Silahkan pilih..."
+                                    class="form-control myline select2me" style="margin-bottom:5px">
+                                    <option value=""></option>
+                                    <option value="0">Ready</option>
+                                    <option value="1">Used</option>
+                                    <option value="2">Delivered</option>
+                                    <option value="3">Booked</option>  
+                                </select> 
+                            </div>
+                            <div class="col-md-4">
+                                &nbsp; &nbsp; <a href="javascript:;" onclick="filterData()" class="btn green"><i class="fa fa-search-plus"></i> Filter</a>        
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-beer"></i>Data Bobin
                 </div>
                 <div class="tools">
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter"><i class="fa fa-search"></i> Filter Status</a>
                 <?php
                     if( ($group_id==1)||($hak_akses['add']==1) ){
                 ?>
@@ -217,7 +244,7 @@
                             }else if($data->status==1){
                                 echo '<div style="background-color:blue; color:white; padding:4px">Used</div>';
                             }else if($data->status==2){
-                                echo '<div style="background-color:yellow; color:white; padding:4px">Delivered</div>';
+                                echo '<div style="background-color:yellow; color:black; padding:4px">Delivered</div>';
                             }else if($data->status==3){
                                 echo '<div style="background-color:orange; color:white; padding:4px">Booked</div>';
                             }  
@@ -354,7 +381,10 @@ $(function(){
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });
 
-
+function filterData(){
+    var id=$('#jb').val();
+    window.location = '<?php echo base_url('index.php/GudangBobbin/filter/');?>'+id;
+}
 
 $(function(){        
     $("#tanggal").datepicker({

@@ -1,0 +1,4 @@
+di detail TTR (DTTTR) ada jenis rongsok dari sparepart, apa perlu di masukan ?
+
+00100119 TTR ini gaada Vouchernya, tetapi sepertinya masuk ke no voucher 0011/TTR karena jumlah harga nya sama seperti yang
+disimulasikan pada program baru

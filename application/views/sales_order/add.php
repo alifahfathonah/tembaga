@@ -78,6 +78,16 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Keterangan
+                        </div>
+                        <div class="col-md-8">
+                            <textarea id="keterangan" name="keterangan" rows="3"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                onkeyup="this.value = this.value.toUpperCase()"></textarea>
+                        </div>
+                    </div>
                     <div class="row">&nbsp;</div>
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>

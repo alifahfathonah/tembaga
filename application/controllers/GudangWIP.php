@@ -443,14 +443,13 @@ class GudangWIP extends CI_Controller{
                         't_bpb_wip_detail_id'=>$v['id'],
                         'qty' =>$v['qty'],
                         'uom' =>$v['uom'],
-                        'berat' =>$v['berat'],
+                        'berat' =>str_replace('.', '', $v['berat']),
                         'keterangan' =>null,
                         'created_by'=> $user_id
                 );
                 $this->db->insert('t_gudang_wip', $data);
             }
-                
-            
+        
             
         if($this->db->trans_complete()){  
                 

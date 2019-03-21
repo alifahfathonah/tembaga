@@ -870,7 +870,7 @@ class GudangFG extends CI_Controller{
                         //'flag_result' => 1,
                         't_spb_fg_id'=> $spb_id,
                         'nomor_SPB'=> $this->input->post('no_spb'),
-                        'keterangan'=> $keterangan,
+                        // 'keterangan'=> $this->input->post('keterangan'),
                         'modified_date'=> $tanggal,
                         'modified_by'=> $user_id
                     );

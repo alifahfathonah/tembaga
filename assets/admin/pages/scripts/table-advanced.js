@@ -400,7 +400,9 @@ var TableAdvanced = function () {
                 'targets': [0]
             }, {
                 "searchable": false,
-                "targets": [0]
+                "targets": [0],
+                "processing": true, // enable/disable display message box on record load
+                "serverSide": true // enable/disable server side ajax loading
             }],
             "order": [
                 [0, "asc"]

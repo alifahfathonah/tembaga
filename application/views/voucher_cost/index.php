@@ -61,7 +61,6 @@
                                                 echo '<option value="'.$row->id.'">'.$row->nama_group_cost.'</option>';
                                             }
                                         ?>
-                                        <option value="0">LAINNYA</option>
                                     </select>
                                 </div>
                             </div>

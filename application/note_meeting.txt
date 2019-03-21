@@ -121,3 +121,14 @@ Pisahin List PPN dan Non-PPN sesuai dengan user login
 User / Group tidak boleh ada nama 'RESMI' nya (Done)
 
 Nomor matching pada resmi gaperlu di show
+
+Create View Stok Bobin skrg per Jenis
+
+Customer, Supplier
+
+Create Invoice tambahin term_of_payment(Done)
+
+Kita = PPN ada di SO, jadi semua Invoice yang dibuat sesuai dengan SO tsb pasti PPN
+App Lama = PPN di SO di flag non-ppn, tapi di Invoice yang dibuat, kadang ada PPN nya kadang Gaada
+
+Untuk masalah tabel keuangan, MSPTG, MSTBAYAR, TRANVOU, CHEQ masih banyak bingung
