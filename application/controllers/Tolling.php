@@ -261,13 +261,13 @@ class Tolling extends CI_Controller{
     function save_detail(){
         $return_data = array();
         $tanggal = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        if($this->input->post('jenis_barang') == 'FG'){
+        if($this->input->post('jb') == 'FG'){
             $dataC = array(
                 't_spb_fg_id'=>$this->input->post('id_spb'),
                 'tanggal'=>$tanggal,
                 'jenis_barang_id'=>$this->input->post('jenis_barang'),
                 'uom'=>$this->input->post('uom'),
-                'netto'=>  str_replace('.', '', $this->input->post('netto')),
+                'netto'=> str_replace('.', '', $this->input->post('netto')),
                 'keterangan'=>'SO TOLLING'
             );
             $this->db->insert('t_spb_fg_detail', $dataC);

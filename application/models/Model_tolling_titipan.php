@@ -5,7 +5,9 @@ class Model_tolling_titipan extends CI_Model{
                     usr.realname As nama_marketing,
                     cust.nama_customer, cust.pic, COALESCE(tsf.status,tsw.status) as status_spb,
                 (Select count(fi.id) from f_invoice fi where fi.id_sales_order = so.id) as invoice,
-                (Select count(sod.id)As jumlah_item From t_sales_order_detail sod Where sod.t_so_id = so.id)As jumlah_item
+                (Select count(sod.id)As jumlah_item From t_sales_order_detail sod 
+                left join t_sales_order tso on tso.id = sod.t_so_id 
+                Where tso.so_id = so.id)As jumlah_item
                 From sales_order so
                     Left Join m_customers cust On (so.m_customer_id = cust.id) 
                     Left Join users usr on (usr.id = so.marketing_id)
@@ -74,8 +76,9 @@ class Model_tolling_titipan extends CI_Model{
 
     function load_detail_edit($id){
         $data = $this->db->query("Select sod.*, jb.jenis_barang, jb.uom From t_sales_order_detail sod 
+                Left Join t_sales_order tso on tso.id = sod.t_so_id
                 Left Join jenis_barang jb On(sod.jenis_barang_id = jb.id) 
-                Where sod.t_so_id=".$id);
+                Where tso.so_id=".$id);
         return $data;
     }
 
@@ -90,8 +93,9 @@ class Model_tolling_titipan extends CI_Model{
     function show_detail_so($id){
         $data = $this->db->query("Select sod.*, jb.jenis_barang,jb.uom
                     From t_sales_order_detail sod 
+                        Left Join t_sales_order tso On (tso.id = sod.t_so_id)
                         Left Join jenis_barang jb On (sod.jenis_barang_id = jb.id) 
-                    Where sod.t_so_id=".$id);
+                    Where tso.so_id=".$id);
         return $data;
     }
 

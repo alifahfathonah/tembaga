@@ -280,8 +280,9 @@ function saveDetail(){
             type:"POST",
             url:'<?php echo base_url('index.php/Tolling/save_detail'); ?>',
             data:{
-                id:$('#id').val(),
+                id:$('#id_tso').val(),
                 id_spb:$('#id_spb').val(),
+                jb:$('#jenis_barang').val(),
                 jenis_barang:$('#jenis_barang_id').val(),
                 tanggal:$('#tanggal').val(),
                 uom:$('#uom').val(),
@@ -291,7 +292,7 @@ function saveDetail(){
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
-                    loadDetail($('#id').val());
+                    loadDetail($('#id_tso').val());
                     $("#jenis_barang_id").select2("val", "");
                     $("#uom").val('');
                     $("#harga").val('');
@@ -322,7 +323,7 @@ function hapusDetail(id,id_spb){
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
-                    loadDetail($('#id').val());
+                    loadDetail($('#id_tso').val());
                 }else{
                     alert(result['message']);
                 }     
@@ -358,7 +359,7 @@ $(function(){
         dateFormat: 'dd-mm-yy'
     }); 
     
-    loadDetail(<?php echo $header['id']; ?>);
+    loadDetail(<?php echo $header['id_tso']; ?>);
 });
 </script>
       
