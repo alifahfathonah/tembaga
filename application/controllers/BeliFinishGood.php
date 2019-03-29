@@ -12,7 +12,8 @@ class BeliFinishGood extends CI_Controller{
     
     function index(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');    
+        $user_ppn = $this->session->userdata('user_ppn');    
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -23,7 +24,7 @@ class BeliFinishGood extends CI_Controller{
         $data['content']= "beli_fg/index";
 
         $this->load->model('Model_beli_fg');
-        $data['list_data'] = $this->Model_beli_fg->po_list()->result();
+        $data['list_data'] = $this->Model_beli_fg->po_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -31,6 +32,7 @@ class BeliFinishGood extends CI_Controller{
     function po_list_outdated(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
+        $user_ppn = $this->session->userdata('user_ppn');   
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -40,7 +42,7 @@ class BeliFinishGood extends CI_Controller{
         //GANTI INTERVAL DI MODEL
         $data['content']= "beli_fg/po_outdated";
         $this->load->model('Model_beli_fg');
-        $data['list_data'] = $this->Model_beli_fg->po_list_outdated()->result();
+        $data['list_data'] = $this->Model_beli_fg->po_list_outdated($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -251,7 +253,8 @@ class BeliFinishGood extends CI_Controller{
 
     function dtbj_list(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');   
+        $user_ppn = $this->session->userdata('user_ppn');     
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -263,7 +266,7 @@ class BeliFinishGood extends CI_Controller{
         $this->load->model('Model_beli_fg');
         $this->load->model('Model_beli_rongsok');
         $this->load->model('Model_gudang_fg');
-        $data['list_data'] = $this->Model_beli_fg->dtbj_list()->result();
+        $data['list_data'] = $this->Model_beli_fg->dtbj_list($user_ppn)->result();
         $data['supplier_list'] = $this->Model_beli_rongsok->supplier_list()->result();
         $data['packing'] = $this->Model_gudang_fg->packing_fg_list()->result();
 
@@ -491,7 +494,8 @@ class BeliFinishGood extends CI_Controller{
 
     function matching(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');    
+        $user_ppn = $this->session->userdata('user_ppn');    
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -501,7 +505,7 @@ class BeliFinishGood extends CI_Controller{
 
         $data['content']= "beli_fg/matching";
         $this->load->model('Model_beli_fg');
-        $data['po_list'] = $this->Model_beli_fg->get_po_list()->result();
+        $data['po_list'] = $this->Model_beli_fg->get_po_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -731,7 +735,8 @@ class BeliFinishGood extends CI_Controller{
 
     function voucher_list(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');     
+        $user_ppn = $this->session->userdata('user_ppn');   
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -741,7 +746,7 @@ class BeliFinishGood extends CI_Controller{
 
         $data['content']= "beli_fg/voucher_list";
         $this->load->model('Model_beli_fg');
-        $data['list_data'] = $this->Model_beli_fg->voucher_list()->result();
+        $data['list_data'] = $this->Model_beli_fg->voucher_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }

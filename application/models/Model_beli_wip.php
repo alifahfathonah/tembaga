@@ -1,7 +1,7 @@
 <?php
 class Model_beli_wip extends CI_Model
 {
-	function po_list(){
+	function po_list($user_ppn){
 		$data = $this->db->query("Select po.*, 
                     bsp.no_pengajuan, bsp.tgl_pengajuan,
                     usr.realname As created_name,
@@ -15,12 +15,12 @@ class Model_beli_wip extends CI_Model
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='WIP' 
+                Where po.jenis_po='WIP' And po.ppn = ".$user_ppn."
                 Order By po.id Desc");
 		return $data;
 	}
 
-    function po_list_outdated(){
+    function po_list_outdated($user_ppn){
         $data = $this->db->query("Select po.*, 
                     bsp.no_pengajuan, bsp.tgl_pengajuan,
                     usr.realname As created_name,
@@ -33,7 +33,7 @@ class Model_beli_wip extends CI_Model
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='WIP' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH) 
+                Where po.jenis_po='WIP' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH) And po.ppn = ".$user_ppn."
                 Order By po.id Desc");
         return $data;
     }
@@ -69,7 +69,7 @@ class Model_beli_wip extends CI_Model
         return $data;
     }
 
-    function dtwip_list(){
+    function dtwip_list($user_ppn){
         $data = $this->db->query("Select dtwip.*, 
                     po.no_po, 
                     spl.nama_supplier,
@@ -79,13 +79,14 @@ class Model_beli_wip extends CI_Model
                     Left Join po On (dtwip.po_id = po.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) or (dtwip.supplier_id = spl.id) 
                     Left Join users usr On (dtwip.created_by = usr.id) 
+                
                 Order By dtwip.id Desc");
         return $data;
     }
 
-    function get_po_list(){
+    function get_po_list($user_ppn){
         $data = $this->db->query("Select id, no_po, jenis_po From po 
-            Where jenis_po= 'WIP' And (status= 0 or status = 2)");
+            Where jenis_po= 'WIP' And (status= 0 or status = 2) And ppn=".$user_ppn);
         return $data;
     }
 
@@ -195,7 +196,7 @@ class Model_beli_wip extends CI_Model
                 po.no_po, po.tanggal As tanggal_po
                 From voucher 
                     Left Join po On (voucher.po_id = po.id) 
-                Where voucher.jenis_barang='WIP'
+                Where voucher.jenis_barang='WIP' And po.ppn = ".$user_ppn."
                 Order By voucher.no_voucher");
         return $data;
     }

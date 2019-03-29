@@ -416,6 +416,7 @@ function saveDetail(){
                 total_harga:$('#total_harga').val()
             },
             success:function(result){
+                console.log(result);
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
                     $("#fg_id").select2("val", "");

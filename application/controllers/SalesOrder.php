@@ -588,7 +588,8 @@ class SalesOrder extends CI_Controller{
 
     function spb_list(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');       
+        $user_ppn = $this->session->userdata('user_ppn');      
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -598,7 +599,7 @@ class SalesOrder extends CI_Controller{
 
         $data['content']= "sales_order/spb_list";
         $this->load->model('Model_sales_order');
-        $data['list_data'] = $this->Model_sales_order->spb_list()->result();
+        $data['list_data'] = $this->Model_sales_order->spb_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -649,6 +650,7 @@ class SalesOrder extends CI_Controller{
     function surat_jalan(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
+        $user_ppn = $this->session->userdata('user_ppn');
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -658,7 +660,7 @@ class SalesOrder extends CI_Controller{
 
         $data['content']= "sales_order/surat_jalan";
         $this->load->model('Model_sales_order');
-        $data['list_data'] = $this->Model_sales_order->surat_jalan()->result();
+        $data['list_data'] = $this->Model_sales_order->surat_jalan($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -691,9 +693,10 @@ class SalesOrder extends CI_Controller{
     }
 
     function get_so_list(){ 
+        $user_ppn = $this->session->userdata('user_ppn');
         $id = $this->input->post('id');
         $this->load->model('Model_sales_order');
-        $data = $this->Model_sales_order->get_so_list($id)->result();
+        $data = $this->Model_sales_order->get_so_list($id, $user_ppn)->result();
         $arr_so[] = "Silahkan pilih....";
         foreach ($data as $row) {
             $arr_so[$row->id] = $row->no_sales_order;

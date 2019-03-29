@@ -12,7 +12,8 @@ class Rongsok extends CI_Controller{
     
     function index(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');    
+        $user_ppn = $this->session->userdata('user_ppn');         
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -22,7 +23,7 @@ class Rongsok extends CI_Controller{
 
         $data['content']= "rongsok/index";
         $this->load->model('Model_rongsok');
-        $data['list_data'] = $this->Model_rongsok->list_data()->result();
+        $data['list_data'] = $this->Model_rongsok->list_data($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }

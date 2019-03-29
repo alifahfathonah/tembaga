@@ -330,7 +330,8 @@ class Tolling extends CI_Controller{
 
     function matching(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');   
+        $user_ppn = $this->session->userdata('user_ppn');     
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -340,7 +341,7 @@ class Tolling extends CI_Controller{
 
         $data['content']= "tolling_titipan/matching";
         $this->load->model('Model_tolling_titipan');
-        $data['po_list'] = $this->Model_tolling_titipan->get_po_list()->result();
+        $data['po_list'] = $this->Model_tolling_titipan->get_po_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -1433,6 +1434,7 @@ class Tolling extends CI_Controller{
     function surat_jalan(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
+        $user_ppn = $this->session->userdata('user_ppn');
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -1442,7 +1444,7 @@ class Tolling extends CI_Controller{
 
         $data['content']= "tolling_titipan/surat_jalan";
         $this->load->model('Model_tolling_titipan');
-        $data['list_data'] = $this->Model_tolling_titipan->surat_jalan()->result();
+        $data['list_data'] = $this->Model_tolling_titipan->surat_jalan($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -1450,6 +1452,7 @@ class Tolling extends CI_Controller{
     function surat_jalan_keluar(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
+        $user_ppn = $this->session->userdata('user_ppn');
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -1459,7 +1462,7 @@ class Tolling extends CI_Controller{
 
         $data['content']= "tolling_titipan/surat_jalan_keluar";
         $this->load->model('Model_tolling_titipan');
-        $data['list_data'] = $this->Model_tolling_titipan->surat_jalan_keluar()->result();
+        $data['list_data'] = $this->Model_tolling_titipan->surat_jalan_keluar($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -1519,9 +1522,10 @@ class Tolling extends CI_Controller{
     }
     
     function get_so_list(){ 
+        $user_ppn = $this->session->userdata('user_ppn');
         $id = $this->input->post('id');
         $this->load->model('Model_tolling_titipan');
-        $data = $this->Model_tolling_titipan->get_so_list($id)->result();
+        $data = $this->Model_tolling_titipan->get_so_list($id, $user_ppn)->result();
         $arr_so[] = "Silahkan pilih....";
         foreach ($data as $row) {
             $arr_so[$row->id] = $row->no_sales_order;
@@ -2429,7 +2433,8 @@ class Tolling extends CI_Controller{
 
     function po_list(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');     
+        $user_ppn = $this->session->userdata('user_ppn');   
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -2439,7 +2444,7 @@ class Tolling extends CI_Controller{
 
         $data['content']= "tolling_titipan/po_list";
         $this->load->model('Model_tolling_titipan');
-        $data['list_data'] = $this->Model_tolling_titipan->po_list()->result();
+        $data['list_data'] = $this->Model_tolling_titipan->po_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -2888,9 +2893,10 @@ class Tolling extends CI_Controller{
     }
 
     function get_po_tolling(){ 
+        $user_ppn = $this->session->userdata('user_ppn');
         $id = $this->input->post('id');
         $this->load->model('Model_tolling_titipan');
-        $data = $this->Model_tolling_titipan->get_po_tolling($id)->result();
+        $data = $this->Model_tolling_titipan->get_po_tolling($id, $user_ppn)->result();
         $arr_so[] = "Silahkan pilih....";
         foreach ($data as $row) {
             $arr_so[$row->id] = $row->no_po;

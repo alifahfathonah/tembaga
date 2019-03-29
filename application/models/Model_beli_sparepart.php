@@ -62,7 +62,7 @@ class Model_beli_sparepart extends CI_Model{
         return $data;
     }
 
-    function po_list(){
+    function po_list($user_ppn){
         $data = $this->db->query("Select po.*, 
                     bsp.no_pengajuan, bsp.tgl_pengajuan,
                     usr.realname As created_name,
@@ -74,12 +74,12 @@ class Model_beli_sparepart extends CI_Model{
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='Sparepart' 
+                Where po.jenis_po='Sparepart' and po.ppn = ".$user_ppn."
                 Order By po.id Desc");
         return $data;
     }
 
-    function po_list_outdated(){
+    function po_list_outdated($user_ppn){
         $data = $this->db->query("Select po.*, 
                     bsp.no_pengajuan, bsp.tgl_pengajuan,
                     usr.realname As created_name,
@@ -91,7 +91,7 @@ class Model_beli_sparepart extends CI_Model{
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='Sparepart' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH)
+                Where po.jenis_po='Sparepart' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH) And po.ppn = ".$user_ppn."
                 Order By po.id Desc");
         return $data;
     }
@@ -194,12 +194,12 @@ class Model_beli_sparepart extends CI_Model{
         return $data;
     }
     
-    function voucher_list(){
+    function voucher_list($user_ppn){
         $data = $this->db->query("Select voucher.*, 
                 po.no_po, po.tanggal As tanggal_po
                 From voucher 
                     Left Join po On (voucher.po_id = po.id) 
-                Where voucher.jenis_barang='SPARE PART'
+                Where voucher.jenis_barang='SPARE PART' and po.ppn = ".$user_ppn."
                 Order By voucher.no_voucher");
         return $data;
     }

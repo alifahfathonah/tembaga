@@ -133,14 +133,14 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
     
-    function get_so_list($id){
+    function get_so_list($id, $user_ppn){
         $data = $this->db->query("Select so.id, so.no_sales_order From sales_order so
                 left join t_sales_order tso on tso.so_id = so.id
                 left join t_spb_fg tsf on tso.jenis_barang = 'FG' and tsf.id = tso.no_spb
                 left join t_spb_wip tsw on tso.jenis_barang = 'wip' and tsw.id = tso.no_spb
                 left join spb s on tso.jenis_barang = 'RONGSOK' and s.id = tso.no_spb
                 Left join t_spb_ampas tsa on tso.jenis_barang = 'AMPAS' and tso.no_spb
-                Where so.m_customer_id=".$id." and so.flag_tolling = 0 and so.flag_sj = 0 and COALESCE(tsf.status,tsw.status,s.status,tsa.status) != 0");
+                Where so.m_customer_id=".$id." and so.flag_tolling = 0 and so.flag_sj = 0 and COALESCE(tsf.status,tsw.status,s.status,tsa.status) != 0 and so.flag_ppn = ".$user_ppn);
         return $data;
     }
 
@@ -258,7 +258,7 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
-    function spb_list(){
+    function spb_list($user_ppn){
         $data = $this->db->query("select tso.*, mc.nama_customer, so.no_sales_order, so.tanggal, coalesce(tsf.no_spb, tsw.no_spb_wip, spb.no_spb) as no_spb_detail , 
             coalesce(tsf.status, tsw.status, spb.status) as status, coalesce(tsf.keterangan, tsw.keterangan, spb.remarks) as keterangan,
             (Select count(tsod.id)As jumlah_item From t_sales_order_detail tsod Where tsod.t_so_id = tso.id)As jumlah_item from t_sales_order tso 
@@ -267,7 +267,7 @@ class Model_sales_order extends CI_Model{
             left join t_spb_wip tsw on tso.jenis_barang='WIP' and tsw.id = tso.no_spb
             left join spb on tso.jenis_barang='RONGSOK' and spb.id = tso.no_spb
             left join m_customers mc on mc.id = so.m_customer_id
-            Where so.flag_tolling = 0
+            Where so.flag_tolling = 0 And so.flag_ppn = ".$user_ppn."
             order by so.tanggal desc");
         return $data;
     }
@@ -331,7 +331,7 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
-    function surat_jalan(){
+    function surat_jalan($user_ppn){
         $data = $this->db->query("Select tsj.*, (select count(tsjd.id) from t_surat_jalan_detail tsjd where tsjd.t_sj_id = tsj.id) as jumlah_item,
                     cust.nama_customer, cust.alamat,
                     so.no_sales_order, fi.id as inv
@@ -339,7 +339,7 @@ class Model_sales_order extends CI_Model{
                     Left Join m_customers cust On (tsj.m_customer_id = cust.id)
                     Left Join sales_order so On (tsj.sales_order_id = so.id) 
                     Left Join f_invoice fi on (fi.id_surat_jalan = tsj.id)
-                Where so.flag_tolling = 0 
+                Where so.flag_tolling = 0  And so.flag_ppn = ".$user_ppn."
                 Order By tsj.id Desc");
         return $data;
     }

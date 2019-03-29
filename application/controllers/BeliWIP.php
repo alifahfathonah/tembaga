@@ -12,7 +12,8 @@ class BeliWIP extends CI_Controller{
     
     function index(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');   
+        $user_ppn = $this->session->userdata('user_ppn');     
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -22,7 +23,7 @@ class BeliWIP extends CI_Controller{
 
         $data['content']= "beli_wip/index";
         $this->load->model('Model_beli_wip');
-        $data['list_data'] = $this->Model_beli_wip->po_list()->result();
+        $data['list_data'] = $this->Model_beli_wip->po_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -30,6 +31,7 @@ class BeliWIP extends CI_Controller{
     function po_list_outdated(){
         $module_name = $this->uri->segment(1);
         $group_id = $this->session->userdata('group_id');
+        $user_ppn = $this->session->userdata('user_ppn');     
         if ($group_id != 1) {
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -39,7 +41,7 @@ class BeliWIP extends CI_Controller{
         $data['content'] = "beli_wip/po_list_outdated";
 
         $this->load->model('Model_beli_wip');
-        $data['list_data'] = $this->Model_beli_wip->po_list_outdated()->result();
+        $data['list_data'] = $this->Model_beli_wip->po_list_outdated($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -248,7 +250,8 @@ class BeliWIP extends CI_Controller{
 
     function dtwip_list(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');    
+        $user_ppn = $this->session->userdata('user_ppn');         
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -258,7 +261,7 @@ class BeliWIP extends CI_Controller{
 
         $data['content']= "beli_wip/dtwip_list";
         $this->load->model('Model_beli_wip');
-        $data['list_data'] = $this->Model_beli_wip->dtwip_list()->result();
+        $data['list_data'] = $this->Model_beli_wip->dtwip_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -402,7 +405,8 @@ class BeliWIP extends CI_Controller{
 
     function matching(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');      
+        $user_ppn = $this->session->userdata('user_ppn');       
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -412,7 +416,7 @@ class BeliWIP extends CI_Controller{
 
         $data['content']= "beli_wip/matching";
         $this->load->model('Model_beli_wip');
-        $data['po_list'] = $this->Model_beli_wip->get_po_list()->result();
+        $data['po_list'] = $this->Model_beli_wip->get_po_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -632,6 +636,7 @@ class BeliWIP extends CI_Controller{
     function voucher_list(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
+        $user_ppn = $this->session->userdata('user_ppn');     
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -641,7 +646,7 @@ class BeliWIP extends CI_Controller{
 
         $data['content']= "beli_wip/voucher_list";
         $this->load->model('Model_beli_wip');
-        $data['list_data'] = $this->Model_beli_wip->voucher_list()->result();
+        $data['list_data'] = $this->Model_beli_wip->voucher_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }

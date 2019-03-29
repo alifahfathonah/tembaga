@@ -421,7 +421,8 @@ class BeliSparePart extends CI_Controller{
     
     function po_list(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');     
+        $user_ppn = $this->session->userdata('user_ppn');        
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -431,7 +432,7 @@ class BeliSparePart extends CI_Controller{
 
         $data['content']= "beli_spare_part/po_list";
         $this->load->model('Model_beli_sparepart');
-        $data['list_data'] = $this->Model_beli_sparepart->po_list()->result();
+        $data['list_data'] = $this->Model_beli_sparepart->po_list($user_ppn)->result();
         $data['bank_list'] = $this->Model_beli_sparepart->bank_list()->result();
 
         $this->load->view('layout', $data);
@@ -440,6 +441,7 @@ class BeliSparePart extends CI_Controller{
     function po_list_outdated(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
+        $user_ppn = $this->session->userdata('user_ppn');     
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -449,7 +451,7 @@ class BeliSparePart extends CI_Controller{
         //GANTI INTERVAL DI MODEL
         $data['content']= "beli_spare_part/po_list_outdated";
         $this->load->model('Model_beli_sparepart');
-        $data['list_data'] = $this->Model_beli_sparepart->po_list_outdated()->result();
+        $data['list_data'] = $this->Model_beli_sparepart->po_list_outdated($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -822,6 +824,7 @@ class BeliSparePart extends CI_Controller{
     function voucher_list(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
+        $user_ppn = $this->session->userdata('user_ppn');     
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -831,7 +834,7 @@ class BeliSparePart extends CI_Controller{
 
         $data['content']= "beli_spare_part/voucher_list";
         $this->load->model('Model_beli_sparepart');
-        $data['list_data'] = $this->Model_beli_sparepart->voucher_list()->result();
+        $data['list_data'] = $this->Model_beli_sparepart->voucher_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }

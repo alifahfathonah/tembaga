@@ -30,7 +30,8 @@ class BeliRongsok extends CI_Controller{
     
     function po_list_outdated(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');   
+        $user_ppn = $this->session->userdata('user_ppn');     
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -40,7 +41,7 @@ class BeliRongsok extends CI_Controller{
         //GANTI INTERVAL DI MODEL
         $data['content']= "beli_rongsok/po_outdated";
         $this->load->model('Model_beli_rongsok');
-        $data['list_data'] = $this->Model_beli_rongsok->po_list_outdated()->result();
+        $data['list_data'] = $this->Model_beli_rongsok->po_list_outdated($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -556,7 +557,8 @@ class BeliRongsok extends CI_Controller{
     
     function matching(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');    
+        $user_ppn = $this->session->userdata('user_ppn');         
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -566,7 +568,7 @@ class BeliRongsok extends CI_Controller{
 
         $data['content']= "beli_rongsok/matching";
         $this->load->model('Model_beli_rongsok');
-        $data['po_list'] = $this->Model_beli_rongsok->get_po_list()->result();
+        $data['po_list'] = $this->Model_beli_rongsok->get_po_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -1133,7 +1135,8 @@ class BeliRongsok extends CI_Controller{
     
     function ttr_list(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');   
+        $user_ppn = $this->session->userdata('user_ppn');          
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -1143,7 +1146,7 @@ class BeliRongsok extends CI_Controller{
 
         $data['content']= "beli_rongsok/ttr_list";
         $this->load->model('Model_beli_rongsok');
-        $data['list_data'] = $this->Model_beli_rongsok->ttr_list()->result();
+        $data['list_data'] = $this->Model_beli_rongsok->ttr_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -1283,7 +1286,8 @@ class BeliRongsok extends CI_Controller{
     
     function voucher_list(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');    
+        $user_ppn = $this->session->userdata('user_ppn');         
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -1293,7 +1297,7 @@ class BeliRongsok extends CI_Controller{
 
         $data['content']= "beli_rongsok/voucher_list";
         $this->load->model('Model_beli_rongsok');
-        $data['list_data'] = $this->Model_beli_rongsok->voucher_list()->result();
+        $data['list_data'] = $this->Model_beli_rongsok->voucher_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }

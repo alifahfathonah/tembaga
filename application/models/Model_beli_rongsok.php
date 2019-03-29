@@ -19,7 +19,7 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
 
-    function po_list_outdated(){
+    function po_list_outdated($user_ppn){
         $data = $this->db->query("Select po.*, 
                     bsp.no_pengajuan, bsp.tgl_pengajuan,
                     usr.realname As created_name,
@@ -32,7 +32,7 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='Rongsok' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH) and po.status != 1
+                Where po.jenis_po='Rongsok' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH) and po.status != 1 And po.ppn = ".$user_ppn."
                 Order By po.id Desc");
         return $data;
     }
@@ -230,9 +230,9 @@ class Model_beli_rongsok extends CI_Model{
     //     return $data;
     // }
 
-    function get_po_list(){
+    function get_po_list($user_ppn){
         $data = $this->db->query("Select id, no_po, jenis_po From po 
-            Where jenis_po= 'Rongsok' And status != 1");
+            Where jenis_po= 'Rongsok' And status != 1 And po.ppn = ".$user_ppn);
         return $data;
     }
     
@@ -285,7 +285,7 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
     
-    function ttr_list(){
+    function ttr_list($user_ppn){
         $data = $this->db->query("Select ttr.*, 
                     dtr.no_dtr,
                     po.no_po, 
@@ -297,6 +297,7 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join dtr On (ttr.dtr_id = dtr.id) 
                     Left Join po On (dtr.po_id = po.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id)
+                Where po.ppn = ".$user_ppn."
                 Order By dtr.id Desc");
         return $data;
     }
@@ -358,12 +359,12 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
     
-    function voucher_list(){
+    function voucher_list($user_ppn){
         $data = $this->db->query("Select voucher.*, 
                 po.no_po, po.tanggal As tanggal_po
                 From voucher 
                     Left Join po On (voucher.po_id = po.id) 
-                Where voucher.jenis_barang='RONGSOK'
+                Where voucher.jenis_barang='RONGSOK' And po.ppn = ".$user_ppn."
                 Order By voucher.no_voucher");
         return $data;
     }
