@@ -132,3 +132,7 @@ Kita = PPN ada di SO, jadi semua Invoice yang dibuat sesuai dengan SO tsb pasti 
 App Lama = PPN di SO di flag non-ppn, tapi di Invoice yang dibuat, kadang ada PPN nya kadang Gaada
 
 Untuk masalah tabel keuangan, MSPTG, MSTBAYAR, TRANVOU, CHEQ masih banyak bingung
+
+Rolling = div_data_spb, div_kawat_hitam_masuk
+Cuci = div_data_spb_kh, div_kawat_merah_masuk
+Bakar Ulang = div_stok_keras, div_kawat_hitam_masuk

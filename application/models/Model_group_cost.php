@@ -1,7 +1,7 @@
 <?php
 class Model_group_cost extends CI_Model{
     function list_data(){
-        $data = $this->db->query("Select * From group_cost Order By nama_group_cost");
+        $data = $this->db->query("Select * From group_cost Order By id asc");
         return $data;
     }
 

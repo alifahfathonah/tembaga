@@ -78,7 +78,8 @@
                     </table>
                 </td>
             </tr>
-            <tr><td colspan="3">
+            <tr>
+                <td colspan="2">
                     <table border="0" cellpadding="4" cellspacing="0" width="40%">
                         <tr>
                             <td width="120px">Pembayaran</td>
@@ -91,6 +92,14 @@
                         <tr>
                             <td>Tanggal</td>
                             <td>: </td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <table cellpadding="4" width="60%">
+                        <tr>
+                            <td></td>
+                            <td style="text-align: right">Hormat Kami</td>
                         </tr>
                     </table>
                 </td>

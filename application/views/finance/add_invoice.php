@@ -34,6 +34,8 @@
                             <input type="text" id="no_pembayaran" name="no_pembayaran" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="Auto generate">
+
+                            <input type="hidden" id="flag_ppn" name="flag_ppn" value="<?= $ppn ;?>">
                         </div>
                     </div>
                     <div class="row">
@@ -128,9 +130,18 @@
                     </div>
                 </div>         
             </div>
+            <?php if($ppn == 1){ ?>
             <hr class="divider">
             <div class="row">
                 <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nama Direktur
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_direktur" name="nama_direktur" class="form-control myline" style="margin-bottom:5px">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Bank <font color="#f00">*</font>
@@ -172,6 +183,7 @@
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
+                    <?php } ?>
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
@@ -212,11 +224,12 @@ function getComa(value, id){
 }
 
 function get_no_so(id){
+    const ppn = $('#flag_ppn').val();
     $.ajax({
         url: "<?php echo base_url('index.php/Finance/get_so_list'); ?>",
         async: false,
         type: "POST",
-        data: "id="+id,
+        data: {id:id, ppn:ppn},
         dataType: "html",
         success: function(result) {
             $('#sales_order_id').html(result);
@@ -258,9 +271,6 @@ function simpanData(){
     }else if($.trim($("#surat_jalan_id").val()) == ""){
         $('#message').html("Silahkan pilih Surat Jalan");
         $('.alert-danger').show();
-    }else if($.trim($("#bank_id").val()) == ""){
-        $('#message').html("Bank harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show(); 
     }else{
         $('#formku').submit(); 
     };

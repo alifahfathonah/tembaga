@@ -60,7 +60,7 @@
                             foreach ($details as $row){
                                 echo '<tr>';
                                 echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
-                                echo '<td style="border-left:1px solid #000">'.$row->jenis_barang.'</td>';
+                                echo '<td style="border-left:1px solid #000">'.$row->jenis_barang.'(Ongkos Kerja)</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->uom.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->netto.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->amount,0,',', '.').'</td>';

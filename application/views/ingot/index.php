@@ -48,7 +48,7 @@
                     <th>Tipe Apolo</th> 
                     <th>PIC</th>
                     <th>Keterangan</th> 
-                    <th>Jmlh Item <br>Bahan Baku</th>
+                    <th>Jumlah Bahan Baku</th>
                     <th>SPB</th>
                 </tr>
                 </thead>
@@ -66,7 +66,7 @@
                         <td><?php echo $data->tipe_apolo;?></td>
                         <td><?php echo $data->pic; ?></td>  
                         <td><?php echo $data->remarks; ?></td> 
-                        <td style="text-align:right"><?php echo $data->jumlah_item; ?></td> 
+                        <td style="text-align:right"><?php echo $data->jumlah; ?></td> 
                         <td style="text-align:center"> 
                             <?php
                                 if($data->status==0){

@@ -1,0 +1,135 @@
+Print_po : Disetujui oleh dan tanggal dari supplier, ditambah hormat kami di (kanan) (Done)
+
+T_Surat_Jalan jangan lupa ditambahin field reject_remarks(Done)
+
+User Group untuk Pak Gun : DTR saja (dual user ppn dan non-ppn)
+
+Jumlah Rongsok di hapus(Done)
+
+No_pallete reset per bulan, 4 digit dibelakang tanggal
+
+TTR group by Jenis barang saat ingin di print(Done)
+
+TTR print dengan harga(group by jenis barang)(Done)
+
+Herman (Gudang- create PP Sparepart)(Done)
+
+Laporan Sparepart kurang Value yang ada di gudang sparepart sekarang, dan value yang ada di gudang sparepart di stok awal
+
+Surat Jalan jika direject bisa input lagi dengan surat jalan yang sama.
+
+Invoice baru bisa di create jika surat jalan sudah di approve (Done)
+
+Nomor Kendaraan, Type Kendaraan, Supir pada surat jalan tidak perlu diisi (Done)
+
+Nomor SO Tolling sama kayak SO biasa, (Done)
+
+SO Tolling, Surat Jalan Tolling, dan Invoice dikasih catatan default Ongkos Kerja (Done)
+
+Print seperti Faktur hanya berlaku pada Invoice PPN(Done)
+Invoice non-PPN, print lebih simpel(Done)
+Direktur pada print isi nama Direkturnya manual(Done)
+
+Biaya lain lain = mengurangi harga invoice
+
+Nomor Cek dan Nominal bisa di edit sebelum matching invoice. *Kalau gagal cair harus mengganti nomor cek lama
+
+Sisa Invoice atau Sisa Uang Masuk masih dibawah atau lebih seribu, bisa masuk ke pembulatan.
+
+Tambah 2 input biaya pada matching invoice, (PPH / Bobbin dan Transfer) *mengurangi invoice
+
+Sort by login, invoice ppn dan non-ppn(Done)
+
+Uang masuk PPN dan Uang masuk Non-ppn, show sesuai login di matching invoice
+
+Keterangan Uang Masuk untuk pembayaran invoice mana aja
+
+8 CV di data PPN tidak masuk report gabungan, tetapi masih masuk report PPN
+
+Matching Pembayaran bisa liat voucher yang belum dibayar sort by customer
+
+Slip setoran hanya masuk ke bank mayora atau masuk ke kas.(Non PPN)
+
+Memorial(Detail Matching Pembayaran) Pili slip setoran mau dikurang dengan uang masuk yang mana
+
+Format uang masuk sesuai dengan jenis pembayaran. Numbering per tahun, 4 digit
+
+Matching Invoice punya nomor sendiri
+agar Balance dengan Voucher yang dibayarkan
+
+Rata rata harga Jenis Barang Rongsok per bulan dan bisa di Print
+
+Rata rata Netto Supplier Rongsok bulan itu. Paling banyak ngirim siapa, di ranking.
+
+TTR per bulan, per jenis barang ditampilkan Netto dan Harganya, di total per jenis barang
+
+Master Bank tambah A/N siapa, Nomor Rekening, dan Kantor Cabang
+
+SPB Rongsok gausah di batesin Jumlah permintaan dan pemenuhannya
+
+Hasil_produksi2 tambahin satuan di belakang input
+
+Produksi WIP Rolling tambahin Berat BS Rolling, dan BS Ingot. Nanti masuk ke gudang Rongsok
+
+Tali Rolling = Pemasukan dari BS FinishGood -> masuk ke Gudang Rongsok sebagai BS SDM -> 
+Request SPB Rongsok keluar scan BS SDM tersebut
+
+Berat Tali Rolling ga perlu ada di Proses WIP Rolling
+
+Bakar Ulang = Hilangkan jumlah & berat kawat keras, tali rolling dan berat serbuk. Input BS masuk langsung ke Gudang
+Rongsok sebagai BS 8 MM
+
+ProsesBPB GudangWIP kurang nomor produksi
+
+Proses Cuci gausah ada Serbuk dan BS
+
+spb wip keperluan 'Lainnya' diganti jadi 'SDM'
+
+SPB Bobbin, isi perlu size apa aja dan berapa jumlah bobin yang diminta.
+
+Print SPB Bobbin tambah berat
+
+Print surat peminjaman bobbin, jumlah Bobbin yang di kirim, bukan total berat
+
+Laporan Rongsok detail per jenis barang ada stok awal bulan dan stok akhir bulan
+
+Bobbin di Customer dan Bobbin di Supplier
+
+Penerimaan bobbin tidak ada Nomor Surat Peminjaman, langsung liat sesuai supplier atau customer. Bobbin di scan atau input manual
+karena bisa rusak nomor barcodenya
+
+Surat Jalan tidak perlu isi nomor kendaraan, Nanti surat jalan langsung select yang udah dikeluarin, jadi pemilihan list dan Aliasnya
+ada di SPB
+
+/** Voucher Cost di bagi 2 **/ Bank dan Kas
+
+Bank Masuk, Bank Keluar input. 
+(masuk) Jika ada customer, maka di matching dengan invoice. Jika gaada, langsung milih mau masuk bank mana, nambah saldo.
+(keluar)voucher cost bank langsung bayar sama kayak create voucher PO.
+
+Kas Masuk, Kas Keluar input. (keluar)voucher cost kas langsung bayar sama kayak create voucher PO.
+
+Tolling ngirim jenis barang rongsok masih salah*cek
+
+Tolling print sj keluar, nama barang munculin
+
+Penomoran pajak dibedakan, ditambahkan KMP. contoh "SJ-KMP.201903.0001"
+
+Penomoran Bobbin ditambah. Karena ada Bobbin supplier (contoh indoka) masuk ke kita dan harus di register.
+
+BPB Tolling catatannya diganti dengan BARANG TOLLING FG, *Berat bobbin belum masuk
+
+Tolling dari Customer, bisa ada yang PPN dan Gaada. Yang PPN, nomor DTR-T nya beda, ditambahin KMP. ini di flag ppn, karena nanti
+masuk ke database PPN.
+
+Tolling dari Customer, bisa ada yang customer ngirim wip bukan rongsok, (biasanya customer Voksel).
+
+Tolling Cek Balance, SO dengan DTR/DTWIP, dan PO dengan DTT
+
+Retur Rongsok dan WIP belum. Rongsok, bikin barcode baru.
+
+Retur, sebelum approve, bisa ganti Type Retur. Karena gatau akan Diganti barang atau Kurang Invoice.
+
+Retur, surat jalan, harus otomatis langsung ke select yang sudah dikeluarkan.
+
+Rongsok keluar, terus bisa input DTR tanpa ada PO. untuk flow repacking yang Export.

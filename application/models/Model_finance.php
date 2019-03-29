@@ -156,20 +156,21 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function list_invoice(){
+    function list_invoice($ppn){
         $data = $this->db->query("Select fi.*, mc.nama_customer, so.no_sales_order, tsj.no_surat_jalan, so.flag_ppn,
             (select count(fid.id) from f_invoice_detail fid where fid.id_invoice = fi.id) as jumlah 
             From f_invoice fi
             left join sales_order so on so.id = fi.id_sales_order
             left join t_surat_jalan tsj on tsj.id = fi.id_surat_jalan
             left join m_customers mc on mc.id = fi.id_customer
+            where so.flag_ppn = ".$ppn."
             Order By id desc");
         return $data;
     }
 
-    function get_so_list($id){
+    function get_so_list($id,$ppn){
         $data = $this->db->query("Select so.* From sales_order so
-            Where so.m_customer_id=".$id." and (select id from t_surat_jalan tsj where tsj.sales_order_id = so.id group by tsj.sales_order_id) and flag_invoice != 1");
+            Where so.m_customer_id=".$id." and (select id from t_surat_jalan tsj where tsj.sales_order_id = so.id group by tsj.sales_order_id) and flag_invoice != 1 and flag_ppn =".$ppn);
         return $data;
     }
 
@@ -179,7 +180,7 @@ class Model_finance extends CI_Model{
     }
 
     function show_header_invoice($id){
-        $data = $this->db->query("select fi.*, tso.alias, mc.nama_customer, mc.alamat, mc.npwp, so.no_sales_order, so.flag_ppn, tso.no_po, u.realname, tsj.no_surat_jalan, tso.id as id_t_sales_order, r.no_retur, b.kode_bank, b.nama_bank, b.nomor_rekening from f_invoice fi
+        $data = $this->db->query("select fi.*, tso.alias, mc.nama_customer, mc.alamat, mc.npwp, so.no_sales_order, so.flag_ppn, so.flag_tolling, tso.no_po, u.realname, tsj.no_surat_jalan, tso.id as id_t_sales_order, r.no_retur, b.kode_bank, b.nama_bank, b.nomor_rekening from f_invoice fi
             left join m_customers mc on mc.id = fi.id_customer
             left join sales_order so on so.id = fi.id_sales_order
             left join t_sales_order tso on tso.so_id = fi.id_sales_order

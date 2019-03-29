@@ -1,6 +1,6 @@
 <?php
 class Model_tolling_titipan extends CI_Model{
-    function so_list(){
+    function so_list($ppn){
         $data = $this->db->query("Select so.*, 
                     usr.realname As nama_marketing,
                     cust.nama_customer, cust.pic, COALESCE(tsf.status,tsw.status) as status_spb,
@@ -14,7 +14,7 @@ class Model_tolling_titipan extends CI_Model{
                     Left Join t_sales_order tso on (tso.so_id = so.id)
                     Left Join t_spb_fg tsf on (tso.jenis_barang = 'FG' and tsf.id = tso.no_spb)
                     Left Join t_spb_wip tsw on (tso.jenis_barang = 'WIP' and tsw.id = tso.no_spb)
-                Where so.flag_tolling > 0
+                Where so.flag_tolling > 0 and so.flag_ppn = ".$ppn."
                 Order By so.id Desc");
         return $data;
     }

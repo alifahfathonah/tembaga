@@ -1,6 +1,6 @@
 <?php
 class Model_sales_order extends CI_Model{
-    function so_list(){
+    function so_list($ppn){
         $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, so.flag_ppn, so.flag_sj, so.flag_invoice, usr.realname As nama_marketing, cust.nama_customer, cust.pic, COALESCE(tsf.status,tsw.status,spb.status) as status_spb,
             (Select count(fi.id) from f_invoice fi where fi.id_sales_order = so.id) as invoice,
             (Select count(tsod.id)As jumlah_item From t_sales_order_detail tsod Where tsod.t_so_id = tso.id)As jumlah_item From t_sales_order tso
@@ -10,7 +10,7 @@ class Model_sales_order extends CI_Model{
             Left Join t_spb_wip tsw on (tso.jenis_barang='WIP') and (tsw.id=tso.no_spb)
             Left Join spb on (tso.jenis_barang='RONGSOK') and (spb.id=tso.no_spb)
             Left Join users usr On (so.marketing_id = usr.id)
-            Where so.flag_tolling = 0
+            Where so.flag_tolling = 0 and so.flag_ppn =".$ppn."
             Order by so.tanggal desc");
         return $data;
     }

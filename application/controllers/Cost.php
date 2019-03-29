@@ -23,7 +23,7 @@ class Cost extends CI_Controller{
         $data['content']= "cost/index";
         $this->load->model('Model_cost');
         $data['list_data'] = $this->Model_cost->list_data()->result();
-        $data['list_group_cost'] = $this->Model_cost->list_group_cost()->result();
+        $data['list_group_cost'] = $this->Model_cost->list_group_cost_add()->result();
 
         $this->load->view('layout', $data);
     }

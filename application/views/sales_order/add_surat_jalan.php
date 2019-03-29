@@ -192,12 +192,6 @@ function simpanData(){
         $('.alert-danger').show(); 
     }else if($.trim($("#sales_order_id").val()) == ""){
         $('#message').html("Silahkan pilih no. sales order");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#m_type_kendaraan_id").val()) == ""){
-        $('#message').html("Silahkan pilih kendaraan");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#supir").val()) == ""){
-        $('#message').htmml("Nama supir harus diisi, tidak boleh kosong!");
         $('.alert-danger').show();
     }else{     
         $('#formku').submit(); 

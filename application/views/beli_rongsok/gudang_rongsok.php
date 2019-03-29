@@ -37,9 +37,9 @@
             <td><?= $no; ?></td>
             <td><?= $data->kode_rongsok.' | '.$data->nama_item; ?></td>
             <td><?= $data->jumlah_packing ;?></td>
-            <td><?= $data->stok_masuk; ?></td>
+            <td><?= number_format($data->stok_masuk,2,',','.'); ?></td>
             <td><?= 0+$data->stok_keluar; ?></td>
-            <td><?= $data->stok_rsk; ?></td>
+            <td><?= number_format($data->stok_rsk,2,',','.'); ?></td>
         </tr>    
     <?php $no++; } ?>
      </tbody>   

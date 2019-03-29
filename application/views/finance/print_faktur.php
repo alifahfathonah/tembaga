@@ -205,7 +205,7 @@
                         <tr>
                             <td colspan="4" style="border-left: 1px solid #000; border-bottom: 1px solid #000;"></td>
                             <td colspan="4" style="text-align: center; border-bottom: 1px solid #000; border-right: 1px solid #000;">
-                                <strong style="text-decoration: underline;">(Senklawan Tjandra)</strong><br>
+                                <strong style="text-decoration: underline;"><?php echo '('.$header['nama_direktur'].')';?></strong><br>
                                 <span>Direktur</span>
                             </td>
                         </tr>

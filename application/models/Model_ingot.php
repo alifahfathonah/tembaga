@@ -1,9 +1,23 @@
 <?php
 class Model_ingot extends CI_Model{
+    // function list_data(){
+    //     $data = $this->db->query("Select pi.*, jb.jenis_barang,
+    //                 usr.realname As pic, a.tipe_apolo, s.status,
+    //                 (Select count(pid.id)As jumlah_item From produksi_ingot_detail pid Where pid.produksi_ingot_id = pi.id)As jumlah_item,
+    //                 (Select Count(pid.id)As ready_to_spb From produksi_ingot_detail pid Where 
+    //                 pid.produksi_ingot_id = pi.id And pid.flag_spb=0)As ready_to_spb
+    //             From produksi_ingot pi
+    //                 Left Join users usr On (pi.created_by = usr.id) 
+    //                 Left Join jenis_barang jb On (pi.jenis_barang_id = jb.id)
+    //                 Left Join apolo a On (a.id = pi.id_apolo)
+    //                 Left Join spb s On (s.produksi_ingot_id = pi.id)
+    //             Order By pi.id Desc");
+    //     return $data;
+    // }
+
     function list_data(){
         $data = $this->db->query("Select pi.*, jb.jenis_barang,
-                    usr.realname As pic, a.tipe_apolo, s.status,
-                    (Select count(pid.id)As jumlah_item From produksi_ingot_detail pid Where pid.produksi_ingot_id = pi.id)As jumlah_item,
+                    usr.realname As pic, a.tipe_apolo, s.status, s.jumlah,
                     (Select Count(pid.id)As ready_to_spb From produksi_ingot_detail pid Where 
                     pid.produksi_ingot_id = pi.id And pid.flag_spb=0)As ready_to_spb
                 From produksi_ingot pi

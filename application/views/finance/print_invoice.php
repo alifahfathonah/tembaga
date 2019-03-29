@@ -5,7 +5,7 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br>INVOICE</h3>
+        <h3 style="text-align: center; text-decoration: underline;">INVOICE</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="60%">
@@ -70,11 +70,16 @@
                             $no = 1;
                             $total = 0;
                             $total_netto = 0;
+                            if($header['flag_tolling'] > 0){
+                                $ok = '(Ongkos Kerja)';
+                            }else{
+                                $ok = '';
+                            }
                             foreach ($details as $row){
                         ?>
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
-                            <td style="border-left:1px solid #000;"><?=$row->jenis_barang;?></td>
+                            <td style="border-left:1px solid #000;"><?=$row->jenis_barang.$ok;?></td>
                             <td style="border-left:1px solid #000;"><?=$row->uom;?></td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=$row->qty;?></td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=$row->netto;?></td>

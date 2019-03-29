@@ -1,6 +1,6 @@
 <?php
 class Model_beli_rongsok extends CI_Model{
-    function po_list(){
+    function po_list($ppn){
         $data = $this->db->query("Select po.*, 
                     bsp.no_pengajuan, bsp.tgl_pengajuan,
                     usr.realname As created_name,
@@ -14,7 +14,7 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='Rongsok' 
+                Where po.jenis_po='Rongsok' and po.tanggal >= NOW()-INTERVAL 2 MONTH and po.ppn = ".$ppn."
                 Order By po.id Desc");
         return $data;
     }
@@ -32,7 +32,25 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='Rongsok' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH)
+                Where po.jenis_po='Rongsok' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH) and po.status != 1
+                Order By po.id Desc");
+        return $data;
+    }
+
+    function po_list_filter($start,$end){
+        $data = $this->db->query("Select po.*, 
+                    bsp.no_pengajuan, bsp.tgl_pengajuan,
+                    usr.realname As created_name,
+                    spl.nama_supplier, spl.pic,
+                (Select count(id)As jumlah_item From po_detail pd Where pd.po_id = po.id)As jumlah_item,
+                (Select count(id)As tot_voucher From voucher vc Where vc.po_id = po.id)As tot_voucher,
+                (Select count(pd.id)As ready_to_dtr From po_detail pd Where 
+                    pd.po_id = po.id And pd.flag_dtr=1)As ready_to_dtr
+                From po 
+                    Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
+                    Left Join supplier spl On (po.supplier_id = spl.id) 
+                    Left Join users usr On (bsp.created_by = usr.id) 
+                Where po.jenis_po='Rongsok' and po.tanggal between '".$start."' and '".$end."'
                 Order By po.id Desc");
         return $data;
     }
@@ -286,6 +304,7 @@ class Model_beli_rongsok extends CI_Model{
     function show_header_ttr($id){
         $data = $this->db->query("Select ttr.*, 
                     dtr.no_dtr,
+                    dtr.po_id,
                     po.no_po,
                     po.tanggal as tanggal_po,
                     spl.nama_supplier,
@@ -302,11 +321,20 @@ class Model_beli_rongsok extends CI_Model{
     }
     
     function show_detail_ttr($id){
-        $data = $this->db->query("Select ttrd.*, rsk.nama_item, rsk.uom, dtr_detail.no_pallete, dtr_detail.berat_palette
+        $data = $this->db->query("Select sum(ttrd.bruto) as bruto, sum(ttrd.netto) as netto, ttrd.line_remarks, rsk.nama_item, rsk.uom, dtr_detail.no_pallete, sum(dtr_detail.berat_palette)
                     From ttr_detail ttrd 
                         Left Join rongsok rsk On (ttrd.rongsok_id = rsk.id)
                         left join dtr_detail on dtr_detail.id = ttrd.dtr_detail_id
-                    Where ttrd.ttr_id=".$id);
+                    Where ttrd.ttr_id=".$id." group by ttrd.rongsok_id");
+        return $data;
+    }
+
+    function show_detail_ttr_harga($id,$poid){
+        $data = $this->db->query("Select sum(ttrd.bruto) as bruto, sum(ttrd.netto) as netto,(select amount from po_detail where po_id=".$poid." and rongsok_id = ttrd.rongsok_id) as harga, ttrd.line_remarks, rsk.nama_item, rsk.uom, dtr_detail.no_pallete, sum(dtr_detail.berat_palette)
+                    From ttr_detail ttrd 
+                        Left Join rongsok rsk On (ttrd.rongsok_id = rsk.id)
+                        left join dtr_detail on dtr_detail.id = ttrd.dtr_detail_id
+                    Where ttrd.ttr_id=".$id." group by ttrd.rongsok_id");
         return $data;
     }
     

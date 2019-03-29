@@ -12,7 +12,8 @@ class Tolling extends CI_Controller{
     
     function index(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -22,7 +23,7 @@ class Tolling extends CI_Controller{
 
         $data['content']= "tolling_titipan/index";
         $this->load->model('Model_tolling_titipan');
-        $data['list_data'] = $this->Model_tolling_titipan->so_list()->result();
+        $data['list_data'] = $this->Model_tolling_titipan->so_list($ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -40,7 +41,7 @@ class Tolling extends CI_Controller{
         
         $this->load->model('Model_tolling_titipan');
         $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
-        $data['marketing_list'] = $this->Model_tolling_titipan->marketing_list()->result();
+        // $data['marketing_list'] = $this->Model_tolling_titipan->marketing_list()->result();
         $this->load->view('layout', $data);
     }
     
@@ -70,7 +71,7 @@ class Tolling extends CI_Controller{
         $user_ppn  = $this->session->userdata('user_ppn');
         
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('SO-T', $tgl_input); 
+        $code = $this->Model_m_numberings->getNumbering('SO', $tgl_input); 
         
         if($code){        
             $data = array(
@@ -175,7 +176,7 @@ class Tolling extends CI_Controller{
             $data['header'] = $this->Model_tolling_titipan->show_header_so($id)->row_array();  
             $jenis = $data['header']['jenis_barang'];          
             $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
-            $data['marketing_list'] = $this->Model_tolling_titipan->marketing_list()->result();
+            // $data['marketing_list'] = $this->Model_tolling_titipan->marketing_list()->result();
                 $data['list_barang'] = $this->Model_tolling_titipan->jenis_barang($jenis)->result();
             $this->load->view('layout', $data);   
         }else{
@@ -2130,7 +2131,7 @@ class Tolling extends CI_Controller{
             $data['header']  = $this->Model_tolling_titipan->show_header_sj($id)->row_array();
             $data['details'] = $this->Model_tolling_titipan->load_detail_surat_jalan($id)->result();
 
-            $this->load->view('print_surat_jalan', $data);
+            $this->load->view('tolling_titipan/print_sj', $data);
         }else{
             redirect('index.php'); 
         }

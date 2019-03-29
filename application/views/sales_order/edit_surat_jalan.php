@@ -229,7 +229,7 @@
                         <table class="table table-bordered table-striped table-hover" id="tabel_barang">
                             <thead>
                                 <th>No</th>
-                                <th>Nama Item</th>
+                                <th width="20%">Nama Item</th>
                                 <th>UOM</th>
                                 <th>Qty</th>
                                 <th>Netto (Kg)</th>
@@ -240,7 +240,7 @@
                                 <tr>
                                     <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
                                     <td>
-                                        <select id="barang_id_1" name="details[1][barang_id]" class="form-control myline" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="get_data(1);">
+                                        <select id="barang_id_1" name="details[1][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="get_data(1);">
                                             <option value=""></option>
                                         <?php foreach ($list_produksi as $value){ ?>
                                             <option value='<?=$value->id;?>'>
@@ -444,6 +444,7 @@ function create_new_input(id){
             '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input('+new_id+');" style="margin-top:5px" id="save_'+new_id+'"><i class="fa fa-plus"></i> Tambah </a>'+
             '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail('+new_id+');" style="margin-top:5px;display: none"><i class="fa fa-trash"></i> Delete </a></td>'+
         '</tr>');
+        $('#barang_id_'+new_id).select2();
         }else if($('#jenis_barang').val()=="RONGSOK"){
         $("#tabel_barang>tbody").append(
         '<tr>'+
@@ -601,5 +602,4 @@ $(function(){
 
     //loadDetail(<?php echo $header['id']; ?>);
 });
-</script>
-      
+</script> 

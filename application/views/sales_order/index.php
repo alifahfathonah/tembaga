@@ -94,7 +94,7 @@
                     <th>Jenis<br>Barang</th>
                     <th>Tanggal</th>
                     <th>Customer</th> 
-                    <th>PPN</th> 
+                    <?php if($this->session->userdata('user_ppn') == 0){ echo '<th>PPN</th>'; }?> 
                     <th>Jumlah<br>Items</th>
                     <th>Status<br>Invoice</th>
                     <th>Status<br>Surat Jalan</th>
@@ -116,11 +116,10 @@
                         <td><?php echo $data->jenis_barang; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->nama_customer; ?></td>
-                        <td>
-                        <?php 
-                           echo (($data->flag_ppn==1)? '<i class="fa fa-check"></i> Yes': '<i class="fa fa-times"></i> No');
+                        <?php if($this->session->userdata('user_ppn') == 0){ 
+                           echo (($data->flag_ppn==1)? '<td><i class="fa fa-check"></i> Yes</td>': '<td><i class="fa fa-times"></i> No</td>');
+                        }
                         ?>
-                        </td>
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td>
                         <?php 

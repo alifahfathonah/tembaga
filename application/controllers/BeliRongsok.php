@@ -12,7 +12,8 @@ class BeliRongsok extends CI_Controller{
     
     function index(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -22,7 +23,7 @@ class BeliRongsok extends CI_Controller{
 
         $data['content']= "beli_rongsok/index";
         $this->load->model('Model_beli_rongsok');
-        $data['list_data'] = $this->Model_beli_rongsok->po_list()->result();
+        $data['list_data'] = $this->Model_beli_rongsok->po_list($ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -42,6 +43,29 @@ class BeliRongsok extends CI_Controller{
         $data['list_data'] = $this->Model_beli_rongsok->po_list_outdated()->result();
 
         $this->load->view('layout', $data);
+    }
+
+    function filter_po(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $arr=explode("&",$id);
+
+            $data['content']= "beli_rongsok/index";
+            $this->load->model('Model_beli_rongsok');
+            $data['list_data'] = $this->Model_beli_rongsok->po_list_filter(date("Y-m-d", strtotime($arr[0])),date("Y-m-d", strtotime($arr[1])))->result();
+
+            $this->load->view('layout', $data);
+        }else{
+            redirect('index.php/BeliRongsok');
+        }
     }
 
     function add(){
@@ -335,7 +359,7 @@ class BeliRongsok extends CI_Controller{
         $nilai_dp  = str_replace('.', '', $this->input->post('nilai_dp'));
         $amount  = str_replace('.', '', $this->input->post('amount'));
         $id = $this->input->post('id');
-        
+
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('VRSK', $tgl_input);
@@ -422,7 +446,6 @@ class BeliRongsok extends CI_Controller{
                         'dtr_id'=>$dtr_id,
                         //'po_detail_id'=>$row['po_detail_id'],
                         'rongsok_id'=>$row['rongsok_id'],
-                        'qty'=>str_replace('.', '', $row['qty']),
                         'bruto'=>$row['bruto'],
                         'berat_palette'=>$row['berat_palette'],
                         'netto'=>$row['netto'],
@@ -1156,6 +1179,21 @@ class BeliRongsok extends CI_Controller{
             $data['details'] = $this->Model_beli_rongsok->show_detail_ttr($id)->result();
 
             $this->load->view('print_ttr', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
+
+    function print_ttr_harga(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_beli_rongsok');
+            $this->load->helper('tanggal_indo');
+            $data['header']  = $this->Model_beli_rongsok->show_header_ttr($id)->row_array();
+            $poid = $data['header']['po_id'];
+            $data['details'] = $this->Model_beli_rongsok->show_detail_ttr_harga($id, $poid)->result();
+
+            $this->load->view('beli_rongsok/print_ttr_harga', $data);
         }else{
             redirect('index.php'); 
         }

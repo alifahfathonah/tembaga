@@ -104,7 +104,7 @@
                         <td><?php echo $data->nama_group_cost; ?></td>
                         <td><?php echo $data->remarks; ?></td>
                         <td style="text-align:center"> 
-                            <?php
+                        <?php if($data->id > 2){
                                 if( ($group_id==1)||($hak_akses['edit']==1) ){
                             ?>
                             <a class="btn btn-circle btn-xs green" onclick="editData(<?php echo $data->id; ?>)" style="margin-bottom:4px">
@@ -116,7 +116,9 @@
                             <a href="<?php echo base_url(); ?>index.php/GroupCost/delete/<?php echo $data->id; ?>" 
                                class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus data ini?');">
                                 <i class="fa fa-trash-o"></i> Hapus </a>
-                            <?php }?>
+                            <?php }
+                        }
+                        ?>
                         </td>
                     </tr>
                     <?php

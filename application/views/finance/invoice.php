@@ -37,12 +37,12 @@
                 <tr>
                     <th>No</th>
                     <th>Trx</th>
-                    <th>Nomor Invoice</th>
-                    <th>Nomor Sales Order</th>
-                    <th>Nomor Surat Jalan</th>
+                    <th>No. Invoice</th>
+                    <th>No. Sales Order</th>
+                    <th>No. Surat Jalan</th>
                     <th>Nama Customer</th>
                     <th>Tanggal</th>
-                    <th>PPN</th>
+                    <?php if($this->session->userdata('user_ppn') == 0){ echo '<th>PPN</th>'; }?> 
                     <th>Keterangan</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -62,11 +62,10 @@
                         <td><?php echo $data->no_surat_jalan; ?></td>
                         <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->tanggal;?></td>
-                        <td>
-                        <?php 
-                           echo (($data->flag_ppn==1)? '<i class="fa fa-check"></i> Yes': '<i class="fa fa-times"></i> No');
+                        <?php if($this->session->userdata('user_ppn') == 0){ 
+                           echo (($data->flag_ppn==1)? '<td><i class="fa fa-check"></i> Yes</td>': '<td><i class="fa fa-times"></i> No</td>');
+                        }
                         ?>
-                        </td>
                         <td><?php echo $data->keterangan;?></td>
                         <td><?= ($data->flag_matching > 0) ? '<div style="background-color:green; color:#fff; padding:3px">Sudah Matching</div>' : '<div style="background-color:darkkhaki; padding:3px">Belum Matching</div>';?></td>
                         <td style="text-align:center"> 

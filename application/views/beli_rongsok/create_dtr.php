@@ -120,7 +120,7 @@
                                 <th style="width:40px">No</th>
                                 <th style="width:20%">Nama Item Rongsok</th>
                                 <th>UOM</th>
-                                <th>Jumlah Rongsok</th>
+                                <!-- <th>Jumlah Rongsok</th> -->
                                 <th>Bruto (Kg)</th>
                                 <th>Berat Palette</th>
                                 <th>Netto (Kg)</th>
@@ -144,7 +144,7 @@
                                 </select>
                                 </td>
                                 <td><input type="text" id="uom_1" name="myDetails[1][uom]" class="form-control myline" readonly="readonly"></td>
-                                <td><input type="text" id="qty_1" name="myDetails[1][qty]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
+<!--                                 <td><input type="text" id="qty_1" name="myDetails[1][qty]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td> -->
                                 <td><input type="number" id="bruto_1" name="myDetails[1][bruto]" class="form-control myline" value="0" maxlength="10"></td>
                                 <td><input type="number" id="berat_palette_1" name="myDetails[1][berat_palette]" class="form-control myline" value="0" maxlength="10"></td>
                                 <td><input type="text" id="netto_1" name="myDetails[1][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
@@ -301,7 +301,6 @@ function saveDetail(id){
                 '</select>'+
                 '</td>'+
                 '<td><input type="text" id="uom_'+new_id+'" name="myDetails['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
-                '<td><input type="text" id="qty_'+new_id+'" name="myDetails['+new_id+'][qty]" class="form-control myline" value="0" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
                 '<td><input type="number" id="bruto_'+new_id+'" name="myDetails['+new_id+'][bruto]" class="form-control myline" value="0" maxlength="10"></td>'+
                 '<td><input type="text" id="berat_palette_'+new_id+'" name="myDetails['+new_id+'][berat_palette]" class="form-control myline" value="0" maxlength="10"></td>'+
                 '<td><input type="text" id="netto_'+new_id+'" name="myDetails['+new_id+'][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+

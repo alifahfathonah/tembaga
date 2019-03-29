@@ -87,15 +87,10 @@
                             Marketing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="marketing_id" name="marketing_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($marketing_list as $row){
-                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['marketing_id'])? 'selected="selected"': '').'>'.$row->realname.'</option>';
-                                    }
-                                ?>
-                            </select>
+                            <input type="text" id="nama_marketing" name="nama_marketing" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?= $header['nama_marketing'];?>">
+                            <input type="hidden" id="marketing_id" name="marketing_id" value="<?= $header['marketing_id'];?>">
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
@@ -233,10 +228,7 @@ function simpanData(){
         $('.alert-danger').show(); 
     }else if($.trim($("#m_customer_id").val()) == ""){
         $('#message').html("Silahkan pilih nama customer!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#marketing_id").val()) == ""){
-        $('#message').html("Silahkan pilih marketing!");
-        $('.alert-danger').show(); 
+        $('.alert-danger').show();
     }else{     
         $('#formku').submit(); 
     };

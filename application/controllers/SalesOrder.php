@@ -12,7 +12,8 @@ class SalesOrder extends CI_Controller{
     
     function index(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');    
+        $ppn         = $this->session->userdata('user_ppn');
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -22,7 +23,7 @@ class SalesOrder extends CI_Controller{
 
         $data['content']= "sales_order/index";
         $this->load->model('Model_sales_order');
-        $data['list_data'] = $this->Model_sales_order->so_list()->result();
+        $data['list_data'] = $this->Model_sales_order->so_list($ppn)->result();
 
         $this->load->view('layout', $data);
     }

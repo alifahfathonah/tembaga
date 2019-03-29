@@ -82,6 +82,15 @@
                             <input type="number" id="jumlah_afkir" name="jumlah_afkir" 
                                 class="form-control myline" style="margin-bottom:5px" value="0">
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jumlah Packing
+                        </div>
+                        <div class="col-md-8">
+                            <input type="number" id="jumlah_packing" name="jumlah_packing" 
+                                class="form-control myline" style="margin-bottom:5px" value="0">
+                        </div>
                     </div> 
                     <div class="row">
                         <div class="col-md-4">
@@ -91,8 +100,7 @@
                             <input type="number" id="jumlah_lain" name="jumlah_lain" 
                                 class="form-control myline" style="margin-bottom:5px" value="0">
                         </div>
-                    </div>
-                    
+                    </div>                    
                 </div>              
             </div>
             <div class="row">
@@ -103,7 +111,6 @@
                                 <th>No</th>
                                 <th>Nama Item Rongsok</th>
                                 <th>UOM</th>
-                                <th>Jumlah</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Berat Palette</th>
                                 <th>Netto (Kg)</th>
@@ -113,7 +120,6 @@
                             <tbody>
                             <?php
                                 $no = 1;
-                                $jumlah_packing = 0;
                                 foreach ($details as $row){
                                     echo '<tr>';
                                     echo '<td style="text-align:center">'.$no.'</td>';
@@ -125,9 +131,6 @@
                                     echo '</td>';
                                     echo '<td><input type="text" name="myDetails['.$no.'][uom]" '
                                             . 'class="form-control myline" value="'.$row->uom.'" '
-                                            . 'readonly="readonly"></td>';                                    
-                                    echo '<td><input type="text" name="myDetails['.$no.'][qty]" '
-                                            . 'class="form-control myline" value="'.$row->qty.'" '
                                             . 'readonly="readonly"></td>';
                                     
                                     echo '<td><input type="text" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
@@ -147,15 +150,9 @@
                                     echo '<td><input type="text" name="myDetails['.$no.'][line_remarks]" value="'.$row->line_remarks.'"'
                                             . 'class="form-control myline" readonly="readonly"></td>';
                                     echo '</tr>';
-                                    $jumlah_packing += $row->berat_palette;
                                     $no++;
                                 }
                             ?>
-                            <tr>
-                                <td colspan="5" style="text-align: right;"><strong>Jumlah Pengepakan</strong></td>
-                                <td><input type="text" class="form-control" id="jumlah_packing" name="jumlah_packing" value="<?=$jumlah_packing;?>" readonly="readonly"></td>
-                                <td colspan="3"></td>
-                            </tr>
                             </tbody>
                         </table>
                     </div>

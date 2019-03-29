@@ -17,6 +17,11 @@ class Model_cost extends CI_Model{
         return $data;
     }
     
+    function list_group_cost_add(){
+        $data = $this->db->query("Select * From group_cost where id > 2");
+        return $data;
+    }
+
     function list_group_cost(){
         $data = $this->db->query("Select * From group_cost Order By nama_group_cost");
         return $data;

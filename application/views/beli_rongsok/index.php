@@ -157,12 +157,37 @@
                 </div>
             </div>
         </div>
+        <div class="collapse well" id="form_filter" border="1">
+            <form class="eventInsForm" method="post" target="_self" name="filter" 
+            id="filter">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-2">
+                                Dari Tanggal
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" id="tgl_start" name="tgl_start" class="form-control myline input-small" style="margin-bottom:5px;float:left;" value="<?= date('d-m-Y');?>">  
+                            </div>
+                            <div class="col-md-1" style="margin-bottom: 5px;">S/D</div>
+                            <div class="col-md-3">
+                                <input type="text" id="tgl_end" name="tgl_end" class="form-control myline input-small" style="margin-bottom:5px;float:left;" value="<?= date('d-m-Y');?>">  
+                            </div>
+                            <div class="col-md-3">
+                                &nbsp; &nbsp; <a href="javascript:;" onclick="filterData()" class="btn green"><i class="fa fa-search-plus"></i> Filter</a>        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-beer"></i>Purchase Order List
                 </div>
                 <div class="tools">
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter"><i class="fa fa-search"></i> Filter Tanggal</a>
                 <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliRongsok/po_list_outdated"> <i class="fa fa-minus"></i> PO LIST OUTDATED</a>
                 <?php
                     if( ($group_id==1)||($hak_akses['add']==1) ){
@@ -181,7 +206,7 @@
                     <th>Tanggal</th>
                     <th>Supplier</th> 
                     <th>Attention To</th>
-                    <th>PPN</th> 
+                    <?php if($this->session->userdata('user_ppn') == 0){ echo '<th>PPN</th>'; }?> > 
                     <th>Jumlah <br>Items</th>
                     <th>Status</th>
                     <th>Keterangan</th>
@@ -198,24 +223,13 @@
                     <tr>
                         <td style="text-align:center;"><?php echo $no; ?></td>
                         <td><?php echo $data->no_po; ?></td>
-                        <?php
-                        if(strtotime($data->tanggal) < strtotime('-2 MONTH')) {
-                        ?>
-                        <td style="background-color: red;"><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <?php
-                        } else {
-                        ?>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <?php
-                        }
-                        ?>
                         <td><?php echo $data->nama_supplier; ?></td>
                         <td><?php echo $data->pic; ?></td>
-                        <td>
-                        <?php 
-                           echo (($data->ppn==1)? '<i class="fa fa-check"></i> Yes': '<i class="fa fa-times"></i> No');
+                        <?php if($this->session->userdata('user_ppn') == 0){ 
+                           echo (($data->flag_ppn==1)? '<td><i class="fa fa-check"></i> Yes</td>': '<td><i class="fa fa-times"></i> No</td>');
+                        }
                         ?>
-                        </td>
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td style="text-align:center">
                             <?php 
@@ -337,6 +351,11 @@ function saveVoucher(){
     };
 };
 
+function filterData(){
+    const start=$('#tgl_start').val();
+    const end=$('#tgl_end').val()
+    window.location = '<?php echo base_url('index.php/BeliRongsok/filter_po/');?>'+start+'&'+end;
+}
 // function createVoucherPelunasan(id){
 //     $.ajax({
 //         url: "<?php echo base_url('index.php/BeliRongsok/create_voucher_pelunasan'); ?>",
@@ -402,7 +421,27 @@ $(function(){
         changeYear: true,
         dateFormat: 'dd-mm-yy'
     }); 
+
+    $("#tgl_start").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    }); 
     
+    $("#tgl_end").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    }); 
+
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });
 </script>         

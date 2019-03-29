@@ -53,15 +53,10 @@
                             Marketing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="marketing_id" name="marketing_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($marketing_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->realname.'</option>';
-                                    }
-                                ?>
-                            </select>
+                            <input type="text" id="nama_marketing" name="nama_marketing" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $this->session->userdata('realname'); ?>">
+                            <input type="hidden" id="marketing_id" name="marketing_id" value="<?= $this->session->userdata('user_id');?>">
                         </div>
                     </div>
                     <div class="row">

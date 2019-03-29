@@ -253,7 +253,9 @@
                                                 <td><input type="text" id="qty_1" name="details[1][qty]" class="form-control myline"/></td>
                                                 <td><input type="text" id="berat_1" name="details[1][berat]" class="form-control myline" /></td>
                                                 <td><input type="text" id="keterangan_1" name="details[1][keterangan]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
-                                                <td style="text-align:center"><a id="btn_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
+                                                <td style="text-align:center">
+                                                    <a id="btn_add_1" href="javascript:;" class="btn btn-xs btn-circle green" onclick="create_new_input(1);" style="margin-top:5px"><i class="fa fa-plus"></i> Add </a>
+                                                    <a id="btn_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -475,10 +477,10 @@ function getBarang(id){
                         $("#spb_id_"+id).val(result['id']);
                         console.log(result['id']);
                         $("#uom_"+id).val(result['uom']);
-                        $("#btn_"+id).removeClass('disabled');
+                        // $("#btn_"+id).removeClass('disabled');
                         $("#barang_"+id).attr('disabled','disabled');
     
-                        create_new_input(id);
+                        // create_new_input(id);
                     } else {
                         alert('Gagal menambahkan, silahkan ulangi kembali');
                         $("#barang_"+id).val('');
@@ -487,22 +489,28 @@ function getBarang(id){
             });
         } else {
             alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
-            $("#no_pallete_"+id).val('');
+            $("#barang_"+id).val('');
         }
     }
 }
 
 
 function create_new_input(id){
-       var new_id = id+1; 
-        $("#tabel_barang>tbody").append('<tr><td><div id="no_tabel_'+new_id+'">'+new_id+'</div><input id="spb_id_'+new_id+'" name="details['+new_id+'][spb_detail_id]" type="hidden"></td><td><select id="barang_'+new_id+'" class="form-control" placeholder="pilih jenis barang" name="details['+new_id+'][jenis_barang]" onchange="getBarang('+new_id+')"><option value=""></option><?php foreach($list_barang as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}?></select><input name="details['+new_id+'][id_barang]" id="barang_id_'+new_id+'" type="hidden"></td><td><input id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly" type="text"></td><td><input id="qty_'+new_id+'" name="details['+new_id+'][qty]" class="form-control myline" type="text"></td><td><input id="berat_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline" type="text"></td><td><input id="keterangan_'+new_id+'" name="details['+new_id+'][keterangan]" class="form-control myline" type="text" onkeyup="this.value = this.value.toUpperCase()"></td><td style="text-align:center"><a id="btn_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td></tr>');
+    if($.trim($("#berat_"+id).val()) == ""){
+        alert('Berat Belum Di Input !');
+    }else{
+       var new_id = id+1;
+       $('#btn_'+id).removeClass('disabled');
+       $('#btn_add_'+id).attr('disabled','disabled').hide();
+        $("#tabel_barang>tbody").append('<tr><td><div id="no_tabel_'+new_id+'">'+new_id+'</div><input id="spb_id_'+new_id+'" name="details['+new_id+'][spb_detail_id]" type="hidden"></td><td><select id="barang_'+new_id+'" class="form-control" placeholder="pilih jenis barang" name="details['+new_id+'][jenis_barang]" onchange="getBarang('+new_id+')"><option value=""></option><?php foreach($list_barang as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}?></select><input name="details['+new_id+'][id_barang]" id="barang_id_'+new_id+'" type="hidden"></td><td><input id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly" type="text"></td><td><input id="qty_'+new_id+'" name="details['+new_id+'][qty]" class="form-control myline" type="text"></td><td><input id="berat_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline" type="text"></td><td><input id="keterangan_'+new_id+'" name="details['+new_id+'][keterangan]" class="form-control myline" type="text" onkeyup="this.value = this.value.toUpperCase()"></td><td style="text-align:center"><a id="btn_add_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle green" onclick="create_new_input('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Add </a><a id="btn_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td></tr>');
+    }
 }
 
 function hapusDetail(id){
     var r=confirm("Anda yakin menghapus item barang ini?");
     if (r==true){
         $('#no_tabel_'+id).closest('tr').remove();
-        }
+    }
 }
 
 </script>

@@ -58,7 +58,6 @@ class Model_purchase_order extends CI_Model{
 	}
 
 	function load_detail_po_sj($id){
-<<<<<<< HEAD
 		$data = $this->db->query("select rpod.*, tsjd.bruto as bruto_tsjd, tsjd.netto as netto_tsjd, tsjd.no_packing, jb.jenis_barang, jb.uom, jb.kode
 			from r_t_po_detail rpod
             left join r_t_po rpo on (rpo.id = rpod.po_id)
@@ -66,7 +65,7 @@ class Model_purchase_order extends CI_Model{
 			left join t_surat_jalan_detail tsjd on (fi.id_surat_jalan = tsjd.t_sj_id)
 			left join jenis_barang jb on jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
 			where rpod.po_id =".$id);
-=======
+
 		// $data = $this->db->query("select rpod.*, tsjd.bruto as bruto_tsjd, tsjd.netto as netto_tsjd, tsjd.no_packing, jb.jenis_barang, jb.uom, jb.kode
 		// 	from r_t_po_detail rpod
   //           left join r_t_po rpo on (rpo.id = rpod.po_id)
@@ -74,13 +73,12 @@ class Model_purchase_order extends CI_Model{
 		// 	left join t_surat_jalan_detail tsjd on (fi.id_surat_jalan = tsjd.t_sj_id)
 		// 	left join jenis_barang jb on jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
 		// 	where rpod.po_id =".$id);
-		$data = $this->db->query("select fid.*, tsjd.bruto, tsjd.no_packing, tsjd.nomor_bobbin,
-		(select id from r_t_po_detail rtpd where rtpd.po_id = rtp.id and rtpd.jenis_barang_id = fid.jenis_barang_id) as po_detail_id
-		from f_invoice_detail fid 
-		left join t_surat_jalan_detail tsjd on tsjd.id = fid.sj_detail_id
-        left join r_t_po rtp on rtp.f_invoice_id = fid.id_invoice
-		where rtp.id =".$id);
->>>>>>> f7a2b833fc5dc3f37f3196a2c802da8928a61d62
+		// $data = $this->db->query("select fid.*, tsjd.bruto, tsjd.no_packing, tsjd.nomor_bobbin,
+		// (select id from r_t_po_detail rtpd where rtpd.po_id = rtp.id and rtpd.jenis_barang_id = fid.jenis_barang_id) as po_detail_id
+		// from f_invoice_detail fid 
+		// left join t_surat_jalan_detail tsjd on tsjd.id = fid.sj_detail_id
+  //       left join r_t_po rtp on rtp.f_invoice_id = fid.id_invoice
+		// where rtp.id =".$id);
 		return $data;
 	}
 }

@@ -130,13 +130,13 @@
                             <div class="col-md-2">
                                 Susut Jumlah
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-4">
                                 <input type="text" id="susut_jumlah_ingot" name="susut_jumlah_keras" class="form-control myline" style="margin-bottom: 5px;float: left;" readonly>
                             </div>
                             <div class="col-md-2">
                                 Susut Berat
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-4">
                                 <input type="text" id="susut_berat_ingot" name="susut_berat_keras" class="form-control myline" style="margin-bottom: 5px;float: left;" readonly>
                             </div>
                         </div>
@@ -169,7 +169,7 @@
                                 Susut Berat
                             </div>
                             <div class="col-md-3">
-                                <input type="text" id="susut_berat_kh" name="susut" class="form-control myline" style="margin-bottom: 5px;float: left;" readonly>
+                                <input type="text" id="susut_berat_kh" name="susut_berat_keras" class="form-control myline" style="margin-bottom: 5px;float: left;" readonly>
                             </div>
                         </div>
                     </div>
@@ -480,6 +480,7 @@ function get_data(id,jb){
         }
     });
 }
+
 function pilih_data(id){
     if(id == 'ROLLING'){
         $('#div_kawat_merah_masuk').addClass('hidden disabled');
@@ -492,6 +493,11 @@ function pilih_data(id){
         $('#div_kawat_hitam_masuk').removeClass('hidden disabled');
         $('#div_spb_rolling').removeClass('hidden disabled');
         $('#id_jenis_barang').val('6');
+        $('#div_kawat_hitam_masuk :input').attr('disabled', false);
+        $('#div_kawat_merah_masuk :input').attr('disabled', true);
+        $('#div_data_spb :input').attr('disabled', false);
+        $('#div_data_spb_kh :input').attr('disabled', true);
+        $('#div_stok_keras :input').attr('disabled', true);
         reset_values();
         $("#id_spb_ingot").select2("val", "");
     }else if(id == 'BAKAR ULANG'){
@@ -505,6 +511,11 @@ function pilih_data(id){
         $('#div_kawat_hitam_masuk').removeClass('hidden disabled');
         $('#div_stok_keras').removeClass('hidden disabled');
         $('#id_jenis_barang').val('6');
+        $('#div_kawat_hitam_masuk :input').attr('disabled', false);
+        $('#div_kawat_merah_masuk :input').attr('disabled', true);
+        $('#div_data_spb :input').attr('disabled', true);
+        $('#div_data_spb_kh :input').attr('disabled', true);
+        $('#div_stok_keras :input').attr('disabled', false);
         reset_values();
     }else if(id == 'CUCI'){
         $('#div_spb_rolling').addClass('hidden disabled');
@@ -526,6 +537,11 @@ function pilih_data(id){
         $('#berat_bs_km').val('');
         $('#susut_jumlah_kh').val('');
         $('#susut_berat_kh').val('');
+        $('#div_kawat_hitam_masuk :input').attr('disabled', true);
+        $('#div_kawat_merah_masuk :input').attr('disabled', false);
+        $('#div_data_spb :input').attr('disabled', true);
+        $('#div_data_spb_kh :input').attr('disabled', false);
+        $('#div_stok_keras :input').attr('disabled', true);
     }
 }
 function simpanData(){

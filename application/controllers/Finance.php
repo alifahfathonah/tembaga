@@ -907,7 +907,8 @@ class Finance extends CI_Controller{
 
     function invoice(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -917,7 +918,7 @@ class Finance extends CI_Controller{
 
         $data['content']= "finance/invoice";
         $this->load->model('Model_finance');
-        $data['list_data'] = $this->Model_finance->list_invoice()->result();
+        $data['list_data'] = $this->Model_finance->list_invoice($ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -930,6 +931,7 @@ class Finance extends CI_Controller{
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
             $data['hak_akses'] = $roles;
         }
+        $data['ppn'] = $this->session->userdata('user_ppn');
         $data['group_id']  = $group_id;
         $data['judul']     = "Finance";
         $data['content']   = "finance/add_invoice";
@@ -951,8 +953,9 @@ class Finance extends CI_Controller{
 
     function get_so_list(){ 
         $id = $this->input->post('id');
+        $ppn = $this->input->post('ppn');
         $this->load->model('Model_finance');
-        $data = $this->Model_finance->get_so_list($id)->result();
+        $data = $this->Model_finance->get_so_list($id,$ppn)->result();
         $arr_so[] = "Silahkan pilih....";
         foreach ($data as $row) {
             $arr_so[$row->id] = $row->no_sales_order;
@@ -990,6 +993,7 @@ class Finance extends CI_Controller{
             'diskon'=> str_replace('.', '', $this->input->post('diskon')),
             'add_cost'=> str_replace('.', '', $this->input->post('add_cost')),
             'materai'=> str_replace('.', '', $this->input->post('materai')),
+            'nama_direktur'=> $this->input->post('nama_direktur'),
             'tanggal'=> $tgl_input,
             'tgl_jatuh_tempo'=> $this->input->post('tanggal_jatuh'),
             'id_customer'=> $this->input->post('m_customer_id'),
@@ -1102,8 +1106,11 @@ class Finance extends CI_Controller{
             }
 
             $data['total'] = $total;
-
+            if($data['header']['flag_ppn'] == 1){
             $this->load->view('finance/print_faktur', $data);
+            }else{
+            $this->load->view('finance/print_invoice', $data);
+            }
         }else{
             redirect('index.php'); 
         }

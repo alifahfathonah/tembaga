@@ -10,7 +10,7 @@ class Model_voucher_cost extends CI_Model{
                 From voucher 
                     Left Join group_cost gc On (voucher.group_cost_id = gc.id) 
                     Left Join cost On (voucher.cost_id = cost.id)
-                    LEFT JOIN m_customers mc ON (voucher.customer_id = mc.id)
+                    Left Join m_customers mc ON (voucher.customer_id = mc.id)
                     left join supplier supp on (voucher.supplier_id = supp.id)
                 Where voucher.jenis_voucher='Manual'
                 Order By voucher.no_voucher");
@@ -28,7 +28,7 @@ class Model_voucher_cost extends CI_Model{
     }
     
     function list_group_cost(){
-        $data = $this->db->query("Select * From group_cost Order By nama_group_cost");
+        $data = $this->db->query("Select * From group_cost Order By Id asc");
         return $data;
     }
 

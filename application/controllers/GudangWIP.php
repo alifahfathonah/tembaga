@@ -108,10 +108,11 @@ class GudangWIP extends CI_Controller{
                     'qty'=>(int)($this->input->post('qty_kh')!= null) ? $this->input->post('qty_kh'): $this->input->post('qty_km'),
                     'uom' => 'ROLL',
                     'berat' => (int)($this->input->post('berat_kh')!=null) ? $this->input->post('berat_kh') : $this->input->post('berat_km'),
-                    'susut' => (int)$this->input->post('susut'),
+                    'susut' => (int)$this->input->post('susut_berat_keras'),
                     'keras' => (int)$this->input->post('berat_keras'),
                     'qty_keras' => (int)$this->input->post('jml_keras'),
                     'bs' => (int)$this->input->post('bs'),
+                    'serbuk' => (int)$this->input->post('serbuk'),
                     'tali_rolling' => (int)$this->input->post('tali_rolling'),
                     'created_by'=> $user_id
                 );
