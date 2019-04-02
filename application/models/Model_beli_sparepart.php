@@ -49,6 +49,11 @@ class Model_beli_sparepart extends CI_Model{
         return $data;
     }
     
+    function bank($ppn){
+        $data = $this->db->query("select id, kode_bank, nomor_rekening from bank where ppn=".$ppn);
+        return $data;
+    }
+    
     function bank_list(){
         $data = $this->db->query("select id, kode_bank, nomor_rekening from bank");
         return $data;

@@ -12,7 +12,8 @@ class Finance extends CI_Controller{
     
     function index(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');   
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -22,7 +23,7 @@ class Finance extends CI_Controller{
 
         $data['content']= "finance/index";
         $this->load->model('Model_finance');
-        $data['list_data'] = $this->Model_finance->list_data()->result();
+        $data['list_data'] = $this->Model_finance->list_data($ppn)->result();
         $data['list_customer'] = $this->Model_finance->customer_list()->result();
 
         $this->load->view('layout', $data);
@@ -30,19 +31,22 @@ class Finance extends CI_Controller{
 
     function add(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
             $data['hak_akses'] = $roles;
         }
+        
         $data['group_id']  = $group_id;
         $data['judul']     = "Finance";
         $data['content']   = "finance/add";
         
         $this->load->model('Model_finance');
         $data['customer_list'] = $this->Model_finance->customer_list()->result();
-        $data['bank_list'] = $this->Model_finance->bank_list()->result();
+        $data['bank_list'] = $this->Model_finance->bank_list($ppn)->result();
         $this->load->view('layout', $data); 
     }
 
@@ -81,50 +85,71 @@ class Finance extends CI_Controller{
         $user_ppn  = $this->session->userdata('user_ppn');
         $tglurut = date('ymd', strtotime($this->input->post('tanggal')));
 
-        $tgl_sekarang = date('d', strtotime($this->input->post('tanggal')));
-        if ($tgl_sekarang == 01) {
-            $cek_no_sebelumnya = $this->db->query("select no_uang_masuk from f_uang_masuk where tanggal = '$tgl_input' order by id desc")->row_array();
-                $cek = $cek_no_sebelumnya['no_uang_masuk'];
-            if (empty($cek_no_sebelumnya)) {
-                $no_urut = 0;
-            } else {
-                $this->load->model('Model_finance');
-                $check = $this->Model_finance->check_urut()->row_array();
-                $no_urut = substr($check['no_uang_masuk'], 0, 4);
-            }
+        // $tgl_sekarang = date('d', strtotime($this->input->post('tanggal')));
+        // if ($tgl_sekarang == 01) {
+        //     $cek_no_sebelumnya = $this->db->query("select no_uang_masuk from f_uang_masuk where tanggal = '$tgl_input' order by id desc")->row_array();
+        //         $cek = $cek_no_sebelumnya['no_uang_masuk'];
+        //     if (empty($cek_no_sebelumnya)) {
+        //         $no_urut = 0;
+        //     } else {
+        //         $this->load->model('Model_finance');
+        //         $check = $this->Model_finance->check_urut()->row_array();
+        //         $no_urut = substr($check['no_uang_masuk'], 0, 4);
+        //     }
             
-        } else {
-           $this->load->model('Model_finance');
-            $check = $this->Model_finance->check_urut()->row_array();
-            $no_urut = substr($check['no_uang_masuk'], 0, 4);
-        }
+        // } else {
+        //    $this->load->model('Model_finance');
+        //     $check = $this->Model_finance->check_urut()->row_array();
+        //     $no_urut = substr($check['no_uang_masuk'], 0, 4);
+        // }
 
         
-        $no_urut = $no_urut + 1;
-        switch (strlen($no_urut)) {
-            case 1 : $urutan = "000".$no_urut;
-                break;
-            case 2 : $urutan = "00".$no_urut;
-                break;
-            case 3 : $urutan = "0".$no_urut;
-                break;
+        // $no_urut = $no_urut + 1;
+        // switch (strlen($no_urut)) {
+        //     case 1 : $urutan = "000".$no_urut;
+        //         break;
+        //     case 2 : $urutan = "00".$no_urut;
+        //         break;
+        //     case 3 : $urutan = "0".$no_urut;
+        //         break;
             
-            default:
-                $urutan = $no_urut;
-                break;
+        //     default:
+        //         $urutan = $no_urut;
+        //         break;
+        // }
+
+
+        // // $this->load->model('Model_m_numberings');
+        // // $code = $this->Model_m_numberings->getNumbering('UM', $tgl_input);
+        // $code = $urutan.$tglurut;
+        // echo $code;
+        $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+        if($this->input->post('jenis_id') == ('Cek' || 'Cek Mundur')){
+            if($user_ppn == 1){
+                $code = $this->Model_m_numberings->getNumbering('CM-KMP');
+            }else{
+                $code = $this->Model_m_numberings->getNumbering('CM');
+            }
+        }else{
+            if($user_ppn == 1){
+                $code = $this->Model_m_numberings->getNumbering('BM-KMP');
+            }else{
+                $code = $this->Model_m_numberings->getNumbering('BM');
+            }
         }
 
-
-        // $this->load->model('Model_m_numberings');
-        // $code = $this->Model_m_numberings->getNumbering('UM', $tgl_input);
-        $code = $urutan.$tglurut;
-        echo $code;
-        $this->db->trans_start();
+        if($user_ppn == 1){
+            $status = 1;
+        }else{
+            $status = 0;
+        }
         $data = array(
             'no_uang_masuk'=> $code,
             'm_customer_id'=> $this->input->post('customer_id'),
             'tanggal'=> $this->input->post('tanggal'),
-            'status'=> 0,
+            'status'=> $status,
+            'flag_ppn'=>$user_ppn,
             'jenis_pembayaran'=> $this->input->post('jenis_id'),
             'rekening_tujuan'=> $this->input->post('bank_id'),
             'bank_pembayaran'=> $this->input->post('bank_pengirim'),
@@ -146,6 +171,22 @@ class Finance extends CI_Controller{
                             'replace_id'=>$insert_id,
                             'status'=> 8,
             ));
+        }
+
+        if($user_ppn == 1){
+            $data = array(
+                'jenis_trx'=>0,
+                'nomor'=>$code,
+                'flag_ppn'=>$user_ppn,
+                'tanggal'=> $tgl_input,
+                'id_bank'=> $this->input->post('bank_id'),
+                'id_um'=> $insert_id,
+                'currency'=> $this->input->post('currency'),
+                'nominal'=> str_replace('.', '', $this->input->post('nominal')),
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id
+            );
+            $this->db->insert('f_kas', $data);
         }
 
         if($this->db->trans_complete()){
@@ -189,6 +230,15 @@ class Finance extends CI_Controller{
         
         header('Content-Type: application/json');
         echo json_encode($barang); 
+    }
+
+    function get_currency(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_finance');
+        $get = $this->Model_finance->get_currency($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($get); 
     }
 
     function approve_um(){
@@ -262,8 +312,20 @@ class Finance extends CI_Controller{
         $tgl_input = date('Y-m-d');
         $id = $this->input->post('header_id');
         
+        $this->load->model('Model_finance');
+        $get = $this->Model_finance->get_id_match_by_inv($id)->row_array();
+
+        //Ganti Status F_MATCH
+        $this->db->where('id', $get['id_match']);
+        $this->db->update('f_match', array( 'status' => 0 ));
+
+        //Delete Uang Masuk pada f_match_detail
+        $this->db->where('id_um', $id);
+        $this->db->delete('f_match_detail');
+
         #Update status Uang Masuk
         $data = array(
+            'flag_matching'=>0,
             'status'=> 9,
             'reject_at'=> $tanggal,
             'reject_by'=> $user_id,
@@ -810,6 +872,7 @@ class Finance extends CI_Controller{
         $loop_vc = $this->Model_finance->load_detail($id)->result();
         $loop_um = $this->Model_finance->load_detail_um($id)->result();
 
+        //Insert ke tabel Pembayaran Detail
         foreach ($loop_vc as $row) {
             $data = array(
             'id_pembayaran'=> $id,
@@ -819,6 +882,7 @@ class Finance extends CI_Controller{
             $this->db->insert('f_pembayaran_detail', $data);   
         }
 
+        //Update Status UM sudah Cair
         foreach ($loop_um as $row) {
             $data = array(
                 'status'=>1,
@@ -826,10 +890,11 @@ class Finance extends CI_Controller{
                 'approved_at'=>$tanggal_input,
                 'approved_by'=>$user_id
             );
-            $this->db->where('id',$row->um_id);
+            $this->db->where('id', $row->um_id);
             $this->db->update('f_uang_masuk', $data);   
         }
 
+        //Update Status Pembayaran jadi Approve
         $this->db->where('id',$id);
         $this->db->update('f_pembayaran', array(
             'status'=>1,
@@ -837,11 +902,18 @@ class Finance extends CI_Controller{
             'approved_by'=>$user_id
         ));
 
+        //Buat Slip Setoran
         $this->db->insert('f_slip_setoran', array(
             'id_pembayaran'=>$id,
             'nominal'=>$this->input->post('nominal_slip'),
             'created_at'=>$tanggal,
             'created_by'=>$user_id
+        ));
+
+        // Update Status Voucher
+        $this->db->where('pembayaran_id', $id);
+        $this->db->update('voucher', array(
+            'status' => 1
         ));
             
             if($this->db->trans_complete()){    
@@ -938,7 +1010,7 @@ class Finance extends CI_Controller{
         
         $this->load->model('Model_finance');
         $data['customer_list'] = $this->Model_finance->customer_list()->result();
-        $data['bank_list'] = $this->Model_finance->bank_list()->result();
+        $data['bank_list'] = $this->Model_finance->bank_list($data['ppn'])->result();
         $this->load->view('layout', $data); 
     }
 
@@ -978,10 +1050,15 @@ class Finance extends CI_Controller{
         $user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $ppn       = $this->session->userdata('user_ppn');
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('INVOICE', $tgl_input);
+        if($ppn == 1){
+            $code = $this->Model_m_numberings->getNumbering('INV-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('INVOICE', $tgl_input);
+        }
 
         $id_so = $this->input->post('sales_order_id');
         $id_sj = $this->input->post('surat_jalan_id');
@@ -1005,6 +1082,11 @@ class Finance extends CI_Controller{
         );
         $this->db->insert('f_invoice', $data);
         $id_new=$this->db->insert_id();
+
+        $this->db->where('id', $id_sj);
+        $this->db->update('t_surat_jalan', array(
+            'inv_id'=> $id_new
+        ));
 
         $this->load->model('Model_finance');
         // if($this->input->post('flag_tolling') == 1){
@@ -1063,9 +1145,10 @@ class Finance extends CI_Controller{
 
             $this->load->model('Model_finance');
             $data['header'] = $this->Model_finance->show_header_invoice($id)->row_array();
+            $id_match = $data['header']['flag_matching'];
             if($data['header']['id_retur']==0){
                 $data['detailInvoice'] = $this->Model_finance->show_detail_invoice($id)->result();
-                $data['matching'] = $this->Model_finance->show_detail_matching_um($id)->result();
+                $data['matching'] = $this->Model_finance->show_detail_matching_um($id_match)->result();
             }else{
                 $data['detailInvoice'] = $this->Model_finance->show_invoice_detail($id)->result();
             }
@@ -1095,7 +1178,8 @@ class Finance extends CI_Controller{
     function print_invoice(){
         $id = $this->uri->segment(3);
         if($id){       
-            $this->load->helper('terbilang_helper'); 
+            $this->load->helper('terbilang_helper');
+            $this->load->helper('tanggal_indo');
             $this->load->model('Model_finance');
             $data['header'] = $this->Model_finance->show_header_invoice($id)->row_array();
             $data['details'] = $this->Model_finance->show_detail_invoice($id)->result();
@@ -1115,7 +1199,7 @@ class Finance extends CI_Controller{
             redirect('index.php'); 
         }
     }
-
+/* OLD MATCHING
     function matching(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
@@ -1156,67 +1240,6 @@ class Finance extends CI_Controller{
         }else{
             redirect('index.php/Finance');
         }
-    }
-
-    function get_um(){
-        $id = $this->input->post('id');
-        $tabel = "";
-
-        $this->load->model('Model_finance');
-        $um= $this->Model_finance->get_um($id)->row_array();
-
-        header('Content-Type: application/json');
-        echo json_encode($um);
-    }
-
-    function get_invoice_list_plus(){ 
-        $this->load->model('Model_finance');
-        $data = $this->Model_finance->list_invoice_matching_plus($this->input->post('id'))->result();
-        $arr_so[] = "Silahkan pilih....";
-        foreach ($data as $row) {
-            $arr_so[$row->id] = $row->no_invoice;
-        } 
-        print form_dropdown('invoice_id', $arr_so);
-    }
-
-    function get_invoice_list_minus(){
-        $this->load->model('Model_finance');
-        $data = $this->Model_finance->list_invoice_matching_minus($this->input->post('id'))->result();
-        $arr_so[] = "Silahkan pilih....";
-        foreach ($data as $row) {
-            $arr_so[$row->id] = $row->no_invoice;
-        }
-        print form_dropdown('invoice_id', $arr_so);
-    }
-
-    function get_um_list(){ 
-        $this->load->model('Model_finance');
-        $data = $this->Model_finance->list_um_matching($this->input->post('id'))->result();
-        $arr_so[] = "Silahkan pilih....";
-        foreach ($data as $row) {
-            $arr_so[$row->id] = $row->nomor;
-        } 
-        print form_dropdown('invoice_id', $arr_so);
-    }
-
-    function get_data_invoice(){
-        $id = $this->input->post('id');
-
-        $this->load->model('Model_finance');
-        $result= $this->Model_finance->get_data_invoice($id)->row_array();
-
-        header('Content-Type: application/json');
-        echo json_encode($result);
-    }
-
-    function get_data_hutang(){
-        $id = $this->input->post('id');
-
-        $this->load->model('Model_finance');
-        $result= $this->Model_finance->get_data_hutang($id)->row_array();
-
-        header('Content-Type: application/json');
-        echo json_encode($result);
     }
 
     function add_matching(){
@@ -1293,6 +1316,489 @@ class Finance extends CI_Controller{
             }
        redirect('index.php/Finance/matching_invoice/'.$id);
     }
+*/  
+    function matching(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "finance/matching";
+        $this->load->model('Model_finance');
+        $data['list_data'] = $this->Model_finance->list_matching($ppn)->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function add_match(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['ppn'] = $this->session->userdata('user_ppn');
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Finance";
+        $data['content']   = "finance/add_match";
+        
+        $this->load->model('Model_finance');
+        $data['customer_list'] = $this->Model_finance->customer_list()->result();
+        $this->load->view('layout', $data); 
+    }
+
+    function save_match(){
+        $user_id   = $this->session->userdata('user_id');
+        $tanggal   = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $ppn       = $this->session->userdata('user_ppn');
+
+        $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+        if($ppn == 1){
+            $code = $this->Model_m_numberings->getNumbering('MTCH-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('MTCH', $tgl_input);
+        }
+        $data = array(
+            'no_matching'=>$code,
+            'tanggal'=> $tgl_input,
+            'id_customer'=> $this->input->post('m_customer_id'),
+            'flag_ppn'=> $ppn,
+            'keterangan'=> $this->input->post('remarks'),
+            'created_at'=> $tanggal,
+            'created_by'=> $user_id
+        );
+        $this->db->insert('f_match', $data);
+        $insert_id=$this->db->insert_id();
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Matching Group Berhasil dibuat!');
+            redirect(base_url('index.php/Finance/matching_invoice/'.$insert_id));
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Matching Group gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/Finance');  
+        }            
+    }
+
+    function save_matching(){
+        $user_id   = $this->session->userdata('user_id');
+        $tanggal   = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+
+        $this->db->trans_start();
+
+        if($this->input->post('total_invoice') == $this->input->post('total_nominal')){
+            $status = 1;
+        }else{
+            $status = 0;
+        }
+
+        $this->db->where('id',$this->input->post('id'));
+        $this->db->update('f_match', array(
+            'tanggal'=>$tgl_input,
+            'status'=>$status,
+            'modified_at'=>$tanggal,
+            'modified_by'=>$user_id
+        ));
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Matching Group Berhasil disimpan!');
+            redirect('index.php/Finance/matching');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Matching Group gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/Finance');  
+        }  
+    }
+
+    function matching_invoice(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');
+            $ppn         = $this->session->userdata('user_ppn');
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Finance";
+            $data['content']   = "finance/matching_invoice";
+
+            $this->load->model('Model_finance');
+            $data['header'] = $this->Model_finance->matching_header($id)->row_array();
+            // $data['details_matching'] = $this->Model_finance->load_matching_invoice($id)->result();
+            $this->load->view('layout', $data);
+        }else{
+            redirect('index.php/Finance');
+        }
+    }
+
+    function load_list_invoice(){
+        $id = $this->input->post('id');
+        $ppn = $this->session->userdata('user_ppn');
+
+        $tabel = "";
+        $total_invoice = 0;
+        $no    = 1;
+        $this->load->model('Model_finance');
+        $myDetail = $this->Model_finance->load_invoice_full($id,$ppn)->result();
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+                if($row->jenis_trx == 0){
+                    $tabel .= '<td style="background-color: green; color: white;"><i class="fa fa-arrow-circle-up"></i></td>';
+                    $total_invoice += $row->total; 
+                }else{
+                    $tabel .= '<td style="background-color: red; color: white;"><i class="fa fa-arrow-circle-down"></i></td>';
+                    $total_invoice += -$row->total;
+                }
+            $tabel .= '<td>'.$row->no_invoice.'</td>';
+            $tabel .= '<td style="text-align:right;">'.number_format($row->total,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="input_inv('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addInv"><i class="fa fa-plus"></i> Tambah </a></td>';
+
+            $no++;
+        }
+        $tabel .= '<tr>';
+        $tabel .= '<td style="text-align:right;" colspan="3"><strong>Total Harga </strong></td>';
+        $tabel .= '<td style="text-align:right;">';
+        $tabel .= '<strong>'.number_format($total_invoice,0,',','.').'</strong>';
+        $tabel .= '</td>';
+        $tabel .= '<td></td>';
+        $tabel .= '</tr>';
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function load_data_invoice(){
+        $id = $this->input->post('id');
+
+        $tabel = "";
+        $total_invoice = 0;
+        $no    = 1;
+        $this->load->model('Model_finance');
+        $myDetail = $this->Model_finance->load_invoice_match($id)->result();
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+                if($row->jenis_trx == 0){
+                    $tabel .= '<td style="background-color: green; color: white;"><i class="fa fa-arrow-circle-up"></i></td>';
+                    $total_invoice += $row->total; 
+                }else{
+                    $tabel .= '<td style="background-color: red; color: white;"><i class="fa fa-arrow-circle-down"></i></td>';
+                    $total_invoice += -$row->total;
+                }
+            $tabel .= '<td>'.$row->no_invoice.'</td>';
+            $tabel .= '<td style="text-align:right;">'.number_format($row->total,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle blue" onclick="view_inv('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-floppy-o"></i> View </a>';
+            $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle red" onclick="delInv('.$row->id.','.$row->id_inv.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-trash"></i> Delete </a></td>';
+
+            $no++;
+        }
+        $tabel .= '<tr>';
+        $tabel .= '<td style="text-align:right;" colspan="3"><strong>Total Harga </strong></td>';
+        $tabel .= '<td style="text-align:right;">';
+        $tabel .= '<strong>'.number_format($total_invoice,0,',','.').'</strong>';
+        $tabel .= '<input type="hidden" name="total_invoice" value="'.$total_invoice.'">';
+        $tabel .= '</td>';
+        $tabel .= '<td></td>';
+        $tabel .= '</tr>';
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function add_inv_match(){
+        $user_id   = $this->session->userdata('user_id');
+        $return_data = array();
+        $tanggal   = date('Y-m-d h:m:s');
+        
+        $this->db->where('id',$this->input->post('invoice_id'));
+        $this->db->update('f_invoice', array(
+            'flag_matching'=>$this->input->post('id_modal')
+        ));
+
+        $data = array(
+            'id_match'=>$this->input->post('id_modal'),
+            'id_um'=>0,
+            'id_inv'=>$this->input->post('invoice_id'),
+            'biaya1'=>str_replace('.', '',$this->input->post('b_1')),
+            'ket1'=>$this->input->post('k_1'),
+            'biaya2'=>str_replace('.', '',$this->input->post('b_2')),
+            'ket2'=>$this->input->post('k_2')
+        );
+
+        if($this->db->insert('f_match_detail', $data)){
+            $this->session->set_flashdata('flash_msg', 'Matching sudah diupdate');    
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat penginputan Data Matching, silahkan coba kembali!');
+        }
+
+        redirect('index.php/Finance/matching_invoice/'.$this->input->post('id_modal'));
+    }
+
+    function save_inv_match(){
+        $user_id   = $this->session->userdata('user_id');
+        $return_data = array();
+        $tanggal   = date('Y-m-d h:m:s');
+        
+        $data = array(
+            'biaya1'=>str_replace('.', '',$this->input->post('b_1')),
+            'ket1'=>$this->input->post('k_1'),
+            'biaya2'=>str_replace('.', '',$this->input->post('b_2')),
+            'ket2'=>$this->input->post('k_2')
+        );
+
+        $this->db->where('id', $this->input->post('invoice_id'));
+        if($this->db->update('f_match_detail', $data)){
+            $this->session->set_flashdata('flash_msg', 'Matching sudah diupdate');    
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat penginputan Data Matching, silahkan coba kembali!');
+        }
+
+        redirect('index.php/Finance/matching_invoice/'.$this->input->post('id_modal'));
+    }
+
+    function view_data_invoice(){
+        $id = $this->input->post('id');
+
+        $this->load->model('Model_finance');
+        $result= $this->Model_finance->view_invoice_match($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
+
+    function del_inv_match(){
+        $user_id   = $this->session->userdata('user_id');
+        $return_data = array();
+        $tanggal   = date('Y-m-d h:m:s');
+        
+        $this->db->where('id',$this->input->post('id_inv'));
+        $this->db->update('f_invoice', array(
+            'flag_matching'=>0
+        ));
+
+        $this->db->where('id', $this->input->post('id'));
+        if($this->db->delete('f_match_detail')){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function load_list_um(){
+        $id = $this->input->post('id');
+        $ppn = $this->session->userdata('user_ppn');
+
+        $tabel = "";
+        $total_nominal = 0;
+        $no    = 1;
+        $this->load->model('Model_finance');
+        $myDetail = $this->Model_finance->load_um_full($id,$ppn)->result();
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->no_uang_masuk.'</td>';
+            $tabel .= '<td>'.$row->jenis_pembayaran.'</td>';
+            $tabel .= '<td>'.$row->bank_pembayaran.'</td>';
+            $tabel .= '<td>';
+                if($row->status==0){
+                    $tabel .= '<div style="background-color:darkkhaki; padding:3px">Belum Cair</div>';
+                }else if($row->status==1){
+                    $tabel .= '<div style="background-color:green; padding:3px; color:white">Sudah Cair</div>';
+                }else if($row->status==2){
+                    $tabel .= '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
+                }else if($row->status==9){
+                    $tabel .= '<div style="background-color:red; color:#fff; padding:3px">Gagal Cair</div>';
+                }else if($row->status==8){
+                    $tabel .= '<div style="background-color:orange; color:#fff; padding:3px">Sudah Diganti</div>';
+                }
+            $tabel .= '</td>';
+            $tabel .= '<td>'.$row->currency.'</td>';
+            $tabel .= '<td style="text-align:right;">'.number_format($row->nominal,0,',', '.').'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="addUM('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addUM"><i class="fa fa-plus"></i> Tambah </a></td>';
+            $tabel .= '</tr>';            
+            $no++;
+            $total_nominal += $row->nominal;
+        }
+        $tabel .= '<tr>';
+        $tabel .= '<td style="text-align:right;" colspan="6"><strong>Total Harga </strong></td>';
+        $tabel .= '<td style="text-align:right;">';
+        $tabel .= '<strong>'.number_format($total_nominal,0,',','.').'</strong>';
+        $tabel .= '</td>';
+        $tabel .= '<td></td>';
+        $tabel .= '</tr>';
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function load_data_um(){
+        $id = $this->input->post('id');
+
+        $tabel = "";
+        $total_nominal = 0;
+        $no    = 1;
+        $this->load->model('Model_finance');
+        $myDetail = $this->Model_finance->load_um_match($id)->result();
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->no_uang_masuk.'</td>';
+            $tabel .= '<td>'.$row->jenis_pembayaran.'</td>';
+            $tabel .= '<td>'.$row->bank_pembayaran.'</td>';
+            $tabel .= '<td>';
+                if($row->status==0){
+                    $tabel .= '<div style="background-color:darkkhaki; padding:3px">Belum Cair</div>';
+                }else if($row->status==1){
+                    $tabel .= '<div style="background-color:green; padding:3px; color:white">Sudah Cair</div>';
+                }else if($row->status==2){
+                    $tabel .= '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
+                }else if($row->status==9){
+                    $tabel .= '<div style="background-color:red; color:#fff; padding:3px">Gagal Cair</div>';
+                }else if($row->status==8){
+                    $tabel .= '<div style="background-color:orange; color:#fff; padding:3px">Sudah Diganti</div>';
+                }
+            $tabel .= '</td>';
+            $tabel .= '<td>'.$row->currency.'</td>';
+            $tabel .= '<td style="text-align:right;">'.number_format($row->nominal,0,',', '.').'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle red" onclick="delUM('.$row->id.','.$row->id_um.');" style="margin-top:2px; margin-bottom:2px;" id="addUM"><i class="fa fa-trash"></i> Delete </a></td>';
+            $tabel .= '</tr>';            
+            $no++;
+            $total_nominal += $row->nominal;
+        }
+        $tabel .= '<tr>';
+        $tabel .= '<td style="text-align:right;" colspan="6"><strong>Total Harga </strong></td>';
+        $tabel .= '<td style="text-align:right;">';
+        $tabel .= '<strong>'.number_format($total_nominal,0,',','.').'</strong>';
+        $tabel .= '<input type="hidden" name="total_nominal" value="'.$total_nominal.'">';
+        $tabel .= '</td>';
+        $tabel .= '<td></td>';
+        $tabel .= '</tr>';
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function add_um_match(){
+        $user_id   = $this->session->userdata('user_id');
+        $return_data = array();
+        $tanggal   = date('Y-m-d h:m:s');
+        
+        $this->db->where('id',$this->input->post('id_um'));
+        $this->db->update('f_uang_masuk', array(
+            'flag_matching'=>$this->input->post('id')
+        ));
+
+        $data = array(
+            'id_match'=>$this->input->post('id'),
+            'id_um'=>$this->input->post('id_um'),
+            'id_inv'=>0
+        );
+
+        if($this->db->insert('f_match_detail', $data)){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function del_um_match(){
+        $user_id   = $this->session->userdata('user_id');
+        $return_data = array();
+        $tanggal   = date('Y-m-d h:m:s');
+        
+        $this->db->where('id',$this->input->post('id_um'));
+        $this->db->update('f_uang_masuk', array(
+            'flag_matching'=>0
+        ));
+
+        $this->db->where('id', $this->input->post('id'));
+        if($this->db->delete('f_match_detail')){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function get_um(){
+        $id = $this->input->post('id');
+        $tabel = "";
+
+        $this->load->model('Model_finance');
+        $um= $this->Model_finance->get_um($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($um);
+    }
+
+    function get_invoice_list_plus(){ 
+        $this->load->model('Model_finance');
+        $data = $this->Model_finance->list_invoice_matching_plus($this->input->post('id'))->result();
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->no_invoice;
+        } 
+        print form_dropdown('invoice_id', $arr_so);
+    }
+
+    function get_invoice_list_minus(){
+        $this->load->model('Model_finance');
+        $data = $this->Model_finance->list_invoice_matching_minus($this->input->post('id'))->result();
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->no_invoice;
+        }
+        print form_dropdown('invoice_id', $arr_so);
+    }
+
+    function get_um_list(){ 
+        $this->load->model('Model_finance');
+        $data = $this->Model_finance->list_um_matching($this->input->post('id'))->result();
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->nomor;
+        } 
+        print form_dropdown('invoice_id', $arr_so);
+    }
+
+    function get_data_invoice(){
+        $id = $this->input->post('id');
+
+        $this->load->model('Model_finance');
+        $result= $this->Model_finance->get_data_invoice($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
+
+    function get_data_hutang(){
+        $id = $this->input->post('id');
+
+        $this->load->model('Model_finance');
+        $result= $this->Model_finance->get_data_hutang($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
 
     function filter_cek(){
         $module_name = $this->uri->segment(1);
@@ -1320,7 +1826,8 @@ class Finance extends CI_Controller{
 
     function list_kas(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $ppn    = $this->session->userdata('user_ppn');
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -1330,14 +1837,16 @@ class Finance extends CI_Controller{
 
         $data['content']= "finance/list_kas";
         $this->load->model('Model_finance');
-        $data['list_data'] = $this->Model_finance->list_kas()->result();
+        $data['list_data'] = $this->Model_finance->list_kas($ppn)->result();
 
         $this->load->view('layout', $data);
     }
 
     function add_kas(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -1349,37 +1858,81 @@ class Finance extends CI_Controller{
         
         $this->load->model('Model_finance');
         $data['um_list'] = $this->Model_finance->um_list_kas()->result();
-        $data['bank_list'] = $this->Model_finance->bank_list()->result();
+        $data['bank_list'] = $this->Model_finance->bank_list($ppn)->result();
         $this->load->view('layout', $data); 
     }
 
     function save_kas(){
         $user_id   = $this->session->userdata('user_id');
+        $user_ppn  = $this->session->userdata('user_ppn');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
 
+        $this->load->model('Model_m_numberings');
+
+        if($user_ppn==1){
+            if($this->input->post('bank_id')==0){
+                $num = 'KM-KMP';
+            }else{
+                $num = 'BM-KMP';
+            }
+        }else{
+            if($this->input->post('bank_id')==0){
+                $num = 'KM';
+            }else{
+                $num = 'BM';
+            }
+        }
+
+        $code = $this->Model_m_numberings->getNumbering($num);
+
+        if($this->input->post('bank_id')==0){
+            $jenis = 'Cash';
+        }else{
+            $jenis = 'Setor Tunai';
+        }
+
+        $data_um = array(
+            'no_uang_masuk'=> $code,
+            'm_customer_id'=> 0,
+            'tanggal'=> $this->input->post('tanggal'),
+            'status'=> 1,
+            'flag_ppn'=> $user_ppn,
+            'jenis_pembayaran'=> $jenis,
+            'rekening_tujuan'=> $this->input->post('bank_id'),
+            'currency'=> 'IDR',
+            'nominal'=> str_replace('.', '', $this->input->post('nominal')),
+            'keterangan'=> $this->input->post('remarks'),
+            'created_at'=> $tanggal,
+            'created_by'=> $user_id
+        );
+        $this->db->insert('f_uang_masuk', $data_um);
+        $um_id = $this->db->insert_id();
+
         $data = array(
             'jenis_trx'=>0,
+            'flag_ppn'=>$user_ppn,
+            'nomor'=> $code,
             'tanggal'=> $tgl_input,
             'id_bank'=> $this->input->post('bank_id'),
-            'id_um'=> $this->input->post('um_id'),
+            'id_um'=> $um_id,
             'currency'=> $this->input->post('currency'),
-            'nominal'=> $this->input->post('nominal'),
+            'nominal'=> str_replace('.', '',$this->input->post('nominal')),
             'keterangan'=> $this->input->post('remarks'),
             'created_at'=> $tanggal,
             'created_by'=> $user_id
         );
         $this->db->insert('f_kas', $data);
 
-        $this->db->where('id', $this->input->post('um_id'));
-        $this->db->update('f_uang_masuk', array(
-            'status'=>1,
-            'flag_matching'=>2,
-            'approved_at'=>$tanggal,
-            'approved_by'=>$user_id
-        ));
+        // $this->db->where('id', $this->input->post('um_id'));
+        // $this->db->update('f_uang_masuk', array(
+        //     'status'=>1,
+        //     'flag_matching'=>2,
+        //     'approved_at'=>$tanggal,
+        //     'approved_by'=>$user_id
+        // ));
 
         if($this->db->trans_complete()){
             $this->session->set_flashdata('flash_msg', 'Uang Kas Berhasil disimpan!');
@@ -1415,7 +1968,9 @@ class Finance extends CI_Controller{
 
     function add_slip_setoran(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -1427,7 +1982,7 @@ class Finance extends CI_Controller{
         
         $this->load->model('Model_finance');
         $data['data_slip'] = $this->Model_finance->slip_setoran_list()->result();
-        $data['bank_list'] = $this->Model_finance->bank_list()->result();
+        $data['bank_list'] = $this->Model_finance->bank_list($ppn)->result();
         $this->load->view('layout', $data); 
     }
 
@@ -1438,9 +1993,32 @@ class Finance extends CI_Controller{
 
         $this->db->trans_start();
 
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('BM');
+
+        $data_um = array(
+            'no_uang_masuk'=> $code,
+            'm_customer_id'=> 0,
+            'tanggal'=> $this->input->post('tanggal'),
+            'status'=> 1,
+            'flag_ppn'=> 0,
+            'jenis_pembayaran'=> 'Setor Tunai',
+            'rekening_tujuan'=> $this->input->post('bank_id'),
+            'currency'=> 'IDR',
+            'nominal'=> str_replace('.', '', $this->input->post('nominal')),
+            'keterangan'=> 'Slip Setoran | '.$this->input->post('remarks'),
+            'created_at'=> $tanggal,
+            'created_by'=> $user_id
+        );
+        $this->db->insert('f_uang_masuk', $data_um);
+        $um_id = $this->db->insert_id();
+
         $data = array(
             'jenis_trx'=>0,
+            'nomor'=> $code,
+            'flag_ppn'=> 0,
             'tanggal'=> $tgl_input,
+            'id_um' => $um_id,
             'id_bank'=> $this->input->post('bank_id'),
             'id_slip_setoran'=> $this->input->post('slip_id'),
             'currency'=> 'IDR',

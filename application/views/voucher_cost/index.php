@@ -73,6 +73,7 @@
                                         data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                         <option value=""></option>
                                     </select>
+                                    <input type="text" id="nm_cost" name="nm_cost" style="margin-bottom:5px" class="form-control myline hidden" disabled="disabled" placeholder="Nama Cost" onkeyup="this.value = this.value.toUpperCase()">
                                 </div>
                             </div>
                             <div class="row">
@@ -83,6 +84,53 @@
                                     <textarea id="remarks" name="remarks" rows="3"
                                         class="form-control myline" style="margin-bottom:5px" 
                                         onkeyup="this.value = this.value.toUpperCase()"></textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Nomor Giro
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="nomor_giro" name="nomor_giro" 
+                                        class="form-control myline" style="margin-bottom:5px">   
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Bank
+                                </div>
+                                <div class="col-md-7">
+                                    <select id="bank_id" name="bank_id" class="form-control myline select2me"
+                                    data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                    <option value=""></option>
+                                    <option value="0">KAS</option>
+                                    <?php
+                                        foreach ($bank_list as $row){
+                                            echo '<option value="'.$row->id.'">'.$row->kode_bank.' ('.$row->nomor_rekening.')</option>';
+                                        }
+                                    ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Tanggal Jatuh Tempo
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="tanggal_jatuh" name="tanggal_jatuh" 
+                                        class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                        value="<?php echo date('Y-m-d'); ?>">
+                                </div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Kurs
+                                </div>
+                                <div class="col-md-7">
+                                    <select id="currency" name="currency" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                    <option value="IDR">IDR</option>
+                                    <option value="USD">USD</option>
+                                    </select>         
                                 </div>
                             </div>
                             <div class="row">
@@ -137,7 +185,7 @@
                     <th>Nama Group Cost</th>   
                     <th>Katerangan</th>
                     <th>Amount (Rp)</th> 
-                    <th>Actions</th>
+                    <!-- <th>Actions</th> -->
                 </tr>
                 </thead>
                 <tbody>
@@ -154,7 +202,7 @@
                         <td><?php echo $data->nama_group_cost; ?></td>
                         <td><?php echo $data->keterangan; ?></td>
                         <td style="text-align:right"><?php echo number_format($data->amount,0,',','.'); ?></td>
-                        <td style="text-align:center">                             
+                        <!-- <td style="text-align:center">                             
                             <?php 
                                 if( ($group_id==1)||($hak_akses['delete']==1) ){
                             ?>
@@ -162,7 +210,7 @@
                                class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus data ini?');">
                                 <i class="fa fa-trash-o"></i> Hapus </a>
                             <?php }?>
-                        </td>
+                        </td> -->
                     </tr>
                     <?php
                         }
@@ -235,14 +283,19 @@ function simpandata(){
 };
 
 function get_cost(id){   
-    if (id == 0) {
+    if (id == 3) {
         $('#cost_id').attr('disabled','disabled');
+        $('#cost_id').addClass('hidden');
+        $('#nm_cost').attr('disabled',false);
+        $('#nm_cost').removeClass('hidden');
     } else {
         $('#cost_id').val('');
         $('#cost_id').removeAttr('disabled');
+        $('#cost_id').removeClass('hidden');
+        $('#nm_cost').attr('disabled','disabled');
+        $('#nm_cost').addClass('hidden');
         $.ajax({
             url: "<?php echo base_url('index.php/VoucherCost/get_cost_list'); ?>",
-            async: false,
             type: "POST",
             data: "id="+id,
             dataType: "html",
@@ -264,6 +317,16 @@ $(function(){
         dateFormat: 'dd-mm-yy'
     }); 
     
+    $("#tanggal_jatuh").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yy-mm-dd'
+    });
+
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });
 </script>         

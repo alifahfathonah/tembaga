@@ -149,8 +149,16 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
+    // function list_item_sj_fg($soid){
+    //     $data = $this->db->query("select tgf.id, tgf.no_packing, jb.jenis_barang, jb.uom, jb.ukuran from t_sales_order tso
+    //             left join t_gudang_fg tgf on tgf.t_spb_fg_id = tso.no_spb
+    //             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+    //             where tso.so_id = ".$soid." and flag_taken = 0");
+    //     return $data;
+    // }
+
     function list_item_sj_fg($soid){
-        $data = $this->db->query("select tgf.id, tgf.no_packing, jb.jenis_barang, jb.uom, jb.ukuran from t_sales_order tso
+        $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.kode, jb.uom, jb.ukuran from t_sales_order tso
                 left join t_gudang_fg tgf on tgf.t_spb_fg_id = tso.no_spb
                 left join jenis_barang jb on jb.id = tgf.jenis_barang_id
                 where tso.so_id = ".$soid." and flag_taken = 0");

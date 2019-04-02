@@ -31,7 +31,14 @@ class Model_m_numberings extends CI_Model{
                     $date =date('Y-m-d');
                 }
                 $prefix .= date('Ym', strtotime($date));
-            }          
+            }else if($MNumbers['date_info']==2){
+                if($date != null || $date !=""){
+                    $date = $date;
+                }else{              
+                    $date =date('Y-m-d');
+                }
+                $prefix .= date('Y', strtotime($date));
+            }
             $padding = $MNumbers['padding'];            
 
             //Cek Prefix            

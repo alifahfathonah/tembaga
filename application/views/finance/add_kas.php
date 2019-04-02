@@ -28,18 +28,34 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
+                            Nominal <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nominal" name="nominal" class="form-control myline" style="margin-bottom:5px;" placeholder="Nominal" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Pilih Bank Tujuan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <select id="bank_id" name="bank_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value=""></option>
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_currency(this.value);">
+                                <option value="0">Masuk ke Kas</option>
                                 <?php
                                     foreach ($bank_list as $row){
                                         echo '<option value="'.$row->id.'">'.$row->kode_bank.' ('.$row->nomor_rekening.')'.'</option>';
                                     }
                                 ?>
                             </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Currency <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="currency" name="currency" class="form-control myline" style="margin-bottom:5px;" placeholder="Nominal" value="IDR" readonly="readonly">
                         </div>
                     </div>
                     <div class="row">
@@ -83,7 +99,7 @@
                     </div>
                 </div>
                 <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-5">
+                <!-- <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
                             Pilih Uang Masuk <font color="#f00">*</font>
@@ -149,7 +165,7 @@
                             <input type="hidden" id="nominal" name="nominal">
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </form>
         <?php
@@ -165,8 +181,37 @@
     </div>
 </div> 
 <script>
+function myCurrency(evt) {
+    var charCode = (evt.which) ? evt.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
+        return false;
+    return true;
+}
+
+function getComa(value, id){
+    angka = value.toString().replace(/\./g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    hitungSubTotal();
+}
+
 function numberWithCommas(x) {
      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+function get_currency(id){
+    if(id > 0){
+        $.ajax({
+            url: "<?php echo base_url('index.php/Finance/get_currency'); ?>",
+            type: "POST",
+            data: "id="+id,
+            dataType: "json",
+            success: function(result) {
+                $('#currency').val(result['currency']);
+            }
+        });
+    }else{
+        $('#currency').val('IDR');
+    }
 }
 
 function get_data_um(id){
@@ -197,9 +242,9 @@ function simpanData(){
     }else if($.trim($("#bank_id").val()) == ""){
         $('#message').html("Bank Tujuan harus dipilih!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#um_id").val()) == ""){
-        $('#message').html("Uang Masuk harus dipilih, tidak boleh kosong!");
-        $('.alert-danger').show(); 
+    // }else if($.trim($("#um_id").val()) == ""){
+    //     $('#message').html("Uang Masuk harus dipilih, tidak boleh kosong!");
+    //     $('.alert-danger').show(); 
     }else{    
         $('#formku').submit(); 
     };

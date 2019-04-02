@@ -433,7 +433,7 @@ class BeliSparePart extends CI_Controller{
         $data['content']= "beli_spare_part/po_list";
         $this->load->model('Model_beli_sparepart');
         $data['list_data'] = $this->Model_beli_sparepart->po_list($user_ppn)->result();
-        $data['bank_list'] = $this->Model_beli_sparepart->bank_list()->result();
+        $data['bank_list'] = $this->Model_beli_sparepart->bank($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -758,6 +758,7 @@ class BeliSparePart extends CI_Controller{
     }
     
     function save_voucher_pembayaran(){
+        $ppn = $this->session->userdata('user_ppn');
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
@@ -772,12 +773,18 @@ class BeliSparePart extends CI_Controller{
         
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('VSP', $tgl_input); 
+        if($ppn==1){
+            $code = $this->Model_m_numberings->getNumbering('VSP-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('VSP', $tgl_input); 
+        }
+
         if($code){ 
             $this->db->insert('voucher', array(
                 'no_voucher'=>$code,
                 'tanggal'=>$tgl_input,
                 'jenis_voucher'=>$jenis_voucher,
+                'flag_ppn'=>$ppn,
                 'status'=>1,
                 'po_id'=>$this->input->post('id'),
                 'supplier_id'=>$this->input->post('supplier_id'),
@@ -789,6 +796,7 @@ class BeliSparePart extends CI_Controller{
                 'modified'=> $tanggal,
                 'modified_by'=> $user_id
             ));
+            $id_vc = $this->db->insert_id();
             
             $this->db->where('id', $this->input->post('id'));
             if($jenis_voucher=='Pelunasan'){
@@ -797,12 +805,31 @@ class BeliSparePart extends CI_Controller{
                 $this->db->update('po', array('flag_dp'=>1));
             }
 
+            if($this->input->post('bank_id')==0){
+                if($this->input->post('ppn')==0){
+                    $num = 'KK';
+                }else{
+                    $num = 'KK-KMP';
+                }
+            }else{
+                if($this->input->post('ppn')==0){
+                    $num = 'BK';
+                }else{
+                    $num = 'BK-KMP';
+                }
+            }
+
+            $code_um = $this->Model_m_numberings->getNumbering($num);
+
             $this->db->insert('f_kas', array(
                 'jenis_trx'=>1,
+                'nomor'=>$code_um,
+                'flag_ppn'=>$ppn,
                 'tanggal'=>$tgl_input,
                 'tgl_jatuh_tempo'=>$this->input->post('tanggal_jatuh'),
                 'no_giro'=>$this->input->post('nomor_giro'),
                 'id_bank'=>$this->input->post('bank_id'),
+                'id_vc'=>$id_vc,
                 'currency'=>$this->input->post('currency'),
                 'nominal'=>str_replace('.', '', $amount),
                 'created_at'=>$tanggal,
@@ -810,7 +837,7 @@ class BeliSparePart extends CI_Controller{
             ));
             
             if($this->db->trans_complete()){    
-                $this->session->set_flashdata('flash_msg', 'Voucher pembayaran spare part berhasil di-create dengan nomor : '.$code);                 
+                $this->session->set_flashdata('flash_msg', 'Voucher pembayaran spare part berhasil di-create dengan nomor : '.$code);
             }else{
                 $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create voucher pembayaran spare part, silahkan coba kembali!');
             }

@@ -106,6 +106,17 @@
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View SJ &nbsp; </a>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Matching<font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_sj" name="no_sj" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px;" 
+                                value="<?php echo $header['no_matching']; ?>">
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/matching_invoice/<?php echo $header['flag_matching']; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View Matching &nbsp; </a>
+                        </div>
+                    </div>
                 <?php } else { ?>
                     <div class="row">
                         <div class="col-md-4">
@@ -258,7 +269,7 @@
                                         </tr>
                                         <tr>
                                             <td>Biaya Tambahan</td>
-                                            <td>(<i class="fa fa-plus"></i>) <?=number_format($header['add_cost'],0,',','.');?></td>
+                                            <td>(<i class="fa fa-minus"></i>) <?=number_format($header['add_cost'],0,',','.');?></td>
                                         </tr>
                                         <tr>
                                             <td>Materai</td>
@@ -270,7 +281,7 @@
                                         </tr>
                                         <?php 
                                         $total_bersih = 0;
-                                        $total_bersih = $total_all - $header['diskon'] + $header['add_cost'] + $header['materai'] + $ppn;
+                                        $total_bersih = $total_all - $header['diskon'] - $header['add_cost'] + $header['materai'] + $ppn;
                                         ?>
                                         <tr>
                                             <td style="text-align: right;"><strong>Total Bersih</strong></td>
@@ -297,7 +308,6 @@
                                             <th>Rekening Pembayaran /<br>Nomor Cek</th>
                                             <th>Currency</th>
                                             <th>Nominal</th>
-                                            <th>Yang Digunakan</th>
                                             <th>Keterangan</th>
                                         </thead>
                                         <tbody>
@@ -313,15 +323,14 @@
                                                 echo '<td>'.$row->rekening_pembayaran.$row->nomor_cek.'</td>';
                                                 echo '<td>'.$row->currency.'</td>';
                                                 echo '<td>'.number_format($row->nominal,0,',','.').'</td>';
-                                                echo '<td>'.number_format($row->paid,0,',','.').'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
                                                 echo '</tr>';
                                                 $no++;
-                                                $total_all += $row->paid;
+                                                $total_all += $row->nominal;
                                             }
                                         ?>
                                         <tr>
-                                            <td colspan="7" style="text-align: right; font-weight: bold;">Total</td>
+                                            <td colspan="6" style="text-align: right; font-weight: bold;">Total</td>
                                             <td style="background-color: green; color: white;"><?php echo number_format($total_all,0,',','.');?></td>
                                             <td></td>
                                         </tr>

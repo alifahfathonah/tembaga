@@ -158,18 +158,17 @@ class R_SuratJalan extends CI_Controller{
                     'sj_resmi_id' => $sjr_id,
                     'po_detail_id' => $row->po_detail_id,
                     'jenis_barang_id' => $row->jenis_barang_id,
-<<<<<<< HEAD:application/controllers/SuratJalan.php
-                    'bruto' => $row->bruto_tsjd,
-                    'netto' => $row->netto_tsjd,
-                    'no_packing' => $row->no_packing,
-                    'line_remarks' => $row->line_remarks
-=======
+// <<<<<<< HEAD:application/controllers/SuratJalan.php
+//                     'bruto' => $row->bruto_tsjd,
+//                     'netto' => $row->netto_tsjd,
+//                     'no_packing' => $row->no_packing,
+//                     'line_remarks' => $row->line_remarks
+// =======
                     'bruto' => $row->bruto,
                     'netto' => $row->netto,
                     'no_packing' => $row->no_packing,
                     'nomor_bobbin' => $row->nomor_bobbin,
                     'line_remarks' => $row->keterangan
->>>>>>> f7a2b833fc5dc3f37f3196a2c802da8928a61d62:application/controllers/R_SuratJalan.php
                 );
                 $this->db->insert('r_t_surat_jalan_detail', $detail);
             }

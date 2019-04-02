@@ -82,13 +82,13 @@ class Model_beli_fg extends CI_Model
                     po.no_po, 
                     spl.nama_supplier,
                     usr.realname As penimbang,
-                    Coalesce(po.ppn,0) As flag_ppn,
+                    Coalesce(po.ppn,".$user_ppn.") As flag_ppn,
                 (Select count(dtbjd.id)As jumlah_item From dtbj_detail dtbjd Where dtbjd.dtbj_id = dtbj.id)As jumlah_item
                 From dtbj
                     Left Join po On dtbj.po_id > 0 and po.id = dtbj.po_id
                     Left Join supplier spl On (po.supplier_id = spl.id) or (dtbj.supplier_id = spl.id) 
                     Left Join users usr On (dtbj.created_by = usr.id) 
-                Where po.ppn = ".$user_ppn."
+                Where COALESCE(po.ppn,".$user_ppn.") =".$user_ppn."
                 Order By dtbj.id Desc");
 		return $data;
 	}

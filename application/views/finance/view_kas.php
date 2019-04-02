@@ -159,7 +159,7 @@
                                             echo '<td>'.$header['bank_pembayaran'].'</td>';
                                             echo '<td>'.$header['nomor'].'</td>';
                                             echo '<td>'.$header['nama_customer'].'</td>';
-                                            echo '<td>'.$header['keterangan'].'</td>';
+                                            echo '<td>'.$header['ket_v'].'</td>';
                                             echo '</tr>';
                                         ?>
                                         </tbody>
@@ -193,6 +193,8 @@
                                             echo '<th>Nama Customer</th>';
                                         }else if(!empty($header['nama_supplier'])){
                                             echo '<th>Nama Supplier</th>';
+                                        }else{
+                                            echo '<th>Nama Cost</th>';
                                         }?>
                                             <th>Keterangan</th>
                                         </thead>
@@ -200,10 +202,10 @@
                                         <?php
                                             echo '<tr>';
                                             echo '<td style="text-align:center">'.$header['no_voucher'].'</td>';
-                                            echo '<td>'.$header['jenis_barang'].'</td>';
+                                            echo '<td>'.$header['jenis_voucher'].'</td>';
                                             echo '<td>'.$header['no_po'].'</td>';
-                                            echo '<td>'.$header['nama_customer'].$header['nama_supplier'].'</td>';
-                                            echo '<td>'.$header['keterangan'].'</td>';
+                                            echo '<td>'.$header['nama_customer'].$header['nama_supplier'].$header['nm_cost'].'</td>';
+                                            echo '<td>'.$header['ket_v'].'</td>';
                                             echo '</tr>';
                                         ?>
                                         </tbody>

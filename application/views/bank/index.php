@@ -31,7 +31,7 @@
                               id="formku">                            
                             <div class="row">
                                 <div class="col-md-5">
-                                    Kode Bank <font color="#f00">*</font>
+                                    Kode Bank
                                 </div>
                                 <div class="col-md-7">
                                     <input type="text" id="kode_bank" name="kode_bank" 
@@ -50,7 +50,60 @@
                                         class="form-control myline" style="margin-bottom:5px" 
                                         onkeyup="this.value = this.value.toUpperCase()">
                                 </div>
-                            </div>                                
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Nomor Rekening <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="no_rek" name="no_rek" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeyup="this.value = this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Atas Nama A/N
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="an" name="an" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeyup="this.value = this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Currency <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <select id="currency" name="currency" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                    <option value=""></option>
+                                    <option value="IDR">IDR</option>
+                                    <option value="USD">USD</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Kantor Cabang
+                                </div>
+                                <div class="col-md-7">
+                                    <textarea id="kc" name="kc" rows="2" onkeyup="this.value = this.value.toUpperCase()"
+                                class="form-control myline" style="margin-bottom:5px"></textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Jenis Rekening <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <select id="ppn" name="ppn" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                    <option value=""></option>
+                                    <option value="0">Non-PPN</option>
+                                    <option value="1">PPN</option>
+                                    </select>
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">                        
@@ -88,7 +141,12 @@
                 <tr>
                     <th style="width:50px;">No</th>
                     <th>Kode Bank</th>   
-                    <th>Nama Bank</th> 
+                    <th>Nama Bank</th>
+                    <th>Nomor Rekening</th>
+                    <th>A/N</th>
+                    <th>PPN</th>
+                    <th>Currency</th>
+                    <th>Kantor Cabang</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -101,7 +159,12 @@
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
                         <td><?php echo $data->kode_bank; ?></td>
-                        <td><?php echo $data->nama_bank; ?></td>                         
+                        <td><?php echo $data->nama_bank; ?></td>
+                        <td><?= $data->nomor_rekening; ?></td>
+                        <td><?= $data->atas_nama; ?></td>
+                        <?php echo (($data->ppn==1)? '<td><i class="fa fa-check"></i> Yes</td>': '<td><i class="fa fa-times"></i> No</td>');?>
+                        <td><?= $data->currency; ?></td>
+                        <td><?= $data->kantor_cabang; ?></td>                         
                         <td style="text-align:center"> 
                             <?php
                                 if( ($group_id==1)||($hak_akses['edit']==1) ){
@@ -146,6 +209,11 @@ var dsState;
 function newData(){
     $('#kode_bank').val('');
     $('#nama_bank').val('');
+    $('#no_rek').val('');
+    $('#an').val('');
+    $('#currency').select2('val', '');
+    $('#kc').val('');
+    $('#ppn').select2('val', '');
     $('#id').val('');
     dsState = "Input";
     
@@ -162,7 +230,16 @@ function simpandata(){
         $('.alert-danger').show(); 
     }else if($.trim($("#nama_bank").val()) == ""){
         $('#message').html("Nama Bank harus diisi!");
-        $('.alert-danger').show(); 
+        $('.alert-danger').show();
+    }else if($.trim($("#no_rek").val()) == ""){
+        $('#message').html("Nomor Rekening harus diisi!");
+        $('.alert-danger').show();
+    }else if($.trim($("#currency").val()) == ""){
+        $('#message').html("Currency harus diisi!");
+        $('.alert-danger').show();
+    }else if($.trim($("#ppn").val()) == ""){
+        $('#message').html("Jenis Rekening harus diisi!");
+        $('.alert-danger').show();
     }else{      
         if(dsState=="Input"){
             $.ajax({
@@ -197,6 +274,11 @@ function editData(id){
         success: function (result){
             $('#kode_bank').val(result['kode_bank']);
             $('#nama_bank').val(result['nama_bank']);
+            $('#no_rek').val(result['nomor_rekening']);
+            $('#an').val(result['atas_nama']);
+            $('#currency').select2('val', result['currency']);
+            $('#kc').val(result['kantor_cabang']);
+            $('#ppn').select2('val', result['ppn']);
             $('#id').val(result['id']);
             
             $("#myModal").find('.modal-title').text('Edit Bank');

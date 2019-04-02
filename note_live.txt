@@ -30,17 +30,19 @@ Print seperti Faktur hanya berlaku pada Invoice PPN(Done)
 Invoice non-PPN, print lebih simpel(Done)
 Direktur pada print isi nama Direkturnya manual(Done)
 
-Biaya lain lain = mengurangi harga invoice
+Biaya lain lain = mengurangi harga invoice (DONE)
 
 Nomor Cek dan Nominal bisa di edit sebelum matching invoice. *Kalau gagal cair harus mengganti nomor cek lama
 
-Sisa Invoice atau Sisa Uang Masuk masih dibawah atau lebih seribu, bisa masuk ke pembulatan.
+Uang masuk dibedain nomornya Jika bank masuk atau cek masuk(Done)
 
-Tambah 2 input biaya pada matching invoice, (PPH / Bobbin dan Transfer) *mengurangi invoice
+Sisa Invoice atau Sisa Uang Masuk masih dibawah atau lebih seribu, bisa masuk ke pembulatan.(Done)
+
+Tambah 2 input biaya pada matching invoice, (PPH / Bobbin dan Transfer) *mengurangi invoice(Done)
 
 Sort by login, invoice ppn dan non-ppn(Done)
 
-Uang masuk PPN dan Uang masuk Non-ppn, show sesuai login di matching invoice
+Uang masuk PPN dan Uang masuk Non-ppn, show sesuai login di matching invoice(Done)
 
 Keterangan Uang Masuk untuk pembayaran invoice mana aja
 
@@ -48,11 +50,11 @@ Keterangan Uang Masuk untuk pembayaran invoice mana aja
 
 Matching Pembayaran bisa liat voucher yang belum dibayar sort by customer
 
-Slip setoran hanya masuk ke bank mayora atau masuk ke kas.(Non PPN)
+Slip setoran hanya masuk ke bank mayora atau masuk ke kas.(Non PPN)(Done)
 
 Memorial(Detail Matching Pembayaran) Pili slip setoran mau dikurang dengan uang masuk yang mana
 
-Format uang masuk sesuai dengan jenis pembayaran. Numbering per tahun, 4 digit
+Format uang masuk sesuai dengan jenis pembayaran. Numbering per tahun, 4 digit(Done)
 
 Matching Invoice punya nomor sendiri
 agar Balance dengan Voucher yang dibayarkan
@@ -102,12 +104,12 @@ Surat Jalan tidak perlu isi nomor kendaraan, Nanti surat jalan langsung select y
 ada di SPB
 
 /** Voucher Cost di bagi 2 **/ Bank dan Kas
-
+\(Done)
 Bank Masuk, Bank Keluar input. 
 (masuk) Jika ada customer, maka di matching dengan invoice. Jika gaada, langsung milih mau masuk bank mana, nambah saldo.
 (keluar)voucher cost bank langsung bayar sama kayak create voucher PO.
 
-Kas Masuk, Kas Keluar input. (keluar)voucher cost kas langsung bayar sama kayak create voucher PO.
+Kas Masuk, Kas Keluar input. (keluar)voucher cost kas langsung bayar sama kayak create voucher PO.(Done)
 
 Tolling ngirim jenis barang rongsok masih salah*cek
 
@@ -133,3 +135,32 @@ Retur, sebelum approve, bisa ganti Type Retur. Karena gatau akan Diganti barang 
 Retur, surat jalan, harus otomatis langsung ke select yang sudah dikeluarkan.
 
 Rongsok keluar, terus bisa input DTR tanpa ada PO. untuk flow repacking yang Export.
+
+No. Invoice Resmi diganti nama jadi 'No. Invoice CV'
+
+Susut 12% default * dengan total jumlah Finish Good. jadi misal total FG 2000KG * 12% = 2240. 12% ini bisa diganti, ope field.
+
+Matching DTR bisa diedit, nettonya. Pilih salah satu dari yang sudah di tambah. Sisanya masih bisa dipakai di matching selanjutnya.
+
+R_PurchaseOrder/edit_po/ Dikasih header Nama CV yang Login, dan Customernya fix PT Kawat Mas
+
+PO dari Customer ke CV. otomatis buat SJ dan Invoice balik CV ke Customer.
+
+Surat jalan CV KMP gaperlu detail kendaraan.
+
+Laporan CV.
+
+Laporan Penjualan = PO Customer, Invoice FG CV ke Customer (item, harga satuan, total).
+
+Laporan semua Per CV ----
+Penjualan, Per Customer, Per Jenis Barang.
+Pembelian, Semua yang PO KMP, Per Jenis Barang.
+
+Penomoran SO dan SJ KMP pada Aplikasi resmi disamain dengan penomoran Intern yang PPN
+Penomoran DTR, TTR resmi dan pajak sama. Tapi ditambahin -KMP.
+
+SO Ampas Belum
+SJ Ampas Belum
+
+Voucher juga bedain penomorannya non-ppn dan KMP(Done)
+Nomor po belom masuk. Finance/Voucher_list/ belom di filter PPN dan NON

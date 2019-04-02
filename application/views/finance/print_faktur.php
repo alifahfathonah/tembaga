@@ -78,7 +78,7 @@
                         </tr>
                         <tr>
                             <td>Tanggal Jatuh Tempo</td>
-                            <td>: <?php echo $header['tgl_jatuh_tempo'];?></td>
+                            <td>: <?php echo tanggal_indo($header['tgl_jatuh_tempo']);?></td>
                         </tr>             
                         <tr>
                             <td>No. PO</td>
@@ -170,7 +170,7 @@
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">Rp.</td>
                             <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($header['materai'],0,',', '.');?></td>
                         </tr>
-                        <?php $total_bersih = $total-$header['diskon']+$header['add_cost']+$header['materai']+$harga_ppn;?>
+                        <?php $total_bersih = $total-$header['diskon']-$header['add_cost']+$header['materai']+$harga_ppn;?>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>T O T A L</strong></td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">Rp.</td>
@@ -180,7 +180,7 @@
                             <td colspan="2" style="border-left: 1px solid #000;">Terbilang</td>
                             <td>:</td>
                             <td colspan="5" rowspan="2">** <?php echo ucwords(number_to_words($total)); ?> **</td>
-                            <td colspan="3"  style="border-right: 1px solid #000;">Tanggerang, <?= $header['tanggal'];?></td>
+                            <td colspan="3"  style="border-right: 1px solid #000;">Tanggerang, <? =tanggal_indo($header['tanggal']);?></td>
                         </tr>
                         <tr>
                             <td colspan="2" style="border-left: 1px solid #000;"></td>

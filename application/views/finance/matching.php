@@ -26,19 +26,22 @@
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-file-word-o"></i>Data Matching Invoice Customer
-                </div>   
+                </div>
+                <div class="tools">    
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Finance/add_match"><i class="fa fa-plus"></i> Input Matching</a>              
+                </div>
             </div>
             <div class="portlet-body">
                 <table class="table table-striped table-bordered table-hover" id="sample_6">
                 <thead>
                 <tr>
                     <th style="width:50px;">No</th>
+                    <th>No. Matching</th>
                     <th>Nama Customer</th> 
                     <th>PIC</th> 
-                    <th>Alamat</th>
-                    <th>Jumlah<br>Sales Order</th>
-                    <th>Jumlah<br>Surat Jalan</th>
                     <th>Jumlah<br>Invoice</th>
+                    <th>Jumlah<br>Uang Masuk</th>
+                    <th>Status</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -50,12 +53,18 @@
                     ?>
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
+                        <td><?php echo $data->no_matching; ?></td>
                         <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->pic; ?></td>
-                        <td><?php echo $data->alamat; ?></td>
-                        <td><?php echo $data->jumlah_so; ?></td>
-                        <td><?php echo $data->jumlah_sj; ?></td>
-                        <td><?php echo $data->jumlah_invoice; ?></td>
+                        <td><?php echo $data->jumlah_inv; ?></td>
+                        <td><?php echo $data->jumlah_um; ?></td>
+                        <td>
+                            <?php if($data->status==0){
+                                echo '<div style="background-color:darkkhaki; padding:3px">Belum Balance</div>';
+                            }else{
+                                echo '<div style="background-color:green; padding:3px; color:white;">Balanced</div>';
+                            }?>
+                        </td>
                         <td>
                             <!-- <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/view_matching/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a> -->
@@ -88,6 +97,3 @@
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
-<script>
-
-</script>         

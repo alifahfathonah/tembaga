@@ -343,9 +343,6 @@ function simpanData(){
     }else if($.trim($("#jenis_barang").val()) == ""){
         $('#message').html("Silahkan pilih jenis barang!");
         $('.alert-danger').show();
-    }else if($.trim($("#m_type_kendaraan_id").val()) == ""){
-        $('#message').html("Silahkan pilih kendaraan");
-        $('.alert-danger').show();
     }else{   
         $('#formku').submit(); 
     };

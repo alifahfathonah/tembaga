@@ -257,6 +257,7 @@
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
+
 function approveAgain(){
     var r=confirm("Anda yakin meng-approve kembali permintaan barang ini?");
     if (r==true){
@@ -271,8 +272,12 @@ function approveAgain(){
 }
 
 function simpanData(){
+    const slip =($('#slip_setoran').val().toString().replace(/\./g, ''));
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else if(Number(slip) < 0){
+        $('#message').html("Slip setoran tidak boleh minus!");
         $('.alert-danger').show();
     }else{
         $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/save_pmb");  
@@ -283,8 +288,7 @@ function slipSetoran(){
     var total_vc = $('#total_vc').data("myvalue");
     var total_um = $('#total_um').data("myvalue");
     var total = (total_um - total_vc);
-    console.log(total);
-    $('#slip_setoran').val(total);
+    $('#slip_setoran').val(numberWithCommas(total));
 }
 
 function load_vc(){

@@ -62,7 +62,7 @@
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="customer_id" name="customer_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="resetAllValues();$('#show_replace').hide();$('#show_replace_detail').hide();$('#jenis_id').prop('selectedIndex',0);">
+                            <select id="customer_id" name="customer_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="resetAllValues();$('#show_replace').hide();$('#show_replace_detail').hide();$('#jenis_id').select2('val','');">
                                 <option value=""></option>
                                 <?php
                                     foreach ($customer_list as $row){
@@ -77,7 +77,7 @@
                             Jenis Pembayaran <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="jenis_id" name="jenis_id" class="form-control myline" 
+                            <select id="jenis_id" name="jenis_id" class="form-control myline select2me" 
                                 placeholder="Silahkan pilih Jenis Pembayaran ..." onchange="get_cek(this.value);" style="margin-bottom:5px">
                                 <option value="0"></option>
                                 <option value="Cek">Cek</option>
@@ -250,6 +250,10 @@
     </div>
 </div> 
 <script>
+function numberWithCommas(x) {
+     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
@@ -335,8 +339,8 @@ function get_replace_detail(id){
                 $('#show_replace_detail').show();
                 $('#bank_cek_lama').val(result['bank_pembayaran']);
                 $('#currency_lama').val(result['currency']);
-                $('#nominal_lama').val(result['nominal']);
-                $('#nominal').val(result['nominal']);
+                $('#nominal_lama').val(numberWithCommas(result['nominal']));
+                $('#nominal').val(numberWithCommas(result['nominal']));
                 $('#nominal').attr('readonly', true);
                 $('#cek_mundur_lama').val(result['tgl_cair']);
                 $('#reject_remarks').val(result['reject_remarks']);

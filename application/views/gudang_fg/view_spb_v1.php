@@ -152,6 +152,7 @@
                                         <tbody>
                                         <?php
                                             $no = 1;
+                                            $netto = 0;
                                             foreach ($myDetail as $row){
                                             $total_qty = $row->total_qty;
                                             $total_netto = $row->total_netto;
@@ -177,9 +178,15 @@
                                                 }
                                                 echo '</tr>';
                                                 $no++;
+                                                $netto += $row->netto;
                                             }
                                         ?>
                                         </tbody>
+                                        <tr>
+                                            <td colspan="2" style="text-align: right"><strong>Total :</strong></td>
+                                            <td style="color: white; background-color: green;"><?= number_format($netto,0,',','.'); ?></td>
+                                            <td colspan="4"></td>
+                                        </tr>
                                     </table>
                                 </div>
                         </div>

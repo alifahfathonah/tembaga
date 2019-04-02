@@ -1,8 +1,9 @@
 <?php
 class Model_finance extends CI_Model{
-    function list_data(){
+    function list_data($ppn){
         $data = $this->db->query("Select fum.*, mc.nama_customer From f_uang_masuk fum
             left join m_customers mc on mc.id = fum.m_customer_id
+            where fum.flag_ppn =".$ppn."
             Order By id desc");
         return $data;
     }
@@ -34,13 +35,18 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function bank_list(){
-        $data = $this->db->query("Select * From bank Order By kode_bank");
+    function bank_list($ppn){
+        $data = $this->db->query("Select * From bank where ppn =".$ppn." Order By kode_bank ");
         return $data;
     }
 
     function get_bank_list($id){
         $data = $this->db->query("Select * From bank where id =".$id);
+        return $data;
+    }
+
+    function get_currency($id){
+        $data = $this->db->query("Select currency From bank where id =".$id);
         return $data;
     }
 
@@ -174,13 +180,18 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    // function get_sj_list($id){
+    //     $data = $this->db->query("Select tsj.id, tsj.no_surat_jalan from t_surat_jalan tsj where tsj.sales_order_id = ".$id." and tsj.status = 1 and not exists (select null from f_invoice fi where fi.id_surat_jalan = tsj.id)");
+    //     return $data;
+    // }
+
     function get_sj_list($id){
-        $data = $this->db->query("Select tsj.id, tsj.no_surat_jalan from t_surat_jalan tsj where tsj.sales_order_id = ".$id." and not exists (select null from f_invoice fi where fi.id_surat_jalan = tsj.id)");
+        $data = $this->db->query("Select tsj.id, tsj.no_surat_jalan from t_surat_jalan tsj where tsj.sales_order_id = ".$id." and tsj.status = 1 and tsj.inv_id is null");
         return $data;
     }
 
     function show_header_invoice($id){
-        $data = $this->db->query("select fi.*, tso.alias, mc.nama_customer, mc.alamat, mc.npwp, so.no_sales_order, so.flag_ppn, so.flag_tolling, tso.no_po, u.realname, tsj.no_surat_jalan, tso.id as id_t_sales_order, r.no_retur, b.kode_bank, b.nama_bank, b.nomor_rekening from f_invoice fi
+        $data = $this->db->query("select fi.*, tso.alias, mc.nama_customer, mc.alamat, mc.npwp, so.no_sales_order, so.flag_ppn, so.flag_tolling, tso.no_po, u.realname, tsj.no_surat_jalan, tso.id as id_t_sales_order, r.no_retur, b.kode_bank, b.nama_bank, b.nomor_rekening, mtch.no_matching from f_invoice fi
             left join m_customers mc on mc.id = fi.id_customer
             left join sales_order so on so.id = fi.id_sales_order
             left join t_sales_order tso on tso.so_id = fi.id_sales_order
@@ -188,6 +199,7 @@ class Model_finance extends CI_Model{
             left join retur r on fi.id_retur > 0 and r.id = fi.id_retur
             left join bank b on b.id = fi.bank_id
             left join users u on u.id = fi.created_by
+            left join f_match mtch on mtch.id = fi.flag_matching
             where fi.id = ".$id);
         return $data;
     }
@@ -238,12 +250,13 @@ class Model_finance extends CI_Model{
     }
 
     function show_detail_matching_um($id){
-        $data = $this->db->query("select fum.*, b.kode_bank, b.nama_bank, b.nomor_rekening, fmd.paid from f_matching_detail fmd
+        $data = $this->db->query("select fum.*, b.kode_bank, b.nama_bank, b.nomor_rekening, fmd.biaya1, fmd.biaya2, fmd.ket1, fmd.ket2 from f_match_detail fmd
             left join f_uang_masuk fum on fum.id = fmd.id_um
             left join bank b on b.id = fum.rekening_tujuan
-            where fmd.id_invoice =".$id);
+            where id_inv = 0 and fmd.id_match =".$id);
         return $data;
     }
+
     function show_detail_invoice($id){
         $data = $this->db->query("select fid.*, COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom) as uom
         from f_invoice_detail fid
@@ -283,33 +296,90 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function list_matching(){
-        $data = $this->db->query("select mc.*, 
-        (select count(id) from sales_order so where so.m_customer_id = mc.id) as jumlah_so,
-        (select count(id) from t_surat_jalan tsj where tsj.m_customer_id = mc.id) as jumlah_sj,
-        (select count(id) from f_invoice fi where fi.id_customer = mc.id) as jumlah_invoice
-        from m_customers mc where 
-        (select fi.id from f_invoice fi where mc.id = fi.id_customer group by fi.id_customer) is not null");
+    // function list_matching(){
+    //     $data = $this->db->query("select mc.*, 
+    //     (select count(id) from sales_order so where so.m_customer_id = mc.id) as jumlah_so,
+    //     (select count(id) from t_surat_jalan tsj where tsj.m_customer_id = mc.id) as jumlah_sj,
+    //     (select count(id) from f_invoice fi where fi.id_customer = mc.id) as jumlah_invoice
+    //     from m_customers mc where 
+    //     (select fi.id from f_invoice fi where mc.id = fi.id_customer group by fi.id_customer) is not null");
+    //     return $data;
+    // }
+
+    function list_matching($ppn){
+        $data = $this->db->query("select fm.*, mc.nama_customer, mc.pic, (select count(id) from f_match_detail fmd where fmd.id_match = fm.id and fmd.id_um = 0) as jumlah_inv, (select count(id) from f_match_detail fmd where fmd.id_match = fm.id and fmd.id_inv = 0) as jumlah_um from f_match fm 
+            left join m_customers mc on mc.id = fm.id_customer
+            where flag_ppn=".$ppn);
         return $data;
     }
 
-    function load_invoice_full($id){
+    function matching_header($id){
+        $data = $this->db->query("select fm.*, mc.nama_customer, mc.pic, mc.alamat from f_match fm 
+            left join m_customers mc on mc.id = fm.id_customer
+            where fm.id =".$id);
+        return $data;
+    }
+
+    function matching_detail($id){
+        $data = $this->db->query("select fm.*, mc.nama_customer, mc.pic, mc.alamat from f_match fm 
+            left join m_customers mc on mc.id = fm.id_customer
+            where fm.id_customer =".$id);
+        return $data;
+    }
+
+    function load_invoice_full($id,$ppn){
         $data = $this->db->query("select fi.*,
-            (select sum(fmd.paid) from f_matching_detail fmd where fmd.id_invoice = fi.id) as paid, 
-            (select sum(fmd.used_hutang) from f_matching_detail fmd where fmd.id_hutang = fi.id) as used_hutang,
-            (select if(so.flag_ppn=1,round((sum(fid.total_harga)-f.diskon)*110/100)+f.add_cost+f.materai,sum(fid.total_harga-f.diskon)+f.add_cost+f.materai) from f_invoice_detail fid
+            (select if(so.flag_ppn=1,round((sum(fid.total_harga)-f.diskon)*110/100)-f.add_cost+f.materai,sum(fid.total_harga-f.diskon)-f.add_cost+f.materai) from f_invoice_detail fid
             left join f_invoice f on f.id = fid.id_invoice
             left join sales_order so on so.id = f.id_sales_order 
             where fid.id_invoice = fi.id) as total 
             from f_invoice fi 
-            where fi.id_customer =".$id." and flag_matching = 0");
+            left join sales_order so on so.id = fi.id_sales_order
+            where fi.id_customer =".$id." and so.flag_ppn=".$ppn." and flag_matching = 0");
         return $data;
     }
 
-    function load_um_full($id){
-        $data = $this->db->query("select fum.id, fum.jenis_pembayaran, fum.bank_pembayaran, COALESCE(NULLIF(fum.rekening_pembayaran,''), NULLIF(fum.nomor_cek, '')) as nomor, fum.currency, fum.nominal,(select sum(fmd.paid) from f_matching_detail fmd where fmd.id_um = fum.id)as paid
+    function load_um_full($id,$ppn){
+        $data = $this->db->query("select fum.id, fum.no_uang_masuk, fum.jenis_pembayaran, fum.bank_pembayaran, fum.status, COALESCE(NULLIF(fum.rekening_pembayaran,''), NULLIF(fum.nomor_cek, '')) as nomor, fum.currency, fum.nominal
             from f_uang_masuk fum
-            where fum.m_customer_id =".$id." and fum.flag_matching = 0 and fum.status = 1");
+            where fum.m_customer_id =".$id." and fum.flag_ppn=".$ppn." and fum.flag_matching = 0 and (fum.status = 0 or fum.status = 1)");
+        return $data;
+    }
+
+    function load_invoice_match($id){
+        $data = $this->db->query("select fmd.*, fi.jenis_trx, fi.no_invoice,
+            (select if(so.flag_ppn=1,
+                round((sum(fid.total_harga)-f.diskon)*110/100)-f.add_cost+f.materai,
+                sum(fid.total_harga-f.diskon)-f.add_cost+f.materai) 
+                    from f_invoice_detail fid
+                    left join f_invoice f on f.id = fid.id_invoice
+                    left join sales_order so on so.id = f.id_sales_order 
+                    where fid.id_invoice = fmd.id_inv)-(fmd.biaya1+fmd.biaya2) as total 
+            from f_match_detail fmd
+            left join f_invoice fi on fi.id = fmd.id_inv
+            where fmd.id_match =".$id." and fmd.id_um = 0");
+        return $data;
+    }
+
+    function view_invoice_match($id){
+        $data = $this->db->query("select fmd.*, fi.jenis_trx, fi.no_invoice,
+            (select if(so.flag_ppn=1,
+                round((sum(fid.total_harga)-f.diskon)*110/100)-f.add_cost+f.materai,
+                sum(fid.total_harga-f.diskon)-f.add_cost+f.materai) 
+                    from f_invoice_detail fid
+                    left join f_invoice f on f.id = fid.id_invoice
+                    left join sales_order so on so.id = f.id_sales_order 
+                    where fid.id_invoice = fmd.id_inv)as total 
+            from f_match_detail fmd
+            left join f_invoice fi on fi.id = fmd.id_inv
+            where fmd.id =".$id);
+        return $data;
+    }
+
+    function load_um_match($id){
+        $data = $this->db->query("select fmd.*, fum.no_uang_masuk, fum.jenis_pembayaran, fum.bank_pembayaran, fum.currency, fum.nominal, fum.status  from f_match_detail fmd
+            left join f_uang_masuk fum on fum.id = fmd.id_um
+            where fmd.id_match =".$id." and fmd.id_inv = 0");
         return $data;
     }
 
@@ -328,15 +398,31 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function get_id_match_by_inv($id){
+        $data = $this->db->query("select id_match from f_match_detail where id_um =".$id);
+        return $data;
+    }
+
+    // function get_data_invoice($id){
+    //     $data = $this->db->query("select 
+    //         (select if(so.flag_ppn=1,round((sum(fid.total_harga)-f.diskon)*110/100)-f.add_cost+f.materai,sum(fid.total_harga-f.diskon)-f.add_cost+f.materai) from f_invoice_detail fid
+    //         left join f_invoice f on f.id = fid.id_invoice
+    //         left join sales_order so on so.id = f.id_sales_order 
+    //         where fid.id_invoice = fi.id) as total  , 
+    //         sum(fmd.paid) as paid
+    //         from f_invoice fi
+    //         left join f_matching_detail fmd on fmd.id_invoice = fi.id
+    //         where fi.id =".$id);
+    //     return $data;
+    // }
+
     function get_data_invoice($id){
-        $data = $this->db->query("select 
-            (select if(so.flag_ppn=1,round((sum(fid.total_harga)-f.diskon)*110/100)+f.add_cost+f.materai,sum(fid.total_harga-f.diskon)+f.add_cost+f.materai) from f_invoice_detail fid
+        $data = $this->db->query("select fi.id, fi.no_invoice,
+            (select if(so.flag_ppn=1,round((sum(fid.total_harga)-f.diskon)*110/100)-f.add_cost+f.materai,sum(fid.total_harga-f.diskon)-f.add_cost+f.materai) from f_invoice_detail fid
             left join f_invoice f on f.id = fid.id_invoice
             left join sales_order so on so.id = f.id_sales_order 
-            where fid.id_invoice = fi.id) as total  , 
-            sum(fmd.paid) as paid
+            where fid.id_invoice = fi.id) as total
             from f_invoice fi
-            left join f_matching_detail fmd on fmd.id_invoice = fi.id
             where fi.id =".$id);
         return $data;
     }
@@ -373,7 +459,7 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function list_kas(){
+    function list_kas($ppn){
         $data = $this->db->query("select fk.*, b.kode_bank, fum.no_uang_masuk, fp.no_pembayaran, mc.nama_customer 
             from f_kas fk
             left join bank b on b.id=fk.id_bank
@@ -381,6 +467,7 @@ class Model_finance extends CI_Model{
             left join m_customers mc on mc.id=fum.m_customer_id
             left join f_slip_setoran fss on fss.id=fk.id_slip_setoran
             left join f_pembayaran fp on fp.id = fss.id_pembayaran
+            where fk.flag_ppn = ".$ppn."
             order by id desc");
         return $data;
     }
@@ -391,7 +478,7 @@ class Model_finance extends CI_Model{
     }
 
     function show_header_kas($id){
-        $data = $this->db->query("select fk.*, fum.no_uang_masuk, fum.jenis_pembayaran, fum.bank_pembayaran, coalesce(fum.rekening_pembayaran,fum.nomor_cek) as nomor, b.kode_bank, b.nama_bank, b.nomor_rekening, v.jenis_barang, v.no_voucher, v.jenis_voucher, v.supplier_id, p.no_po, mc.nama_customer, s.nama_supplier, fp.no_pembayaran FROM f_kas fk
+        $data = $this->db->query("select fk.*, fum.no_uang_masuk, fum.jenis_pembayaran, fum.bank_pembayaran, coalesce(fum.rekening_pembayaran,fum.nomor_cek) as nomor, b.kode_bank, b.nama_bank, b.nomor_rekening, v.jenis_barang, v.no_voucher, v.jenis_voucher, v.supplier_id, p.no_po, mc.nama_customer, s.nama_supplier,v.nm_cost, fp.no_pembayaran, coalesce(v.keterangan,fum.keterangan) as ket_v FROM f_kas fk
             left join bank b on b.id= fk.id_bank
             left join f_uang_masuk fum on fk.id_um != 0 and fum.id = fk.id_um
             left join voucher v on fk.id_vc != 0 and v.id = fk.id_vc

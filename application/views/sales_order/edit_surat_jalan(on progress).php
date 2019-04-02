@@ -190,9 +190,10 @@
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
+                                <?php $no=0; foreach ($list_produksi as $row) { $no++; ?>
                                 <tr>
-                                    <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
-                                    <td>
+                                    <td style="text-align: center;"><?= $no ;?></td>
+                                    <td><input type="text" class="form-control myline" style="margin-bottom:5px" name="details[1][barang_id]" value="<?=$row->id;?>" data-id='<?=$value->ukuran;?>'>
                                         <select id="barang_id_1" name="details[1][barang_id]" class="form-control select2me myline scrollable" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="get_data(1);">
                                             <option value="0"></option>
                                         <?php foreach ($list_produksi as $value){ ?>
@@ -223,6 +224,7 @@
                                     <a id="print_1" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(1);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>
                                     </td>
                                 </tr>
+                                <?php } ?>
                             </tbody>
                         </table>
                     <?php } else if($header['jenis_barang']=='WIP'){ ?>
@@ -373,11 +375,8 @@ function simpanData(){
     }else if($.trim($("#no_sales_order").val()) == ""){
         $('#message').html("Silahkan pilih no. sales order");
         $('.alert-danger').show(); 
-    }else{
-        result = confirm('Anda yakin untuk menyimpannya ?');
-        if(result){
-            $('#formku').submit();
-        } 
+    }else{   
+        $('#formku').submit(); 
     };
 };
 

@@ -171,17 +171,18 @@ class Model_beli_rongsok extends CI_Model{
     //     return $data;
     // }
 
-    function dtr_list(){
+    function dtr_list($user_ppn){
         $data = $this->db->query("Select dtr.*, 
                     po.no_po, 
+                    COALESCE(po.ppn,".$user_ppn.") as flag_ppn,
                     spl.nama_supplier,
                     usr.realname As penimbang,
                 (Select count(dtrd.id)As jumlah_item From dtr_detail dtrd Where dtrd.dtr_id = dtr.id)As jumlah_item
                 From dtr
-                    Left Join po On (dtr.po_id = po.id) 
+                    Left Join po On (dtr.po_id > 0 and po.id = dtr.po_id)
                     Left Join supplier spl On (po.supplier_id = spl.id) or (dtr.supplier_id = spl.id) 
                     Left Join users usr On (dtr.created_by = usr.id) 
-                    Where dtr.customer_id = 0
+                    Where dtr.customer_id = 0 and COALESCE(po.ppn,".$user_ppn.") =".$user_ppn."
                 Order By dtr.id Desc");
         return $data;
     }

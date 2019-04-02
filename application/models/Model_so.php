@@ -54,14 +54,20 @@ class Model_so extends CI_Model{
 	// }
 
 	function list_detail_so($id){
-		$data = $this->db->query('select fid.*, tsjd.bruto, tsjd.no_packing, tsjd.nomor_bobbin, tsjd.line_remarks,
-			(select rtsd.id from r_t_so_detail rtsd 
-	      	left join r_t_so rts on rts.id = rtsd.so_id
-	      	where rts.po_id = rtp.id and rtsd.jenis_barang_id = fid.jenis_barang_id) as so_detail
-			from f_invoice_detail fid 
-			left join t_surat_jalan_detail tsjd on tsjd.id = fid.sj_detail_id
-	        left join r_t_po rtp on rtp.f_invoice_id = fid.id_invoice
-			where rtp.id ='.$id);
+		// $data = $this->db->query('select fid.*, tsjd.bruto, tsjd.no_packing, tsjd.nomor_bobbin, tsjd.line_remarks,
+		// 	(select rtsd.id from r_t_so_detail rtsd 
+	 //      	left join r_t_so rts on rts.id = rtsd.so_id
+	 //      	where rts.po_id = rtp.id and rtsd.jenis_barang_id = fid.jenis_barang_id) as so_detail
+		// 	from f_invoice_detail fid 
+		// 	left join t_surat_jalan_detail tsjd on tsjd.id = fid.sj_detail_id
+	 //        left join r_t_po rtp on rtp.f_invoice_id = fid.id_invoice
+		// 	where rtp.id ='.$id);
+		$data = $this->db->query("select tsjd.*, 
+			(select rtsd.id from r_t_so_detail rtsd left join r_t_so rts on rts.id = rtsd.so_id where rts.po_id = rtp.id and rtsd.jenis_barang_id = tsjd.jenis_barang_id) as so_detail 
+			from t_surat_jalan_detail tsjd 
+			left join f_invoice fi on fi.id_surat_jalan = tsjd.t_sj_id
+		    left join r_t_po rtp on rtp.f_invoice_id = fi.id
+		    where rtp.id =".$id);
 		return $data;
 	}
 

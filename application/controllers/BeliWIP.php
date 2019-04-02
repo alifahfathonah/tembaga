@@ -70,8 +70,11 @@ class BeliWIP extends CI_Controller{
         $user_ppn  = $this->session->userdata('user_ppn');
         
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('POWIP', $tgl_input); 
-
+        if($user_ppn == 0){
+            $code = $this->Model_m_numberings->getNumbering('POWIP', $tgl_input); 
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('POW-KMP', $tgl_input);
+        }
         $data = array(
             'no_po'=> $code,
             'tanggal'=> $tgl_input,

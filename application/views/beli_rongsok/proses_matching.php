@@ -416,8 +416,6 @@
     </div>
 </div> 
 <script>
-
-
 function approve(id){
     $.ajax({
         url: "<?php echo base_url('index.php/BeliRongsok/approve'); ?>",

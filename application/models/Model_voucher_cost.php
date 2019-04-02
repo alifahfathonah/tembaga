@@ -1,18 +1,18 @@
 <?php
 class Model_voucher_cost extends CI_Model{
-    function list_data(){
+    function list_data($ppn){
         $data = $this->db->query("Select voucher.*, 
                 gc.nama_group_cost,
                 cost.nama_cost,
                 mc.nama_customer,
                 supp.nama_supplier,
-                COALESCE(cost.nama_cost, mc.nama_customer, supp.nama_supplier) as nama_trx
+                COALESCE(nm_cost, mc.nama_customer, supp.nama_supplier) as nama_trx
                 From voucher 
                     Left Join group_cost gc On (voucher.group_cost_id = gc.id) 
                     Left Join cost On (voucher.cost_id = cost.id)
                     Left Join m_customers mc ON (voucher.customer_id = mc.id)
                     left join supplier supp on (voucher.supplier_id = supp.id)
-                Where voucher.jenis_voucher='Manual'
+                Where voucher.jenis_voucher='Manual' and voucher.flag_ppn =".$ppn."
                 Order By voucher.no_voucher");
         return $data;
     }

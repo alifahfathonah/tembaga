@@ -44,6 +44,11 @@ class Bank extends CI_Controller{
         $data = array(
                     'kode_bank'=> $this->input->post('kode_bank'),
                     'nama_bank'=> $this->input->post('nama_bank'),
+                    'nomor_rekening'=> $this->input->post('no_rek'),
+                    'atas_nama'=> $this->input->post('an'),
+                    'currency'=> $this->input->post('currency'),
+                    'kantor_cabang'=> $this->input->post('kc'),
+                    'ppn'=> $this->input->post('ppn'),
                     'created'=> $tanggal,
                     'created_by'=> $user_id,
                     'modified'=> $tanggal,
@@ -81,6 +86,11 @@ class Bank extends CI_Controller{
         $data = array(
                 'kode_bank'=> $this->input->post('kode_bank'),
                 'nama_bank'=> $this->input->post('nama_bank'),
+                'nomor_rekening'=> $this->input->post('no_rek'),
+                'atas_nama'=> $this->input->post('an'),
+                'currency'=> $this->input->post('currency'),
+                'kantor_cabang'=> $this->input->post('kc'),
+                'ppn'=> $this->input->post('ppn'),
                 //'flag_sinkronisasi'=>0,
                 //'flag_action'=>'U',
                 'modified'=> $tanggal,

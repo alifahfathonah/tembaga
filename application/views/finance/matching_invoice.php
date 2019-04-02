@@ -45,96 +45,112 @@
                             <input type="hidden" id="id_modal" name="id_modal">
                             <div class="row">
                                 <div class="col-md-4">
-                                    Pilih Invoice <font color="#f00">*</font>
+                                    No. Invoice<font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-8">
-                                    <select id="invoice_id" name="invoice_id" class="form-control select2me myline"  style="margin-bottom:5px;" onchange="get_data_invoice(this.value);">
-                                    </select>
+                                    <input type="text" id="no_invoice" name="no_invoice" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                                    <input type="hidden" id="invoice_id" name="invoice_id">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    Harga<font color="#f00">*</font>
+                                    Nominal
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" id="harga_invoice" name="harga_invoice" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                                    <input type="text" id="nominal" name="nominal" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    Pilih Uang Masuk <font color="#f00">*</font>
+                                    Biaya 1
                                 </div>
                                 <div class="col-md-8">
-                                    <select id="um_id" name="um_id" class="form-control select2me myline"  style="margin-bottom:5px;" onchange="get_data_um(this.value);">
-                                    </select>
+                                    <input type="text" id="b_1" name="b_1" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    Nominal<font color="#f00">*</font>
+                                    Keterangan 1
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" id="harga_um" name="harga_um" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                                    <input type="text" id="k_1" name="k_1" class="form-control myline" style="margin-bottom:5px" placeholder="Input Keterangan ...">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    Pilih Invoice Hutang <font color="#f00">*</font>
+                                    Biaya 2
                                 </div>
                                 <div class="col-md-8">
-                                    <select id="invoice_min" name="invoice_min" class="form-control select2me myline"  style="margin-bottom:5px;" onchange="get_data_invoice_min(this.value);">
-                                    </select>
+                                    <input type="text" id="b_2" name="b_2" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);" max="10">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    Nominal Hutang<font color="#f00">*</font>
+                                    Keterangan 2
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" id="hutang" name="hutang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                                    <input type="text" id="k_2" name="k_2" class="form-control myline" style="margin-bottom:5px" placeholder="Input Keterangan ...">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    Sisa Invoice
+                                    Total Nominal
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" id="sisa_invoice" name="sisa_invoice" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    Sisa Uang Masuk
-                                </div>
-                                <div class="col-md-8">
-                                    <input type="text" id="sisa_um" name="sisa_um" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    Sisa Hutang
-                                </div>
-                                <div class="col-md-8">
-                                    <input type="text" id="sisa_hutang" name="sisa_hutang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                                    <input type="text" id="total_nominal" name="total_nominal" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">                        
-                        <button type="button" class="btn blue" onclick="saveDetail();">Simpan</button>
+                        <button type="button" class="btn blue" id="tambah" onclick="addInv();">Tambah</button>
+                        <button type="button" class="btn blue" id="simpan" onclick="saveInv();">Simpan</button>
                         <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
                     </div>
                 </div>
             </div>
         </div>
-        
+            <form class="eventInsForm" method="post" target="_self" name="formku" 
+              id="formku" action="<?php echo base_url('index.php/Finance/save_matching'); ?>">  
             <div class="row">
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-4">
+                            No Matching<font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_matching" name="no_matching" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['no_matching']; ?>">
+                            <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tanggal" name="tanggal" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('Y-m-d'); ?>">
+                        </div>
+                    </div>  
+                    <div class="row">
+                        <div class="col-md-4">
+                            Status
+                        </div>
+                        <div class="col-md-8">
+                            <?php if($header['status']==0){
+                                echo '<div style="background-color:darkkhaki; padding:3px">Belum Balance</div>';
+                            }else{
+                                echo '<div style="background-color:green; padding:3px; color:white;">Balanced</div>';
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <div class="row">&nbsp;</div>
+                </div>
+                <div class="col-md-2">&nbsp;</div>
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
@@ -144,7 +160,7 @@
                             <input type="text" id="nama_customer" name="nama_customer" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['nama_customer']; ?>">
-                            <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
+                            <input type="hidden" id="id_customer" name="id_customer" value="<?php echo $header['id_customer']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -157,10 +173,6 @@
                                 value="<?php echo $header['pic']; ?>">
                         </div>
                     </div>
-                    <div class="row">&nbsp;</div>
-                </div>
-                <div class="col-md-2">&nbsp;</div>
-                <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
                             Alamat
@@ -177,60 +189,76 @@
                 <div class="portlet box yellow-gold">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-file-word-o"></i>Data Invoice
-                        </div>
-                        <div class="tools">
-                        <?php
-                            if( ($group_id==1)||($hak_akses['input_invoice']==1) ){
-                        ?>
-                        <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="javascript:;" onclick="input();"> <i class="fa fa-plus"></i> Input Invoice</a>
-                        <?php } ?>
-                        </div>    
+                            <i class="fa fa-file-word-o"></i>List Invoice
+                        </div> 
                     </div>
                     <div class="portlet-body">
                         <div class="table-scrollable">
                             <table class="table table-striped table-bordered table-hover">
                                 <thead>
-                                <tr>
                                     <th>No</th>
                                     <th>Trx</th>
                                     <th>No Invoice</th>
                                     <th>Total</th>
-                                    <th>Sisa</th>
-                                </tr>
+                                    <th>Action</th>
                                 </thead>
-                                <tbody>
-                                    <?php
-                                    $no = 1;
-                                    $total_invoice = 0;
-                                    $total_sisa = 0;
-                                    foreach ($details_invoice as $row){
-                                        echo '<tr>';
-                                        echo '<td style="text-align:center;">'.$no.'</td>';
-                                        if($row->jenis_trx == 0){
-                                        $sisa = $row->total - $row->paid;
-                                            echo '<td style="background-color: green; color: white;"><i class="fa fa-arrow-circle-up"></i></td>';
-                                        $total_invoice += $row->total;
-                                        $total_sisa += $sisa;    
-                                        }else{
-                                        $sisa = $row->total - $row->used_hutang;
-                                            echo '<td style="background-color: red; color: white;"><i class="fa fa-arrow-circle-down"></i></td>';
-                                        $total_invoice += -$row->total;
-                                        $total_sisa += -$sisa;
-                                        }
-                                        echo '<td>'.$row->no_invoice.'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($row->total,0,',','.').'</td>';
-                                        echo '<td>'.number_format($sisa,0,',','.').'</td>';
-                                        $no++;
-                                    }
-                                    ?>
-                                    <tr>
-                                        <td style="text-align:right;" colspan="3"><strong>Total Harga </strong></td>
-                                        <td style="text-align:right;">
-                                            <strong><?php echo number_format($total_invoice,0,',','.'); ?></strong>
-                                        </td>
-                                        <td><strong><?php echo number_format($total_sisa,0,',','.'); ?></strong></td>
-                                    </tr>
+                                <tbody id="list_inv">
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+            <div class="col-md-7">                
+                <div class="portlet box green-seagreen">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-file-word-o"></i>List Uang Masuk
+                        </div>                 
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-scrollable">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <th>No</th>
+                                    <th>No. Uang Masuk</th>
+                                    <th>Jenis</th>
+                                    <th>Bank</th>
+                                    <th>Status</th>
+                                    <th>Currency</th> 
+                                    <th>Nominal</th>
+                                    <th>Action</th>
+                                </thead>
+                                <tbody id="list_um">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>                          
+        <div class="row">
+            <div class="col-md-5">
+                <div class="portlet box yellow-gold">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-file-word-o"></i>Data Invoice
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-scrollable">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <th>No</th>
+                                    <th>Trx</th>
+                                    <th>No Invoice</th>
+                                    <th>Total</th>
+                                    <th>Action</th>
+                                </thead>
+                                <tbody id="data_inv">
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -248,114 +276,30 @@
                         <div class="table-scrollable">
                             <table class="table table-striped table-bordered table-hover">
                                 <thead>
-                                <tr>
                                     <th>No</th>
-                                    <th>Jenis<br>Pembayaran</th>
-                                    <th>Bank<br>Pembayaran</th>
-                                    <th>Nomor Cek/<br>Rekening</th>
+                                    <th>No. Uang Masuk</th>
+                                    <th>Jenis</th>
+                                    <th>Bank</th>
+                                    <th>Status</th>
                                     <th>Currency</th> 
                                     <th>Nominal</th>
-                                    <th>Sisa</th>                      
-                                </tr>
+                                    <th>Action</th>
                                 </thead>
-                                <tbody>
-                                    <?php
-                                    $no = 1;
-                                    $total_nominal = 0;
-                                    $total_sisa_um = 0;
-                                    foreach ($details_um as $row){
-                                        echo '<tr>';
-                                        echo '<td style="text-align:center;">'.$no.'</td>';
-                                        echo '<td>'.$row->jenis_pembayaran.'</td>';
-                                        echo '<td>'.$row->bank_pembayaran.'</td>';
-                                        echo '<td>'.$row->nomor.'</td>';
-                                        echo '<td>'.$row->currency.'</td>';
-                                        $sisa = $row->nominal - $row->paid;
-                                        echo '<td style="text-align:right;">'.number_format($row->nominal,0,',', '.').'</td>';
-                                        echo '<td>'.number_format($sisa,0,',','.').'</td>';
-                                        echo '</tr>';
-                                        $total_nominal += $row->nominal;
-                                        $total_sisa_um += $sisa;
-                                        $no++;
-                                    }
-                                    ?>
-                                    <tr>
-                                        <td style="text-align:right;" colspan="5"><strong>Total Harga </strong></td>
-                                        <td style="text-align:right;">
-                                            <strong><?php echo number_format($total_nominal,0,',','.'); ?></strong>
-                                        </td>
-                                        <td style="text-align:right;">
-                                            <strong><?php echo number_format($total_sisa_um,0,',','.'); ?></strong>
-                                        </td>
-                                    </tr>
+                                <tbody id="data_um">
+                                    
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>                          
-        <div class="row">
-            <div class="col-md-12">
-                <div class="portlet box green">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="fa fa-file-word-o"></i>Detail Matching Invoice
-                        </div>                 
-                    </div>
-                    <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-bordered table-striped table-hover">
-                                <thead style="border: 1px solid #000;">
-                                    <th colspan="3" style="text-align: center; border-right: 1px solid #000;">Invoice</th>
-                                    <th colspan="3" style="text-align: center; border-right: 1px solid #000;">Uang Masuk</th>
-                                    <th colspan="3" style="text-align: center; border-right: 1px solid #000;" >Hutang</th>
-                                    <th colspan="3" style="text-align: center;">Details</th>
-                                </thead>
-                                <thead>
-                                    <th>No</th>
-                                    <th>No. Invoice</th>
-                                    <th style="border-right:1px solid #000;">Total<br>Invoice</th>
-                                    <th>Jenis<br>Pembayaran</th>
-                                    <th>Nomor Cek<br>/Rekening</th>
-                                    <th style="border-right:1px solid #000;">Total<br>Nominal</th>
-                                    <th>No.<br>Invoice Hutang</th>
-                                    <th>Nominal<br>Hutang</th>
-                                    <th style="border-right:1px solid #000;">Hutang<br>Dipotong</th>
-                                    <th>UM<br>Digunakan</th>
-                                    <th>Sisa<br>Invoice</th>
-                                    <th>Sisa<br>UM</th>
-                                </thead>
-                                <tbody id="boxDetailUm">
-                                    <?php
-                                        $no = 1;
-                                        foreach ($details_matching as $row){
-                                            echo '<tr>';
-                                            echo '<td style="text-align:center;">'.$no.'</td>';
-                                            echo '<td>'.$row->no_invoice.'</td>';
-                                            echo '<td style="border-right:1px solid #000;">'.number_format($row->total,0,',', '.').'</td>';
-                                            echo '<td>'.$row->jenis_pembayaran.'</td>';
-                                            echo '<td>'.$row->nomor.'</td>';
-                                            echo '<td style="border-right:1px solid #000;">'.number_format($row->nominal,0,',', '.').'</td>';
-                                            echo '<td>'.$row->no_hutang.'</td>';
-                                            echo '<td>'.number_format($row->total_hutang,0,',','.').'</td>';
-                                            echo '<td style="border-right:1px solid #000;">'.number_format($row->used_hutang,0,',', '.').'</td>';
-                                            echo '<td style="text-align:right;">'.number_format($row->paid,0,',', '.').'</td>';
-                                            echo '<td style="text-align:right;">'.number_format($row->sisa_invoice,0,',', '.').'</td>';
-                                            echo '<td style="text-align:right;">'.number_format($row->sisa_um,0,',', '.').'</td>';
-                                            echo '</tr>';
-                                            $no++;
-                                        }
-                                        ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            <a href="<?php echo base_url('index.php/Finance/matching'); ?>" class="btn blue-hoki"> 
-                        <i class="fa fa-angle-left"></i> Kembali </a>
             </div>
         </div>
+            <a href="<?php echo base_url('index.php/Finance/matching'); ?>" class="btn blue-hoki"> 
+                        <i class="fa fa-angle-left"></i> Kembali </a>
+                        &nbsp;
+            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                        <i class="fa fa-floppy-o"></i> Simpan </a>
+        </form>
         <?php
             }else{
         ?>
@@ -367,194 +311,247 @@
             }
         ?>
     </div>
-</div> 
+</div>
 <script>
+function simpanData(){
+    var result = confirm("Anda yakin untuk menyimpannya ?");
+    if (result) {
+        $('#formku').submit(); 
+    }
+}
+
 function numberWithCommas(x) {
      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-function load_invoice_plus(id){
+function myCurrency(evt) {
+    var charCode = (evt.which) ? evt.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
+        return false;
+    return true;
+}
+
+function getComa(value, id){
+    angka = value.toString().replace(/\./g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    hitungSubTotal();
+}
+
+function hitungSubTotal(){
+    nominal = $('#nominal').val().toString().replace(/\./g, "");
+    b1 = $('#b_1').val().toString().replace(/\./g, "");
+    b2 = $('#b_2').val().toString().replace(/\./g, "");
+    total_harga = Number(nominal) - (Number(b1) + Number(b2));
+    $('#total_nominal').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+}
+
+function list_inv(id){
     $.ajax({
-        url: "<?php echo base_url('index.php/Finance/get_invoice_list_plus'); ?>",
+        url: "<?php echo base_url('index.php/Finance/load_list_invoice'); ?>",
         type: "POST",
         data: "id="+id,
-        dataType: "html",
+        dataType: "json",
         success: function(result) {
-            $('#invoice_id').html(result);
+            $('#list_inv').html(result);
         }
-    })
+    });
 }
 
-function load_invoice_minus(id){
-    $.ajax({
-        url: "<?php echo base_url('index.php/Finance/get_invoice_list_minus'); ?>",
-        type: "POST",
-        data: "id="+id,
-        dataType: "html",
-        success: function(result) {
-            $('#invoice_min').html(result);
-        }
-    })
-}
-
-function get_data_invoice(id){
-    if(''!=id){
-        $.ajax({
-            url: "<?php echo base_url('index.php/Finance/get_data_invoice'); ?>",
-            type: "POST",
-            data: "id="+id,
-            dataType: "json",
-            success: function(result) {
-                $('#harga_invoice').val(numberWithCommas(result['total']-result['paid']));
-                const myHutang = $('#hutang').val();
-                const newHutang = myHutang.replace(/\./g, '');
-                const myInv = $('#harga_invoice').val();
-                const Inv = myInv.replace(/\./g, '');
-                const newInv = (Inv - newHutang);
-                const myUm = $('#harga_um').val();
-                const newUm = myUm.replace(/\./g, '');
-                const sisa  = (newInv-newUm);
-                if(sisa>0){
-                    $('#sisa_invoice').val(numberWithCommas(sisa));
-                    $('#sisa_um').val(0);
-                    $('#sisa_hutang').val(0);
-                }else{
-                    var sisa1 = (newUm-newInv);
-                    if(sisa1 > newUm){
-                        const hutang = (sisa1 - newUm);
-                        $('#sisa_hutang').val(numberWithCommas(hutang));
-                    }else{
-                        $('#sisa_um').val(numberWithCommas(sisa1));
-                        $('#sisa_invoice').val(0);
-                    }
-                }
-            }
-        });
-    }
-}
-
-function get_data_invoice_min(id){
-    if(''!=id){
-        $.ajax({
-            url: "<?php echo base_url('index.php/Finance/get_data_hutang'); ?>",
-            type: "POST",
-            data: "id="+id,
-            dataType: "json",
-            success: function(result){
-                $('#hutang').val(numberWithCommas(result['total']-result['used_hutang']));
-                const myHutang = $('#hutang').val();
-                const newHutang = myHutang.replace(/\./g, '');
-                const myInv = $('#harga_invoice').val();
-                const Inv = myInv.replace(/\./g, '');
-                const newInv = (Inv - newHutang);
-                const myUm = $('#harga_um').val();
-                const newUm = myUm.replace(/\./g, '');
-                const sisa  = (newInv-newUm);
-                if(sisa>0){
-                    $('#sisa_invoice').val(numberWithCommas(sisa));
-                    $('#sisa_um').val(0);
-                    $('#sisa_hutang').val(0);
-                }else{
-                    var sisa1 = (newUm-newInv);
-                    if(sisa1 > newUm){
-                        const hutang = (sisa1 - newUm);
-                        $('#sisa_hutang').val(numberWithCommas(hutang));
-                    }else{
-                        $('#sisa_um').val(numberWithCommas(sisa1));
-                        $('#sisa_invoice').val(0);
-                    }
-                }
-            }
-        });
-    }
-}
-
-function load_um(id){
-    $.ajax({
-        url: "<?php echo base_url('index.php/Finance/get_um_list'); ?>",
-        async: false,
-        type: "POST",
-        data: "id="+id,
-        dataType: "html",
-        success: function(result) {
-            $('#um_id').html(result);
-        }
-    })
-}
-
-function get_data_um(id){
-    if(''!=id){
-        $.ajax({
-            url: "<?php echo base_url('index.php/Finance/get_um'); ?>",
-            type: "POST",
-            data: "id="+id,
-            dataType: "json",
-            success: function(result) {
-                $('#harga_um').val(numberWithCommas(result['nominal']-result['paid']));
-                const myHutang = $('#hutang').val();
-                const newHutang = myHutang.replace(/\./g, '');
-                const myInv = $('#harga_invoice').val();
-                const Inv = myInv.replace(/\./g, '');
-                const newInv = (Inv - newHutang);
-                const myUm = $('#harga_um').val();
-                const newUm = myUm.replace(/\./g, '');
-                const sisa  = (newInv-newUm);
-                if(sisa>0){
-                    $('#sisa_invoice').val(numberWithCommas(sisa));
-                    $('#sisa_um').val(0);
-                    $('#sisa_hutang').val(0);
-                }else{
-                    var sisa1 = (newUm-newInv);
-                    if(sisa1 > newUm){
-                        const hutang = (sisa1 - newUm);
-                        $('#sisa_hutang').val(numberWithCommas(hutang));
-                    }else{
-                        $('#sisa_um').val(numberWithCommas(sisa1));
-                        $('#sisa_invoice').val(0);
-                    }
-                }
-            }
-        });
-    }
-}
-
-// function simpan_matching(id){
+// function addInv(id){
 //     $.ajax({
-//         url: "<?php echo base_url('index.php/Finance/simpan_matching'); ?>",
-//         type: "POST",
-//         data : {dtr_id: id,po_id: $('#po_id').val()},
-//         success: function (result){            
-//             if(result['type_message']=="sukses"){
-//                 alert(result['message']);
-//                 location.reload();
+//         type:"POST",
+//         url:'<?php echo base_url('index.php/Finance/add_inv_match'); ?>',
+//         data:{
+//            id:$('#id').val(),
+//            id_inv:id
+//         },
+//         success:function(result){
+//             if(result['message_type']=="sukses"){
+//                 list_inv(<?php echo $header['id_customer'];?>);
+//                 data_inv(<?php echo $header['id'];?>);
 //             }else{
-//                 alert(result['message']);
-//             }
+//                 $('#message').html(result['message']);
+//                 $('.alert-danger').show(); 
+//             }            
 //         }
 //     });
-// };
+// }
 
-function input(){        
-    $("#myModal").find('.modal-title').text('Input Matching');
-    $("#myModal").modal('show',{backdrop: 'true'});
-    $("#id_modal").val(<?php echo $header['id'];?>);
-    load_invoice_plus(<?php echo $header['id'];?>);
-    load_invoice_minus(<?php echo $header['id'];?>);
-    load_um(<?php echo $header['id'];?>);
+function delInv(id,id_inv){
+    $.ajax({
+        type:"POST",
+        url:'<?php echo base_url('index.php/Finance/del_inv_match'); ?>',
+        data:{
+           id:id,
+           id_inv:id_inv
+        },
+        success:function(result){
+            if(result['message_type']=="sukses"){
+                list_inv(<?php echo $header['id_customer'];?>);
+                data_inv(<?php echo $header['id'];?>);
+            }else{
+                $('#message').html(result['message']);
+                $('.alert-danger').show(); 
+            }            
+        }
+    });
 }
 
-function saveDetail(){
-    if($.trim($("#harga_invoice").val()) == ""){
-        $('#message').html("Invoice harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#harga_um").val()) == ""){
-        $('#message').html("Uang Masuk harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show(); 
-    }else{
-        $('#message').html("");
-        $('.alert-danger').hide();
-        $('#frmDetail').attr("action", "<?php echo base_url(); ?>index.php/Finance/add_matching");
+function data_inv(id){
+    $.ajax({
+        url: "<?php echo base_url('index.php/Finance/load_data_invoice'); ?>",
+        type: "POST",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result) {
+            $('#data_inv').html(result);
+        }
+    });
+}
+
+function addInv(){
+    var result = confirm("Anda yakin untuk menambahnya ?");
+    if (result) {
+        $('#frmDetail').attr("action", "<?php echo base_url(); ?>index.php/Finance/add_inv_match");
         $('#frmDetail').submit(); 
     }
 }
+
+function saveInv(){
+    var result = confirm("Anda yakin untuk menyimpan ?");
+    if (result) {
+        $('#frmDetail').attr("action", "<?php echo base_url(); ?>index.php/Finance/save_inv_match");
+        $('#frmDetail').submit(); 
+    }
+}
+
+function input_inv(id){
+    $.ajax({
+        url: "<?php echo base_url('index.php/Finance/get_data_invoice'); ?>",
+        type: "POST",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result){
+            $("#myModal").find('.modal-title').text('Input Matching');
+            $("#myModal").modal('show',{backdrop: 'true'});
+            $("#tambah").show();
+            $("#simpan").hide();
+            $("#id_modal").val(<?php echo $header['id'];?>);
+            $("#no_invoice").val(result['no_invoice']);
+            $("#invoice_id").val(result['id']);
+            $("#nominal").val(numberWithCommas(result['total']));
+            $("#total_nominal").val(numberWithCommas(result['total']));
+        }
+    });
+}
+
+function view_inv(id){
+    $.ajax({
+        url: "<?php echo base_url('index.php/Finance/view_data_invoice'); ?>",
+        type: "POST",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result){
+            $("#myModal").find('.modal-title').text('Edit Matching');
+            $("#myModal").modal('show',{backdrop: 'true'});
+            $("#tambah").hide();
+            $("#simpan").show();
+            $("#id_modal").val(<?php echo $header['id'];?>);
+            $("#no_invoice").val(result['no_invoice']);
+            $("#invoice_id").val(id);
+            $('#b_1').val(numberWithCommas(result['biaya1']));
+            $('#k_1').val(result['ket1'])
+            $('#b_2').val(numberWithCommas(result['biaya2']));
+            $('#k_2').val(result['ket2']);
+            $("#nominal").val(numberWithCommas(result['total']));
+            $("#total_nominal").val(numberWithCommas(Number(result['total'])-(Number(result['biaya1'])+Number(result['biaya2']))));
+        }
+    });
+}
+
+/** UM DIBAWAH **/
+
+function list_um(id){
+    $.ajax({
+        url: "<?php echo base_url('index.php/Finance/load_list_um'); ?>",
+        type: "POST",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result) {
+            $('#list_um').html(result);
+        }
+    });
+}
+
+function addUM(id){
+    $.ajax({
+        type:"POST",
+        url:'<?php echo base_url('index.php/Finance/add_um_match'); ?>',
+        data:{
+           id:$('#id').val(),
+           id_um:id
+        },
+        success:function(result){
+            if(result['message_type']=="sukses"){
+                list_um(<?php echo $header['id_customer'];?>);
+                data_um(<?php echo $header['id'];?>);
+            }else{
+                $('#message').html(result['message']);
+                $('.alert-danger').show(); 
+            }            
+        }
+    });
+}
+
+function delUM(id,id_um){
+    $.ajax({
+        type:"POST",
+        url:'<?php echo base_url('index.php/Finance/del_um_match'); ?>',
+        data:{
+           id:id,
+           id_um:id_um
+        },
+        success:function(result){
+            if(result['message_type']=="sukses"){
+                list_um(<?php echo $header['id_customer'];?>);
+                data_um(<?php echo $header['id'];?>);
+            }else{
+                $('#message').html(result['message']);
+                $('.alert-danger').show(); 
+            }            
+        }
+    });
+}
+
+function data_um(id){
+    $.ajax({
+        url: "<?php echo base_url('index.php/Finance/load_data_um'); ?>",
+        type: "POST",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result) {
+            $('#data_um').html(result);
+        }
+    });
+}
+</script>
+<link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+<script>
+$(function(){        
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });
+    list_inv(<?php echo $header['id_customer']; ?>);
+    list_um(<?php echo $header['id_customer']; ?>);
+    data_inv(<?php echo $header['id']; ?>);
+    data_um(<?php echo $header['id']; ?>);
+});
 </script>

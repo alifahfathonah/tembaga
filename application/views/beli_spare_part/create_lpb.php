@@ -241,10 +241,7 @@ function simpanData(){
     
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kososng!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#pengirim").val()) == ""){
-        $('#message').html("Nama pengirim harus diisi!");
-        $('.alert-danger').show(); 
+        $('.alert-danger').show();
     }else{    
         if(item_check==0){
             $('#message').html("Silahkan pilih item spare part yang diterima!"); 

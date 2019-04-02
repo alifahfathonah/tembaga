@@ -311,8 +311,12 @@ class SalesOrder extends CI_Controller{
         $user_ppn  = $this->session->userdata('user_ppn');
         
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('SO', $tgl_input); 
-        
+        if($user_ppn == 1){
+            $code = $this->Model_m_numberings->getNumbering('SO-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('SO', $tgl_input); 
+        }
+
         if($code){
             $category = $this->input->post('jenis_barang');
             
@@ -726,9 +730,14 @@ class SalesOrder extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $user_ppn = $this->session->userdata('user_ppn');
         
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('SJ', $tgl_input); 
+        if($user_ppn == 1){
+            $code = $this->Model_m_numberings->getNumbering('SJ-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('SJ', $tgl_input); 
+        }
         
         if($code){        
             $data = array(

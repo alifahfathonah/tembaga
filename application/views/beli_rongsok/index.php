@@ -227,7 +227,7 @@
                         <td><?php echo $data->nama_supplier; ?></td>
                         <td><?php echo $data->pic; ?></td>
                         <?php if($this->session->userdata('user_ppn') == 0){ 
-                           echo (($data->flag_ppn==1)? '<td><i class="fa fa-check"></i> Yes</td>': '<td><i class="fa fa-times"></i> No</td>');
+                           echo (($data->ppn==1)? '<td><i class="fa fa-check"></i> Yes</td>': '<td><i class="fa fa-times"></i> No</td>');
                         }
                         ?>
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>

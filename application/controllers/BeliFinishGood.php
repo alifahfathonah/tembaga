@@ -32,7 +32,7 @@ class BeliFinishGood extends CI_Controller{
     function po_list_outdated(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
-        $user_ppn = $this->session->userdata('user_ppn');   
+        $user_ppn    = $this->session->userdata('user_ppn');   
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -71,7 +71,11 @@ class BeliFinishGood extends CI_Controller{
         $user_ppn  = $this->session->userdata('user_ppn');
         
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('POFG', $tgl_input); 
+        if($user_ppn == 0){
+            $code = $this->Model_m_numberings->getNumbering('POFG', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('POFG-KMP', $tgl_input);
+        }
 
         $data = array(
             'no_po'=> $code,

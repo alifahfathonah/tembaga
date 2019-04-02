@@ -49,7 +49,7 @@
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-file-word-o"></i>Data Matching Invoice Customer
+                    <i class="fa fa-file-word-o"></i>List Kas
                 </div>
                 <div class="tools">
                     <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter"><i class="fa fa-search"></i> Filter Cek</a>
@@ -67,7 +67,7 @@
                     <th style="width:50px;">No</th>
                     <th>Jenis Transaksi</th> 
                     <th>Bank</th> 
-                    <th>No. Uang Masuk/<br>No. Giro/ No. Pembayaran</th>
+                    <th>No. Uang Masuk</th>
                     <th>Nama Customer</th>
                     <th>Nominal</th>
                     <th>Keterangan</th>
@@ -82,9 +82,9 @@
                     ?>
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
-                        <td><?php ($data->jenis_trx) ? print('<i class="fa fa-arrow-circle-up"></i> Keluar'): print('<i class="fa fa-arrow-circle-down"></i> Masuk');?></td>
-                        <td><?php echo $data->kode_bank; ?></td>
-                        <td><?php echo $data->no_uang_masuk.$data->no_giro.$data->no_pembayaran; ?></td>
+                        <?php ($data->jenis_trx) ? print('<td style="background-color:red; color: white;"><i class="fa fa-arrow-circle-up"></i> Keluar</td>'): print('<td style="background-color:green; color: white;"><i class="fa fa-arrow-circle-down"></i> Masuk</td>');?>
+                        <td><?php ($data->id_bank==0) ? print('KAS') : print($data->kode_bank); ?></td>
+                        <td><?php echo $data->nomor; ?></td>
                         <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->currency.' '.number_format($data->nominal,0,',','.') ?></td>
                         <td><?php echo $data->keterangan; ?></td>
@@ -121,6 +121,6 @@
 <script>
 function filterData(){
     var id=$('#customer').val();
-    window.location = 'Finance/filter_kas/'+id;
+    window.location = 'filter_kas/'+id;
 }
 </script>  

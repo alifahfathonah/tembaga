@@ -73,13 +73,14 @@ class Model_beli_wip extends CI_Model
         $data = $this->db->query("Select dtwip.*, 
                     po.no_po, 
                     spl.nama_supplier,
+                    COALESCE(po.ppn,".$user_ppn.") as flag_ppn,
                     usr.realname As penimbang,
                 (Select count(dtwipd.id)As jumlah_item From dtwip_detail dtwipd Where dtwipd.dtwip_id = dtwip.id)As jumlah_item
                 From dtwip
-                    Left Join po On (dtwip.po_id = po.id) 
+                    Left Join po On (dtwip.po_id > 0 and dtwip.po_id = po.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) or (dtwip.supplier_id = spl.id) 
-                    Left Join users usr On (dtwip.created_by = usr.id) 
-                
+                    Left Join users usr On (dtwip.created_by = usr.id)
+                Where COALESCE(po.ppn,".$user_ppn.") =".$user_ppn."
                 Order By dtwip.id Desc");
         return $data;
     }

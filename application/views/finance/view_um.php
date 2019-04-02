@@ -130,6 +130,16 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
+                            No Uang Masuk<font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_um" name="no_um" readonly="readonly" class="form-control myline" style="margin-bottom:5px" value="<?php echo $myData['no_uang_masuk']; ?>">
+
+                            <input type="hidden" id="id" name="id" value="<?php echo $myData['id']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Nama Customer<font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">

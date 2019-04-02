@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Finance
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Finance/slip_setoran'); ?>"> Data Slip Setoran </a>
+            <a href="<?php echo base_url('index.php/Finance/pembayaran'); ?>"> Data Pembayaran </a>
         </h4>          
     </div>
 </div>
@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['index']==1) ){
+            if( ($group_id==1)||($hak_akses['matching']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -25,25 +25,21 @@
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-file-word-o"></i>Data Slip Setoran
-                </div>
-                <div class="tools">
-                <?php
-                    if( ($group_id==1)||($hak_akses['add_kas']==1) ){
-                ?>
-                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Finance/add_slip_setoran"> <i class="fa fa-plus"></i> Transfer Slip Setoran</a>
-                <?php } ?>
-                </div>
+                    <i class="fa fa-file-word-o"></i>Data Matching Invoice Customer
+                </div>   
             </div>
             <div class="portlet-body">
                 <table class="table table-striped table-bordered table-hover" id="sample_6">
                 <thead>
                 <tr>
                     <th style="width:50px;">No</th>
-                    <th>No. Pembayaran</th> 
-                    <th>Tanggal</th>
-                    <th>Nominal</th>
-                    <th>Bank</th>
+                    <th>Nama Customer</th> 
+                    <th>PIC</th> 
+                    <th>Alamat</th>
+                    <th>Jumlah<br>Sales Order</th>
+                    <th>Jumlah<br>Surat Jalan</th>
+                    <th>Jumlah<br>Invoice</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -54,14 +50,21 @@
                     ?>
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
-                        <td><?php echo $data->no_pembayaran; ?></td>
-                        <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <td><?php echo number_format($data->nominal,0,',','.'); ?></td>
-                    <?php if(!empty($data->nama_bank)){
-                        echo '<td style="background-color: green; color: white;">'.$data->nama_bank.'</td>';
-                    }else{
-                        echo '<td></td>';
-                    }?>
+                        <td><?php echo $data->nama_customer; ?></td>
+                        <td><?php echo $data->pic; ?></td>
+                        <td><?php echo $data->alamat; ?></td>
+                        <td><?php echo $data->jumlah_so; ?></td>
+                        <td><?php echo $data->jumlah_sj; ?></td>
+                        <td><?php echo $data->jumlah_invoice; ?></td>
+                        <td>
+                            <!-- <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/view_matching/<?php echo $data->id; ?>" 
+                               style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a> -->
+                        <?php
+                            if( ($group_id==1)||($hak_akses['matching']==1) ){
+                        ?>
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/Finance/matching_invoice/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-files-o"></i> Matching &nbsp; </a>
+                        <?php } ?>
+                        </td>
                     </tr>
                     <?php
                         }
@@ -85,3 +88,6 @@
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+<script>
+
+</script>         

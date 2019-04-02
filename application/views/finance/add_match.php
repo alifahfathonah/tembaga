@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['add_kas']==1) ){
+            if( ($group_id==1)||($hak_akses['add_invoice']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -23,23 +23,19 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/Finance/save_slip_setoran'); ?>">
+              id="formku" action="<?php echo base_url('index.php/Finance/save_match'); ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            Pilih Bank Tujuan <font color="#f00">*</font>
+                            No. Matching <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="bank_id" name="bank_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($bank_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->kode_bank.' ('.$row->nomor_rekening.')'.'</option>';
-                                    }
-                                ?>
-                            </select>
+                            <input type="text" id="no_pembayaran" name="no_pembayaran" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="Auto generate">
+
+                            <input type="hidden" id="flag_ppn" name="flag_ppn" value="<?= $ppn ;?>">
                         </div>
                     </div>
                     <div class="row">
@@ -48,7 +44,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;"
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
                                 value="<?php echo date('Y-m-d'); ?>">
                         </div>
                     </div>  
@@ -72,47 +68,40 @@
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
-                    <div class="row">
-                        <div class="col-md-4">&nbsp;</div>
-                        <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                                <i class="fa fa-floppy-o"></i> Input Details </a>
-                            <a href="<?php echo base_url('index.php/Finance/slip_setoran'); ?>" class="btn blue-hoki"> 
-                            <i class="fa fa-angle-left"></i> Kembali </a>
-                        </div>
-                    </div>
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
-                            Pilih Slip Setoran <font color="#f00">*</font>
+                            Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="slip_id" name="slip_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
-                                onclick="get_data();">
+                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                 <option value=""></option>
                                 <?php
-                                    foreach ($data_slip as $row){
-                                        echo '<option value="'.$row->id.'" data-small="'.$row->nominal.'">'.$row->no_pembayaran.'</option>';
+                                    foreach ($customer_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
                                     }
                                 ?>
                             </select>
                         </div>
                     </div>
+                </div>    
+                <div class="col-md-12">
                     <div class="row">
-                        <div class="col-md-4">
-                            Nominal
-                        </div>
+                        <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
-                            <input type="text" id="nominal" name="nominal" 
-                                class="form-control" style="margin-bottom:5px" readonly="readonly">
+                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                                <i class="fa fa-floppy-o"></i> Input Details </a>
+                            <a href="<?php echo base_url('index.php/Finance/invoice'); ?>" class="btn blue-hoki"> 
+                            <i class="fa fa-angle-left"></i> Kembali </a>
                         </div>
                     </div>
-                </div>
+                </div>     
             </div>
         </form>
+        
         <?php
             }else{
         ?>
@@ -126,30 +115,32 @@
     </div>
 </div> 
 <script>
-function numberWithCommas(x) {
-     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+function myCurrency(evt) {
+    var charCode = (evt.which) ? evt.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
+        return false;
+    return true;
 }
 
-function get_data(){
-    const nominal = $("#slip_id :selected").attr("data-small");
-    $('#nominal').val(numberWithCommas(nominal));
+function getComa(value, id){
+    angka = value.toString().replace(/\./g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    hitungSubTotal();
 }
 
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#bank_id").val()) == ""){
-        $('#message').html("Bank Tujuan harus dipilih!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#slip_id").val()) == ""){
-        $('#message').html("Slip Setoran harus dipilih, tidak boleh kosong!");
-        $('.alert-danger').show(); 
-    }else{    
+    }else if($.trim($("#m_customer_id").val()) == ""){
+        $('#message').html("Silahkan pilih Customer");
+        $('.alert-danger').show();
+    }else{
         $('#formku').submit(); 
     };
 };
 </script>
+
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
@@ -162,7 +153,16 @@ $(function(){
         buttonText: "Select date",
         changeMonth: true,
         changeYear: true,
-        dateFormat: 'dd-mm-yy'
-    });       
+        dateFormat: 'yy-mm-dd'
+    });
+    $("#tanggal_jatuh").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yy-mm-dd'
+    });
 });
 </script>
