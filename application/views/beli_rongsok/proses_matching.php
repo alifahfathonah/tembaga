@@ -423,10 +423,11 @@ function approve(id){
         data : {dtr_id: id,po_id: $('#po_id').val()},
         success: function (result){            
             if(result['type_message']=="sukses"){
-                alert(result['message']);
+                // alert(result['message']);
                 location.reload();
             }else{
-                alert(result['message']);
+                // alert(result['message']);
+                location.reload();
             }
         }
     });

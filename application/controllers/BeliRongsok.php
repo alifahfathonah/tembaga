@@ -690,16 +690,16 @@ class BeliRongsok extends CI_Controller{
                         }
                 }
 
-            $return_data['type_message']= "sukses";
-            $return_data['message'] = "TTR sudah diberikan ke bagian gudang";
+            redirect('index.php/BeliRongsok/proses_matching/'.$this->input->post('po_id'));
+            // $return_data['type_message']= "sukses";
+            // $return_data['message'] = "TTR sudah diberikan ke bagian gudang";
                 //$return_data['message']= "TTR berhasil di-create dengan nomor : ".$code;                 
         }else{
-            $return_data['type_message']= "error";
-            $return_data['message']= "Pembuatan TTR gagal, penomoran belum disetup!";
+            redirect('index.php/BeliRongsok/proses_matching/'.$this->input->post('po_id'));
         }                  
         
-       header('Content-Type: application/json');
-       echo json_encode($return_data);
+       // header('Content-Type: application/json');
+       // echo json_encode($return_data);
     }
     
     public function approve_ttr(){
