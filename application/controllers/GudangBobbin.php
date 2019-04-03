@@ -379,7 +379,7 @@ class GudangBobbin extends CI_Controller{
 
             if($this->db->insert('m_bobbin_peminjaman', $data)){
                 $peminjaman_id = $this->db->insert_id();
-                $loop = $this->db->query("select mb.id, mb.nomor_bobbin from bobbin_spb_detail mbsd left join m_bobbin mb on (mbsd.id_bobbin = mb.id) where mbsd.id_spb_bobbin =".$spb_id)->result();
+                $loop = $this->db->query("select mb.id, mb.nomor_bobbin from bobbin_spb_fulfilment mbsd left join m_bobbin mb on (mbsd.bobbin_id = mb.id) where mbsd.id_spb_bobbin =".$spb_id)->result();
 
                 foreach ($loop as $row) {
                     $data_detail = array(

@@ -113,7 +113,7 @@
                                     <td><?php echo $row->nomor_bobbin ?></td>
                                 </tr>
                             <?php   
-                                }
+                                $no++; }
                             ?>
                             </tbody>
                         </table>

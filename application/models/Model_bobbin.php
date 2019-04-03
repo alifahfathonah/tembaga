@@ -291,8 +291,8 @@ class Model_bobbin extends CI_Model{
 
     function load_bobbin_spb($id){
         $data = $this->db->query("select mbsd.*, mb.nomor_bobbin 
-            from bobbin_spb_detail mbsd 
-            left join m_bobbin mb on (mbsd.id_bobbin = mb.id) 
+            from bobbin_spb_fulfilment mbsd 
+            left join m_bobbin mb on (mbsd.bobbin_id = mb.id) 
             where mbsd.id_spb_bobbin = ".$id);
         return $data;
     }
