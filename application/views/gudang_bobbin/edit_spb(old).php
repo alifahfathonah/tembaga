@@ -99,27 +99,16 @@
                             <thead>
                                 <th>No</th>
                                 <th>Nomor Bobbin</th>
-                                <th>Jumlah</th>
+                                <th>Berat</th>
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
                             <tr>
                                 <td style="text-align:center"><div id="no_tabel_1">1</div></td>
-                                <input type="hidden" id="id_size_1" name="details[1][id_size]">
-                                <td>
-                                    <select id="jenis_size_1" name="details[1][jenis_size]" placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom: 5px;" onchange="check(1);">
-                                        <option value=""></option>
-                                        <?php foreach ($jenis_size as $row) {
-                                            echo '<option value="'.$row->id.'">('.$row->bobbin_size.") ".$row->keterangan."</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </td>
-                                <td><input type="text" id="qty_1" name="details[1][qty]" class="form-control myline"></td>
-                                <td style="text-align:center">
-                                    <a id="add_1" href="javascript:;" class="btn btn-xs btn-circle green" onclick="create_new_input(1);" style="margin-top:5px"><i class="fa fa-plus"></i> Tambah </a>
-                                    <a id="del_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Hapus </a>
-                                </td>
+                                <input type="hidden" id="id_bobbin_1" name="details[1][id_bobbin]">
+                                <td><input type="text" id="nomor_bobbin_1" name="details[1][nomor_bobbin]" class="form-control myline" onchange="getBobbin(1);"  autofocus onfocus="this.value = this.value;" onkeyup="this.value = this.value.toUpperCase()"></td>
+                                <td><input type="text" id="berat_1" name="details[1][berat]" class="form-control myline" readonly="readonly"></td>
+                                <td style="text-align:center"><a id="btn_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
                             </tr>
                             </tbody>
                         </table>
@@ -152,26 +141,47 @@
     </div>
 </div> 
 <script>
-function check(id){
-    var check = check_duplicate();
-    if(check){
-
-    }else{
-        alert('Inputan tidak boleh sama !');
-        $('#jenis_size_'+id).select2('val','');
-    }
-}
-
-function check_duplicate(){
+function check_duplicate(id){
     var valid = true;
-        $.each($("select[name$='[jenis_size]']"), function (index1, item1) {
-            $.each($("select[name$='[jenis_size]']").not(this), function (index2, item2) {
+        $.each($("input[name$='[nomor_bobbin]']"), function (index1, item1) {
+            $.each($("input[name$='[nomor_bobbin]']").not(this), function (index2, item2) {
                 if ($(item1).val() == $(item2).val()) {
                     valid = false;
                 }
             });
         });
-        return valid;
+    return valid;
+}
+
+function getBobbin(id){
+    var no = $("#nomor_bobbin_"+id).val();
+    const new_id = id + 1;
+    if(no!=''){    
+        var check = check_duplicate();
+        if(check){
+            $.ajax({
+                url: "<?php echo base_url('index.php/GudangBobbin/get_bobbin'); ?>",
+                type: "POST",
+                data : {nomor_bobbin: no},
+                success: function (result){
+                    if (result!=null){
+                        $("#id_bobbin_"+id).val(result['id']);
+                        $("#berat_"+id).val(result['berat']);
+                        $("#btn_"+id).removeClass('disabled');
+                        $("#nomor_bobbin_"+id).prop('readonly', true);
+                        create_new_input(id);
+                        $('#nomor_bobbin_'+new_id).focus();
+                    } else {
+                        alert('Nomor Bobbin tidak ditemukan, silahkan ulangi kembali');
+                        $("#nomor_bobbin_"+id).val('');
+                    }
+                }
+            });
+        } else {
+            //alert('Inputan pallete tidak boleh sama dengan inputan sebelumnya!');
+            $("#nomor_bobbin_"+id).val('');
+        }
+    }
 }
 
 function simpanData(){
@@ -186,40 +196,20 @@ function simpanData(){
 function hapusDetail(id){
     var r=confirm("Anda yakin menghapus item bobbin ini?");
     if (r==true){
-        $('#no_tabel_'+id).closest('tr').remove();
+        $('#nomor_bobbin_'+id).closest('tr').remove();
         }
 }
 
 function create_new_input(id){
-    if($('#qty_'+id).val()==''){
-        alert('Jumlah tidak boleh kosong !');
-    }else{
-        var new_id = id+1;
-        $("#id_size_"+id).val($('#jenis_size_'+id).val());
-        $("#jenis_size_"+id).prop('disabled', true);
-        $("#qty_"+id).prop('readonly', true);
-        $("#del_"+id).removeClass('disabled');
-        $("#add_"+id).hide();
-        $("#no_tabel_"+id).prop('readonly', true);
-
-        $("#tabel_bobbin>tbody").append(
+       var new_id = id+1;
+        $("#tabel_bobbin>tbody").append('<tr>'+
             '<tr>'+
                 '<td style="text-align:center"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
-                '<input type="hidden" id="id_size_'+new_id+'" name="details['+new_id+'][id_size]">'+
-                '<td>'+
-                    '<select id="jenis_size_'+new_id+'" name="details['+new_id+'][jenis_size]" placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom: 5px;" onchange="check('+new_id+');">'+
-                        '<option value=""></option>'+
-                        '<?php foreach ($jenis_size as $row) { print('<option value="'.$row->id.'">('.$row->bobbin_size.") ".$row->keterangan."</option>"); } ?>'+
-                    '</select>'+
-                '</td>'+
-                '<td><input type="text" id="qty_'+new_id+'" name="details['+new_id+'][qty]" class="form-control myline"></td>'+
-                '<td style="text-align:center">'+
-                    '<a id="add_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle green" onclick="create_new_input('+new_id+');" style="margin-top:5px"><i class="fa fa-plus"></i> Tambah </a>'+
-                    '<a id="del_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Hapus </a>'+
-                '</td>'+
+                '<input type="hidden" id="id_bobbin_'+new_id+'" name="details['+new_id+'][id_bobbin]">'+
+                '<td><input type="text" id="nomor_bobbin_'+new_id+'" name="details['+new_id+'][nomor_bobbin]" class="form-control myline" onchange="getBobbin('+new_id+');"  autofocus onfocus="this.value = this.value;" onkeyup="this.value = this.value.toUpperCase()"></td>'+
+                '<td><input type="text" id="berat_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline" readonly="readonly"></td>'+
+                '<td style="text-align:center"><a id="btn_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
             '</tr>');
-        $('#jenis_size_'+new_id).select2();
-    }
 }
 </script>
 

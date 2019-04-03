@@ -111,7 +111,7 @@
                             <tr>
                                 <td style="text-align:center"><?php echo $no; ?></td>
                                 <td><?php echo $data->jenis_voucher; ?></td>
-                                <td><?php echo $data->jenis_barang; ?></td>
+                                <td><?php echo $data->jenis_barang.$data->nm_cost; ?></td>
                                 <td><?php echo $data->keterangan; ?></td>
                                 <td style="text-align:right"><?php echo number_format($data->amount,0,',','.'); ?></td>
                             </tr>

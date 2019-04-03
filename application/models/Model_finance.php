@@ -72,12 +72,13 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function voucher_list(){
+    function voucher_list($ppn){
         $data = $this->db->query("Select voucher.*, supplier.nama_supplier, 
-                po.no_po, po.tanggal As tanggal_po
+                po.no_po, coalesce(po.tanggal,0) As tanggal_po
                 From voucher 
                     Left Join po On (voucher.po_id = po.id)
                     left join supplier on (supplier.id = po.supplier_id)
+                Where voucher.flag_ppn =".$ppn."
                 Order By voucher.no_voucher");
         return $data;
     }

@@ -277,7 +277,7 @@ class GudangBobbin extends CI_Controller{
 
         //#CODE DIBAWAH UNTUK SAVE TANPA VIEW
         // $this->db->where('id', $this->input->post('spb_id'));
-        // $this->db->update('m_bobbin_spb', array('keperluan' => 2));
+        // $this->db->update('bobbin_spb', array('keperluan' => 2));
 
         // $this->load->model('Model_m_numberings');
         // $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);
@@ -295,7 +295,7 @@ class GudangBobbin extends CI_Controller{
 
         // $loop = $this->db->query("
         //     select msbd.*, b.nomor_bobbin
-        //     from m_bobbin_spb_detail msbd
+        //     from bobbin_spb_detail msbd
         //     left join m_bobbin b on (msbd.id_bobbin = b.id)
         //     where id_spb_bobbin = ".$this->input->post('spb_id'))->result();
         // foreach ($loop as $row) {
@@ -364,7 +364,7 @@ class GudangBobbin extends CI_Controller{
         #Insert surat peminjaman bobbin
         if($code){        
             $this->db->where('id', $spb_id);
-            $this->db->update('m_bobbin_spb', array(
+            $this->db->update('bobbin_spb', array(
                 'keperluan' => 2
             ));
 
@@ -379,7 +379,7 @@ class GudangBobbin extends CI_Controller{
 
             if($this->db->insert('m_bobbin_peminjaman', $data)){
                 $peminjaman_id = $this->db->insert_id();
-                $loop = $this->db->query("select mb.id, mb.nomor_bobbin from m_bobbin_spb_detail mbsd left join m_bobbin mb on (mbsd.id_bobbin = mb.id) where mbsd.id_spb_bobbin =".$spb_id)->result();
+                $loop = $this->db->query("select mb.id, mb.nomor_bobbin from bobbin_spb_detail mbsd left join m_bobbin mb on (mbsd.id_bobbin = mb.id) where mbsd.id_spb_bobbin =".$spb_id)->result();
 
                 foreach ($loop as $row) {
                     $data_detail = array(
@@ -759,7 +759,7 @@ class GudangBobbin extends CI_Controller{
             'created_at' => $tanggal
             );
 
-            if($this->db->insert('m_bobbin_spb', $data)){
+            if($this->db->insert('bobbin_spb', $data)){
                 redirect('index.php/GudangBobbin/edit_spb/'.$this->db->insert_id());  
             }else{
                 $this->session->set_flashdata('flash_msg', 'Data SPB Bobbin gagal disimpan, silahkan dicoba kembali!');
@@ -792,7 +792,8 @@ class GudangBobbin extends CI_Controller{
             $data['content']= "gudang_bobbin/edit_spb";
             $this->load->model('Model_bobbin');
             $data['header'] = $this->Model_bobbin->show_header_spb($id)->row_array();
-            $data['details'] = $this->Model_bobbin->show_detail_spb($id)->result();
+            $jp = $data['header']['jenis_packing'];
+            $data['jenis_size'] = $this->Model_bobbin->jenis_size($jp)->result();
     
             $this->load->view('layout', $data);   
         }else{
@@ -860,10 +861,11 @@ class GudangBobbin extends CI_Controller{
         #Create SPB fulfilment
         $details = $this->input->post('details');
         foreach ($details as $v) {
-            if($v['id_bobbin']!=''){   
-                $this->db->insert('m_bobbin_spb_detail', array(
+            if($v['id_size']!=''){   
+                $this->db->insert('bobbin_spb_detail', array(
                         'id_spb_bobbin'=>$this->input->post('id'),
-                        'id_bobbin'=>$v['id_bobbin']
+                        'jenis_size'=>$v['id_size'],
+                        'jumlah'=>$v['qty']
                             ));
             }   
         }
@@ -873,7 +875,7 @@ class GudangBobbin extends CI_Controller{
             );
         
         $this->db->where('id', $this->input->post('id'));
-        $this->db->update('m_bobbin_spb', $data);
+        $this->db->update('bobbin_spb', $data);
         
         $this->session->set_flashdata('flash_msg', 'Data SPB BB berhasil disimpan');
         redirect('index.php/GudangBobbin/spb_list');
@@ -895,7 +897,7 @@ class GudangBobbin extends CI_Controller{
 
             $this->load->model('Model_bobbin');
             $data['list_barang'] = $this->Model_bobbin->jenis_barang_list_by_spb($id)->result();
-            $data['myData'] = $this->Model_bobbin->show_header_spb($id)->row_array();           
+            $data['myData'] = $this->Model_bobbin->show_header_spb($id)->row_array();     
             $data['myDetail'] = $this->Model_bobbin->show_detail_spb($id)->result(); 
             $this->load->view('layout', $data);   
         }else{
@@ -913,22 +915,37 @@ class GudangBobbin extends CI_Controller{
         
         #Update status SPB
         $this->db->where('id', $spb_id);
-        $this->db->update('m_bobbin_spb', array(
+        $this->db->update('bobbin_spb', array(
                         'status'=> 1,
                         'keterangan' => $this->input->post('remarks'),
                         'approved_at'=> $tanggal,
                         'approved_by'=>$user_id
         ));
 
-        $key = $this->db->query("select *from m_bobbin_spb_detail where id_spb_bobbin = ".$spb_id)->result();
-        foreach ($key as $row) {
-            $id_bobbin = $row->id_bobbin;
-            $this->db->where('id', $id_bobbin);
-            $this->db->update('m_bobbin', array(
-                'status' => 3,
-                'modified_at' => $tanggal,
-                'modified_by' => $user_id
-            ));
+        // foreach ($key as $row) {
+        //     $id_bobbin = $row->id_bobbin;
+        //     $this->db->where('id', $id_bobbin);
+        //     $this->db->update('m_bobbin', array(
+        //         'status' => 3,
+        //         'modified_at' => $tanggal,
+        //         'modified_by' => $user_id
+        //     ));
+        // }
+        $details = $this->input->post('details');
+        foreach ($details as $v) {
+            if($v['id_bobbin']!=''){
+                $this->db->where('id', $v['id_bobbin']);
+                $this->db->update('m_bobbin', array(
+                        'status'=> 3,
+                        'modified_at' => $tanggal,
+                        'modified_by' => $user_id
+                            ));
+
+                $this->db->insert('bobbin_spb_fulfilment', array(
+                    'id_spb_bobbin'=> $spb_id,
+                    'bobbin_id'=> $v['id_bobbin']
+                ));
+            }   
         }
             
             if($this->db->trans_complete()){    
@@ -945,7 +962,7 @@ class GudangBobbin extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $id_spb = $this->input->post('header_id');
         
-        #Update status m_bobbin_spb
+        #Update status bobbin_spb
         $data = array(
                 'status'=> 9,
                 'rejected_at'=> $tanggal,
@@ -954,7 +971,7 @@ class GudangBobbin extends CI_Controller{
             );
         
         $this->db->where('id', $id_spb);
-        $this->db->update('m_bobbin_spb', $data);
+        $this->db->update('bobbin_spb', $data);
 
         // #Update NULL di t_gudang_fg
         // $this->db->where('t_spb_fg_id', $id_spb);

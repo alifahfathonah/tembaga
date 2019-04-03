@@ -2,11 +2,9 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h4 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Pembelian 
-            <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliSparePart'); ?>"> Pembelian Spare Part </a> 
-            <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliRongsok/voucher_list'); ?>"> Voucher List </a> 
+            <i class="fa fa-angle-right"></i> Finance
+            <i class="fa fa-angle-right"></i>
+            <a href="<?php echo base_url('index.php/Finance/voucher_list'); ?>"> Voucher List </a> 
         </h4>          
     </div>
 </div>
@@ -36,7 +34,7 @@
                     <th>No. PO</th>  
                     <th>Tanggal PO</th>                    
                     <th>Amount (Rp)</th> 
-                    <th>Katerangan</th>
+                    <th>Keterangan</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -53,7 +51,12 @@
                         <td><?php echo $data->nama_supplier ?></td>
                         <td><?php echo $data->jenis_voucher; ?></td>
                         <td><?php echo $data->no_po; ?></td>
-                        <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal_po)); ?></td>
+                        <td style="text-align:center"><?php 
+                        if($data->jenis_voucher=='Manual'){
+                            echo '-';
+                        }else{
+                            echo date('d-m-Y', strtotime($data->tanggal_po)); 
+                        }?></td>
                         <td style="text-align:right"><?php echo number_format($data->amount,0,',','.'); ?></td>
                         <td><?php echo $data->keterangan; ?></td>                        
                         <td style="text-align:center">                             

@@ -370,7 +370,8 @@ class Finance extends CI_Controller{
 
     function voucher_list(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -380,7 +381,7 @@ class Finance extends CI_Controller{
 
         $data['content']= "finance/voucher_list";
         $this->load->model('Model_finance');
-        $data['list_data'] = $this->Model_finance->voucher_list()->result();
+        $data['list_data'] = $this->Model_finance->voucher_list($ppn)->result();
 
         $this->load->view('layout', $data);
     }

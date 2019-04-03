@@ -163,4 +163,4 @@ SO Ampas Belum
 SJ Ampas Belum
 
 Voucher juga bedain penomorannya non-ppn dan KMP(Done)
-Nomor po belom masuk. Finance/Voucher_list/ belom di filter PPN dan NON
+Nomor po belom masuk. Finance/Voucher_list/ belom di filter PPN dan NON(Done)

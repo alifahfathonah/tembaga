@@ -131,39 +131,55 @@
                     ?>
                 </div>              
             </div>
-            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-scrollable">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <th>No</th>
+                                <th>Jenis</th>
+                                <th>Jumlah</th>
+                                <th>Keterangan</th>
+                            </thead>
+                            <tbody>
+                                <?php $no=0; foreach ($myDetail as $row) { $no++;
+                                    echo '<tr>';
+                                    echo '<td>'.$no.'</td>';
+                                    echo '<td>'.$row->bobbin_size.'</td>';
+                                    echo '<td>'.$row->jumlah.'</td>';
+                                    echo '<td>'.$row->keterangan.'</td>';
+                                    echo '<tr>';
+                                }?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
             <div class="panel panel-default">
                 <div class="panel-body">
                     <?php if ($myData['status']==0) { ?>
+
                     <div class="row">
                         <div class="col-md-12">
-                                <h4 align="center">Detail SPB BB dan Ketersediaan (Kuantitas dan Stok)</h4>
-                                <div class="table-scrollable">
-                                    <table class="table table-bordered table-striped table-hover">
-                                        <thead>
-                                            <th style="width:40px">No</th>
-                                            <th>Nomor Bobbin</th>
-                                            <th>Berat</th>
-                                            <th>Status</th>
-                                        </thead>
-                                        <tbody>
-                                        <?php
-                                            $no = 1;
-                                            foreach ($list_barang as $row){
-                                                echo '<tr>';
-                                                echo '<td style="text-align:center">'.$no.'</td>';
-                                                echo '<td>'.$row->nomor_bobbin.'</td>';
-                                                echo '<td>'.$row->berat.' kg</td>';
-                                                if($row->status == 0){
-                                                    echo '<td style="background-color:green; color:white; padding:4px">Ready</td>';
-                                                }
-                                                echo '</tr>';
-                                                $no++;
-                                            }
-                                        ?>
-                                        </tbody>
-                                    </table>
-                                </div>
+                            <div class="table-scrollable">
+                                <table class="table table-bordered table-striped table-hover" id="tabel_bobbin">
+                                    <thead>
+                                        <th>No</th>
+                                        <th>Nomor Bobbin</th>
+                                        <th>Berat</th>
+                                        <th>Actions</th>
+                                    </thead>
+                                    <tbody id="boxDetail">
+                                    <tr>
+                                        <td style="text-align:center"><div id="no_tabel_1">1</div></td>
+                                        <input type="hidden" id="id_bobbin_1" name="details[1][id_bobbin]">
+                                        <td><input type="text" id="nomor_bobbin_1" name="details[1][nomor_bobbin]" class="form-control myline" onchange="getBobbin(1);"  autofocus onfocus="this.value = this.value;" onkeyup="this.value = this.value.toUpperCase()"></td>
+                                        <td><input type="text" id="berat_1" name="details[1][berat]" class="form-control myline" readonly="readonly"></td>
+                                        <td style="text-align:center"><a id="btn_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                     <hr class="divider"/>
@@ -205,7 +221,6 @@
                                         </tbody>
                                     </table>
                                 </div>
-
                         </div>
                     </div>
                 <?php } ?>
@@ -276,37 +291,67 @@ function rejectData(){
     }
 }
 
-/*function getBarang(id){
-    $("#barang_id_"+id).val($("#barang_"+id).val());
-    var id_barang = $("#barang_"+id).val();
-    console.log(id_barang);
-    if(id_barang!=''){    
+function check_duplicate(id){
+    var valid = true;
+        $.each($("input[name$='[nomor_bobbin]']"), function (index1, item1) {
+            $.each($("input[name$='[nomor_bobbin]']").not(this), function (index2, item2) {
+                if ($(item1).val() == $(item2).val()) {
+                    valid = false;
+                }
+            });
+        });
+    return valid;
+}
+
+function getBobbin(id){
+    var no = $("#nomor_bobbin_"+id).val();
+    const new_id = id + 1;
+    if(no!=''){    
         var check = check_duplicate();
         if(check){
             $.ajax({
-                url: "<?php// echo base_url('index.php/GudangFG/get_uom_spb'); ?>",
+                url: "<?php echo base_url('index.php/GudangBobbin/get_bobbin'); ?>",
                 type: "POST",
-                data : {id: id_barang},
+                data : {nomor_bobbin: no},
                 success: function (result){
                     if (result!=null){
-                        $("#spb_id_"+id).val(result['id']);
-                        $("#uom_"+id).val(result['uom']);
+                        $("#id_bobbin_"+id).val(result['id']);
+                        $("#berat_"+id).val(result['berat']);
                         $("#btn_"+id).removeClass('disabled');
-                        $("#barang_"+id).attr('disabled','disabled');
-    
+                        $("#nomor_bobbin_"+id).prop('readonly', true);
                         create_new_input(id);
+                        $('#nomor_bobbin_'+new_id).focus();
                     } else {
-                        alert('Gagal menambahkan, silahkan ulangi kembali');
-                        $("#barang_"+id).val('');
+                        alert('Nomor Bobbin tidak ditemukan, silahkan ulangi kembali');
+                        $("#nomor_bobbin_"+id).val('');
                     }
                 }
             });
         } else {
-            alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
-            $("#no_pallete_"+id).val('');
+            //alert('Inputan pallete tidak boleh sama dengan inputan sebelumnya!');
+            $("#nomor_bobbin_"+id).val('');
         }
     }
-}*/
+}
+
+function hapusDetail(id){
+    var r=confirm("Anda yakin menghapus item bobbin ini?");
+    if (r==true){
+        $('#nomor_bobbin_'+id).closest('tr').remove();
+        }
+}
+
+function create_new_input(id){
+       var new_id = id+1;
+        $("#tabel_bobbin>tbody").append('<tr>'+
+            '<tr>'+
+                '<td style="text-align:center"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
+                '<input type="hidden" id="id_bobbin_'+new_id+'" name="details['+new_id+'][id_bobbin]">'+
+                '<td><input type="text" id="nomor_bobbin_'+new_id+'" name="details['+new_id+'][nomor_bobbin]" class="form-control myline" onchange="getBobbin('+new_id+');"  autofocus onfocus="this.value = this.value;" onkeyup="this.value = this.value.toUpperCase()"></td>'+
+                '<td><input type="text" id="berat_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline" readonly="readonly"></td>'+
+                '<td style="text-align:center"><a id="btn_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
+            '</tr>');
+}
 </script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>

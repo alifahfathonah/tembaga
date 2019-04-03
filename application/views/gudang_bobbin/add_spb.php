@@ -132,7 +132,13 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else{     
+    }else if($.trim($("#jenis_packing").val()) == ""){
+        $('#message').html("Jenis Packing belum dipilih!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#keperluan").val()) == ""){
+        $('#message').html("Keperluan belum dipilih!");
+        $('.alert-danger').show(); 
+    }else{  
         $('#formku').submit(); 
     };
 };

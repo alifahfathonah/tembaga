@@ -68,7 +68,7 @@ class Model_bobbin extends CI_Model{
     }
 
     function spb_list(){
-        $data = $this->db->query("select mbs.*, aprv.realname as approved_name, rjct.realname as rejected_name, (select count(mbsd.id) from m_bobbin_spb_detail mbsd where mbsd.id_spb_bobbin = mbs.id) as jumlah_item from m_bobbin_spb mbs
+        $data = $this->db->query("select mbs.*, aprv.realname as approved_name, rjct.realname as rejected_name, (select count(mbsd.id) from bobbin_spb_detail mbsd where mbsd.id_spb_bobbin = mbs.id) as jumlah_item from bobbin_spb mbs
             left join users aprv on (aprv.id = mbs.approved_by)
             left join users rjct on (rjct.id = mbs.rejected_by)
             order by id desc
@@ -82,7 +82,7 @@ class Model_bobbin extends CI_Model{
                 appr.realname As aprroved_name,
                 rjct.realname As rejected_name,
                 mjp.jenis_packing As nama_jenis
-                from m_bobbin_spb mbs
+                from bobbin_spb mbs
                     left join users usr on (mbs.created_by = usr.id)
                     left join m_jenis_packing mjp on (mjp.id = mbs.jenis_packing)
                     left join users appr on (mbs.approved_by = usr.id)
@@ -92,14 +92,20 @@ class Model_bobbin extends CI_Model{
         return $data;
     }
 
-    function show_detail_spb($id){
-        $data = $this->db->query("select mb.*, mjp.jenis_packing, mbs.bobbin_size
-            from m_bobbin mb inner join m_jenis_packing mjp on mb.m_jenis_packing_id = mjp.id
-            left join m_bobbin_size mbs on mb.m_bobbin_size_id = mbs.id
-            ");
+    // function show_detail_spb($id){
+    //     $data = $this->db->query("select mb.*, mjp.jenis_packing, mbs.bobbin_size
+    //         from m_bobbin mb inner join m_jenis_packing mjp on mb.m_jenis_packing_id = mjp.id
+    //         left join m_bobbin_size mbs on mb.m_bobbin_size_id = mbs.id
+    //         ");
 
+    //     return $data;
+    // }
+    function show_detail_spb($id){
+        $data = $this->db->query("select bs.*, mbs.bobbin_size, mbs.keterangan from bobbin_spb_detail bs left join m_bobbin_size mbs on mbs.id = bs.jenis_size
+            where bs.id_spb_bobbin =".$id);
         return $data;
     }
+
 
     function show_detail_spb_fulfilment($id){
         $data = $this->db->query("select mb.nomor_bobbin, mb.berat");
@@ -115,7 +121,7 @@ class Model_bobbin extends CI_Model{
         $data = $this->db->query("select * from m_bobbin mb
             where not exists 
             (SELECT id_bobbin 
-            FROM m_bobbin_spb_detail mbsd
+            FROM bobbin_spb_detail mbsd
             WHERE mbsd.id_spb_bobbin =".$id." and mbsd.id_bobbin = mb.id) 
             and m_jenis_packing_id =".$id_jenis." and status = 0");
         return $data;
@@ -123,7 +129,7 @@ class Model_bobbin extends CI_Model{
 
     function load_spb_detail($id){
         $data = $this->db->query("select mbsd.id, mb.nomor_bobbin, mb.berat
-            from m_bobbin_spb_detail mbsd
+            from bobbin_spb_detail mbsd
             left join m_bobbin mb on (mbsd.id_bobbin = mb.id)
             where mbsd.id_spb_bobbin = ".$id);
         return $data;
@@ -136,9 +142,9 @@ class Model_bobbin extends CI_Model{
 
     function jenis_barang_list_by_spb($id){
         $data = $this->db->query("select mb.nomor_bobbin, mb.id, mb.berat, mb.status
-                from m_bobbin_spb_detail mbsd
-                left join m_bobbin mb on (mb.id = mbsd.id_bobbin )
-                where id_spb_bobbin =".$id
+                from bobbin_spb_fulfilment mbsd
+                left join m_bobbin mb on (mb.id = mbsd.bobbin_id )
+                where mbsd.id_spb_bobbin =".$id
                 );
         return $data;
     }
@@ -156,6 +162,11 @@ class Model_bobbin extends CI_Model{
         //     left join users rjct on (rjct.id = mbs.rejected_by)
         //     ");
         // return $data;
+    }
+
+    function jenis_size($id){
+        $data = $this->db->query("select * from m_bobbin_size where jenis_packing_id =".$id);
+        return $data;
     }
 
     function show_header_peminjam($id){
@@ -274,13 +285,13 @@ class Model_bobbin extends CI_Model{
     }    
 
     function list_spb(){
-        $data = $this->db->query("select *from m_bobbin_spb where keperluan = 1");
+        $data = $this->db->query("select *from bobbin_spb where keperluan = 1");
         return $data;
     }
 
     function load_bobbin_spb($id){
         $data = $this->db->query("select mbsd.*, mb.nomor_bobbin 
-            from m_bobbin_spb_detail mbsd 
+            from bobbin_spb_detail mbsd 
             left join m_bobbin mb on (mbsd.id_bobbin = mb.id) 
             where mbsd.id_spb_bobbin = ".$id);
         return $data;
@@ -293,7 +304,7 @@ class Model_bobbin extends CI_Model{
 
     function header_peminjaman_eks($id){
         $data = $this->db->query("select mbs.*, u.realname
-            from m_bobbin_spb mbs
+            from bobbin_spb mbs
             left join users u on (mbs.created_by = u.id)
             where mbs.id = ".$id);
         return $data;
