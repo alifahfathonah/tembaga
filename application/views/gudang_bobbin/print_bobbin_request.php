@@ -70,8 +70,9 @@
                             <td style="border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                         </tr>
                         <tr>
-                            <td colspan="2" style="text-align:right;"><strong>Total</strong></td>
-                            <td style="text-align: center; border-bottom: 1px solid #000;"><?= $berat ;?></td>
+                            <td style="text-align:right;"><strong>Total </strong></td>
+                            <td style="text-align: center; border-bottom: 1px solid #000;"><?= $no ;?></td>
+                            <td style="text-align: center;"><?= $berat ;?></td>
                         </tr>
                     </table>
                 </td>

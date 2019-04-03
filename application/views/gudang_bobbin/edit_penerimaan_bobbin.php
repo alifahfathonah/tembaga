@@ -34,7 +34,7 @@
                             <input type="text" id="no_produksi" name="no_produksi" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_penerimaan']; ?>">
-                            <input type="hidden" id="id_peminjaman" name="id_peminjaman" value="<?php echo $header['id_peminjaman']; ?>">
+<!--                             <input type="hidden" id="id_peminjaman" name="id_peminjaman" value="<?php echo $header['id_peminjaman']; ?>"> -->
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
                                 class="form-control input-small myline" style="margin-bottom:5px; float:left;" 
-                                value="<?php echo date('d-m-Y', strtotime($header['created_at'])); ?>">
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -78,7 +78,7 @@
                             <input type="text" class="form-control myline" style="margin-bottom: 5px" readonly name="jenis_packing" value="<?php echo $header['pengirim'] ?>">
                         </div>
                     </div>
-                    <div class="row">
+<!--                     <div class="row">
                         <div class="col-md-4">
                             No. Surat Peminjaman
                         </div>
@@ -87,7 +87,7 @@
 
                             <input type="hidden" name="id_jenis" id="id_jenis" value="<?php echo $header['no_surat_peminjaman'] ?>">
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
@@ -103,14 +103,15 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
-                        <table class="table table-bordered table-striped table-hover" id="tabel_barang">
+                        <table class="table table-bordered table-striped table-hover" id="tabel_bobbin">
                             <thead>
                                 <th>No</th>
                                 <th>Nomor Bobbin</th>
+                                <th>Berat</th>
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
-                                <tr>
+                                <!-- <tr>
                                     <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
                                     <td>
                                         <select id="barang_id_1" name="details[1][barang_id]" class="form-control myline select2me" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_nomor(1)">
@@ -123,7 +124,14 @@
                                     <input type="hidden" id="nomor_bobbin_1" name="details[1][nomor_bobbin]">
                                     <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input(1);" style="margin-top:5px" id="save_1"><i class="fa fa-plus"></i> Tambah </a><a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail(1);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Delete </a>
                                     </td>
-                                </tr>
+                                </tr> -->
+                                    <tr>
+                                        <td style="text-align:center"><div id="no_tabel_1">1</div></td>
+                                        <input type="hidden" id="id_bobbin_1" name="details[1][id_bobbin]">
+                                        <td><input type="text" id="nomor_bobbin_1" name="details[1][nomor_bobbin]" class="form-control myline" onchange="getBobbin(1);"  autofocus onfocus="this.value = this.value;" onkeyup="this.value = this.value.toUpperCase()"></td>
+                                        <td><input type="text" id="berat_1" name="details[1][berat]" class="form-control myline" readonly="readonly"></td>
+                                        <td style="text-align:center"><a id="btn_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
+                                    </tr>
                             </tbody>
                         </table>
                     </div>
@@ -164,6 +172,56 @@ function simpanData(){
     };
 };
 
+function getBobbin(id){
+    var no = $("#nomor_bobbin_"+id).val();
+    const new_id = id + 1;
+    if(no!=''){    
+        var check = check_duplicate();
+        if(check){
+            $.ajax({
+                url: "<?php echo base_url('index.php/GudangBobbin/get_bobbin_deliver'); ?>",
+                type: "POST",
+                data : {nomor_bobbin: no},
+                success: function (result){
+                    if (result!=null){
+                        $("#id_bobbin_"+id).val(result['id']);
+                        $("#berat_"+id).val(result['berat']);
+                        $("#btn_"+id).removeClass('disabled');
+                        $("#nomor_bobbin_"+id).prop('readonly', true);
+                        create_new_input(id);
+                        $('#nomor_bobbin_'+new_id).focus();
+                    } else {
+                        alert('Nomor Bobbin tidak ditemukan, silahkan ulangi kembali');
+                        $("#nomor_bobbin_"+id).val('');
+                    }
+                }
+            });
+        } else {
+            //alert('Inputan pallete tidak boleh sama dengan inputan sebelumnya!');
+            $("#nomor_bobbin_"+id).val('');
+        }
+    }
+}
+
+function hapusDetail(id){
+    var r=confirm("Anda yakin menghapus item bobbin ini?");
+    if (r==true){
+        $('#nomor_bobbin_'+id).closest('tr').remove();
+        }
+}
+
+function create_new_input(id){
+       var new_id = id+1;
+        $("#tabel_bobbin>tbody").append('<tr>'+
+            '<tr>'+
+                '<td style="text-align:center"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
+                '<input type="hidden" id="id_bobbin_'+new_id+'" name="details['+new_id+'][id_bobbin]">'+
+                '<td><input type="text" id="nomor_bobbin_'+new_id+'" name="details['+new_id+'][nomor_bobbin]" class="form-control myline" onchange="getBobbin('+new_id+');"  autofocus onfocus="this.value = this.value;" onkeyup="this.value = this.value.toUpperCase()"></td>'+
+                '<td><input type="text" id="berat_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline" readonly="readonly"></td>'+
+                '<td style="text-align:center"><a id="btn_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
+            '</tr>');
+}
+
 function check_duplicate(){
     var valid = true;
         $.each($("select[name$='[barang_id]']"), function (index1, item1) {
@@ -176,40 +234,40 @@ function check_duplicate(){
         return valid;
 }
 
-function create_new_input(id){
-    if($.trim($("#barang_id_"+id).val()) == ""){
-        alert('Barang Belum Di Input !');
-    }else{  
-        var check = check_duplicate();
-        if(check){
-        $("#barang_id_"+id).attr('readonly','readonly');
-        $("#save_"+id).attr('disabled','disabled').hide();
-        $("#delete_"+id).show();
-        var new_id = id+1;
-        $("#tabel_barang>tbody").append(
-        '<tr>'+
-            '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
-            '<td>'+
-                '<select id="barang_id_'+new_id+'" name="details['+new_id+'][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_nomor('+new_id+');">'+
-                    '<option value=""></option>'+
-                    '<?php foreach($list_barang as $v){ print('<option value="'.$v->id.'">'.$v->nomor_bobbin.'</option>');}?>'+
-                '</select>' +
-            '</td>'+
-            '<input type="hidden" id="nomor_bobbin_'+new_id+'" name="details['+new_id+'][nomor_bobbin]">'+
-            '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input('+new_id+');" style="margin-top:5px" id="save_'+new_id+'"><i class="fa fa-plus"></i> Tambah </a>'+
-            '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail('+new_id+');" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Delete </a></td>'+
-        '</tr>');
-        $('#barang_id_'+new_id).select2();
-        } else {
-            alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
-            $("#barang_id_"+id).select2("val", "");
-        }
-    };
-};
+// function create_new_input(id){
+//     if($.trim($("#barang_id_"+id).val()) == ""){
+//         alert('Barang Belum Di Input !');
+//     }else{  
+//         var check = check_duplicate();
+//         if(check){
+//         $("#barang_id_"+id).attr('readonly','readonly');
+//         $("#save_"+id).attr('disabled','disabled').hide();
+//         $("#delete_"+id).show();
+//         var new_id = id+1;
+//         $("#tabel_barang>tbody").append(
+//         '<tr>'+
+//             '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
+//             '<td>'+
+//                 '<select id="barang_id_'+new_id+'" name="details['+new_id+'][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_nomor('+new_id+');">'+
+//                     '<option value=""></option>'+
+                    // '<?php //foreach($list_barang as $v){ print('<option value="'.$v->id.'">'.$v->nomor_bobbin.'</option>');}?>'+
+//                 '</select>' +
+//             '</td>'+
+//             '<input type="hidden" id="nomor_bobbin_'+new_id+'" name="details['+new_id+'][nomor_bobbin]">'+
+//             '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input('+new_id+');" style="margin-top:5px" id="save_'+new_id+'"><i class="fa fa-plus"></i> Tambah </a>'+
+//             '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail('+new_id+');" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Delete </a></td>'+
+//         '</tr>');
+//         $('#barang_id_'+new_id).select2();
+//         } else {
+//             alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
+//             $("#barang_id_"+id).select2("val", "");
+//         }
+//     };
+// };
 
-function get_nomor(id){
-    $('#nomor_bobbin_'+id).val($("#barang_id_"+id+" option:selected" ).text());
-}
+// function get_nomor(id){
+//     $('#nomor_bobbin_'+id).val($("#barang_id_"+id+" option:selected" ).text());
+// }
 // function loadDetail(id){
 //     id_peminjaman = $('#id_peminjaman').val();
 //     $.ajax({

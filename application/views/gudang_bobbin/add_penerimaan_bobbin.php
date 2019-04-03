@@ -108,7 +108,7 @@
                         </div>
                         <div class="col-md-8">
                             <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_surat_jalan_customer(this.value);">
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                 <option value=""></option>
                                 <?php
                                     foreach ($customer_list as $row){
@@ -118,7 +118,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-4">
                             No. Surat Peminjaman
                         </div>
@@ -128,7 +128,7 @@
                                 <option value=""></option>  
                             </select>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
@@ -159,11 +159,15 @@ function pilih_data(id){
     if(id == 'Supplier'){
         $('#show_supplier').removeClass('hidden disabled');
         $('#supplier_id').removeClass('disabled');
+        $('#supplier_id').select2('val','');
+        $('#m_customer_id').select2('val', '');
         $('#m_customer_id').addClass('disabled');
         $('#show_customer').addClass('hidden disabled');
     }else if(id == 'Customer'){
         $('#show_supplier').addClass('hidden disabled');
         $('#supplier_id').addClass('disabled');
+        $('#supplier_id').select2('val','');
+        $('#m_customer_id').select2('val', '');
         $('#m_customer_id').removeClass('disabled');
         $('#show_customer').removeClass('hidden disabled');
     }

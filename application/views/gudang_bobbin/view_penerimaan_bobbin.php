@@ -78,7 +78,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo date('d-m-Y', strtotime($header['created_at'])); ?>">
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -106,13 +106,13 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Customer
+                            Customer/Supplier
                         </div>
                         <div class="col-md-8">
                             <input type="text" class="form-control myline" style="margin-bottom: 5px" readonly name="jenis_packing" value="<?php echo $header['pengirim'] ?>">
                         </div>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-4">
                             No. Surat Peminjaman
                         </div>
@@ -121,7 +121,7 @@
 
                             <input type="hidden" name="id_jenis" id="id_jenis" value="<?php echo $header['no_surat_peminjaman'] ?>">
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row">
                         <div class="col-md-4">
                             Catatan

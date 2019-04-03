@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 03, 2019 at 04:18 PM
+-- Generation Time: Apr 03, 2019 at 05:16 PM
 -- Server version: 10.1.25-MariaDB
 -- PHP Version: 7.1.7
 
@@ -264,7 +264,8 @@ CREATE TABLE `bobbin_spb` (
 
 INSERT INTO `bobbin_spb` (`id`, `no_spb_bobbin`, `keperluan`, `jenis_packing`, `pemohon`, `status`, `keterangan`, `created_by`, `created_at`, `approved_by`, `approved_at`, `rejected_by`, `rejected_at`, `reject_remarks`) VALUES
 (5, 'SPB-BB.201904.0002', 0, '1', 'BELO', 1, '', 1, '2019-04-03 06:04:08', 1, '2019-04-03 09:04:30', NULL, NULL, NULL),
-(6, 'SPB-BB.201904.0003', 0, '1', '', 1, '', 1, '2019-04-03 09:04:47', 1, '2019-04-03 09:04:42', NULL, NULL, NULL);
+(6, 'SPB-BB.201904.0003', 0, '1', '', 1, '', 1, '2019-04-03 09:04:47', 1, '2019-04-03 09:04:42', NULL, NULL, NULL),
+(7, 'SPB-BB.201904.0004', 2, '1', '', 1, '', 1, '2019-04-03 09:04:25', 1, '2019-04-03 09:04:48', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -288,7 +289,8 @@ INSERT INTO `bobbin_spb_detail` (`id`, `id_spb_bobbin`, `jenis_size`, `jumlah`) 
 (13, 5, 11, 6),
 (14, 5, 16, 2),
 (15, 6, 12, 2),
-(16, 6, 11, 3);
+(16, 6, 11, 3),
+(17, 7, 12, 2);
 
 -- --------------------------------------------------------
 
@@ -311,7 +313,9 @@ INSERT INTO `bobbin_spb_fulfilment` (`id`, `id_spb_bobbin`, `bobbin_id`) VALUES
 (16, 6, 837),
 (17, 6, 117),
 (18, 6, 119),
-(19, 6, 133);
+(19, 6, 133),
+(20, 7, 843),
+(21, 7, 850);
 
 -- --------------------------------------------------------
 
@@ -3120,14 +3124,14 @@ INSERT INTO `m_bobbin` (`id`, `tanggal`, `nomor_bobbin`, `m_jenis_packing_id`, `
 (840, '2010-12-31', 'M0063', 1, 0, 0, 0, 12, 48.1, '0063', 0, '0000-00-00 00:00:00', 0, NULL, NULL),
 (841, '2010-12-31', 'M0066', 1, 0, 0, 0, 12, 49.2, '0066', 2, '0000-00-00 00:00:00', 0, NULL, NULL),
 (842, '2010-12-31', 'M0067', 1, 0, 0, 0, 12, 54.3, '0067', 2, '0000-00-00 00:00:00', 0, NULL, NULL),
-(843, '2010-12-31', 'M0068', 1, 0, 0, 0, 12, 58.1, '0068', 0, '0000-00-00 00:00:00', 0, NULL, NULL),
+(843, '2010-12-31', 'M0068', 1, 0, 0, 0, 12, 58.1, '0068', 0, '0000-00-00 00:00:00', 0, '2019-04-03 09:04:48', 1),
 (844, '2010-12-31', 'M0069', 1, 0, 0, 0, 12, 57.4, '0069', 2, '0000-00-00 00:00:00', 0, NULL, NULL),
 (845, '2010-12-31', 'M0070', 1, 0, 0, 0, 12, 42.4, '0070', 2, '0000-00-00 00:00:00', 0, NULL, NULL),
 (846, '2010-12-31', 'M0071', 1, 0, 0, 0, 12, 47.8, '0071', 2, '0000-00-00 00:00:00', 0, NULL, NULL),
 (847, '2010-12-31', 'M0072', 1, 0, 0, 0, 12, 59.8, '0072', 2, '0000-00-00 00:00:00', 0, NULL, NULL),
 (848, '2010-12-31', 'M0074', 1, 0, 0, 0, 12, 47, '0074', 3, '0000-00-00 00:00:00', 0, NULL, NULL),
 (849, '2010-12-31', 'M0076', 1, 0, 0, 0, 12, 47.4, '0076', 3, '0000-00-00 00:00:00', 0, NULL, NULL),
-(850, '2010-12-31', 'M0077', 1, 0, 0, 0, 12, 48, '0077', 0, '0000-00-00 00:00:00', 0, NULL, NULL),
+(850, '2010-12-31', 'M0077', 1, 0, 0, 0, 12, 48, '0077', 0, '0000-00-00 00:00:00', 0, '2019-04-03 09:04:48', 1),
 (851, '2010-12-31', 'M0079', 1, 0, 0, 0, 12, 50.3, '0079', 2, '0000-00-00 00:00:00', 0, NULL, NULL),
 (852, '2010-12-31', 'M0080', 1, 0, 0, 0, 12, 50.6, '0080', 2, '0000-00-00 00:00:00', 0, NULL, NULL),
 (853, '2018-06-28', 'M0083', 1, 0, 0, 0, 12, 48.8, '0083', 2, '0000-00-00 00:00:00', 0, NULL, NULL),
@@ -3454,10 +3458,10 @@ INSERT INTO `m_bobbin` (`id`, `tanggal`, `nomor_bobbin`, `m_jenis_packing_id`, `
 (1173, '2010-12-31', 'M0940', 1, 0, 0, 0, 12, 49.4, '0940', 1, '0000-00-00 00:00:00', 0, NULL, NULL),
 (1174, '2010-12-31', 'M0941', 1, 0, 0, 0, 12, 38.3, '0941', 2, '0000-00-00 00:00:00', 0, NULL, NULL),
 (1175, '2010-12-31', 'M0943', 1, 0, 0, 0, 12, 42.5, '0943', 0, '0000-00-00 00:00:00', 0, NULL, NULL),
-(1176, '2010-12-31', 'M0945', 1, 0, 0, 0, 12, 41.4, '0945', 2, '0000-00-00 00:00:00', 0, NULL, NULL),
+(1176, '2010-12-31', 'M0945', 1, 0, 0, 0, 12, 41.4, '0945', 0, '0000-00-00 00:00:00', 0, NULL, NULL),
 (1177, '2010-12-31', 'M0946', 1, 0, 0, 0, 12, 47.8, '0946', 3, '0000-00-00 00:00:00', 0, NULL, NULL),
-(1178, '2010-12-31', 'M0957', 1, 0, 0, 0, 12, 50.7, '0957', 2, '0000-00-00 00:00:00', 0, NULL, NULL),
-(1179, '2010-12-31', 'M0958', 1, 0, 0, 0, 12, 55.2, '0958', 2, '0000-00-00 00:00:00', 0, NULL, NULL),
+(1178, '2010-12-31', 'M0957', 1, 0, 0, 0, 12, 50.7, '0957', 0, '0000-00-00 00:00:00', 0, NULL, NULL),
+(1179, '2010-12-31', 'M0958', 1, 0, 0, 0, 12, 55.2, '0958', 0, '0000-00-00 00:00:00', 0, NULL, NULL),
 (1180, '2010-12-31', 'M0959', 1, 0, 0, 0, 12, 55.3, '0959', 3, '0000-00-00 00:00:00', 0, NULL, NULL),
 (1181, '2010-12-31', 'M0960', 1, 0, 0, 0, 12, 49.6, '0960', 3, '0000-00-00 00:00:00', 0, NULL, NULL),
 (1182, '2010-12-31', 'M0971', 1, 0, 0, 0, 12, 50.6, '0971', 3, '0000-00-00 00:00:00', 0, NULL, NULL),
@@ -3955,7 +3959,8 @@ INSERT INTO `m_bobbin_peminjaman` (`id`, `no_surat_peminjaman`, `id_surat_jalan`
 (7, 'BB-BR.201903.0003', 2, 1, 0, 0, 0, 1, '2019-03-27 03:03:55'),
 (8, 'BB-BR.201903.0004', 9, 14, 0, 0, 0, 2, '2019-03-30 08:03:08'),
 (9, 'BB-BR.201903.0005', 10, 1, 0, 0, 0, 2, '2019-03-30 09:03:42'),
-(10, 'BB-BR.201904.0001', 12, 1, 0, 0, 0, 1, '2019-04-01 10:04:25');
+(10, 'BB-BR.201904.0001', 12, 1, 0, 0, 0, 1, '2019-04-01 10:04:25'),
+(11, 'BB-BR.201904.0002', 0, 0, 43, 0, 0, 1, '2019-04-03 09:04:48');
 
 -- --------------------------------------------------------
 
@@ -4006,7 +4011,9 @@ INSERT INTO `m_bobbin_peminjaman_detail` (`id`, `id_peminjaman`, `id_penerimaan`
 (29, 9, 0, 'KA018'),
 (30, 10, 0, 'KA040'),
 (31, 10, 0, 'B0001'),
-(32, 10, 0, 'B0001');
+(32, 10, 0, 'B0001'),
+(33, 11, 0, 'M0068'),
+(34, 11, 0, 'M0077');
 
 -- --------------------------------------------------------
 
@@ -4017,7 +4024,10 @@ INSERT INTO `m_bobbin_peminjaman_detail` (`id`, `id_peminjaman`, `id_penerimaan`
 CREATE TABLE `m_bobbin_penerimaan` (
   `id` int(11) NOT NULL,
   `no_penerimaan` varchar(30) NOT NULL,
+  `tanggal` date NOT NULL,
   `id_peminjaman` int(11) NOT NULL,
+  `id_customer` int(11) NOT NULL,
+  `id_supplier` int(11) NOT NULL,
   `surat_jalan` varchar(30) NOT NULL,
   `created_by` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
@@ -4030,8 +4040,10 @@ CREATE TABLE `m_bobbin_penerimaan` (
 -- Dumping data for table `m_bobbin_penerimaan`
 --
 
-INSERT INTO `m_bobbin_penerimaan` (`id`, `no_penerimaan`, `id_peminjaman`, `surat_jalan`, `created_by`, `created_at`, `received_by`, `received_at`, `remarks`) VALUES
-(1, 'BB-RC.201903.0001', 5, 'SJ-SINAR.INTAN.0001', 1, '2019-03-27 11:03:38', 1, '2019-03-27 11:03:01', '');
+INSERT INTO `m_bobbin_penerimaan` (`id`, `no_penerimaan`, `tanggal`, `id_peminjaman`, `id_customer`, `id_supplier`, `surat_jalan`, `created_by`, `created_at`, `received_by`, `received_at`, `remarks`) VALUES
+(1, 'BB-RC.201903.0001', '0000-00-00', 5, 0, 0, 'SJ-SINAR.INTAN.0001', 1, '2019-03-27 11:03:38', 1, '2019-03-27 11:03:01', ''),
+(2, 'BB-RC.201904.0001', '0000-00-00', 0, 0, 0, 'SJ.TRM.0001', 1, '2019-04-03 09:04:28', 1, '2019-04-03 09:04:14', ''),
+(6, 'BB-RC.201904.0005', '2019-04-03', 0, 7, 0, 'SJ.AL.TRM.0002', 1, '2019-04-03 10:04:53', 1, '2019-04-03 10:04:41', '');
 
 -- --------------------------------------------------------
 
@@ -4052,7 +4064,12 @@ CREATE TABLE `m_bobbin_penerimaan_detail` (
 INSERT INTO `m_bobbin_penerimaan_detail` (`id`, `id_bobbin_penerimaan`, `nomor_bobbin`) VALUES
 (1, 1, 'M0037'),
 (2, 1, 'M0039'),
-(3, 1, 'M0046');
+(3, 1, 'M0046'),
+(4, 2, 'M0077'),
+(5, 2, 'M0068'),
+(6, 6, 'M0958'),
+(7, 6, 'M0957'),
+(8, 6, 'M0945');
 
 -- --------------------------------------------------------
 
@@ -4679,7 +4696,7 @@ INSERT INTO `m_numbering_details` (`id`, `prefix`, `last_number`) VALUES
 (58, 'SO.201904', 1),
 (59, 'SPB-FG201904', 1),
 (60, 'SJ.201904', 2),
-(61, 'BB-BR.201904', 1),
+(61, 'BB-BR.201904', 2),
 (62, 'INVOICE-201904', 1),
 (63, 'PO-201904', 1),
 (64, 'VCOST.201904', 5),
@@ -4698,7 +4715,8 @@ INSERT INTO `m_numbering_details` (`id`, `prefix`, `last_number`) VALUES
 (77, 'POSP.201904', 1),
 (78, 'BPB.201904', 1),
 (79, 'VSP-KMP.201904', 1),
-(80, 'SPB-BB.201904', 3);
+(80, 'SPB-BB.201904', 4),
+(81, 'BB-RC.201904', 5);
 
 -- --------------------------------------------------------
 
@@ -12521,17 +12539,17 @@ ALTER TABLE `beli_sparepart_detail`
 -- AUTO_INCREMENT for table `bobbin_spb`
 --
 ALTER TABLE `bobbin_spb`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `bobbin_spb_detail`
 --
 ALTER TABLE `bobbin_spb_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 --
 -- AUTO_INCREMENT for table `bobbin_spb_fulfilment`
 --
 ALTER TABLE `bobbin_spb_fulfilment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 --
 -- AUTO_INCREMENT for table `cost`
 --
@@ -12681,22 +12699,22 @@ ALTER TABLE `m_bobbin`
 -- AUTO_INCREMENT for table `m_bobbin_peminjaman`
 --
 ALTER TABLE `m_bobbin_peminjaman`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- AUTO_INCREMENT for table `m_bobbin_peminjaman_detail`
 --
 ALTER TABLE `m_bobbin_peminjaman_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 --
 -- AUTO_INCREMENT for table `m_bobbin_penerimaan`
 --
 ALTER TABLE `m_bobbin_penerimaan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `m_bobbin_penerimaan_detail`
 --
 ALTER TABLE `m_bobbin_penerimaan_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `m_bobbin_size`
 --
@@ -12741,7 +12759,7 @@ ALTER TABLE `m_numberings`
 -- AUTO_INCREMENT for table `m_numbering_details`
 --
 ALTER TABLE `m_numbering_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 --
 -- AUTO_INCREMENT for table `m_print_barcode`
 --

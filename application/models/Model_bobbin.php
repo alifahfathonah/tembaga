@@ -217,11 +217,10 @@ class Model_bobbin extends CI_Model{
     }
 
     function show_header_penerimaan($id){
-        $data = $this->db->query("select mbt.*, mbp.no_surat_peminjaman, mbp.id_customer, COALESCE(mc.nama_customer, s.nama_supplier) as pengirim, u.realname
+        $data = $this->db->query("select mbt.id, mbt.tanggal, mbt.surat_jalan, mbt.remarks, mbt.no_penerimaan, COALESCE(mc.nama_customer, s.nama_supplier) as pengirim, u.realname
             from m_bobbin_penerimaan mbt
-            left join m_bobbin_peminjaman mbp on (mbt.id_peminjaman = mbp.id)
-            left join m_customers mc on (mbp.id_customer != 0 and mbp.id_customer = mc.id)
-            left join supplier s on (mbp.supplier_id != 0 and mbp.supplier_id = s.id)
+            left join m_customers mc on (mbt.id_customer != 0 and mbt.id_customer = mc.id)
+            left join supplier s on (mbt.id_supplier != 0 and mbt.id_supplier = s.id)
             left join users u on (u.id = mbt.created_by)
             where mbt.id = ".$id);
         return $data;
@@ -265,6 +264,11 @@ class Model_bobbin extends CI_Model{
 
     function get_bobbin($id){
         $data = $this->db->query("select id, berat from m_bobbin where status = 0 and nomor_bobbin ='".$id."'");
+        return $data;
+    }
+
+    function get_bobbin_deliver($id){
+        $data = $this->db->query("select id, berat from m_bobbin where status = 2 and nomor_bobbin ='".$id."'");
         return $data;
     }
 

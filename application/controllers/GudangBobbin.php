@@ -455,7 +455,10 @@ class GudangBobbin extends CI_Controller{
         if($code){        
             $data = array(
             'no_penerimaan' => $code,
-            'id_peminjaman' => $this->input->post('surat_peminjaman_id'),
+            'tanggal' => $tgl_input,
+            'id_customer' => $this->input->post('m_customer_id'),
+            'id_supplier' => $this->input->post('supplier_id'),
+            // 'id_peminjaman' => $this->input->post('surat_peminjaman_id'),
             'surat_jalan' => $this->input->post('surat_jalan'),
             'remarks' => $this->input->post('remarks'),
             'created_by' => $user_id,
@@ -495,9 +498,8 @@ class GudangBobbin extends CI_Controller{
             $data['content']= "gudang_bobbin/edit_penerimaan_bobbin";
             $this->load->model('Model_bobbin');
             $data['header'] = $this->Model_bobbin->show_header_penerimaan($id)->row_array();
-            $id_peminjaman = $data['header']['id_peminjaman'];
             // $data['details'] =   $this->Model_bobbin->show_detail_peminjam($id)->result();
-            $data['list_barang'] = $this->Model_bobbin->load_list_bobbin_penerimaan($id_peminjaman)->result();
+            // $data['list_barang'] = $this->Model_bobbin->load_list_bobbin_penerimaan($id_peminjaman)->result();
 
             $this->load->view('layout', $data);   
         }else{
@@ -592,7 +594,7 @@ class GudangBobbin extends CI_Controller{
 
         $details = $this->input->post('details');
         foreach ($details as $v){
-            if($v['barang_id']!=''){
+            if($v['id_bobbin']!=''){
 
                 if($this->db->insert('m_bobbin_penerimaan_detail', array(
                     'id_bobbin_penerimaan'=>$this->input->post('id'),
@@ -606,22 +608,22 @@ class GudangBobbin extends CI_Controller{
                     'borrowed_by_supplier' => 0
                 ));
 
-                $this->db->where('id', $v['barang_id']);
-                $this->db->update('m_bobbin_peminjaman_detail', array(
-                    'id_penerimaan' => $this->input->post('id')
-                ));
+                // $this->db->where('id', $v['barang_id']);
+                // $this->db->update('m_bobbin_peminjaman_detail', array(
+                //     'id_penerimaan' => $this->input->post('id')
+                // ));
             }
         }
 
-        $id = $this->input->post('id_peminjaman');
-        $this->load->model('Model_bobbin');
-        $cek = $this->Model_bobbin->check_sisa_bobbin($id)->row_array();
-        if(empty($cek['id'])){
-            $this->db->where('id', $id);
-            $this->db->update('m_bobbin_peminjaman', array(
-                'status' => 1
-            ));
-        }
+        // $id = $this->input->post('id_peminjaman');
+        // $this->load->model('Model_bobbin');
+        // $cek = $this->Model_bobbin->check_sisa_bobbin($id)->row_array();
+        // if(empty($cek['id'])){
+        //     $this->db->where('id', $id);
+        //     $this->db->update('m_bobbin_peminjaman', array(
+        //         'status' => 1
+        //     ));
+        // }
 
         // $id = $this->input->post('id');
         // $key = $this->db->query("select *from m_bobbin_penerimaan_detail where id_bobbin_penerimaan = ". $id)->result();
@@ -817,6 +819,14 @@ class GudangBobbin extends CI_Controller{
         $this->load->model('Model_bobbin');
         $nomor_bobbin = $this->input->post('nomor_bobbin');
         $result = $this->Model_bobbin->get_bobbin($nomor_bobbin)->row_array();
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
+
+    function get_bobbin_deliver(){
+        $this->load->model('Model_bobbin');
+        $nomor_bobbin = $this->input->post('nomor_bobbin');
+        $result = $this->Model_bobbin->get_bobbin_deliver($nomor_bobbin)->row_array();
         header('Content-Type: application/json');
         echo json_encode($result);
     }

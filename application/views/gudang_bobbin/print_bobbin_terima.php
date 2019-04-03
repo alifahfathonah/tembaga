@@ -20,7 +20,7 @@
                         </tr>       
                         <tr>
                             <td>Nama Customer</td>
-                            <td>: <?php echo $header['nama_customer']; ?></td>
+                            <td>: <?php echo $header['pengirim']; ?></td>
                         </tr>               
                     </table>
                 </td>
