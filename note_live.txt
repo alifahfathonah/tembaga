@@ -32,7 +32,7 @@ Direktur pada print isi nama Direkturnya manual(Done)
 
 Biaya lain lain = mengurangi harga invoice (DONE)
 
-Nomor Cek dan Nominal bisa di edit sebelum matching invoice. *Kalau gagal cair harus mengganti nomor cek lama
+Nomor Cek dan Nominal bisa di edit sebelum matching invoice. *Kalau gagal cair harus mengganti nomor cek lama (Done)
 
 Uang masuk dibedain nomornya Jika bank masuk atau cek masuk(Done)
 

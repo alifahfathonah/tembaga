@@ -151,7 +151,7 @@
                                 <option value="USD">USD</option>
                             </select>
                             <input type="text" id="nominal" name="nominal" 
-                                class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id)";>
+                                class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id)">
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>

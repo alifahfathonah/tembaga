@@ -72,7 +72,9 @@
                             if( ($group_id==1)||($hak_akses['matching']==1) ){
                         ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/Finance/matching_invoice/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-files-o"></i> Matching &nbsp; </a>
-                        <?php } ?>
+                        <?php 
+                            echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Finance/print_matching_invoice/'.$data->id.'" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
+                        } ?>
                         </td>
                     </tr>
                     <?php

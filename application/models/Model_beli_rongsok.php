@@ -323,7 +323,7 @@ class Model_beli_rongsok extends CI_Model{
     }
     
     function show_detail_ttr($id){
-        $data = $this->db->query("Select sum(ttrd.bruto) as bruto, sum(ttrd.netto) as netto, ttrd.line_remarks, rsk.nama_item, rsk.uom, dtr_detail.no_pallete, sum(dtr_detail.berat_palette)
+        $data = $this->db->query("Select ttrd.id, sum(ttrd.bruto) as bruto, sum(ttrd.netto) as netto, ttrd.line_remarks, rsk.nama_item, rsk.uom, dtr_detail.no_pallete, sum(dtr_detail.berat_palette) as berat_palette
                     From ttr_detail ttrd 
                         Left Join rongsok rsk On (ttrd.rongsok_id = rsk.id)
                         left join dtr_detail on dtr_detail.id = ttrd.dtr_detail_id

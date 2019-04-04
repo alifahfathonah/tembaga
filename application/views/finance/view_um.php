@@ -34,6 +34,7 @@
                                     
                                     <input type="hidden" id="headers_id" name="header_id">
                                     <input type="hidden" id="tanggal_cek_baru" name="tanggal_cek_baru">
+                                    <input type="hidden" id="nominal_baru" name="nominal_baru">
                                     <input type="hidden" id="nomor" name="nomor">
                                     <input type="hidden" id="jenis1" name="jenis1">
                                 </div>
@@ -162,8 +163,7 @@
                             Nominal (<?php echo $myData['currency'];?>)
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nominal" name="nominal" 
-                                class="form-control myline" style="margin-bottom:5px" value="<?php echo number_format($myData['nominal'],0,',','.');?>" readonly="readonly">
+                            <input type="text" id="nominal" name="nominal" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id)" class="form-control myline" style="margin-bottom:5px" value="<?php echo number_format($myData['nominal'],0,',','.');?>" readonly="readonly">
                         </div>
                     </div>
             <?php if($myData['jenis_pembayaran']!='Cash'){ 
@@ -297,12 +297,15 @@
                     ?>
                     <a href="<?php echo base_url('index.php/Finance'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
-                    <?php if( ($group_id==1 || $hak_akses['edit_um']==1) && $myData['jenis_pembayaran']=='Cek Mundur' && $myData['status']==9){
+                    <?php 
+                    if($group_id==1 || $hak_akses['print_um']==1){
+                            echo '<a class="btn blue-ebonyclay" href="'.base_url().'index.php/Finance/print_um_match/'.$myData['id'].'" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print Match &nbsp; </a> ';
+                        }
+                    if( ($group_id==1 || $hak_akses['edit_um']==1) && $myData['jenis_pembayaran']=='Cek Mundur' && $myData['status']==9){
                             echo '<a href="javascript:;" class="btn green" id="editDataCekMundur" onclick="editDataCekMundur();"> 
                         <i class="fa fa-pencil"></i> Edit Cek Mundur </a>';
                         }
-                    ?>
-                    <?php if( ($group_id==1 || $hak_akses['edit_um']==1) && ($myData['jenis_pembayaran']=='Cek' || $myData['jenis_pembayaran']=='Giro') && $myData['status']==9){
+                    if( ($group_id==1 || $hak_akses['edit_um']==1) && ($myData['jenis_pembayaran']=='Cek' || $myData['jenis_pembayaran']=='Giro') && $myData['status']==9){
                             echo '<a href="javascript:;" class="btn green" id="editData" onclick="editData();"> 
                         <i class="fa fa-pencil"></i> Edit </a>';
                         }
@@ -378,6 +381,7 @@ function editDataCekMundur(){
 
 function editData(){
     $("#editData").hide();
+    $("#nominal").prop('readonly', false);
     if($("#jenis").val()=="Cek"){
         $("#nomor_cek").prop('readonly', false);
     }else if($("jenis").val()=="Giro"){
@@ -395,6 +399,7 @@ function showUpdateBox(){
         if (r==true){
             $('#headers_id').val($('#id').val());
             $('#jenis1').val($('#jenis').val());
+            $('#nominal_baru').val($('#nominal').val());
             if($("#jenis").val()=="Cek Mundur"){
                 $('#tanggal_cek_baru').val($('#tanggal_cek').val());
             }else if($("#jenis").val()=="Cek"){

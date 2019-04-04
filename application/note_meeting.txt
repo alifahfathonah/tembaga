@@ -116,7 +116,7 @@ Modules untuk Resmi SJ, dan Tolling Belum (Done)
 
 po_id di SO masih salah(Done)
 
-Pisahin List PPN dan Non-PPN sesuai dengan user login
+Pisahin List PPN dan Non-PPN sesuai dengan user login(Done)
 
 User / Group tidak boleh ada nama 'RESMI' nya (Done)
 
