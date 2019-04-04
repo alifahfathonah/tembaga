@@ -74,7 +74,7 @@
                             </select>   
                         </div>
                     </div>
-                    <div class="row hidden disabled" id="div_spb_rolling">
+                    <!-- <div class="row hidden disabled" id="div_spb_rolling">
                         <div class="col-md-4">
                             No. SPB <font color="#f00">*</font>
                         </div>
@@ -89,7 +89,7 @@
                                 <?php } ?>    
                             </select>   
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row">&nbsp;</div>
                 </div>
                 <div class="col-md-1">&nbsp;</div>
@@ -117,13 +117,13 @@
                                 Jumlah Ingot
                             </div>
                             <div class="col-md-3">
-                                <input id="jml_ingot" name="jml_ingot" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="" type="text">
+                                <input id="jml_ingot" name="jml_ingot" class="form-control myline" style="margin-bottom:5px" value="" type="text">
                             </div>
                             <div class="col-md-3">
                                 Berat Ingot
                             </div>
                             <div class="col-md-3">
-                                <input id="berat_ingot" name="berat_ingot" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="" type="text">
+                                <input id="berat_ingot" name="berat_ingot" class="form-control myline" style="margin-bottom:5px" value="" type="text">
                             </div>
                         </div>
                         <div class="row">
@@ -298,13 +298,24 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6" id="div_berat_bs">
                         <div class="form-inline">
                             <div class="form-group">
                                 <label>Berat BS </label>
                                 <input type="text" id="berat_bs_in" name="bs" 
                                 class="form-control myline" size="25" 
                                 value="" placeholder="Berat BS" onchange="hitung_susut_berat();"/>
+                                <label> Kg</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 hidden disabled" id="div_berat_bs_rolling">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label>Berat BS Rolling</label>
+                                <input type="text" id="berat_bs_rolling" name="bs_rolling" 
+                                class="form-control myline" size="25" 
+                                value="" placeholder="Berat BS Rolling" onchange="hitung_susut_berat();"/>
                                 <label> Kg</label>
                             </div>
                         </div>
@@ -319,6 +330,17 @@
                                 <input type="text" id="berat_tali_rolling" name="tali_rolling" 
                                 class="form-control myline" size="25" 
                                 value="" placeholder="Berat Tali Rolling" onchange="hitung_susut_berat();"/>
+                                <label> Kg</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 hidden disabled" id="div_berat_bs_ingot">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label>Berat BS Ingot </label>
+                                <input type="text" id="berat_bs_ingot" name="bs_ingot" 
+                                class="form-control myline" size="25" 
+                                value="" placeholder="Berat BS Ingot" onchange="hitung_susut_berat();"/>
                                 <label> Kg</label>
                             </div>
                         </div>
@@ -368,7 +390,7 @@
                 </div>
                 <br>
                 <div class="row">
-                    <div class="col-md-6">
+                    <!-- <div class="col-md-6">
                         <div class="form-inline">
                             <div class="form-group">
                                 <label>Berat Serbuk</label>
@@ -378,8 +400,8 @@
                                 <label> Kg</label>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
+                    </div> -->
+                    <!-- <div class="col-md-6">
                         <div class="form-inline">
                             <div class="form-group">
                                 <label>Berat BS </label>
@@ -389,7 +411,7 @@
                                 <label> Kg</label>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="row">
                 <br/><br/>
@@ -428,7 +450,7 @@ function hitung_susut_jumlah(){
 }
 function hitung_susut_berat(){
     if($('#jenis_masak').val()=='ROLLING'){
-        var susut = Number(Number($('#berat_ingot').val()) - (Number($('#berat_kh_in').val()) + Number($('#berat_keras_in').val()) + Number($('#berat_tali_rolling').val()) + Number($('#berat_bs_in').val()) + Number($('#berat_serbuk_in').val())));
+        var susut = Number(Number($('#berat_ingot').val()) - (Number($('#berat_kh_in').val()) + Number($('#berat_keras_in').val()) + Number($('#berat_tali_rolling').val()) + Number($('#berat_bs_rolling').val()) + Number($('#berat_serbuk_in').val()) + Number($('#berat_bs_ingot').val())));
         $('#susut_berat_ingot').val(susut);
     }else if($('#jenis_masak').val()=='BAKAR ULANG'){
         var susut = Number(Number($('#jml_berat_keras').val()) - (Number($('#berat_kh_in').val()) + Number($('#berat_keras_in').val()) + Number($('#berat_tali_rolling').val()) + Number($('#berat_bs_in').val()) + Number($('#berat_serbuk_in').val())));
@@ -487,11 +509,14 @@ function pilih_data(id){
         $('#div_stok_keras').addClass('hidden disabled');
         $('#div_spb_cuci').addClass('hidden disabled');
         $('#div_data_spb_kh').addClass('hidden disabled');
+        $('#div_berat_bs').addClass('hidden disabled');
         $('#id_spb_kh').prop("disabled", true);
         $('#id_spb_ingot').prop("disabled", false);
         $('#div_data_spb').removeClass('hidden disabled');
         $('#div_kawat_hitam_masuk').removeClass('hidden disabled');
         $('#div_spb_rolling').removeClass('hidden disabled');
+        $('#div_berat_bs_rolling').removeClass('hidden disabled');
+        $('#div_berat_bs_ingot').removeClass('hidden disabled');
         $('#id_jenis_barang').val('6');
         $('#div_kawat_hitam_masuk :input').attr('disabled', false);
         $('#div_kawat_merah_masuk :input').attr('disabled', true);
@@ -506,10 +531,13 @@ function pilih_data(id){
         $('#div_data_spb').addClass('hidden disabled');
         $('#div_spb_cuci').addClass('hidden disabled');
         $('#div_data_spb_kh').addClass('hidden disabled');
+        $('#div_berat_bs_rolling').addClass('hidden disabled');
+        $('#div_berat_bs_ingot').addClass('hidden disabled');
         $('#id_spb_kh').prop("disabled", true);
         $('#id_spb_ingot').prop("disabled", true);
         $('#div_kawat_hitam_masuk').removeClass('hidden disabled');
         $('#div_stok_keras').removeClass('hidden disabled');
+        $('#div_berat_bs').removeClass('hidden disabled');
         $('#id_jenis_barang').val('6');
         $('#div_kawat_hitam_masuk :input').attr('disabled', false);
         $('#div_kawat_merah_masuk :input').attr('disabled', true);
@@ -522,11 +550,14 @@ function pilih_data(id){
         $('#div_kawat_hitam_masuk').addClass('hidden disabled');
         $('#div_stok_keras').addClass('hidden disabled');
         $('#div_data_spb').addClass('hidden disabled');
+        $('#div_berat_bs_rolling').addClass('hidden disabled');
+        $('#div_berat_bs_ingot').addClass('hidden disabled');
         $('#id_spb_kh').prop("disabled", false);
         $('#id_spb_ingot').prop("disabled", true);
         $('#div_data_spb_kh').removeClass('hidden disabled');
         $('#div_spb_cuci').removeClass('hidden disabled');
         $('#div_kawat_merah_masuk').removeClass('hidden disabled');
+        $('#div_berat_bs').removeClass('hidden disabled');
         $('#id_jenis_barang').val('5');
         $("#id_spb_kh").select2("val", "");
         $('#jml_kawat_hitam').val('');
@@ -547,10 +578,11 @@ function pilih_data(id){
 function simpanData(){
     id = $('#jenis_masak').val();
     if(id == 'ROLLING'){
-        if($.trim($("#id_spb_ingot").val()) == ""){
-            $('#message').html("SPB harus diisi, tidak boleh kosong!");
-            $('.alert-danger').show(); 
-        }else if($.trim($("#qty_kh_in").val()) == ""){
+        // if($.trim($("#id_spb_ingot").val()) == ""){
+        //     $('#message').html("SPB harus diisi, tidak boleh kosong!");
+        //     $('.alert-danger').show(); 
+        // }else 
+        if($.trim($("#qty_kh_in").val()) == ""){
             $('#message').html("Jumlah Kawat Hitam harus diisi, tidak boleh kosong!");
             $('.alert-danger').show(); 
         }else if($.trim($("#berat_kh_in").val()) == ""){
