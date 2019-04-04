@@ -104,6 +104,7 @@ class BeliRongsok extends CI_Controller{
             'tanggal'=> $tgl_input,
             'ppn'=> $user_ppn,
             'supplier_id'=>$this->input->post('supplier_id'),
+            'remarks'=> $this->input->post('remarks'),
             'term_of_payment'=>$this->input->post('term_of_payment'),
             'jenis_po'=>'Rongsok',
             'created'=> $tanggal,
@@ -158,6 +159,7 @@ class BeliRongsok extends CI_Controller{
         $data = array(
                 'tanggal'=> $tgl_input,
                 'supplier_id'=>$this->input->post('supplier_id'),
+                'remarks'=> $this->input->post('remarks'),
                 'term_of_payment'=>$this->input->post('term_of_payment'),
                 'modified'=> $tanggal,
                 'modified_by'=> $user_id

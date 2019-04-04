@@ -28,7 +28,7 @@
                     <i class="fa fa-beer"></i>SPB List
                 </div>
                 <div class="tools">
-                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?php echo base_url('index.php/Ingot/create_spb');?>"><i class="fa fa-plus"></i> Create SPB Rongsok </a>
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?php echo base_url('index.php/Ingot/add_spb_keluar');?>"><i class="fa fa-plus"></i> Create SPB Rongsok </a>
                 </div>
             </div>
             <div class="portlet-body">
