@@ -158,10 +158,10 @@ function get_uom(id, nmr){
 
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
-        $('#message').html("Tanggal harus diisi, tidak boleh kososng!");
+        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#remarks_header").val()) == ""){
-        $('#message').html("Catatan harus diisi, tidak boleh kososng!");
+    }else if($.trim($("#remarks").val()) == ""){
+        $('#message').html("Catatan harus diisi, tidak boleh kosong!");
         $('.alert-danger').show();
     }else{
         $('#message').html("");

@@ -321,48 +321,6 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function matching_header_um_print($id){
-        $data = $this->db->query("select fum.*, mc.nama_customer, mc.pic, fm.no_matching, 
-            (select sum((select if(so.flag_ppn=1,round((sum(fid.total_harga)-f.diskon)*110/100)-f.add_cost+f.materai,sum(fid.total_harga-f.diskon)-f.add_cost+f.materai) from f_invoice_detail fid
-                    left join f_invoice f on f.id = fid.id_invoice
-                    left join sales_order so on so.id = f.id_sales_order 
-                    where fid.id_invoice = md.id_inv)) 
-                        from f_match_detail md where md.id_um = 0 and md.id_match = fm.id) as total 
-            from f_uang_masuk fum
-            left join f_match fm on fm.id = fum.flag_matching
-            left join m_customers mc on mc.id = fum.m_customer_id
-            where fum.id =".$id);
-        return $data;
-    }
-
-    function matching_header_print($id){
-        $data = $this->db->query("select fm.*, mc.nama_customer, mc.pic, mc.alamat, 
-            (select sum((select if(so.flag_ppn=1,round((sum(fid.total_harga)-f.diskon)*110/100)-f.add_cost+f.materai,sum(fid.total_harga-f.diskon)-f.add_cost+f.materai) from f_invoice_detail fid
-                    left join f_invoice f on f.id = fid.id_invoice
-                    left join sales_order so on so.id = f.id_sales_order 
-                    where fid.id_invoice = md.id_inv) - (md.biaya1 + md.biaya2)) 
-                        from f_match_detail md where md.id_um = 0 and md.id_match = fm.id) as total
-            from f_match fm 
-            left join m_customers mc on mc.id = fm.id_customer
-            where fm.id =".$id);
-        return $data;
-    }
-
-    function load_invoice_print_um_match($id){
-        $data = $this->db->query("select fmd.*, fi.jenis_trx, fi.no_invoice,
-            (select if(so.flag_ppn=1,
-                round((sum(fid.total_harga)-f.diskon)*110/100)-f.add_cost+f.materai,
-                sum(fid.total_harga-f.diskon)-f.add_cost+f.materai) 
-                    from f_invoice_detail fid
-                    left join f_invoice f on f.id = fid.id_invoice
-                    left join sales_order so on so.id = f.id_sales_order 
-                    where fid.id_invoice = fmd.id_inv) as total 
-            from f_match_detail fmd
-            left join f_invoice fi on fi.id = fmd.id_inv
-            where fmd.id_match =".$id." and fmd.id_um = 0");
-        return $data;
-    }
-
     function matching_detail($id){
         $data = $this->db->query("select fm.*, mc.nama_customer, mc.pic, mc.alamat from f_match fm 
             left join m_customers mc on mc.id = fm.id_customer

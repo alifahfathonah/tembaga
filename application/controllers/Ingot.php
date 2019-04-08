@@ -310,68 +310,6 @@ class Ingot extends CI_Controller{
         redirect('index.php/Ingot');    
     }
 
-    function save_spb_keluar(){
-        $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-
-        $this->db->trans_start();
-        $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('SPB', $tgl_input); 
-        
-        if($code){        
-            $data = array(
-                        'no_spb'=> $code,
-                        'tanggal'=> $tgl_input,
-                        'produksi_ingot_id'=> 0,
-                        'jenis_barang'=> 1,
-                        'jumlah'=> $this->input->post('qty'),
-                        'remarks'=> $this->input->post('remarks'),
-                        'created'=> $tanggal,
-                        'created_by'=> $user_id,
-                        'modified'=> $tanggal,
-                        'modified_by'=> $user_id
-                    );
-
-            $this->db->insert('spb', $data);
-            $id = $this->db->insert_id();
-
-            if($this->db->trans_complete()){
-                redirect('index.php/Ingot/create_spb_keluar/'.$id);  
-            }else{
-                $this->session->set_flashdata('flash_msg', 'Data produksi gagal disimpan, silahkan dicoba kembali!');
-                redirect('index.php/Ingot/hasil_produksi');  
-            }                           
-        }else{
-            $this->session->set_flashdata('flash_msg', 'Pembuatan SPB gagal, penomoran belum disetup!');
-        }
-        redirect('index.php/Ingot');    
-    }
-
-    function create_spb_keluar(){
-        $module_name = $this->uri->segment(1);
-        $id = $this->uri->segment(3);
-        if($id){
-            $group_id    = $this->session->userdata('group_id');        
-            if($group_id != 1){
-                $this->load->model('Model_modules');
-                $roles = $this->Model_modules->get_akses($module_name, $group_id);
-                $data['hak_akses'] = $roles;
-            }
-            $data['group_id']  = $group_id;
-
-            $data['content']= "ingot/create_spb_keluar";
-            $this->load->model('Model_ingot');
-            $data['header'] = $this->Model_ingot->show_header_spb($id)->row_array();
-            $this->load->model('Model_rongsok');
-            $data['list_rongsok'] = $this->Model_rongsok->list_data()->result();
-            
-            $this->load->view('layout', $data);   
-        }else{
-            redirect('index.php/Ingot');
-        }
-    }
-
     function save_spb_rsk(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
@@ -379,12 +317,6 @@ class Ingot extends CI_Controller{
         $id = $this->input->post('id');
 
             $this->db->trans_start();
-
-            $this->db->where('id', $id);
-            $this->db->update('spb', array(
-                'tanggal'=> $this->input->post('tanggal'),
-                'remarks'=> $this->input->post('remarks')
-            ));
 
             $details = $this->input->post('myDetails');
             foreach ($details as $row){
@@ -1163,24 +1095,7 @@ class Ingot extends CI_Controller{
             redirect('index.php/Ingot/spb_list');
         }
     }
-
-    function add_spb_keluar(){
-        $module_name = $this->uri->segment(1);
-            $group_id    = $this->session->userdata('group_id');        
-            if($group_id != 1){
-                $this->load->model('Model_modules');
-                $roles = $this->Model_modules->get_akses($module_name, $group_id);
-                $data['hak_akses'] = $roles;
-            }
-            $data['group_id']  = $group_id;
-
-            $data['content']= "ingot/add_spb_keluar";
-
-            $this->load->model('Model_rongsok');
-            $data['list_rongsok'] = $this->Model_rongsok->list_data()->result();
-            $this->load->view('layout', $data);
-    }
-
+    
     function view_spb(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);

@@ -241,25 +241,25 @@ function loadDetail(id){
     });
 }
 
-function get_packing(id){
-    if(''!=id){
-    $.ajax({
-        url: "<?php echo base_url('index.php/GudangFG/get_bobbin'); ?>",
-        async: false,
-        type: "POST",
-        data: "id="+id,
-        dataType: "json",
-        success: function(result) {
-            if(result){
-                $('#id_packing').val(result['id']);
-            } else {
-                alert('Bobbin/Keranjang tidak ditemukan, coba lagi');
-                $('#no_packing').val('');
-            }
-        }
-    });
-    }
-}
+// function get_packing(id){
+//     if(''!=id){
+//     $.ajax({
+//         url: "<?php echo base_url('index.php/GudangFG/get_bobbin'); ?>",
+//         async: false,
+//         type: "POST",
+//         data: "id="+id,
+//         dataType: "json",
+//         success: function(result) {
+//             if(result){
+//                 $('#id_packing').val(result['id']);
+//             } else {
+//                 alert('Bobbin/Keranjang tidak ditemukan, coba lagi');
+//                 $('#no_packing').val('');
+//             }
+//         }
+//     });
+//     }
+// }
 
 function saveDetail(){
     if($.trim($("#netto").val()) == ""){

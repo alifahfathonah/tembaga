@@ -67,7 +67,7 @@
                             }else if($data->flag_produksi==5){
                                 $flag_produksi = 'KIRIM KE RONGSOK';
                             }else{
-                                $flag_produksi = 'LAINNYA';
+                                $flag_produksi = 'SDM';
                             } ?>
                         <td><?=$flag_produksi;?></td>
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>

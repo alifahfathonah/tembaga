@@ -83,52 +83,70 @@
                                 <div class="panel panel-default">
                                     <div class="panel-body">
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 INGOT <font color="#f00">*</font>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <input type="text" id="ingot_balok" name="ingot"
                                                     class="form-control myline" placeholder="ingot/batang" style="margin-bottom:5px; width:120px;" required="required">
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-2">
+                                                <span>Batang</span>
+                                            </div>
+                                            <div class="col-md-3">
                                                 <input type="text" id="ingot_berat" name="berat_ingot"
-                                                    class="form-control myline" placeholder="kg" style="margin-bottom:5px; width:100px;"  required="required" onchange="hitung_susut()" >
+                                                    class="form-control myline" placeholder="kg" style="margin-bottom:5px; width:100px;"  required="required" onchange="hitung_susut()">
+                                            </div>
+                                            <div class="cold-md-1">
+                                                <span>KG</span>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4">
                                                 BS <font color="#f00">*</font>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-3">
                                                 <input type="text" id="bs" name="bs"
                                                     class="form-control myline" placeholder="bs/kg" style="margin-bottom:5px; width:100px;"  required="required" onchange="hitung_susut()">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <span>KG</span>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4">
                                                 SUSUT  <font color="#f00">*</font>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-3">
                                                 <input type="text" id="susut" name="susut"
                                                     class="form-control myline" placeholder="susut/kg" style="margin-bottom:5px; width:100px;"  required="required" readonly="readonly">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <span>KG</span>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4">
                                                 AMPAS <font color="#f00">*</font>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-3">
                                                 <input type="text" id="ampas" name="ampas"
                                                     class="form-control myline" placeholder="ampas/kg" style="margin-bottom:5px; width:100px;"  required="required" onchange="hitung_susut()">     
+                                            </div>
+                                            <div class="col-md-3">
+                                                <span>KG</span>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4">
                                                 SERBUK <font color="#f00">*</font>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-3">
                                                 <input type="text" id="serbuk" name="serbuk"
                                                     class="form-control myline" placeholder="serbuk/kg" style="margin-bottom:5px; width:100px;"  required="required" onchange="hitung_susut()">     
+                                            </div>
+                                            <div class="col-md-3">
+                                                <span>KG</span>
                                             </div>
                                         </div>
                                     </div>

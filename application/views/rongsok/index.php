@@ -31,7 +31,7 @@
                               id="formku">
                             <div class="row">
                                 <div class="col-md-5">
-                                    Nama Item <font color="#f00">*</font>
+                                    ID <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-7">
                                     <input type="text" id="id" name="id" 
@@ -250,7 +250,7 @@ function editData(id){
             $('#nama_item').val(result['nama_item']);
             $('#uom').val(result['uom']);
             $('#description').val(result['description']);
-            $('#alias').val(result['kode_rongsok']);
+            $('#kode_rongsok').val(result['kode_rongsok']);
             $('#id').val(result['id']);
             
             $("#myModal").find('.modal-title').text('Edit Rongsok');

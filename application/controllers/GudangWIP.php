@@ -111,7 +111,7 @@ class GudangWIP extends CI_Controller{
                     'susut' => (int)$this->input->post('susut_berat_keras'),
                     'keras' => (int)$this->input->post('berat_keras'),
                     'qty_keras' => (int)$this->input->post('jml_keras'),
-                    'bs' => (int)($this->input->post('bs')!= null)? $this->input->post('bs') : $this->input->post('bs_rolling'),
+                    'bs' => (int)$this->input->post('bs'),
                     'serbuk' => (int)$this->input->post('serbuk'),
                     'tali_rolling' => (int)$this->input->post('tali_rolling'),
                     'created_by'=> $user_id
@@ -188,14 +188,14 @@ class GudangWIP extends CI_Controller{
             $this->db->insert('t_gudang_keras', $data);
         }
 
-        if($this->input->post('bs') != 0 || $this->input->post('bs_rolling') != 0){
+        if($this->input->post('bs') != 0){
             if($this->input->post('jenis_masak') == 'ROLLING'){
                 #insert bs ke gudang bs
                 $data_bs = array(
                     'id_produksi' => $insert_id,
                     'jenis_barang_id' => 20,
                     'jenis_produksi' => 'WIP',
-                    'berat' => $this->input->post('bs_rolling'),
+                    'berat' => $this->input->post('bs'),
                     'tanggal' => $tgl_input,
                     'status' => 0,
                     'created_by' => $user_id,
@@ -613,19 +613,12 @@ class GudangWIP extends CI_Controller{
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('SPB-WIP', $tgl_input); 
         
-        if($code){
-            if($this->input->post('flag_produksi') == "2"){
-                $remarks = "ROLLING | ".$this->input->post('remarks');
-            } else if ($this->input->post('flag_produksi') == "3"){
-                $remarks = "CUCI | ".$this->input->post('remarks');
-            } else {
-                $remarks = $this->input->post('remakrs');
-            }        
+        if($code){        
             $data = array(
                 'no_spb_wip'=> $code,
                 'flag_produksi'=> $this->input->post('flag_produksi'),
                 'tanggal'=> $tgl_input,
-                'keterangan'=>$remarks,
+                'keterangan'=>$this->input->post('remarks'),
                 'created'=> $tanggal,
                 'created_by'=> $user_id
             );

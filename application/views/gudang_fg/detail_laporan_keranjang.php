@@ -259,7 +259,7 @@ function saveDetail(){
                 nomor_produksi:$('#nomor_produksi').val(),
                 bruto:$('#bruto').val(),
                 netto: $('#netto').val(),
-                berat: $('#berat').val(),
+                berat_bobbin: $('#berat_bobbin').val(),
                 id_bobbin: $('#id_bobbin').val(),
                 no_bobbin: $('#no_bobbin').val(),
                 ukuran: $('#ukuran').val(),

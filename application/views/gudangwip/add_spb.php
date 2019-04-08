@@ -75,7 +75,7 @@
                             <select id="flag_produksi" name="flag_produksi" placeholder="Silahkan pilih..."
                                 class="form-control myline select2me" style="margin-bottom:5px;">
                                 <option></option>
-                                <option value="0">LAINNYA</option>
+                                <option value="0">SDM</option>
                                 <option value="2">ROLLING (INGOT)</option>
                                 <option value="3">CUCI (KAWAT HITAM)</option>
                                 <option value="5">KIRIM RONGSOK</option>

@@ -56,8 +56,8 @@ Memorial(Detail Matching Pembayaran) Pili slip setoran mau dikurang dengan uang 
 
 Format uang masuk sesuai dengan jenis pembayaran. Numbering per tahun, 4 digit(Done)
 
-Matching Invoice punya nomor sendiri
-agar Balance dengan Voucher yang dibayarkan
+Matching Invoice punya nomor sendiri 
+agar Balance dengan Voucher yang dibayarkan (Done)
 
 Rata rata harga Jenis Barang Rongsok per bulan dan bisa di Print
 
@@ -65,27 +65,27 @@ Rata rata Netto Supplier Rongsok bulan itu. Paling banyak ngirim siapa, di ranki
 
 TTR per bulan, per jenis barang ditampilkan Netto dan Harganya, di total per jenis barang
 
-Master Bank tambah A/N siapa, Nomor Rekening, dan Kantor Cabang
+Master Bank tambah A/N siapa, Nomor Rekening, dan Kantor Cabang(Done)
 
 SPB Rongsok gausah di batesin Jumlah permintaan dan pemenuhannya
 
-Hasil_produksi2 tambahin satuan di belakang input
+Hasil_produksi2 tambahin satuan di belakang input (Done)
 
-Produksi WIP Rolling tambahin Berat BS Rolling, dan BS Ingot. Nanti masuk ke gudang Rongsok
+Produksi WIP Rolling tambahin Berat BS Rolling, dan BS Ingot. Nanti masuk ke gudang Rongsok (Done)
 
 Tali Rolling = Pemasukan dari BS FinishGood -> masuk ke Gudang Rongsok sebagai BS SDM -> 
 Request SPB Rongsok keluar scan BS SDM tersebut
 
-Berat Tali Rolling ga perlu ada di Proses WIP Rolling
+Berat Tali Rolling ga perlu ada di Proses WIP Rolling (Done)
 
 Bakar Ulang = Hilangkan jumlah & berat kawat keras, tali rolling dan berat serbuk. Input BS masuk langsung ke Gudang
-Rongsok sebagai BS 8 MM
+Rongsok sebagai BS 8 MM (Done)
 
-ProsesBPB GudangWIP kurang nomor produksi
+ProsesBPB GudangWIP kurang nomor produksi (Done)
 
-Proses Cuci gausah ada Serbuk dan BS
+Proses Cuci gausah ada Serbuk dan BS (Done)
 
-spb wip keperluan 'Lainnya' diganti jadi 'SDM'
+spb wip keperluan 'Lainnya' diganti jadi 'SDM' (Done)
 
 SPB Bobbin, isi perlu size apa aja dan berapa jumlah bobin yang diminta.
 
@@ -159,8 +159,10 @@ Pembelian, Semua yang PO KMP, Per Jenis Barang.
 Penomoran SO dan SJ KMP pada Aplikasi resmi disamain dengan penomoran Intern yang PPN
 Penomoran DTR, TTR resmi dan pajak sama. Tapi ditambahin -KMP.
 
-SO Ampas Belum
-SJ Ampas Belum
+PO Tolling Ampas, Kirim Ampas, balikannya 25% dari yang dikirim. sesuai balikannya. Balikannya Ingot Rendah.
+SJ Ampas Keluar Belum tanpa Invoice
 
 Voucher juga bedain penomorannya non-ppn dan KMP(Done)
 Nomor po belom masuk. Finance/Voucher_list/ belom di filter PPN dan NON(Done)
+
+PO Sparepart beda in penomoran PPN dan Non PPN. Beserta Penomoran LPB nya

@@ -30,7 +30,7 @@
                     <i class="fa fa-beer"></i>DTR List
                 </div>
                 <div class="tools">    
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliRongsok/create_dtr"> <i class="fa fa-plus"></i> Create DTR</a>
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliRongsok/create_dtr"> <i class="fa fa-plus"></i> Tambah DTR</a>
                 </div>           
             </div>
             <div class="portlet-body">
@@ -80,7 +80,7 @@
                                 if(($group_id==1 || $hak_akses['edit_dtr']==1) && $data->status==9){
                                     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliRongsok/edit_dtr/'.$data->id.'" 
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit &nbsp; </a> ';
-                                }else if ($data->status==0 && (strpos($data->remarks, 'SISA PRODUKSI') || strpos($data->remarks, 'TRANSFER KE RONGSOK')) !== false){
+                                }else if ($data->status==0 && $data->supplier_id==0 && $data->customer_id==0){
                                     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliRongsok/proses_dtr/'.$data->id.'" 
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
                                 }

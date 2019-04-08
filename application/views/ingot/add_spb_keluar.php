@@ -23,7 +23,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/Ingot/save_spb_rsk'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/Ingot/save_spb_keluar'); ?>">                            
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
