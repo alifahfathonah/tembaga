@@ -274,6 +274,7 @@ class Finance extends CI_Controller{
         $jenis = $this->input->post('jenis1');
         if($jenis=="Cek Mundur"){
             $data = array(
+                'nominal'=>str_replace('.', '', $this->input->post('nominal_baru')),
                 'status'=>0,
                 'tgl_cair'=>$this->input->post('tanggal_cek_baru'),
                 'modified_at'=>$tanggal,
@@ -282,6 +283,7 @@ class Finance extends CI_Controller{
             );
         }else if($jenis=="Cek"){
             $data = array(
+                'nominal'=>str_replace('.', '', $this->input->post('nominal_baru')),
                 'status'=>0,
                 'nomor_cek'=>$this->input->post('nomor'),
                 'modified_at'=>$tanggal,
@@ -290,6 +292,7 @@ class Finance extends CI_Controller{
             );
         }else if($jenis=="Giro"){
             $data = array(
+                'nominal'=>str_replace('.', '', $this->input->post('nominal_baru')),
                 'status'=>0,
                 'rekening_pembayaran'=>$this->input->post('nomor'),
                 'modified_at'=>$tanggal,
@@ -1439,6 +1442,38 @@ class Finance extends CI_Controller{
             $this->load->view('layout', $data);
         }else{
             redirect('index.php/Finance');
+        }
+    }
+
+    function print_matching_invoice(){
+        $id = $this->uri->segment(3);
+        if($id){       
+            $this->load->helper('terbilang_helper');
+            $this->load->helper('tanggal_indo');
+            $this->load->model('Model_finance');
+            $data['header'] = $this->Model_finance->matching_header_print($id)->row_array();
+            $data['details'] = $this->Model_finance->load_invoice_match($id)->result();
+            $data['details_um'] = $this->Model_finance->load_um_match($id)->result();
+
+            $this->load->view('finance/print_matching_inv', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
+
+    function print_um_match(){
+        $id = $this->uri->segment(3);
+        if($id){       
+            $this->load->helper('terbilang_helper');
+            $this->load->helper('tanggal_indo');
+            $this->load->model('Model_finance');
+            $data['header'] = $this->Model_finance->matching_header_um_print($id)->row_array();
+            $idm = $data['header']['flag_matching'];
+            $data['details'] = $this->Model_finance->load_invoice_print_um_match($idm)->result();
+
+            $this->load->view('finance/print_um_match', $data);
+        }else{
+            redirect('index.php'); 
         }
     }
 

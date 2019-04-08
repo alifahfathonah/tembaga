@@ -109,6 +109,20 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Jenis Barang Retur <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cek(this.value);">
+                                <option value=""></option>
+                                <option value="RONGSOK">Rongsok</option>
+                                <option value="WIP">WIP</option>
+                                <option value="FG">Finish Good</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" id="div_jenis_packing">
+                        <div class="col-md-4">
                             Jenis Packing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -170,12 +184,16 @@ function simpanData(){
     }else if($.trim($("#m_customer_id").val()) == ""){
         $('#message').html("Silahkan pilih nama customer!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#jenis_packing_id").val()) == ""){
-        $('#message').html("Silahkan pilih jenis packing!");
-        $('.alert-danger').show(); 
     }else if($.trim($("#type_retur").val()) == ""){
         $('#message').html("Silahkan pilih type retur!");
         $('.alert-danger').show(); 
+    }else if($.trim($("#jenis_barang").val()) == 'FG'){
+        if($.trim($("#jenis_packing_id").val()) == ""){
+            $('#message').html("Silahkan pilih jenis packing!");
+            $('.alert-danger').show();
+        }else{
+            $('#formku').submit();
+        }
     }else{     
         $('#formku').submit(); 
     };
@@ -191,6 +209,15 @@ function get_contact(id){
             $("#contact_person").val(result['pic']);
         } 
     });
+}
+function get_cek(id){
+    if(id === "FG") {
+        $('#div_jenis_packing').show();
+        $('#jenis_packing_id').prop("disabled", false);
+    }else{
+        $('#div_jenis_packing').hide();
+        $('#jenis_packing_id').prop("disabled", true);
+    }
 }
 </script>
 

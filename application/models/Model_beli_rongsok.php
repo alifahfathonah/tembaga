@@ -298,7 +298,7 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join dtr On (ttr.dtr_id = dtr.id) 
                     Left Join po On (dtr.po_id = po.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id)
-                Where po.ppn = ".$user_ppn."
+                Where po.ppn = ".$user_ppn." or dtr.po_id = 0
                 Order By dtr.id Desc");
         return $data;
     }

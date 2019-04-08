@@ -74,6 +74,7 @@ class Retur extends CI_Controller{
             $data = array(
                 'no_retur'=> $code,
                 'customer_id'=>$this->input->post('m_customer_id'),
+                'jenis_barang'=>$this->input->post('jenis_barang'),
                 'jenis_retur'=>$this->input->post('type_retur'),
                 'jenis_packing_id' => $this->input->post('jenis_packing_id'),
                 'remarks'=>$this->input->post('remarks'),
@@ -107,12 +108,20 @@ class Retur extends CI_Controller{
             }
             $data['group_id']  = $group_id;
 
-            $data['content']= "retur/edit";
             $this->load->model('Model_retur');
-            $data['header'] = $this->Model_retur->show_header_retur($id)->row_array();  
-            
             $data['customer_list'] = $this->Model_retur->customer_list()->result();
-            $data['jenis_barang_list'] = $this->Model_retur->jenis_barang_list()->result();
+            $data['header'] = $this->Model_retur->show_header_retur($id)->row_array();  
+            $jb = $data['header']['jenis_barang'];
+            if($jb == 'FG'){
+                $data['jenis_barang_list'] = $this->Model_retur->jenis_barang_list()->result();
+                $data['content']= "retur/edit";
+            }else if($jb == 'WIP'){
+                $data['jenis_barang_list'] = $this->Model_retur->jenis_wip_retur()->result();
+                $data['content']= "retur/edit_wip";
+            }else if($jb == 'RONGSOK'){
+                $data['jenis_barang_list'] = $this->Model_retur->rongsok_retur()->result();
+                $data['content']= "retur/edit_rongsok";
+            }
 
             $this->load->view('layout', $data);   
         }else{
@@ -181,6 +190,46 @@ class Retur extends CI_Controller{
         echo json_encode($tabel); 
     }
 
+    function load_detail_rsk(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $no    = 1;
+        $bruto = 0;
+        $netto = 0;
+        $this->load->model('Model_retur');
+        $jenis_barang_list = $this->Model_retur->jenis_barang_list()->result();
+         
+        $myDetail = $this->Model_retur->load_detail($id)->result(); 
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->nama_item.'</td>';
+            $tabel .= '<td>'.$row->no_packing.'</td>';
+            $tabel .= '<td style="text-align:right">'.$row->bruto.'</td>';
+            $tabel .= '<td style="text-align:right">'.$row->netto.'</td>';
+            $tabel .= '<td>'.$row->line_remarks.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a></td>';
+            $tabel .= '</tr>';
+            $bruto += $row->bruto;
+            $netto += $row->netto;
+            $no++;
+        }
+                    
+        $tabel .= '<tr>';
+        $tabel .= '<td colspan="3" style="text-align:right"><strong>Total</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($bruto,0,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
+        $tabel .= '<td colspan="2"></td>';
+        $tabel .= '</tr>';
+       
+        
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
     function get_uom(){
         $id = $this->input->post('id');
         $this->load->model('Model_ampas');
@@ -191,6 +240,32 @@ class Retur extends CI_Controller{
     }
     
     function save_detail(){
+        $return_data = array();
+        $no_bobbin = $this->input->post('no_bobbin');
+        $kode_bobbin = substr($no_bobbin, 0,1);
+        $urut_bobbin = substr($no_bobbin, 1,4);
+        $ukuran = $this->input->post('ukuran');
+        $no_packing = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin."RTR";
+        
+        if($this->db->insert('retur_detail', array(
+            'retur_id'=>$this->input->post('id'),
+            'jenis_barang_id'=>$this->input->post('jenis_barang_id'), 
+            'bruto'=>$this->input->post('bruto'),
+            'netto'=>$this->input->post('netto'),
+            'bobbin_id'=>$this->input->post('id_bobbin'),
+            'no_packing'=>$no_packing,
+            'line_remarks'=>$this->input->post('line_remarks')
+        ))){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan detail item retur! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function save_detail_rsk(){
         $return_data = array();
         $no_bobbin = $this->input->post('no_bobbin');
         $kode_bobbin = substr($no_bobbin, 0,1);

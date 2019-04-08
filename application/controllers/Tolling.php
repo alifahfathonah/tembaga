@@ -780,15 +780,10 @@ class Tolling extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $user_ppn = $this->session->userdata('user_ppn');
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        if($user_ppn==1){
-            $code = $this->Model_m_numberings->getNumbering('DTR-TKMP', $tgl_input);
-        }else{
-            $code = $this->Model_m_numberings->getNumbering('DTR-T', $tgl_input);
-        }
+        $code = $this->Model_m_numberings->getNumbering('DTR-T', $tgl_input);
         $this->load->model('Model_tolling_titipan');
 
         if($code){        
@@ -837,8 +832,7 @@ class Tolling extends CI_Controller{
     
     function dtr_list(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');  
-        $user_ppn    = $this->session->userdata('user_ppn');
+        $group_id    = $this->session->userdata('group_id');        
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -848,7 +842,7 @@ class Tolling extends CI_Controller{
 
         $data['content']= "tolling_titipan/dtr_list";
         $this->load->model('Model_tolling_titipan');
-        $data['list_data'] = $this->Model_tolling_titipan->dtr_list($user_ppn)->result();
+        $data['list_data'] = $this->Model_tolling_titipan->dtr_list()->result();
 
         $this->load->view('layout', $data);
     }

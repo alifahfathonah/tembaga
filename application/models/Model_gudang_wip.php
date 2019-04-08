@@ -37,7 +37,7 @@ class Model_gudang_wip extends CI_Model{
     
     function show_header_bpb($id){
         $data = $this->db->query("Select bpbwip.*, tsw.no_spb_wip, 
-                (pi.no_produksi) as no_produksi_ingot,
+                COALESCE(pi.no_produksi, hslwip.no_produksi_wip) as no_produksi_ingot,
                     usr.realname As pengirim, us.realname As penerima
                     From t_bpb_wip bpbwip
                         left Join users usr On (bpbwip.created_by = usr.id)
@@ -106,6 +106,13 @@ class Model_gudang_wip extends CI_Model{
         $data = $this->db->query("select jb.jenis_barang, jb.id
                 from jenis_barang jb
                 where id=".$id);
+        return $data;
+    }
+
+    function jenis_barang_spb_cuci(){
+        $data = $this->db->query("select jb.jenis_barang, jb.id
+                from jenis_barang jb
+                where id in (6,656)");
         return $data;
     }
 
@@ -216,8 +223,8 @@ class Model_gudang_wip extends CI_Model{
         return $data;
     }
 
-    function get_spb($id,$jb){
-        $data = $this->db->query("select * from t_spb_wip_detail where t_spb_wip_id =".$id." and jenis_barang_id =".$jb);
+    function get_spb($id){
+        $data = $this->db->query("select sum(qty)as qty, sum(berat) as berat from t_spb_wip_detail where t_spb_wip_id =".$id);
         return $data;
     }
 

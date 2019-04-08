@@ -63,6 +63,16 @@ class Model_retur extends CI_Model{
         $data = $this->db->query("Select * From jenis_barang where category = 'FG' Order By jenis_barang");
         return $data;
     }
+
+    function jenis_wip_retur($jb){
+        $data = $this->db->query("Select * From jenis_barang where category = 'WIP' Order By jenis_barang");
+        return $data;
+    }
+
+    function rongsok_retur(){
+        $data = $this->db->query("Select * From rongsok Where type_barang='Rongsok' Order By nama_item");
+        return $data;
+    }
     
     function jenis_packing_list(){
         $data = $this->db->query("select *from m_jenis_packing");

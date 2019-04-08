@@ -134,7 +134,7 @@ Retur, sebelum approve, bisa ganti Type Retur. Karena gatau akan Diganti barang 
 
 Retur, surat jalan, harus otomatis langsung ke select yang sudah dikeluarkan.
 
-Rongsok keluar, terus bisa input DTR tanpa ada PO. untuk flow repacking yang Export.
+Rongsok keluar, terus bisa input DTR tanpa ada PO. untuk flow repacking yang Export.(Done)
 
 No. Invoice Resmi diganti nama jadi 'No. Invoice CV'
 
