@@ -1016,7 +1016,8 @@ class GudangBobbin extends CI_Controller{
         if($id){        
             $this->load->model('Model_bobbin');
             $data['header']  = $this->Model_bobbin->show_header_spb($id)->row_array();
-            $data['details'] = $this->Model_bobbin->jenis_barang_list_by_spb($id)->result();
+            // $data['details'] = $this->Model_bobbin->jenis_barang_list_by_spb($id)->result();
+            $data['myDetail'] = $this->Model_bobbin->show_detail_spb($id)->result(); 
 
             $this->load->view('gudang_bobbin/print_spb_bobbin', $data);
         }else{

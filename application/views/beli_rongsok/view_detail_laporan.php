@@ -51,7 +51,7 @@
                         foreach ($detailLaporan as $row){
                             echo '<tr>';
                             echo '<td style="text-align:center">'.$no.'</td>';
-                            echo ($row->tanggal_masuk != NULL) ? "<td><i class='fa fa-arrow-circle-down'></i> Masuk</td>" : "<td><i class='fa fa-arrow-circle-up'></i> Keluar</td>";
+                            echo ($row->tanggal_masuk != NULL) ? "<td style='background-color: green; color: white;'><i class='fa fa-arrow-circle-down'></i> Masuk</td>" : "<td style='background-color: red; color: white;'><i class='fa fa-arrow-circle-up'></i> Keluar</td>";
                             echo '<td>'.$row->tanggal_masuk.$row->tanggal_keluar.'</td>';
                             echo '<td>'.$row->nama_item.'</td>';
                             echo '<td>'.$row->no_pallete.'</td>';
