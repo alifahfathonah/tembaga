@@ -173,7 +173,7 @@ class Model_beli_rongsok extends CI_Model{
 
     function dtr_list($user_ppn){
         $data = $this->db->query("Select dtr.*, 
-                    po.no_po, 
+                    COALESCE(po.no_po,r.no_retur) as no_po, 
                     COALESCE(po.ppn,".$user_ppn.") as flag_ppn,
                     spl.nama_supplier,
                     usr.realname As penimbang,
@@ -182,20 +182,23 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join po On (dtr.po_id > 0 and po.id = dtr.po_id)
                     Left Join supplier spl On (po.supplier_id = spl.id) or (dtr.supplier_id = spl.id) 
                     Left Join users usr On (dtr.created_by = usr.id) 
-                    Where dtr.customer_id = 0 and COALESCE(po.ppn,".$user_ppn.") =".$user_ppn."
+                    Left Join retur r On (r.id = dtr.retur_id)
+                    Where (dtr.customer_id = 0 or retur_id > 0) and COALESCE(po.ppn,".$user_ppn.") =".$user_ppn."
                 Order By dtr.id Desc");
         return $data;
     }
     
     function show_header_dtr($id){
         $data = $this->db->query("Select dtr.*, 
-                    po.no_po,
-                    spl.nama_supplier,
+                    COALESCE(po.no_po,r.no_retur) as no_po,
+                    COALESCE(spl.nama_supplier,c.nama_customer) as nama_supplier,
                     usr.realname As penimbang,
                     rjct.realname As rejected_name
                     From dtr
                         Left Join po On (dtr.po_id = po.id)
+                        Left Join retur r On (dtr.po_id = 0 AND r.id = dtr.retur_id)
                         Left Join supplier spl On (dtr.supplier_id = spl.id) 
+                        Left Join m_customers c On (c.id =  dtr.customer_id)
                         Left Join users usr On (dtr.created_by = usr.id) 
                         Left Join users rjct On (dtr.rejected_by = rjct.id) 
                     Where dtr.id=".$id);
@@ -298,7 +301,7 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join dtr On (ttr.dtr_id = dtr.id) 
                     Left Join po On (dtr.po_id = po.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id)
-                Where po.ppn = ".$user_ppn." or dtr.po_id = 0
+                Where po.ppn = ".$user_ppn." or (dtr.po_id = 0 and dtr.customer_id = 0) or (dtr.retur_id > 0)
                 Order By dtr.id Desc");
         return $data;
     }

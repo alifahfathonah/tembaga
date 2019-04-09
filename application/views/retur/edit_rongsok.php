@@ -69,6 +69,21 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Jenis Barang
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jenis_barang" name="jenis_barang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $header['jenis_barang']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">&nbsp;</div>
+                    
+                </div>
+                <div class="col-md-1">&nbsp;</div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4">
                             Nama Penimbang
                         </div>
                         <div class="col-md-8">
@@ -77,11 +92,6 @@
                                 value="<?php echo $header['penimbang']; ?>">
                         </div>
                     </div>
-                    <div class="row">&nbsp;</div>
-                    
-                </div>
-                <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
                             Customer <font color="#f00">*</font>
@@ -128,6 +138,8 @@
                                 <th width="20%">Nama Item Retur</th>
                                 <th>No. Palette</th>
                                 <th>Bruto (Kg)</th>
+                                <th>Berat Palette</th>
+                                <th></th>
                                 <th>Netto (Kg)</th>
                                 <th>Keterangan</th>
                                 <th>Actions</th>
@@ -149,8 +161,9 @@
                                 </td>
                                 <td><input type="text" id="no_packing" name="no_packing" class="form-control myline" readonly="readonly" value="Auto"></td>
                                 <td><input type="text" id="bruto" name="bruto" class="form-control myline"></td>
+                                <td><input type="text" id="berat_palette" name="berat_palette" class="form-control myline"/></td>
+                                <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto();"><i class="fa fa-dashboard"></i> Timbang </a></td>
                                 <td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"/></td>
-                                <!-- <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen"> <i class="fa fa-dashboard"></i> Timbang </a></td> -->
                                 <td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
                                 <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
                             </tr>
@@ -184,6 +197,14 @@
     </div>
 </div> 
 <script>
+function timbang_netto(){
+    var bruto = $("#bruto").val();
+    var berat_palette = $("#berat_palette").val();
+    var total_netto = bruto - berat_palette;
+    const netto = total_netto.toFixed(2);
+    $("#netto").val(netto);
+}
+
 function myCurrency(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
@@ -243,6 +264,8 @@ function saveDetail(){
                 qty:$('#qty').val(),
                 bruto:$('#bruto').val(),
                 netto:$('#netto').val(),
+                berat:$('#berat_palette').val(),
+                tgl:$('#tanggal').val(),
                 line_remarks:$('#line_remarks').val()
             },
             success:function(result){
@@ -251,8 +274,7 @@ function saveDetail(){
                     $('#qty').val('');
                     $('#bruto').val('');
                     $('#netto').val('');
-                    $('#no_bobbin').val('');
-                    $('#id_bobbin').val('');
+                    $('#berat_palette').val('');
                     $('#line_remarks').val('');
                     loadDetail($('#id').val());
                     $('#message').html("");

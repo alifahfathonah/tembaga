@@ -108,10 +108,25 @@ class Model_retur extends CI_Model{
         return $data;
     }
 
+    function load_detail_rsk($id){
+        $data = $this->db->query("Select rd.*, r.nama_item, r.uom From retur_detail rd 
+                Left Join rongsok r On(rd.jenis_barang_id = r.id)
+                Where rd.retur_id=".$id);
+        return $data;
+    }
+
     function load_detail_fulfilment($id){
         $data = $this->db->query("select rf.*, jb.jenis_barang
             from retur_fulfilment rf
             left join jenis_barang jb on (rf.jenis_barang_id = jb.id)
+            where rf.retur_id = ".$id);
+        return $data;
+    }
+
+    function load_detail_fulfilment_rsk($id){
+        $data = $this->db->query("select rf.*, r.nama_item
+            from retur_fulfilment rf
+            left join rongsok r on (rf.jenis_barang_id = r.id)
             where rf.retur_id = ".$id);
         return $data;
     }

@@ -141,7 +141,7 @@ class Model_tolling_titipan extends CI_Model{
         return $data;
     }
 
-    function dtr_list(){
+    function dtr_list($user_ppn){
         $data = $this->db->query("Select dtr.*, 
                     so.no_sales_order, 
                     cust.nama_customer,
@@ -151,7 +151,7 @@ class Model_tolling_titipan extends CI_Model{
                     Left Join sales_order so On (dtr.so_id = so.id) 
                     Left Join m_customers cust On (so.m_customer_id = cust.id) 
                     Left Join users usr On (dtr.created_by = usr.id) 
-                Where dtr.customer_id!=0 
+                Where dtr.customer_id!=0 and COALESCE(so.flag_ppn,".$user_ppn.") =".$user_ppn."
                 Order By dtr.id Desc");
         return $data;
     }

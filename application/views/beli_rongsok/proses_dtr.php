@@ -13,7 +13,7 @@
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12">
-        <h3 align="center"><b> Konfirmasi Reject DTR Rongsok</b></h3>
+        <h3 align="center"><b> Konfirmasi DTR Rongsok</b></h3>
         <hr class="divider" />
         <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog">
@@ -61,6 +61,8 @@
                             <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_dtr']; ?>">
+                            
+                            <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -75,14 +77,12 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            No. PO 
+                        <?php if($header['retur_id'] > 0){ echo 'No. Retur';}else{echo 'No. PO';}?> 
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_po" name="no_po" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_po']; ?>">
-                            
-                            <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
                     </div>                    
                     <div class="row">

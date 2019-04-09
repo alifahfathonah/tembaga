@@ -113,18 +113,19 @@
                                     <i class="fa fa-chain"></i>
                                     Matching PO - DTR</a>
                                 </li>
-                                <?php } if($group_id==1 || (isset($akses_menu['BeliRongsok']) && $akses_menu['BeliRongsok']==1)){ ?>
+                                <?php } if($group_id==1 || (isset($akses_menu['ttr_list']) && $akses_menu['ttr_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliRongsok/ttr_list">
                                     <i class="fa fa-file-powerpoint-o"></i>
                                     TTR List </a>
                                 </li>
-                                <?php } ?>
+                                <?php } if($group_id==1 || (isset($akses_menu['voucher_list']) && $akses_menu['voucher_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliRongsok/voucher_list">
                                     <i class="fa fa-usd"></i>
                                     Voucher List </a>
                                 </li>
+                                <?php } ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliRongsok/laporan_list">
                                     <i class="fa fa-briefcase"></i>
@@ -539,7 +540,7 @@
                     </ul>
                 </li>
                 <?php } ?>                        
-                <li <?php if($module_name=="PengirimanSample") echo 'class="start active open"'; ?>>
+                <!-- <li <?php if($module_name=="PengirimanSample") echo 'class="start active open"'; ?>>
                     <a href="javascript:;">
                     <i class="fa fa-taxi"></i>
                     <span class="title">PENGIRIMAN SAMPLE</span>
@@ -562,7 +563,7 @@
                             Surat Jalan</a>
                         </li>
                     </ul>
-                </li>
+                </li> -->
             <?php if($group_id==1 || (isset($akses_menu['Retur']) && $akses_menu['Retur']==1)){ ?>
                 <li <?php if($module_name=="Retur") echo 'class="start active open"'; ?>>
                     <a href="javascript:;">
@@ -785,7 +786,7 @@
                         </li>
                     </ul>
                 </li>
-            <?php } ?> 
+            <?php } if($group_id==1 || (isset($akses_menu['VoucherCost']) && $akses_menu['VoucherCost']==1)){ ?>
                 <li>
                     <a href="<?php echo base_url(); ?>index.php/VoucherCost">
                     <i class="fa fa-usd"></i>
@@ -793,7 +794,7 @@
                     <span class="arrow"></span>
                     </a>
                 </li>
-            <?php if($group_id==1 || ( isset($akses_menu['MApolo']) || isset($akses_menu['MCost']) || isset($akses_menu['MCities']) || isset($akses_menu['MKendaraan']) || isset($akses_menu['MGroupCost']) || isset($akses_menu['MNumberings']) || isset($akses_menu['MProvinces']) || isset($akses_menu['MTypeKendaraan']) || isset($akses_menu['MSupplier']) || isset($akses_menu['MCustomer']) || isset($akses_menu['MRongsok']) || isset($akses_menu['MBank']) || isset($akses_menu['MSparepart']) || isset($akses_menu['MAmpas']) || isset($akses_menu['MJenisBarang']) )){ ?>
+            <?php } if($group_id==1 || ( isset($akses_menu['MApolo']) || isset($akses_menu['MCost']) || isset($akses_menu['MCities']) || isset($akses_menu['MKendaraan']) || isset($akses_menu['MGroupCost']) || isset($akses_menu['MNumberings']) || isset($akses_menu['MProvinces']) || isset($akses_menu['MTypeKendaraan']) || isset($akses_menu['MSupplier']) || isset($akses_menu['MCustomer']) || isset($akses_menu['MRongsok']) || isset($akses_menu['MBank']) || isset($akses_menu['MSparepart']) || isset($akses_menu['MAmpas']) || isset($akses_menu['MJenisBarang']) )){ ?>
                 <li <?php if($module_name=="MNumberings" || $module_name=="Apolo"
                         || $module_name=="MProvinces" || $module_name=="MCities" 
                         || $module_name=="Customer" || $module_name=="Supplier" 

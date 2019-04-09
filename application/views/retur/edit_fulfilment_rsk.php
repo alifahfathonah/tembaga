@@ -104,7 +104,7 @@
                                             foreach ($myDetail as $row){
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
-                                                echo '<td>'.$row->jenis_barang.'</td>';
+                                                echo '<td>'.$row->nama_item.'</td>';
                                                 echo '<td>'.$row->netto.'</td>';
                                                 echo '<td>'.$row->line_remarks.'</td>';
                                                 echo '</tr>';
@@ -145,7 +145,7 @@
                                         <select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="check(this.value);">
                                         <option value=""></option>
                                            <?php foreach ($jenis_barang_list as $value){
-                                                echo "<option value='".$value->id."'>".$value->jenis_barang."</option>";
+                                                echo "<option value='".$value->id."'>".$value->nama_item."</option>";
                                             } ?>
                                         </select>
                                         </td>
@@ -211,10 +211,9 @@ function simpanData(){
 }
 
 function loadDetail(id){
-    console.log(id);
     $.ajax({
         type:"POST",
-        url:"<?php echo base_url('index.php/Retur/load_detail_fulfilment'); ?>",
+        url:"<?php echo base_url('index.php/Retur/load_detail_fulfilment_rsk'); ?>",
         data:"id="+ id,
         success:function(result){
             console.log(result);
@@ -307,4 +306,3 @@ $(function(){
     loadDetail(<?php echo $header['id']; ?>);
 });
 </script>
-      

@@ -5,7 +5,7 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br>SURAT PEMINJAMAN BOBBIN</h3>
+        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')){ echo 'PT. KAWATMAS PRAKASA<br>';} ?> SURAT PEMINJAMAN BOBBIN</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="40%">
@@ -71,7 +71,7 @@
                         </tr>
                         <tr>
                             <td style="text-align:right;"><strong>Total </strong></td>
-                            <td style="text-align: center; border-bottom: 1px solid #000;"><?= $no ;?></td>
+                            <td style="text-align: center; border-bottom: 1px solid #000;"><?= $no-1 ;?></td>
                             <td style="text-align: center;"><?= $berat ;?></td>
                         </tr>
                     </table>
