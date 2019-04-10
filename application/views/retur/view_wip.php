@@ -110,7 +110,6 @@
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
-                    
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-6">
@@ -131,16 +130,6 @@
                         <div class="col-md-8">
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
                                    class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['pic']; ?>">
-                        </div>
-                    </div>                    
-                    <div class="row">
-                        <div class="col-md-4">
-                            Jenis Packing <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="jenis_packing_id" name="jenis_packing_id" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['jenis_packing']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -167,10 +156,8 @@
                             <thead>
                                 <th style="width:40px">No</th>
                                 <th>Nama Item</th>
-                                <th>Nomor Packing</th>
-                                <th>Bruto</th>
+                                <th>Quantity</th>
                                 <th>Netto</th>
-                                <th>No. Bobbin / Keranjang</th>
                                 <th>Keterangan</th>
                             </thead>
                             <tbody>
@@ -181,10 +168,8 @@
                                 <tr>
                                     <td style="text-align:center"><?php echo $no; ?></td>
                                     <td><?php echo $row->jenis_barang; ?></td>
-                                    <td><?php echo $row->no_packing; ?></td>
-                                    <td style="text-align:right"><?php echo $row->bruto; ?></td>
+                                    <td style="text-align:right"><?php echo $row->qty; ?></td>
                                     <td style="text-align:right"><?php echo $row->netto; ?></td>
-                                    <td><?php echo $row->nomor_bobbin; ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
                                 </tr>
             <?php

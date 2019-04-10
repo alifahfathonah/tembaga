@@ -110,7 +110,7 @@
                             No. Retur <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="retur_id" name="retur_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                            <select id="retur_id" name="retur_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_jenis_barang(this.value);">
                                 <option value=""></option>
                             </select>
                         </div>
@@ -247,9 +247,10 @@ function get_alamat(id){
 }
 
 function get_jenis_barang(id){
+    console.log(id);
     $.ajax({
         type: "POST",
-        url: "<?php echo base_url('index.php/SalesOrder/get_jenis_barang'); ?>",
+        url: "<?php echo base_url('index.php/Retur/get_jenis_barang'); ?>",
         data: {id: id},
         success: function(result) {
             $("#jenis_barang").val(result['jenis_barang']);  

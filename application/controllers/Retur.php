@@ -78,7 +78,6 @@ class Retur extends CI_Controller{
                 'jenis_retur'=>$this->input->post('type_retur'),
                 'jenis_packing_id' => $this->input->post('jenis_packing_id'),
                 'remarks'=>$this->input->post('remarks'),
-                'jenis_retur'=>$this->input->post('type_retur'),
                 'status' => 0,
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id
@@ -190,6 +189,46 @@ class Retur extends CI_Controller{
         echo json_encode($tabel); 
     }
 
+    function load_detail_wip(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $no    = 1;
+        $qty = 0;
+        $netto = 0;
+        $this->load->model('Model_retur');
+        $jenis_barang_list = $this->Model_retur->jenis_barang_list()->result();
+         
+        $myDetail = $this->Model_retur->load_detail($id)->result(); 
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->jenis_barang.'</td>';
+            $tabel .= '<td style="text-align:right">'.$row->uom.'</td>';
+            $tabel .= '<td style="text-align:right">'.$row->qty.'</td>';
+            $tabel .= '<td style="text-align:right">'.$row->netto.'</td>';
+            $tabel .= '<td>'.$row->line_remarks.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a></td>';
+            $tabel .= '</tr>';
+            $qty += $row->qty;
+            $netto += $row->netto;
+            $no++;
+        }
+                    
+        $tabel .= '<tr>';
+        $tabel .= '<td colspan="3" style="text-align:right"><strong>Total</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($qty,0,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
+        $tabel .= '<td colspan="2"></td>';
+        $tabel .= '</tr>';
+       
+        
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
     function load_detail_rsk(){
         $id = $this->input->post('id');
         
@@ -233,11 +272,11 @@ class Retur extends CI_Controller{
 
     function get_uom(){
         $id = $this->input->post('id');
-        $this->load->model('Model_ampas');
-        $ampas = $this->Model_ampas->show_data($id)->row_array();
+        $this->load->model('Model_retur');
+        $barang= $this->Model_retur->get_uom($id)->row_array();
         
         header('Content-Type: application/json');
-        echo json_encode($ampas); 
+        echo json_encode($barang); 
     }
     
     function save_detail(){
@@ -255,6 +294,30 @@ class Retur extends CI_Controller{
             'netto'=>$this->input->post('netto'),
             'bobbin_id'=>$this->input->post('id_bobbin'),
             'no_packing'=>$no_packing,
+            'line_remarks'=>$this->input->post('line_remarks')
+        ))){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan detail item retur! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function save_detail_wip(){
+        $return_data = array();
+        $no_bobbin = $this->input->post('no_bobbin');
+        $kode_bobbin = substr($no_bobbin, 0,1);
+        $urut_bobbin = substr($no_bobbin, 1,4);
+        $ukuran = $this->input->post('ukuran');
+        $no_packing = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin."RTR";
+        
+        if($this->db->insert('retur_detail', array(
+            'retur_id'=>$this->input->post('id'),
+            'jenis_barang_id'=>$this->input->post('jenis_barang_id'), 
+            'qty'=>$this->input->post('qty'),
+            'netto'=>$this->input->post('netto'),
             'line_remarks'=>$this->input->post('line_remarks')
         ))){
             $return_data['message_type']= "sukses";
@@ -633,6 +696,9 @@ class Retur extends CI_Controller{
             if($data['header']['jenis_barang'] == 'RONGSOK'){
                 $data['content']= "retur/view_rsk";
                 $data['myDetail'] = $this->Model_retur->load_detail_rsk($id)->result();
+            }else if($data['header']['jenis_barang'] == 'WIP'){
+                $data['content']= "retur/view_wip";
+                $data['myDetail'] = $this->Model_retur->load_detail($id)->result();  
             }else{
                 $data['content']= "retur/view";
                 $data['myDetail'] = $this->Model_retur->load_detail($id)->result();  
@@ -743,10 +809,36 @@ class Retur extends CI_Controller{
                     'tanggal_masuk'=>$tgl_input
                 ));
             }
+        }else if($this->input->post('jenis_barang')=='WIP'){
+                $code = $this->Model_m_numberings->getNumbering('BPB-WIPR',$tgl_input);
+                $data_bpb = array(
+                        'no_bpb' => $code,
+                        'created' => $tanggal,
+                        'created_by' => $user_id,
+                        'keterangan' => 'BARANG RETUR WIP',
+                        'status' => 0
+                    );
+                $this->db->insert('t_bpb_wip',$data_bpb);
+                $id_bpb = $this->db->insert_id();
+
+            $loop = $this->db->query("select rd.*, jb.uom from retur_detail rd left join jenis_barang jb on jb.id = rd.jenis_barang_id where retur_id =".$this->input->post('id'))->result();
+                foreach ($loop as $k2) {
+                    $this->db->insert('t_bpb_wip_detail', array(
+                        'bpb_wip_id' => $id_bpb,
+                        'created' => $tgl_input,
+                        'jenis_barang_id' => $k2->jenis_barang_id,
+                        'qty' => $k2->qty,
+                        'berat' => $k2->netto,
+                        'uom' => $k2->uom,
+                        'keterangan' => $k2->line_remarks,
+                        'created_by' => $user_id
+                    ));
+                }
         }
 
             $data = array(
                     'status'=> 1,
+                    'jenis_retur'=> $this->input->post('type_retur'),
                     'approved_at'=> $tanggal,
                     'approved_by'=>$user_id
                 );
@@ -798,7 +890,11 @@ class Retur extends CI_Controller{
         if($id){        
             $this->load->model('Model_retur');
             $data['header']  = $this->Model_retur->show_header_sj($id)->row_array();
-            $data['details'] = $this->Model_retur->load_detail_sj($id)->result();
+            if($data['header']['jenis_barang']=='RONGSOK'){
+                $data['details'] = $this->Model_retur->load_detail_sj_rsk($id)->result();
+            }else{
+                $data['details'] = $this->Model_retur->load_detail_sj($id)->result();
+            }
             $this->load->view('retur/print_surat_jalan', $data);
         }else{
             redirect('index.php'); 
@@ -917,10 +1013,14 @@ class Retur extends CI_Controller{
                 $data['content']= "retur/edit_fulfilment_rsk";
                 $data['myDetail'] = $this->Model_retur->load_detail_rsk($id)->result();
                 $data['jenis_barang_list'] = $this->Model_retur->rongsok_retur()->result();
-            }else{
+            }else if($data['header']['jenis_barang']=='FG'){
                 $data['content']= "retur/edit_fulfilment";
                 $data['myDetail'] = $this->Model_retur->load_detail($id)->result();
                 $data['jenis_barang_list'] = $this->Model_retur->jenis_barang_list()->result();
+            }else if($data['header']['jenis_barang']=='WIP'){
+                $data['content']= "retur/edit_fulfilment_wip";
+                $data['myDetail'] = $this->Model_retur->load_detail($id)->result();
+                $data['jenis_barang_list'] = $this->Model_retur->jenis_wip_retur()->result();
             }
 
             $this->load->view('layout', $data);   
@@ -946,7 +1046,42 @@ class Retur extends CI_Controller{
             $tabel .= '<input type="hidden" id="id_jenis_barang" value="'.$row->jenis_barang_id.'" />';
             $tabel .= '<td>'.$row->jenis_barang.'</td>';
             $tabel .= '<td>'.$row->netto.'</td>';
-            $tabel .= '<td></td>';
+            $tabel .= '<td>'.$row->keterangan.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a></td>';
+            $tabel .= '</tr>';
+            $no++;
+        }
+        
+        // $tabel .= '<tr>';
+        // $tabel .= '<td style="text-align: right;" colspan="2">Total</td>';
+        // $tabel .= '<td name="sum_netto" id="sum_netto">'.$netto.'</td>';
+        // $tabel .= '<td></td>';
+        // $tabel .= '</tr>';       
+        
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function load_detail_fulfilment_wip(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $no    = 1;
+        $netto = 0;
+        $this->load->model('Model_retur');
+        $jenis_barang_list = $this->Model_retur->jenis_barang_list()->result();
+         
+        $myDetail = $this->Model_retur->load_detail_fulfilment($id)->result(); 
+        foreach ($myDetail as $row){
+            $netto += $row->netto;
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<input type="hidden" id="id_jenis_barang" value="'.$row->jenis_barang_id.'" />';
+            $tabel .= '<td>'.$row->jenis_barang.'</td>';
+            $tabel .= '<td>'.$row->qty.'</td>';
+            $tabel .= '<td>'.$row->netto.'</td>';
             $tabel .= '<td>'.$row->keterangan.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
@@ -982,7 +1117,6 @@ class Retur extends CI_Controller{
             $tabel .= '<input type="hidden" id="id_jenis_barang" value="'.$row->jenis_barang_id.'" />';
             $tabel .= '<td>'.$row->nama_item.'</td>';
             $tabel .= '<td>'.$row->netto.'</td>';
-            $tabel .= '<td></td>';
             $tabel .= '<td>'.$row->keterangan.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
@@ -1009,6 +1143,7 @@ class Retur extends CI_Controller{
             'retur_id'=>$this->input->post('id'),
             'tanggal'=>$tgl_input,
             'uom'=>'KG',
+            'qty'=>$this->input->post('qty'),
             'jenis_barang_id'=>$this->input->post('jenis_barang_id'),
             'netto'=>$this->input->post('netto'),
             'keterangan'=>$this->input->post('line_remarks')
@@ -1076,7 +1211,7 @@ class Retur extends CI_Controller{
                     );
                     $this->db->insert('t_spb_fg_detail', $data_spb_detail);
                 }
-            
+
 
             if($this->db->trans_complete()){
                 redirect('index.php/GudangFG/spb_list');
@@ -1121,7 +1256,57 @@ class Retur extends CI_Controller{
                 $this->session->set_flashdata('flash_msg', 'Data SPB gagal disimpan, silahkan dicoba kembali!');
                 redirect('index.php/Retur/edit_fulfilment/'.$this->input->post('id'));  
             }
+        }else if($jb == 'WIP'){
+            $code = $this->Model_m_numberings->getNumbering('SPB-wIP', $tgl_input); 
+
+            $data = array(
+                'no_spb_wip'=> $code,
+                'tanggal'=> $tgl_input,
+                'keterangan'=>'RETUR WIP',
+                'created'=> $tanggal,
+                'created_by'=> $user_id
+            );
+
+                $this->db->insert('t_spb_wip', $data);
+                $spb_id = $this->db->insert_id();
+
+                $this->db->where('id', $this->input->post('id'));
+                $this->db->update('retur', array(
+                    'spb_id' => $spb_id
+                ));
+
+                $key = $this->db->query("select rf.*, jb.uom from retur_fulfilment rf left join jenis_barang jb on jb.id = rf.jenis_barang_id where rf.retur_id = ".$this->input->post('id'))->result();
+
+                foreach ($key as $row) {
+                    $data_spb_detail = array(
+                        'tanggal' => date('Y-m-d'),
+                        't_spb_wip_id' => $spb_id,
+                        'jenis_barang_id' => $row->jenis_barang_id,
+                        'uom' => $row->uom,
+                        'qty' => $row->qty,
+                        'berat' => $row->netto,
+                        'keterangan' => $row->keterangan
+                    );
+                    $this->db->insert('t_spb_wip_detail', $data_spb_detail);
+                }
+
+
+            if($this->db->trans_complete()){
+                redirect('index.php/GudangWIP/spb_list');
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data SPB gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/Retur/edit_fulfilment/'.$this->input->post('id'));  
+            }
         }
+    }
+
+    function get_jenis_barang(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_retur');
+        $jenis_barang = $this->Model_retur->get_jenis_barang($id)->row_array();
+        
+        header('Content-Type: application/json');
+        echo json_encode($jenis_barang); 
     }
     /*function print_po(){
         $id = $this->uri->segment(3);
@@ -1321,19 +1506,26 @@ class Retur extends CI_Controller{
             }
             $data['group_id']  = $group_id;
 
-            $data['content']= "retur/edit_surat_jalan";
             $this->load->model('Model_retur');
             $data['header'] = $this->Model_retur->show_header_sj($id)->row_array();
-            $spid = $data['header']['spb_id'];              
-            $data['retur_list'] = $this->Model_retur->get_retur_fulfilment($spid)->result();
-        
-            $this->load->model('Model_tolling_titipan');            
-            $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
+            $jb = $data['header']['jenis_barang'];
+            $spid = $data['header']['spb_id'];    
+            if($jb == 'FG'){          
+                $data['content']= "retur/edit_surat_jalan";
+                $data['retur_list'] = $this->Model_retur->get_retur_fulfilment($spid)->result();
+            }else if($jb == 'RONGSOK'){
+                $data['content']= "retur/edit_surat_jalan_rsk";
+                $data['retur_list'] = $this->Model_retur->get_retur_fulfilment_rsk($spid)->result();
+            }else if($jb == 'WIP'){
+                $data['content']= "retur/edit_surat_jalan_wip";
+                $data['retur_list'] = $this->Model_retur->get_retur_fulfilment_wip($spid)->result();
+            }
+
             $this->load->model('Model_sales_order');
             $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/PengirimanAmpas/surat_jalan');
+            redirect('index.php/Retur/surat_jalan');
         }
     }
 
@@ -1479,35 +1671,83 @@ class Retur extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis_barang');
+        $custid = $this->input->post('id_customer');
         $retur_id = $this->input->post('retur_id');
         $spbid = $this->input->post('spb_id');
-
+        $sjid = $this->input->post('id');
         #Insert Surat Jalan
         $details = $this->input->post('details');
-        foreach ($details as $v) {
-            if($v['id_barang']!=''){
-                $this->db->insert('t_surat_jalan_detail', array(
-                        't_sj_id'=>$this->input->post('id'),
-                        'jenis_barang_id'=>$v['jenis_barang_id'],
-                        'no_packing'=>$v['no_packing'],
-                        'qty'=>'1',
-                        'bruto'=>$v['bruto'],
-                        'netto'=>$v['netto'],
-                        'nomor_bobbin'=>$v['bobbin'],
-                        'line_remarks'=>$v['line_remarks'],
-                        'created_by'=>$user_id,
-                        'created_at'=>$tanggal
-                    ));
-                    $this->db->where('id',$v['id_barang']);
-                    $this->db->update('t_gudang_fg',array(
-                        'flag_taken'=>1,
-                    )); 
+        if($jenis == 'WIP'){
+            foreach ($details as $v) {
+                if($v['id_barang']!=''){
+                    $this->db->insert('t_surat_jalan_detail', array(
+                            't_sj_id'=>$this->input->post('id'),
+                            'gudang_id'=>$v['id_barang'],
+                            'jenis_barang_id'=>$v['jenis_barang_id'],
+                            'qty'=>$v['qty'],
+                            'netto'=>$v['netto'],
+                            'line_remarks'=>$v['line_remarks'],
+                            'created_by'=>$user_id,
+                            'created_at'=>$tanggal
+                        ));
+                        // $this->db->where('id',$v['id_barang']);
+                        // $this->db->update('t_gudang_fg',array(
+                        //     'flag_taken'=>1,
+                        // )); 
+                }
+            }
+        }else{
+            foreach ($details as $v) {
+                if($v['id_barang']!=''){
+                    $this->db->insert('t_surat_jalan_detail', array(
+                            't_sj_id'=>$this->input->post('id'),
+                            'gudang_id'=>$v['id_barang'],
+                            'jenis_barang_id'=>$v['jenis_barang_id'],
+                            'no_packing'=>$v['no_packing'],
+                            'qty'=>'1',
+                            'bruto'=>$v['bruto'],
+                            'netto'=>$v['netto'],
+                            'nomor_bobbin'=>$v['bobbin'],
+                            'line_remarks'=>$v['line_remarks'],
+                            'created_by'=>$user_id,
+                            'created_at'=>$tanggal
+                        ));
+                        // $this->db->where('id',$v['id_barang']);
+                        // $this->db->update('t_gudang_fg',array(
+                        //     'flag_taken'=>1,
+                        // )); 
+                }
+            }
+        }
+         
+        #set flag taken
+        $loop = $this->db->query("select *from t_surat_jalan_detail where t_sj_id = ".$sjid)->result();
+        if ($jenis == 'FG') {
+            foreach ($loop as $row) {
+                $this->db->where('id', $row->gudang_id);
+                $this->db->update('t_gudang_fg', array('flag_taken' => 1));
+            }
+        } else if ($jenis == 'WIP') {
+            foreach ($loop as $row) {
+                $this->db->where('id', $row->gudang_id);
+                $this->db->update('t_gudang_wip', array('flag_taken' => 1));
+            }
+        } else if ($jenis == 'RONGSOK'){
+            foreach ($loop as $row) {
+                $this->db->where('id', $row->gudang_id);
+                $this->db->update('dtr_detail', array('retur_id' => $retur_id));
             }
         }
 
         $this->load->model('Model_retur');
         #cek jika surat jalan sudah di kirim semua atau belum
+        if($jenis == 'FG'){
             $list_produksi = $this->Model_retur->get_retur_fulfilment($spbid)->result();
+        }else if($jenis == 'WIP'){
+            $list_produksi = $this->Model_retur->get_retur_fulfilment_wip($spbid)->result();
+        }else{
+            $list_produksi = $this->Model_retur->get_retur_fulfilment_rsk($spbid)->result();
+        }
 
         if(empty($list_produksi)){
             $this->db->where('id',$retur_id);
@@ -1516,25 +1756,26 @@ class Retur extends CI_Controller{
             ));
         }
 
+        if($jenis=='FG'){
             #insert bobbin_peminjaman
             $this->load->model('Model_m_numberings');
             $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);
 
             $this->db->insert('m_bobbin_peminjaman', array(
                 'no_surat_peminjaman' => $code,
-                'id_surat_jalan' => $this->input->post('id'),
-                'id_customer' => $this->input->post('id_customer'),
+                'id_surat_jalan' => $sjid,
+                'id_customer' => $custid,
                 'status' => 0,
                 'created_by' => $user_id,
                 'created_at' => $tanggal
             ));
             $insert_id = $this->db->insert_id();
 
-            $query = $this->db->query('select *from t_surat_jalan_detail where t_sj_id = '.$this->input->post('id'))->result();
+            $query = $this->db->query('select * from t_surat_jalan_detail where t_sj_id = '.$sjid)->result();
             foreach ($query as $row) {
                 $this->db->where('nomor_bobbin', $row->nomor_bobbin);
                 $this->db->update('m_bobbin', array(
-                    'borrowed_by' => $this->input->post('id_customer'),
+                    'borrowed_by' => $custid,
                     'status' => 2
                 ));
 
@@ -1543,25 +1784,20 @@ class Retur extends CI_Controller{
                     'nomor_bobbin' => $row->nomor_bobbin
                 ));
             }
-
+        }
+        
         $data = array(
-                'tanggal'=> $tgl_input,
-                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
-                'no_kendaraan'=>$this->input->post('no_kendaraan'),
-                'supir'=>$this->input->post('supir'),
-                'remarks'=>$this->input->post('remarks'),
-                'modified_at'=> $tanggal,
-                'modified_by'=> $user_id
+                'status' => 1,
+                'approved_at'=> $tanggal,
+                'approved_by'=> $user_id
             );
         
-        $this->db->where('id', $this->input->post('id'));
+        $this->db->where('id', $sjid);
         $this->db->update('t_surat_jalan', $data);
-
-        
         $this->session->set_flashdata('flash_msg', 'Data surat jalan berhasil disimpan');
         redirect('index.php/Retur/surat_jalan');
     }
-    
+
     // function print_surat_jalan(){
     //     $id = $this->uri->segment(3);
     //     if($id){        
@@ -1586,11 +1822,20 @@ class Retur extends CI_Controller{
         }
         $data['group_id']  = $group_id;
         $data['judul']     = "Retur";
-        $data['content']   = "retur/add_invoice";
         
         $this->load->model('Model_retur');
         $data['header'] = $this->Model_retur->show_header_retur($id)->row_array();
-        $data['list_retur'] = $this->Model_retur->load_detail($id)->result();
+        $jb = $data['header']['jenis_barang'];
+        if($jb == 'FG'){
+            $data['content']   = "retur/add_invoice";
+            $data['list_retur'] = $this->Model_retur->load_detail($id)->result();
+        }else if($jb == 'WIP'){
+            $data['content']   = "retur/add_invoice_wip";
+            $data['list_retur'] = $this->Model_retur->load_detail_wip($id)->result();
+        }else if($jb == 'RONGSOK'){
+            $data['content']   = "retur/add_invoice_rsk";
+            $data['list_retur'] = $this->Model_retur->load_detail_rsk($id)->result();
+        }
         $this->load->view('layout', $data); 
     }
 

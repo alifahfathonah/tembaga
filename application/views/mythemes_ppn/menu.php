@@ -113,7 +113,7 @@
                                     <i class="fa fa-usd"></i>
                                     Voucher List </a>
                                 </li>
-                                <?php } ?>
+                                <?php } if($group_id==1 || (isset($akses_menu['view_laporan']) && $akses_menu['view_laporan']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliRongsok/laporan_list">
                                     <i class="fa fa-briefcase"></i>
@@ -124,6 +124,7 @@
                                     <i class="fa fa-cubes"></i>
                                     Gudang Rongsok </a>
                                 </li>
+                                <?php } ?>
                             </ul>
                         </li>
                         <?php } ?>

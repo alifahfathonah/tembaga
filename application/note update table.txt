@@ -40,3 +40,9 @@ update table 170119
 update table 210119
 -table m_bobbin_peminjaman add remarks
 -table po_detail add wip_id
+
+update table
+
+dtr tambah retur_id
+tabel retur banyak yang di ubah
+tambah flag_ppn di retur

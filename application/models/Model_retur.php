@@ -46,6 +46,23 @@ class Model_retur extends CI_Model{
         return $data;
     }
 
+    function get_retur_fulfilment_wip($spbid){
+        $data = $this->db->query("select tgw.*, jb.jenis_barang
+            from t_gudang_wip tgw
+            left join jenis_barang jb on (jb.id = tgw.jenis_barang_id)
+            where tgw.t_spb_wip_id = ".$spbid. " and flag_taken = 0");
+        return $data;
+    }
+
+    function get_retur_fulfilment_rsk($spbid){
+        $data = $this->db->query("select dd.id, dd.rongsok_id, r.nama_item, dd.bruto, dd.netto, dd.berat_palette, dd.no_pallete
+            from spb_detail_fulfilment sdf
+            left join dtr_detail dd on dd.id = sdf.dtr_detail_id 
+            left join rongsok r on r.id = dd.rongsok_id 
+            where sdf.spb_id=".$spbid." and dd.retur_id = 0");
+        return $data;
+    }
+
     function list_item_sj_retur_detail($id){
         $data = $this->db->query("select tgf.*, jb.jenis_barang
             from t_gudang_fg tgf
@@ -64,7 +81,7 @@ class Model_retur extends CI_Model{
         return $data;
     }
 
-    function jenis_wip_retur($jb){
+    function jenis_wip_retur(){
         $data = $this->db->query("Select * From jenis_barang where category = 'WIP' Order By jenis_barang");
         return $data;
     }
@@ -203,6 +220,11 @@ class Model_retur extends CI_Model{
         return $data;
     }
 
+    function get_uom($id){
+        $data = $this->db->query("select uom from jenis_barang where id=".$id);
+        return $data;
+    }
+
     function fulfilment_list(){
         $data = $this->db->query("select r.*, tsf.no_spb, tsf.status as status_spb, c.nama_customer, (select count(id) as jumlah_item from retur_fulfilment rf where rf.retur_id = r.id) as jumlah_item
             from retur r
@@ -227,7 +249,7 @@ class Model_retur extends CI_Model{
                 From t_surat_jalan tsj
                     Left Join m_customers cust On (tsj.m_customer_id = cust.id)
                     Left Join sales_order so On (tsj.sales_order_id = so.id) 
-                Where tsj.jenis_barang = 'RETUR' 
+                Where tsj.retur_id > 0
                 Order By tsj.id Desc");
         return $data;
     }
@@ -236,6 +258,14 @@ class Model_retur extends CI_Model{
         $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jb.uom 
                 from t_surat_jalan_detail tsjd
                 left join jenis_barang jb on jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
+                where tsjd.t_sj_id =".$id);
+        return $data;
+    }
+
+    function load_detail_sj_rsk($id){
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, r.nama_item as jenis_barang, r.uom 
+                from t_surat_jalan_detail tsjd
+                left join rongsok r on (r.id = tsjd.jenis_barang_id)
                 where tsjd.t_sj_id =".$id);
         return $data;
     }
@@ -313,6 +343,12 @@ class Model_retur extends CI_Model{
                     Where tsj.id=".$id);
         return $data;
     }
+
+    function get_jenis_barang($id){
+        $data = $this->db->query("Select jenis_barang from retur where id=".$id);
+        return $data;
+    }
+
     /*
     function load_detail_surat_jalan($id){
         $data = $this->db->query("Select sjd.*, ampas.nama_item, ampas.uom,

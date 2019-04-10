@@ -14,7 +14,7 @@ class Model_modules extends CI_Model{
     function list_modules(){
         // $data = $this->db->query("Select * From modules Where id>1 Order By id");
         // $data = $this->db->query("Select * From modules Order By parent_id ASC");   
-        $data = $this->db->query("Select * From modules Where parent_id = 1 Order By id");     
+        $data = $this->db->query("Select * From modules Where parent_id = 1 Order By alias");     
         return $data;
     }
 
@@ -31,7 +31,7 @@ class Model_modules extends CI_Model{
     }
 
     function modules_details(){
-        $data = $this->db->query("Select * From modules Where parent_id > 1 Order by Id");
+        $data = $this->db->query("Select * From modules Where parent_id > 1 Order by Alias");
         return $data;
     }
 

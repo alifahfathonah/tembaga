@@ -143,7 +143,6 @@
                                    class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['pic']; ?>">
                         </div>
                     </div>
-                    
                     <div class="row">
                         <div class="col-md-4">
                             Type Retur <font color="#f00">*</font>
@@ -218,7 +217,7 @@
                         }
                     ?>
 
-                    <a href="<?php echo base_url('index.php/Retur/fulfilment_list'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/Retur'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>

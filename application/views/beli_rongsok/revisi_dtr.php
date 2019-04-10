@@ -127,7 +127,7 @@
                                     echo '</select>';
                                     }else{
                                     echo '<td><input type="text" name="myDetails['.$no.'][nama_item]" class="form-control myline" value="'.$row->nama_item.'" readonly></td>';
-                                    echo '<input type="hidden" name="myDetails['.$no.'[rongsok_id]">';
+                                    echo '<input type="hidden" name="myDetails['.$no.'][rongsok_id]" value="'.$row->rongsok_id.'">';
                                     }                                  
                                     echo '</td>';
                                     echo '<td><input type="text" name="myDetails['.$no.'][uom]" '

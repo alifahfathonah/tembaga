@@ -170,7 +170,8 @@ class Model_finance extends CI_Model{
             left join sales_order so on so.id = fi.id_sales_order
             left join t_surat_jalan tsj on tsj.id = fi.id_surat_jalan
             left join m_customers mc on mc.id = fi.id_customer
-            where so.flag_ppn = ".$ppn."
+            left join retur r on r.id = fi.id_retur
+            where so.flag_ppn = ".$ppn." or r.flag_ppn = ".$ppn."
             Order By id desc");
         return $data;
     }
@@ -265,13 +266,16 @@ class Model_finance extends CI_Model{
         left join t_sales_order tso on tso.so_id=fi.id_sales_order
         left join jenis_barang jb on tso.jenis_barang != 'RONGSOK' and jb.id = fid.jenis_barang_id
         left join rongsok r on tso.jenis_barang = 'RONGSOK' and r.id = fid.jenis_barang_id
-        where fid.id_invoice = ".$id);
+        where fid.id_invoice =".$id);
         return $data;
     }
 
     function show_invoice_detail($id){
-        $data = $this->db->query("select fid.*, jb.jenis_barang, jb.uom from f_invoice_detail fid
-            left join jenis_barang jb on jb.id=fid.jenis_barang_id
+        $data = $this->db->query("select fid.*, COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, jb.uom from f_invoice_detail fid
+            left join f_invoice fi on fi.id = fid.id_invoice
+            left join retur rt on rt.id = fi.id_retur
+            left join jenis_barang jb on rt.jenis_barang != 'RONGSOK' and jb.id=fid.jenis_barang_id
+            left join rongsok r on rt.jenis_barang = 'RONGSOK' and r.id = fid.jenis_barang_id
             where id_invoice=".$id);
         return $data;
     }

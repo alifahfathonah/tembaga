@@ -156,19 +156,22 @@
                                 <th>Netto (Kg)</th>
                                 <th>Bobbin</th>
                                 <th>Keterangan</th>
+                                <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
                                 <?php $no=0; foreach ($retur_list as $row) { $no++;
                                 echo '<tr>'.
                                     '<td style="text-align: center;">'.$no.'</td>'.
-                                    '<td style="width: 200px"><input type="text" id="nama_barang" class="form-control myline" readonly="readonly" value="'.$row->jenis_barang.'"></td>'.
-                                    '<input type="hidden" name="details['.$no.'][id_barang]" id="id_barang_'.$no.'" value="'.$row->id.'">'.
-                                    '<input type="hidden" id="jenis_barang_id_'.$no.'" name="details['.$no.'][jenis_barang_id]" class="form-control myline" value="'.$row->jenis_barang_id.'">'.
-                                    '<td><input type="text" id="no_packing_'.$no.'" name="details['.$no.'][no_packing]" class="form-control myline" readonly="readonly" value="'.$row->no_packing.'"></td>'.
+                                    '<td style="width: 200px">'.
+                                        '<input type="text" class="form-control myline" readonly="readonly" value="'.$row->nama_item.'">'.
+                                    '</td>'.
+                                    '<input type="hidden" name="details['.$no.'][id_barang]" id="id_barang_1" value="'.$row->id.'">'.
+                                    '<input type="hidden" id="jenis_barang_id_'.$no.'" name="details['.$no.'][jenis_barang_id]" class="form-control myline" value="'.$row->rongsok_id.'">'.
+                                    '<td><input type="text" id="no_packing_'.$no.'" name="details['.$no.'][no_packing]" class="form-control myline" readonly="readonly" value="'.$row->no_pallete.'"></td>'.
                                     '<td><input type="text" id="bruto_'.$no.'" name="details['.$no.'][bruto]" class="form-control myline" readonly="readonly" value="'.$row->bruto.'"></td>'.
+                                    '<td><input type="text" id="berat_palette_'.$no.'" name="details['.$no.'][berat_palette]" class="form-control myline" readonly="readonly" value="'.$row->berat_palette.'"></td>'.
                                     '<td><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" class="form-control myline" readonly="readonly" value="'.$row->netto.'"></td>'.
-                                    '<td><input type="text" id="bobbin_'.$no.'" name="details['.$no.'][bobbin]" class="form-control myline" readonly="readonly" value="'.$row->nomor_bobbin.'"></td>'.
-                                    '<td><input type="text" id="line_remarks_'.$no.'" name="details['.$no.'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" value="'.$row->keterangan.'" readonly="readonly"></td>'.
+                                    '<td><input type="text" id="line_remarks_'.$no.'" name="details['.$no.'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'.
                                     '</td>'.
                                 '</tr>';
                                 } ?>
@@ -182,7 +185,7 @@
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
-                    <a href="<?php echo base_url('index.php/SalesOrder/surat_jalan'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/Retur/surat_jalan'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>

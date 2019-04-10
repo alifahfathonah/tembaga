@@ -166,3 +166,7 @@ Voucher juga bedain penomorannya non-ppn dan KMP(Done)
 Nomor po belom masuk. Finance/Voucher_list/ belom di filter PPN dan NON(Done)
 
 PO Sparepart beda in penomoran PPN dan Non PPN. Beserta Penomoran LPB nya
+
+Sparepart di grouping jenis barang nya
+
+PPN pada Retur belum

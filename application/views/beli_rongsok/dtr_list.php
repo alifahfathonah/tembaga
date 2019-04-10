@@ -29,8 +29,14 @@
                 <div class="caption">
                     <i class="fa fa-beer"></i>DTR List
                 </div>
-                <div class="tools">    
+                <div class="tools">
+                <?php
+                    if( ($group_id==1)||($hak_akses['create_dtr']==1) ){
+                ?>
                 <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliRongsok/create_dtr"> <i class="fa fa-plus"></i> Tambah DTR</a>
+                <?php
+                    }
+                ?>
                 </div>           
             </div>
             <div class="portlet-body">
@@ -77,10 +83,11 @@
                         </td>                        
                         <td style="text-align:center"> 
                             <?php
-                                if(($group_id==1 || $hak_akses['edit_dtr']==1) && $data->status==9){
+                                if(($group_id==1 || $hak_akses['edit_dtr']==1) && $data->status!=1){
                                     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliRongsok/edit_dtr/'.$data->id.'" 
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit &nbsp; </a> ';
-                                }else if ($data->status==0 && (($data->supplier_id==0 && $data->customer_id==0) || ($data->customer_id > 0 && $data->retur_id > 0)) ){
+                                }
+                                if ($data->status==0 && (($data->supplier_id==0 && $data->customer_id==0) || ($data->customer_id > 0 && $data->retur_id > 0)) ){
                                     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliRongsok/proses_dtr/'.$data->id.'" 
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
                                 }

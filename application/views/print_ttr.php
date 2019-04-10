@@ -5,7 +5,7 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br>TANDA TERIMA RONGSOK (TTR)</h3>
+        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWATMAS PRAKASA<br>'; }?>TANDA TERIMA RONGSOK (TTR)</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="40%">
@@ -37,7 +37,7 @@
                         </tr>
                         <tr>
                             <td>Tanggal PO</td>
-                            <td>: <?php echo tanggal_indo($header['tanggal_po']); ?></td>
+                            <td>: <?php if(isset($header['tanggal_po'])){ echo tanggal_indo($header['tanggal_po']);} ?></td>
                         </tr>
                         <tr>
                             <td>No. Reff/ DTR</td>

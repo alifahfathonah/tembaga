@@ -63,7 +63,7 @@
                         <td style="background-color: turquoise;"><?=number_format($arr['bruto_awal'][$no] + ($data['bruto_masuk'] - $data['bruto_keluar']), 2, '.', ',') ;?></td>
                         <td style="background-color: turquoise;"><?=number_format($arr['netto_awal'][$no] + ($data['netto_masuk'] - $data['netto_keluar']), 2, '.', ',') ;?></td>
                         <td><?php
-                        if($group_id==1 || $hak_akses['view_spb']==1){
+                        if($group_id==1 || $hak_akses['view_laporan']==1){
                         ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/BeliRongsok/view_laporan/<?php echo $data['tanggal']; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
                         <?php

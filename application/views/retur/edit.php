@@ -48,7 +48,7 @@
                                 value="<?php echo date('d-m-Y', strtotime($header['created_at'])); ?>">
                         </div>
                     </div>
-                    <!-- <div class="row">
+                    <div class="row">
                         <div class="col-md-4">
                             Jenis Barang <font color="#f00">*</font>
                         </div>
@@ -57,7 +57,7 @@
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['jenis_barang']; ?>">
                         </div>
-                    </div> -->
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Catatan

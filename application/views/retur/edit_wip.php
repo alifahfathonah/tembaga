@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Retur 
             <i class="fa fa-angle-right"></i>  
-            <a href="<?php echo base_url('index.php/Retur/edit'); ?>"> Edit Data Retur WIP</a> 
+            <a href="<?php echo base_url('index.php/Retur/edit'); ?>"> Edit Data Retur </a> 
         </h5>          
     </div>
 </div>
@@ -48,7 +48,7 @@
                                 value="<?php echo date('d-m-Y', strtotime($header['created_at'])); ?>">
                         </div>
                     </div>
-                    <!-- <div class="row">
+                    <div class="row">
                         <div class="col-md-4">
                             Jenis Barang <font color="#f00">*</font>
                         </div>
@@ -57,7 +57,7 @@
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['jenis_barang']; ?>">
                         </div>
-                    </div> -->
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
@@ -100,6 +100,16 @@
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
                                    class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['pic']; ?>">
                         </div>
+                    </div>                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Packing <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jenis_packing_id" name="jenis_packing_id" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['jenis_packing']; ?>">
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
@@ -126,10 +136,9 @@
                             <thead>
                                 <th>No</th>
                                 <th width="20%">Nama Item Retur</th>
-                                <th>No. Packing</th>
-                                <th>Bruto (Kg)</th>
+                                <th>UOM</th>
+                                <th>Quantity</th>
                                 <th>Netto (Kg)</th>
-                                <th>ID Bobbin / Keranjang</th>
                                 <th>Keterangan</th>
                                 <th>Actions</th>
                             </thead>
@@ -139,7 +148,7 @@
                             <tr>
                                 <td style="text-align:center"><i class="fa fa-plus"></i></td>
                                 <td>
-                                <select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                <select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom(this.value);">
                                 <option value=""></option>
                                 <?php
                                     foreach ($jenis_barang_list as $value){
@@ -148,11 +157,9 @@
                                 ?>
                                 </select>
                                 </td>
-                                <td><input type="text" id="no_packing" name="no_packing" class="form-control myline" readonly="readonly" value="Auto"></td>
-                                <td><input type="text" id="bruto" name="bruto" class="form-control myline"></td>
-                                <td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"/></td>
-                                <td><input type="text" id="no_bobbin" name="no_bobbin" class="form-control myline" onchange="get_bobbin(this.value)" onkeyup="this.value = this.value.toUpperCase()"/><input type="hidden" name="id_bobbin" id="id_bobbin"></td>
-                                <!-- <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen"> <i class="fa fa-dashboard"></i> Timbang </a></td> -->
+                                <td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="qty" name="qty" class="form-control myline"></td>
+                                <td><input type="text" id="netto" name="netto" class="form-control myline"></td>
                                 <td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
                                 <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
                             </tr>
@@ -186,35 +193,6 @@
     </div>
 </div> 
 <script>
-function get_bobbin(id){
-    if(''!=id){
-    $.ajax({
-        url: "<?php echo base_url('index.php/GudangFG/get_bobbin'); ?>",
-        async: false,
-        type: "POST",
-        data: "id="+id,
-        dataType: "json",
-        success: function(result) {
-            console.log(result);
-            if(result){
-                $('#berat_bobbin').val(result['berat']);
-                $('#pemilik').val(result['nama_owner']);
-                $('#id_bobbin').val(result['id']);
-                const netto = ($('#bruto').val() - result['berat']);
-                $('#netto').val(Math.round(netto*100)/100);
-            } else {
-                alert('Bobbin/Keranjang tidak ditemukan atau belum dipesan, coba lagi');
-                $('#no_bobbin').val('');
-                $('#id_bobbin').val('');
-                $('#berat_bobbin').val('');
-                $('#pemilik').val('');
-                $('#netto').val('');
-            }
-        }
-    });
-    }
-}
-
 function myCurrency(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
@@ -226,13 +204,6 @@ function getComa(value, id){
     angka = value.toString().replace(/\./g, "");
     $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
     //hitungSubTotal();
-}
-
-function hitungSubTotal(){
-    harga = $('#harga').val().toString().replace(/\./g, "");
-    qty   = $('#qty').val().toString().replace(/\./g, "");
-    total_harga = Number(harga)* Number(qty);
-    $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
 
 function simpanData(){
@@ -253,7 +224,7 @@ function simpanData(){
 function loadDetail(id){
     $.ajax({
         type:"POST",
-        url:'<?php echo base_url('index.php/Retur/load_detail'); ?>',
+        url:'<?php echo base_url('index.php/Retur/load_detail_wip'); ?>',
         data:"id="+ id,
         success:function(result){
             $('#boxDetail').html(result);     
@@ -278,8 +249,8 @@ function saveDetail(){
     if($.trim($("#jenis_barang_id").val()) == ""){
         $('#message').html("Silahkan pilih detail item retur!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#bruto").val()) == ""){
-        $('#message').html("Bruto tidak boleh kosong!");
+    }else if($.trim($("#qty").val()) == ""){
+        $('#message').html("Quantity tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#netto").val()) == ""){
         $('#message').html("Netto tidak boleh kosong!");
@@ -287,25 +258,19 @@ function saveDetail(){
     }else{
         $.ajax({
             type:"POST",
-            url:'<?php echo base_url('index.php/Retur/save_detail'); ?>',
+            url:'<?php echo base_url('index.php/Retur/save_detail_wip'); ?>',
             data:{
                 id:$('#id').val(),
                 jenis_barang_id:$('#jenis_barang_id').val(),
                 qty:$('#qty').val(),
-                bruto:$('#bruto').val(),
                 netto:$('#netto').val(),
-                no_bobbin:$('#no_bobbin').val(),
-                id_bobbin:$('#id_bobbin').val(),
                 line_remarks:$('#line_remarks').val()
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
                     $('#jenis_barang_id').select2('val','');
                     $('#qty').val('');
-                    $('#bruto').val('');
                     $('#netto').val('');
-                    $('#no_bobbin').val('');
-                    $('#id_bobbin').val('');
                     $('#line_remarks').val('');
                     loadDetail($('#id').val());
                     $('#message').html("");
@@ -357,3 +322,4 @@ $(function(){
     loadDetail(<?php echo $header['id']; ?>);
 });
 </script>
+      

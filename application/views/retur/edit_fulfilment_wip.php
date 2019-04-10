@@ -94,6 +94,7 @@
                                         <thead>
                                             <th style="width:40px">No</th>
                                             <th>Nama Item</th>
+                                            <th>Quantity</th>
                                             <th>Netto (Kg)</th>
                                             <th>Keterangan</th>
                                         </thead>
@@ -104,7 +105,8 @@
                                             foreach ($myDetail as $row){
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
-                                                echo '<td>'.$row->nama_item.'</td>';
+                                                echo '<td>'.$row->jenis_barang.'</td>';
+                                                echo '<td>'.$row->qty.'</td>';
                                                 echo '<td>'.$row->netto.'</td>';
                                                 echo '<td>'.$row->line_remarks.'</td>';
                                                 echo '</tr>';
@@ -131,6 +133,7 @@
                                     <thead>
                                         <th style="width:40px">No</th>
                                         <th width="25%;">Nama Barang</th>
+                                        <th>Quantity</th>
                                         <th>Netto (kg)</th>
                                         <th>Keterangan</th>
                                         <th>Action</th>
@@ -144,10 +147,11 @@
                                         <select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="check(this.value);">
                                         <option value=""></option>
                                            <?php foreach ($jenis_barang_list as $value){
-                                                echo "<option value='".$value->id."'>".$value->nama_item."</option>";
+                                                echo "<option value='".$value->id."'>".$value->jenis_barang."</option>";
                                             } ?>
                                         </select>
                                         </td>
+                                        <td><input type="text" id="qty" name="qty" class="form-control myline"/></td>
                                         <td><input type="text" id="netto" name="netto" class="form-control myline"/></td>
                                         <td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
                                         <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
@@ -209,9 +213,10 @@ function simpanData(){
 }
 
 function loadDetail(id){
+    console.log(id);
     $.ajax({
         type:"POST",
-        url:"<?php echo base_url('index.php/Retur/load_detail_fulfilment_rsk'); ?>",
+        url:"<?php echo base_url('index.php/Retur/load_detail_fulfilment_wip'); ?>",
         data:"id="+ id,
         success:function(result){
             console.log(result);
@@ -234,6 +239,7 @@ function saveDetail(){
             data:{
                 id:$('#id').val(),
                 jenis_barang_id:$('#jenis_barang_id').val(),
+                qty:$('#qty').val(),
                 netto:$('#netto').val(),
                 line_remarks:$('#line_remarks').val()
             },
@@ -242,6 +248,7 @@ function saveDetail(){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
                     $('#jenis_barang_id').select2('val','');
+                    $('#qty').val('');
                     $('#netto').val('');
                     $('#line_remarks').val('');
                     $('#message').html("");
@@ -304,3 +311,4 @@ $(function(){
     loadDetail(<?php echo $header['id']; ?>);
 });
 </script>
+      

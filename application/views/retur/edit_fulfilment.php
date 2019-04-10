@@ -132,7 +132,6 @@
                                         <th style="width:40px">No</th>
                                         <th width="25%;">Nama Barang</th>
                                         <th>Netto (kg)</th>
-                                        <th></th>
                                         <th>Keterangan</th>
                                         <th>Action</th>
                                     </thead>
@@ -150,7 +149,6 @@
                                         </select>
                                         </td>
                                         <td><input type="text" id="netto" name="netto" class="form-control myline"/></td>
-                                        <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen"><i class="fa fa-dashboard"></i> Timbang </a></td>
                                         <td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
                                         <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
                                         </td>

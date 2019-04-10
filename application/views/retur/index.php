@@ -48,6 +48,7 @@
                     <th>Penimbang</th>
                     <th>Jumlah <br>Items</th>
                     <th>Tipe <br>Retur</th>
+                    <th>Pemenuhan</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -67,6 +68,7 @@
                         <td><?php echo $data->penimbang; ?></td>                        
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td><?php echo (($data->jenis_retur==0)? "Ganti Barang": "Ganti Voucher"); ?></td>
+                        <?php echo (($data->spb_id==0)? "<td style='background-color:orange; color: white;'>Belum ada pengganti": "<td style='background-color:green; color: white;'>Sudah ada pengganti"); ?></td>
                         <td style="text-align:center">
                             <?php 
                                 if($data->status==0){ 
