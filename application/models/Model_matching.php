@@ -40,6 +40,12 @@ class Model_matching extends CI_Model{
         return $data;
     }
 
+    function jenis_barang_list(){
+        $this->db->where('type_barang', 'Rongsok');
+        $data = $this->db->get('rongsok');
+        return $data;
+    }
+
     function list_invoice_detail($id){
         $data = $this->db->query("select ird.*, dtrd.no_pallete, dtrd.qty, r.nama_item, dtr.id as dtr_id
             from r_t_invoice_detail ird
@@ -55,6 +61,14 @@ class Model_matching extends CI_Model{
             from dtr_detail dtrd
             left join rongsok r on (dtrd.rongsok_id = r.id)
             where dtrd.flag_resmi = 0 and dtrd.dtr_id = ".$id);
+        return $data;
+    }
+
+    function load_detail_jb($id){
+        $data = $this->db->query("select dtrd.*, r.nama_item, (select sum(netto) from dtr_detail where dtr_id = dtrd.id) as total_netto
+            from dtr_detail dtrd
+            left join rongsok r on (dtrd.rongsok_id = r.id)
+            where dtrd.flag_resmi = 0 and r.id = ".$id);
         return $data;
     }
 
@@ -74,12 +88,26 @@ class Model_matching extends CI_Model{
     }
 
     function po_free(){
-        $data = $this->db->query("select * from r_t_po where flag_sj = 0");
+        $data = $this->db->query("select * from r_t_po where flag_sj = 0 and cv_id = 0");
         return $data;
     }
 
     function po_free_edit($id){
-        $data = $this->db->query("select * from r_t_po where flag_sj = 0 or flag_sj =".$id);
+        $data = $this->db->query("select * from r_t_po where flag_sj = 0 and customer_id = 0");
+        return $data;
+    }
+
+    function po_free_cv(){
+        $data = $this->db->query("select * from r_t_po where flag_sj = 0 and customer_id = 0");
+        return $data;
+    }
+
+    function get_gudangfg_int($id){
+        $data = $this->db->query("select tgfg.* from t_surat_jalan_detail tsjd
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
+            left join f_invoice fi on fi.id = tsj.inv_id
+            left join t_gudang_fg tgfg on tgfg.id = tsjd.gudang_id
+            where fi.id = ".$id);
         return $data;
     }
 }

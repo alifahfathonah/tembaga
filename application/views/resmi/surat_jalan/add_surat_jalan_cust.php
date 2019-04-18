@@ -32,13 +32,8 @@
                             No. Surat Jalan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <?php if($jenis == 'so'){ ?>
-                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" maxlength="25"
-                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="Auto Generate" readonly="readonly">
-                            <?php } else { ?>
                             <input type="text" id="no_surat_jalan" name="no_surat_jalan" maxlength="25"
                                 class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
-                            <?php } ?>
                         </div>
                     </div>
                     <div class="row">
@@ -101,7 +96,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Customer <font color="#f00">*</font>
+                            CV <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
@@ -150,7 +145,7 @@
                                 <option value=""></option>
                                 <?php
                                     foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'" '.(($row->id == $header['cv_id'])? 'selected="selected"' : '').'>'.$row->nama_customer.'</option>';
+                                        echo '<option value="'.$row->id.'" '.(($row->id == $header['customer_id'])? 'selected="selected"' : '').'>'.$row->nama_customer.'</option>';
                                     }
                                 ?>
                             </select>
@@ -213,100 +208,8 @@
                         </div>
                     </div>
                     <?php
-                    } else if($jenis == 'sj_cv'){
+                    }
                     ?>
-                    <div class="row">
-                        <div class="col-md-4">
-                            No. Surat Jalan Cust. <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="no_surat_jalan_customer" name="no_surat_jalan_customer" value="<?= $header['no_sj_resmi'] ?>" maxlength="25"
-                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly">
-                            <input type="hidden" name="r_sj_id" id="r_sj_id" value="<?= $header['id'] ?>">
-                            <input type="hidden" name="id_invoice_resmi" value="<?php echo $header['r_invoice_id'];?>">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Jenis Barang <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" 
-                                class="form-control myline" style="margin-bottom:5px" value="RONGSOK" readonly="readonly">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            No. PO
-                        </div>
-                        <div class="col-md-8">
-                            <select id="flag_po" name="flag_po" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($po_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->no_po.'</option>';
-                                    }
-                                ?>
-                            </select>
-                        </div>
-                    </div> 
-                    <div class="row">
-                        <div class="col-md-4">
-                            CV <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <select id="m_cv_id" name="m_cv_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
-                                >
-                                <option value=""></option>
-                                <?php
-                                    foreach ($cv_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_cv.'</option>';
-                                    }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <?php } else if($jenis == 'sj_customer'){ ?>
-                    <div class="row">
-                        <div class="col-md-4">
-                            No. Surat Jalan Cust. <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="no_surat_jalan_customer" name="no_surat_jalan_customer" value="<?= $header['no_sj_resmi'] ?>" maxlength="25"
-                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly">
-                            <input type="hidden" name="r_sj_id" id="r_sj_id" value="<?= $header['id'] ?>">
-                            <!-- <input type="hidden" name="id_invoice_resmi" value="<?php echo $header['r_invoice_id'];?>"> -->
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Jenis Barang <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" 
-                                class="form-control myline" style="margin-bottom:5px" value="FG" readonly="readonly">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Customer <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
-                                >
-                                <option value=""></option>
-                                <?php
-                                    foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
-                                    }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <?php } ?>
                     <div class="row">&nbsp;</div>
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>

@@ -2,7 +2,7 @@
 class Model_invoice_jasa extends CI_Model{
 
 	function list_inv(){
-		$data = $this->db->query("select tij.*, tsj.no_sj_resmi, ts.no_so, tp.no_po, mc.nama_customer, mc.pic from r_t_inv_jasa tij
+		$data = $this->db->query("select tij.*, tsj.id as sjr_id, tsj.no_sj_resmi, ts.no_so, tp.no_po, mc.nama_customer, mc.pic from r_t_inv_jasa tij
 		left join r_t_surat_jalan tsj on tsj.id = tij.sjr_id
 	    left join r_t_so ts on ts.id = tij.r_t_so_id
 	    left join r_t_po tp on tp.id = tij.r_t_po_id
@@ -12,18 +12,56 @@ class Model_invoice_jasa extends CI_Model{
 	}
 
 	function list_sj_so($id){
-		$data = $this->db->query("select tsjd.*, jb.jenis_barang, jb.uom, COALESCE((select tsd.amount from r_t_so_detail tsd where tsd.id = tsjd.so_detail_id),(select tpd.amount from r_t_po_detail tpd where tpd.id = tsjd.po_detail_id)) as amount from r_t_surat_jalan_detail tsjd 
+		$data = $this->db->query("select tsjd.*, jb.jenis_barang, jb.uom, (select so.amount from r_t_so_detail so where so.so_id = rtsj.r_so_id and so.jenis_barang_id = tsjd.jenis_barang_id ) as amount from r_t_surat_jalan_detail tsjd 
+		left join r_t_surat_jalan rtsj on rtsj.id = tsjd.sj_resmi_id
 		left join jenis_barang jb on jb.id = tsjd.jenis_barang_id
 		where tsjd.sj_resmi_id =".$id);
 		return $data;
 	}
 
+	function list_sj_so_v2($id,$id_inv){
+		$data = $this->db->query("select tsjd.jenis_barang_id, sum(bruto) as bruto, sum(tsjd.netto) as netto, tsjd.so_detail_id, tsjd.po_detail_id, sum(tsjd.qty) as qty, tsjd.line_remarks, (select tpod.amount from r_t_po_detail tpod
+	left join r_t_po tp on tp.id = tpod.po_id
+	where tp.f_invoice_id =".$id_inv." and cv_id = 0 and tpod.jenis_barang_id = tsjd.jenis_barang_id ) as amount from r_t_surat_jalan_detail tsjd 
+		left join r_t_surat_jalan rtsj on rtsj.id = tsjd.sj_resmi_id
+		left join jenis_barang jb on jb.id = tsjd.jenis_barang_id
+		where tsjd.sj_resmi_id =".$id." group by tsjd.jenis_barang_id");
+		return $data;
+	}
+
+	function get_po($id){
+		$data = $this->db->query("select ti.id from r_t_surat_jalan rtsj
+		left join r_t_so tso on tso.id = rtsj.r_so_id
+		left join r_t_po tpo on tpo.id = tso.po_id
+		left join r_t_invoice ti on ti.id = tpo.f_invoice_id
+		where rtsj.id =".$id);
+		return $data;
+	}
+
+	function get_po_for_cust($id){
+		$data = $this->db->query("select ti.id from r_t_surat_jalan rtsj
+			left join r_t_surat_jalan rts on rts.id = rtsj.r_sj_id
+			left join r_t_so tso on tso.id = rts.r_so_id
+			left join r_t_po tpo on tpo.id = tso.po_id
+			left join r_t_invoice ti on ti.id = tpo.f_invoice_id
+			where rtsj.id =".$id);
+		return $data;
+	}
+
+	function pod_list($id){
+		$data = $this->db->query("select tpod.* from r_t_po_detail tpod
+	left join r_t_po tp on tp.id = tpod.po_id
+	where tp.f_invoice_id =".$id." and cv_id = 0");
+		return $data;
+	}
+
 	function show_header_inv_jasa($id){
-		$data = $this->db->query("select tij.*, tsj.no_sj_resmi, ts.no_so,ts.tanggal as tgl_so, tp.no_po, tp.tanggal as tgl_po, mc.nama_customer, mc.pic from r_t_inv_jasa tij
+		$data = $this->db->query("select tij.*, tsj.no_sj_resmi, ts.no_so,ts.tanggal as tgl_so, tp.no_po, tp.tanggal as tgl_po, coalesce(mc.nama_customer, cv.nama_cv) as nama_customer, coalesce(mc.pic, cv.pic) as pic from r_t_inv_jasa tij
 		left join r_t_surat_jalan tsj on tsj.id = tij.sjr_id
 	    left join r_t_so ts on ts.id = tij.r_t_so_id
 	    left join r_t_po tp on tp.id = tij.r_t_po_id
 	    left join m_customers mc on mc.id = tij.customer_id
+	    left join m_cv cv on cv.id = tij.cv_id
 	    where tij.id =".$id);
 		return $data;
 	}

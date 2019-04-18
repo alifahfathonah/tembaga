@@ -91,6 +91,22 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Persentase (%)
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="persentase" id="persentase" class="form-control myline" style="margin-bottom: 5px" readonly="readonly" value="<?= $header['persentase'] ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Total (Kg)
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="total" id="total" class="form-control myline" style="margin-bottom: 5px" readonly="readonly" value="<?= $header['total'] ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">
@@ -108,7 +124,7 @@
                     </div> 
                 </div>
                 <div class="portlet-body">
-                    <table class="table table-striped table-bordered table-hover" id="sample_6">
+                    <table class="table table-striped table-bordered table-hover" id="">
                         <thead>
                             <th style="width:40px">No</th>
                             <th>No. DTR</th>
@@ -141,7 +157,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             Pilih DTR
-                            <select class="form-control select2me myline" id="dtr_id" name="dtr_id" onchange="loadDetail(this.value);">
+                            <select class="form-control select2me myline" id="dtr_id" name="dtr_id" onchange="loadDetailJb(this.value);">
                                 <!-- <?php foreach ($list_dtr as $row) {
                                 ?>
                                 <option value="<?php echo $row->id ?>"><?php echo $row->no_dtr ?></option>
@@ -152,7 +168,8 @@
                         <div class="col-md-2">
                         </div>                    
                     </div>
-                    <div class="table-scrollable" id>
+                    <div>
+                        <br>
                         <table class="table table-striped table-bordered table-hover" id="sample_6">
                             <thead>
                                 <th></th>
@@ -250,16 +267,28 @@ function load_list_dtr(){
     });
 }
 
-function load_dtr(){
+// function load_dtr(){
+//     $.ajax({
+//         url: "<?php echo base_url('index.php/R_Matching/get_dtr_list'); ?>",
+//         async: false,
+//         type: "POST",
+//         dataType: "html",
+//         success: function(result) {
+//             $('#dtr_id').html(result);
+//         }
+//     })
+// }
+
+function load_jenis_barang(){
     $.ajax({
-        url: "<?php echo base_url('index.php/R_Matching/get_dtr_list'); ?>",
+        url: "<?= base_url('index.php/R_Matching/get_jenis_barang_list'); ?>",
         async: false,
         type: "POST",
         dataType: "html",
-        success: function(result) {
+        success: function(result){
             $('#dtr_id').html(result);
         }
-    })
+    });
 }
 
 function loadDetail(id){
@@ -273,11 +302,23 @@ function loadDetail(id){
     });
 }
 
+function loadDetailJb(id){
+    $.ajax({
+        type: "POST",
+        url: "<?= base_url('index.php/R_Matching/load_detail_jb'); ?>",
+        data:"id="+ id,
+        success:function(result){
+            $('#boxDetail').html(result);
+        }
+    });
+}
+
 function saveData(){
     $('#message2').html("");
     $('#alert-danger2').hide(); 
     $('#formku').attr('action','<?php echo base_url(); ?>index.php/R_Matching/saveData');
     $('#formku').submit(); 
+    
 }
 
 function saveDetail(id){
@@ -302,7 +343,7 @@ function saveDetail(id){
                         $('#dtr_id').select2('val', result['id_dtr']);
                     }
                     load_list_dtr();
-                    load_dtr();
+                    // load_dtr();
                     loadDetail(result['id_dtr']);
                     loadDetailInvoice($('#id').val());
                     $('#message').html("");
@@ -334,7 +375,7 @@ function hapusDetail(id){
                         $('#dtr_id').select2('val', result['dtr_id']);
                     }
                     load_list_dtr();
-                    load_dtr();
+                    // load_dtr();
                     loadDetail(result['dtr_id']);
                     loadDetailInvoice($('#id').val());
                 }else{
@@ -371,7 +412,8 @@ $(function(){
         dateFormat: 'dd-mm-yy'
     });  
     load_list_dtr();
-    load_dtr();
+    // load_dtr();
+    load_jenis_barang();
     loadDetailInvoice(<?php echo $header['id']; ?>);
 });
 </script>

@@ -80,8 +80,11 @@
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_PurchaseOrder/print_po/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
-                                }
+                                }if(($group_id==9 || $hak_akses['print_po']==1) && $data->flag_sjr == 0 ){
                             ?>
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_SuratJalan/add_surat_jalan/sj_customer/<?php echo $data->sjr_id; ?>" 
+                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-truck"></i> Create Surat Jalan CV &nbsp; </a>
+                            <?php }?>
                         </td>
                     </tr>
                     <?php

@@ -69,12 +69,36 @@ class R_Matching extends CI_Controller{
             'invoice_id'=> $this->input->post('invoice_id'),
             'tanggal'=> $tgl_input,
             'jumlah'=> $this->input->post('qty'),
+            'persentase'=> $this->input->post('persentase'),
+            'total'=> $this->input->post('total'),
             'remarks'=> $this->input->post('remarks'),
             'created_at'=> $tanggal,
             'created_by'=> $user_id
         );
         $this->db->insert('r_t_invoice', $data);
         $id_new=$this->db->insert_id();
+
+        $get_gudangfg_int = $this->Model_matching->get_gudangfg_int($this->input->post('invoice_id'))->result();
+        foreach ($get_gudangfg_int as $v) {
+            $ins_r_t_fg = array(
+                'f_invoice_id' => $id_new,
+                'jenis_barang_id' => $v->jenis_barang_id,
+                'bruto' => $v->bruto,
+                'netto' => $v->netto,
+                'berat_bobbin' => $v->berat_bobbin,
+                'no_packing' => $v->no_packing,
+                'bobbin_id' => $v->bobbin_id,
+                'nomor_bobbin' => $v->nomor_bobbin,
+                'created_at' => $tgl_input,
+                'created_by' => $user_id,
+                'tanggal_masuk' => $v->tanggal_masuk
+            );
+
+            $this->db->insert('r_t_gudang_fg', $ins_r_t_fg);
+
+            $this->db->where('id', $v->id);
+            $this->db->update('t_gudang_fg', array('flag_resmi'=>1));
+        }
 
         if($this->db->trans_complete()){
             redirect(base_url('index.php/R_Matching/matching_invoice/'.$id_new));
@@ -138,6 +162,16 @@ class R_Matching extends CI_Controller{
         print form_dropdown('dtr_id', $arr_so);
     }
 
+    function get_jenis_barang_list(){
+        $this->load->model('Model_matching');
+        $data = $this->Model_matching->jenis_barang_list()->result();
+        $arr_so[] = "Silahkan pilih...";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->nama_item;
+        }
+        print form_dropdown('dtr_id', $arr_so);
+    }
+
     function load_detail_dtr(){
         $id = $this->input->post('id');
 
@@ -180,19 +214,63 @@ class R_Matching extends CI_Controller{
         echo json_encode($tabel);
     }
 
+    function load_detail_jb(){
+        $id = $this->input->post('id');
+
+        $tabel = "";
+        $no = 1;
+        $total = 0;
+
+        $this->load->model('Model_matching');
+        $myDetail = $this->Model_matching->load_detail_jb($id)->result();
+
+        foreach ($myDetail as $row) {
+            $tabel .= '<input type="hidden" id="dtr_id_'.$no.'" value="'.$row->dtr_id.'"/>';
+            $tabel .= '<tr>';
+            $tabel .= '<td style="width: 30px; text-align:center;"><input type="checkbox" value="1" id="check_'.$no.'" name="details['.$no.'][check]" onclick="check();" class="form-check-input"/></td>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<input type="hidden" id="dtr_detail_id_'.$no.'" name="details['.$no.'][dtr_detail_id]" value="'.$row->id.'" />';
+            $tabel .= '<input type="hidden" id="id_barang_'.$no.'" name="details['.$no.'][id_barang]" value="'.$row->rongsok_id.'" />';
+            $tabel .= '<td><input type="text" id="nama_item_'.$no.'" name="details['.$no.'][nama_item]" value="'.$row->nama_item.'" class="form-control myline" readonly /></td>';
+            $tabel .= '<td style="text-align:right"><input type="text" id="bruto_'.$no.'" name="details['.$no.'][bruto]" value="'.$row->bruto.'" class="form-control myline" readonly /></td>';
+            $tabel .= '<td style="text-align:right"><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" value="'.$row->netto.'" class="form-control myline" readonly /></td>';
+            $tabel .= '<td style="text-align:right"><input type="text" id="berat_palette_'.$no.'" name="details['.$no.'][berat_palette]" value="'.$row->berat_palette.'" class="form-control myline" readonly /></td>';
+            $tabel .= '<td><input type="text" id="no_pallete_'.$no.'" name="details['.$no.'][no_pallete]" value="'.$row->no_pallete.'" class="form-control myline" readonly /></td>';
+            $tabel .= '<td><input type="text" id="line_remarks_'.$no.'" name="details['.$no.'][line_remarks]" value="'.$row->line_remarks.'" class="form-control myline" readonly /></td>';
+            $tabel .= '<td><a href="javascript:;"  class="btn btn-xs btn-circle yellow-gold"  onclick="saveDetail('.$no.');" style="margin-top:5px" id="btnSaveDetail" ><i class="fa fa-plus"></i> Tambah </a></td>';
+            // $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+            //         . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+            //         . '<i class="fa fa-trash"></i> Delete </a></td>';
+            $tabel .= '</tr>';
+            $total += $row->netto;
+            $no++;
+        }
+
+        $tabel .= '<tr>';
+        $tabel .= '<td></td>';
+        $tabel .= '<td colspan="3" style="text-align:right"><strong>Total (Kg) </strong></td>';
+        $tabel .= '<input type="hidden" name="total_input" id="total_input" value="'.$total.'"/>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.$total.'</strong></td>';
+        $tabel .= '<td colspan="4"></td>';
+        $tabel .= '</tr>';
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel);
+    }
+
     function saveData(){
         $id = $this->input->post('id');
         $qty = $this->input->post('qty');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
-        $check = $this->db->query("select sum(netto) as total_netto from r_t_invoice_detail where invoice_resmi_id = ".$id)->row_array();
-        $total_netto = $check['total_netto'];
+        // $check = $this->db->query("select sum(netto) as total_netto from r_t_invoice_detail where invoice_resmi_id = ".$id)->row_array();
+        // $total_netto = $check['total_netto'];
         
-        if ($total_netto < $qty) {
-            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan. Jumlah netto invoice kurang dari berat permintaan!');
-            redirect('index.php/R_Matching/matching_invoice/'.$id);
-        } else {
+        $total = $this->input->post('total');
+        $qty_pemenuhan = $this->input->post('qty_pemenuhan');
+
+        if ($total < $qty_pemenuhan) {
             $this->db->trans_start();
 
             $this->db->where('id', $id);
@@ -210,6 +288,10 @@ class R_Matching extends CI_Controller{
                 $this->session->set_flashdata('flash_msg', 'Data invoice gagal disimpan!');
                 redirect('index.php/R_Matching/matching_invoice/'.$id);
             }
+        } else {
+            
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan. Jumlah netto invoice kurang dari berat permintaan!');
+            redirect('index.php/R_Matching/matching_invoice/'.$id);
         }
     }
 
@@ -308,6 +390,7 @@ class R_Matching extends CI_Controller{
 
         $tabel .= '<tr>';
         $tabel .= '<td colspan="3" style="text-align:right"><strong>Total (Kg) </strong></td>';
+        $tabel .= '<input type="hidden" name="qty_pemenuhan" id="qty_pemenuhan" value="'.$total.'"/>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.$total.'</strong></td>';
         $tabel .= '<td colspan="4"></td>';
         $tabel .= '</tr>';

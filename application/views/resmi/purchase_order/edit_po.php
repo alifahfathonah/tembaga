@@ -67,7 +67,7 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
-                            Customer <font color="#f00">*</font>
+                            CV <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <select id="customer_id" name="customer_id" class="form-control myline select2me" 
@@ -75,7 +75,7 @@
                             <option value=""></option>
                                 <?php
                                     foreach ($cv_list as $row){
-                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['customer_id'])? 'selected="selected"': '').'>'.$row->nama_cv.'</option>';
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['cv_id'])? 'selected="selected"': '').'>'.$row->nama_cv.'</option>';
                                     }
                                 ?>
                              </select>

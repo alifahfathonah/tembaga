@@ -25,7 +25,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/R_InvoiceJasa/update'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/R_InvoiceJasa/update_inv_cust'); ?>">                            
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -122,7 +122,7 @@
                             <input type="text" id="nama_customer" name="nama_customer" 
                                 class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_customer'];?>" readonly="readonly">
 
-                            <input type="hidden" name="customer_id" value="<?php echo $header['cv_id'];?>">
+                            <input type="hidden" name="customer_id" value="<?php echo $header['customer_id'];?>">
                         </div>
                     </div>
                     <div class="row">

@@ -78,12 +78,14 @@ class Model_surat_jalan extends CI_Model{
 	// }
 
 	function show_header_sj($id){
-		$data = $this->db->query("select sjr.*, c.id as id_customer, c.nama_customer, c.alamat, tri.no_invoice_resmi, ts.no_so, ts.tanggal as tgl_so, tp.no_po, tp.tanggal as tgl_po
+		$data = $this->db->query("select sjr.*, c.id as id_customer, coalesce(c.nama_customer, cv.nama_cv) as nama_customer, coalesce(c.alamat, cv.alamat) as alamat, tri.no_invoice_resmi, ts.no_so, ts.tanggal as tgl_so, coalesce(tp.no_po,tpo.no_po) as no_po, tp.tanggal as tgl_po
 			from r_t_surat_jalan sjr
 			left join r_t_invoice tri on (tri.id = sjr.r_invoice_id)
             left join r_t_so ts on (ts.id = sjr.r_so_id)
             left join r_t_po tp on (sjr.r_invoice_id > 0 and tp.flag_sj = sjr.id)
+            left join r_t_po tpo on (tpo.id = sjr.r_po_id)
 			left join m_customers c on (sjr.m_customer_id = c.id)
+			left join m_cv cv on (sjr.m_cv_id = cv.id)
 			where sjr.id =".$id);
 		return $data;
 	}
@@ -101,4 +103,23 @@ class Model_surat_jalan extends CI_Model{
         $data = $this->db->query("Select * From m_cv Where id=".$id);
         return $data;
     }
+
+    function show_header_sj_cv($id){
+    	$data = $this->db->query("select *from r_t_surat_jalan where id = ".$id);
+    	return $data;
+    }
+
+    function sj_detail($id){
+    	$data = $this->db->query("select *from r_t_surat_jalan_detail where sj_resmi_id = ".$id);
+    	return $data;
+    }
+
+    function cv_list(){
+    	$data = $this->db->query("select *from m_cv order by nama_cv asc");
+    	return $data;
+    }
+
+    // function show_header_sj_customer($id){
+    // 	$data = $this->db->query("");
+    // }
 }

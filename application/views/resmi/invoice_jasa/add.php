@@ -32,7 +32,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_inv_jasa" name="no_inv_jasa" 
-                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="Auto Generate" readonly="readonly">
                         </div>
                     </div>
                     <div class="row">
@@ -122,7 +122,7 @@
                             <input type="text" id="nama_customer" name="nama_customer" 
                                 class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_customer'];?>" readonly="readonly">
 
-                            <input type="hidden" name="customer_id" value="<?php echo $header['m_customer_id'];?>">
+                            <input type="hidden" name="customer_id" value="<?php echo $header['m_cv_id'];?>">
                         </div>
                     </div>
                     <div class="row">

@@ -22,7 +22,7 @@
             </div>
         </div>
         <?php
-            if( ($group_id==1)||($hak_akses['view_surat_jalan']==1) ){
+            if( ($group_id==9)||($hak_akses['view_surat_jalan']==1) ){
         ?>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku">
@@ -205,7 +205,6 @@
                             <thead>
                                 <th>No</th>
                                 <th style="width: 19%">Nama Item</th>
-                                <th style="width: 19%">Nama Item Alias</th>
                                 <th>UOM</th>
                                 <th style="width: 15%">No. Packing</th>
                                 <th>Bruto (Kg)</th>
@@ -221,11 +220,6 @@
                                 <tr>
                                     <td><?php echo $no; ?></td>
                                     <td><?php echo $row->jenis_barang; ?></td>
-                                    <?php if(is_null($row->jenis_barang_a)){ ?>
-                                    <td>TIDAK ADA ALIAS</td>
-                                    <?php } else { ?>
-                                    <td><?php echo $row->jenis_barang_a; ?></td>
-                                    <?php } ?>
                                     <td><?php echo $row->uom; ?></td>
                                     <td><?php echo $row->no_packing; ?></td>
                                     <td><?php echo $row->bruto; ?></td>

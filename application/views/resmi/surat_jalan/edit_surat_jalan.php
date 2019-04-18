@@ -57,7 +57,7 @@
                                 value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
-                    <?php if ($header['r_invoice_id'] > 0){ ?>
+                    <?php if ($header['r_invoice_id'] > 0 && $header['r_sj_id'] == 0){ ?>
                     <div class="row">
                         <div class="col-md-4">
                             No. Invoice <font color="#f00">*</font>
@@ -75,7 +75,7 @@
                             No. PO
                         </div>
                         <div class="col-md-8">
-                            <select id="flag_po" name="flag_po" class="form-control myline select2me" 
+                            <!-- <select id="flag_po" name="flag_po" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                 <option value=""></option>
                                 <?php
@@ -83,9 +83,44 @@
                                         echo '<option value="'.$row->id.'" '.(($row->flag_sj==$header['id'])? 'selected="selected"': '').'>'.$row->no_po.'</option>';
                                     }
                                 ?>
-                            </select>
+                            </select> -->
+                            <input type="text" name="flag_po" id="flag_po" value="<?= $header['no_po'] ?>" class="form-control myline" style="margin-bottom: 5px;" readonly="readonly">
                         </div>
                     </div> 
+                <?php } else if($header['r_invoice_id'] > 0 && $header['r_sj_id'] > 0){ ?>    
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. PO
+                        </div>
+                        <div class="col-md-8">
+                            <!-- <select id="flag_po" name="flag_po" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($po_list as $row){
+                                        echo '<option value="'.$row->id.'" '.(($row->flag_sj==$header['id'])? 'selected="selected"': '').'>'.$row->no_po.'</option>';
+                                    }
+                                ?>
+                            </select> -->
+                            <input type="text" name="flag_po" id="flag_po" value="<?= $header['no_po'] ?>" class="form-control myline" style="margin-bottom: 5px;" readonly="readonly">
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-4">
+                            CV <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="m_cv_id" name="m_cv_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
+                                onchange="get_alamat(this.value);">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($cv_list as $row){
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['m_cv_id'])? 'selected="selected"': '').'>'.$row->nama_cv.'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>   
                 <?php } else if($header['r_so_id'] > 0){
                     ?>
                     <div class="row">
@@ -109,6 +144,22 @@
                             <input type="text" name="tgl_so" id="tgl_so" class="form-control myline input-small" style="margin-bottom:5px; float: left;" onkeyup="this.value = this.value.toUpperCase();" value="<?php echo date('d-m-Y', strtotime($header['tgl_so'])) ?>" readonly="readonly">
                         </div>
                     </div> 
+                    <div class="row">
+                        <div class="col-md-4">
+                            CV <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="m_cv_id" name="m_cv_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
+                                onchange="get_alamat(this.value);">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($cv_list as $row){
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['m_cv_id'])? 'selected="selected"': '').'>'.$row->nama_cv.'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>  
                 <?php
                 } else if($header['r_po_id'] > 0){
                 ?>  
@@ -133,7 +184,7 @@
                             <input type="text" name="tgl_po" id="tgl_po" class="form-control myline input-small" style="margin-bottom:5px; float: left;" onkeyup="this.value = this.value.toUpperCase();" value="<?php echo date('d-m-Y', strtotime($header['tgl_po'])) ?>" readonly="readonly">
                         </div>
                     </div> 
-                <?php } ?>
+                <?php } else if($header['jenis_surat_jalan'] == 'SURAT JALAN KE CUSTOMER'){ ?>
                     <div class="row">
                         <div class="col-md-4">
                             Customer <font color="#f00">*</font>
@@ -149,7 +200,26 @@
                                 ?>
                             </select>
                         </div>
-                    </div>                    
+                    </div>  
+                <?php } ?>
+                <?php if($header['r_sj_id'] == 0 && $header['r_so_id'] == 0){ ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Customer <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
+                                onchange="get_alamat(this.value);">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($customer_list as $row){
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['m_customer_id'])? 'selected="selected"': '').'>'.$row->nama_customer.'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>    
+                <?php } ?>                
                     <div class="row">
                         <div class="col-md-4">
                             Alamat

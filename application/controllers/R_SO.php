@@ -60,50 +60,55 @@ class R_SO extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
+
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('SO-KMP', $tgl_input);
                 
         $category = $this->input->post('jenis_barang');
 
-        $this->db->trans_start();
+        if($code){
+            $this->db->trans_start();
 
-        $t_data = array(
-            'no_so'=>$this->input->post('no_so'),
-            'tanggal'=>$tgl_input,
-            'marketing_id'=>$this->input->post('marketing_id'),
-            'customer_id'=>$this->input->post('customer_id'),
-            'po_id'=>$this->input->post('po_id'),
-            'tgl_po'=>$tgl_po,
-            'jenis_so'=>'JASA',
-            'jenis_barang'=>'FG',
-            'created_at'=> $tanggal,
-            'created_by'=> $user_id
-        );
-        $this->db->insert('r_t_so', $t_data);
-        $so_id = $this->db->insert_id();
-
-        $this->db->where('id', $this->input->post('po_id'));
-        $this->db->update('r_t_po', array(
-            'flag_so' => $so_id
-        ));
-        
-        $loop = $this->db->get_where('r_t_po_detail', array('po_id'=>$this->input->post('po_id')))->result();
-        foreach ($loop as $row) {
-            $data_sod = array(
-                'so_id' => $so_id,
-                'po_detail_id' => $row->id,
-                'jenis_barang_id' => $row->jenis_barang_id,
-                'netto' => $row->netto,
-                'amount' => $row->amount,
-                'total_amount' => $row->total_amount
+            $t_data = array(
+                'no_so'=>$code,
+                'tanggal'=>$tgl_input,
+                'marketing_id'=>$this->input->post('marketing_id'),
+                'cv_id'=>$this->input->post('customer_id'),
+                'po_id'=>$this->input->post('po_id'),
+                'tgl_po'=>$tgl_po,
+                'jenis_so'=>'SO KMP',
+                'jenis_barang'=>'FG',
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id
             );
+            $this->db->insert('r_t_so', $t_data);
+            $so_id = $this->db->insert_id();
 
-            $this->db->insert('r_t_so_detail', $data_sod);
-        }
-                  
-        if ($this->db->trans_complete()) {
-            redirect('index.php/R_SO/edit_so/'.$so_id);  
-        } else {
-            $this->session->set_flashdata('flash_msg', 'Sales order gagal disimpan, silahkan dicoba kembali!');
-            redirect('index.php/R_SO');  
+            $this->db->where('id', $this->input->post('po_id'));
+            $this->db->update('r_t_po', array(
+                'flag_so' => $so_id
+            ));
+            
+            $loop = $this->db->get_where('r_t_po_detail', array('po_id'=>$this->input->post('po_id')))->result();
+            foreach ($loop as $row) {
+                $data_sod = array(
+                    'so_id' => $so_id,
+                    'po_detail_id' => $row->id,
+                    'jenis_barang_id' => $row->jenis_barang_id,
+                    'netto' => $row->netto,
+                    'amount' => $row->amount,
+                    'total_amount' => $row->total_amount
+                );
+
+                $this->db->insert('r_t_so_detail', $data_sod);
+            }
+                      
+            if ($this->db->trans_complete()) {
+                redirect('index.php/R_SO/edit_so/'.$so_id);  
+            } else {
+                $this->session->set_flashdata('flash_msg', 'Sales order gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/R_SO');  
+            }
         }
     }
 
@@ -256,10 +261,9 @@ class R_SO extends CI_Controller{
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
         
         $data = array(
-                'no_so'=> $this->input->post('no_so'),
                 'tanggal'=> $tgl_input,
                 'marketing_id'=>$this->input->post('marketing_id'),
-                'customer_id'=>$this->input->post('m_customer_id'),
+                'cv_id'=>$this->input->post('m_customer_id'),
                 'po_id'=>$this->input->post('po_id'),
                 'tgl_po'=>$tgl_po,
                 'remarks'=>$this->input->post('remarks'),

@@ -12,8 +12,8 @@ class Model_tolling_resmi extends CI_Model{
 	}
 
     function add_tolling($id){
-        $data = $this->db->query("select tsj.id, tsj.no_sj_resmi, tsj.r_invoice_id, tsj.m_customer_id, mc.nama_cv from r_t_surat_jalan tsj
-            left join m_cv mc on mc.id = tsj.m_customer_id where tsj.id =".$id);
+        $data = $this->db->query("select tsj.id, tsj.no_sj_resmi, tsj.r_invoice_id, tsj.m_cv_id, mc.nama_cv from r_t_surat_jalan tsj
+            left join m_cv mc on mc.id = tsj.m_cv_id where tsj.id =".$id);
         return $data;
     }
 

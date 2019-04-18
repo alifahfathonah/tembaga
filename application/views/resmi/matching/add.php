@@ -99,6 +99,22 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Persentase (%)
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="persentase" id="persentase" class="form-control myline" style="margin-bottom: 5px" onkeyup="hitungTotal()">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Total (Kg)
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="total" id="total" class="form-control myline" style="margin-bottom: 5px" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">
@@ -123,6 +139,16 @@
     </div>
 </div> 
 <script>
+function hitungTotal(){
+    var jumlah = $("#qty").val();
+    var persentase = $("#persentase").val();
+    var total = 0;
+
+    total = (Number(jumlah) * Number(persentase)/100) + Number(jumlah);
+
+    $("#total").val(total);
+}
+
 function get_jumlah(id){
     $.ajax({
         type:"POST",

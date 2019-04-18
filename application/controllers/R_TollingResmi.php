@@ -63,11 +63,10 @@ class R_TollingResmi extends CI_Controller{
         $this->db->trans_start();
 
             $this->load->model('Model_m_numberings');
-            $code_dtr = $this->Model_m_numberings->getNumbering('DTR-R', $tgl_input); 
+            $code_dtr = $this->Model_m_numberings->getNumbering('DTR-KMP', $tgl_input); 
 
             //CREATE DTR R
             $data_dtr = array(
-                'no_dtr_resmi'=> $code_dtr,
                 'tanggal'=> $tgl_input,
                 'sj_id'=>$this->input->post('sj_id'),
                 'r_invoice_id'=>$this->input->post('r_invoice_id'),
@@ -79,9 +78,8 @@ class R_TollingResmi extends CI_Controller{
             $dtr_id = $this->db->insert_id();
 
             //CREATE TTR R
-            $code_ttr = $this->Model_m_numberings->getNumbering('TTR-R', $tgl_input); 
+            $code_ttr = $this->Model_m_numberings->getNumbering('TTR-KMP', $tgl_input); 
             $data_ttr = array(
-                'no_ttr_resmi'=> $code_ttr,
                 'tanggal'=> $tgl_input,
                 'r_dtr_id'=> $dtr_id,
                 'customer_id'=>$this->input->post('customer_id'),
@@ -130,7 +128,7 @@ class R_TollingResmi extends CI_Controller{
             }
 
             if($this->db->trans_complete()){
-                redirect('index.php/R_TollingResmi');  
+                redirect('index.php/R_TollingResmi/view_tolling/'.$dtr_id);  
             }else{
                 $this->session->set_flashdata('flash_msg', 'Data surat jalan gagal disimpan, silahkan dicoba kembali!');
                 redirect('index.php/R_TollingResmi');  
@@ -160,6 +158,30 @@ class R_TollingResmi extends CI_Controller{
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/R_TollingResmi');
+        }
+    }
+
+    function update(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));   
+        $r_dtr_id = $this->input->post('r_dtr_id');
+        $r_ttr_id = $this->input->post('r_ttr_id');     
+        
+        $this->db->trans_start();
+
+        $this->db->where('id', $r_dtr_id);
+        $this->db->update('r_dtr', array('no_dtr_resmi'=>$this->input->post('no_dtr_r')));
+
+        $this->db->where('id', $r_ttr_id);
+        $this->db->update('r_ttr', array('no_ttr_resmi'=>$this->input->post('no_ttr_r')));
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'DTR dan TTR berhasil disimpan!');
+            redirect('index.php/R_TollingResmi');  
+        }else{
+            $this->session->set_flashdata('flash_msg', 'DTR dan TTR gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/R_TollingResmi');  
         }
     }
 }

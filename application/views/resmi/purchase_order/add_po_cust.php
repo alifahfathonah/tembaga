@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> 
             <a href="<?php echo base_url('index.php/R_PurchaseOrder'); ?>"> Purchase Order </a> 
-            <i class="fa fa-angle-right"></i> Input PO CV
+            <i class="fa fa-angle-right"></i> Input PO
         </h5>          
     </div>
 </div>
@@ -23,7 +23,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/R_PurchaseOrder/save_po'); ?>">
+              id="formku" action="<?php echo base_url('index.php/R_PurchaseOrder/save_po_cust'); ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
@@ -31,7 +31,6 @@
                             No. PO <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="hidden" name="id" id="id" value="<?= $header['id'] ?>">
                             <input type="text" id="no_po" name="no_po" maxlength="25" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" style="margin-bottom:5px">
                         </div>
                     </div>
@@ -45,7 +44,7 @@
                                 value="<?php echo date('d-m-Y'); ?>">
                         </div>
                     </div>
-                    <!-- <div class="row">
+                    <div class="row">
                         <div class="col-md-4">
                             No. Invoice FG <font color="#f00">*</font>
                         </div>
@@ -54,15 +53,6 @@
 
                             <input type="hidden" name="r_invoice_id" value="<?php echo $header['id'];?>">
                             <input type="hidden" name="id_invoice" value="<?php echo $header['invoice_id'];?>">
-                        </div>
-                    </div> -->
-                    <div class="row">
-                        <div class="col-md-4">
-                            No. PO. Customer <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="no_po_customer" name="no_po_customer" class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_po'];?>" readonly="readonly">
-                            <input type="hidden" id="f_invoice_id" name="f_invoice_id" class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['f_invoice_id'];?>" readonly="readonly">
                         </div>
                     </div>
                     <div class="row">
@@ -87,15 +77,15 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
-                            CV <font color="#f00">*</font>
+                            Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <select id="customer_id" name="customer_id" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
                             <option value=""></option>
                                 <?php
-                                    foreach ($cv_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_cv.'</option>';
+                                    foreach ($cust_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
                                     }
                                 ?>
                              </select>

@@ -49,8 +49,9 @@ class R_SuratJalan extends CI_Controller{
         $data['content']= "resmi/surat_jalan/add_surat_jalan";
         if($jenis == 'matching'){
             $this->load->model('Model_matching');
+            $this->load->model('Model_purchase_order');
             $data['header'] = $this->Model_surat_jalan->show_header_invoice($id)->row_array();
-            $data['customer_list'] = $this->Model_matching->cv_list($id)->result();
+            $data['customer_list'] = $this->Model_purchase_order->customer_list($id)->result();
             $data['po_list'] = $this->Model_matching->po_free()->result();
         }else if($jenis == 'so'){
             $this->load->model('Model_so');
@@ -60,6 +61,14 @@ class R_SuratJalan extends CI_Controller{
         }else if($jenis == 'po'){
             $this->load->model('Model_purchase_order');
             $data['header'] = $this->Model_purchase_order->show_header_po($id)->row_array();
+            $data['customer_list'] = $this->Model_surat_jalan->customer_list()->result();
+        }else if($jenis == 'sj_cv'){
+            $this->load->model('Model_matching');
+            $data['header'] = $this->Model_surat_jalan->show_header_sj_cv($id)->row_array();
+            $data['cv_list'] = $this->Model_surat_jalan->cv_list()->result();
+            $data['po_list'] = $this->Model_matching->po_free_cv()->result();
+        }else if($jenis == 'sj_customer'){
+            $data['header'] = $this->Model_surat_jalan->show_header_sj_cv($id)->row_array();
             $data['customer_list'] = $this->Model_surat_jalan->customer_list()->result();
         }
         // $data['customer_list'] = $this->Model_surat_jalan->customer_list()->result();
@@ -76,6 +85,9 @@ class R_SuratJalan extends CI_Controller{
         
         $this->db->trans_start();
 
+            
+
+        if($jenis == 'matching'){
             $data = array(
                 'no_sj_resmi'=> $this->input->post('no_surat_jalan'),
                 'r_invoice_id'=>$this->input->post('id_invoice_resmi'),
@@ -84,6 +96,7 @@ class R_SuratJalan extends CI_Controller{
                 'tanggal'=> $tgl_input,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'm_customer_id'=>$this->input->post('m_customer_id'),
+                'jenis_surat_jalan'=>'SURAT JALAN CUSTOMER',
                 'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
                 'no_kendaraan'=>$this->input->post('no_kendaraan'),
                 'supir'=>$this->input->post('supir'),
@@ -96,7 +109,6 @@ class R_SuratJalan extends CI_Controller{
             $this->db->insert('r_t_surat_jalan', $data);
             $sjr_id = $this->db->insert_id();
 
-        if($jenis == 'matching'){
             $this->db->where('id',$this->input->post('id_invoice_resmi'));
             $this->db->update('r_t_invoice', array(
                 'sjr_id'=> $sjr_id
@@ -124,10 +136,39 @@ class R_SuratJalan extends CI_Controller{
                 ));
             }
         }else if($jenis == 'so'){
+            $this->load->model('Model_m_numberings');
+            $code = $this->Model_m_numberings->getNumbering('SJ-KMP', $tgl_input);
+            $data = array(
+                'no_sj_resmi'=> $code,
+                'r_invoice_id'=>$this->input->post('id_invoice_resmi'),
+                'r_so_id' => $this->input->post('so_id'),
+                'r_po_id' => $this->input->post('po_id'),
+                'tanggal'=> $tgl_input,
+                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'm_cv_id'=>$this->input->post('m_customer_id'),
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
+                'supir'=>$this->input->post('supir'),
+                'remarks'=>$this->input->post('remarks'),
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id,
+                'modified_at'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+            $this->db->insert('r_t_surat_jalan', $data);
+            $sjr_id = $this->db->insert_id();
+
             $this->db->where('id',$this->input->post('so_id'));
             $this->db->update('r_t_so', array(
                 'sjr_id'=> $sjr_id
             ));
+
+            $this->load->model('Model_so');
+            $get_r_gudang_fg = $this->Model_so->get_r_gudang_fg($this->input->post('so_id'))->result();
+            foreach ($get_r_gudang_fg as $v) {
+                $this->db->where('id', $v->id);
+                $this->db->update('r_t_gudang_fg', array('tanggal_keluar'=>$tgl_input));
+            }
 
             $this->load->model('Model_so');
             $get_po = $this->input->post('get_po');
@@ -146,6 +187,27 @@ class R_SuratJalan extends CI_Controller{
                 $this->db->insert('r_t_surat_jalan_detail', $detail);
             }
         }else if($jenis == 'po'){
+            $data = array(
+                'no_sj_resmi'=> $this->input->post('no_surat_jalan'),
+                'r_invoice_id'=>$this->input->post('id_invoice_resmi'),
+                'r_so_id' => $this->input->post('so_id'),
+                'r_po_id' => $this->input->post('po_id'),
+                'tanggal'=> $tgl_input,
+                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'm_cv_id'=>$this->input->post('m_customer_id'),
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'jenis_surat_jalan'=>'SURAT JALAN CV',
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
+                'supir'=>$this->input->post('supir'),
+                'remarks'=>$this->input->post('remarks'),
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id,
+                'modified_at'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+            $this->db->insert('r_t_surat_jalan', $data);
+            $sjr_id = $this->db->insert_id();
+
             $this->db->where('id',$this->input->post('po_id'));
             $this->db->update('r_t_po', array(
                 'flag_sj'=> $sjr_id
@@ -170,6 +232,93 @@ class R_SuratJalan extends CI_Controller{
                     'nomor_bobbin' => $row->nomor_bobbin,
                     'line_remarks' => $row->keterangan
                 );
+                $this->db->insert('r_t_surat_jalan_detail', $detail);
+            }
+        } else if($jenis == 'sj_cv'){
+            $data = array(
+                'no_sj_resmi'=> $this->input->post('no_surat_jalan'),
+                'r_invoice_id'=>$this->input->post('id_invoice_resmi'),
+                // 'r_so_id' => $this->input->post('so_id'),
+                'r_po_id' => $this->input->post('flag_po'),
+                'tanggal'=> $tgl_input,
+                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'm_cv_id'=>$this->input->post('m_cv_id'),
+                'jenis_surat_jalan'=>'SURAT JALAN CV',
+                'r_sj_id'=>$this->input->post('r_sj_id'),
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
+                'supir'=>$this->input->post('supir'),
+                'remarks'=>$this->input->post('remarks'),
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id,
+                'modified_at'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+            $this->db->insert('r_t_surat_jalan', $data);
+            $sjr_id = $this->db->insert_id();
+
+            $this->db->where('id', $this->input->post('r_sj_id'));
+            $this->db->update('r_t_surat_jalan', array('flag_sj_cv' => $sjr_id));
+
+            $this->db->where('id', $this->input->post('flag_po'));
+            $this->db->update('r_t_po', array('flag_sj'=>$sjr_id));
+
+            $sj_detail = $this->Model_surat_jalan->sj_detail($this->input->post('r_sj_id'))->result();
+            foreach ($sj_detail as $row) {
+                $detail = array(
+                    'sj_resmi_id' => $sjr_id,
+                    'jenis_barang_id' => $row->jenis_barang_id,
+                    'no_packing' => $row->no_packing,
+                    'qty' => $row->qty,
+                    'bruto' => $row->bruto,
+                    'netto' => $row->netto,
+                    'line_remarks' => $row->line_remarks
+                );
+
+                $this->db->insert('r_t_surat_jalan_detail', $detail);
+            }
+        } else if($jenis == 'sj_customer'){
+            $data = array(
+                'no_sj_resmi'=> $this->input->post('no_surat_jalan'),
+                // 'r_invoice_id'=>$this->input->post('id_invoice_resmi'),
+                // 'r_so_id' => $this->input->post('so_id'),
+                // 'r_po_id' => $this->input->post('po_id'),
+                'tanggal'=> $tgl_input,
+                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'm_customer_id'=>$this->input->post('m_customer_id'),
+                'jenis_surat_jalan'=>'SURAT JALAN KE CUSTOMER',
+                'r_sj_id'=>$this->input->post('r_sj_id'),
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
+                'supir'=>$this->input->post('supir'),
+                'remarks'=>$this->input->post('remarks'),
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id,
+                'modified_at'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+            $this->db->insert('r_t_surat_jalan', $data);
+            $sjr_id = $this->db->insert_id();
+
+            $this->db->where('id', $this->input->post('r_sj_id'));
+            $this->db->update('r_t_surat_jalan', array('flag_sj_cv' => $sjr_id));
+
+            $this->db->where('sjr_id', $this->input->post('r_sj_id'));
+            $this->db->update('r_t_inv_jasa', array('flag_sjr'=>1));
+
+            $sj_detail = $this->Model_surat_jalan->sj_detail($this->input->post('r_sj_id'))->result();
+            foreach ($sj_detail as $row) {
+                $detail = array(
+                    'sj_resmi_id' => $sjr_id,
+                    'jenis_barang_id' => $row->jenis_barang_id,
+                    'no_packing' => $row->no_packing,
+                    'qty' => $row->qty,
+                    'bruto' => $row->bruto,
+                    'netto' => $row->netto,
+                    'nomor_bobbin' => $row->nomor_bobbin,
+                    'line_remarks' => $row->line_remarks
+                );
+
                 $this->db->insert('r_t_surat_jalan_detail', $detail);
             }
         }
@@ -199,9 +348,13 @@ class R_SuratJalan extends CI_Controller{
             $this->load->model('Model_sales_order');
             if($data['header']['r_invoice_id']>0){
                 $this->load->model('Model_matching');
-                $data['customer_list'] = $this->Model_matching->cv_list()->result();
+                $this->load->model('Model_purchase_order');
+                $data['customer_list'] = $this->Model_purchase_order->customer_list()->result();
+                $data['cv_list'] = $this->Model_purchase_order->cv_list()->result();
                 $data['po_list'] = $this->Model_matching->po_free_edit($id)->result();
             }else{
+                $this->load->model('Model_purchase_order');
+                $data['cv_list'] = $this->Model_purchase_order->cv_list()->result();
                 $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
             }
             $this->load->model('Model_so');
@@ -264,6 +417,7 @@ class R_SuratJalan extends CI_Controller{
                             'no_packing'=> $v['no_packing'],
                             'bruto'=> $v['bruto'],
                             'netto'=> $v['netto'],
+                            'nomor_bobbin'=> $v['nomor_bobbin'],
                             'line_remarks'=> $v['line_remarks'],
                             'modified_at'=> $tanggal,
                             'modified_by'=> $user_id
@@ -278,6 +432,7 @@ class R_SuratJalan extends CI_Controller{
         $data = array(
                 'no_sj_resmi'=> $this->input->post('no_surat_jalan'),
                 'tanggal'=> $tgl_input,
+                'm_cv_id'=>$this->input->post('m_cv_id'),
                 'm_customer_id'=>$this->input->post('m_customer_id'),
                 'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
                 'no_kendaraan'=>$this->input->post('no_kendaraan'),

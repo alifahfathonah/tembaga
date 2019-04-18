@@ -32,7 +32,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_so" name="no_so" maxlength="25"
-                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $header['no_so']; ?>">
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $header['no_so']; ?>" readonly>
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
                     </div>
@@ -82,7 +82,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_po" name="no_po"
-                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $header['no_so']; ?>" readonly="readonly">
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $header['no_po']; ?>" readonly="readonly">
 
                             <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['po_id']; ?>">
                         </div>
@@ -107,7 +107,7 @@
                                 <option value=""></option>
                                 <?php
                                     foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['customer_id'])? 'selected="selected"': '').'>'.$row->nama_customer.'</option>';
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['cv_id'])? 'selected="selected"': '').'>'.$row->nama_customer.'</option>';
                                     }
                                 ?>
                             </select>

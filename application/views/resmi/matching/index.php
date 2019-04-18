@@ -84,7 +84,7 @@
                             <?php 
                                 }if(($group_id==9 || $hak_akses['create_po']==1) && $row->r_po_id == 0){
                             ?>
-                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_PurchaseOrder/add_po/<?php echo $row->id; ?>" 
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_PurchaseOrder/add_po_fcustomer/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-cube"></i> Create PO &nbsp; </a>
                             <?php } ?>
                         </td>

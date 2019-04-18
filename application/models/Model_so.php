@@ -28,7 +28,7 @@ class Model_so extends CI_Model{
 			u.realname as nama_marketing 
 			from r_t_so rso
 			left join r_t_po rpo on (rpo.id = rso.po_id)
-			left join m_cv c on (rso.customer_id = c.id)
+			left join m_cv c on (rso.cv_id = c.id)
 			left join users u on (rso.marketing_id = u.id)
 			where rso.id = ".$id);
 		return $data;
@@ -74,6 +74,14 @@ class Model_so extends CI_Model{
 	function jenis_barang_list(){
 		$this->db->order_by('jenis_barang','asc');
 		$data = $this->db->get_where('jenis_barang', array('category'=>'FG'));
+		return $data;
+	}
+
+	function get_r_gudang_fg($id){
+		$data = $this->db->query("select rtg.* from r_t_so rts
+			left join r_t_po rtp on rtp.id = rts.po_id
+			left join r_t_gudang_fg rtg on rtg.f_invoice_id = rtp.f_invoice_id
+			where rts.id = ".$id);
 		return $data;
 	}
 }

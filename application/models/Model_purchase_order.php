@@ -2,9 +2,10 @@
 class Model_purchase_order extends CI_Model{
 	
 	function po_list(){
-		$data = $this->db->query("select rpo.*, c.nama_cv, c.pic, (select count(tpd.id) from r_t_po_detail tpd where tpd.po_id = rpo.id)as jumlah_item
+		$data = $this->db->query("select rpo.*, coalesce(cs.nama_customer,c.nama_cv) as nama_cv, coalesce(cs.pic, c.pic) as pic, (select count(tpd.id) from r_t_po_detail tpd where tpd.po_id = rpo.id)as jumlah_item
 			from r_t_po rpo
-			left join m_cv c on (rpo.customer_id = c.id)
+			left join m_customers cs on (rpo.customer_id = cs.id)
+			left join m_cv c on (rpo.cv_id = c.id)
 			order by rpo.created_at desc");
 		return $data;
 	}
@@ -17,9 +18,19 @@ class Model_purchase_order extends CI_Model{
 		return $data;
 	}
 
+	function get_po_customer($id){
+		$data = $this->db->query("select rpo.* from r_t_po rpo where id=".$id);
+		return $data;
+	}
+
 	function invoice_detail($id){
 		$data = $this->db->query("select fid.id, fid.id_invoice, fid.sj_detail_id, fid.jenis_barang_id, sum(fid.qty) as qty, sum(fid.netto) as netto, fid.harga, sum(fid.total_harga) as total_harga from f_invoice_detail fid 
 		where fid.id_invoice =".$id." group by fid.jenis_barang_id");
+		return $data;
+	}
+
+	function po_detail($id){
+		$data = $this->db->query("select *from r_t_po_detail where po_id=".$id);
 		return $data;
 	}
 
@@ -37,6 +48,13 @@ class Model_purchase_order extends CI_Model{
 	function get_contact_name($id){
 		$this->db->select('pic');
 		$this->db->where('id', $id);
+		$data = $this->db->get('m_cv');
+		return $data;
+	}
+
+	function get_contact_name_customer($id){
+		$this->db->select('pic');
+		$this->db->where('id', $id);
 		$data = $this->db->get('m_customers');
 		return $data;
 	}
@@ -44,7 +62,7 @@ class Model_purchase_order extends CI_Model{
 	function show_header_po($id){
 		$data = $this->db->query("select rpo.*, c.nama_cv, c.pic, c.alamat
 			from r_t_po rpo
-			left join m_cv c on (rpo.customer_id = c.id)
+			left join m_cv c on (rpo.cv_id = c.id)
 			where rpo.id = ".$id);
 		return $data;
 	}

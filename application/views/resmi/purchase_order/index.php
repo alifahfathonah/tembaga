@@ -75,7 +75,7 @@
                         <td><?php echo $data->remarks; ?></td>
                         <td style="text-align:center"> 
                             <?php
-                                if( ($group_id==9 || $hak_akses['create_so']==1) && $data->flag_so == 0){
+                                if( ($group_id==9 || $hak_akses['create_so']==1) && $data->flag_so == 0 && $data->cv_id != 0){
                             ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/R_SO/add_so/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-truck"></i> Create SO &nbsp; </a>
@@ -96,7 +96,12 @@
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_PurchaseOrder/print_po/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
-                                }
+                                }if( ($group_id==9 || $hak_akses['create_so']==1) && $data->customer_id != 0 && $data->flag_po_cv == 0){
+                            ?>
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_PurchaseOrder/add_po/<?php echo $data->id; ?>" style="margin-bottom:4px">
+                                &nbsp; <i class="fa fa-truck"></i> Create PO CV &nbsp; </a>
+                            <?php
+                             }
                             ?>
                         </td>
                     </tr>
