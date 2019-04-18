@@ -149,7 +149,7 @@
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
-                    <a href="<?php echo base_url('index.php/SuratJalan/'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/Retur/'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>

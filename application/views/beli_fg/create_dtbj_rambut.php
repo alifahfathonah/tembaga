@@ -106,7 +106,7 @@
                             Pilih Packing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select  id="no_packing" name="no_packing" placeholder="Silahkan pilih..." onchange="get_packing(this.value)" 
+                            <select  id="no_packing" name="no_packing" placeholder="Silahkan pilih..." 
                                 class="form-control myline select2me" style="margin-bottom:5px">
                                 <option value=""></option>
                                 <?php 
@@ -169,7 +169,9 @@
                                 <td><input type="text" id="netto_1" name="myDetails[1][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly"></td>
                                 <td><input type="text" name="myDetails[1][no_packing]" id="no_packing_1" class="form-control myline" readonly placeholder="Auto"></td>
                                 <td style="text-align:center"><a id="save_1" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(1);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
-                                    <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
+                                    <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
+                                    <a id="print_1" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(1);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -252,24 +254,24 @@ function get_uom_po(id, nmr){
     }
 }
 
-function get_packing(id){
-    if(''!=id){
-        $.ajax({
-            url: "<?php echo base_url('index.php/GudangFG/get_bobbin'); ?>",
-            type: "POST",
-            data: "id="+id,
-            dataType: "json",
-            success: function(result) {
-                if(result){
-                    $('#id_packing').val(result['id']);
-                } else {
-                    alert('Bobbin/Keranjang tidak ditemukan, coba lagi');
-                    $('#no_packing').val('');
-                }
-            }
-        });
-    }
-}
+// function get_packing(id){
+//     if(''!=id){
+//         $.ajax({
+//             url: "<?php echo base_url('index.php/GudangFG/get_bobbin'); ?>",
+//             type: "POST",
+//             data: "id="+id,
+//             dataType: "json",
+//             success: function(result) {
+//                 if(result){
+//                     $('#id_packing').val(result['id']);
+//                 } else {
+//                     alert('Bobbin/Keranjang tidak ditemukan, coba lagi');
+//                     $('#no_packing').val('');
+//                 }
+//             }
+//         });
+//     }
+// }
 
 function saveDetail(id){
     if($.trim($("#name_rongsok_"+id).val()) == ""){
@@ -284,7 +286,8 @@ function saveDetail(id){
         $("#netto_"+id).attr('readonly','readonly');
         $("#bruto_"+id).attr('readonly','readonly');
         $("#berat_bobbin_"+id).attr('readonly','readonly');
-        $("#save_"+id).attr('disabled','disabled');
+        $("#save_"+id).hide();
+        $("#print_"+id).show();
         $("#delete_"+id).removeClass('disabled');
         var new_id = id+1; 
         $("#tabel_dtr>tbody").append(
@@ -305,7 +308,8 @@ function saveDetail(id){
                 '<td><input type="text" id="netto_'+new_id+'" name="myDetails['+new_id+'][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly"></td>'+
                 '<td><input type="text" name="myDetails['+new_id+'][no_packing]" id="no_packing_'+new_id+'" class="form-control myline" readonly placeholder="Auto"></td>'+
                 '<td style="text-align:center"><a id="save_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail('+new_id+');" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>'+
-                    '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
+                    '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>'+
+                    '<a id="print_'+new_id+'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('+new_id+');" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a></td>'+
             '</tr>'
         );
     }$('#name_rongsok_'+new_id).select2();
@@ -316,6 +320,16 @@ function deleteDetail(id){
     if (r==true){
         $('#no_tabel_'+id).closest('tr').remove();
         }
+}
+
+function printBarcode(id){
+    const fg = $('#fg_id_'+id).val();
+    const b = $('#bruto_'+id).val();
+    const bb = $('#berat_bobbin_'+id).val();
+    const n = $('#netto_'+id).val();
+    const np = $('#no_packing_'+id).val();
+    console.log(id+' | '+fg+' | '+b+' | '+bb+' | '+n+' | '+np);
+    window.open('<?php echo base_url();?>index.php/BeliFinishGood/print_barcode?fg='+fg+'&b='+b+'&bb='+bb+'&n='+n+'&np='+np,'_blank');
 }
 </script>
 

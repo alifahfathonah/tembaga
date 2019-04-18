@@ -133,6 +133,18 @@
                                 value="<?php echo $header['nomor_rekening']; ?>">
                         </div>
                     </div>
+                    <?php if($header['id_matching']>0){?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Matching Pembayaran
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_po" name="no_po" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['no_pembayaran']; ?>">
+                        </div>
+                    </div>
+                    <?php } ?>
                 </div>              
             </div>
         <?php if($header['id_um']!=0){?>

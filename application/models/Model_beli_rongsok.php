@@ -14,7 +14,7 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='Rongsok' and po.tanggal >= NOW()-INTERVAL 2 MONTH and po.ppn = ".$ppn."
+                Where po.jenis_po='Rongsok' and po.tanggal >= NOW()-INTERVAL 2 MONTH and po.flag_ppn = ".$ppn."
                 Order By po.id Desc");
         return $data;
     }
@@ -32,7 +32,7 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='Rongsok' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH) and po.status != 1 And po.ppn = ".$user_ppn."
+                Where po.jenis_po='Rongsok' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH) and po.status != 1 And po.flag_ppn = ".$user_ppn."
                 Order By po.id Desc");
         return $data;
     }
@@ -121,7 +121,7 @@ class Model_beli_rongsok extends CI_Model{
     }
 
     function voucher_po_rsk($id){
-        $data = $this->db->query("Select po.*,s.nama_supplier, dtr.po_id, sum(dd.netto*pd.amount) as nilai_po, 
+        $data = $this->db->query("Select po.*,s.nama_supplier, dtr.po_id, Coalesce(sum(dd.netto*pd.amount),0) as nilai_po, 
             (Select Sum(voucher.amount) From voucher Where voucher.po_id = po.id)As nilai_dp
             From po
             inner join dtr on dtr.po_id = po.id
@@ -173,8 +173,7 @@ class Model_beli_rongsok extends CI_Model{
 
     function dtr_list($user_ppn){
         $data = $this->db->query("Select dtr.*, 
-                    COALESCE(po.no_po,r.no_retur) as no_po, 
-                    COALESCE(po.ppn,".$user_ppn.") as flag_ppn,
+                    COALESCE(po.no_po,r.no_retur) as no_po,
                     spl.nama_supplier,
                     usr.realname As penimbang,
                 (Select count(dtrd.id)As jumlah_item From dtr_detail dtrd Where dtrd.dtr_id = dtr.id)As jumlah_item
@@ -183,7 +182,7 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join supplier spl On (po.supplier_id = spl.id) or (dtr.supplier_id = spl.id) 
                     Left Join users usr On (dtr.created_by = usr.id) 
                     Left Join retur r On (r.id = dtr.retur_id)
-                    Where (dtr.customer_id = 0 or retur_id > 0) and COALESCE(po.ppn,".$user_ppn.") =".$user_ppn."
+                    Where (dtr.customer_id = 0 or retur_id > 0) and dtr.flag_ppn =".$user_ppn."
                 Order By dtr.id Desc");
         return $data;
     }
@@ -236,7 +235,7 @@ class Model_beli_rongsok extends CI_Model{
 
     function get_po_list($user_ppn){
         $data = $this->db->query("Select id, no_po, jenis_po From po 
-            Where jenis_po= 'Rongsok' And status != 1 And po.ppn = ".$user_ppn);
+            Where jenis_po= 'Rongsok' And status != 1 And po.flag_ppn = ".$user_ppn);
         return $data;
     }
     
@@ -273,7 +272,7 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
 
-    function get_dtr($sp_id){
+    function get_dtr($sp_id,$flag_ppn){
         $data = $this->db->query("Select dtr.*,  
                     spl.nama_supplier,
                     usr.realname As penimbang,
@@ -285,7 +284,7 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join users usr On (dtr.created_by = usr.id) 
                     Left Join users app On (dtr.approved_by = app.id) 
                     Left Join users rjct On (dtr.rejected_by = rjct.id) 
-                Where dtr.supplier_id=".$sp_id." and status = 0");
+                Where dtr.supplier_id=".$sp_id." and status = 0 and dtr.flag_ppn=".$flag_ppn);
         return $data;
     }
     
@@ -298,10 +297,10 @@ class Model_beli_rongsok extends CI_Model{
                 (Select Sum(ttrd.bruto) From ttr_detail ttrd Where ttrd.ttr_id = ttr.id)As bruto, 
                 (Select Sum(ttrd.netto) From ttr_detail ttrd Where ttrd.ttr_id = ttr.id)As netto
                 From ttr 
-                    Left Join dtr On (ttr.dtr_id = dtr.id) 
-                    Left Join po On (dtr.po_id = po.id) 
+                    Left Join dtr On (dtr.id = ttr.dtr_id) 
+                    Left Join po On (po.id = dtr.po_id) 
                     Left Join supplier spl On (po.supplier_id = spl.id)
-                Where po.ppn = ".$user_ppn." or (dtr.po_id = 0 and dtr.customer_id = 0) or (dtr.retur_id > 0)
+                Where dtr.flag_ppn = ".$user_ppn." or (dtr.po_id = 0 and dtr.customer_id = 0 and dtr.flag_ppn= ".$user_ppn.") or (dtr.flag_ppn=".$user_ppn." and dtr.retur_id > 0)
                 Order By dtr.id Desc");
         return $data;
     }
@@ -326,6 +325,15 @@ class Model_beli_rongsok extends CI_Model{
     }
     
     function show_detail_ttr($id){
+        $data = $this->db->query("Select ttrd.id, ttrd.bruto, ttrd.netto, ttrd.line_remarks, rsk.nama_item, rsk.uom, dtr_detail.no_pallete, dtr_detail.berat_palette
+                    From ttr_detail ttrd 
+                        Left Join rongsok rsk On (ttrd.rongsok_id = rsk.id)
+                        left join dtr_detail on dtr_detail.id = ttrd.dtr_detail_id
+                    Where ttrd.ttr_id=".$id);
+        return $data;
+    }
+
+    function show_detail_ttr_group($id){
         $data = $this->db->query("Select ttrd.id, sum(ttrd.bruto) as bruto, sum(ttrd.netto) as netto, ttrd.line_remarks, rsk.nama_item, rsk.uom, dtr_detail.no_pallete, sum(dtr_detail.berat_palette) as berat_palette
                     From ttr_detail ttrd 
                         Left Join rongsok rsk On (ttrd.rongsok_id = rsk.id)
@@ -368,7 +376,7 @@ class Model_beli_rongsok extends CI_Model{
                 po.no_po, po.tanggal As tanggal_po
                 From voucher 
                     Left Join po On (voucher.po_id = po.id) 
-                Where voucher.jenis_barang='RONGSOK' And po.ppn = ".$user_ppn."
+                Where voucher.jenis_barang='RONGSOK' And po.flag_ppn = ".$user_ppn."
                 Order By voucher.no_voucher");
         return $data;
     }

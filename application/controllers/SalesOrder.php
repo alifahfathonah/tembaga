@@ -781,7 +781,6 @@ class SalesOrder extends CI_Controller{
             }
             $data['group_id']  = $group_id;
 
-            $data['content']= "sales_order/edit_surat_jalan";
             $this->load->model('Model_sales_order');
             $data['header'] = $this->Model_sales_order->show_header_sj($id)->row_array();  
             $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
@@ -792,12 +791,15 @@ class SalesOrder extends CI_Controller{
             if($jenis == 'FG'){
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_fg($soid)->result();
                 $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_in_so($soid)->result();
+                $data['content']= "sales_order/edit_surat_jalan_test";
             }else if($jenis == 'WIP'){
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_wip($soid)->result();
                 $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_wip()->result();
+                $data['content']= "sales_order/edit_surat_jalan";
             }else{
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_rsk($soid)->result();
                 $data['jenis_barang'] = $this->Model_sales_order->rongsok_in_so($soid)->result();
+                $data['content']= "sales_order/edit_surat_jalan";
             }
             $this->load->view('layout', $data);   
         }else{
@@ -882,6 +884,7 @@ class SalesOrder extends CI_Controller{
 
         $data = array(
                 'tanggal'=> $tgl_input,
+                'status'=> 0,
                 'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
                 'no_kendaraan'=>$this->input->post('no_kendaraan'),
                 'supir'=>$this->input->post('supir'),
@@ -1046,6 +1049,9 @@ class SalesOrder extends CI_Controller{
         
         $this->db->where('id', $sjid);
         $this->db->update('t_surat_jalan', $data);
+        
+        $this->db->where('t_sj_id', $sjid);
+        $this->db->delete('t_surat_jalan_detail');
         
         $this->session->set_flashdata('flash_msg', 'Surat jalan berhasil direject');
         redirect('index.php/SalesOrder/surat_jalan');

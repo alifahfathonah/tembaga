@@ -73,8 +73,14 @@
                                     <a href="<?php echo base_url(); ?>index.php/BeliSparePart/bpb_list">
                                     <i class="fa fa-cubes"></i>
                                     BPB List </a>
+                                </li> 
+                                <?php } if($group_id==1 || (isset($akses_menu['bpb_list']) && $akses_menu['lpb_list']==1)){ ?>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/BeliSparePart/lpb_list">
+                                    <i class="fa fa-usd"></i>
+                                    LPB List </a>
                                 </li>
-                                <?php } if($group_id==1 || (isset($akses_menu['voucher_list']) && $akses_menu['voucher_list']==1)){ ?>
+                                <?php }  if($group_id==1 || (isset($akses_menu['voucher_list']) && $akses_menu['voucher_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliSparePart/voucher_list">
                                     <i class="fa fa-usd"></i>

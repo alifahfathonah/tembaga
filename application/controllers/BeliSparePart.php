@@ -12,7 +12,8 @@ class BeliSparePart extends CI_Controller{
     
     function index(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $user_ppn    = $this->session->userdata('user_ppn');        
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -22,7 +23,7 @@ class BeliSparePart extends CI_Controller{
 
         $data['content']= "beli_spare_part/index";
         $this->load->model('Model_beli_sparepart');
-        $data['list_data'] = $this->Model_beli_sparepart->list_data()->result();
+        $data['list_data'] = $this->Model_beli_sparepart->list_data($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -43,6 +44,7 @@ class BeliSparePart extends CI_Controller{
     function save(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
+        $user_ppn = $this->session->userdata('user_ppn');
 
         $tgl_pengajuan = date('Y-m-d', strtotime($this->input->post('tgl_pengajuan')));
         if($this->input->post('jenis_kebutuhan')==0){
@@ -51,13 +53,19 @@ class BeliSparePart extends CI_Controller{
             $tgl_spare_part = NULL;
         }
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('PPS', $tgl_pengajuan); 
-        
+        if($user_ppn==1){
+            $code = $this->Model_m_numberings->getNumbering('PPS-KMP', $tgl_pengajuan);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('PPS', $tgl_pengajuan); 
+        }
+
         if($code){        
             $data = array(
                         'no_pengajuan'=> $code,
+                        'flag_ppn'=> $user_ppn,
                         'tgl_pengajuan'=> $tgl_pengajuan,
                         'jenis_kebutuhan'=> $this->input->post('jenis_kebutuhan'),
+                        'nama_pengaju'=> $this->input->post('nama_pengaju'),
                         'tgl_sparepart_dibutuhkan'=> $tgl_spare_part,
                         'remarks'=>$this->input->post('keterangan'),
                         'created'=> $tanggal,
@@ -129,6 +137,7 @@ class BeliSparePart extends CI_Controller{
         $data = array(
                 'jenis_kebutuhan'=> $this->input->post('jenis_kebutuhan'),
                 'tgl_sparepart_dibutuhkan'=> $tgl_spare_part,
+                'nama_pengaju' => $this->input->post('nama_pengaju'),
                 'remarks'=>$this->input->post('keterangan'),
                 'status'=>(($this->input->post('status')==9)? 0 : $this->input->post('status')),
                 //'flag_sinkronisasi'=>0,
@@ -174,6 +183,9 @@ class BeliSparePart extends CI_Controller{
             $tabel .= '<td style="text-align:right"><label id="lbl_qty_'.$no.'">'.$row->qty.'</label>';
             $tabel .= '<input type="text" id="qty_'.$no.'" name="qty_'.$no.'" class="form-control myline" '
                 . 'onkeydown="return myCurrency(event);" maxlength="3" value="'.$row->qty.'" style="display:none">';
+            $tabel .= '</td>';
+            $tabel .= '<td style="text-align:right"><label id="lbl_remarks_'.$no.'">'.$row->keterangan.'</label>';
+            $tabel .= '<input type="text" id="remarks_'.$no.'" name="remarks_'.$no.'" class="form-control myline" value="'.$row->keterangan.'" style="display:none">';
             $tabel .= '</td>';
             
             $tabel .= '<td style="text-align:center">';
@@ -229,7 +241,8 @@ class BeliSparePart extends CI_Controller{
         if($this->db->insert('beli_sparepart_detail', array(
             'beli_sparepart_id'=>$this->input->post('id'),
             'sparepart_id'=>$this->input->post('sparepart_id'),
-            'qty'=>$this->input->post('qty')
+            'qty'=>$this->input->post('qty'),
+            'keterangan'=>$this->input->post('remarks')
         ))){
             $return_data['message_type']= "sukses";
         }else{
@@ -246,7 +259,8 @@ class BeliSparePart extends CI_Controller{
         $this->db->where('id', $this->input->post('detail_id'));
         if($this->db->update('beli_sparepart_detail', array(
             'sparepart_id'=>$this->input->post('sparepart_id'),
-            'qty'=>$this->input->post('qty')
+            'qty'=>$this->input->post('qty'),
+            'keterangan'=>$this->input->post('remarks')
         ))){
             $return_data['message_type']= "sukses";
         }else{
@@ -370,16 +384,23 @@ class BeliSparePart extends CI_Controller{
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('POSP', $tgl_input); 
-        
+        if($user_ppn==1){
+            $code = $this->Model_m_numberings->getNumbering('POSP-KMP', $tgl_input); 
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('POSP', $tgl_input);
+        }
+
         if($code){        
             $data = array(
                         'no_po'=> $code,
                         'tanggal'=> $tgl_input,
+                        'flag_ppn'=> $user_ppn,
                         'beli_sparepart_id'=> $this->input->post('beli_sparepart_id'),
                         'ppn'=>$this->input->post('ppn'),
                         'diskon'=>$this->input->post('diskon'),
                         'materai'=>$this->input->post('materai'),
+                        'currency'=>$this->input->post('currency'),
+                        'kurs'=>$this->input->post('kurs'),
                         'supplier_id'=>$this->input->post('supplier_id'),
                         'term_of_payment'=>$this->input->post('term_of_payment'),
                         'jenis_po'=>'Sparepart',
@@ -575,11 +596,16 @@ class BeliSparePart extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $user_ppn = $this->session->userdata('user_ppn');
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('BPB', $tgl_input); 
-        
+        if($user_ppn==1){
+            $code = $this->Model_m_numberings->getNumbering('BPB-KMP', $tgl_input); 
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('BPB', $tgl_input);
+        }
+
         if($code){        
             $data = array(
                         'no_bpb'=> $code,
@@ -682,7 +708,9 @@ class BeliSparePart extends CI_Controller{
     
     function bpb_list(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $user_ppn    = $this->session->userdata('user_ppn');
+
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -692,19 +720,40 @@ class BeliSparePart extends CI_Controller{
 
         $data['content']= "beli_spare_part/bpb_list";
         $this->load->model('Model_beli_sparepart');
-        $data['list_data'] = $this->Model_beli_sparepart->bpb_list()->result();
+        $data['list_data'] = $this->Model_beli_sparepart->bpb_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
     
     function print_bpb(){
         $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
         if($id){        
             $this->load->model('Model_beli_sparepart');
             $data['header']  = $this->Model_beli_sparepart->show_header_bpb($id)->row_array();
             $data['details'] = $this->Model_beli_sparepart->show_detail_bpb($id)->result();
 
             $this->load->view('print_bpb', $data);
+
+        }else{
+            redirect('index.php'); 
+        }
+    }
+
+    function print_lpb(){
+        $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
+        if($id){        
+            $this->load->model('Model_beli_sparepart');
+            $data['header']  = $this->Model_beli_sparepart->show_header_bpb($id)->row_array();
+            $data['details'] = $this->Model_beli_sparepart->show_detail_bpb($id)->result();
+
+            if($user_ppn==1){
+                $this->load->view('beli_spare_part/print_bpb_ppn', $data);
+            }else{
+                $this->load->view('beli_spare_part/print_bpb', $data);
+            }        
+
         }else{
             redirect('index.php'); 
         }
@@ -805,7 +854,7 @@ class BeliSparePart extends CI_Controller{
                 $this->db->update('po', array('flag_dp'=>1));
             }
 
-            if($this->input->post('bank_id')==0){
+            if($this->input->post('bank_id')<=3){
                 if($this->input->post('ppn')==0){
                     $num = 'KK';
                 }else{
@@ -847,6 +896,24 @@ class BeliSparePart extends CI_Controller{
             redirect('index.php/BeliSparePart/po_list');
         }
     }
+
+    function vk_list(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        $user_ppn = $this->session->userdata('user_ppn');     
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "beli_spare_part/vk_list";
+        $this->load->model('Model_beli_sparepart');
+        $data['list_data'] = $this->Model_beli_sparepart->vk_list($user_ppn)->result();
+
+        $this->load->view('layout', $data);
+    }
     
     function voucher_list(){
         $module_name = $this->uri->segment(1);
@@ -866,6 +933,32 @@ class BeliSparePart extends CI_Controller{
         $this->load->view('layout', $data);
     }
 
+    // function print_voucher(){
+    //     $module_name = $this->uri->segment(1);
+    //     $id = $this->uri->segment(3);
+    //     if($id){
+    //         $group_id    = $this->session->userdata('group_id');        
+    //         if($group_id != 1){
+    //             $this->load->model('Model_modules');
+    //             $roles = $this->Model_modules->get_akses($module_name, $group_id);
+    //             $data['hak_akses'] = $roles;
+    //         }
+    //         $this->load->helper('terbilang_helper');
+    //         $this->load->model('Model_finance');
+    //         $data['header'] = $this->Model_finance->show_header_voucher($id)->row_array();
+    //         $data['list_data'] = $this->Model_finance->show_detail_voucher($id)->result();
+    //         $total = 0;
+    //         foreach ($data['list_data'] as $row) {
+    //             $total += $row->amount;
+    //         }
+    //         $data['total'] = $total;
+
+    //         $this->load->view('beli_spare_part/print_voucher', $data);   
+    //     }else{
+    //         redirect('index.php/BeliSparePart');
+    //     }
+    // }
+
     function print_voucher(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
@@ -877,16 +970,16 @@ class BeliSparePart extends CI_Controller{
                 $data['hak_akses'] = $roles;
             }
             $this->load->helper('terbilang_helper');
-            $this->load->model('Model_finance');
-            $data['header'] = $this->Model_finance->show_header_voucher($id)->row_array();
-            $data['list_data'] = $this->Model_finance->show_detail_voucher($id)->result();
+            $this->load->model('Model_beli_sparepart');
+            $data['header'] = $this->Model_beli_sparepart->show_header_voucher($id)->row_array();
+            $data['list_data'] = $this->Model_beli_sparepart->show_detail_voucher_sp($data['header']['vk_id'])->result();
             $total = 0;
             foreach ($data['list_data'] as $row) {
                 $total += $row->amount;
             }
             $data['total'] = $total;
 
-            $this->load->view('beli_spare_part/print_voucher', $data);   
+            $this->load->view('beli_spare_part/print_voucher_sp', $data);   
         }else{
             redirect('index.php/BeliSparePart');
         }
@@ -1427,5 +1520,320 @@ class BeliSparePart extends CI_Controller{
         $data['list_data'] = $this->Model_beli_sparepart->gudang_sp_list()->result();
         
         $this->load->view('layout', $data);
+    }
+
+    // function pembayaran(){
+    //     $module_name = $this->uri->segment(1);
+    //     $group_id    = $this->session->userdata('group_id');        
+    //     if($group_id != 1){
+    //         $this->load->model('Model_modules');
+    //         $roles = $this->Model_modules->get_akses($module_name, $group_id);
+    //         $data['hak_akses'] = $roles;
+    //     }
+    //     $data['group_id']  = $group_id;
+
+    //     $data['content']= "finance/pembayaran";
+    //     $this->load->model('Model_finance');
+    //     $data['list_data'] = $this->Model_finance->list_data_pembayaran()->result();
+
+    //     $this->load->view('layout', $data);
+    // }
+
+    function add_matching(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Beli Sparepart";
+        $data['content']   = "beli_spare_part/add_matching";
+        
+        $this->load->model('Model_beli_sparepart');
+        $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
+
+        $this->load->view('layout', $data); 
+    }
+
+    function save_pembayaran(){
+        $user_id   = $this->session->userdata('user_id');
+        $tanggal   = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $user_ppn  = $this->session->userdata('user_ppn');
+
+        $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+        if($user_ppn==1){
+            $code = $this->Model_m_numberings->getNumbering('VK-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('VK', $tgl_input);
+        }
+
+        $data = array(
+            'no_vk'=> $code,
+            'flag_ppn'=> $user_ppn,
+            'supplier_id'=> $this->input->post('supplier_id'),
+            'tanggal'=> $this->input->post('tanggal'),
+            'keterangan'=> $this->input->post('remarks'),
+            'created_at'=> $tanggal,
+            'created_by'=> $user_id
+        );
+        $this->db->insert('f_vk', $data);
+        $id_new=$this->db->insert_id();
+
+        if($this->db->trans_complete()){
+            redirect(base_url('index.php/BeliSparePart/matching_voucher/'.$id_new));
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Uang Masuk gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/BeliSparePart/voucher_list');  
+        }            
+    }
+
+    function matching_voucher(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Beli Sparepart";
+            $data['content']   = "beli_spare_part/matching_voucher";
+
+            $this->load->model('Model_beli_sparepart');
+            $data['header'] = $this->Model_beli_sparepart->list_detail_pembayaran($id)->row_array();
+            $this->load->model('Model_finance');
+            $data['bank_list'] = $this->Model_finance->bank_list($user_ppn)->result();
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/BeliSparePart');
+        }
+    }
+
+    function save_vk(){
+        $return_data = array();
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_jatuh = date('Y-m-d', strtotime($this->input->post('tanggal_jatuh')));
+        $user_ppn = $this->session->userdata('user_ppn');
+        $id       = $this->input->post('id');
+
+        $this->load->model('Model_beli_sparepart');
+
+        $po_group = $this->Model_beli_sparepart->get_po_group($id)->result();
+            foreach ($po_group as $key) {
+                $check = $this->Model_beli_sparepart->check_po_lpb($key->po_id)->result();
+                if(empty($check) && $key->status == 3){
+                    $this->db->where('id', $key->po_id);
+                    $this->db->update('po', array(
+                        'flag_pelunasan'=>1,
+                        'status'=>4
+                    ));
+                }else{
+                    $this->db->where('id', $key->po_id);
+                    $this->db->update('po', array(
+                        'flag_dp'=>1
+                    ));
+                }
+            }
+
+        $data = array(
+            'tanggal'=>$tgl_input,
+            'keterangan'=>$this->input->post('remarks'),
+            'modified_at'=>$tanggal,
+            'modified_by'=>$user_id
+        );
+        $this->db->where('id', $id);
+        $this->db->update('f_vk', $data);
+
+        $this->load->model('Model_m_numberings');
+        if($user_ppn==1){
+            $code = $this->Model_m_numberings->getNumbering('VSP-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('VSP', $tgl_input);
+        }
+
+        if($this->input->post('bank_id')<=3){
+            if($user_ppn==1){
+                $num = 'KK-KMP';
+            }else{
+                $num = 'KK';
+            }
+        }else{
+            if($user_ppn==1){
+                $num = 'BK-KMP';
+            }else{
+                $num = 'BK';
+            }
+        }
+        $code_um = $this->Model_m_numberings->getNumbering($num);
+
+                $data_v = array(
+                        'no_voucher'=> $code,
+                        'tanggal'=> $tgl_input,
+                        'flag_ppn'=> $user_ppn,
+                        'jenis_voucher'=>'Pelunasan',
+                        'supplier_id'=> $this->input->post('supplier_id'),
+                        'status'=>1,
+                        'jenis_barang'=> 'SPARE PART',
+                        'vk_id'=> $this->input->post('id'),
+                        'keterangan'=> $this->input->post('remarks'),
+                        'amount'=> str_replace('.', '', $this->input->post('nominal')),
+                        'created'=> $tanggal,
+                        'created_by'=> $user_id,
+                        'modified'=> $tanggal,
+                        'modified_by'=> $user_id
+                    );
+                $this->db->insert('voucher', $data_v);
+                $insert_id=$this->db->insert_id();
+
+                $data_vk = array(
+                    'jenis_trx'=>1,
+                    'nomor'=>$code_um,
+                    'flag_ppn'=> $user_ppn,
+                    'tanggal'=>$tgl_input,
+                    'tgl_jatuh_tempo'=>$tgl_jatuh,
+                    'no_giro'=>$this->input->post('nomor_giro'),
+                    'id_bank'=>$this->input->post('bank_id'),
+                    'id_vc'=>$insert_id,
+                    'currency'=>$this->input->post('currency'),
+                    'nominal'=>str_replace('.', '', $this->input->post('nominal')),
+                    'created_at'=>$tanggal,
+                    'created_by'=>$user_id
+                );
+        if($this->db->insert('f_kas', $data_vk)){
+            redirect(base_url('index.php/BeliSparePart/voucher_list'));
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Matching LPB gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/BeliSparePart');
+        } 
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function lpb_list(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $user_ppn    = $this->session->userdata('user_ppn');
+
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "beli_spare_part/lpb_list";
+        $this->load->model('Model_beli_sparepart');
+        $data['list_data'] = $this->Model_beli_sparepart->lpb_list($user_ppn)->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function load_detail_lpb(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $total_lpb = 0;
+        $no    = 1;
+        $this->load->model('Model_beli_sparepart');
+        $myDetail = $this->Model_beli_sparepart->load_detail_lpb($id)->result();
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->no_bpb.'</td>';
+            $tabel .= '<td>'.$row->no_po.'</td>';
+            $tabel .= '<td>'.(($row->ppn==1)? '<i class="fa fa-check"></i> Yes': '<i class="fa fa-times"></i> No').'</td>';
+            $tabel .= '<td>'.number_format($row->amount,0,',','.').'</td>';
+            $tabel .= '<td>'.$row->remarks.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail_lpb('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a></td>';
+            $tabel .= '</tr>';            
+            $no++;
+            $total_lpb += $row->amount;
+        }
+        $tabel .= '<tr>';
+        $tabel .= '<td></td>';
+        $tabel .= '<td><a <a href="'.base_url().'index.php/BeliSparePart/bpb_list" onclick="window.open(\''.base_url().'index.php/BeliSparePart/bpb_list\',\'newwindow\',\'width=1200,height=550\'); return false;" class="btn btn-primary" style="width:100%;">Lihat daftar Penerimaan Barang</a></td>';
+        $tabel .= '<td style="text-align:right" colspan="2"><strong>Total </strong></td>';
+        $tabel .= '<td><input type="text" id="total_lpb" name="total_lpb" style="background-color: green; color: white;" class="form-control" data-myvalue="'.$total_lpb.'" value="'.number_format($total_lpb,0,',','.').'" readonly="readonly"></td>';
+        $tabel .= '<td colspan="2"></td>';
+        $tabel .= '<tr>';
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function get_lpb_list(){ 
+        $this->load->model('Model_beli_sparepart');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $data = $this->Model_beli_sparepart->list_data_lpb($this->input->post('supplier_id'),$user_ppn)->result();
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->no_bpb;
+        } 
+        print form_dropdown('lpb_id', $arr_so);
+    }
+
+    function get_data_lpb(){
+        $id = $this->input->post('id');
+        $tabel = "";
+
+        $this->load->model('Model_beli_sparepart');
+        $lpb= $this->Model_beli_sparepart->get_data_lpb($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($lpb);
+    }
+
+    function save_detail_vk(){
+        $return_data = array();
+        $tgl_input = date("Y-m-d");
+        $user_id  = $this->session->userdata('user_id');
+        
+        $data = array(
+            'vk_id'=>$this->input->post('id'),
+            'modified'=>$tgl_input,
+            'modified_by'=>$user_id
+        );
+        $this->db->where('id', $this->input->post('lpb_id'));
+        if($this->db->update('lpb', $data)){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function delete_detail_vk(){
+        $id = $this->input->post('id');
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $return_data = array();
+
+        $data = array(
+            'vk_id'=>0,
+            'modified'=>$tanggal,
+            'modified_by'=>$user_id
+        );
+        $this->db->where('id', $this->input->post('id'));
+        if($this->db->update('lpb', $data)){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menghapus pemenuhan SPB FG! Silahkan coba kembali";
+        }           
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
     }
 }

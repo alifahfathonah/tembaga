@@ -556,7 +556,8 @@ class Finance extends CI_Controller{
 
     function get_vc_list(){ 
         $this->load->model('Model_finance');
-        $data = $this->Model_finance->list_data_voucher()->result();
+        $user_ppn = $this->session->userdata('user_ppn');
+        $data = $this->Model_finance->list_data_voucher($user_ppn)->result();
         $arr_so[] = "Silahkan pilih....";
         foreach ($data as $row) {
             $arr_so[$row->id] = $row->no_voucher;
@@ -566,7 +567,8 @@ class Finance extends CI_Controller{
 
     function get_um_list_pmb(){ 
         $this->load->model('Model_finance');
-        $data = $this->Model_finance->list_data_um()->result();
+        $user_ppn = $this->session->userdata('user_ppn');
+        $data = $this->Model_finance->list_data_um($user_ppn)->result();
         $arr_so[] = "Silahkan pilih....";
         foreach ($data as $row) {
             $arr_so[$row->id] = $row->no_uang_masuk;
@@ -744,6 +746,126 @@ class Finance extends CI_Controller{
         echo json_encode($return_data);
     }
 
+    function load_detail_uk(){
+        $id = $this->input->post('id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        
+        $tabel = "";
+        $total_uk = 0;
+        $no    = 1;
+        $this->load->model('Model_finance');
+        $myDetail = $this->Model_finance->load_detail_uk($id)->result();
+        $bank_list = $this->Model_finance->bank_list($user_ppn)->result();
+
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->nomor.'</td>';
+            $tabel .= '<td><label id="lbl_bank_id_'.$no.'">'.$row->nama_bank.'</label>';
+            $tabel .= '<select id="bank_id_'.$no.'" name="bank_id_'.$no.'" class="form-control select2me myline" ';
+                $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px; display:none" onchange="get_currency_a(this.value, '.$no.');">';
+                $tabel .= '<option value=""></option>';
+                $tabel .= '<option value="0">Kas</option>';
+                foreach ($bank_list as $value){
+                    $tabel .= "<option value='".$value->id."' ".(($value->id==$row->id_bank)? "selected='selected'": "").">".$value->nama_bank."</option>";
+                }
+                $tabel .= '</select>';
+                $tabel .= '<input type="hidden" id="detail_id_'.$no.'" name="detail_id_'.$no.'" value="'.$row->id.'">';
+            $tabel .= '<td><label id="lbl_no_giro_'.$no.'">'.$row->no_giro.'</label>';
+            $tabel .= '<input type="text" id="no_giro_'.$no.'" name="no_giro_'.$no.'" class="form-control myline" '
+                    . 'value="'.$row->no_giro.'" style="display:none">';
+            $tabel .= '<td><label id="lbl_currency_'.$no.'">'.$row->currency.'</label>';
+            $tabel .= '<input type="text" id="currency_'.$no.'" name="currency_'.$no.'" class="form-control myline" readonly="readonly" '
+                    . 'value="'.$row->currency.'" style="display:none">';
+            $tabel .= '<td><label id="lbl_nominal_'.$no.'">'.number_format($row->nominal,0,',','.').'</label>';
+            $tabel .= '<input type="text" id="nominal_'.$no.'" name="nominal_'.$no.'" class="form-control myline"'
+                    . 'value="'.$row->nominal.'" style="display:none" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);">';
+            $tabel .= '<td style="text-align:center">';
+            $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'green" onclick="editDetail('.$no.');" style="margin-top:5px" id="btnEdit_'.$no.'"> '
+                    . '<i class="fa fa-edit"></i> Edit &nbsp; </a>';
+            $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'green-seagreen" onclick="updateDetail('.$no.');" style="margin-top:5px; display:none" id="btnUpdate_'.$no.'"> '
+                    . '<i class="fa fa-floppy-o"></i> Update </a></td>';
+            $tabel .= '</tr>';
+            $no++;
+            $total_uk += $row->nominal;
+        }
+        $tabel .= '<td colspan="5" style="text-align:right;"><strong>Total</strong></td>';
+        $tabel .= '<td><input type="text" id="total_uk" name="total_uk" style="background-color: green; color: white;" class="form-control" data-myvalue="'.$total_uk.'" value="'.number_format($total_uk,0,',','.').'" readonly="readonly"></td>';
+        $tabel .= '<td></td>';
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function update_detail_uk(){
+        $return_data = array();
+        
+        $this->db->where('id', $this->input->post('detail_id'));
+        if($this->db->update('f_kas', array(
+            'id_bank'=>$this->input->post('bank_id'),
+            'no_giro'=>$this->input->post('no_giro'),
+            'currency'=>$this->input->post('currency'),
+            'nominal'=>str_replace('.', '', $this->input->post('nominal')),
+        ))){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal mengupdate item spare part! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function save_detail_uk(){
+        $return_data = array();
+        $tgl_input = date("Y-m-d");
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        
+        if($this->input->post('bank_id')<=3){
+            if($user_ppn==1){
+                $num = 'KK-KMP';
+            }else{
+                $num = 'KK';
+            }
+        }else{
+            if($user_ppn==1){
+                $num = 'BK-KMP';
+            }else{
+                $num = 'BK';
+            }
+        }
+
+        $this->load->model('Model_m_numberings');
+        $code_um = $this->Model_m_numberings->getNumbering($num);
+
+        $data = array(
+                    'jenis_trx'=>1,
+                    'nomor'=>$code_um,
+                    'flag_ppn'=> $user_ppn,
+                    'tanggal'=>$tgl_input,
+                    'no_giro'=>$this->input->post('nomor_giro'),
+                    'id_bank'=>$this->input->post('bank_id'),
+                    'id_vc'=>0,
+                    'id_matching'=>$this->input->post('id'),
+                    'currency'=>$this->input->post('currency'),
+                    'nominal'=>str_replace('.', '', $this->input->post('nominal')),
+                    'created_at'=>$tgl_input,
+                    'created_by'=>$user_id
+                );
+
+        if($this->db->insert('f_kas', $data)){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
     function approveagain(){
         $return_data = array();
         $user_id  = $this->session->userdata('user_id');
@@ -794,6 +916,7 @@ class Finance extends CI_Controller{
     function matching_pmb(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
         if($id){
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -807,6 +930,7 @@ class Finance extends CI_Controller{
 
             $this->load->model('Model_finance');
             $data['header'] = $this->Model_finance->list_detail_pembayaran($id)->row_array();
+            $data['bank_list'] = $this->Model_finance->bank_list($user_ppn)->result();
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/Finance');
@@ -835,6 +959,7 @@ class Finance extends CI_Controller{
             $data['detailVC'] = $this->Model_finance->load_detail($id)->result();
             }
             $data['detailUM'] = $this->Model_finance->load_detail_um($id)->result();
+            $data['detailUK'] = $this->Model_finance->load_detail_uk($id)->result();
 
             $this->load->view('layout', $data);   
         }else{
@@ -907,12 +1032,14 @@ class Finance extends CI_Controller{
         ));
 
         //Buat Slip Setoran
-        $this->db->insert('f_slip_setoran', array(
-            'id_pembayaran'=>$id,
-            'nominal'=>$this->input->post('nominal_slip'),
-            'created_at'=>$tanggal,
-            'created_by'=>$user_id
-        ));
+        if($this->input->post('nominal_slip')!=0){
+            $this->db->insert('f_slip_setoran', array(
+                'id_pembayaran'=>$id,
+                'nominal'=>$this->input->post('nominal_slip'),
+                'created_at'=>$tanggal,
+                'created_by'=>$user_id
+            ));
+        }
 
         // Update Status Voucher
         $this->db->where('pembayaran_id', $id);
@@ -1874,6 +2001,11 @@ class Finance extends CI_Controller{
         $data['content']= "finance/list_kas";
         $this->load->model('Model_finance');
         $data['list_data'] = $this->Model_finance->list_kas($ppn)->result();
+        if($ppn==1){
+            $data['saldo'] = $this->Model_finance->saldo_ppn()->result();
+        }else{
+            $data['saldo'] = $this->Model_finance->saldo()->result();
+        }
 
         $this->load->view('layout', $data);
     }

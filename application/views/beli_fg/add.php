@@ -104,21 +104,40 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Currency
+                        </div>
+                        <div class="col-md-8">
+                            <select id="currency" name="currency" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cur(this.value);">
+                                <option value="IDR">IDR</option>
+                                <option value="USD">USD</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" id="show_kurs">
+                        <div class="col-md-4">
+                            Kurs
+                        </div>
+                        <div class="col-md-8">
+                            <input type="number" id="kurs" name="kurs" class="form-control myline" value="0" style="margin-bottom:5px">
+                        </div>
+                    </div>
+                    <?php if($this->session->userdata('user_ppn')==1){?>
+                    <div class="row">
+                        <div class="col-md-4">
                             PPN
                         </div>
-                    <div class="col-md-8">
-                <?php
-                if($user_ppn == 0){
-                ?>
-                            <input type="text" id="ppn" name="ppn" readonly="readonly" class="form-control myline" style="margin-bottom:5px" value="NO PPN">
-                        
-                <?php                
-                }else{
-                ?>
-                            <input type="text" id="ppn" name="ppn" readonly="readonly" class="form-control myline" style="margin-bottom:5px" value="PPN 10%">
-                <?php
-                }
-                ?>
+                        <div class="col-md-8">
+                            <select id="ppn" name="ppn" class="form-control myline" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <?php } else{ ?>
+                        <input type="hidden" id="ppn" name="ppn" value="0">
+                    <?php } ?>
                         </div>
                     </div>
                 </div>              
@@ -165,13 +184,23 @@ function get_contact(id){
         } 
     });
 }
+
+function get_cur(id){
+    if(id=='USD'){
+        $('#show_kurs').show();
+    }else if(id=='IDR'){
+        $('#show_kurs').hide();
+        $('#kurs').val(0);
+    }
+}
 </script>
 
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-$(function(){        
+$(function(){     
+    $('#show_kurs').hide();   
     $("#tanggal").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",

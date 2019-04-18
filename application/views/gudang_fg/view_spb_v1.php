@@ -573,4 +573,11 @@ function hapusDetail(id){
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+<script type="text/javascript">
+$(function(){
+    window.onbeforeunload = function() {
+      return "Data Akan Terhapus Bila Page di Refresh, Anda Yakin?";
+    };
+});
+</script>
       

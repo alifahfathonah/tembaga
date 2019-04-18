@@ -13,7 +13,220 @@
     <div class="col-md-12"> 
         <?php
             if( ($group_id==1)||($hak_akses['index']==1) ){
-        ?>
+        if($this->session->userdata('user_ppn')==1){?>
+        <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">&nbsp;</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-danger display-hide" id="box_error_voucher">
+                                    <button class="close" data-close="alert"></button>
+                                    <span id="msg_voucher">&nbsp;</span>
+                                </div>
+                            </div>
+                        </div>
+                        <form class="eventInsForm" method="post" target="_self" name="formku" 
+                              id="formku">                            
+                            <input type="hidden" id="status_vc" name="status_vc">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    No. Voucher <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="no_voucher" name="no_voucher" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        readonly="readonly" value="Auto Generate">
+                                    
+                                    <input type="hidden" id="id" name="id">
+                                </div>
+                            </div>                             
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Tanggal <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="tanggal" name="tanggal" 
+                                        class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                        value="<?php echo date('Y-m-d'); ?>">
+                                </div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Jenis Barang
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="jenis_barang" name="jenis_barang" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        readonly="readonly" value="WIP">                                                                       
+                                </div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-5">
+                                    No. PO
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="no_po" name="no_po" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        readonly="readonly">                                                                       
+                                </div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Tanggal PO
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="tanggal_po" name="tanggal_po" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        readonly="readonly">                                                                       
+                                </div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Supplier
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="nama_supplier" name="nama_supplier" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        readonly="readonly">         
+                                    <input type="hidden" name="supplier_id" id="supplier_id">                                                 
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    Diskon(Rp)
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" id="diskon" name="diskon" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        readonly="readonly">      
+                                </div>
+                                <div class="col-md-3">
+                                    Materai(Rp)
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" id="materai" name="materai" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        readonly="readonly">      
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Nilai PO (Rp) <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="nilai_po" name="nilai_po" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        readonly="readonly">                                                                       
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Nilai PPN
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="nilai_ppn" name="nilai_ppn" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        readonly="readonly">      
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Terbilang
+                                </div>
+                                <div class="col-md-7">
+                                    <textarea id="terbilang" name="terbilang" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        readonly="readonly"></textarea>                                                 
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Total Pembayaran Sebelumnya (Rp) <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="nilai_dp" name="jumlah_dibayar" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        readonly="readonly">                                                                       
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Nomor Giro
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="nomor_giro" name="nomor_giro" 
+                                        class="form-control myline" style="margin-bottom:5px">   
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Bank
+                                </div>
+                                <div class="col-md-7">
+                                    <select id="bank_id" name="bank_id" class="form-control myline select2me"
+                                    data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_currency(this.value)">
+                                    <option value=""></option>
+                                    <?php
+                                        foreach ($bank_list as $row){
+                                            echo '<option value="'.$row->id.'">'.$row->kode_bank.' ('.$row->nomor_rekening.')</option>';
+                                        }
+                                    ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Tanggal Jatuh Tempo
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="tanggal_jatuh" name="tanggal_jatuh" 
+                                        class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                        value="<?php echo date('Y-m-d'); ?>">
+                                </div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Currency
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="currency" name="currency" class="form-control myline" style="margin-bottom:5px" readonly="readonly">           
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Jumlah Bayar (Rp) <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="amount" name="amount" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Keterangan
+                                </div>
+                                <div class="col-md-7">
+                                    <textarea id="keterangan" name="keterangan" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>                                                                       
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">                        
+                        <button type="button" class="btn blue" onClick="prosesVoucher();">Simpan</button>
+                        <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php }else{ ?>
         <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -31,7 +244,8 @@
                             </div>
                         </div>
                         <form class="eventInsForm" method="post" target="_self" name="formku" 
-                              id="formku">                            
+                              id="formku">                      
+                            <input type="hidden" id="status_vc" name="status_vc">      
                             <div class="row">
                                 <div class="col-md-5">
                                     No. Voucher <font color="#f00">*</font>
@@ -91,7 +305,7 @@
                                 <div class="col-md-7">
                                     <input type="text" id="nama_supplier" name="nama_supplier" 
                                         class="form-control myline" style="margin-bottom:5px" 
-                                        readonly="readonly"> 
+                                        readonly="readonly">  
                                     <input type="hidden" name="supplier_id" id="supplier_id">                                                                 
                                 </div>
                             </div>
@@ -147,7 +361,8 @@
                     </div>
                 </div>
             </div>
-        </div>       
+        </div> 
+        <?php } ?>
         
         <div class="row">
             <div class="col-md-12">
@@ -236,7 +451,7 @@
                         <td style="text-align:center">
                             <?php
                                 if($data->tot_voucher>0){print('Ada <b>'.$data->tot_voucher.'</b> Voucher<br/>');}
-                                if( ($group_id==1 || $hak_akses['create_voucher_dp']==1) && $data->flag_pelunasan==0 && $data->status==(2 || 3)){
+                                if( ($group_id==1 || $hak_akses['create_voucher_dp']==1) && $data->flag_pelunasan==0 && ($data->status!=1 || $data->status!=4)){
                                     echo '<a class="btn btn-circle btn-xs green" href="javascript:;" onclick="createVoucher('.$data->id.');"
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Create &nbsp; </a>';
                                 }
@@ -294,6 +509,22 @@ function getComa(value, id){
     $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
 
+function get_currency(id){
+    if(id > 0){
+        $.ajax({
+            url: "<?php echo base_url('index.php/Finance/get_currency'); ?>",
+            type: "POST",
+            data: "id="+id,
+            dataType: "json",
+            success: function(result) {
+                $('#currency').val(result['currency']);
+            }
+        });
+    }else{
+        $('#currency').val('IDR');
+    }
+}
+
 function createVoucher(id){
     console.log(id);
     $.ajax({
@@ -310,7 +541,9 @@ function createVoucher(id){
             $('#nilai_po').val(result['nilai_po']);
             $('#terbilang').val(result['terbilang']);
             $('#nilai_dp').val(result['nilai_dp']);
+            $('#nilai_ppn').val(result['nilai_ppn']);
             $('#amount').val(result['sisa']);
+            $('#status_vc').val(result['status']);
             $('#keterangan').val('');
             $('#id').val(result['id']);
             
@@ -338,6 +571,23 @@ function saveVoucher(){
     };
 };
 
+function prosesVoucher(){
+    if($.trim($("#tanggal").val()) == ""){
+        $('#msg_voucher').html("Tanggal harus diisi, tidak boleh kosong!");
+        $('#box_error_voucher').show(); 
+    }else if($.trim($("#amount").val()) == "" || $("#amount").val()=="0"){
+        $('#msg_voucher').html("Amount harus diisi, tidak boleh kosong!");
+        $('#box_error_voucher').show();
+    }else if($.trim($("#bank_id").val()) == ""){
+        $('#msg_voucher').html("Bank harus dipilih!");
+        $('#box_error_voucher').show();
+    }else{    
+        $('#msg_voucher').html("");
+        $('#box_error_voucher').hide();
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/BeliWIP/save_voucher_pembayaran");
+        $('#formku').submit(); 
+    };
+};
 // function createVoucherPelunasan(id){
 //     $.ajax({
 //         url: "<?php echo base_url('index.php/BeliRongsok/create_voucher_pelunasan'); ?>",

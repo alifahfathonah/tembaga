@@ -151,7 +151,7 @@
                                 <td><input type="text" id="netto_1" name="myDetails[1][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
                                 <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(1);"> <i class="fa fa-dashboard"></i> Timbang </a></td>                          
                                 <td><input type="text" name="myDetails[1][no_pallete]" id="no_pallete_1"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly"></td>
-                                <td><input type="text" name="myDetails[1][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
+                                <td><input type="text" id="line_remarks_1" name="myDetails[1][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
                                 <td style="text-align:center">
                                     <a id="save_1" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(1);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
                                     <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
@@ -195,26 +195,38 @@ function timbang_netto(id){
     $("#netto_"+id).val(netto);
 }
 
-function loadTimbangan(id){
-    $.ajax({
-        url: "<?php echo base_url('index.php/BeliRongsok/load_angka_timbangan'); ?>",
-        type: "POST",
-        data : {},
-        success: function (result){
-            if(result['type_message'][0]=="error"){
-                $("#bruto_"+id).val('0');
-                $('#message').html(result['message'][0]);
-                $('.alert-danger').show(); 
+// function loadTimbangan(id){
+//     $.ajax({
+//         url: "<?php echo base_url('index.php/BeliRongsok/load_angka_timbangan'); ?>",
+//         type: "POST",
+//         data : {},
+//         success: function (result){
+//             if(result['type_message'][0]=="error"){
+//                 $("#bruto_"+id).val('0');
+//                 $('#message').html(result['message'][0]);
+//                 $('.alert-danger').show(); 
                 
-            }else if(result['type_message'][0]=="success"){
-                $('#message').html("");
-                $('.alert-danger').hide(); 
+//             }else if(result['type_message'][0]=="success"){
+//                 $('#message').html("");
+//                 $('.alert-danger').hide(); 
                 
-                $("#bruto_"+id).val(result['berat'][0]);
-            }
-        }
-    });
-}
+//                 $("#bruto_"+id).val(result['berat'][0]);
+//         }            }
+
+//     });
+// }
+
+// function timbang_netto(id){
+//     $.ajax({
+//         url: "192.168.1.23:8080/scaleload",
+//         contentType: "text/javascript",
+//         type: "GET",
+//         dataType: "json",
+//         success: function (result){
+//             console.log(result);
+//         }
+//     });
+// }
 
 function myCurrency(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;

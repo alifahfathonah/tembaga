@@ -22,7 +22,10 @@
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-beer"></i>Voucher List
-                </div>                
+                </div>
+                <div class="tools">    
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliSparePart/add_matching"> <i class="fa fa-plus"></i> Add Matching</a>
+                </div>  
             </div>
             <div class="portlet-body">
                 <table class="table table-striped table-bordered table-hover" id="sample_6">
@@ -32,10 +35,9 @@
                     <th>No. Voucher</th> 
                     <th>Tanggal</th> 
                     <th>Jenis Voucher</th>  
-                    <th>No. PO</th>  
-                    <th>Tanggal PO</th>                    
-                    <th>Amount (Rp)</th> 
-                    <th>Katerangan</th>
+                    <th>No. VK</th>
+                    <th>Nama Supplier</th>
+                    <th>Keterangan</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -50,9 +52,8 @@
                         <td><?php echo $data->no_voucher; ?></td>
                         <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->jenis_voucher; ?></td>
-                        <td><?php echo $data->no_po; ?></td>
-                        <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal_po)); ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->amount,0,',','.'); ?></td>
+                        <td><?php echo $data->no_vk; ?></td>
+                        <td><?php echo $data->nama_supplier; ?></td>
                         <td><?php echo $data->keterangan; ?></td>                        
                         <td style="text-align:center">                             
                             <a class="btn btn-circle btn-xs blue-ebonyclay" target="_blank" href="<?php echo base_url(); ?>index.php/BeliSparePart/print_voucher/<?php echo $data->id; ?>" 

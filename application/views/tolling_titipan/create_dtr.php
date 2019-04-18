@@ -356,5 +356,8 @@ $(function(){
         changeYear: true,
         dateFormat: 'yy-mm-dd'
     });
+    window.onbeforeunload = function() {
+      return "Data Akan Terhapus Bila Page di Refresh, Anda Yakin?";
+    };
 });
 </script>

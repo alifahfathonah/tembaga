@@ -67,7 +67,7 @@ class VoucherCost extends CI_Controller{
             $code = $this->Model_m_numberings->getNumbering('VCOST', $tgl_input);
         }
 
-        if($this->input->post('bank_id')==0){
+        if($this->input->post('bank_id')<=3){
             if($user_ppn==1){
                 $num = 'KK-KMP';
             }else{

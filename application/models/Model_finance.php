@@ -67,8 +67,8 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function list_data_voucher(){
-        $data = $this->db->query("Select * from voucher where pembayaran_id = 0 and status = 0");
+    function list_data_voucher($ppn){
+        $data = $this->db->query("Select * from voucher where pembayaran_id = 0 and status = 0 and flag_ppn =".$ppn);
         return $data;
     }
 
@@ -149,10 +149,10 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function list_data_um(){
+    function list_data_um($ppn){
         $data = $this->db->query("Select fum.* from f_uang_masuk fum
                 left join f_pembayaran_detail fpd on fpd.um_id = fum.id 
-                where fpd.um_id is null and fum.status = 0");
+                where fpd.um_id is null and fum.status = 0 and fum.flag_ppn=".$ppn);
         return $data;
     }
 
@@ -160,6 +160,13 @@ class Model_finance extends CI_Model{
         $data = $this->db->query("Select fum.*, mc.nama_customer from f_uang_masuk fum
                 left join m_customers mc on mc.id = fum.m_customer_id
                 where fum.id = ".$id);
+        return $data;
+    }
+
+    function load_detail_uk($id){
+        $data = $this->db->query("select fk.id, fk.nomor, fk.no_giro, fk.id_bank, fk.nominal, fk.currency, b.nama_bank from f_kas fk
+        left join bank b on b.id = fk.id_bank
+        where fk.id_matching=".$id);
         return $data;
     }
 
@@ -193,7 +200,7 @@ class Model_finance extends CI_Model{
     }
 
     function show_header_invoice($id){
-        $data = $this->db->query("select fi.*, tso.alias, mc.nama_customer, mc.alamat, mc.npwp, so.no_sales_order, so.flag_ppn, so.flag_tolling, tso.no_po, u.realname, tsj.no_surat_jalan, tso.id as id_t_sales_order, r.no_retur, b.kode_bank, b.nama_bank, b.nomor_rekening, mtch.no_matching from f_invoice fi
+        $data = $this->db->query("select fi.*, tso.alias, mc.nama_customer, mc.alamat, mc.npwp, so.no_sales_order, COALESCE(so.flag_ppn,r.flag_ppn) as flag_ppn, so.flag_tolling, tso.no_po, u.realname, tsj.no_surat_jalan, tso.id as id_t_sales_order, r.no_retur, b.kode_bank, b.nama_bank, b.nomor_rekening, mtch.no_matching from f_invoice fi
             left join m_customers mc on mc.id = fi.id_customer
             left join sales_order so on so.id = fi.id_sales_order
             left join t_sales_order tso on tso.so_id = fi.id_sales_order
@@ -382,7 +389,8 @@ class Model_finance extends CI_Model{
             where fid.id_invoice = fi.id) as total 
             from f_invoice fi 
             left join sales_order so on so.id = fi.id_sales_order
-            where fi.id_customer =".$id." and so.flag_ppn=".$ppn." and flag_matching = 0");
+            left join retur r on r.id = fi.id_retur
+            where fi.id_customer =".$id." and coalesce(so.flag_ppn,r.flag_ppn)=".$ppn." and flag_matching = 0");
         return $data;
     }
 
@@ -525,7 +533,7 @@ class Model_finance extends CI_Model{
     }
 
     function show_header_kas($id){
-        $data = $this->db->query("select fk.*, fum.no_uang_masuk, fum.jenis_pembayaran, fum.bank_pembayaran, coalesce(fum.rekening_pembayaran,fum.nomor_cek) as nomor, b.kode_bank, b.nama_bank, b.nomor_rekening, v.jenis_barang, v.no_voucher, v.jenis_voucher, v.supplier_id, p.no_po, mc.nama_customer, s.nama_supplier,v.nm_cost, fp.no_pembayaran, coalesce(v.keterangan,fum.keterangan) as ket_v FROM f_kas fk
+        $data = $this->db->query("select fk.*, fum.no_uang_masuk, fum.jenis_pembayaran, fum.bank_pembayaran, coalesce(fum.rekening_pembayaran,fum.nomor_cek) as nomor, b.kode_bank, b.nama_bank, b.nomor_rekening, v.jenis_barang, v.no_voucher, v.jenis_voucher, v.supplier_id, p.no_po, mc.nama_customer, s.nama_supplier,v.nm_cost, coalesce(fp.no_pembayaran,fpp.no_pembayaran) as no_pembayaran, coalesce(v.keterangan,fum.keterangan) as ket_v FROM f_kas fk
             left join bank b on b.id= fk.id_bank
             left join f_uang_masuk fum on fk.id_um != 0 and fum.id = fk.id_um
             left join voucher v on fk.id_vc != 0 and v.id = fk.id_vc
@@ -534,6 +542,7 @@ class Model_finance extends CI_Model{
             left join supplier s on s.id = v.supplier_id
             left join f_slip_setoran fss on fss.id = fk.id_slip_setoran
             left join f_pembayaran fp on fp.id = fss.id_pembayaran
+            left join f_pembayaran fpp on fpp.id = fk.id_matching
             where fk.id =".$id);
         return $data;
     }
@@ -547,6 +556,15 @@ class Model_finance extends CI_Model{
 
     function get_flag($id){
         $data = $this->db->query("select flag_tolling from sales_order where id=".$id);
+        return $data;
+    }
+
+    function saldo_ppn(){
+        $data = $this->db->query("select * from stok_um_ppn");
+        return $data;
+    }
+    function saldo(){
+        $data = $this->db->query("select * from stok_um");
         return $data;
     }
 }

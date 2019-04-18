@@ -120,6 +120,7 @@
                                     <?php
                                     $no = 1;
                                     $total = 0;
+                                    $netto = 0;
                                     foreach ($details_po as $row){
                                         echo '<tr>';
                                         echo '<td style="text-align:center;">'.$no.'</td>';
@@ -129,12 +130,16 @@
                                         echo '<td style="text-align:right;">'.number_format($row->qty,0,',', '.').'</td>';
                                         echo '<td style="text-align:right;">'.number_format($row->total_amount,0,',', '.').'</td>';
                                         echo '</tr>';
+                                        $netto += $row->qty;
                                         $total += $row->total_amount;
                                         $no++;
                                     }
                                     ?>
                                     <tr>
-                                        <td style="text-align:right;" colspan="5"><strong>Total Harga (Rp) </strong></td>
+                                        <td style="text-align:right;" colspan="4"><strong>Total</strong></td>
+                                        <td style="text-align:right;">
+                                            <strong><?php echo number_format($netto,0,',','.'); ?></strong>
+                                        </td>
                                         <td style="text-align:right;">
                                             <strong><?php echo number_format($total,0,',','.'); ?></strong>
                                         </td>
@@ -424,12 +429,12 @@ function approve(id){
         type: "POST",
         data : {dtbj_id: id,po_id: $('#po_id').val()},
         success: function (result){            
-            if(result['type_message']=="sukses"){
-                alert(result['message']);
+            // if(result['type_message']=="sukses"){
+            // //     alert(result['message']);
                 location.reload();
-            }else{
-                alert(result['message']);
-            }
+            // }else{
+            //     alert(result['message']);
+            // }
         }
     });
 };

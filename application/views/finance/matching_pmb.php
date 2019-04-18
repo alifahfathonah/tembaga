@@ -210,6 +210,51 @@
                     </div>
                 </div>
             </div>
+    <!-- BANK -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 align="center" style="font-weight: bold;">Detail Uang Keluar</h4>
+                    <div class="table-scrollable">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <th>No</th>
+                                <th>No. Uang Keluar</th>
+                                <th>Bank</th>
+                                <th>Nomor Giro</th>
+                                <th>Currency</th>
+                                <th>Nominal</th>
+                                <th>Actions</th>
+                            </thead>
+                            <tbody id="boxDetailUK">
+
+                            </tbody>
+                            <div id="add_uk">
+                            <tr>
+                                <td style="text-align:center"><i class="fa fa-plus"></i></td>
+                                <td><input type="text" class="form-control myline" readonly="readonly" value="Auto Generated" readonly="readonly"></td>
+                                <td>
+                                    <select id="bank_id" name="bank_id" class="form-control myline select2me" 
+                                    data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_currency(this.value);">
+                                    <option></option>
+                                    <option value="0">Kas</option>
+                                    <?php
+                                        foreach ($bank_list as $row){
+                                            echo '<option value="'.$row->id.'">'.$row->kode_bank.' ('.$row->nomor_rekening.')'.'</option>';
+                                        }
+                                    ?>
+                                    </select>
+                                </td>
+                                <td><input type="text" id="nomor_giro" name="nomor_giro" class="form-control myline"></td>
+                                <td><input type="type" id="currency" name="currency" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="nominal" name="nominal" class="form-control myline" style="margin-bottom:5px" 
+                                        onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
+                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail_uk();" style="margin-top:7px" id="btnSaveDetail"> <i class="fa fa-plus"></i> Tambah </a></td>
+                            </tr>
+                            </div>
+                        </table>
+                    </div>
+                </div>
+            </div>
     <!-- SLIP SETORAN -->
             <hr class="divider"/>
             <div class="row">
@@ -258,6 +303,18 @@ function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
+function myCurrency(evt) {
+    var charCode = (evt.which) ? evt.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
+        return false;
+    return true;
+}
+
+function getComa(value, id){
+    angka = value.toString().replace(/\./g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+}
+
 function approveAgain(){
     var r=confirm("Anda yakin meng-approve kembali permintaan barang ini?");
     if (r==true){
@@ -287,7 +344,8 @@ function simpanData(){
 function slipSetoran(){
     var total_vc = $('#total_vc').data("myvalue");
     var total_um = $('#total_um').data("myvalue");
-    var total = (total_um - total_vc);
+    var total_uk = $('#total_uk').data("myvalue");
+    var total = ((total_um + total_uk) - total_vc);
     $('#slip_setoran').val(numberWithCommas(total));
 }
 
@@ -353,7 +411,7 @@ function saveDetail_vc(){
                     $("#jenis_voucher").val('');
                     $("#jenis_barang").val('');
                     $("#amount_vc").val('');
-                    $("#keterangan").val('');
+                    $("#keterangan_vc").val('');
                     $('#message').html("");
                     $('.alert-danger').hide();
                     load_vc();
@@ -376,6 +434,7 @@ function hapusDetail_vc(id){
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail_vc(<?php echo $header['id'];?>);
+                    load_vc();
                 }else{
                     alert(result['message']);
                 }     
@@ -479,6 +538,136 @@ function hapusDetail_um(id){
     }
 }
 
+//DIBAWAH CODINGAN UANG KELUAR
+function loadDetail_uk(id){
+    $.ajax({
+        type:"POST",
+        url:'<?php echo base_url('index.php/Finance/load_detail_uk'); ?>',
+        data:{
+                id:id,
+                um_id:$('#id').val()
+            },
+        success:function(result){
+            $('#boxDetailUK').html(result);
+            slipSetoran();
+        }
+    });
+}
+
+function saveDetail_uk(){
+    if($.trim($("#bank_id").val()) == ""){
+        $('#message').html("Silahkan pilih jenis barang!");
+        $('.alert-danger').show();
+    }else if($.trim($("#nominal").val()) == ""){
+        $('#message').html("Silahkan pilih jenis barang!");
+        $('.alert-danger').show();
+    }else{
+        $.ajax({
+            type:"POST",
+            url:'<?php echo base_url('index.php/Finance/save_detail_uk'); ?>',
+            data:{
+                id:$('#id').val(),
+                bank_id:$('#bank_id').val(),
+                nomor_giro:$('#nomor_giro').val(),
+                currency:$('#currency').val(),
+                nominal:$('#nominal').val()
+            },
+            success:function(result){
+                if(result['message_type']=="sukses"){
+                    loadDetail_uk(<?php echo $header['id'];?>);
+                    $('#bank_id').select2("val", "");
+                    $('#nomor_giro').val('');
+                    $('#currency').val('');
+                    $('#nominal').val('');
+                    $('#message').html("");
+                    $('.alert-danger').hide(); 
+                }else{
+                    $('#message').html(result['message']);
+                    $('.alert-danger').show(); 
+                }            
+            }
+        });
+    }
+}
+
+function get_currency(id){
+    if(id > 0){
+        $.ajax({
+            url: "<?php echo base_url('index.php/Finance/get_currency'); ?>",
+            type: "POST",
+            data: "id="+id,
+            dataType: "json",
+            success: function(result) {
+                $('#currency').val(result['currency']);
+            }
+        });
+    }else{
+        $('#currency').val('IDR');
+    }
+}
+
+function get_currency_a(id,no){
+    if(id > 0){
+        $.ajax({
+            url: "<?php echo base_url('index.php/Finance/get_currency'); ?>",
+            type: "POST",
+            data: "id="+id,
+            dataType: "json",
+            success: function(result) {
+                $('#currency_'+no).val(result['currency']);
+            }
+        });
+    }else{
+        $('#currency_'+no).val('IDR');
+    }
+}
+
+function updateDetail(id){
+    if($.trim($("#bank_id_"+id).val()) == ""){
+        $('#message').html("Silahkan pilih bank!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#nominal_"+id).val()) == ""){
+        $('#message').html("Jumlah  tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{
+        $.ajax({
+            type:"POST",
+            url:'<?php echo base_url('index.php/Finance/update_detail_uk'); ?>',
+            data:{
+                detail_id:$('#detail_id_'+id).val(),
+                no_giro:$('#no_giro_'+id).val(),
+                bank_id:$('#bank_id_'+id).val(),
+                currency:$('#currency_'+id).val(),
+                nominal:$('#nominal_'+id).val()
+            },
+            success:function(result){
+                if(result['message_type']=="sukses"){
+                    loadDetail_uk($('#id').val());
+                    $('#message').html("");
+                    $('.alert-danger').hide(); 
+                }else{
+                    $('#message').html(result['message']);
+                    $('.alert-danger').show(); 
+                }            
+            }
+        });
+    }
+}
+
+function editDetail(id){
+    $('#btnEdit_'+id).hide();
+    $('#lbl_bank_id_'+id).hide();
+    $('#lbl_no_giro_'+id).hide();
+    $('#lbl_currency_'+id).hide();
+    $('#lbl_nominal_'+id).hide();
+    
+    $('#btnUpdate_'+id).show();
+    $('#bank_id_'+id).show();
+    $('#no_giro_'+id).show();
+    $('#currency_'+id).show();
+    $('#nominal_'+id).show();
+}
+
 //DIBAWAH CODINGAN FORM REJECT
 function showRejectBox(){
     var r=confirm("Anda yakin me-reject semua permintaan pembayaran ini?");
@@ -521,6 +710,7 @@ $(function(){
     });
     loadDetail_vc(<?php echo $header['id']; ?>);
     loadDetail_um(<?php echo $header['id']; ?>);
+    loadDetail_uk(<?php echo $header['id']; ?>);
     load_vc();
     load_um();
 });

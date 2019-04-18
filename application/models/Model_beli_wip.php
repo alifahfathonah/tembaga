@@ -15,7 +15,7 @@ class Model_beli_wip extends CI_Model
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='WIP' And po.ppn = ".$user_ppn."
+                Where po.jenis_po='WIP' And po.flag_ppn = ".$user_ppn."
                 Order By po.id Desc");
 		return $data;
 	}
@@ -33,7 +33,7 @@ class Model_beli_wip extends CI_Model
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='WIP' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH) And po.ppn = ".$user_ppn."
+                Where po.jenis_po='WIP' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH) And po.flag_ppn = ".$user_ppn."
                 Order By po.id Desc");
         return $data;
     }
@@ -73,21 +73,20 @@ class Model_beli_wip extends CI_Model
         $data = $this->db->query("Select dtwip.*, 
                     po.no_po, 
                     spl.nama_supplier,
-                    COALESCE(po.ppn,".$user_ppn.") as flag_ppn,
                     usr.realname As penimbang,
                 (Select count(dtwipd.id)As jumlah_item From dtwip_detail dtwipd Where dtwipd.dtwip_id = dtwip.id)As jumlah_item
                 From dtwip
                     Left Join po On (dtwip.po_id > 0 and dtwip.po_id = po.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) or (dtwip.supplier_id = spl.id) 
                     Left Join users usr On (dtwip.created_by = usr.id)
-                Where COALESCE(po.ppn,".$user_ppn.") =".$user_ppn."
+                Where dtwip.flag_ppn=".$user_ppn."
                 Order By dtwip.id Desc");
         return $data;
     }
 
     function get_po_list($user_ppn){
         $data = $this->db->query("Select id, no_po, jenis_po From po 
-            Where jenis_po= 'WIP' And (status= 0 or status = 2) And ppn=".$user_ppn);
+            Where jenis_po= 'WIP' And (status= 0 or status = 2) And flag_ppn=".$user_ppn);
         return $data;
     }
 
@@ -99,7 +98,7 @@ class Model_beli_wip extends CI_Model
         return $data;
     }
 
-    function get_dtwip($id){
+    function get_dtwip($id,$ppn){
         $data = $this->db->query("Select dtwip.*,  
                     spl.nama_supplier,
                     usr.realname As penimbang,
@@ -111,7 +110,7 @@ class Model_beli_wip extends CI_Model
                     Left Join users usr On (dtwip.created_by = usr.id) 
                     Left Join users app On (dtwip.approved_by = app.id) 
                     Left Join users rjct On (dtwip.rejected_by = rjct.id) 
-                Where dtwip.supplier_id=".$id." and status = 0");
+                Where dtwip.supplier_id=".$id." and status = 0 and dtwip.flag_ppn=".$ppn);
         return $data;
     }
 
@@ -181,7 +180,7 @@ class Model_beli_wip extends CI_Model
     }
 
     function voucher_po_wip($id){
-        $data = $this->db->query("Select po.*,s.nama_supplier, dtwip.po_id, sum(dtwipd.berat*pd.amount) as nilai_po, 
+        $data = $this->db->query("Select po.*,s.nama_supplier, dtwip.po_id, coalesce(sum(dtwipd.berat*pd.amount),0) as nilai_po, 
             (Select Sum(voucher.amount) From voucher Where voucher.po_id = po.id)As nilai_dp
             From po
             inner join dtwip on dtwip.po_id = po.id
@@ -192,12 +191,12 @@ class Model_beli_wip extends CI_Model
         return $data;
     }
 
-    function voucher_list(){
+    function voucher_list($ppn){
         $data = $this->db->query("Select voucher.*, 
                 po.no_po, po.tanggal As tanggal_po
                 From voucher 
                     Left Join po On (voucher.po_id = po.id) 
-                Where voucher.jenis_barang='WIP' And po.ppn = ".$user_ppn."
+                Where voucher.jenis_barang='WIP' And po.flag_ppn = ".$ppn."
                 Order By voucher.no_voucher");
         return $data;
     }

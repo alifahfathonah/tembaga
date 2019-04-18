@@ -68,7 +68,7 @@
                         <td><?php echo $data->penimbang; ?></td>                        
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td><?php echo (($data->jenis_retur==0)? "Ganti Barang": "Ganti Voucher"); ?></td>
-                        <?php echo (($data->spb_id==0)? "<td style='background-color:orange; color: white;'>Belum ada pengganti": "<td style='background-color:green; color: white;'>Sudah ada pengganti"); ?></td>
+                        <?php echo (($data->spb_id==0 && $data->flag_taken==0)? "<td style='background-color:orange; color: white;'>Belum ada pengganti": "<td style='background-color:green; color: white;'>Sudah ada pengganti"); ?></td>
                         <td style="text-align:center">
                             <?php 
                                 if($data->status==0){ 
@@ -90,7 +90,7 @@
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Retur/print/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }
-                                if(($group_id==1 || $hak_akses['create_invoice']==1) && $data->jenis_retur==1 ){
+                                if(($group_id==1 || $hak_akses['create_invoice']==1) && $data->jenis_retur==1 && $data->status==1 && $data->flag_taken==0){
                                     echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/Retur/add_invoice/'.$data->id.'" 
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Create Hutang Invoice &nbsp; </a> ';
                                 }

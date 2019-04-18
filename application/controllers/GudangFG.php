@@ -703,7 +703,8 @@ class GudangFG extends CI_Controller{
 
     function bpb_list(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');     
+        $user_ppn    = $this->session->userdata('user_ppn');   
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -713,7 +714,7 @@ class GudangFG extends CI_Controller{
 
         $data['content']= "gudang_fg/bpb_list";
         $this->load->model('Model_gudang_fg');
-        $data['list_data'] = $this->Model_gudang_fg->bpb_list()->result();
+        $data['list_data'] = $this->Model_gudang_fg->bpb_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -934,6 +935,7 @@ class GudangFG extends CI_Controller{
     function approve_bpb(){
         $bpb_id = $this->input->post('bpb_fg_id');
         $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d');
         $return_data = array();
@@ -997,6 +999,7 @@ class GudangFG extends CI_Controller{
                 foreach ($details as $v) {  
                     $data_else = array(
                             'tanggal'=> $tgl_input,
+                            'flag_ppn'=> $user_ppn,
                             'jenis_trx' => 0, //0 masuk
                             'flag_taken'=>0, // 0 belum diambil
                             't_bpb_fg_id' => $bpb_id,

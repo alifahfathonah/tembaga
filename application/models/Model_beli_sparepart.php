@@ -1,6 +1,6 @@
 <?php
 class Model_beli_sparepart extends CI_Model{
-    function list_data(){
+    function list_data($ppn){
         $data = $this->db->query("Select bsp.*, 
                 usr.realname,
                 aprv.realname As approve_name,
@@ -10,6 +10,7 @@ class Model_beli_sparepart extends CI_Model{
                 From beli_sparepart bsp
                     Left Join users usr On (bsp.created_by = usr.id) 
                     Left Join users aprv On (bsp.approved_by = aprv.id) 
+                Where bsp.flag_ppn=".$ppn."
                 Order By tgl_pengajuan Desc");
         return $data;
     }
@@ -20,7 +21,7 @@ class Model_beli_sparepart extends CI_Model{
                 aprv.realname As approve_name
                 From beli_sparepart bsp
                     Left Join users crt On (bsp.created_by = crt.id) 
-                    Left Join users aprv On (bsp.rejected_by = aprv.id) 
+                    Left Join users aprv On (bsp.approved_by = aprv.id) 
                 Where bsp.id=".$id);        
         return $data;
     }
@@ -73,13 +74,14 @@ class Model_beli_sparepart extends CI_Model{
                     usr.realname As created_name,
                     spl.nama_supplier,
                 (Select count(id)As jumlah_item From po_detail pd Where pd.po_id = po.id)As jumlah_item,
+                (Select count(lpb.id) from lpb left join po p on p.id = lpb.po_id where lpb.po_id = po.id and lpb.vk_id = 0)As lpb_belum_dibayar,
                 (Select Count(pd.id)As ready_to_lpb From po_detail pd Where 
                     pd.po_id = po.id And pd.flag_lpb=0)As ready_to_lpb
                 From po 
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='Sparepart' and po.ppn = ".$user_ppn."
+                Where po.jenis_po='Sparepart' and po.flag_ppn = ".$user_ppn."
                 Order By po.id Desc");
         return $data;
     }
@@ -150,7 +152,7 @@ class Model_beli_sparepart extends CI_Model{
         return $data;
     }
     
-    function bpb_list(){
+    function bpb_list($ppn){
         $data = $this->db->query("Select lpb.*, 
                     po.no_po, 
                     spl.nama_supplier,
@@ -159,7 +161,25 @@ class Model_beli_sparepart extends CI_Model{
                 From lpb 
                     Left Join po On (lpb.po_id = po.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
-                    Left Join users usr On (lpb.created_by = usr.id) 
+                    Left Join users usr On (lpb.created_by = usr.id)
+                Where po.flag_ppn =".$ppn."
+                Order By lpb.id Desc");
+        return $data;
+    }
+
+    function lpb_list($ppn){
+        $data = $this->db->query("Select lpb.*, 
+                    po.no_po, 
+                    spl.nama_supplier,
+                    vk.no_vk,
+                    usr.realname As penerima,
+                (Select count(lpbd.id)As jumlah_item From lpb_detail lpbd Where lpbd.lpb_id = lpb.id)As jumlah_item
+                From lpb 
+                    Left Join po On (lpb.po_id = po.id) 
+                    Left Join supplier spl On (po.supplier_id = spl.id)
+                    Left Join f_vk vk On (vk.id = lpb.vk_id) 
+                    Left Join users usr On (lpb.created_by = usr.id)
+                Where po.flag_ppn =".$ppn."
                 Order By lpb.id Desc");
         return $data;
     }
@@ -178,9 +198,11 @@ class Model_beli_sparepart extends CI_Model{
     }
     
     function show_detail_bpb($id){
-        $data = $this->db->query("Select lpbd.*, spr.nama_item, spr.uom
+        $data = $this->db->query("Select lpbd.*, po.ppn, spr.nama_item, spr.uom, pod.amount, (lpbd.qty*pod.amount) as total
                     From lpb_detail lpbd 
                         Left Join sparepart spr On (lpbd.sparepart_id = spr.id) 
+                        Left Join po_detail pod On (pod.id = lpbd.po_detail_id)
+                        Left Join po on (po.id = pod.po_id)
                     Where lpbd.lpb_id=".$id);
         return $data;
     }
@@ -200,11 +222,12 @@ class Model_beli_sparepart extends CI_Model{
     }
     
     function voucher_list($user_ppn){
-        $data = $this->db->query("Select voucher.*, 
-                po.no_po, po.tanggal As tanggal_po
+        $data = $this->db->query("Select voucher.*, v.no_vk, s.nama_supplier
                 From voucher 
                     Left Join po On (voucher.po_id = po.id) 
-                Where voucher.jenis_barang='SPARE PART' and po.ppn = ".$user_ppn."
+                    Left Join f_vk v On (voucher.vk_id = v.id)
+                    Left Join supplier s On (s.id = voucher.supplier_id)
+                Where voucher.jenis_barang='SPARE PART' and po.flag_ppn = ".$user_ppn." or v.flag_ppn =".$user_ppn."
                 Order By voucher.no_voucher");
         return $data;
     }
@@ -381,6 +404,83 @@ class Model_beli_sparepart extends CI_Model{
 
     function gudang_sp_list(){
         $data = $this->db->query("select * from t_inventory where jenis_item = 'SPARE PART'");
+        return $data;
+    }
+
+    function list_detail_pembayaran($id){
+        $data = $this->db->query("select fv.*, s.nama_supplier, usr.realname from f_vk fv
+                Left Join supplier s On (s.id = fv.supplier_id)
+                Left Join users usr On (fv.created_by = usr.id)
+                where fv.id =".$id);
+        return $data;
+    }
+
+    function list_data_lpb($supp,$ppn){
+        $data = $this->db->query("Select lpb.id, lpb.no_bpb, po.ppn from lpb
+                left join po on po.id = lpb.po_id
+                where po.supplier_id=".$supp." and flag_ppn=".$ppn." and lpb.vk_id=0");
+        return $data;
+    }
+
+    function get_data_lpb($id){
+        $data = $this->db->query("select lpb.id, lpb.remarks, po.no_po, po.ppn,
+                (select if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount)) from lpb_detail ld
+                 left join po_detail pd on pd.id = ld.po_detail_id
+                 left join po p on p.id = pd.po_id
+                 where ld.lpb_id=lpb.id) as amount          
+            from lpb
+            left join po on po.id = lpb.po_id
+            where lpb.id =".$id);
+        return $data;
+    }
+
+    function load_detail_lpb($id){
+        $data = $this->db->query("select lpb.id, lpb.no_bpb, lpb.remarks, po.no_po, po.ppn,
+                (select if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount)) from lpb_detail ld
+                 left join po_detail pd on pd.id = ld.po_detail_id
+                 left join po p on p.id = pd.po_id
+                 where ld.lpb_id=lpb.id) as amount          
+            from lpb
+            left join po on po.id = lpb.po_id
+            where lpb.vk_id =".$id);
+        return $data;
+    }
+
+    function get_po_group($id){
+        $data = $this->db->query("select lpb.po_id, po.status from lpb 
+            left join po on po.id = lpb.po_id
+            where vk_id =".$id." group by po_id");
+        return $data;
+    }
+
+    function check_po_lpb($id){
+        $data = $this->db->query("select id from lpb where po_id=".$id." and vk_id = 0");
+        return $data;
+    }
+
+    function show_header_voucher($id){
+        $data = $this->db->query("select v.*, fk.tgl_jatuh_tempo, fk.no_giro, b.no_acc, b.nama_bank, s.nama_supplier, p.no_po, pmb.no_pembayaran, u.realname as pic, fk.nomor
+            from voucher v 
+            left join f_kas fk on (fk.id_vc = v.id)
+            left join bank b on (b.id = fk.id_bank)
+            left join po p on (p.id = v.po_id)
+            left join supplier s on (s.id = v.supplier_id)
+            left join f_pembayaran pmb on (pmb.id = v.pembayaran_id)
+            left join users u on (u.id = v.created_by)
+            where v.id = ".$id);
+        return $data;
+    }
+
+    function show_detail_voucher_sp($id){
+        $data = $this->db->query("select lpb.no_bpb, lpb.remarks, po.no_po,
+            (select if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount)) from lpb_detail ld
+                 left join po_detail pd on pd.id = ld.po_detail_id
+                 left join po p on p.id = pd.po_id
+                 where ld.lpb_id=lpb.id) as amount     
+            from lpb
+            left join po on po.id = lpb.po_id
+            left join voucher v on v.vk_id = lpb.vk_id
+            where lpb.vk_id =".$id);
         return $data;
     }
 }

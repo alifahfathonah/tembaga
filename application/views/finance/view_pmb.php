@@ -160,7 +160,7 @@
                             ?>
                             <tr>
                                 <td colspan="5" style="text-align: right; font-weight: bold;"> Total</td>
-                                <td style="background-color: green; color: white;"><?php echo number_format($total_vc,0,',','.');?></td>
+                                <td style="background-color: red; color: white;"><?php echo number_format($total_vc,0,',','.');?></td>
                             </tr>
                             </tbody>
                         </table>
@@ -210,6 +210,48 @@
                     </div>
                 </div>
             </div>
+    <!-- UANG KELUAR -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 align="center" style="font-weight: bold;">Detail Uang Keluar</h4>
+                    <div class="table-scrollable">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <th>No</th>
+                                <th>Jenis Pembayaran</th>
+                                <th>Bank Pembayaran</th>
+                                <th>Rekening Pembayaran / Nomor Cek</th>
+                                <th>Keterangan</th>
+                                <th>Amount</th>
+                            </thead>
+                            <tbody>
+                            <?php 
+                                $no = 0;
+                                $total_uk = 0;
+                                foreach ($detailUK as $data){
+                                    $no++;
+                            ?>
+                            <tr>
+                                <td style="text-align:center"><?php echo $no; ?></td>
+                                <td><?php echo $data->nomor; ?></td>
+                                <td><?php echo $data->nama_bank; ?></td>
+                                <td><?php echo $data->no_giro;?></td>
+                                <td><?php echo $data->currency; ?></td>
+                                <td style="text-align:right"><?php echo number_format($data->nominal,0,',','.'); ?></td>
+                            </tr>
+                            <?php
+                                $total_uk += $data->nominal;
+                                }
+                            ?>
+                            <tr>
+                                <td colspan="5" style="text-align: right; font-weight: bold;"> Total</td>
+                                <td style="background-color: green; color: white;"><?php echo number_format($total_uk,0,',','.');?></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
     <!-- SLIP SETORAN -->
             <hr class="divider"/>
             <div class="row">
@@ -219,7 +261,7 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th><strong>Slip Setoran</strong></th>
-                            <?php $slip_setoran = $total_um - $total_vc;?>
+                            <?php $slip_setoran = ($total_um + $total_uk) - $total_vc;?>
                                 <th><?php echo number_format($slip_setoran,0,',','.');?></th>
                                 <input type="hidden" id="nominal_slip" name="nominal_slip" value="<?php echo $slip_setoran;?>">
                             </thead>

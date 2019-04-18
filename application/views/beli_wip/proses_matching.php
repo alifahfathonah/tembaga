@@ -406,10 +406,11 @@ function approve(id){
         success: function(result){    
         console.log(result);        
             if(result['type_message']=="sukses"){
-                alert(result['message']);
+                // alert(result['message']);
                 location.reload();
             }else{
-                alert(result['message']);
+                // alert(result['message']);
+                location.reload();
             }
         }
     });

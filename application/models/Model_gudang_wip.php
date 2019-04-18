@@ -24,13 +24,14 @@ class Model_gudang_wip extends CI_Model{
         return $data;
     } 
 
-    function bpb_list(){
+    function bpb_list($ppn){
         $data = $this->db->query("Select bpbwip.*, tsw.no_spb_wip,
                     (select count(id) from t_bpb_wip_detail bpbwipd where bpbwip.id = bpbwipd.bpb_wip_id)as jumlah_item,
                     usr.realname As pengirim
                 From t_bpb_wip bpbwip
                     Left join users usr On (bpbwip.created_by = usr.id)
                     left join t_spb_wip tsw on (tsw.id = bpbwip.spb_wip_id)
+                Where flag_ppn =".$ppn."
                 Order By bpbwip.id Desc");
         return $data;
     }
@@ -219,7 +220,7 @@ class Model_gudang_wip extends CI_Model{
     function spb_kawat_hitam(){
         $data = $this->db->query("select tsw.id, tsw.no_spb_wip FROM t_spb_wip tsw
                 left join t_spb_wip_detail tswd on tswd.t_spb_wip_id = tsw.id
-                where tswd.jenis_barang_id = 6 and tsw.status = 1 and flag_produksi = 3");
+                where tsw.status = 1 and flag_produksi = 3");
         return $data;
     }
 

@@ -4,7 +4,9 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Pembelian 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliWIP'); ?>"> Pembelian WIP </a> 
+            <a href="<?php echo base_url('index.php/BeliSparePart'); ?>"> Pembelian Spare Part </a> 
+            <i class="fa fa-angle-right"></i> 
+            <a href="<?php echo base_url('index.php/BeliSparePart/bpb_list'); ?>"> BPB List </a> 
         </h5>          
     </div>
 </div>
@@ -12,7 +14,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['index']==1) ){
+            if( ($group_id==1)||($hak_akses['bpb_list']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -22,26 +24,23 @@
                 </div>
             </div>
         </div>
-        <div class="portlet box red">
+        <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-beer"></i>Outdated Purchase Order List
-                </div>  
-                <div class="tools">    
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliWIP/"> <i class="fa fa-home"></i> PO LIST</a>                
-                </div>
+                    <i class="fa fa-beer"></i>BPB List
+                </div>                
             </div>
             <div class="portlet-body">
                 <table class="table table-striped table-bordered table-hover" id="sample_6">
                 <thead>
                 <tr>
                     <th style="width:50px;">No</th>
-                    <th>No. PO</th>
+                    <th>No. BPB</th>
                     <th>Tanggal</th>
-                    <th>Supplier</th> 
-                    <th>Attention To</th>
-                    <th>PPN</th> 
+                    <th>No. PO</th>
+                    <th>Supplier</th>
                     <th>Jumlah <br>Items</th>
+                    <th>Remarks</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -54,43 +53,29 @@
                     ?>
                     <tr>
                         <td style="text-align:center;"><?php echo $no; ?></td>
-                        <td><?php echo $data->no_po; ?></td>
+                        <td><?php echo $data->no_bpb; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <td><?php echo $data->nama_supplier; ?></td>
-                        <td><?php echo $data->pic; ?></td>
-                        <td>
-                        <?php 
-                           echo (($data->ppn==1)? '<i class="fa fa-check"></i> Yes': '<i class="fa fa-times"></i> No');
-                        ?>
-                        </td>
+                        <td><?php echo $data->no_po; ?></td>
+                        <td><?php echo $data->nama_supplier; ?></td>                     
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
+                        <td><?php echo $data->remarks; ?></td>
                         <td style="text-align:center">
                             <?php 
-                                if($data->status==0){ 
-                                    echo '<div style="background-color:bisque; padding:4px">Draft</div>';
-                                }else if($data->status==1){ 
-                                    echo '<div style="background-color:green; color:white; padding:4px">Closed</div>';
-                                }else if($data->status==2){ 
-                                    echo '<div style="background-color:yellow; padding:4px;">Processing</div>';
+                                if($data->vk_id==0){ 
+                                    echo '<div style="background-color:bisque; padding:4px">Belum Dibayar</div>';
+                                }else if($data->vk_id > 0){ 
+                                    echo '<div style="background-color:green; color:white; padding:4px">Sudah Dibayar</div>';
                                 }
                             ?>
                         </td>
                         <td style="text-align:center"> 
                             <?php
-                                if( ($group_id==1 || $hak_akses['edit']==1) && $data->status!=1 ){
+                                if($group_id==1 || $hak_akses['print_bpb']==1){
                             ?>
-                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/BeliRongsok/edit/<?php echo $data->id; ?>" style="margin-bottom:4px">
-                                &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
-                            <?php
-                                }
-                                if($group_id==1 || $hak_akses['print_po']==1){
-                            ?>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/BeliRongsok/print_po/<?php echo $data->id; ?>" 
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/BeliSparePart/print_lpb/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
-                                
-                            <?php
-                                }
-                            ?>
+                                                                                
+                            <?php }?>
                         </td>
                     </tr>
                     <?php
@@ -116,27 +101,7 @@
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-$(function(){   
-    $("#tanggal").datepicker({
-        showOn: "button",
-        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
-        buttonImageOnly: true,
-        buttonText: "Select date",
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'dd-mm-yy'
-    }); 
-    
-    $("#tanggal_pelunasan").datepicker({
-        showOn: "button",
-        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
-        buttonImageOnly: true,
-        buttonText: "Select date",
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'dd-mm-yy'
-    }); 
-    
+$(function(){    
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });
-</script>         
+</script>

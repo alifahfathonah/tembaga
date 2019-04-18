@@ -12,7 +12,9 @@ class Retur extends CI_Controller{
     
     function index(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $user_ppn    = $this->session->userdata('user_ppn');
+
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -22,7 +24,7 @@ class Retur extends CI_Controller{
 
         $data['content']= "retur/index";
         $this->load->model('Model_retur');
-        $data['list_data'] = $this->Model_retur->retur_list()->result();
+        $data['list_data'] = $this->Model_retur->retur_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -49,9 +51,14 @@ class Retur extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $user_ppn = $this->session->userdata('user_ppn');
         
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('RTR', $tgl_input); 
+        if($user_ppn == 1){
+            $code = $this->Model_m_numberings->getNumbering('RTR-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('RTR', $tgl_input); 
+        }
         // $code_bpb = $this->Model_m_numberings->getNumbering('BPB-RTR', $tgl_input);
         
         if($code){        
@@ -74,6 +81,7 @@ class Retur extends CI_Controller{
             $data = array(
                 'no_retur'=> $code,
                 'customer_id'=>$this->input->post('m_customer_id'),
+                'flag_ppn'=>$user_ppn,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'jenis_retur'=>$this->input->post('type_retur'),
                 'jenis_packing_id' => $this->input->post('jenis_packing_id'),
@@ -729,6 +737,7 @@ class Retur extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $user_ppn = $this->session->userdata('user_ppn');
         
         $this->load->model('Model_m_numberings');
         
@@ -746,6 +755,7 @@ class Retur extends CI_Controller{
                 $this->db->insert('t_bpb_fg', array(
                     'no_bpb_fg' => $code_bpb,
                     'tanggal' => $tgl_input,
+                    'flag_ppn' => $user_ppn,
                     'produksi_fg_id' => $this->input->post('id'),
                     'jenis_barang_id' => $row1->jenis_barang_id,
                     'created_at' => $tanggal,
@@ -783,6 +793,7 @@ class Retur extends CI_Controller{
             #insert dtr
             $data_dtr = array(
                         'no_dtr'=> $code,
+                        'flag_ppn' => $user_ppn,
                         'retur_id'=> $this->input->post('id'),
                         'customer_id'=> $this->input->post('customer_id'),
                         'tanggal'=> $tgl_input,
@@ -813,6 +824,7 @@ class Retur extends CI_Controller{
                 $code = $this->Model_m_numberings->getNumbering('BPB-WIPR',$tgl_input);
                 $data_bpb = array(
                         'no_bpb' => $code,
+                        'flag_ppn' => $user_ppn,
                         'created' => $tanggal,
                         'created_by' => $user_id,
                         'keterangan' => 'BARANG RETUR WIP',

@@ -633,6 +633,9 @@ function hapusDetail(id){
 <script type="text/javascript">
 $(function(){    
     loadDetail(<?php echo $myData['id']; ?>);
+    window.onbeforeunload = function() {
+      return "Data Akan Terhapus Bila Page di Refresh, Anda Yakin?";
+    };
 });
 </script>
       

@@ -65,7 +65,7 @@ class GudangWIP extends CI_Controller{
                         'CUCI' => 'CUCI'
                         );
        $data['pil_masak'] = $pilihan_jenis_masak;
-       $data['spb_ingot'] = $this->Model_gudang_wip->spb_ingot()->result();
+       // $data['spb_ingot'] = $this->Model_gudang_wip->spb_ingot()->result();
        $data['stok_keras'] = $this->Model_gudang_wip->stok_keras()->row_array();
        $data['spb_kawat_hitam'] = $this->Model_gudang_wip->spb_kawat_hitam()->result();
         
@@ -518,7 +518,9 @@ class GudangWIP extends CI_Controller{
 
     function bpb_list(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');   
+        $user_ppn    = $this->session->userdata('user_ppn');
+
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -528,7 +530,7 @@ class GudangWIP extends CI_Controller{
 
         $data['content']= "gudangwip/bpb_list";
         $this->load->model('Model_gudang_wip');
-        $data['list_data'] = $this->Model_gudang_wip->bpb_list()->result();
+        $data['list_data'] = $this->Model_gudang_wip->bpb_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -559,6 +561,8 @@ class GudangWIP extends CI_Controller{
     function approve_bpb(){
         $bpb_id = $this->input->post('id_bpb_wip');
         $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+
         $hasil_wip_id = $this->input->post('id_hasil_wip');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d');
@@ -579,6 +583,7 @@ class GudangWIP extends CI_Controller{
             foreach ($details as $v) {    
                 $data = array(
                         'tanggal'=> $tgl_input,
+                        'flag_ppn'=> $user_ppn,
                         'flag_taken'=>0,
                         't_spb_wip_detail_id' =>$v['id_spb_detail'],
                         't_hasil_wip_id'=> $hasil_wip_id,
@@ -594,7 +599,7 @@ class GudangWIP extends CI_Controller{
             }
         
             
-        if($this->db->trans_complete()){  
+            if($this->db->trans_complete()){  
                 
                 $this->session->set_flashdata("message", "Inventori WIP sudah dibuat dan masuk gudang");
             }else{

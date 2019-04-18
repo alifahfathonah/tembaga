@@ -195,15 +195,13 @@
 function get_bobbin(id, nmr){
     if(''!=id){
         const ukuran = $('#ukuran_'+nmr).val();
-        const jp = $('#jenis_packing').val();
         $.ajax({
             url: "<?php echo base_url('index.php/BeliFinishGood/get_bobbin'); ?>",
-            async: false,
             type: "POST",
             data: {
                 id:id,
                 ukuran:ukuran,
-                jp:jp
+                jenis_barang:$('#jenis_barang').val()
             },
             dataType: "json",
             success: function(result){

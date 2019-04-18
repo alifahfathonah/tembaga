@@ -1,20 +1,18 @@
 <div class="row">
     <div class="col-md-12 alert-warning alert-dismissable">        
-        <h5 style="color:navy">
+        <h4 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Pembelian 
+            <i class="fa fa-angle-right"></i> Beli Sparepart
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliSparePart'); ?>"> Pembelian Spare Part </a> 
-            <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliSparePart/add'); ?>"> Pengajuan Baru </a> 
-        </h5>          
+            <a href="<?php echo base_url('index.php/BeliSparePart/voucher_list'); ?>"> Data Voucher </a>
+        </h4>          
     </div>
 </div>
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['add']==1) ){
+            if( ($group_id==1)||($hak_akses['add_pmb']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -25,45 +23,37 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/BeliSparePart/save'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/BeliSparePart/save_pembayaran'); ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            No Pengajuan <font color="#f00">*</font>
+                            No. Matching Voucher Sparepart <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_pengajuan" name="no_pengajuan" readonly="readonly"
+                            <input type="text" id="no_pembayaran" name="no_pembayaran" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="Auto generate">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Tgl Pengajuan <font color="#f00">*</font>
+                            Tanggal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="tgl_pengajuan" name="tgl_pengajuan" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                            <input type="text" id="tanggal" name="tanggal" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('Y-m-d'); ?>">
                         </div>
-                    </div>
+                    </div>  
                     <div class="row">
                         <div class="col-md-4">
-                            Jenis Kebutuhan <font color="#f00">*</font>
+                            PIC
                         </div>
-                        <div class="col-md-3">
-                            <select id="jenis_kebutuhan" name="jenis_kebutuhan" class="form-control myline" 
-                                    style="margin-bottom:5px" onclick="showTanggal(this.value);">
-                                <option value=""></option>
-                                <option value="1">Segera</option>
-                                <option value="0">Tanggal</option>
-                            </select>
-                        </div>
-                        <div class="col-md-5" id="boxTanggal" style="display:none">
-                            <input type="text" id="tgl_spare_part" name="tgl_spare_part" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                        <div class="col-md-8">
+                            <input type="text" id="nama_pembuat" name="nama_pembuat" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $this->session->userdata('realname'); ?>">
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
@@ -71,30 +61,40 @@
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
                             <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                                <i class="fa fa-floppy-o"></i> Input Spare Part </a>
-                        </div>    
+                                <i class="fa fa-floppy-o"></i> Input Details </a>
+                            <a href="<?php echo base_url('index.php/Finance/pembayaran'); ?>" class="btn blue-hoki"> 
+                            <i class="fa fa-angle-left"></i> Kembali </a>
+                        </div>
+
                     </div>
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-5">
                     <div class="row">
-                        <div class="col-md-3">
-                            Nama yang Mengajukan
+                        <div class="col-md-4">
+                            Supplier <font color="#f00">*</font>
                         </div>
-                        <div class="col-md-9">
-                            <input type="text" id="nama_pengaju" name="nama_pengaju" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" style="margin-bottom:5px">
+                        <div class="col-md-8">
+                            <select id="supplier_id" name="supplier_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($supplier_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->nama_supplier.'</option>';
+                                    }
+                                ?>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-3">
-                            Keterangan
+                        <div class="col-md-4">
+                            Catatan
                         </div>
-                        <div class="col-md-9">
-                            <textarea id="keterangan" name="keterangan" rows="3"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                onkeyup="this.value = this.value.toUpperCase()"></textarea>
+                        <div class="col-md-8">
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
+                                class="form-control myline" style="margin-bottom:5px"></textarea>                           
                         </div>
-                      </div>
+                    </div>
                 </div>              
             </div>
             
@@ -113,17 +113,9 @@
     </div>
 </div> 
 <script>
-function showTanggal(nilai){
-    if(nilai=="0"){
-        $('#boxTanggal').show();
-    }else{
-        $('#boxTanggal').hide();
-    }
-}
-
 function simpanData(){
-    if($.trim($("#jenis_kebutuhan").val()) == ""){
-        $('#message').html("Silahkan pilih jenis kebutuhan!");
+    if($.trim($("#tanggal").val()) == ""){
+        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else{     
         $('#formku').submit(); 
@@ -136,7 +128,7 @@ function simpanData(){
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
 $(function(){        
-    $("#tgl_spare_part").datepicker({
+    $("#tanggal").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,

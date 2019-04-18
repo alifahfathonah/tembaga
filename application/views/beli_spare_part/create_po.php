@@ -81,8 +81,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">&nbsp;</div>
-                <div class="col-md-5">
+                <div class="col-md-1">&nbsp;</div>
+                <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
                             Supplier <font color="#f00">*</font>
@@ -109,25 +109,43 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             Term of Payment <font color="#f00">*</font>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-4">
                             <input type="text" id="term_of_payment" name="term_of_payment" 
                                 class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             Materai
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-4">
                             <select id="materai" name="materai" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                 <option></option>
                                 <option value="3000">Materai 3000</option>
                                 <option value="6000">Materai 6000</option>
                             </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            Currency
+                        </div>
+                        <div class="col-md-4">
+                            <select id="currency" name="currency" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cur(this.value);">
+                                <option value="IDR">IDR</option>
+                                <option value="USD">USD</option>
+                            </select>
+                        </div>
+                        <div id="show_kurs">
+                        <div class="col-md-2">
+                            Kurs
+                        </div>
+                        <div class="col-md-4">
+                            <input type="number" id="kurs" name="kurs" class="form-control myline" value="0">
+                        </div>
                         </div>
                     </div>
                     <div class="row">
@@ -141,6 +159,7 @@
                         <div class="col-md-1">
                             <h4>%</h4>
                         </div>
+                    <?php if($this->session->userdata('user_ppn')==1){?>
                         <div class="col-md-2">
                             PPN
                         </div>
@@ -151,6 +170,9 @@
                                 <option value="1">Yes</option>
                             </select>
                         </div>
+                    <?php } else{ ?>
+                        <input type="hidden" id="ppn" name="ppn" value="0">
+                    <?php } ?>
                     </div>
                 </div>              
             </div>
@@ -240,6 +262,15 @@ function get_contact(id){
     });
 }
 
+function get_cur(id){
+    if(id=='USD'){
+        $('#show_kurs').show();
+    }else if(id=='IDR'){
+        $('#show_kurs').hide();
+        $('#kurs').val(0);
+    }
+}
+
 function myCurrency(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
@@ -309,7 +340,8 @@ function simpanData(){
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-$(function(){        
+$(function(){
+    $('#show_kurs').hide();
     $("#tanggal").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",

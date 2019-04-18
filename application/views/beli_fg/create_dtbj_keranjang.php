@@ -147,7 +147,7 @@
                                 </select>
                                 </td>
                                 <td><input type="text" id="uom_1" name="myDetails[1][uom]" class="form-control myline" readonly="readonly"></td>
-                                <td><input type="text" id="bruto_1" name="myDetails[1][bruto]" class="form-control myline" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
+                                <td><input type="number" id="bruto_1" name="myDetails[1][bruto]" class="form-control myline" maxlength="10"></td>
                                 <td><input type="text" id="berat_bobbin_1" name="myDetails[1][berat_bobbin]" class="form-control myline" value="0" readonly maxlength="10"></td>
                                 <td><input type="text" id="netto_v_1" name="myDetails[1][netto_v]" class="form-control myline" value="0" maxlength="10" readonly="readonly">
                                     <input type="hidden" name="myDetails[1][netto]" id="netto_1">
@@ -190,14 +190,17 @@
 <script>
 function get_bobbin(id, nmr){
     if(''!=id){
+        const ukuran = $('#ukuran_'+nmr).val();
         $.ajax({
             url: "<?php echo base_url('index.php/BeliFinishGood/get_bobbin'); ?>",
-            async: false,
             type: "POST",
-            data: "id="+id,
+            data: {
+                id:id,
+                ukuran:ukuran,
+                jenis_barang:$('#jenis_barang').val()
+            },
             dataType: "json",
-            success: function(result) {
-                console.log(result);
+            success: function(result){
                 if(result['id'] != null){
                     $('#berat_bobbin_'+nmr).val(result['berat']);
                     $('#id_bobbin_'+nmr).val(result['id']);
@@ -213,6 +216,7 @@ function get_bobbin(id, nmr){
         });
     }
 }
+
 function timbang_netto(id){
     var bruto = $("#bruto_"+id).val();
     var berat_palette = $("#berat_bobbin_"+id).val();
@@ -312,7 +316,7 @@ function saveDetail(id){
                 '</select>'+
                 '</td>'+
                 '<td><input type="text" id="uom_'+new_id+'" name="myDetails['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
-                '<td><input type="text" id="bruto_'+new_id+'" name="myDetails['+new_id+'][bruto]" class="form-control myline" maxlength="10" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
+                '<td><input type="number" id="bruto_'+new_id+'" name="myDetails['+new_id+'][bruto]" class="form-control myline" maxlength="10"></td>'+
                 '<td><input type="text" id="berat_bobbin_'+new_id+'" name="myDetails['+new_id+'][berat_bobbin]" class="form-control myline" value="0" maxlength="10" readonly="readonly"></td>'+
                 '<td><input type="text" id="netto_v_'+new_id+'" name="myDetails['+new_id+'][netto_v]" class="form-control myline" value="0" maxlength="10" readonly="readonly"></td>'+
                 '<input type="hidden" name="myDetails['+new_id+'][netto]" id="netto_'+new_id+'">'+

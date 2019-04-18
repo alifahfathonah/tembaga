@@ -46,3 +46,12 @@ update table
 dtr tambah retur_id
 tabel retur banyak yang di ubah
 tambah flag_ppn di retur
+
+tambah tabel f_vk dan f_vk_detail
+tambah flag_ppn di f_pembayaran
+tambah flag_ppn di po
+tambah vk_id di lpb
+tambah vk_id di voucher
+tambah flag_ppn di dtr
+tambah flag_ppn di dtt,dtr,dtbj,dtwip, t_bpb_fg, t_bpb_wip, t_gudang_wip, t_gudang_fg
+tambah no_acc di bank

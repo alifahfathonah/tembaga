@@ -81,7 +81,7 @@
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo date('d-m-Y', strtotime($myData['tgl_pengajuan'])); ?>">
                         </div>
-                      </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Jenis Kebutuhan <font color="#f00">*</font>
@@ -98,10 +98,19 @@
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
-
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-3">
+                            Nama Pengaju
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" id="nama_pengaju" name="nama_pengaju" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $myData['nama_pengaju']; ?>">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-3">
                             Keterangan
@@ -146,6 +155,7 @@
                                 <th>Nama Item Spare Part</th>
                                 <th>Unit of Measure</th>
                                 <th>Jumlah</th>
+                                <th>Keterangan</th>
                             </thead>
                             <tbody>
                             <?php
@@ -156,6 +166,7 @@
                                     echo '<td>'.$row->nama_item.'</td>';
                                     echo '<td>'.$row->uom.'</td>';
                                     echo '<td style="text-align:right">'.$row->qty.'</td>';
+                                    echo '<td style="text-align:right">'.$row->keterangan.'</td>';
                                     echo '</tr>';
                                     $no++;
                                 }
@@ -182,7 +193,7 @@
                     <a href="<?php echo base_url('index.php/BeliSparePart'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                     <?php
-                        if( ($group_id==1 || $hak_akses['print_po']==1) && $myData['status']=="1"){
+                        if( ($group_id==1 || $hak_akses['print_po']==1)){
                     ?>
                         <a class="btn btn-circle blue-ebonyclay" href="<?php echo base_url(); ?>index.php/BeliSparePart/print_pps/<?php echo $myData['id']; ?>"> &nbsp; <i class="fa  fa-file-text-o"></i> Print &nbsp; </a>
                     <?php

@@ -179,7 +179,6 @@
                         <table class="table table-bordered table-striped table-hover" id="tabel_barang">
                             <thead>
                                 <th>No</th>
-                                <th width="15%">No Packing</th>
                                 <th style="width: 20%">Nama Item</th>
                                 <th style="width: 15%">Nama Item Alias</th>
                                 <th style="width: 15%">No. Packing</th>
@@ -190,41 +189,31 @@
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
-                                <?php $no=0; foreach ($list_produksi as $row) { $no++; ?>
-                                <tr>
-                                    <td style="text-align: center;"><?= $no ;?></td>
-                                    <td><input type="text" class="form-control myline" style="margin-bottom:5px" name="details[1][barang_id]" value="<?=$row->id;?>" data-id='<?=$value->ukuran;?>'>
-                                        <select id="barang_id_1" name="details[1][barang_id]" class="form-control select2me myline scrollable" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="get_data(1);">
-                                            <option value="0"></option>
-                                        <?php foreach ($list_produksi as $value){ ?>
-                                            <option value='<?=$value->id;?>' data-id='<?=$value->ukuran;?>'>
-                                                <?=$value->no_packing;?>
-                                            </option>
-                                        <?php } ?>
-                                        </select>
-                                    </td>
-                                    <input type="hidden" name="details[1][id_barang]" id="id_barang_1">
-                                    <td><input type="text" id="nama_barang_1" name="details[1][nama_barang]" class="form-control myline" readonly="readonly"></td>
-                                    <input type="hidden" id="jenis_barang_id_1" name="details[1][jenis_barang_id]" class="form-control myline">
-                                    <td>
-                                        <select id="barang_alias_id_1" name="details[1][barang_alias_id]" class="form-control select2me myline" disabled data-placeholder="Pilih..." style="margin-bottom:5px" onChange="genPacking(1);">
+                                <?php $no=0; foreach ($list_produksi as $row) { $no++;
+                                echo '<tr>'.
+                                    '<td style="text-align: center;">'.$no.'</td>'.
+                                    '<td><input type="text" id="nama_barang_'.$no.'" name="details['.$no.'][nama_barang]" class="form-control myline" readonly="readonly" value="'.$row->jenis_barang.'"></td>'.
+                                    '<input type="hidden" name="details['.$no.'][id_barang]" id="id_barang_'.$no.'" value="'.$row->id.'">'.
+                                    '<input type="hidden" id="jenis_barang_id_'.$no.'" name="details['.$no.'][jenis_barang_id]" value="'.$row->jenis_barang_id.'" data-id="'.$row->ukuran.'">'.
+                                    '<td>'.
+                                        '<select id="barang_alias_id_'.$no.'" name="details['.$no.'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="genPacking('.$no.');">
                                             <option></option>
-                                            <option value="0" data-id="0">TIDAK ADA ALIAS</option>
-                                        <?php foreach ($jenis_barang as $value){ ?>
-                                            <option value='<?=$value->id;?>' data-id='<?=$value->ukuran;?>'><?=$value->jenis_barang;?></option>
-                                        <?php } ?>
-                                        </select>
-                                    </td>
-                                    <td><input type="text" id="no_packing_1" name="details[1][no_packing]" class="form-control myline" readonly="readonly"></td>
-                                    <td><input type="text" id="bruto_1" name="details[1][bruto]" class="form-control myline" readonly="readonly"></td>
-                                    <td><input type="text" id="netto_1" name="details[1][netto]" class="form-control myline" readonly="readonly"></td>
-                                    <td><input type="text" id="bobbin_1" name="details[1][bobbin]" class="form-control myline" readonly="readonly"></td>
-                                    <td><input type="text" id="line_remarks_1" name="details[1][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
-                                    <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input(1);" style="margin-top:5px" id="save_1"><i class="fa fa-plus"></i> Tambah </a><a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail(1);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Delete </a>
-                                    <a id="print_1" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(1);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>
-                                    </td>
-                                </tr>
-                                <?php } ?>
+                                            <option value="0" data-id="0">TIDAK ADA ALIAS</option>';
+                                            foreach ($jenis_barang as $value){
+                                            echo '<option value="'.$value->id.'" data-id="'.$value->ukuran.'">'.$value->jenis_barang.'</option>';
+                                            }
+                                        echo '</select>'.
+                                    '</td>'.
+                                    '<td><input type="text" class="form-control myline" style="margin-bottom:5px" id="no_packing_'.$no.'" name="details['.$no.'][no_packing]" value="'.$row->no_packing.'" data-id="'.$value->ukuran.'" readonly="readonly">'.
+                                    '</td>'.
+                                    '<td><input type="text" id="bruto_'.$no.'" name="details['.$no.'][bruto]" class="form-control myline" readonly="readonly" value="'.$row->bruto.'"></td>'.
+                                    '<td><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" class="form-control myline" readonly="readonly" value="'.$row->netto.'"></td>'.
+                                    '<td><input type="text" id="bobbin_'.$no.'" name="details['.$no.'][bobbin]" class="form-control myline" readonly="readonly" value="'.$row->nomor_bobbin.'"></td>'.
+                                    '<td><input type="text" id="line_remarks_'.$no.'" name="details['.$no.'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()">'.$row->keterangan.'</td>'.
+                                    '<td style="text-align:center">'.
+                                    '<a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Print </a>'.
+                                    '</td>'.
+                                '</tr>'; } ?>
                             </tbody>
                         </table>
                     <?php } else if($header['jenis_barang']=='WIP'){ ?>
@@ -353,11 +342,9 @@ function genPacking(id){
     const str = $('#no_packing_'+id).val();
     const res = str.substring(7, 11);
     var ukuran = $('#barang_alias_id_'+id).find(':selected').attr('data-id');
-    console.log(ukuran);
     if(ukuran==0 || ukuran==undefined){
-        var ukuran = $('#barang_id_'+id).find(':selected').attr('data-id');
+        var ukuran = $('#jenis_barang_id_'+id).attr('data-id');
     }
-    console.log(ukuran);
     const no_packing = str.replace(res, ukuran);
     $('#no_packing_'+id).val(no_packing);    
 }
@@ -392,39 +379,7 @@ function create_new_input(id){
            $('#print_'+id).show();
         }
         var new_id = id+1; 
-        if($("#jenis_barang").val()=="FG"){
-        $("#tabel_barang>tbody").append(
-        '<tr>'+
-            '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
-            '<td>'+
-                '<select id="barang_id_'+new_id+'" name="details['+new_id+'][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_data('+new_id+');">'+
-                    '<option value=""></option>'+
-                    '<?php if($header["jenis_barang"]=="FG"){foreach($list_produksi as $v){ print('<option value="'.$v->id.'" data-id="'.$v->ukuran.'">'.$v->no_packing.'</option>');}}?>'+
-                '</select>' +
-            '</td>'+
-            '<input type="hidden" name="details['+new_id+'][id_barang]" id="id_barang_'+new_id+'">'+
-            '<input type="hidden" id="jenis_barang_id_'+new_id+'" name="details['+new_id+'][jenis_barang_id]" class="form-control myline">'+
-            '<td><input type="text" id="nama_barang_'+new_id+'" name="details['+new_id+'][nama_barang]" class="form-control myline" readonly="readonly"></td>'+
-            '<td>'+
-                '<select id="barang_alias_id_'+new_id+'" name="details['+new_id+'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="genPacking('+new_id+');">'+
-                    '<option value=""></option>'+
-                    '<option value="0">TIDAK ADA ALIAS</option>'+
-                    '<?php if($header["jenis_barang"]=="FG"){foreach($jenis_barang as $v){ print('<option value="'.$v->id.'" data-id="'.$v->ukuran.'">'.$v->jenis_barang.'</option>');}}?>'+
-                '</select>'+
-            '</td>'+
-            '<td><input type="text" id="no_packing_'+new_id+'" name="details['+new_id+'][no_packing]" class="form-control myline" readonly="readonly"></td>'+
-            '<td><input type="text" id="bruto_'+new_id+'" name="details['+new_id+'][bruto]" class="form-control myline" readonly="readonly"></td>'+
-            '<td><input type="text" id="netto_'+new_id+'" name="details['+new_id+'][netto]" class="form-control myline" readonly="readonly"></td>'+
-            '<td><input type="text" id="bobbin_'+new_id+'" name="details['+new_id+'][bobbin]" class="form-control myline" readonly="readonly"></td>'+
-            '<td><input type="text" id="line_remarks_'+new_id+'" name="details['+new_id+'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
-            '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input('+new_id+');" style="margin-top:5px" id="save_'+new_id+'"><i class="fa fa-plus"></i> Tambah </a>'+
-            '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail('+new_id+');" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Delete </a>'+
-            '<a id="print_'+new_id+'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('+new_id+');" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>'+
-            '</td>'+
-        '</tr>');
-        $('#barang_id_'+new_id).select2();
-        $('#barang_alias_id_'+new_id).select2();
-        }else if($("#jenis_barang").val()=='WIP'){
+        if($("#jenis_barang").val()=='WIP'){
         $("#tabel_barang>tbody").append(
         '<tr>'+
             '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
@@ -564,7 +519,11 @@ function get_type_kendaraan(id){
 }
 
 function printBarcode(id){
-    const fg = $('#barang_alias_id_'+id).val();
+    if($('#barang_alias_id_'+id).val() == "" || $('#barang_alias_id_'+id).val() == 0){
+        var fg = $('#jenis_barang_id_'+id).val();
+    }else{
+        var fg = $('#barang_alias_id_'+id).val();
+    }
     const b = $('#bruto_'+id).val();
     const n = $('#netto_'+id).val();
     const bp = b - n;

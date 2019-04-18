@@ -24,7 +24,9 @@ class BeliFinishGood extends CI_Controller{
         $data['content']= "beli_fg/index";
 
         $this->load->model('Model_beli_fg');
+        $this->load->model('Model_beli_sparepart');
         $data['list_data'] = $this->Model_beli_fg->po_list($user_ppn)->result();
+        $data['bank_list'] = $this->Model_beli_sparepart->bank($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -80,7 +82,10 @@ class BeliFinishGood extends CI_Controller{
         $data = array(
             'no_po'=> $code,
             'tanggal'=> $tgl_input,
-            'ppn'=> $user_ppn,
+            'flag_ppn'=> $user_ppn,
+            'ppn'=> $this->input->post('ppn'),
+            'currency'=> $this->input->post('currency'),
+            'kurs'=> $this->input->post('kurs'),
             'supplier_id'=>$this->input->post('supplier_id'),
             'term_of_payment'=>$this->input->post('term_of_payment'),
             'jenis_po'=>'FG',
@@ -328,26 +333,36 @@ class BeliFinishGood extends CI_Controller{
         //     $ukuran = substr($no_bobbin, 0,1);
         //     $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin;
         // }
-        $check = $this->Model_beli_fg->check_urut($jp)->row_array();
-        $no_urut = $check['no_urut'];
-        $no_urut = $no_urut + 1;
-        switch (strlen($no_urut)) {
-            case 1 : $urutan = "000".$no_urut;
-                break;
-            case 2 : $urutan = "00".$no_urut;
-                break;
-            case 3 : $urutan = "0".$no_urut;
-                break;
-            
-            default:
-                $urutan = $no_urut;
-                break;
+        if($this->input->post('jenis_barang')=='KARDUS'){
+            $check = $this->Model_beli_fg->check_urut($jp)->row_array();
+            $no_urut = $check['no_urut'];
+            $no_urut = $no_urut + 1;
+            switch (strlen($no_urut)) {
+                case 1 : $urutan = "000".$no_urut;
+                    break;
+                case 2 : $urutan = "00".$no_urut;
+                    break;
+                case 3 : $urutan = "0".$no_urut;
+                    break;
+                
+                default:
+                    $urutan = $no_urut;
+                    break;
+            }
+
+            $no_bobbin = $barang['nomor_bobbin'];
+            $kode_bobbin = substr($no_bobbin, 0,1);
+            $nomor_bobbin = substr($no_bobbin, 2,4);
+            $ukuran = $this->input->post('ukuran');
+            $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urutan;
+        }else{
+            $no_bobbin = $barang['nomor_bobbin'];
+            $kode_bobbin = substr($no_bobbin, 0,1);
+            $nomor_bobbin = substr($no_bobbin, 2,4);
+            $ukuran = $this->input->post('ukuran');
+            $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$nomor_bobbin;
         }
 
-        $no_bobbin = $barang['nomor_bobbin'];
-        $kode_bobbin = substr($no_bobbin, 0,1);
-        $ukuran = $this->input->post('ukuran');
-        $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urutan;
         header('Content-Type: application/json');
         echo json_encode($barang); 
     }
@@ -356,11 +371,18 @@ class BeliFinishGood extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $user_ppn = $this->session->userdata('user_ppn');
 
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('DTBJ', $tgl_input); 
+        if($user_ppn==1){
+            $code = $this->Model_m_numberings->getNumbering('DTBJ-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('DTBJ', $tgl_input); 
+        }
+
         $data = array(
                         'no_dtbj'=> $code,
+                        'flag_ppn'=> $user_ppn,
                         'tanggal'=> $tgl_input,
                         'supplier_id'=> $this->input->post('supplier_id'),
                         'jenis_packing'=> $this->input->post('packing'),
@@ -516,7 +538,9 @@ class BeliFinishGood extends CI_Controller{
 
     function proses_matching(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $user_ppn    = $this->session->userdata('user_ppn');
+
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -537,7 +561,7 @@ class BeliFinishGood extends CI_Controller{
         }
         $data['dtbj_app'] = $dtbj_app;
         $sp_id = $data['header_po']['supplier_id'];
-        $dtbj = $this->Model_beli_fg->get_dtbj($sp_id)->result();
+        $dtbj = $this->Model_beli_fg->get_dtbj($sp_id,$user_ppn)->result();
         foreach ($dtbj as $index=>$row){
             $dtbj[$index]->details = $this->Model_beli_fg->show_detail_dtbj($row->id)->result();
         }
@@ -549,6 +573,7 @@ class BeliFinishGood extends CI_Controller{
         $dtbj_id = $this->input->post('dtbj_id');
         $po_id = $this->input->post('po_id');
         $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d');
         $return_data = array();
@@ -563,8 +588,6 @@ class BeliFinishGood extends CI_Controller{
                     'status'=>1,
                     'approved'=>$tanggal,
                     'approved_by'=>$user_id));
-            
-            if($this->db->trans_complete()){  
                 
                 #update po_detail_id di dtbj_detail
 
@@ -607,10 +630,15 @@ class BeliFinishGood extends CI_Controller{
                     where dtbjd.dtbj_id = ".$dtbj_id." group by jb.jenis_barang")->result();
                 foreach ($loop1 as $k1) {
                     #insert t_bpb_fg
-                    $code = $this->Model_m_numberings->getNumbering('BPB-PO',$tgl_input);
+                    if($user_ppn==1){
+                        $code = $this->Model_m_numberings->getNumbering('BPB-KMP',$tgl_input);
+                    }else{
+                        $code = $this->Model_m_numberings->getNumbering('BPB-PO',$tgl_input);
+                    }
                     $data_bpb = array(
                             'no_bpb_fg' => $code,
                             'tanggal' => $tgl_input,
+                            'flag_ppn' => $user_ppn,
                             // 'produksi_fg_id' => $id_produksi,
                             'jenis_barang_id' => $k1->jenis_barang_id,
                             'created_at' => $tanggal,
@@ -631,20 +659,20 @@ class BeliFinishGood extends CI_Controller{
                             'bruto' => $k2->bruto,
                             'netto' => $k2->netto,
                             'no_packing_barcode' => $k2->no_packing,
+                            'berat_bobbin' => $k2->berat_bobbin,
                             'bobbin_id' => $k2->bobbin_id
                         ));
                     }
                 }
 
-            $return_data['type_message']= "sukses";
-            $return_data['message'] = "DTBJ sudah diberikan ke bagian gudang";           
+        if($this->db->trans_complete()){  
+            redirect('index.php/BeliFinishGood/proses_matching/'.$this->input->post('po_id'));
         }else{
-            $return_data['type_message']= "error";
-            $return_data['message']= "Pembuatan DTBJ gagal, penomoran belum disetup!";
-        }                  
+            redirect('index.php/BeliFinishGood/proses_matching/'.$this->input->post('po_id'));
+        }                       
         
-       header('Content-Type: application/json');
-       echo json_encode($return_data);
+       // header('Content-Type: application/json');
+       // echo json_encode($return_data);
     }
 
     function reject(){
@@ -677,12 +705,20 @@ class BeliFinishGood extends CI_Controller{
         $this->load->helper('terbilang_helper');
         $this->load->model('Model_beli_fg');
         $data = $this->Model_beli_fg->voucher_po_fg($id)->row_array();
-        $terbilang = $data['nilai_po'];
-        $sisa = $data['nilai_po'] - $data['nilai_dp'];
-        $data['nilai_po'] = number_format($data['nilai_po'],0,',','.');
+        if($data['ppn']==1){
+            $nilai_po = $data['nilai_po']*110/100;
+            $data['nilai_ppn'] = number_format($data['nilai_po']*10/100,0,',','.');
+        }else{
+            $nilai_po = $data['nilai_po'];
+            $data['nilai_ppn'] = 0;
+        }
+
+        $terbilang = $nilai_po;
+        $sisa = $nilai_po - $data['nilai_dp'];
+        $data['nilai_po'] = number_format($nilai_po,0,',','.');
         $data['nilai_dp'] = number_format($data['nilai_dp'],0,',','.');
         $data['sisa']     = number_format($sisa,0,',','.');
-
+        // $nilai_po = $data['nilai_po'];
         $data['terbilang'] = ucwords(number_to_words($terbilang));
         
         header('Content-Type: application/json');
@@ -733,6 +769,97 @@ class BeliFinishGood extends CI_Controller{
             redirect('index.php/BeliFinishGood');  
         }else{
             $this->session->set_flashdata('flash_msg', 'Pembuatan voucher finish good gagal, penomoran belum disetup!');
+            redirect('index.php/BeliFinishGood');
+        }
+    }
+
+    function save_voucher_pembayaran(){
+        $ppn = $this->session->userdata('user_ppn');
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $nilai_po  = str_replace('.', '', $this->input->post('nilai_po'));
+        $jumlah_dibayar  = str_replace('.', '', $this->input->post('jumlah_dibayar'));
+        $amount  = str_replace('.', '', $this->input->post('amount'));
+        if($nilai_po-($jumlah_dibayar+$amount)>0){
+            $jenis_voucher = 'Parsial';
+        }else{
+            $jenis_voucher = 'Pelunasan';
+        }
+        
+        $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+        if($ppn==1){
+            $code = $this->Model_m_numberings->getNumbering('VFG-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('VFG', $tgl_input); 
+        }
+
+        if($code){ 
+            $this->db->insert('voucher', array(
+                'no_voucher'=>$code,
+                'tanggal'=>$tgl_input,
+                'jenis_voucher'=>$jenis_voucher,
+                'flag_ppn'=>$ppn,
+                'status'=>1,
+                'po_id'=>$this->input->post('id'),
+                'supplier_id'=>$this->input->post('supplier_id'),
+                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'amount'=>$amount,
+                'keterangan'=>$this->input->post('keterangan'),
+                'created'=> $tanggal,
+                'created_by'=> $user_id,
+                'modified'=> $tanggal,
+                'modified_by'=> $user_id
+            ));
+            $id_vc = $this->db->insert_id();
+            
+            $this->db->where('id', $this->input->post('id'));
+            if($jenis_voucher=='Pelunasan' && $this->input->post('status_vc')==3){
+                $this->db->update('po', array('flag_pelunasan'=>1, 'status'=>4));
+            }else{
+                $this->db->update('po', array('flag_dp'=>1));
+            }
+
+            if($this->input->post('bank_id')<=3){
+                if($this->input->post('ppn')==0){
+                    $num = 'KK';
+                }else{
+                    $num = 'KK-KMP';
+                }
+            }else{
+                if($this->input->post('ppn')==0){
+                    $num = 'BK';
+                }else{
+                    $num = 'BK-KMP';
+                }
+            }
+
+            $code_um = $this->Model_m_numberings->getNumbering($num);
+
+            $this->db->insert('f_kas', array(
+                'jenis_trx'=>1,
+                'nomor'=>$code_um,
+                'flag_ppn'=>$ppn,
+                'tanggal'=>$tgl_input,
+                'tgl_jatuh_tempo'=>$this->input->post('tanggal_jatuh'),
+                'no_giro'=>$this->input->post('nomor_giro'),
+                'id_bank'=>$this->input->post('bank_id'),
+                'id_vc'=>$id_vc,
+                'currency'=>$this->input->post('currency'),
+                'nominal'=>str_replace('.', '', $amount),
+                'created_at'=>$tanggal,
+                'created_by'=>$user_id
+            ));
+            
+            if($this->db->trans_complete()){  
+                $this->session->set_flashdata('flash_msg', 'Voucher pembayaran Finish Good berhasil di-create dengan nomor : '.$code);
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create voucher pembayaran Finish Good, silahkan coba kembali!');
+            }
+            redirect('index.php/BeliFinishGood');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Pembuatan voucher pembayaran spare part gagal, penomoran belum disetup!');
             redirect('index.php/BeliFinishGood');
         }
     }

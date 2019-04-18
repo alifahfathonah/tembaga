@@ -15,7 +15,7 @@ class Model_beli_fg extends CI_Model
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='FG' and po.supplier_id > 0 and po.ppn = ".$user_ppn."
+                Where po.jenis_po='FG' and po.supplier_id > 0 and po.flag_ppn = ".$user_ppn."
                 Order By po.id Desc");
 		return $data;
 	}
@@ -33,7 +33,7 @@ class Model_beli_fg extends CI_Model
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='FG' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH)  and po.ppn = ".$user_ppn."
+                Where po.jenis_po='FG' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH)  and po.flag_ppn = ".$user_ppn."
                 Order By po.id Desc");
         return $data;
     }
@@ -82,13 +82,12 @@ class Model_beli_fg extends CI_Model
                     po.no_po, 
                     spl.nama_supplier,
                     usr.realname As penimbang,
-                    Coalesce(po.ppn,".$user_ppn.") As flag_ppn,
                 (Select count(dtbjd.id)As jumlah_item From dtbj_detail dtbjd Where dtbjd.dtbj_id = dtbj.id)As jumlah_item
                 From dtbj
                     Left Join po On dtbj.po_id > 0 and po.id = dtbj.po_id
                     Left Join supplier spl On (po.supplier_id = spl.id) or (dtbj.supplier_id = spl.id) 
                     Left Join users usr On (dtbj.created_by = usr.id) 
-                Where COALESCE(po.ppn,".$user_ppn.") =".$user_ppn."
+                Where dtbj.flag_ppn = ".$user_ppn."
                 Order By dtbj.id Desc");
 		return $data;
 	}
@@ -104,11 +103,11 @@ class Model_beli_fg extends CI_Model
 
     function get_po_list($user_ppn){
     	$data = $this->db->query("Select id, no_po, jenis_po From po 
-            Where jenis_po= 'FG' And status != 1 And customer_id = 0 And ppn = ".$user_ppn);
+            Where jenis_po= 'FG' And status != 1 And customer_id = 0 And flag_ppn = ".$user_ppn);
     	return $data;
     }
 
-    function get_dtbj($id){
+    function get_dtbj($id,$ppn){
     	$data = $this->db->query("Select dtbj.*,  
                     spl.nama_supplier,
                     usr.realname As penimbang,
@@ -120,7 +119,7 @@ class Model_beli_fg extends CI_Model
                     Left Join users usr On (dtbj.created_by = usr.id) 
                     Left Join users app On (dtbj.approved_by = app.id) 
                     Left Join users rjct On (dtbj.rejected_by = rjct.id) 
-                Where dtbj.supplier_id=".$id." and status = 0");
+                Where dtbj.supplier_id=".$id." and status = 0 and flag_ppn=".$ppn);
     	return $data;
     }
 
@@ -201,7 +200,7 @@ class Model_beli_fg extends CI_Model
     }
 
     function voucher_po_fg($id){
-        $data = $this->db->query("Select po.*,s.nama_supplier, dtbj.po_id, sum(dtbjd.netto*pd.amount) as nilai_po, 
+        $data = $this->db->query("Select po.*,s.nama_supplier, dtbj.po_id, COALESCE(sum(dtbjd.netto*pd.amount),0) as nilai_po, 
             (Select Sum(voucher.amount) From voucher Where voucher.po_id = po.id)As nilai_dp
             From po
             inner join dtbj on dtbj.po_id = po.id
@@ -217,7 +216,7 @@ class Model_beli_fg extends CI_Model
                 po.no_po, po.tanggal As tanggal_po
                 From voucher 
                     Left Join po On (voucher.po_id = po.id) 
-                Where voucher.jenis_barang='FG' and po.ppn = ".$user_ppn."
+                Where voucher.jenis_barang='FG' and voucher.flag_ppn = ".$user_ppn."
                 Order By voucher.no_voucher");
         return $data;
     }

@@ -190,13 +190,10 @@
                             </div> 
                             <div class="row">
                                 <div class="col-md-5">
-                                    Kurs
+                                    Currency
                                 </div>
                                 <div class="col-md-7">
-                                    <select id="currency" name="currency" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                    <option value="IDR">IDR</option>
-                                    <option value="USD">USD</option>
-                                    </select>         
+                                    <input type="text" id="currency" name="currency" class="form-control myline" style="margin-bottom:5px" readonly="readonly">           
                                 </div>
                             </div>
                             <div class="row">
@@ -316,16 +313,14 @@
                         <td><?php echo $data->remarks; ?></td>
                         <td style="text-align:center">
                             <?php
-                                if($data->flag_pelunasan==0 || $data->ready_to_lpb>0){
-                                    if( ($group_id==1 || $hak_akses['create_voucher']==1)){
-                                        echo '<a class="btn btn-circle btn-xs green" href="javascript:;" onclick="createVoucher('.$data->id.');"
-                                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Create &nbsp; </a>';
-                                        if($data->flag_dp > 0){
-                                        echo '<small style="color:green"><i>Sudah ada DP</i></small>';
-                                        }
-                                    }
-                                }else if($data->flag_pelunasan==1 && $data->ready_to_lpb==0){
+                                if($data->flag_dp > 0){
+                                    echo '<small style="color:green"><i>Sudah ada DP</i></small>';
+                                }
+                                if($data->flag_pelunasan==1 && $data->ready_to_lpb==0){
                                     echo '<small style="color:green"><i>Sudah Lunas</i></small>';
+                                }
+                                if($data->lpb_belum_dibayar > 0){
+                                    echo '<small style="color:green"><i><b>'.$data->lpb_belum_dibayar.'</b> LPB Belum Dibayar</i></small>';
                                 }
                             ?>
                         </td>

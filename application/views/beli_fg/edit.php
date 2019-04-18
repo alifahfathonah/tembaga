@@ -150,7 +150,7 @@
                         </div>
                         <div class="col-md-8">
                 <?php
-                if($user_ppn == 0){
+                if($header['ppn'] == 0){
                 ?>
                             <input type="text" id="ppn" name="ppn" readonly="readonly" class="form-control myline" style="margin-bottom:5px" value="0">
                         

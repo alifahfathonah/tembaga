@@ -142,7 +142,7 @@ Susut 12% default * dengan total jumlah Finish Good. jadi misal total FG 2000KG 
 
 Matching DTR bisa diedit, nettonya. Pilih salah satu dari yang sudah di tambah. Sisanya masih bisa dipakai di matching selanjutnya.
 
-R_PurchaseOrder/edit_po/ Dikasih header Nama CV yang Login, dan Customernya fix PT Kawat Mas
+R_PurchaseOrder/edit_po/ Dikasih header Nama CV yang Login, dan Customernya fix PT Kaw at Mas
 
 PO dari Customer ke CV. otomatis buat SJ dan Invoice balik CV ke Customer.
 
@@ -167,6 +167,8 @@ Nomor po belom masuk. Finance/Voucher_list/ belom di filter PPN dan NON(Done)
 
 PO Sparepart beda in penomoran PPN dan Non PPN. Beserta Penomoran LPB nya
 
-Sparepart di grouping jenis barang nya
+Sparepart di grouping jenis barang nya(Done)
 
-PPN pada Retur belum
+PPN pada Retur belum (Done)
+
+view_spb gudangfg kasih warning(Done)

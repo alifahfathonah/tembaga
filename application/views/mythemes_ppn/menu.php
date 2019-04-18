@@ -38,31 +38,43 @@
                             <span class="arrow "></span>
                             </a>
                             <ul class="sub-menu">
+                                <?php if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliSparePart">
                                     <i class="fa fa-send"></i>
                                     Beli Spare Part </a>
                                 </li>
+                                <?php } if($group_id==1 || (isset($akses_menu['po_list']) && $akses_menu['po_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliSparePart/po_list">
                                     <i class="fa fa-file-word-o"></i>
                                     PO List </a>
                                 </li>
+                                <?php } if($group_id==1 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliSparePart/spb_list">
                                     <i class="fa fa-file-word-o"></i>
                                     SPB List </a>
                                 </li>
+                                <?php } if($group_id==1 || (isset($akses_menu['bpb_list']) && $akses_menu['bpb_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliSparePart/bpb_list">
                                     <i class="fa fa-cubes"></i>
                                     BPB List </a>
+                                </li> 
+                                <?php } if($group_id==1 || (isset($akses_menu['bpb_list']) && $akses_menu['lpb_list']==1)){ ?>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/BeliSparePart/lpb_list">
+                                    <i class="fa fa-usd"></i>
+                                    LPB List </a>
                                 </li>
+                                <?php }  if($group_id==1 || (isset($akses_menu['voucher_list']) && $akses_menu['voucher_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliSparePart/voucher_list">
                                     <i class="fa fa-usd"></i>
                                     Voucher List </a>
                                 </li>
+                                <?php } if($group_id==1 || (isset($akses_menu['view']) && $akses_menu['view']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliSparePart/laporan_list">
                                     <i class="fa fa-usd"></i>
@@ -73,6 +85,7 @@
                                     <i class="fa fa-cubes"></i>
                                     Gudang SP </a>
                                 </li>
+                            <?php } ?>
                             </ul>
                         </li>
                         <?php } if($group_id==1 || (isset($akses_menu['BeliRongsok']) && $akses_menu['BeliRongsok']==1)){ ?>

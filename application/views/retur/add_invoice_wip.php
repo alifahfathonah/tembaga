@@ -111,11 +111,9 @@
                                 <th>No</th>
                                 <th style="width: 19%">Nama Item</th>
                                 <th>UOM</th>
-                                <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
                                 <th width="15%">Harga</th>
                                 <th width="15%">Sub Total</th>
-                                <th style="width: 15%">No. Packing</th>
                                 <th>Keterangan</th>
                             </thead>
                             <tbody id="boxDetail">
@@ -128,11 +126,9 @@
                                     <td style="text-align: center;"><?= $no ;?></td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][nama_barang]" value="'.$row->jenis_barang.'" readonly="readonly"><input type="hidden" name="details['.$no.'][jenis_barang_id]" value="'.$row->jenis_barang_id.'">';?></td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" value="'.$row->uom.'" readonly="readonly">';?></td>
-                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][bruto]" value="'.$row->bruto.'" readonly="readonly">';?></td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" id="netto_'.$no.'" name="details['.$no.'][netto]" value="'.$row->netto.'" readonly="readonly">';?></td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" id="amount_'.$no.'" name="details['.$no.'][amount]" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" id="total_amount_'.$no.'" name="details['.$no.'][total]" readonly="readonly">';?></td>
-                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][no_packing]" value="'.$row->no_packing.'" readonly="readonly">';?></td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][line_remarks]" value="'.$row->line_remarks.'" onkeyup="this.value = this.value.toUpperCase()">';?></td>
                                 </tr>
                                 <?php
@@ -149,7 +145,7 @@
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
-                    <a href="<?php echo base_url('index.php/SuratJalan/'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/Retur/'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>

@@ -41,7 +41,7 @@
                         <div class="col-md-8">
                             <select id="bank_id" name="bank_id" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_currency(this.value);">
-                                <option value="0">Masuk ke Kas</option>
+                                <option></option>
                                 <?php
                                     foreach ($bank_list as $row){
                                         echo '<option value="'.$row->id.'">'.$row->kode_bank.' ('.$row->nomor_rekening.')'.'</option>';
@@ -242,9 +242,9 @@ function simpanData(){
     }else if($.trim($("#bank_id").val()) == ""){
         $('#message').html("Bank Tujuan harus dipilih!");
         $('.alert-danger').show(); 
-    // }else if($.trim($("#um_id").val()) == ""){
-    //     $('#message').html("Uang Masuk harus dipilih, tidak boleh kosong!");
-    //     $('.alert-danger').show(); 
+    }else if($.trim($("#nominal").val()) == ""){
+        $('#message').html("Nominal tidak boleh kosong!");
+        $('.alert-danger').show(); 
     }else{    
         $('#formku').submit(); 
     };

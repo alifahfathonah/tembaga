@@ -19,12 +19,13 @@ class Model_retur extends CI_Model{
         return $data;
     }
 
-    function retur_list(){
+    function retur_list($user_ppn){
         $data = $this->db->query("select r.*, c.nama_customer, c.pic, u.realname as penimbang, (select count(id) as jumlah_item from retur_detail rd where rd.retur_id = r.id) as jumlah_item
             from retur r
             left join users u on (u.id = r.created_by)
             left join m_jenis_packing jp on (jp.id = r.jenis_packing_id)
-            left join m_customers c on (c.id = r.customer_id)");
+            left join m_customers c on (c.id = r.customer_id)
+            where r.flag_ppn =".$user_ppn);
         return $data;
     }
 
@@ -121,6 +122,13 @@ class Model_retur extends CI_Model{
         $data = $this->db->query("Select rd.*, jb.jenis_barang, jb.uom, mb.nomor_bobbin From retur_detail rd 
                 Left Join jenis_barang jb On(rd.jenis_barang_id = jb.id) 
                 left join m_bobbin mb on (rd.bobbin_id = mb.id)
+                Where rd.retur_id=".$id);
+        return $data;
+    }
+
+    function load_detail_wip($id){
+        $data = $this->db->query("Select rd.*, jb.jenis_barang, jb.uom from retur_detail rd
+                Left Join jenis_barang jb On (rd.jenis_barang_id = jb.id)
                 Where rd.retur_id=".$id);
         return $data;
     }

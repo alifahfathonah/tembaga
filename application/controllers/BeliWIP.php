@@ -22,8 +22,10 @@ class BeliWIP extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "beli_wip/index";
+        $this->load->model('Model_beli_sparepart');
         $this->load->model('Model_beli_wip');
         $data['list_data'] = $this->Model_beli_wip->po_list($user_ppn)->result();
+        $data['bank_list'] = $this->Model_beli_sparepart->bank($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -41,7 +43,9 @@ class BeliWIP extends CI_Controller{
         $data['content'] = "beli_wip/po_list_outdated";
 
         $this->load->model('Model_beli_wip');
+        $this->load->model('Model_beli_sparepart');
         $data['list_data'] = $this->Model_beli_wip->po_list_outdated($user_ppn)->result();
+        $data['bank_list'] = $this->Model_beli_sparepart->bank($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -75,10 +79,14 @@ class BeliWIP extends CI_Controller{
         }else{
             $code = $this->Model_m_numberings->getNumbering('POW-KMP', $tgl_input);
         }
+
         $data = array(
             'no_po'=> $code,
             'tanggal'=> $tgl_input,
-            'ppn'=> $user_ppn,
+            'flag_ppn'=> $user_ppn,
+            'ppn'=> $this->input->post('ppn'),
+            'currency'=> $this->input->post('currency'),
+            'kurs'=> $this->input->post('kurs'),
             'supplier_id'=>$this->input->post('supplier_id'),
             'term_of_payment'=>$this->input->post('term_of_payment'),
             'jenis_po'=>'WIP',
@@ -292,14 +300,20 @@ class BeliWIP extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $user_ppn =  $this->session->userdata('user_ppn');
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('DTWIP', $tgl_input); 
-        
+        if($user_ppn == 1){
+            $code = $this->Model_m_numberings->getNumbering('DTWP-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('DTWIP', $tgl_input); 
+        }
+
         if($code){        
             $data = array(
                         'no_dtwip'=> $code,
+                        'flag_ppn'=> $user_ppn,
                         'tanggal'=> $tgl_input,
                         'supplier_id'=> $this->input->post('supplier_id'),
                         'jenis_barang'=> $this->input->post('jenis_barang'),
@@ -426,7 +440,9 @@ class BeliWIP extends CI_Controller{
 
     function proses_matching(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id'); 
+        $user_ppn    = $this->session->userdata('user_ppn');
+
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -447,7 +463,7 @@ class BeliWIP extends CI_Controller{
         }
         $data['dtwip_app'] = $dtwip_app;
         $sp_id = $data['header_po']['supplier_id'];
-        $dtwip = $this->Model_beli_wip->get_dtwip($sp_id)->result();
+        $dtwip = $this->Model_beli_wip->get_dtwip($sp_id,$user_ppn)->result();
         foreach ($dtwip as $index=>$row){
             $dtwip[$index]->details = $this->Model_beli_wip->show_detail_dtwip($row->id)->result();
         }
@@ -476,6 +492,7 @@ class BeliWIP extends CI_Controller{
         $dtwip_id = $this->input->post('dtwip_id');
         $po_id = $this->input->post('po_id');
         $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d');
         $return_data = array();
@@ -490,9 +507,7 @@ class BeliWIP extends CI_Controller{
                 'status'=>1,
                 'approved'=>$tanggal,
                 'approved_by'=>$user_id));
-            
-        if($this->db->trans_complete()){  
-            
+                        
             #update po_detail_id di dtwip_detail
 
             $po_dtwip_check_update = $this->Model_beli_wip->check_to_update($po_id)->result();
@@ -533,9 +548,15 @@ class BeliWIP extends CI_Controller{
                 where dtwipd.dtwip_id = ".$dtwip_id." group by jb.jenis_barang")->result();
             foreach ($loop1 as $k1) {
                 #insert t_bpb_fg
-                $code = $this->Model_m_numberings->getNumbering('BPB-PO',$tgl_input);
+                if($user_ppn==1){
+                    $code = $this->Model_m_numberings->getNumbering('BPB-KMP', $tgl_input);
+                }else{
+                    $code = $this->Model_m_numberings->getNumbering('BPB-PO',$tgl_input);
+                }
+
                 $data_bpb = array(
                         'no_bpb' => $code,
+                        'flag_ppn' => $user_ppn,
                         'created' => $tanggal,
                         'created_by' => $user_id,
                         'keterangan' => 'BARANG PO WIP',
@@ -560,15 +581,14 @@ class BeliWIP extends CI_Controller{
                 }
             }
 
-            $return_data['type_message']= "sukses";
-            $return_data['message'] = "DTWIP sudah diberikan ke bagian gudang";           
+        if($this->db->trans_complete()){  
+            redirect('index.php/BeliWIP/proses_matching/'.$this->input->post('po_id'));
         }else{
-            $return_data['type_message']= "error";
-            $return_data['message']= "Pembuatan DTWIP gagal, penomoran belum disetup!";
-        }                  
+            redirect('index.php/BeliWIP/proses_matching/'.$this->input->post('po_id'));
+        }                       
         
-       header('Content-Type: application/json');
-       echo json_encode($return_data);
+       // header('Content-Type: application/json');
+       // echo json_encode($return_data);
     }
 
     function create_voucher(){
@@ -576,12 +596,20 @@ class BeliWIP extends CI_Controller{
         $this->load->helper('terbilang_helper');
         $this->load->model('Model_beli_wip');
         $data = $this->Model_beli_wip->voucher_po_wip($id)->row_array();
-        $terbilang = $data['nilai_po'];
-        $sisa = $data['nilai_po'] - $data['nilai_dp'];
-        $data['nilai_po'] = number_format($data['nilai_po'],0,',','.');
+        if($data['ppn']==1){
+            $nilai_po = $data['nilai_po']*110/100;
+            $data['nilai_ppn'] = number_format($data['nilai_po']*10/100,0,',','.');
+        }else{
+            $nilai_po = $data['nilai_po'];
+            $data['nilai_ppn'] = 0;
+        }
+
+        $terbilang = $nilai_po;
+        $sisa = $nilai_po - $data['nilai_dp'];
+        $data['nilai_po'] = number_format($nilai_po,0,',','.');
         $data['nilai_dp'] = number_format($data['nilai_dp'],0,',','.');
         $data['sisa']     = number_format($sisa,0,',','.');
-
+        // $nilai_po = $data['nilai_po'];
         $data['terbilang'] = ucwords(number_to_words($terbilang));
         
         header('Content-Type: application/json');
@@ -632,6 +660,97 @@ class BeliWIP extends CI_Controller{
             redirect('index.php/BeliWIP');  
         }else{
             $this->session->set_flashdata('flash_msg', 'Pembuatan voucher wip gagal, penomoran belum disetup!');
+            redirect('index.php/BeliWIP');
+        }
+    }
+
+    function save_voucher_pembayaran(){
+        $ppn = $this->session->userdata('user_ppn');
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $nilai_po  = str_replace('.', '', $this->input->post('nilai_po'));
+        $jumlah_dibayar  = str_replace('.', '', $this->input->post('jumlah_dibayar'));
+        $amount  = str_replace('.', '', $this->input->post('amount'));
+        if($nilai_po-($jumlah_dibayar+$amount)>0){
+            $jenis_voucher = 'Parsial';
+        }else{
+            $jenis_voucher = 'Pelunasan';
+        }
+        
+        $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+        if($ppn==1){
+            $code = $this->Model_m_numberings->getNumbering('VFG-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('VFG', $tgl_input); 
+        }
+
+        if($code){ 
+            $this->db->insert('voucher', array(
+                'no_voucher'=>$code,
+                'tanggal'=>$tgl_input,
+                'jenis_voucher'=>$jenis_voucher,
+                'flag_ppn'=>$ppn,
+                'status'=>1,
+                'po_id'=>$this->input->post('id'),
+                'supplier_id'=>$this->input->post('supplier_id'),
+                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'amount'=>$amount,
+                'keterangan'=>$this->input->post('keterangan'),
+                'created'=> $tanggal,
+                'created_by'=> $user_id,
+                'modified'=> $tanggal,
+                'modified_by'=> $user_id
+            ));
+            $id_vc = $this->db->insert_id();
+            
+            $this->db->where('id', $this->input->post('id'));
+            if($jenis_voucher=='Pelunasan' && $this->input->post('status_vc')==3){
+                $this->db->update('po', array('flag_pelunasan'=>1, 'status'=>4));
+            }else{
+                $this->db->update('po', array('flag_dp'=>1));
+            }
+
+            if($this->input->post('bank_id')<=3){
+                if($this->input->post('ppn')==0){
+                    $num = 'KK';
+                }else{
+                    $num = 'KK-KMP';
+                }
+            }else{
+                if($this->input->post('ppn')==0){
+                    $num = 'BK';
+                }else{
+                    $num = 'BK-KMP';
+                }
+            }
+
+            $code_um = $this->Model_m_numberings->getNumbering($num);
+
+            $this->db->insert('f_kas', array(
+                'jenis_trx'=>1,
+                'nomor'=>$code_um,
+                'flag_ppn'=>$ppn,
+                'tanggal'=>$tgl_input,
+                'tgl_jatuh_tempo'=>$this->input->post('tanggal_jatuh'),
+                'no_giro'=>$this->input->post('nomor_giro'),
+                'id_bank'=>$this->input->post('bank_id'),
+                'id_vc'=>$id_vc,
+                'currency'=>$this->input->post('currency'),
+                'nominal'=>str_replace('.', '', $amount),
+                'created_at'=>$tanggal,
+                'created_by'=>$user_id
+            ));
+            
+            if($this->db->trans_complete()){  
+                $this->session->set_flashdata('flash_msg', 'Voucher pembayaran WIP berhasil di-create dengan nomor : '.$code);
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create voucher pembayaran WIP, silahkan coba kembali!');
+            }
+            redirect('index.php/BeliWIP');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Pembuatan voucher pembayaran WIP gagal, penomoran belum disetup!');
             redirect('index.php/BeliWIP');
         }
     }

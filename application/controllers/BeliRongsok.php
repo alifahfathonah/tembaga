@@ -23,7 +23,9 @@ class BeliRongsok extends CI_Controller{
 
         $data['content']= "beli_rongsok/index";
         $this->load->model('Model_beli_rongsok');
+        $this->load->model('Model_beli_sparepart');
         $data['list_data'] = $this->Model_beli_rongsok->po_list($ppn)->result();
+        $data['bank_list'] = $this->Model_beli_sparepart->bank($ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -102,7 +104,10 @@ class BeliRongsok extends CI_Controller{
         $data = array(
             'no_po'=> $code,
             'tanggal'=> $tgl_input,
-            'ppn'=> $user_ppn,
+            'flag_ppn'=> $user_ppn,
+            'ppn'=> $this->input->post('ppn'),
+            'currency'=> $this->input->post('currency'),
+            'kurs'=> $this->input->post('kurs'),
             'supplier_id'=>$this->input->post('supplier_id'),
             'remarks'=> $this->input->post('remarks'),
             'term_of_payment'=>$this->input->post('term_of_payment'),
@@ -346,14 +351,22 @@ class BeliRongsok extends CI_Controller{
         $this->load->helper('terbilang_helper');
         $this->load->model('Model_beli_rongsok');
         $data = $this->Model_beli_rongsok->voucher_po_rsk($id)->row_array();
-        $terbilang = $data['nilai_po'];
-        $sisa = $data['nilai_po'] - $data['nilai_dp'];
-        $data['nilai_po'] = number_format($data['nilai_po'],0,',','.');
+         if($data['ppn']==1){
+            $nilai_po = $data['nilai_po']*110/100;
+            $data['nilai_ppn'] = number_format($data['nilai_po']*10/100,0,',','.');
+        }else{
+            $nilai_po = $data['nilai_po'];
+            $data['nilai_ppn'] = 0;
+        }
+
+        $terbilang = $nilai_po;
+        $sisa = $nilai_po - $data['nilai_dp'];
+        $data['nilai_po'] = number_format($nilai_po,0,',','.');
         $data['nilai_dp'] = number_format($data['nilai_dp'],0,',','.');
         $data['sisa']     = number_format($sisa,0,',','.');
-        $nilai_po = $data['nilai_po'];
+        // $nilai_po = $data['nilai_po'];
         $data['terbilang'] = ucwords(number_to_words($terbilang));
-        
+
         header('Content-Type: application/json');
         echo json_encode($data);    
     }
@@ -370,12 +383,14 @@ class BeliRongsok extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('VRSK', $tgl_input);
-        if($nilai_po-($nilai_dp+$amount)>0){
-            $jenis_voucher = 'DP';
-        }else{
+        if($nilai_po-($nilai_dp+$amount)==0 && $this->input->post('status_vc')==3){
             $jenis_voucher = 'Pelunasan';
             $this->db->where('id', $id);
-            $this->db->update('po', array('flag_pelunasan'=>1,'status'=>4));
+            $this->db->update('po', array('flag_pelunasan'=>1,'status'=>1));
+        }else{
+            $jenis_voucher = 'DP';
+            $this->db->where('id', $id);
+            $this->db->update('po', array('flag_dp'=>1));
         } 
 
         if($code){ 
@@ -406,6 +421,97 @@ class BeliRongsok extends CI_Controller{
         }
     }
     
+    function save_voucher_pembayaran(){
+        $ppn = $this->session->userdata('user_ppn');
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $nilai_po  = str_replace('.', '', $this->input->post('nilai_po'));
+        $jumlah_dibayar  = str_replace('.', '', $this->input->post('jumlah_dibayar'));
+        $amount  = str_replace('.', '', $this->input->post('amount'));
+        if($nilai_po-($jumlah_dibayar+$amount)>0){
+            $jenis_voucher = 'Parsial';
+        }else{
+            $jenis_voucher = 'Pelunasan';
+        }
+        
+        $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+        if($ppn==1){
+            $code = $this->Model_m_numberings->getNumbering('VRSK-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('VRSK', $tgl_input); 
+        }
+
+        if($code){ 
+            $this->db->insert('voucher', array(
+                'no_voucher'=>$code,
+                'tanggal'=>$tgl_input,
+                'jenis_voucher'=>$jenis_voucher,
+                'flag_ppn'=>$ppn,
+                'status'=>1,
+                'po_id'=>$this->input->post('id'),
+                'supplier_id'=>$this->input->post('supplier_id'),
+                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'amount'=>$amount,
+                'keterangan'=>$this->input->post('keterangan'),
+                'created'=> $tanggal,
+                'created_by'=> $user_id,
+                'modified'=> $tanggal,
+                'modified_by'=> $user_id
+            ));
+            $id_vc = $this->db->insert_id();
+            
+            $this->db->where('id', $this->input->post('id'));
+            if($jenis_voucher=='Pelunasan' && $this->input->post('status_vc')==3){
+                $this->db->update('po', array('flag_pelunasan'=>1, 'status'=>4));
+            }else{
+                $this->db->update('po', array('flag_dp'=>1));
+            }
+
+            if($this->input->post('bank_id')<=3){
+                if($this->input->post('ppn')==0){
+                    $num = 'KK';
+                }else{
+                    $num = 'KK-KMP';
+                }
+            }else{
+                if($this->input->post('ppn')==0){
+                    $num = 'BK';
+                }else{
+                    $num = 'BK-KMP';
+                }
+            }
+
+            $code_um = $this->Model_m_numberings->getNumbering($num);
+
+            $this->db->insert('f_kas', array(
+                'jenis_trx'=>1,
+                'nomor'=>$code_um,
+                'flag_ppn'=>$ppn,
+                'tanggal'=>$tgl_input,
+                'tgl_jatuh_tempo'=>$this->input->post('tanggal_jatuh'),
+                'no_giro'=>$this->input->post('nomor_giro'),
+                'id_bank'=>$this->input->post('bank_id'),
+                'id_vc'=>$id_vc,
+                'currency'=>$this->input->post('currency'),
+                'nominal'=>str_replace('.', '', $amount),
+                'created_at'=>$tanggal,
+                'created_by'=>$user_id
+            ));
+            
+            if($this->db->trans_complete()){  
+                $this->session->set_flashdata('flash_msg', 'Voucher pembayaran Rongsok berhasil di-create dengan nomor : '.$code);
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create voucher pembayaran Rongsok, silahkan coba kembali!');
+            }
+            redirect('index.php/BeliRongsok');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Pembuatan voucher pembayaran Rongsok gagal, penomoran belum disetup!');
+            redirect('index.php/BeliRongsok');
+        }
+    }
+
     function create_dtr(){
         $module_name = $this->uri->segment(1);
             $group_id    = $this->session->userdata('group_id');        
@@ -427,15 +533,21 @@ class BeliRongsok extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $user_ppn = $this->session->userdata('user_ppn');
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
-        
+        if($user_ppn==1){
+            $code = $this->Model_m_numberings->getNumbering('DTR-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
+        }
+
         if($code){        
             $data = array(
                         'no_dtr'=> $code,
                         'tanggal'=> $tgl_input,
+                        'flag_ppn'=> $user_ppn,
                         'supplier_id'=> $this->input->post('supplier_id'),
                         'jenis_barang'=> $this->input->post('jenis_barang'),
                         'remarks'=> $this->input->post('remarks'),
@@ -582,7 +694,9 @@ class BeliRongsok extends CI_Controller{
     
     function proses_matching(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');  
+        $user_ppn    = $this->session->userdata('user_ppn');
+
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -603,7 +717,7 @@ class BeliRongsok extends CI_Controller{
         }
         $data['dtr_app'] = $dtr_app;
         $sp_id = $data['header_po']['supplier_id'];
-        $dtr = $this->Model_beli_rongsok->get_dtr($sp_id)->result();
+        $dtr = $this->Model_beli_rongsok->get_dtr($sp_id,$user_ppn)->result();
         foreach ($dtr as $index=>$row){
             $dtr[$index]->details = $this->Model_beli_rongsok->show_detail_dtr($row->id)->result();
         }
@@ -708,10 +822,15 @@ class BeliRongsok extends CI_Controller{
         $ttr_id = $this->input->post('id');
         $tanggal = date('Y-m-d h:i:s');
         $user_id = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('TTR', $tanggal);
+        if($user_ppn==1){
+            $code = $this->Model_m_numberings->getNumbering('TTR-KMP', $tanggal);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('TTR'. $tanggal);
+        }
 
         #Update status TTR
             $this->db->where('id',$ttr_id);
@@ -1186,7 +1305,7 @@ class BeliRongsok extends CI_Controller{
             $this->load->model('Model_beli_rongsok');
             $this->load->helper('tanggal_indo');
             $data['header']  = $this->Model_beli_rongsok->show_header_ttr($id)->row_array();
-            $data['details'] = $this->Model_beli_rongsok->show_detail_ttr($id)->result();
+            $data['details'] = $this->Model_beli_rongsok->show_detail_ttr_group($id)->result();
 
             $this->load->view('print_ttr', $data);
         }else{

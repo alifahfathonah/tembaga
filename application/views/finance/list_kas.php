@@ -38,6 +38,47 @@
             </div>
         </form>
     </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 align="center" style="font-weight: bold;">Saldo Bank</h4>
+                    <div class="table-scrollable">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <th>No</th>
+                                <th style="width: 20%;">Nama Bank</th>
+                                <th>Transaksi Masuk</th>
+                                <th>Transaksi Keluar</th>
+                                <th>Saldo</th>
+                            </thead>
+                            <tbody>
+                            <?php 
+                                $no = 0;
+                                $total_saldo = 0;
+                                foreach ($saldo as $data){
+                                    $no++;
+                            ?>
+                            <tr>
+                                <td style="text-align:center"><?php echo $no; ?></td>
+                                <td><?php echo $data->nama_bank; ?></td>
+                                <td style="text-align:right"><?php echo number_format($data->transaksi_masuk,0,',','.'); ?></td>
+                                <td style="text-align:right"><?php echo number_format($data->transaksi_keluar,0,',','.'); ?></td>
+                                <?php $total = $data->transaksi_masuk - $data->transaksi_keluar;?>
+                                <td style="text-align:right"><?php echo number_format($total,0,',','.'); ?></td>
+                            </tr>
+                            <?php
+                                $total_saldo += $total;
+                                }
+                            ?>
+                            <tr>
+                                <td colspan="4" style="text-align: right; font-weight: bold;"> Total</td>
+                                <td style="background-color: green; color: white;"><?php echo number_format($total_saldo,0,',','.');?></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <hr class="divider"/>
         <div class="row">
             <div class="col-md-12">
                 <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">

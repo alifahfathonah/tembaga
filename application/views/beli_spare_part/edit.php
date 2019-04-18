@@ -76,6 +76,16 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-3">
+                            Nama yang Mengajukan
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" id="nama_pengaju" name="nama_pengaju"
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()"
+                                value="<?php echo $myData['nama_pengaju'];?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
                             Keterangan
                         </div>
                         <div class="col-md-9">
@@ -95,6 +105,7 @@
                                 <th>Nama Item Spare Part</th>
                                 <th>Unit of Measure</th>
                                 <th>Jumlah</th>
+                                <th>Keterangan</th>
                                 <th>Actions</th>
                             </thead>
                             <tbody>
@@ -114,6 +125,7 @@
                             </td>
                             <td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>
                             <td><input type="text" id="qty" name="qty" class="form-control myline" onkeydown="return myCurrency(event);"></td>
+                            <td><input type="text" id="remarks" name="remarks" class="form-control myline"></td>
                             <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail()" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
                         </tr>
                             </tbody>
@@ -220,7 +232,8 @@ function saveDetail(){
             data:{
                 id:$('#id').val(),
                 sparepart_id:$('#sparepart_id').val(),
-                qty:$('#qty').val()
+                qty:$('#qty').val(),
+                remarks:$('#remarks').val()
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
@@ -228,6 +241,7 @@ function saveDetail(){
                     $("#sparepart_id").select2("val", "");
                     $('#uom').val('');
                     $('#qty').val('');
+                    $('#remarks').val('');
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{
@@ -253,7 +267,8 @@ function updateDetail(id){
             data:{
                 detail_id:$('#detail_id_'+id).val(),
                 sparepart_id:$('#sparepart_id_'+id).val(),
-                qty:$('#qty_'+id).val()
+                qty:$('#qty_'+id).val(),
+                remarks:$('#remarks_'+id).val()
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
@@ -292,11 +307,13 @@ function editDetail(id){
     $('#lbl_item_'+id).hide();
     $('#lbl_uom_'+id).hide();
     $('#lbl_qty_'+id).hide();
+    $('#lbl_remarks_'+id).hide();
     
     $('#btnUpdate_'+id).show();
     $('#sparepart_id_'+id).show();
     $('#uom_'+id).show();
     $('#qty_'+id).show();
+    $('#remarks_'+id).show();
 }
 
 </script>
