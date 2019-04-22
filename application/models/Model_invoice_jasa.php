@@ -30,7 +30,7 @@ class Model_invoice_jasa extends CI_Model{
 	}
 
 	function get_po($id){
-		$data = $this->db->query("select ti.id from r_t_surat_jalan rtsj
+		$data = $this->db->query("select tpo.f_invoice_id as id from r_t_surat_jalan rtsj
 		left join r_t_so tso on tso.id = rtsj.r_so_id
 		left join r_t_po tpo on tpo.id = tso.po_id
 		left join r_t_invoice ti on ti.id = tpo.f_invoice_id

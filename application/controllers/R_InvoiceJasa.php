@@ -63,7 +63,7 @@ class R_InvoiceJasa extends CI_Controller{
                 'sjr_id' => $this->input->post('id_sj'),
                 'r_t_so_id' => $this->input->post('id_so'),
                 'r_t_po_id' => $this->input->post('id_po'),
-                'flag_sjr' => 1,
+                'flag_sjr' => 0,
                 'tanggal'=> $tgl_input,
                 'cv_id'=>$this->input->post('customer_id'),
                 'remarks'=>$this->input->post('remarks'),
@@ -83,7 +83,8 @@ class R_InvoiceJasa extends CI_Controller{
             $get_po = $this->Model_invoice_jasa->get_po($this->input->post('id_sj'))->row_array();
             // $pod_list = $this->Model_invoice_jasa->pod_list($get_po['id'])->result();
             // $list_sj = $this->Model_invoice_jasa->list_sj_so($this->input->post('id_sj'))->result();
-            $list_sj = $this->Model_invoice_jasa->list_sj_so_v2($this->input->post('id_sj'),$get_po['id'])->result();
+            //$list_sj = $this->Model_invoice_jasa->list_sj_so_v2($this->input->post('id_sj'),$get_po['id'])->result();
+            $list_sj = $this->Model_invoice_jasa->list_sj_so($this->input->post('id_sj'))->result();
             foreach ($list_sj as $row) {
             	$total_amount = $row->netto * $row->amount;
                 $detail = array(

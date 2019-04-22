@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <a href="<?php echo base_url('index.php/R_Matching'); ?>"><i class="fa fa-angle-right"></i> Matching Invoice</a>
             <i class="fa fa-angle-right"></i> 
-            Create Invoice
+            Create Matching
         </h4>          
     </div>
 </div>

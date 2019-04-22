@@ -218,12 +218,11 @@ function timbang_netto(id){
 
 // function timbang_netto(id){
 //     $.ajax({
-//         url: "192.168.1.23:8080/scaleload",
-//         contentType: "text/javascript",
-//         type: "GET",
+//         url: "http://192.168.1.152:10000/scaleload",
+//         method: "POST",
 //         dataType: "json",
 //         success: function (result){
-//             console.log(result);
+//             $('#bruto_'+id).val(result['nett']);
 //         }
 //     });
 // }

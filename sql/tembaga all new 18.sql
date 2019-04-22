@@ -12588,7 +12588,7 @@ INSERT INTO `voucher` (`id`, `no_voucher`, `tanggal`, `flag_ppn`, `jenis_voucher
 --
 DROP TABLE IF EXISTS `stok_fg`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `stok_fg`  AS  select `t_gudang_fg`.`jenis_barang_id` AS `jenis_barang_id`,`jb`.`jenis_barang` AS `jenis_barang`,count(`t_gudang_fg`.`jenis_barang_id`) AS `total_qty`,sum(`t_gudang_fg`.`netto`) AS `total_netto` from (`t_gudang_fg` left join `jenis_barang` `jb` on((`jb`.`id` = `t_gudang_fg`.`jenis_barang_id`))) where (`t_gudang_fg`.`jenis_trx` = 0) group by `t_gudang_fg`.`jenis_barang_id` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`kmpadmin`@`localhost` SQL SECURITY DEFINER VIEW `stok_fg`  AS  select `t_gudang_fg`.`jenis_barang_id` AS `jenis_barang_id`,`jb`.`jenis_barang` AS `jenis_barang`,count(`t_gudang_fg`.`jenis_barang_id`) AS `total_qty`,sum(`t_gudang_fg`.`netto`) AS `total_netto` from (`t_gudang_fg` left join `jenis_barang` `jb` on((`jb`.`id` = `t_gudang_fg`.`jenis_barang_id`))) where (`t_gudang_fg`.`jenis_trx` = 0) group by `t_gudang_fg`.`jenis_barang_id` ;
 
 -- --------------------------------------------------------
 
@@ -12597,7 +12597,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `stok_keras`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `stok_keras`  AS  select `t_gudang_keras`.`jenis_barang_id` AS `jenis_barang_id`,`jb`.`jenis_barang` AS `jenis_barang`,sum((case when (`t_gudang_keras`.`jenis_trx` = 0) then `t_gudang_keras`.`qty` else 0 end)) AS `total_qty_in`,sum((case when (`t_gudang_keras`.`jenis_trx` = 1) then `t_gudang_keras`.`qty` else 0 end)) AS `total_qty_out`,sum((case when (`t_gudang_keras`.`jenis_trx` = 0) then `t_gudang_keras`.`berat` else 0 end)) AS `total_berat_in`,sum((case when (`t_gudang_keras`.`jenis_trx` = 1) then `t_gudang_keras`.`berat` else 0 end)) AS `total_berat_out` from (`t_gudang_keras` left join `jenis_barang` `jb` on((`jb`.`id` = `t_gudang_keras`.`jenis_barang_id`))) group by `t_gudang_keras`.`jenis_barang_id` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`kmpadmin`@`localhost` SQL SECURITY DEFINER VIEW `stok_keras`  AS  select `t_gudang_keras`.`jenis_barang_id` AS `jenis_barang_id`,`jb`.`jenis_barang` AS `jenis_barang`,sum((case when (`t_gudang_keras`.`jenis_trx` = 0) then `t_gudang_keras`.`qty` else 0 end)) AS `total_qty_in`,sum((case when (`t_gudang_keras`.`jenis_trx` = 1) then `t_gudang_keras`.`qty` else 0 end)) AS `total_qty_out`,sum((case when (`t_gudang_keras`.`jenis_trx` = 0) then `t_gudang_keras`.`berat` else 0 end)) AS `total_berat_in`,sum((case when (`t_gudang_keras`.`jenis_trx` = 1) then `t_gudang_keras`.`berat` else 0 end)) AS `total_berat_out` from (`t_gudang_keras` left join `jenis_barang` `jb` on((`jb`.`id` = `t_gudang_keras`.`jenis_barang_id`))) group by `t_gudang_keras`.`jenis_barang_id` ;
 
 -- --------------------------------------------------------
 
@@ -12606,7 +12606,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `stok_rsk`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `stok_rsk`  AS  select `dd`.`rongsok_id` AS `rongsok_id`,`rsk`.`nama_item` AS `nama_item`,count(`dd`.`id`) AS `jumlah_packing`,((select sum(`dd`.`netto`) from `dtr_detail` `dd` where ((`dd`.`tanggal_masuk` <> 0) and (`dd`.`rongsok_id` = `rsk`.`id`))) - coalesce((select sum(`dd`.`netto`) from `dtr_detail` `dd` where ((`dd`.`tanggal_keluar` <> 0) and (`dd`.`rongsok_id` = `rsk`.`id`))),0)) AS `stok` from (`dtr_detail` `dd` left join `rongsok` `rsk` on((`rsk`.`id` = `dd`.`rongsok_id`))) where (`rsk`.`type_barang` = 'Rongsok') group by `dd`.`rongsok_id` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`kmpadmin`@`localhost` SQL SECURITY DEFINER VIEW `stok_rsk`  AS  select `dd`.`rongsok_id` AS `rongsok_id`,`rsk`.`nama_item` AS `nama_item`,count(`dd`.`id`) AS `jumlah_packing`,((select sum(`dd`.`netto`) from `dtr_detail` `dd` where ((`dd`.`tanggal_masuk` <> 0) and (`dd`.`rongsok_id` = `rsk`.`id`))) - coalesce((select sum(`dd`.`netto`) from `dtr_detail` `dd` where ((`dd`.`tanggal_keluar` <> 0) and (`dd`.`rongsok_id` = `rsk`.`id`))),0)) AS `stok` from (`dtr_detail` `dd` left join `rongsok` `rsk` on((`rsk`.`id` = `dd`.`rongsok_id`))) where (`rsk`.`type_barang` = 'Rongsok') group by `dd`.`rongsok_id` ;
 
 -- --------------------------------------------------------
 
@@ -12615,7 +12615,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `stok_sparepart`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `stok_sparepart`  AS  select `ti`.`id` AS `id`,`ti`.`nama_produk` AS `nama_produk`,sum(`tid`.`bruto_masuk`) AS `total_bruto_masuk`,sum(`tid`.`netto_masuk`) AS `total_netto_masuk`,sum(`tid`.`bruto_keluar`) AS `total_bruto_keluar`,sum(`tid`.`netto_keluar`) AS `total_netto_keluar`,(sum(`tid`.`bruto_masuk`) - sum(`tid`.`bruto_keluar`)) AS `stok_bruto`,(sum(`tid`.`netto_masuk`) - sum(`tid`.`netto_keluar`)) AS `stok_netto` from (`t_inventory` `ti` left join `t_inventory_detail` `tid` on((`tid`.`t_inventory_id` = `ti`.`id`))) where (`ti`.`jenis_item` = 'SPARE PART') group by `ti`.`id` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`kmpadmin`@`localhost` SQL SECURITY DEFINER VIEW `stok_sparepart`  AS  select `ti`.`id` AS `id`,`ti`.`nama_produk` AS `nama_produk`,sum(`tid`.`bruto_masuk`) AS `total_bruto_masuk`,sum(`tid`.`netto_masuk`) AS `total_netto_masuk`,sum(`tid`.`bruto_keluar`) AS `total_bruto_keluar`,sum(`tid`.`netto_keluar`) AS `total_netto_keluar`,(sum(`tid`.`bruto_masuk`) - sum(`tid`.`bruto_keluar`)) AS `stok_bruto`,(sum(`tid`.`netto_masuk`) - sum(`tid`.`netto_keluar`)) AS `stok_netto` from (`t_inventory` `ti` left join `t_inventory_detail` `tid` on((`tid`.`t_inventory_id` = `ti`.`id`))) where (`ti`.`jenis_item` = 'SPARE PART') group by `ti`.`id` ;
 
 -- --------------------------------------------------------
 
@@ -12624,7 +12624,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `stok_um`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `stok_um`  AS  select `fk`.`id_bank` AS `id_bank`,(case when isnull(`b`.`nama_bank`) then 'KAS' else `b`.`nama_bank` end) AS `nama_bank`,sum((case when (`fk`.`jenis_trx` = 0) then `fk`.`nominal` else 0 end)) AS `transaksi_masuk`,sum((case when (`fk`.`jenis_trx` = 1) then `fk`.`nominal` else 0 end)) AS `transaksi_keluar` from (`f_kas` `fk` left join `bank` `b` on((`b`.`id` = `fk`.`id_bank`))) where (`fk`.`flag_ppn` = 0) group by `fk`.`id_bank` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`kmpadmin`@`localhost` SQL SECURITY DEFINER VIEW `stok_um`  AS  select `fk`.`id_bank` AS `id_bank`,(case when isnull(`b`.`nama_bank`) then 'KAS' else `b`.`nama_bank` end) AS `nama_bank`,sum((case when (`fk`.`jenis_trx` = 0) then `fk`.`nominal` else 0 end)) AS `transaksi_masuk`,sum((case when (`fk`.`jenis_trx` = 1) then `fk`.`nominal` else 0 end)) AS `transaksi_keluar` from (`f_kas` `fk` left join `bank` `b` on((`b`.`id` = `fk`.`id_bank`))) where (`fk`.`flag_ppn` = 0) group by `fk`.`id_bank` ;
 
 -- --------------------------------------------------------
 
@@ -12633,7 +12633,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `stok_um_ppn`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `stok_um_ppn`  AS  select `fk`.`id_bank` AS `id_bank`,(case when isnull(`b`.`nama_bank`) then 'KAS' else `b`.`nama_bank` end) AS `nama_bank`,sum((case when (`fk`.`jenis_trx` = 0) then `fk`.`nominal` else 0 end)) AS `transaksi_masuk`,sum((case when (`fk`.`jenis_trx` = 1) then `fk`.`nominal` else 0 end)) AS `transaksi_keluar` from (`f_kas` `fk` left join `bank` `b` on((`b`.`id` = `fk`.`id_bank`))) where (`fk`.`flag_ppn` = 1) group by `fk`.`id_bank` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`kmpadmin`@`localhost` SQL SECURITY DEFINER VIEW `stok_um_ppn`  AS  select `fk`.`id_bank` AS `id_bank`,(case when isnull(`b`.`nama_bank`) then 'KAS' else `b`.`nama_bank` end) AS `nama_bank`,sum((case when (`fk`.`jenis_trx` = 0) then `fk`.`nominal` else 0 end)) AS `transaksi_masuk`,sum((case when (`fk`.`jenis_trx` = 1) then `fk`.`nominal` else 0 end)) AS `transaksi_keluar` from (`f_kas` `fk` left join `bank` `b` on((`b`.`id` = `fk`.`id_bank`))) where (`fk`.`flag_ppn` = 1) group by `fk`.`id_bank` ;
 
 -- --------------------------------------------------------
 
@@ -12642,7 +12642,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `stok_wip`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `stok_wip`  AS  select `t_gudang_wip`.`jenis_barang_id` AS `jenis_barang_id`,`jb`.`jenis_barang` AS `jenis_barang`,sum((case when (`t_gudang_wip`.`jenis_trx` = 0) then `t_gudang_wip`.`qty` else 0 end)) AS `total_qty_in`,sum((case when (`t_gudang_wip`.`jenis_trx` = 1) then `t_gudang_wip`.`qty` else 0 end)) AS `total_qty_out`,sum((case when (`t_gudang_wip`.`jenis_trx` = 0) then `t_gudang_wip`.`berat` else 0 end)) AS `total_berat_in`,sum((case when (`t_gudang_wip`.`jenis_trx` = 1) then `t_gudang_wip`.`berat` else 0 end)) AS `total_berat_out` from (`t_gudang_wip` left join `jenis_barang` `jb` on((`jb`.`id` = `t_gudang_wip`.`jenis_barang_id`))) group by `t_gudang_wip`.`jenis_barang_id` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`kmpadmin`@`localhost` SQL SECURITY DEFINER VIEW `stok_wip`  AS  select `t_gudang_wip`.`jenis_barang_id` AS `jenis_barang_id`,`jb`.`jenis_barang` AS `jenis_barang`,sum((case when (`t_gudang_wip`.`jenis_trx` = 0) then `t_gudang_wip`.`qty` else 0 end)) AS `total_qty_in`,sum((case when (`t_gudang_wip`.`jenis_trx` = 1) then `t_gudang_wip`.`qty` else 0 end)) AS `total_qty_out`,sum((case when (`t_gudang_wip`.`jenis_trx` = 0) then `t_gudang_wip`.`berat` else 0 end)) AS `total_berat_in`,sum((case when (`t_gudang_wip`.`jenis_trx` = 1) then `t_gudang_wip`.`berat` else 0 end)) AS `total_berat_out` from (`t_gudang_wip` left join `jenis_barang` `jb` on((`jb`.`id` = `t_gudang_wip`.`jenis_barang_id`))) group by `t_gudang_wip`.`jenis_barang_id` ;
 
 --
 -- Indexes for dumped tables
