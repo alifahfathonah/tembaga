@@ -99,4 +99,14 @@ class Model_purchase_order extends CI_Model{
 		// where rtp.id =".$id);
 		return $data;
 	}
+
+	function show_header_print_po($id){
+		$data = $this->db->query("select rpo.*, coalesce(cs.nama_customer, cv.nama_cv) as nama, coalesce(cs.pic, cv.pic) as pic, coalesce(cs.alamat, cv.alamat) as alamat, rtsj.tanggal as tgl_kirim
+			from r_t_po rpo
+            left join r_t_surat_jalan rtsj on rtsj.id = rpo.flag_sj
+			left join m_customers cs on (rpo.customer_id = cs.id)
+            left join m_cv cv on (rpo.cv_id = cv.id)
+			where rpo.id = ".$id);
+		return $data;
+	}
 }

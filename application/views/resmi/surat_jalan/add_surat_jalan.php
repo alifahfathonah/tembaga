@@ -28,18 +28,31 @@
                 <input type="hidden" name="jenis" value="<?php echo $jenis;?>">
                 <div class="col-md-6">
                     <div class="row">
+                            <?php if($jenis == 'so'){ ?>
                         <div class="col-md-4">
                             No. Surat Jalan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <?php if($jenis == 'so'){ ?>
                             <input type="text" id="no_surat_jalan" name="no_surat_jalan" maxlength="25"
                                 class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="Auto Generate" readonly="readonly">
-                            <?php } else { ?>
+                        </div>
+                            <?php } else if($jenis == 'matching'){ ?>
+                        <div class="col-md-4">
+                            No. BPB <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
                             <input type="text" id="no_surat_jalan" name="no_surat_jalan" maxlength="25"
                                 class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
-                            <?php } ?>
                         </div>
+                            <?php } else { ?>
+                        <div class="col-md-4">
+                            No. Surat Jalan <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" maxlength="25"
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
+                        </div>
+                            <?php } ?>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
@@ -80,7 +93,7 @@
                         </div>
                         <div class="col-md-8">
                             <select id="flag_po" name="flag_po" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_customer(this.value)">
                                 <option value=""></option>
                                 <?php
                                     foreach ($po_list as $row){
@@ -104,7 +117,7 @@
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
+                            <!-- <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me m_customer_id" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
                                 onclick="get_alamat(this.value);">
                                 <option value=""></option>
@@ -113,7 +126,11 @@
                                         echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
                                     }
                                 ?>
-                            </select>
+                            </select> -->
+                            <input type="text" id="nama_customer" name="nama_customer" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                            <input type="hidden" id="m_customer_id" name="m_customer_id" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
                         </div>
                     </div>  
                     <?php }else if($jenis == 'so'){ ?>
@@ -144,7 +161,7 @@
                             CV <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
+                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me m_customer_id" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
                                 onclick="get_alamat(this.value);">
                                 <option value=""></option>
@@ -192,7 +209,7 @@
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
+                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me m_customer_id" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
                                 onclick="get_alamat(this.value);">
                                 <option value=""></option>
@@ -217,12 +234,12 @@
                     ?>
                     <div class="row">
                         <div class="col-md-4">
-                            No. Surat Jalan Cust. <font color="#f00">*</font>
+                            No. BPB. <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_surat_jalan_customer" name="no_surat_jalan_customer" value="<?= $header['no_sj_resmi'] ?>" maxlength="25"
+                            <input type="text" id="no_surat_jalan_customer" name="no_surat_jalan_customer" value="<?= $header['no_bpb'] ?>" maxlength="25"
                                 class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly">
-                            <input type="hidden" name="r_sj_id" id="r_sj_id" value="<?= $header['id'] ?>">
+                            <input type="hidden" name="r_bpb_id" id="r_bpb_id" value="<?= $header['id'] ?>">
                             <input type="hidden" name="id_invoice_resmi" value="<?php echo $header['r_invoice_id'];?>">
                         </div>
                     </div>
@@ -241,7 +258,7 @@
                         </div>
                         <div class="col-md-8">
                             <select id="flag_po" name="flag_po" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cv(this.value)">
                                 <option value=""></option>
                                 <?php
                                     foreach ($po_list as $row){
@@ -256,7 +273,7 @@
                             CV <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="m_cv_id" name="m_cv_id" class="form-control myline select2me" 
+                            <!-- <select id="m_cv_id" name="m_cv_id" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
                                 >
                                 <option value=""></option>
@@ -265,7 +282,12 @@
                                         echo '<option value="'.$row->id.'">'.$row->nama_cv.'</option>';
                                     }
                                 ?>
-                            </select>
+                            </select> -->
+                            <input type="text" id="nama_cv" name="nama_cv" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+
+                            <input type="hidden" id="m_cv_id" name="m_cv_id" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
                         </div>
                     </div>
                     <?php } else if($jenis == 'sj_customer'){ ?>
@@ -294,7 +316,7 @@
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
+                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me " 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
                                 >
                                 <option value=""></option>
@@ -318,6 +340,27 @@
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-5">
+                    <?php if($jenis == 'sj_customer'){ ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. BPB <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="no_bpb" id="no_bpb" class="form-control myline" 
+                                   style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase();">
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal BPB <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tanggal_bpb" name="tanggal_bpb" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('d-m-Y'); ?>">
+                        </div>
+                    </div> 
+                    <?php } ?>
                     <div class="row">
                         <div class="col-md-4">
                             Type Kendaraan
@@ -404,6 +447,33 @@ function get_alamat(id){
     });
 }
 
+function get_customer(id){
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url('index.php/R_SuratJalan/get_customer'); ?>",
+        data: {id: id},
+        cache: false,
+        success: function(result) {
+            $("#m_customer_id").val(result['id']);     
+            $("#nama_customer").val(result['nama_customer']);           
+        } 
+    });
+}
+
+function get_cv(id){
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url('index.php/R_SuratJalan/get_cv'); ?>",
+        data: {id: id},
+        cache: false,
+        success: function(result) {
+            $("#m_cv_id").val(result['id']);     
+            $("#nama_cv").val(result['nama_cv']);           
+        } 
+    });
+}
+
+
 </script>
 
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
@@ -429,7 +499,17 @@ $(function(){
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd-mm-yy'
-    });       
+    });   
+
+    $("#tanggal_bpb").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });     
 });
 </script>
       

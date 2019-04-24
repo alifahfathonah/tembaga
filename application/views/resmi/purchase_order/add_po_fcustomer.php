@@ -75,6 +75,25 @@
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-5">
+                     <div class="row">
+                        <div class="col-md-4">
+                            No. SO <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_so" name="no_so" 
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal SO <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tanggal_so" name="tanggal_so" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('d-m-Y'); ?>">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Customer <font color="#f00">*</font>
@@ -143,6 +162,18 @@ function get_contact(id){
 <script>
 $(function(){        
     $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });       
+});
+
+$(function(){        
+    $("#tanggal_so").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,

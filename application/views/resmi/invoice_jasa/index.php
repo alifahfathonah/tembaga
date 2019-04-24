@@ -77,7 +77,7 @@
                                 }
                                 if($group_id==9 || $hak_akses['print_po']==1){
                             ?>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_PurchaseOrder/print_po/<?php echo $data->id; ?>" 
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/print_invoice/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
                                 }if(($group_id==9 || $hak_akses['print_po']==1) && $data->flag_sjr == 0 ){

@@ -66,6 +66,7 @@ class R_InvoiceJasa extends CI_Controller{
                 'flag_sjr' => 0,
                 'tanggal'=> $tgl_input,
                 'cv_id'=>$this->input->post('customer_id'),
+                'jenis_invoice'=>'INVOICE KMP KE CV',
                 'remarks'=>$this->input->post('remarks'),
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id,
@@ -235,6 +236,7 @@ class R_InvoiceJasa extends CI_Controller{
                 'r_t_so_id' => $this->input->post('id_so'),
                 'r_t_po_id' => $this->input->post('id_po'),
                 'flag_sjr' => 1,
+                'jenis_invoice'=>'INVOICE CV KE CUSTOMER',
                 'tanggal'=> $tgl_input,
                 'customer_id'=>$this->input->post('customer_id'),
                 'remarks'=>$this->input->post('remarks'),
@@ -346,5 +348,22 @@ class R_InvoiceJasa extends CI_Controller{
             $this->session->set_flashdata('flash_msg', 'Surat Jalan gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/R_InvoiceJasa/edit_inv_jasa/'.$this->input->post('id'));  
         }   
+    }
+
+    function print_invoice(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $data['header'] = $this->Model_invoice_jasa->show_header_inv_jasa($id)->row_array();
+            $data['myDetail'] = $this->Model_invoice_jasa->show_detail_inv_jasa($id)->result();
+
+            if($data['header']['jenis_invoice'] == "INVOICE KMP KE CV"){
+                $this->load->view('resmi/invoice_jasa/print_inv_kmp_cv', $data);    
+            }else if($data['header']['jenis_invoice'] == "INVOICE CV KE CUSTOMER"){
+                $this->load->view('resmi/invoice_jasa/print_inv_cv_cs', $data);
+            }
+            
+        }else{
+            redirect('index.php'); 
+        }
     }
 }

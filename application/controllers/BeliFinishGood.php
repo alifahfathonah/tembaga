@@ -95,6 +95,30 @@ class BeliFinishGood extends CI_Controller{
             'modified_by'=> $user_id
         );
 
+        // $html = [];
+        // $html[] = "<form method='post' action='http://192.168.100.5/tembagabaru/index.php/API/savePo' id='sendPo'>";
+        //     $html[] = "<input type='text' name='no_po' value='".$code."'>";
+        //     $html[] = "<input type='text' name='tanggal' value='".$tgl_input."'>";
+        //     $html[] = "<input type='text' name='flag_ppn' value='".$user_ppn."'>";
+        //     $html[] = "<input type='text' name='ppn' value='".$this->input->post('ppn')."'>";
+        //     $html[] = "<input type='text' name='currency' value='".$this->input->post('currency')."'>";
+        //     $html[] = "<input type='text' name='kurs' value='".$this->input->post('kurs')."'>";
+        //     $html[] = "<input type='text' name='supplier_id' value='".$this->input->post('supplier_id')."'>";
+        //     $html[] = "<input type='text' name='term_of_payment' value='".$this->input->post('currency')."'>";
+        //     $html[] = "<input type='text' name='jenis_po' value='FG'>";
+        //     $html[] = "<input type='text' name='created' value='".$tanggal."'>";
+        //     $html[] = "<input type='text' name='created_by' value='".$user_id."'>";
+        //     $html[] = "<input type='text' name='modified' value='".$tanggal."'>";
+        //     $html[] = "<input type='text' name='modified_by' value='".$user_id."'>";
+        //     $html[] = "<script type=\"text/javascript\">document.getElementById(\"sendPo\").submit(); </script>";
+        // $html[] = "</form>";
+
+        // print_r($html);
+        // $encode = json_encode($data);
+        // echo "<form method='post' action='http://192.168.100.5/tembagabaru/index.php/API/savePo' id='sendPo'><input type='text' name='datapo' id='datapo' value='".$encode."'><script type=\"text/javascript\">document.getElementById(\"sendPo\").submit(); </script></form>";
+        // die();
+        // echo "CONTINUE";
+
         if($this->db->insert('po', $data)){
             redirect('index.php/BeliFinishGood/edit/'.$this->db->insert_id());  
         }else{

@@ -9,6 +9,7 @@ class Model_surat_jalan extends CI_Model{
         left join r_t_so ts on ts.id = tsj.r_so_id
         left join r_t_po tp on tp.id = tsj.r_po_id
     	left join m_customers mc on mc.id = tsj.m_customer_id
+    	where tsj.jenis_surat_jalan != 'SURAT JALAN CUSTOMER KE CV'
     	order by id desc");
 		return $data;
 	}
@@ -46,6 +47,19 @@ class Model_surat_jalan extends CI_Model{
 		return $data;
 	}
 
+	function list_bpb(){
+		$data = $this->db->query("select tsj.*, mc.nama_customer, coalesce(ts.no_so, tp.no_po) as no_reff, 
+		(select count(tsjd.id) from r_t_surat_jalan_detail tsjd where tsjd.sj_resmi_id = tsj.id) as jumlah_item
+    	from r_t_surat_jalan tsj
+    	left join r_t_invoice ti on ti.id = tsj.r_invoice_id
+        left join r_t_so ts on ts.id = tsj.r_so_id
+        left join r_t_po tp on tp.id = tsj.r_po_id
+    	left join m_customers mc on mc.id = tsj.m_customer_id
+    	where tsj.jenis_surat_jalan = 'SURAT JALAN CUSTOMER KE CV'
+    	order by id desc");
+		return $data;
+	}
+
 	function show_header_invoice($id){
 		$data = $this->db->query("select ti.*, fi.no_invoice from r_t_invoice ti
 			left join f_invoice fi on fi.id = ti.invoice_id
@@ -78,12 +92,13 @@ class Model_surat_jalan extends CI_Model{
 	// }
 
 	function show_header_sj($id){
-		$data = $this->db->query("select sjr.*, c.id as id_customer, coalesce(c.nama_customer, cv.nama_cv) as nama_customer, coalesce(c.alamat, cv.alamat) as alamat, tri.no_invoice_resmi, ts.no_so, ts.tanggal as tgl_so, coalesce(tp.no_po,tpo.no_po) as no_po, tp.tanggal as tgl_po
+		$data = $this->db->query("select sjr.*, c.id as id_customer, coalesce(c.nama_customer, cv.nama_cv) as nama_customer, coalesce(c.alamat, cv.alamat) as alamat, tri.no_invoice_resmi, ts.no_so, ts.tanggal as tgl_so, coalesce(tp.no_po,tpo.no_po) as no_po, tp.tanggal as tgl_po, bpb.no_bpb, bpb.tanggal as tanggal_bpb
 			from r_t_surat_jalan sjr
 			left join r_t_invoice tri on (tri.id = sjr.r_invoice_id)
             left join r_t_so ts on (ts.id = sjr.r_so_id)
             left join r_t_po tp on (sjr.r_invoice_id > 0 and tp.flag_sj = sjr.id)
             left join r_t_po tpo on (tpo.id = sjr.r_po_id)
+            left join r_t_bpb bpb on (bpb.id = sjr.r_bpb_id)
 			left join m_customers c on (sjr.m_customer_id = c.id)
 			left join m_cv cv on (sjr.m_cv_id = cv.id)
 			where sjr.id =".$id);
@@ -104,8 +119,25 @@ class Model_surat_jalan extends CI_Model{
         return $data;
     }
 
+    function get_customer($id){
+    	$data = $this->db->query("select c.* from m_customers c
+    		left join r_t_po rpo on c.id = rpo.customer_id where rpo.id = ".$id);
+    	return $data;
+    }
+
+    function get_cv($id){
+    	$data = $this->db->query("select c.* from m_cv c
+    		left join r_t_po rpo on c.id = rpo.cv_id where rpo.id = ".$id);
+    	return $data;
+    }
+
     function show_header_sj_cv($id){
     	$data = $this->db->query("select *from r_t_surat_jalan where id = ".$id);
+    	return $data;
+    }
+
+    function show_header_bpb_cv($id){
+    	$data = $this->db->query("select *from r_t_bpb where id = ".$id);
     	return $data;
     }
 
@@ -122,4 +154,35 @@ class Model_surat_jalan extends CI_Model{
     // function show_header_sj_customer($id){
     // 	$data = $this->db->query("");
     // }
+
+    function show_header_print_sj($id){
+    	$data = $this->db->query("select rtsj.*, rtpo.no_po, cv.nama_cv, cs.nama_customer, bpb.no_bpb, coalesce(rtso.no_so, rtso2.no_so) as no_so from r_t_surat_jalan rtsj
+			left join r_t_po rtpo on rtsj.r_po_id = rtpo.id
+            left join r_t_so rtso on rtsj.r_so_id = rtso.id
+            left join r_t_bpb bpb on bpb.id = rtsj.r_bpb_id
+			left join m_cv cv on rtsj.m_cv_id = cv.id
+			left join r_t_surat_jalan rtsj2 on rtsj.r_sj_id = rtsj2.id
+			left join m_customers cs on rtsj2.m_customer_id = cs.id
+            left join r_t_so rtso2 on rtso2.id = rtsj2.r_so_id
+			where rtsj.id = ".$id);
+    	return $data;
+    }
+
+    function list_detail_print_sj($id){
+    	$data = $this->db->query("select tsjd.*, sum(tsjd.netto) as total_netto, rsk.nama_item, jb.jenis_barang, coalesce(rsk.uom, jb.uom) as uom from r_t_surat_jalan_detail tsjd 
+			left join r_t_surat_jalan tsj on tsj.id = tsjd.sj_resmi_id
+			left join rongsok rsk on tsj.jenis_barang = 'RONGSOK' and rsk.id = tsjd.jenis_barang_id
+			left join jenis_barang jb on tsj.jenis_barang = 'FG' and jb.id = tsjd.jenis_barang_id
+			where tsjd.sj_resmi_id =".$id." group by jb.jenis_barang");
+    	return $data;
+    }
+
+    function show_header_print_bpb($id){
+    	$data = $this->db->query("select bpb.*, rtpo.no_po, cv.nama_cv, cs.nama_customer from r_t_bpb bpb
+            left join r_t_po rtpo on bpb.r_po_id = rtpo.id
+            left join m_cv cv on bpb.m_cv_id = cv.id
+            left join m_customers cs on bpb.m_customer_id = cs.id
+            where bpb.id = ".$id);
+    	return $data;
+    }
 }

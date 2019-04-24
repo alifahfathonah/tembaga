@@ -48,11 +48,18 @@
                         <span class="title">SURAT JALAN</span>
                     </a>
                 </li>
+                <?php } if($group_id==9 || (isset($akses_menu['R_BPB']) && $akses_menu['R_BPB']==1)){ ?>
+                <li <?php if ($module_name=="BPB") echo 'class="start active open"'; ?>>
+                    <a href="<?php echo base_url(); ?>index.php/R_BPB">
+                        <i class="fa fa-file-text-o"></i>
+                        <span class="title">BPB</span>
+                    </a>
+                </li>
                 <?php } if($group_id==9 || (isset($akses_menu['R_TollingResmi']) && $akses_menu['R_TollingResmi']==1)){ ?>
                 <li <?php if ($module_name=="TollingResmi") echo 'class="start active open"'; ?>>
                     <a href="<?php echo base_url(); ?>index.php/R_TollingResmi">
                         <i class="fa fa-truck"></i>
-                        <span class="title">Tolling Titipan</span>
+                        <span class="title">TOLLING TITIPAN</span>
                     </a>
                 </li>
                 <?php } if($group_id==9 || (isset($akses_menu['R_PurchaseOrder']) && $akses_menu['R_PurchaseOrder']==1)){ ?>
@@ -73,7 +80,7 @@
                 <li <?php if ($module_name=="InvoiceJasa") echo 'class="start active open"'; ?>>
                     <a href="<?php echo base_url(); ?>index.php/R_InvoiceJasa">
                         <i class="fa fa-credit-card"></i>
-                        <span class="title">Invoice Jasa</span>
+                        <span class="title">INVOICE JASA</span>
                     </a>
                 </li>
                 <?php } if($group_id==9){ ?>

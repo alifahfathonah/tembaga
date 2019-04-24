@@ -74,7 +74,7 @@ class R_PurchaseOrder extends CI_Controller{
             'f_invoice_id'=> $this->input->post('f_invoice_id'),
             'cv_id'=> $this->input->post('customer_id'),
             'term_of_payment'=> $this->input->post('term_of_payment'),
-            'jenis_po'=> 'PO CV',
+            'jenis_po'=> 'PO CV KE KMP',
             'created_at'=> $tanggal,
             'created_by'=> $user_id
         );
@@ -207,7 +207,7 @@ class R_PurchaseOrder extends CI_Controller{
             'tanggal'=> $tgl_input,
             'cv_id'=>$this->input->post('customer_id'),
             'term_of_payment'=>$this->input->post('term_of_payment'),
-            'jenis_po'=>'PO CV',
+            'jenis_po'=>'PO CV KE KMP',
             'remarks'=>$this->input->post('remarks'),
             'modified_at'=> $tanggal,
             'modified_by'=> $user_id
@@ -223,10 +223,15 @@ class R_PurchaseOrder extends CI_Controller{
     function print_po(){
     	$id = $this->uri->segment(3);
         if($id){        
-            $data['header']  = $this->Model_purchase_order->show_header_po($id)->row_array();
+            $data['header']  = $this->Model_purchase_order->show_header_print_po($id)->row_array();
             $data['details'] = $this->Model_purchase_order->load_detail_po($id)->result();
 
-            $this->load->view('resmi/purchase_order/print_po', $data);
+            if($data['header']['jenis_po'] == "PO CUSTOMER KE CV"){
+                $this->load->view('resmi/purchase_order/print_po_cs_cv', $data);    
+            }else if($data['header']['jenis_po'] == "PO CV KE KMP"){
+                $this->load->view('resmi/purchase_order/print_po_cv_kmp', $data);
+            }
+            
         }else{
             redirect('index.php'); 
         }
@@ -254,6 +259,7 @@ class R_PurchaseOrder extends CI_Controller{
         $user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tanggal_so = date('Y-m-d', strtotime($this->input->post('tanggal_so')));
         
         $this->db->trans_start();
 
@@ -263,7 +269,7 @@ class R_PurchaseOrder extends CI_Controller{
             'f_invoice_id'=> $this->input->post('id_invoice'),
             'customer_id'=> $this->input->post('customer_id'),
             'term_of_payment'=> $this->input->post('term_of_payment'),
-            'jenis_po'=> 'PO CUSTOMER',
+            'jenis_po'=> 'PO CUSTOMER KE CV',
             'created_at'=> $tanggal,
             'created_by'=> $user_id
         );
@@ -274,6 +280,22 @@ class R_PurchaseOrder extends CI_Controller{
         $this->db->update('r_t_invoice', array(
             'r_po_id' => $po_id
         ));
+
+        $data_so = array(
+            'no_so' => $this->input->post('no_so'),
+            'tanggal' => $tanggal_so,
+            'marketing_id' => $user_id,
+            'customer_id' => $this->input->post('customer_id'),
+            'po_id' => $po_id,
+            'tgl_po' => $tgl_input,
+            'jenis_so' => 'SO CV',
+            'jenis_barang' => 'FG',
+            'created_at'=> $tanggal,
+            'created_by'=> $user_id
+        );
+
+        $this->db->insert('r_t_so', $data_so);
+        $so_id = $this->db->insert_id();
 
         $invoice_detail = $this->Model_purchase_order->invoice_detail($this->input->post('id_invoice'))->result();
         foreach ($invoice_detail as $row) {
@@ -286,7 +308,19 @@ class R_PurchaseOrder extends CI_Controller{
                     'total_amount' => $row->total_harga,
                 );
             $this->db->insert('r_t_po_detail', $detail);
+
+            $detail_so = array(
+                'so_id' => $so_id,
+                'po_detail_id' => $po_id,
+                'jenis_barang_id' => $row->jenis_barang_id,
+                'qty' => $row->qty,
+                'netto' => $row->netto,
+                'amount' => $row->harga,
+                'total_amount' => $row->total_harga
+            );
+            $this->db->insert('r_t_so_detail', $detail_so);
         }
+
 
         if($this->db->trans_complete()){
             redirect('index.php/R_PurchaseOrder/edit_po_fcustomer/'.$po_id);  
@@ -339,6 +373,17 @@ class R_PurchaseOrder extends CI_Controller{
                     );
                 $this->db->where('id', $v['id']);
                 $this->db->update('r_t_po_detail', $data);
+
+                $data_so = array(
+                        'jenis_barang_id'=> $v['barang_id'],
+                        'netto'=> $v['netto'],
+                        'amount'=> str_replace('.', '', $v['amount']),
+                        'total_amount'=> str_replace('.', '', $v['total_amount']),
+                        'line_remarks'=> $v['line_remarks']
+                    );
+                $this->db->where('po_detail_id', $v['id']);
+                $this->db->update('r_t_so_detail', $data);
+
             }
         }
 
@@ -347,7 +392,7 @@ class R_PurchaseOrder extends CI_Controller{
             'tanggal'=> $tgl_input,
             'customer_id'=>$this->input->post('customer_id'),
             'term_of_payment'=>$this->input->post('term_of_payment'),
-            'jenis_po'=>'PO CUSTOMER',
+            'jenis_po'=>'PO CUSTOMER KE CV',
             'remarks'=>$this->input->post('remarks'),
             'modified_at'=> $tanggal,
             'modified_by'=> $user_id

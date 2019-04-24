@@ -159,6 +159,24 @@ class R_SO extends CI_Controller{
         }
     }
 
+    function print_so(){
+        $id = $this->uri->segment(3);
+
+        if(isset($id)){
+            $this->load->model('Model_surat_jalan');
+            $this->load->helper('tanggal_indo');
+            $data['header'] = $this->Model_so->show_header_so($id)->row_array();
+            $data['myDetails'] = $this->Model_so->load_detail_so($id)->result();
+            if ($data['header']['jenis_so'] == "SO KMP") {
+                $this->load->view('resmi/salesorder/print_so_kmp', $data);
+            } else if ($data['header']['jenis_so'] == "SO CV") {
+                $this->load->view('resmi/salesorder/print_so_cv', $data);
+            }
+        } else {
+            redirect('index.php'); 
+        }
+    }
+
     function load_detail_so(){
         $id = $this->input->post('id');
 
