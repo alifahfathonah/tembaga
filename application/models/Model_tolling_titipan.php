@@ -151,7 +151,7 @@ class Model_tolling_titipan extends CI_Model{
                     Left Join sales_order so On (dtr.so_id = so.id) 
                     Left Join m_customers cust On (so.m_customer_id = cust.id) 
                     Left Join users usr On (dtr.created_by = usr.id) 
-                Where dtr.customer_id!=0 and COALESCE(so.flag_ppn,".$user_ppn.") =".$user_ppn."
+                Where dtr.customer_id!=0 and dtr.retur_id=0 and COALESCE(so.flag_ppn,".$user_ppn.") =".$user_ppn."
                 Order By dtr.id Desc");
         return $data;
     }
@@ -181,7 +181,7 @@ class Model_tolling_titipan extends CI_Model{
         return $data;
     }
     
-    function ttr_list(){
+    function ttr_list($user){
         $data = $this->db->query("Select ttr.*, 
                     dtr.no_dtr,
                     so.no_sales_order, 
@@ -193,7 +193,7 @@ class Model_tolling_titipan extends CI_Model{
                     Left Join dtr On (ttr.dtr_id = dtr.id) 
                     Left Join sales_order so On (dtr.so_id = so.id) 
                     Left Join m_customers cust On (so.m_customer_id = cust.id) 
-                Where dtr.so_id>0 
+                Where dtr.so_id>0 and dtr.flag_ppn =".$user."
                 Order By dtr.id Desc");
         return $data;
     }
@@ -292,14 +292,11 @@ class Model_tolling_titipan extends CI_Model{
 
     function surat_jalan_keluar($user_ppn){
         $data = $this->db->query("Select tsj.*, po.no_po, (select count(tsjd.id) from t_surat_jalan_detail tsjd where tsjd.t_sj_id = tsj.id) as jumlah_item,
-                    cust.nama_customer, cust.alamat,
-                    so.no_sales_order, fi.id as inv
+                    cust.nama_customer, cust.alamat
                 From t_surat_jalan tsj
                     Left Join po On (po.id = tsj.po_id)
                     Left Join m_customers cust On (tsj.m_customer_id = cust.id)
-                    Left Join sales_order so On (tsj.sales_order_id = so.id)
-                    Left Join f_invoice fi on (fi.id_surat_jalan = tsj.id)
-                Where tsj.sales_order_id = 0 and so.flag_ppn = ".$user_ppn."
+                Where tsj.spb_id > 0 and po.flag_ppn = ".$user_ppn."
                 Order By tsj.id Desc");
         return $data;
     }
@@ -732,17 +729,17 @@ class Model_tolling_titipan extends CI_Model{
     }
 
     function get_spb_list_rsk(){
-        $data = $this->db->query("select id, no_spb from spb where flag_tolling = 1");
+        $data = $this->db->query("select id, no_spb from spb where flag_tolling = 1 and status != 0");
         return $data;
     }
 
     function get_spb_list_wip(){
-        $data = $this->db->query("select id, no_spb_wip as no_spb from t_spb_wip where flag_tolling = 1");
+        $data = $this->db->query("select id, no_spb_wip as no_spb from t_spb_wip where flag_tolling = 1 and status != 0");
         return $data;
     }
 
     function get_spb_list_fg(){
-        $data = $this->db->query("select id, no_spb from t_spb_fg where flag_tolling = 1");
+        $data = $this->db->query("select id, no_spb from t_spb_fg where flag_tolling = 1 and status != 0");
         return $data;
     }
 
@@ -830,7 +827,7 @@ class Model_tolling_titipan extends CI_Model{
     }
 
     function get_po_tolling($id, $user_ppn){
-        $data = $this->db->query("select id, no_po from po where customer_id =".$id." and status != 1 and po.ppn = ".$user_ppn);
+        $data = $this->db->query("select id, no_po from po where customer_id =".$id." and status != 1 and po.flag_ppn = ".$user_ppn);
         return $data;
     }
 

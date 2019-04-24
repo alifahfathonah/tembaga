@@ -39,7 +39,7 @@
             <td><?= $data->jumlah_packing ;?></td>
             <td><?= number_format($data->stok_masuk,2,',','.'); ?></td>
             <td><?= 0+$data->stok_keluar; ?></td>
-            <td><?= number_format($data->stok_rsk,2,',','.'); ?></td>
+            <td style="background-color: green; color: white;"><?= number_format($data->stok_rsk,2,',','.'); ?></td>
         </tr>    
     <?php $no++; } ?>
      </tbody>   

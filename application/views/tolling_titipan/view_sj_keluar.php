@@ -373,7 +373,7 @@ function rejectData(){
     } else {
         $('#message').val("");
         $('.alert-danger').hide();
-        $('#frmReject').attr('action', '<?php echo base_url(); ?>index.php/Tolling/reject_surat_jalan');
+        $('#frmReject').attr('action', '<?php echo base_url(); ?>index.php/Tolling/reject_surat_jalan_keluar');
         $('#frmReject').submit();
     }
 }

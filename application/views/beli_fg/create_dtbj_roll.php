@@ -26,7 +26,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/BeliFinishGood/save_dtbj'); ?>">  
+              id="formku" action="<?php echo base_url('index.php/BeliFinishGood/update_dtbj'); ?>">  
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -96,7 +96,7 @@
                             Jenis Packing
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" 
+                            <input type="text" id="jenis_packing" name="jenis_packing" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="ROLL">
                         </div>
@@ -106,8 +106,7 @@
                             Pilih Packing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select  id="no_packing" name="no_packing" placeholder="Silahkan pilih..." onchange="get_packing(this.value)" 
-                                class="form-control myline select2me" style="margin-bottom:5px">
+                            <select  id="no_packing" name="no_packing" placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom:5px">
                                 <option value=""></option>
                                 <?php 
                                 foreach($packing as $p){
@@ -132,7 +131,6 @@
                 </div>              
             </div>
             
-           
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
@@ -144,31 +142,29 @@
                                 <th></th>
                                 <th>Netto (Kg)</th>
                                 <th>No. Packing</th>
-                                <th>Keterangan</th>
+                                <th>Action</th>
                             </thead>
                             <tbody id="boxDetail">
-                            <tr>
-                                <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
-                                <input type="hidden" id="po_id_1" name="myDetails[1][po_detail_id]" value="">
-                                <input type="hidden" id="fg_id_1" name="myDetails[1][fg_id]" value="">
-                                <td><select id="name_rongsok_1" name="myDetails[1][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom_po(this.value,1);">
-                                    <option value=""></option>
-                                    <?php foreach ($list_fg_on_po as $value){ ?>
-                                            <option value='<?=$value->id;?>'>
-                                                <?=$value->jenis_barang;?>
-                                            </option>
-                                    <?php } ?>
-                                </select>
-                                </td>
-                                <td><input type="text" id="uom_1" name="myDetails[1][uom]" class="form-control myline" readonly="readonly"></td>
-                                <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(1);" id="timbang_1"> <i class="fa fa-dashboard"></i> Timbang </a></td>
-                                <td><input type="text" id="netto_1" name="myDetails[1][netto]" class="form-control myline" value="0" maxlength="10">
-                                </td>
-                                <td><input type="text" name="myDetails[1][no_packing]" id="no_packing_1" class="form-control myline" readonly placeholder="Auto"></td>
-                                <td style="text-align:center"><a id="save_1" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(1);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
-                                    <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
-                            </tr>
                             </tbody>
+                            <tr>
+                                <td style="text-align:center"><i class="fa fa-plus"></td>
+                                <td>
+                                    <select id="jenis_barang" name="jenis_barang" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom(this.value)">
+                                        <option value=""></option>
+                                        <?php foreach ($list_fg_on_po as $value){ ?>
+                                                <option value='<?=$value->id;?>'>
+                                                    <?=$value->jenis_barang;?>
+                                                </option>
+                                        <?php } ?>
+                                    </select>
+                                </td>
+                                <td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"/></td>
+                                <input type="hidden" id="ukuran" name="ukuran">
+                                <td><a href="javascript:;" onclick="timbang_netto()" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>
+                                <td><input type="text" id="netto" name="netto" class="form-control myline"/></td>
+                                <td><input type="text" value="Auto" class="form-control myline" readonly="readonly"></td>
+                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -197,84 +193,111 @@
     </div>
 </div> 
 <script>
-// function timbang_netto(id){
-//         $no_packing = $this->input->post('no_packing');
-//         $kode_packing = substr($no_packing, 0,1);
-//         $urut_packing = substr($no_packing, 2,4);
-//         $ukuran = $this->input->post('ukuran');
+// function timbang_netto(){
+//     var bruto = $("#bruto").val();
+//     var berat_palette = $("#berat_bobbin").val();
+//     var total_netto = bruto - berat_palette;
+//     const total = total_netto.toFixed(2);
+//     $("#netto").val(total);
 // }
 
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
-        $('#message').html("Tanggal harus diisi, tidak boleh kososng!");
+        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#supplier_id").val()) == ""){
-        $('#message').html("Supplier harus diisi, tidak boleh kososng!");
-        $('.alert-danger').show(); 
-    }else{   
-        $('#message').html("");
-        $('.alert-danger').hide(); 
-        $('#formku').submit();
+    }else{     
+        $('#formku').submit(); 
     };
 };
 
-function get_uom_po(id, nmr){
-    if($.trim($('#name_rongsok_'+nmr).val())!=''){    
-            $.ajax({
-                url: "<?php echo base_url('index.php/BeliFinishGood/get_uom'); ?>",
-                type: "POST",
-                data: {id: id},
-                dataType: "json",
-                success: function(result) {
-                    $('#uom_'+nmr).val(result['uom']);
-                    $('#fg_id_'+nmr).val(id);
-                }
-            });
+function loadDetail(id){
+    $.ajax({
+        type:"POST",
+        url:'<?php echo base_url('index.php/BeliFinishGood/load_detail_roll'); ?>',
+        data:"id="+ id,
+        success:function(result){
+            $('#boxDetail').html(result);     
+        }
+    });
+}
+
+function get_uom(id){
+    if(''!=id){
+    $.ajax({
+        url: "<?php echo base_url('index.php/BeliFinishGood/get_uom'); ?>",
+        type: "POST",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result) {
+            if(result){
+                $('#uom').val(result['uom']);
+                $('#ukuran').val(result['ukuran']);
+            } else {
+                alert('Bobbin/Keranjang tidak ditemukan, coba lagi');
+                $('#no_packing').val('');
+            }
+        }
+    });
     }
 }
 
-function saveDetail(id){
-    if($.trim($("#name_rongsok_"+id).val()) == ""){
-        $('#message').html("Silahkan pilih nama item finish good!");
-        $('.alert-danger').show();
-    }else if($.trim($("#netto_"+id).val()) == "" || 0){
-        $('#message').html("Jumlah netto tidak boleh kosong!");
-        $('.alert-danger').show();
-    }else{
-        $("#name_rongsok_"+id).attr('readonly','readonly');
-        $("#timbang_"+id).attr('disabled','disabled');
-        $("#netto_v_"+id).attr('readonly','readonly');
-        $("#line_remarks_"+id).attr('readonly','readonly');
-        $("#save_"+id).attr('disabled','disabled');
-        $("#delete_"+id).removeClass('disabled');
-        var new_id = id+1; 
-        $("#tabel_dtr>tbody").append(
-            '<tr>'+
-                '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
-                '<input type="hidden" id="po_id_'+new_id+'" name="myDetails['+new_id+'][po_detail_id]" value="">'+
-                '<input type="hidden" id="fg_id_'+new_id+'" name="myDetails['+new_id+'][fg_id]" value="">'+
-                '<td><select id="name_rongsok_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom_po(this.value,'+new_id+');">'+
-                    '<option value=""></option>'+
-                    '<?php foreach($list_fg_on_po as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}?>'+
-                '</select>'+
-                '</td>'+
-                '<td><input type="text" id="uom_'+new_id+'" name="myDetails['+new_id+'][uom]" class="form-control myline"></td>'+
-                '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('+new_id+');" id="timbang_'+new_id+'"> <i class="fa fa-dashboard"></i> Timbang </a></td>'+
-                '<td><input type="text" id="netto_v_'+new_id+'" name="myDetails['+new_id+'][netto_v]" class="form-control myline" value="0" maxlength="10" readonly="readonly"></td>'+
-                '<input type="hidden" name="myDetails['+new_id+'][netto]" id="netto_'+new_id+'">'+
-                '<td><input type="text" name="myDetails['+new_id+'][no_packing]" id="no_packing_'+new_id+'" class="form-control myline" readonly placeholder="Auto"></td>'+
-                '<td style="text-align:center"><a id="save_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail('+new_id+');" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>'+
-                    '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+
-            '</tr>'
-        );
-    }$('#name_rongsok_'+new_id).select2();
+function saveDetail(){
+    if($.trim($("#netto").val()) == ""){
+        $('#message').html("Silahkan isi netto barang!");
+        $('.alert-danger').show(); 
+    } else if($.trim($("#no_packing").val()) == ""){
+        $('#message').html("Silahkan pilih packing barang!");
+        $('.alert-danger').show(); 
+    } else{
+        $.ajax({
+            type:"POST",
+            url:'<?php echo base_url('index.php/BeliFinishGood/save_detail_roll'); ?>',
+            data:{
+                id:$('#id').val(),
+                jenis_barang: $('#jenis_barang').val(),
+                tanggal: $('#tanggal').val(),
+                netto: $('#netto').val(),
+                ukuran: $('#ukuran').val(),
+                no_packing: $('#no_packing').val(),
+                id_packing: $('#id_packing').val()
+            },
+            success:function(result){
+                if(result['message_type']=="sukses"){
+                    loadDetail($('#id').val());
+                    $('#jenis_barang').select2('val','');
+                    $('#netto').val('');
+                    $('#uom').val('');
+                    $('#message').html("");
+                    $('.alert-danger').hide(); 
+                }else{
+                    $('#message').html(result['message']);
+                    $('.alert-danger').show(); 
+                }            
+            }
+        });
+    }
 }
 
-function deleteDetail(id){
-    var r=confirm("Anda yakin menghapus item rongsok ini?");
+function hapusDetail(id){
+    var r=confirm("Anda yakin menghapus item barang ini?");
     if (r==true){
-        $('#no_tabel_'+id).closest('tr').remove();
-        }
+        $.ajax({
+            type:"POST",
+            url:'<?php echo base_url('index.php/BeliFinishGood/delete_dtbj_detail'); ?>',
+            data:"id="+ id,
+            success:function(result){
+                if(result['message_type']=="sukses"){
+                    loadDetail($('#id').val());
+                }else{
+                    alert(result['message']);
+                }     
+            }
+        });
+    }
+}
+
+function printBarcode(id){
+    window.open('<?php echo base_url('index.php/BeliFinishGood/print_barcode_kardus?id=');?>'+id,'_blank');
 }
 </script>
 
@@ -292,5 +315,6 @@ $(function(){
         changeYear: true,
         dateFormat: 'yy-mm-dd'
     });
+    loadDetail(<?php echo $header['id']; ?>);
 });
 </script>

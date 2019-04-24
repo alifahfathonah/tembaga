@@ -58,6 +58,15 @@
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $header['pembuat']; ?>">
                         </div>
+                    </div>                 
+                    <div class="row">
+                        <div class="col-md-4">
+                            Catatan
+                        </div>
+                        <div class="col-md-8">
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
+                                class="form-control myline" style="margin-bottom:5px"><?=$header['remarks'];?></textarea>                           
+                        </div>
                     </div>
                     <div class="row">&nbsp;</div>
                 </div>
@@ -94,8 +103,7 @@
                             Pilih Packing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select  id="no_packing" name="no_packing" placeholder="Silahkan pilih..." onchange="get_packing(this.value)" 
-                                class="form-control myline select2me" style="margin-bottom:5px">
+                            <select  id="no_packing" name="no_packing" placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom:5px">
                                 <option value=""></option>
                                 <?php 
                                 foreach($packing as $p){
@@ -269,12 +277,12 @@ function saveDetail(){
         $('#message').html("Silahkan pilih packing barang!");
         $('.alert-danger').show(); 
     } else{
-        console.log($('#no_produksi').val());
         $.ajax({
             type:"POST",
             url:'<?php echo base_url('index.php/GudangFG/save_detail_rambut'); ?>',
             data:{
                 id:$('#id').val(),
+                tanggal: $('#tanggal').val(),
                 no_produksi: $('#no_produksi').val(),
                 bruto:$('#bruto').val(),
                 netto: $('#netto').val(),

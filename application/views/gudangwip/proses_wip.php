@@ -58,6 +58,22 @@
                             </select>   
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Barang <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis_barang" name="jenis_barang" placeholder="Silahkan pilih..."
+                                class="form-control myline select2me" style="margin-bottom:5px;" onchange="pilih_data(this.value,6)">
+                                <option value=""></option>
+                                <?php 
+                                foreach($jenis_barang as $k){
+                                ?>
+                                <option value="<?=$k->id;?>"><?=$k->jenis_barang;?></option>
+                                <?php } ?>    
+                            </select>   
+                        </div>
+                    </div>
                     <div class="row hidden disabled" id="div_spb_cuci">
                         <div class="col-md-4">
                             No. SPB <font color="#f00">*</font>
@@ -229,7 +245,7 @@
 
 <h4 class="text-center">Hasil Masak WIP</h4>
 <!-- kolom isian hasil produksi wip-->
-<input type="hidden" id="id_jenis_barang" name="id_jenis_barang">
+<!-- <input type="hidden" id="id_jenis_barang" name="id_jenis_barang"> -->
 <div class="row"> 
     <div id="div_kawat_hitam_masuk" class="hidden disabled">
     <div class="col-md-12">
@@ -517,7 +533,7 @@ function pilih_data(id){
         $('#div_spb_rolling').removeClass('hidden disabled');
         $('#div_berat_bs_rolling').removeClass('hidden disabled');
         $('#div_berat_bs_ingot').removeClass('hidden disabled');
-        $('#id_jenis_barang').val('6');
+        // $('#id_jenis_barang').val('6');
         $('#div_kawat_hitam_masuk :input').attr('disabled', false);
         $('#div_kawat_merah_masuk :input').attr('disabled', true);
         $('#div_data_spb :input').attr('disabled', false);
@@ -540,7 +556,7 @@ function pilih_data(id){
         $('#div_kawat_hitam_masuk').removeClass('hidden disabled');
         $('#div_stok_keras').removeClass('hidden disabled');
         $('#div_berat_bs').removeClass('hidden disabled');
-        $('#id_jenis_barang').val('6');
+        // $('#id_jenis_barang').val('6');
         $('#div_kawat_hitam_masuk :input').attr('disabled', false);
         $('#div_kawat_merah_masuk :input').attr('disabled', true);
         $('#div_data_spb :input').attr('disabled', true);
@@ -562,7 +578,7 @@ function pilih_data(id){
         $('#div_spb_cuci').removeClass('hidden disabled');
         $('#div_kawat_merah_masuk').removeClass('hidden disabled');
         $('#div_berat_bs').removeClass('hidden disabled');
-        $('#id_jenis_barang').val('5');
+        // $('#id_jenis_barang').val('5');
         $("#id_spb_kh").select2("val", "");
         $('#jml_kawat_hitam').val('');
         $('#berat_kawat_hitam').val('');
@@ -585,8 +601,11 @@ function simpanData(){
         // if($.trim($("#id_spb_ingot").val()) == ""){
         //     $('#message').html("SPB harus diisi, tidak boleh kosong!");
         //     $('.alert-danger').show(); 
-        // }else 
-        if($.trim($("#qty_kh_in").val()) == ""){
+        // }else
+        if($.trim($("#jenis_barang").val()) == ""){
+            $('#message').html("Jenis Barang harus dipilih, tidak boleh kosong!");
+            $('.alert-danger').show(); 
+        }else if($.trim($("#qty_kh_in").val()) == ""){
             $('#message').html("Jumlah Kawat Hitam harus diisi, tidak boleh kosong!");
             $('.alert-danger').show(); 
         }else if($.trim($("#berat_kh_in").val()) == ""){
@@ -596,7 +615,10 @@ function simpanData(){
             $('#formku').submit();
         }
     }else if(id == 'BAKAR ULANG'){
-        if($.trim($("#jml_ingot_keras").val()) == ("" || 0)){
+        if($.trim($("#jenis_barang").val()) == ""){
+            $('#message').html("Jenis Barang harus dipilih, tidak boleh kosong!");
+            $('.alert-danger').show(); 
+        }else if($.trim($("#jml_ingot_keras").val()) == ("" || 0)){
             $('#message').html("Jumlah Ingot Keras harus diisi, tidak boleh kosong!");
             $('.alert-danger').show(); 
         }else if($.trim($('#jml_berat_keras').val()) == ("" || 0)){
@@ -612,7 +634,10 @@ function simpanData(){
             $('#formku').submit();
         }
     }else if(id == 'CUCI'){
-        if($.trim($("#id_spb_kh").val()) == ""){
+        if($.trim($("#jenis_barang").val()) == ""){
+            $('#message').html("Jenis Barang harus dipilih, tidak boleh kosong!");
+            $('.alert-danger').show(); 
+        }else if($.trim($("#id_spb_kh").val()) == ""){
             $('#message').html("SPB harus diisi, tidak boleh kosong!");
             $('.alert-danger').show(); 
         }else if($.trim($("#qty_km_in").val()) == ""){
@@ -643,4 +668,3 @@ $(function(){
     });       
 });
 </script>
-      

@@ -31,7 +31,7 @@
                             No. Laporan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_produksi" name="no_produksi" readonly="readonly"
+                            <input type="text" id="no_prd" name="no_prd" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_laporan_produksi']; ?>">
                             
@@ -58,6 +58,15 @@
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $header['pembuat']; ?>">
                         </div>
+                    </div>         
+                    <div class="row">
+                        <div class="col-md-4">
+                            Catatan
+                        </div>
+                        <div class="col-md-8">
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
+                                class="form-control myline" style="margin-bottom:5px"><?=$header['remarks'];?></textarea>                           
+                        </div>
                     </div>
                     <div class="row">&nbsp;</div>
                 </div>
@@ -71,6 +80,7 @@
                             <input type="text" id="jenis_barang" name="jenis_barang" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $header['jenis_barang']; ?>">
+                                
                             <input type="hidden" name="jenis_barang_id" value="<?=$header['jenis_barang_id'];?>">                         
                         </div>
                     </div>
@@ -81,20 +91,35 @@
                         <div class="col-md-8">
                             <input type="text" id="jenis_packing" name="jenis_packing" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['jenis_packing']; ?>"> 
-                            <input type="hidden" name="id_jenis_packing" value="<?=$packing['id']?>" id="id_jenis_packing">
-                            <input type="hidden" name="no_jenis_packing" value="<?=$packing['nomor_bobbin']?>" id="no_jenis_packing">
+                                value="<?php echo $header['jenis_packing']; ?>">                         
                         </div>
                     </div>
-
-                </div>              
-            </div>
-            <hr class="divider"/>
     <?php
         if(($group_id==1 && !$header['flag_result']) || (!$header['flag_result'])){
     ?>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            Pilih Packing <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select  id="no_packing" name="no_packing" placeholder="Silahkan pilih..." 
+                                class="form-control myline select2me" style="margin-bottom:5px">
+                                <option value=""></option>
+                                <?php 
+                                foreach($packing as $p){
+                                ?>
+                                <option value="<?=$p->nomor_bobbin;?>"><?=$p->nomor_bobbin.' ('.$p->jenis_packing.')';?> </option>
+                                <?php } ?>    
+                            </select> 
+                            <input type="hidden" name="id_packing" id="id_packing">                       
+                        </div>
+                    </div>
+                </div>              
+            </div>
+            <hr class="divider"/>
             <h4 class="text-center">Detail Produksi List</h4>
-           
+            
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
@@ -104,18 +129,24 @@
                                 <th>No Produksi</th>
                                 <th></th>
                                 <th>Netto (Kg)</th>
-                                <th>No Packing</th>
-                                <th>Actions</th>
+                                <th>Nomor Packing / Barcode</th>
+                                <th width="20%">Actions</th>
                             </thead>
                             <tbody id="boxDetail">
 
                             </tbody>
+                            <tr>
+                                <td style="text-align:center"><i class="fa fa-plus"></td>
+                                <td><input type="text" id="no_produksi" name="no_produksi" class="form-control myline"></td>
+                                <td><a href="javascript:;" onclick="timbang_netto()" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>
+                                <td><input type="text" id="netto" name="netto" class="form-control myline"/></td>
+                                <td><input type="text" value="Auto" class="form-control myline" readonly="readonly"></td>
+                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
             </div>
-            
-
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
@@ -127,10 +158,12 @@
                 </div>    
             </div>
         </form>
-        
         <?php
         }else{
         ?>
+            </div>              
+        </div>
+        <hr class="divider"/>
         <h4 class="text-center">Detail Produksi List</h4>
             <div class="row">
                 <div class="col-md-12">
@@ -138,9 +171,9 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th>No</th>
-                                <th>No Produksi</th>
+                                <th>Bruto</th>
                                 <th>Netto (Kg)</th>
-                                <th>No Packing</th>
+                                <th>Nomor Packing / Barcode</th>
                                 <th>Keterangan</th>
                             </thead>
                             <tbody>
@@ -151,8 +184,8 @@
                             ?>
                             <tr>
                                 <td style="text-align:center;"><?php echo $no; ?></td>
-                                <td><?php echo $row->no_produksi; ?></td>
-                                <td><?php echo $row->netto; ?></td>
+                                <td><?php echo $row->bruto; ?></td>
+                                <td><?php echo $row->netto; ?></td>       
                                 <td><?php echo $row->no_packing_barcode; ?></td>
                                 <td><?php echo $row->keterangan; ?></td>
                             </tr>
@@ -185,6 +218,14 @@
     </div>
 </div> 
 <script>
+// function timbang_netto(){
+//     var bruto = $("#bruto").val();
+//     var berat_palette = $("#berat_bobbin").val();
+//     var total_netto = bruto - berat_palette;
+//     const total = total_netto.toFixed(2);
+//     $("#netto").val(total);
+// }
+
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
@@ -205,7 +246,7 @@ function loadDetail(id){
     });
 }
 
-function get_bobbin(id){
+function get_packing(id){
     if(''!=id){
     $.ajax({
         url: "<?php echo base_url('index.php/GudangFG/get_bobbin'); ?>",
@@ -215,16 +256,10 @@ function get_bobbin(id){
         dataType: "json",
         success: function(result) {
             if(result){
-                $('#berat_bobbin').val(result['berat']);
-                $('#pemilik').val(result['nama_owner']);
-                $('#id_bobbin').val(result['id']);
-                $('#netto').val(($('#bruto').val() - result['berat']));
+                $('#id_packing').val(result['id']);
             } else {
                 alert('Bobbin/Keranjang tidak ditemukan, coba lagi');
-                $('#no_bobbin').val('');
-                $('#id_bobbin').val('');
-                $('#berat_bobbin').val('');
-                $('#pemilik').val('');
+                $('#no_packing').val('');
             }
         }
     });
@@ -232,27 +267,33 @@ function get_bobbin(id){
 }
 
 function saveDetail(){
-    if($.trim($("#nomor_produksi").val()) == ""){
-        $('#message').html("Silahkan isi nomor produksi!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#netto").val()) == ""){
+    if($.trim($("#netto").val()) == ""){
         $('#message').html("Silahkan isi netto barang!");
         $('.alert-danger').show(); 
-    }else{
+    } else if($.trim($("#no_packing").val()) == ""){
+        $('#message').html("Silahkan pilih packing barang!");
+        $('.alert-danger').show(); 
+    } else{
+        console.log($('#no_produksi').val());
         $.ajax({
             type:"POST",
             url:'<?php echo base_url('index.php/GudangFG/save_detail_roll'); ?>',
             data:{
                 id:$('#id').val(),
-                nomor_produksi:$('#nomor_produksi').val(),
+                no_produksi: $('#no_produksi').val(),
+                tanggal: $('#tanggal').val(),
                 netto: $('#netto').val(),
-                id_packing: $('#id_jenis_packing').val(),
-                no_packing: $('#no_jenis_packing').val(),
-                ukuran: $('#ukuran').val()
+                ukuran: $('#ukuran').val(),
+                no_packing: $('#no_packing').val(),
+                id_packing: $('#id_packing').val()
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
+                    $('#no_produksi').val('');
+                    $('#bruto').val('');
+                    $('#berat_bobbin').val('');
+                    $('#netto').val('');
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{
@@ -282,6 +323,9 @@ function hapusDetail(id){
     }
 }
 
+function printBarcode(id){
+    window.open('<?php echo base_url('index.php/GudangFG/print_barcode_kardus?id=');?>'+id,'_blank');
+}
 </script>
 
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
@@ -290,4 +334,3 @@ function hapusDetail(id){
 <script>    
     loadDetail(<?php echo $header['id']; ?>);
 </script>
-      

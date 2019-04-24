@@ -145,7 +145,7 @@
                                 <th>Berat Palette</th>
                                 <th></th>
                                 <th>Netto (Kg)</th>
-                                <th>No. Packing</th>
+                                <th style="width:20%">No. Packing</th>
                                 <th>Keterangan</th>
                             </thead>
                             <tbody id="boxDetail">
@@ -203,24 +203,9 @@
 </div> 
 <script>
 function timbang_netto(id){
-    if($.trim($("#no_packing").val()) == ""){
-        $('#message').html("Silahkan pilih packing!");
-        $('.alert-danger').show();
-    }else{
-        const no_packing = $('#no_packing').val();
-        const kode_packing = no_packing.substring(0,1);
-        const urut_packing = kode_packing.substring(2,4);
-        const ukuran = $('#ukuran_'+id).val();
-        const date = $('#tanggal').val();
-        const tanggal = date.substring(2, 4)+date.substring(5,7)+date.substring(8,10);
-        const rand = Math.floor(Math.random() * (99 - 1)) + 1;
-        const nomor_packing = (tanggal+kode_packing+ukuran+urut_packing+rand);
-        //console.log(no_packing+' | '+kode_packing+' | '+urut_packing+' | '+ukuran+' | '+tanggal+' | '+rand);
-        $('#no_packing_'+id).val(nomor_packing);
-        const bruto = $('#bruto_'+id).val();
-        const berat = $('#berat_bobbin_'+id).val();
-        $('#netto_'+id).val(bruto - berat);
-    }
+    const bruto = $('#bruto_'+id).val();
+    const berat = $('#berat_bobbin_'+id).val();
+    $('#netto_'+id).val(bruto - berat);
 }
 
 function simpanData(){
@@ -248,7 +233,6 @@ function get_uom_po(id, nmr){
                     $('#uom_'+nmr).val(result['uom']);
                     $('#fg_id_'+nmr).val(id);
                     $('#ukuran_'+nmr).val(result['ukuran']);
-                    console.log($('#ukuran_'+nmr).val());
                 }
             });
     }
@@ -280,7 +264,24 @@ function saveDetail(id){
     }else if($.trim($("#netto_"+id).val()) ==  ("" || 0)){
         $('#message').html("Jumlah netto tidak boleh kosong!");
         $('.alert-danger').show();
+    }else if($.trim($("#no_packing").val()) == ""){
+        $('#message').html("Silahkan pilih packing!");
+        $('.alert-danger').show();
     }else{
+        $.ajax({
+            url: "<?php echo base_url('index.php/BeliFinishGood/get_packing_kardus'); ?>",
+            type: "POST",
+            data: {
+                id:id,
+                tanggal: $('#tanggal').val(),
+                no_packing: $('#no_packing').val(),
+                ukuran: $('#ukuran_'+id).val()
+            },
+            dataType: "json",
+            success: function(result){
+                $('#no_packing_'+id).val(result['no_packing']);
+            }
+        });
         $("#name_rongsok_"+id).attr('readonly','readonly');
         $("#timbang_"+id).attr('disabled','disabled');
         $("#netto_"+id).attr('readonly','readonly');

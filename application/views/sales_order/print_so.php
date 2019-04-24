@@ -4,8 +4,8 @@
         <meta charset="utf-8" />
     </head>
     <body class="margin-left:40px;">
-        <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br>SALES ORDER</h3>
+        <p>&nbsp;</p><h3 style="text-align: center; text-decoration: underline;">
+        <?php if($this->session->userdata('user_ppn')==1){echo 'PT. KAWATMAS PRAKASA<br>DATA TERIMA RONGSOK (DTR)';}?><br>SALES ORDER</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="40%">

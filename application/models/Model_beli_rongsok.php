@@ -407,6 +407,11 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
 
+    function count_palette_rongsok($tgl){
+        $data = $this->db->query("select count(id) from dtr_detail where tanggal_masuk =".$tgl);
+        return $data;
+    }
+
     function show_detail_prev_dtr($id){
         $data =  $this->db->query("
                 Select dtr.no_dtr,rongsok.nama_item,dtr_detail.qty from dtr_detail

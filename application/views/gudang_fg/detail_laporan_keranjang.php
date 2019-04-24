@@ -58,6 +58,15 @@
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $header['pembuat']; ?>">
                         </div>
+                    </div>     
+                    <div class="row">
+                        <div class="col-md-4">
+                            Catatan
+                        </div>
+                        <div class="col-md-8">
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
+                                class="form-control myline" style="margin-bottom:5px"><?=$header['remarks'];?></textarea>                           
+                        </div>
                     </div>
                     <div class="row">&nbsp;</div>
                 </div>

@@ -68,6 +68,7 @@ class GudangWIP extends CI_Controller{
        // $data['spb_ingot'] = $this->Model_gudang_wip->spb_ingot()->result();
        $data['stok_keras'] = $this->Model_gudang_wip->stok_keras()->row_array();
        $data['spb_kawat_hitam'] = $this->Model_gudang_wip->spb_kawat_hitam()->result();
+       $data['jenis_barang'] = $this->Model_gudang_wip->jenis_barang_list()->result();
         
        $this->load->view('layout', $data);  
     }
@@ -103,7 +104,7 @@ class GudangWIP extends CI_Controller{
                     'no_produksi_wip' => $code,
                     'jenis_masak' => $this->input->post('jenis_masak'),
                     'tanggal'=> $tgl_input,
-                    'jenis_barang_id'=> $this->input->post('id_jenis_barang'),
+                    'jenis_barang_id'=> $this->input->post('jenis_barang'),
                     't_spb_wip_id'=> $this->input->post('id_spb'),
                     'qty'=>(int)($this->input->post('qty_kh')!= null) ? $this->input->post('qty_kh'): $this->input->post('qty_km'),
                     'uom' => 'ROLL',
@@ -139,7 +140,7 @@ class GudangWIP extends CI_Controller{
                 $data_bpb_wip_detail = array(
                 'bpb_wip_id' => $insert_id_bpb_wip,
                 'created' => $tgl_input,
-                'jenis_barang_id' => '654', //Copper Rod 8 MM Cuci
+                'jenis_barang_id' => $this->input->post('jenis_barang'), //Copper Rod 8 MM Cuci
                 'spb_wip_detail_id' => 0,
                 'qty' => $this->input->post('qty_km'),
                 'uom' => 'ROLL',
@@ -152,7 +153,7 @@ class GudangWIP extends CI_Controller{
                 $data_bpb_wip_detail = array(
                 'bpb_wip_id' => $insert_id_bpb_wip,
                 'created' => $tgl_input,
-                'jenis_barang_id' => '656', //Copper Rod 8 MM
+                'jenis_barang_id' => $this->input->post('jenis_barang'), //Copper Rod 8 MM
                 'spb_wip_detail_id' => 0,
                 'qty' => $this->input->post('qty_kh'),
                 'uom' => 'ROLL',

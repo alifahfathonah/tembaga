@@ -122,6 +122,7 @@ class BeliFinishGood extends CI_Controller{
             $data['list_data'] = $this->Model_beli_fg->load_detail_po($id)->result();
             $data['list_detail'] = $this->Model_beli_fg->get_jb($id)->result();
             $data['list_fg'] = $this->Model_beli_fg->list_fg()->result();
+            $data['list_terima'] = $this->Model_beli_fg->load_dtbj_detail($id)->result();
 
             $this->load->model('Model_beli_sparepart');
             $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
@@ -138,6 +139,21 @@ class BeliFinishGood extends CI_Controller{
         
         header('Content-Type: application/json');
         echo json_encode($fg); 
+    }
+
+    function get_packing_kardus(){
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('KARDUS',$tgl_input);
+
+        $first = substr($this->input->post('no_packing'),0,1);
+        $ukuran = $this->input->post('ukuran');
+        $data['no_packing'] = $tgl_code.$first.$ukuran.substr($code,12,4);
+
+        header('Content-Type: application/json');
+        echo json_encode($data);
     }
 
     function save_detail(){
@@ -426,7 +442,7 @@ class BeliFinishGood extends CI_Controller{
                 $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result(); 
             } else if ($packing == "ROLL") {
                 $data['content'] = "beli_fg/create_dtbj_roll";
-                $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('ROLL')->row_array();
+                $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('ROLL')->result();
                 $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result(); 
             } else {
                 $data['content'] = "beli_fg/create_dtbj_rambut";
@@ -441,6 +457,27 @@ class BeliFinishGood extends CI_Controller{
         }else{
             redirect('index.php/BeliRongsok');
         }
+    }
+
+    function update_dtbj(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('dtbj', array(
+            'remarks'=>$this->input->post('remarks'),
+            'supplier_id'=>$this->input->post('supplier_id'),
+            'modified'=>$tanggal,
+            'modified_by'=>$user_id
+        ));
+
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'DTBJ berhasil di-create dengan nomor : '.$this->input->post('no_dtr'));                 
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTBJ, silahkan coba kembali!');
+        }
+        redirect('index.php/BeliFinishGood/dtbj_list');
     }
 
     function save_dtbj(){
@@ -495,6 +532,80 @@ class BeliFinishGood extends CI_Controller{
             redirect('index.php/BeliFinishGood/dtbj_list');
     }
 
+    function load_detail_roll(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $no    = 1;
+        $this->load->model('Model_beli_fg');
+        $myDetail = $this->Model_beli_fg->load_detail($id)->result(); 
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->jenis_barang.'</td>';
+            $tabel .= '<td>'.$row->uom.'</td>';
+            $tabel .= '<td><a href="javascript:;" onclick="timbang(this)" class="btn btn-xs btn-circle blue disabled"><i class="fa fa-dashboard"></i> Timbang</a></td>';
+            $tabel .= '<td>'.$row->netto.'</td>';
+            $tabel .= '<td>'.$row->no_packing.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a></td>';
+            $tabel .= '</tr>';            
+            $no++;
+        }
+            
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function save_detail_roll(){
+        $return_data = array();
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+        $this->db->trans_start();
+
+        $this->load->model('Model_m_numberings');
+        $first = substr($this->input->post('no_packing'),0,1);
+        $sec = substr($this->input->post('no_packing'),1,1);
+        $num = $first.$sec;
+        $code = $this->Model_m_numberings->getNumbering($num,$tgl_input);
+
+        $ukuran = $this->input->post('ukuran');
+        $no_packing = $tgl_code.$first.$ukuran.$sec.substr($code,8,3);
+
+        $this->db->insert('dtbj_detail', array(
+            'tanggal_masuk' => $tgl_input,
+            'dtbj_id' =>$this->input->post('id'),
+            'jenis_barang_id' => $this->input->post('jenis_barang'),
+            'no_packing' =>$no_packing,
+            'bruto' => $this->input->post('netto'),
+            'netto' => $this->input->post('netto'),
+            'berat_bobbin' => 0
+        ));
+        if($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function delete_dtbj_detail(){
+        $id = $this->input->post('id');
+        $return_data = array();
+
+        $this->db->where('id', $id);
+        if($this->db->delete('dtbj_detail')){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menghapus item barang! Silahkan coba kembali";
+        }           
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
     // function edit_dtbj(){
     //     $module_name = $this->uri->segment(1);
     //     $id = $this->uri->segment(3);

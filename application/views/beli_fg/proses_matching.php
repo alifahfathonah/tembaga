@@ -195,7 +195,7 @@
                                         Jenis Barang
                                     </div>
                                     <div class="col-md-8">
-                                        : FG ?>
+                                        : FG
                                     </div>
                                 </div>
                                 <div class="row">

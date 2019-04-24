@@ -799,7 +799,7 @@ class SalesOrder extends CI_Controller{
             }else{
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_rsk($soid)->result();
                 $data['jenis_barang'] = $this->Model_sales_order->rongsok_in_so($soid)->result();
-                $data['content']= "sales_order/edit_surat_jalan";
+                $data['content']= "sales_order/edit_surat_jalan_test";
             }
             $this->load->view('layout', $data);   
         }else{

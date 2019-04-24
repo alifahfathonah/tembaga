@@ -794,6 +794,7 @@ class Tolling extends CI_Controller{
         if($code){        
             $data = array(
                         'no_dtr'=> $code,
+                        'flag_ppn'=> $user_ppn,
                         'tanggal'=> $tgl_input,
                         'customer_id'=> $this->input->post('supplier_id'),
                         'jenis_barang'=> $this->input->post('jenis_barang'),
@@ -1143,7 +1144,8 @@ class Tolling extends CI_Controller{
     
     function ttr_list(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $user_ppn    = $this->session->userdata('user_ppn');
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -1153,7 +1155,7 @@ class Tolling extends CI_Controller{
 
         $data['content']= "tolling_titipan/ttr_list";
         $this->load->model('Model_tolling_titipan');
-        $data['list_data'] = $this->Model_tolling_titipan->ttr_list()->result();
+        $data['list_data'] = $this->Model_tolling_titipan->ttr_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -1870,6 +1872,7 @@ class Tolling extends CI_Controller{
     function view_surat_jalan_keluar(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
         if($id){
             $group_id    = $this->session->userdata('group_id');
             if($group_id != 1){
@@ -1886,7 +1889,7 @@ class Tolling extends CI_Controller{
             $custid = $data['header']['m_customer_id'];
             $jenis = $data['header']['jenis_barang'];
 
-            $data['list_po'] = $this->Model_tolling_titipan->get_po_tolling($custid)->result();
+            $data['list_po'] = $this->Model_tolling_titipan->get_po_tolling($custid,$user_ppn)->result();
             if($jenis == 'FG'){
                 $data['list_sj'] = $this->Model_sales_order->load_view_sjd($id)->result();
             }else if($jenis == 'WIP'){
@@ -2027,24 +2030,21 @@ class Tolling extends CI_Controller{
         $this->load->model('Model_tolling_titipan');
         #cek jika surat jalan sudah di kirim semua atau belum
             if($jenis == 'FG'){
-                $list_produksi = $this->Model_tolling_titipan->list_item_sjk_fg($spbid)->result();
-                if(empty($list_produksi) && $this->input->post('status_spb') == 1){
+                if($this->input->post('status_spb') == 1){
                     $this->db->where('id',$spbid);
                     $this->db->update('t_spb_fg', array(
                         'flag_tolling'=>2
                     ));
                 }
             }else if($jenis == 'WIP'){
-                $list_produksi = $this->Model_tolling_titipan->list_item_sjk_wip($spbid)->result();
-                if(empty($list_produksi) && $this->input->post('status_spb') == 1){
+                if($this->input->post('status_spb') == 1){
                     $this->db->where('id',$spbid);
                     $this->db->update('t_spb_wip', array(
                         'flag_tolling'=>2
                     ));
                 }
             }else{
-                $list_produksi = $this->Model_tolling_titipan->list_item_sjk_rsk($spbid)->result();
-                if(empty($list_produksi) && $this->input->post('status_spb') == 1){
+                if($this->input->post('status_spb') == 1){
                     $this->db->where('id',$spbid);
                     $this->db->update('spb', array(
                         'flag_tolling'=>2
@@ -2119,6 +2119,26 @@ class Tolling extends CI_Controller{
         
         $this->session->set_flashdata('flash_msg', 'Surat jalan berhasil direject');
         redirect('index.php/Tolling/surat_jalan');
+    }
+
+    function reject_surat_jalan_keluar(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $sjid = $this->input->post('sj_id');
+        
+        #Update status t_surat_jalan
+        $data = array(
+                'status'=> 9,
+                'rejected_at'=> $tanggal,
+                'rejected_by'=>$user_id,
+                'reject_remarks'=>$this->input->post('reject_remarks')
+            );
+        
+        $this->db->where('id', $sjid);
+        $this->db->update('t_surat_jalan', $data);
+        
+        $this->session->set_flashdata('flash_msg', 'Surat jalan berhasil direject');
+        redirect('index.php/Tolling/surat_jalan_keluar');
     }
 
     function simpan_surat_jalan_keluar(){

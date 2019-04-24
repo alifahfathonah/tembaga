@@ -13,6 +13,48 @@
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12">
+        <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h3 align="center"><b>Approve TTR</b></h3>
+                    <hr class="divider" />
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">&nbsp;</h4>
+                    </div>
+                    <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-danger display-hide">
+                                <button class="close" data-close="alert"></button>
+                                <span id="message">&nbsp;</span>
+                            </div>
+                        </div>
+                    </div>
+                        <form class="eventInsForm" method="post" target="_self" name="frmReject" 
+                              id="frmReject">                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    No TTR<font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="nomor_ttr" name="nomor_ttr" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
+                                    
+                                    <input type="hidden" id="header_id" name="header_id">
+                                    <input type="hidden" id="jml_afkir" name="jml_afkir">
+                                    <input type="hidden" id="jml_packing" name="jml_packing">
+                                    <input type="hidden" id="jml_lain" name="jml_lain">
+                                </div>
+                            </div>                           
+                        </form>
+                    </div>
+                    <div class="modal-footer">                        
+                        <button type="button" class="btn blue" onClick="approveData();">Simpan</button>
+                        <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <?php
             if( ($group_id==1)||($hak_akses['review_ttr']==1) ){
         ?>
@@ -188,33 +230,55 @@
     </div>
 </div> 
 <script>
-function approveTTR(id_ttr){
-    const jumlah_afkir = $('#jumlah_afkir').val();
-    const jumlah_packing = $('#jumlah_packing').val();
-    const jumlah_lain = $('#jumlah_lain').val();
-    $.ajax({
-        url: "<?php echo base_url('index.php/BeliRongsok/approve_ttr'); ?>",
-        type: "POST",
-        data : {
-            id: id_ttr,
-            jumlah_afkir: jumlah_afkir,
-            jumlah_packing: jumlah_packing,
-            jumlah_lain: jumlah_lain
-        },
-        success: function (result){
-            if(result['status']){
-                alert(result['message']);
-                setTimeout(function(){
-                    if($('#no_dtr').val().substring(0, 5)=='DTR-T'){
-                        window.location="<?=base_url('index.php/Tolling/ttr_list');?>";
-                    }else{
-                    window.location="<?=base_url('index.php/BeliRongsok/ttr_list');?>";
-                    }
-                },1000);
-            }
-        }
-    });
+// function approveTTR(id_ttr){
+//     const jumlah_afkir = $('#jumlah_afkir').val();
+//     const jumlah_packing = $('#jumlah_packing').val();
+//     const jumlah_lain = $('#jumlah_lain').val();
+//     $.ajax({
+//         url: "<?php echo base_url('index.php/BeliRongsok/approve_ttr'); ?>",
+//         type: "POST",
+//         data : {
+//             id: id_ttr,
+//             jumlah_afkir: jumlah_afkir,
+//             jumlah_packing: jumlah_packing,
+//             jumlah_lain: jumlah_lain
+//         },
+//         success: function (result){
+//             if(result['status']){
+//                 alert(result['message']);
+//                 setTimeout(function(){
+//                     if($('#no_dtr').val().substring(0, 5)=='DTR-T'){
+//                         window.location="<?=base_url('index.php/Tolling/ttr_list');?>";
+//                     }else{
+//                     window.location="<?=base_url('index.php/BeliRongsok/ttr_list');?>";
+//                     }
+//                 },1000);
+//             }
+//         }
+//     });
+// }
+function approveData(){
+    if($.trim($("#nomor_ttr").val()) == ""){
+        $('#message').html("Nomor TTR harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{
+        $('#message').html("");
+        $('.alert-danger').hide();
+        $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/BeliRongsok/approve_ttr_resmi");
+        $('#frmReject').submit(); 
+    }
+}
 
+function approveTTR(id_ttr){
+    $('#header_id').val(id_ttr);
+    $('#jml_afkir').val($('#jumlah_afkir').val());
+    $('#jml_packing').val($('#jumlah_packing').val());
+    $('#jml_lain').val($('#jumlah_lain').val());
+    $('#message').html("");
+    $('.alert-danger').hide();
+        
+    $("#myModal").find('.modal-title').text('Approve TTR');
+    $("#myModal").modal('show',{backdrop: 'true'}); 
 }
 
 function rejectTTR(id_ttr){
@@ -238,3 +302,4 @@ function rejectTTR(id_ttr){
     }
 }
 </script>
+      

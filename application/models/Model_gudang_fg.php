@@ -26,7 +26,7 @@ class Model_gudang_fg extends CI_Model{
                     Left Join users usr On (pf.created_by = usr.id)
                     left join jenis_barang jb on (jb.id = pf.jenis_barang_id)
                     left join m_jenis_packing jp on (jp.id = pf.jenis_packing_id)  
-                Order By pf.tanggal desc");
+                Order By pf.tanggal desc, pf.id desc");
         return $data;
     } 
 
@@ -139,8 +139,7 @@ class Model_gudang_fg extends CI_Model{
         $data = $this->db->query("select mb.*,mjb.jenis_packing
                 from m_bobbin mb
                 left join m_jenis_packing mjb on(mjb.id = mb.m_jenis_packing_id)
-                where mjb.jenis_packing='$id'"
-                );
+                where mjb.jenis_packing='".$id."'");
         return $data;
     }
     

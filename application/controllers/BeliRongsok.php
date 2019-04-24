@@ -529,6 +529,19 @@ class BeliRongsok extends CI_Controller{
             $this->load->view('layout', $data);
     }
     
+    function generate_palette(){
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
+        
+        $data['no_packing'] = $tgl_code.substr($code,13,4);
+
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+
     function save_dtr(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
@@ -604,7 +617,6 @@ class BeliRongsok extends CI_Controller{
             foreach ($details as $row){
                 $this->db->where('id', $row['id']);
                 $this->db->update('dtr_detail', array(
-                    'qty'=>str_replace('.', '', $row['qty']),
                     'bruto'=>$row['bruto'],
                     'berat_palette'=>$row['berat_palette'],
                     'netto'=>$row['netto'],
@@ -818,6 +830,41 @@ class BeliRongsok extends CI_Controller{
        // echo json_encode($return_data);
     }
     
+    function approve_ttr_resmi(){
+        $ttr_id = $this->input->post('header_id');
+        $tanggal = date('Y-m-d h:i:s');
+        $user_id = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+
+        $this->db->trans_start();
+
+        #Update status TTR
+            $this->db->where('id',$ttr_id);
+            $result = $this->db->update('ttr', array(
+                    'no_ttr' => $this->input->post('nomor_ttr'),
+                    'jmlh_afkiran' => $this->input->post('jml_afkir'),
+                    'jmlh_pengepakan' => $this->input->post('jml_packing'),
+                    'jmlh_lain'=> $this->input->post("jml_lain"),
+                    'ttr_status'=>1,
+                    'tgl_approve'=>$tanggal,
+                    'approved_by'=>$user_id));
+
+        // #Update Stok Rongsok Tersedia
+        //     $this->load->model('Model_beli_rongsok');
+        //     $dtr_list = $this->Model_beli_rongsok->show_detail_dtr_by_ttr($ttr_id)->result();
+        //     foreach ($dtr_list as $k => $v) {
+        //         $this->Model_beli_rongsok->update_stok_tersedia($v->rongsok_id,$v->netto);
+        //     }
+        
+            
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'TTR berhasil di-create dengan nomor : '.$this->input->post('nomor_ttr'));                 
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create TTR, silahkan coba kembali!');
+        }
+        redirect('index.php/BeliRongsok/ttr_list');
+    }
+
     public function approve_ttr(){
         $ttr_id = $this->input->post('id');
         $tanggal = date('Y-m-d h:i:s');
@@ -829,7 +876,7 @@ class BeliRongsok extends CI_Controller{
         if($user_ppn==1){
             $code = $this->Model_m_numberings->getNumbering('TTR-KMP', $tanggal);
         }else{
-            $code = $this->Model_m_numberings->getNumbering('TTR'. $tanggal);
+            $code = $this->Model_m_numberings->getNumbering('TTR', $tanggal);
         }
 
         #Update status TTR
@@ -1280,6 +1327,7 @@ class BeliRongsok extends CI_Controller{
     function review_ttr(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
         if($id){    
             $group_id = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -1292,7 +1340,12 @@ class BeliRongsok extends CI_Controller{
             $this->load->model('Model_beli_rongsok');
             $data['header']  = $this->Model_beli_rongsok->show_header_ttr($id)->row_array();
             $data['details'] = $this->Model_beli_rongsok->show_detail_ttr($id)->result();
-            $data['content'] = 'beli_rongsok/review_ttr';
+            if($user_ppn == 1){
+                $data['content'] = 'beli_rongsok/review_ttr_resmi';
+            }else{
+                $data['content'] = 'beli_rongsok/review_ttr';
+            }
+
             $this->load->view('layout', $data);
         }else{
             redirect('index.php'); 
