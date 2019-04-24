@@ -371,7 +371,7 @@ function hapusDetail(id,jb){
             success:function(result){
                 if(result['message_type']=="sukses"){
                     if (result['check'] == 0) {
-                        $('#dtr_id').select2('val', result['dtr_id']);
+                        $('#dtr_id').select2('val', result['jenis_barang']);
                     }
                     load_list_dtr();
                     // load_dtr();
