@@ -67,7 +67,7 @@
                         <td><?php echo $data->remarks; ?></td>
                         <td style="text-align:center"> 
                             <?php
-                                if( ($group_id==9 || $hak_akses['create_sj_so']==1) && $data->sjr_id == 0){
+                                if( ($group_id==9 || $hak_akses['create_sj_so']==1) && $data->sjr_id == 0 && $data->jenis_so != 'SO CV'){
                             ?>
                             <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_SuratJalan/add_surat_jalan/so/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-truck"></i> Create SJ &nbsp; </a>
@@ -85,7 +85,7 @@
                                 }
                                 if($group_id==9 || $hak_akses['print']==1){
                             ?>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_SO/print_po/<?php echo $data->id; ?>" 
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_SO/print_so/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
                                 }

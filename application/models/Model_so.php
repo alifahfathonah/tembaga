@@ -25,10 +25,12 @@ class Model_so extends CI_Model{
 		$data = $this->db->query("select rso.*, 
 			rpo.no_po, rpo.id as po_id, 
 			c.nama_cv, c.pic, c.alamat,
+            cs.nama_customer, cs.pic as pic_cs, cs.alamat as alamat_cs, cs.telepon as telepon_cs,
 			u.realname as nama_marketing 
 			from r_t_so rso
 			left join r_t_po rpo on (rpo.id = rso.po_id)
 			left join m_cv c on (rso.cv_id = c.id)
+            left join m_customers cs on (rso.customer_id = cs.id)
 			left join users u on (rso.marketing_id = u.id)
 			where rso.id = ".$id);
 		return $data;

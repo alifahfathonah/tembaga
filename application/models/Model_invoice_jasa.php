@@ -39,7 +39,7 @@ class Model_invoice_jasa extends CI_Model{
 	}
 
 	function get_po_for_cust($id){
-		$data = $this->db->query("select ti.id from r_t_surat_jalan rtsj
+		$data = $this->db->query("select tpo.f_invoice_id as id from r_t_surat_jalan rtsj
 			left join r_t_surat_jalan rts on rts.id = rtsj.r_sj_id
 			left join r_t_so tso on tso.id = rts.r_so_id
 			left join r_t_po tpo on tpo.id = tso.po_id
@@ -67,9 +67,9 @@ class Model_invoice_jasa extends CI_Model{
 	}
 
 	function show_detail_inv_jasa($id){
-		$data = $this->db->query("select tijd.*, jb.jenis_barang, jb.uom FROM r_t_inv_jasa_detail tijd
+		$data = $this->db->query("select tijd.*, sum(tijd.total_amount) as sum_total_amount, sum(tijd.bruto) as sum_bruto, sum(tijd.netto) as sum_netto, jb.jenis_barang, jb.uom FROM r_t_inv_jasa_detail tijd
 		left join jenis_barang jb on jb.id = tijd.jenis_barang_id
-		where tijd.inv_jasa_id=".$id);
+		where tijd.inv_jasa_id=".$id." group by jb.jenis_barang");
 		return $data;
 	}
 }
