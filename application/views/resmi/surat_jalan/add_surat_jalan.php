@@ -299,6 +299,7 @@
                             <input type="text" id="no_surat_jalan_customer" name="no_surat_jalan_customer" value="<?= $header['no_sj_resmi'] ?>" maxlength="25"
                                 class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly">
                             <input type="hidden" name="r_sj_id" id="r_sj_id" value="<?= $header['id'] ?>">
+                            <input type="hidden" name="m_cv_id" id="m_cv_id" value="<?= $header['m_cv_id'] ?>">
                             <!-- <input type="hidden" name="id_invoice_resmi" value="<?php echo $header['r_invoice_id'];?>"> -->
                         </div>
                     </div>
