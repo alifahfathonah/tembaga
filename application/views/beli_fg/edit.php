@@ -226,6 +226,7 @@
             ?>
             <div class="row">
                 <div class="col-md-12">
+                    <h3 style="text-align: center">Permintaan PO</h3>
                     <div class="table-scrollable">
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
@@ -240,6 +241,7 @@
                             <?php 
                                 $no = 0;
                                 $total = 0;
+                                $qty= 0;
                                 foreach ($list_data as $row){
                                 $no++;
                                 echo '<tr>';
@@ -250,15 +252,21 @@
                                 echo '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
                                 echo '<td style="text-align:right">'.number_format($row->total_amount,0,',','.').'</td>';
                                 echo '</tr>';
+                                $qty += $row->qty;
                                 $total += $row->total_amount;
                             }
                             ?>
+                            <tr>
+                                <td colspan="4"></td>
+                                <td style="text-align: right;background-color: green;color: white;"><?=number_format($qty,0,',','.');?></td>
+                                <td style="text-align: right;background-color: green;color: white;"><?=number_format($total,0,',','.');?></td>                                
+                            </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <hr class="divider"/>
-                <h3></h3>
+                <hr class="divider">
+                <h3 style="text-align: center">Pemenuhan PO</h3>
                 <div class="col-md-12">
                     <div class="table-scrollable">
                         <table class="table table-bordered table-striped table-hover">
@@ -266,42 +274,37 @@
                                 <th style="width:40px">No</th>
                                 <th>Nama Item Finish Good</th>
                                 <th>Unit of Measure</th>
-                                <th>Jumlah</th>
                                 <th>Bruto</th>
                                 <th>Netto</th>
-                                <th>Jumlah TTR</th>
+                                <th>Jumlah BPB</th>
                             </thead>
                             <tbody>
                             <?php 
                                 $no = 0;
-                                $qty = 0;
                                 $bruto = 0;
                                 $netto = 0;
-                                $ttr = 0;
-                                foreach ($list_detail as $row){
+                                $jumlah = 0;
+                                foreach ($list_terima as $row){
                                 $no++;
                             echo '<tr>';
                             echo '<td style="text-align:center">'.$no.'</td>';
                             echo '<td>'.$row->jenis_barang.'</td>';
                             echo '<td>'.$row->uom.'</td>';
-                            echo '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
                             echo '<td style="text-align:right">'.number_format($row->bruto,0,',','.').'</td>';
                             echo '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
-                            echo '<td>'.$row->jml_ttr.'</td>';
+                            echo '<td style="text-align:right">'.number_format($row->jumlah,0,',','.').'</td>';
                             echo '</tr>';
-                            $qty += $row->qty;
                             $bruto += $row->bruto;
                             $netto += $row->netto;
-                            $ttr += $row->jml_ttr;                            
+                            $jumlah += $row->jumlah;
                             }
                             ?>
                             </tbody>
                             <tr>
                                 <td colspan="3"></td>
-                                <td><?=$qty;?></td>
-                                <td><?=$bruto;?></td>
-                                <td><?=$netto;?></td>
-                                <td><?=$ttr;?></td>
+                                <td style="text-align: right;background-color: green; color: white;"><?=number_format($bruto,0,',','.');?></td>
+                                <td style="text-align: right;background-color: green; color: white;"><?=number_format($netto,0,',','.');?></td>
+                                <td style="text-align: right;background-color: green; color: white;"><?=number_format($jumlah,0,',','.');?></td>
                             </tr>
                         </table>
                     </div>

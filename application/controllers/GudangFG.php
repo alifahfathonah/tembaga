@@ -105,7 +105,7 @@ class GudangFG extends CI_Controller{
             $this->load->model('Model_gudang_fg');
             $data['header'] = $this->Model_gudang_fg->show_header_laporan($id)->row_array();
             $packing = $this->Model_gudang_fg->show_data_packing($data['header']['jenis_packing_id'])->row_array()['packing'];
-            if($packing=="BOBBIN" || $packing=="ROLL"){
+            if($packing=="BOBBIN"){
                 $data['content']   = "gudang_fg/detail_laporan_bobbin";
                 $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result(); 
             } else if ($packing == "KERANJANG") {
@@ -116,9 +116,13 @@ class GudangFG extends CI_Controller{
             //     $data['content'] = "gudang_fg/detail_laporan_roll";
             //     $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('ROLL')->row_array();
             //     $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result(); 
-            } else {
+            } else if ($packing == 'KARDUS') {
                 $data['content'] = "gudang_fg/detail_laporan_rambut";
                 $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('KARDUS')->result();
+                $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result();
+            } else {
+                $data['content'] = "gudang_fg/detail_laporan_roll";
+                $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('ROLL')->result();
                 $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result();
             }
             
@@ -191,17 +195,6 @@ class GudangFG extends CI_Controller{
             $no++;
         }
             
-        $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:center">'.$no.'</td>';
-        $tabel .= '<td><input type="text" id="nomor_produksi" name="nomor_produksi" maxlength="4" class="form-control myline"></td>';
-        $tabel .= '<td><a href="javascript:;" onclick="timbang(this)" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>';
-        $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline"/></td>';
-        $tabel .= '<td><input type="text" id="no_packing" value="Auto" name="no_packing" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
-                . '<i class="fa fa-plus"></i> Tambah </a></td>';
-        $tabel .= '</tr>';
-
         header('Content-Type: application/json');
         echo json_encode($tabel); 
     }
@@ -584,31 +577,18 @@ class GudangFG extends CI_Controller{
 
     function save_detail_rambut(){
         $return_data = array();
-        $tgl_input = date("Y-m-d");
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
 
-        $this->load->model('Model_gudang_fg');
-        $check = $this->Model_gudang_fg->check_urut(3)->row_array();
-        $no_urut = $check['no_urut'];
-        $no_urut = $no_urut + 1;
-        switch (strlen($no_urut)) {
-            case 1 : $urutan = "000".$no_urut;
-                break;
-            case 2 : $urutan = "00".$no_urut;
-                break;
-            case 3 : $urutan = "0".$no_urut;
-                break;
-            
-            default:
-                $urutan = $no_urut;
-                break;
-        }
+        $this->load->model('Model_m_numberings');
 
-        $no_packing = $this->input->post('no_packing');
-        $kode_packing = substr($no_packing, 0,1);
+        $code = $this->Model_m_numberings->getNumbering('KARDUS',$tgl_input);
+
+        $first = substr($this->input->post('no_packing'),0,1);
         $ukuran = $this->input->post('ukuran');
-        $no_packing = date("ymd").$kode_packing.$ukuran.$urutan;
+        $no_packing = $tgl_code.$first.$ukuran.substr($code,12,4);
         
         $this->db->insert('produksi_fg_detail', array(
             'tanggal' => $tgl_input,
@@ -631,27 +611,78 @@ class GudangFG extends CI_Controller{
         echo json_encode($return_data); 
     }
 
-     function save_detail_roll(){
-        $return_data = array();
-        $tgl_input = date("Y-m-d");
+    // function save_detail_roll(){
+    //     $return_data = array();
+    //     $tgl_input = date("Y-m-d");
 
-        $this->db->trans_start();
-        $no_produksi = $this->input->post('nomor_produksi');
-        $urut_packing = sprintf("%'.04d",(int)$no_produksi);
-        $tmp_packing = $this->input->post('no_packing');
-        $kode_packing = substr($tmp_packing, 0,1);
-        $ukuran = $this->input->post('ukuran');
-        $no_packing = date("ymd").$kode_packing.$ukuran.$urut_packing;
+    //     $this->db->trans_start();
+    //     $no_produksi = $this->input->post('nomor_produksi');
+    //     $urut_packing = sprintf("%'.04d",(int)$no_produksi);
+    //     $tmp_packing = $this->input->post('no_packing');
+    //     $kode_packing = substr($tmp_packing, 0,1);
+    //     $ukuran = $this->input->post('ukuran');
+    //     $no_packing = date("ymd").$kode_packing.$ukuran.$urut_packing;
         
+    //     $this->db->insert('produksi_fg_detail', array(
+    //         'tanggal' => $tgl_input,
+    //         'no_produksi' => $no_produksi,
+    //         'produksi_fg_id'=>$this->input->post('id'),
+    //         'no_packing_barcode'=>$no_packing,
+    //         'bruto'=> $this->input->post('bruto'),
+    //         'netto' => $this->input->post('netto'),
+    //         'berat_bobbin' => $this->input->post('berat_bobbin'),
+    //         'bobbin_id'=>$this->input->post('id_packing')
+    //     ));
+    //     if ($this->db->trans_complete()){
+    //         $return_data['message_type']= "sukses";
+    //     }else{
+    //         $return_data['message_type']= "error";
+    //         $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
+    //     }
+    //     header('Content-Type: application/json');
+    //     echo json_encode($return_data); 
+    // }
+
+    function save_detail_roll(){
+        $return_data = array();
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+        $this->db->trans_start();
+
+        // $this->load->model('Model_gudang_fg');
+        // $check = $this->Model_gudang_fg->check_urut(3)->row_array();
+        // $no_urut = $check['no_urut'];
+        // $no_urut = $no_urut + 1;
+        // switch (strlen($no_urut)) {
+        //     case 1 : $urutan = "00".$no_urut;
+        //         break;
+        //     case 2 : $urutan = "0".$no_urut;
+        //         break;
+            
+        //     default:
+        //         $urutan = $no_urut;
+        //         break;
+        // }
+
+        $this->load->model('Model_m_numberings');
+        $first = substr($this->input->post('no_packing'),0,1);
+        $sec = substr($this->input->post('no_packing'),1,1);
+        $num = $first.$sec;
+        $code = $this->Model_m_numberings->getNumbering($num,$tgl_input);
+
+        $ukuran = $this->input->post('ukuran');
+        $no_packing = $tgl_code.$first.$ukuran.$sec.substr($code,8,3);
+
         $this->db->insert('produksi_fg_detail', array(
             'tanggal' => $tgl_input,
-            'no_produksi' => $no_produksi,
-            'produksi_fg_id'=>$this->input->post('id'),
-            'no_packing_barcode'=>$no_packing,
-            'bruto'=> $this->input->post('bruto'),
+            'produksi_fg_id' =>$this->input->post('id'),
+            'no_produksi' => $this->input->post('no_produksi'),
+            'no_packing_barcode' =>$no_packing,
+            'bruto' => $this->input->post('netto'),
             'netto' => $this->input->post('netto'),
-            'berat_bobbin' => $this->input->post('berat_bobbin'),
-            'bobbin_id'=>$this->input->post('id_packing')
+            'berat_bobbin' => 0,
+            'bobbin_id' =>$this->input->post('id_packing'),
+            'keterangan' =>$this->input->post('keterangan')
         ));
         if ($this->db->trans_complete()){
             $return_data['message_type']= "sukses";
@@ -662,7 +693,6 @@ class GudangFG extends CI_Controller{
         header('Content-Type: application/json');
         echo json_encode($return_data); 
     }
-
 
     function delete_detail(){
         $id = $this->input->post('id');
@@ -747,6 +777,7 @@ class GudangFG extends CI_Controller{
         #update status produksi FG
         $data = array(
                 'flag_result' => 1,
+                'remarks' => $this->input->post('remarks'),
                 'modified_date'=> $tanggal,
                 'modified_by'=> $user_id
             );

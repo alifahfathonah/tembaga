@@ -216,17 +216,17 @@ function getComa(value, id){
     $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
 
-function makepallete_id() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+// function makepallete_id() {
+//     var text = "";
+//     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    for (var i = 0; i < 3; i++)
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
+//     for (var i = 0; i < 3; i++)
+//     text += possible.charAt(Math.floor(Math.random() * possible.length));
     
-    var d = new Date();
-    var strDateTime = '<?=date('dmy');?>' + d.getHours() + d.getMinutes() + d.getSeconds();
-    return (strDateTime+text);
-}
+//     var d = new Date();
+//     var strDateTime = '<?=date('dmy');?>' + d.getHours() + d.getMinutes() + d.getSeconds();
+//     return (strDateTime+text);
+// }
 
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
@@ -267,7 +267,7 @@ function get_uom_po(id, nmr){
                 success: function(result) {
                     $('#uom_'+nmr).val(result['uom']);
                     $('#rongsok_id_'+nmr).val(result['id']);
-                    $('#no_pallete_'+nmr).val(makepallete_id());
+                    // $('#no_pallete_'+nmr).val(makepallete_id());
                 }
             });
         // }else{
@@ -288,6 +288,18 @@ function saveDetail(id){
         $('#message').html("Jumlah netto tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else{
+        $.ajax({
+            url: "<?php echo base_url('index.php/BeliRongsok/generate_palette'); ?>",
+            type: "POST",
+            data: {
+                id:id,
+                tanggal: $('#tanggal').val()
+            },
+            dataType: "json",
+            success: function(result){
+                $('#no_pallete_'+id).val(result['no_packing']);
+            }
+        });
         $("#name_rongsok_"+id).attr('disabled','disabled');
         $("#save_"+id).hide();
         $('#qty_'+id).attr('readonly','readonly');

@@ -130,9 +130,9 @@ Tolling Cek Balance, SO dengan DTR/DTWIP, dan PO dengan DTT
 
 Retur Rongsok dan WIP belum. Rongsok, bikin barcode baru.
 
-Retur, sebelum approve, bisa ganti Type Retur. Karena gatau akan Diganti barang atau Kurang Invoice.
+Retur, sebelum approve, bisa ganti Type Retur. Karena gatau akan Diganti barang atau Kurang Invoice.(Done)
 
-Retur, surat jalan, harus otomatis langsung ke select yang sudah dikeluarkan.
+Retur, surat jalan, harus otomatis langsung ke select yang sudah dikeluarkan.(Done)
 
 Rongsok keluar, terus bisa input DTR tanpa ada PO. untuk flow repacking yang Export.(Done)
 
@@ -165,7 +165,7 @@ SJ Ampas Keluar Belum tanpa Invoice
 Voucher juga bedain penomorannya non-ppn dan KMP(Done)
 Nomor po belom masuk. Finance/Voucher_list/ belom di filter PPN dan NON(Done)
 
-PO Sparepart beda in penomoran PPN dan Non PPN. Beserta Penomoran LPB nya
+PO Sparepart beda in penomoran PPN dan Non PPN. Beserta Penomoran LPB nya(Done)
 
 Sparepart di grouping jenis barang nya(Done)
 

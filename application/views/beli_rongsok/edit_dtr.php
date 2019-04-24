@@ -125,7 +125,6 @@
                                 <th>No</th>
                                 <th>Nama Item Rongsok</th>
                                 <th>UOM</th>
-                                <th>Jumlah</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
                                 <th>Berat Pallete</th>
@@ -149,9 +148,7 @@
                                     echo '</td>';
                                     echo '<td><input type="text" name="myDetails['.$no.'][uom]" '
                                             . 'class="form-control myline" value="'.$row->uom.'" '
-                                            . 'readonly="readonly"></td>';                                    
-                                    echo '<td><input type="text" id="qty_'.$no.'" name="myDetails['.$no.'][qty]" '
-                                            . 'class="form-control myline" value="'.number_format($row->qty,0,',','.').'" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);"></td>';
+                                            . 'readonly="readonly"></td>';
                                     echo '<td><input type="number" id="bruto_'.$no.'" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
                                             . 'class="form-control myline" maxlength="10" value="'.$row->bruto.'"></td>';
                                     

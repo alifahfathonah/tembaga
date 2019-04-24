@@ -65,12 +65,28 @@ class Model_beli_fg extends CI_Model
 		return $data;
 	}
 
+    function load_dtbj_detail($id){
+        $data = $this->db->query("Select dd.*, jb.jenis_barang, jb.uom, (dd.netto*pd.amount) as jumlah from dtbj_detail dd
+                left join po_detail pd on (pd.id = dd.po_detail_id)
+                left join jenis_barang jb on (jb.id = dd.jenis_barang_id)
+                left join dtbj d on (d.id = dd.dtbj_id)
+                Where d.po_id=".$id);
+        return $data;
+    }
+
 	function load_detail_po($id){
 		$data = $this->db->query("Select pod.*, jb.jenis_barang, jb.uom From po_detail pod 
                 Left Join jenis_barang jb On(pod.jenis_barang_id = jb.id) 
                 Where pod.po_id=".$id);
 		return $data;
 	}
+
+    function load_detail($id){
+        $data = $this->db->query("Select dd.*, jb.jenis_barang, jb.uom from dtbj_detail dd
+                left join jenis_barang jb on (jb.id = dd.jenis_barang_id)
+                Where dd.dtbj_id=".$id);
+        return $data;
+    }
 
 	function get_jb($id){
 		$data = $this->db->query("select * from jenis_barang where id = ".$id);

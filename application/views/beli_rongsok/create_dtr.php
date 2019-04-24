@@ -46,7 +46,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('Y-m-d'); ?>">
+                                value="<?php echo date('d-m-Y'); ?>">
                         </div>
                     </div>
                     <!-- <div class="row">
@@ -79,7 +79,7 @@
                         </div>
                         <div class="col-md-8">
                             <select id="supplier_id" name="supplier_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                 <option value=""></option>
                                 <option value="0">**TIDAK ADA SUPPLIER**</option>
                                 <?php
@@ -126,7 +126,7 @@
                                 <th>Berat Palette</th>
                                 <th>Netto (Kg)</th>
                                 <th></th>
-                                <th>No. Pallete</th>
+                                <th style="width:15%">No. Pallete</th>
                                 <th>Keterangan</th>
                                 <th>Action</th>
                             </thead>
@@ -239,17 +239,22 @@ function getComa(value, id){
     $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
 
-function makepallete_id() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+// function makepallete_id() {
+//     // var text = "";
+//     // var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    for (var i = 0; i < 3; i++)
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
+//     // for (var i = 0; i < 3; i++)
+//     // text += possible.charAt(Math.floor(Math.random() * possible.length));
     
-    var d = new Date();
-    var strDateTime = '<?=date('dmy');?>' + d.getHours() + d.getMinutes() + d.getSeconds();
-    return (strDateTime+text);
-}
+//     var d = $('#tanggal').val();
+//     var date = d.toString();
+//     var divide = date.split('-');
+//     var lastChar = divide[2].substr(2);
+//     var newDate = divide[0]+divide[1]+lastChar;
+//     var cur_date = new Date();
+//     var strDateTime = newDate + cur_date.getHours() + cur_date.getMinutes() + cur_date.getSeconds();
+//     return (strDateTime);
+// }
 
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
@@ -276,7 +281,6 @@ function get_uom_po(id, nmr){
             success: function(result) {
                 $('#uom_'+nmr).val(result['uom']);
                 $('#rongsok_id_'+nmr).val(result['id']);
-                $('#no_pallete_'+nmr).val(makepallete_id());
             }
         });
     }
@@ -293,6 +297,18 @@ function saveDetail(id){
         $('#message').html("Jumlah netto tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else{
+        $.ajax({
+            url: "<?php echo base_url('index.php/BeliRongsok/generate_palette'); ?>",
+            type: "POST",
+            data: {
+                id:id,
+                tanggal: $('#tanggal').val()
+            },
+            dataType: "json",
+            success: function(result){
+                $('#no_pallete_'+id).val(result['no_packing']);
+            }
+        });
         $("#name_rongsok_"+id).attr('disabled','disabled');
         $("#save_"+id).hide();
         $('#qty_'+id).attr('readonly','readonly');
@@ -359,7 +375,7 @@ $(function(){
         buttonText: "Select date",
         changeMonth: true,
         changeYear: true,
-        dateFormat: 'yy-mm-dd'
+        dateFormat: 'dd-mm-yy'
     });
     window.onbeforeunload = function() {
       return "Data Akan Terhapus Bila Page di Refresh, Anda Yakin?";

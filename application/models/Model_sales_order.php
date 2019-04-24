@@ -204,7 +204,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function list_item_sj_rsk($soid){
-        $data = $this->db->query("select dd.id, dd.no_pallete as jenis_barang
+        $data = $this->db->query("select dd.*, r.nama_item as jenis_barang
             from sales_order so 
             left join t_sales_order tso on tso.so_id = so.id 
             left join spb_detail_fulfilment sdf on sdf.spb_id = tso.no_spb 
