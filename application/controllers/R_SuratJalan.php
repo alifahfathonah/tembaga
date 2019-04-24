@@ -504,7 +504,7 @@ class R_SuratJalan extends CI_Controller{
         $data_bpb = array(
                 'no_bpb'=> $this->input->post('no_bpb'),
                 'tanggal'=> $tanggal_bpb,
-                'm_cv_id'=>$this->input->post('m_cv_id'),
+                // 'm_cv_id'=>$this->input->post('m_cv_id'),
                 'm_customer_id'=>$this->input->post('m_customer_id'),
                 'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
                 'no_kendaraan'=>$this->input->post('no_kendaraan'),

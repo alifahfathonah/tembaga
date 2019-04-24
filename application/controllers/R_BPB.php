@@ -304,7 +304,7 @@ class R_BPB extends CI_Controller{
             if ($data['header']['jenis_bpb'] == "BPB RONGSOK") {
                 $this->load->view('resmi/bpb/print_bpb_cs_cv', $data);
             } else if ($data['header']['jenis_bpb'] == "BPB FG") {
-                $this->load->view('resmi/surat_jalan/print_sj_cv_kmp', $data);
+                $this->load->view('resmi/bpb/print_bpb_kmp_cv', $data);
             }
         } else {
             redirect('index.php'); 

@@ -32,10 +32,14 @@ class Model_bpb extends CI_Model{
     }
 
     function show_header_print_bpb($id){
-        $data = $this->db->query("select bpb.*, rtpo.no_po, cv.nama_cv, cs.nama_customer from r_t_bpb bpb
+        $data = $this->db->query("select bpb.*, coalesce(rtpo.no_po, rtpo2.no_po) as no_po, cv.nama_cv, cs.nama_customer from r_t_bpb bpb
             left join r_t_po rtpo on bpb.r_po_id = rtpo.id
             left join m_cv cv on bpb.m_cv_id = cv.id
             left join m_customers cs on bpb.m_customer_id = cs.id
+            left join r_t_surat_jalan rtsj on rtsj.id = bpb.r_sj_id
+            left join r_t_surat_jalan rtsj2 on rtsj2.id = rtsj.r_sj_id
+            left join r_t_so rtso on rtso.id = rtsj2.r_so_id
+            left join r_t_po rtpo2 on rtpo2.id = rtso.po_id
             where bpb.id = ".$id);
         return $data;
     }

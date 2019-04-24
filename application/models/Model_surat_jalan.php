@@ -132,7 +132,9 @@ class Model_surat_jalan extends CI_Model{
     }
 
     function show_header_sj_cv($id){
-    	$data = $this->db->query("select *from r_t_surat_jalan where id = ".$id);
+    	$data = $this->db->query("select rtsj.*, rtsj2.m_cv_id from r_t_surat_jalan rtsj
+			left join r_t_surat_jalan rtsj2 on rtsj.r_sj_id = rtsj2.id
+			where rtsj.id = ".$id);
     	return $data;
     }
 
