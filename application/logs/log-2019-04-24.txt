@@ -332,3 +332,586 @@ DEBUG - 2019-04-24 11:29:11 --> UTF-8 Support Enabled
 DEBUG - 2019-04-24 11:29:11 --> Global POST, GET and COOKIE data sanitized
 DEBUG - 2019-04-24 11:29:11 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
 DEBUG - 2019-04-24 11:29:11 --> Total execution time: 0.1159
+DEBUG - 2019-04-24 11:54:07 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 11:54:07 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 11:54:07 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 11:54:07 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 11:54:07 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 11:54:07 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 11:54:07 --> Total execution time: 0.1050
+DEBUG - 2019-04-24 11:54:11 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 11:54:11 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 11:54:11 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 11:54:11 --> Total execution time: 0.1950
+DEBUG - 2019-04-24 11:54:11 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 11:54:11 --> No URI present. Default controller set.
+DEBUG - 2019-04-24 11:54:11 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 11:54:11 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 11:54:11 --> Total execution time: 0.0850
+DEBUG - 2019-04-24 11:54:13 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 11:54:13 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 11:54:13 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 11:54:13 --> Severity: Notice --> Undefined property: stdClass::$bpb_id C:\xampp\htdocs\tembagabaru\application\views\resmi\matching\index.php 80
+ERROR - 2019-04-24 11:54:13 --> Severity: Notice --> Undefined property: stdClass::$bpb_id C:\xampp\htdocs\tembagabaru\application\views\resmi\matching\index.php 80
+DEBUG - 2019-04-24 11:54:13 --> Total execution time: 0.4000
+DEBUG - 2019-04-24 11:59:07 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 11:59:07 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 11:59:07 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 11:59:07 --> Total execution time: 0.1325
+DEBUG - 2019-04-24 12:03:46 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:03:46 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:03:46 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:03:46 --> Total execution time: 0.0925
+DEBUG - 2019-04-24 12:03:46 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:03:46 --> Global POST, GET and COOKIE data sanitized
+ERROR - 2019-04-24 12:03:46 --> 404 Page Not Found: R_Matching/favicon.ico
+DEBUG - 2019-04-24 12:03:48 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:03:48 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:03:48 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:03:48 --> Total execution time: 0.0700
+DEBUG - 2019-04-24 12:04:00 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:00 --> No URI present. Default controller set.
+DEBUG - 2019-04-24 12:04:00 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:00 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:00 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:00 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:00 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:00 --> Total execution time: 0.0500
+DEBUG - 2019-04-24 12:04:04 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:04 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:04 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:04 --> Total execution time: 0.1099
+DEBUG - 2019-04-24 12:04:04 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:04 --> No URI present. Default controller set.
+DEBUG - 2019-04-24 12:04:04 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:04 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:04 --> Total execution time: 0.0931
+DEBUG - 2019-04-24 12:04:09 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:09 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:09 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:09 --> Total execution time: 0.0681
+DEBUG - 2019-04-24 12:04:12 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:12 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:12 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:12 --> Total execution time: 0.0875
+DEBUG - 2019-04-24 12:04:19 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:19 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:19 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:19 --> Total execution time: 0.0725
+DEBUG - 2019-04-24 12:04:25 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:25 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:25 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:25 --> Total execution time: 0.0625
+DEBUG - 2019-04-24 12:04:27 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:27 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:27 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:27 --> Total execution time: 0.0825
+DEBUG - 2019-04-24 12:04:30 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:30 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:30 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:30 --> Total execution time: 0.0650
+DEBUG - 2019-04-24 12:04:31 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:31 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:31 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:31 --> Total execution time: 0.0550
+DEBUG - 2019-04-24 12:04:31 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:31 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:31 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:31 --> Total execution time: 0.0625
+DEBUG - 2019-04-24 12:04:33 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:33 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:33 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:33 --> Total execution time: 0.0525
+DEBUG - 2019-04-24 12:04:33 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:33 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:33 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:33 --> Total execution time: 0.0425
+DEBUG - 2019-04-24 12:04:35 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:35 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:35 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:35 --> Total execution time: 0.0631
+DEBUG - 2019-04-24 12:04:35 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:35 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:35 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:35 --> Total execution time: 0.0500
+DEBUG - 2019-04-24 12:04:41 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:41 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:41 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:41 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:41 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:41 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:41 --> Total execution time: 0.1750
+DEBUG - 2019-04-24 12:04:41 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:41 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:42 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 12:04:42 --> Query error: Unknown column 'favicon.ico' in 'where clause' - Invalid query: select fi.*, tso.alias, mc.nama_customer, mc.alamat, mc.npwp, so.no_sales_order, COALESCE(so.flag_ppn,r.flag_ppn) as flag_ppn, so.flag_tolling, tso.no_po, u.realname, tsj.no_surat_jalan, tso.id as id_t_sales_order, r.no_retur, b.kode_bank, b.nama_bank, b.nomor_rekening, mtch.no_matching from f_invoice fi
+            left join m_customers mc on mc.id = fi.id_customer
+            left join sales_order so on so.id = fi.id_sales_order
+            left join t_sales_order tso on tso.so_id = fi.id_sales_order
+            left join t_surat_jalan tsj on tsj.id = fi.id_surat_jalan
+            left join retur r on fi.id_retur > 0 and r.id = fi.id_retur
+            left join bank b on b.id = fi.bank_id
+            left join users u on u.id = fi.created_by
+            left join f_match mtch on mtch.id = fi.flag_matching
+            where fi.id = favicon.ico
+DEBUG - 2019-04-24 12:04:47 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:47 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:47 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:47 --> Total execution time: 0.0725
+DEBUG - 2019-04-24 12:04:50 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:50 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:50 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:50 --> Total execution time: 0.0600
+DEBUG - 2019-04-24 12:04:52 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:52 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:53 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:53 --> Total execution time: 0.0950
+DEBUG - 2019-04-24 12:04:56 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:56 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:56 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:56 --> Total execution time: 0.0625
+DEBUG - 2019-04-24 12:04:57 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:57 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:57 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:57 --> Total execution time: 0.0600
+DEBUG - 2019-04-24 12:04:57 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:57 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:57 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:04:57 --> Total execution time: 0.0425
+DEBUG - 2019-04-24 12:04:59 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:04:59 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:04:59 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:05:00 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:05:00 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:05:00 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:05:00 --> Total execution time: 0.0750
+DEBUG - 2019-04-24 12:05:00 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:05:00 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:05:00 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 12:05:00 --> Query error: Unknown column 'favicon.ico' in 'where clause' - Invalid query: select fi.*, tso.alias, mc.nama_customer, mc.alamat, mc.npwp, so.no_sales_order, COALESCE(so.flag_ppn,r.flag_ppn) as flag_ppn, so.flag_tolling, tso.no_po, u.realname, tsj.no_surat_jalan, tso.id as id_t_sales_order, r.no_retur, b.kode_bank, b.nama_bank, b.nomor_rekening, mtch.no_matching from f_invoice fi
+            left join m_customers mc on mc.id = fi.id_customer
+            left join sales_order so on so.id = fi.id_sales_order
+            left join t_sales_order tso on tso.so_id = fi.id_sales_order
+            left join t_surat_jalan tsj on tsj.id = fi.id_surat_jalan
+            left join retur r on fi.id_retur > 0 and r.id = fi.id_retur
+            left join bank b on b.id = fi.bank_id
+            left join users u on u.id = fi.created_by
+            left join f_match mtch on mtch.id = fi.flag_matching
+            where fi.id = favicon.ico
+DEBUG - 2019-04-24 12:05:04 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:05:04 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:05:04 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:05:04 --> Total execution time: 0.0525
+DEBUG - 2019-04-24 12:05:13 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:05:13 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:05:13 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:05:13 --> Total execution time: 0.0675
+DEBUG - 2019-04-24 12:05:27 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:05:27 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:05:27 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:05:27 --> Total execution time: 0.0381
+DEBUG - 2019-04-24 12:05:28 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:05:28 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:05:28 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:05:28 --> Total execution time: 0.0450
+DEBUG - 2019-04-24 12:05:30 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:05:30 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:05:30 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:05:30 --> Total execution time: 0.0475
+DEBUG - 2019-04-24 12:05:32 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:05:32 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:05:32 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:05:32 --> Total execution time: 0.0525
+DEBUG - 2019-04-24 12:05:34 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:05:34 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:05:34 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:05:34 --> Total execution time: 0.0325
+DEBUG - 2019-04-24 12:07:28 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:07:28 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:07:28 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:07:28 --> Total execution time: 0.0525
+DEBUG - 2019-04-24 12:07:38 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:07:38 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:07:38 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:07:38 --> Total execution time: 0.0525
+DEBUG - 2019-04-24 12:07:41 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:07:41 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:07:41 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:07:41 --> Total execution time: 0.0425
+DEBUG - 2019-04-24 12:08:04 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:08:04 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:08:04 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:08:04 --> Total execution time: 0.0975
+DEBUG - 2019-04-24 12:08:08 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:08:08 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:08:08 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:08:08 --> Total execution time: 0.0475
+DEBUG - 2019-04-24 12:08:14 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:08:14 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:08:14 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:08:15 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:08:15 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:08:15 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 12:08:16 --> Severity: Notice --> Undefined index: approve_spb C:\xampp\htdocs\tembagabaru\application\views\resmi\matching\matching_invoice.php 228
+ERROR - 2019-04-24 12:08:16 --> Severity: Notice --> Undefined index: reject_spb C:\xampp\htdocs\tembagabaru\application\views\resmi\matching\matching_invoice.php 232
+DEBUG - 2019-04-24 12:08:16 --> Total execution time: 0.6600
+DEBUG - 2019-04-24 12:08:17 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:08:17 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:08:17 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:08:17 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:08:17 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:08:17 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:08:17 --> Total execution time: 0.0425
+DEBUG - 2019-04-24 12:08:17 --> Total execution time: 0.0600
+DEBUG - 2019-04-24 12:08:17 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:08:17 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:08:17 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:08:17 --> Total execution time: 0.0575
+DEBUG - 2019-04-24 12:08:17 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:08:17 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:08:17 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 12:08:17 --> Query error: Unknown column 'favicon.ico' in 'where clause' - Invalid query: Select ir.*, fi.no_invoice, u.realname as pic
+            from r_t_invoice ir
+            left join f_invoice fi on fi.id = ir.invoice_id
+            left join users u on (ir.created_by = u.id)
+            where ir.id =favicon.ico
+DEBUG - 2019-04-24 12:08:20 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:08:20 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:08:20 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:08:20 --> Total execution time: 0.0400
+DEBUG - 2019-04-24 12:08:21 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:08:21 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:08:21 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:08:21 --> Total execution time: 0.0450
+DEBUG - 2019-04-24 12:08:25 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:08:25 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:08:25 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:08:25 --> Total execution time: 0.1475
+DEBUG - 2019-04-24 12:08:25 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:08:25 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:08:25 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:08:25 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:08:25 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:08:25 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:08:25 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:08:25 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:08:25 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:08:25 --> Total execution time: 0.1000
+DEBUG - 2019-04-24 12:08:25 --> Total execution time: 0.0750
+DEBUG - 2019-04-24 12:08:25 --> Total execution time: 0.0775
+DEBUG - 2019-04-24 12:10:43 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:10:43 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:10:43 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 12:10:43 --> Severity: Notice --> Undefined index: approve_spb C:\xampp\htdocs\tembagabaru\application\views\resmi\matching\matching_invoice.php 228
+ERROR - 2019-04-24 12:10:43 --> Severity: Notice --> Undefined index: reject_spb C:\xampp\htdocs\tembagabaru\application\views\resmi\matching\matching_invoice.php 232
+DEBUG - 2019-04-24 12:10:43 --> Total execution time: 0.0775
+DEBUG - 2019-04-24 12:10:43 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:10:43 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:10:43 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:10:43 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:10:43 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:10:43 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:10:43 --> Total execution time: 0.0625
+DEBUG - 2019-04-24 12:10:43 --> Total execution time: 0.0675
+DEBUG - 2019-04-24 12:10:43 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:10:43 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:10:43 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:10:43 --> Total execution time: 0.0575
+DEBUG - 2019-04-24 12:10:43 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:10:43 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:10:43 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 12:10:43 --> Query error: Unknown column 'favicon.ico' in 'where clause' - Invalid query: Select ir.*, fi.no_invoice, u.realname as pic
+            from r_t_invoice ir
+            left join f_invoice fi on fi.id = ir.invoice_id
+            left join users u on (ir.created_by = u.id)
+            where ir.id =favicon.ico
+DEBUG - 2019-04-24 12:10:46 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:10:46 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:10:46 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:10:46 --> Total execution time: 0.2175
+DEBUG - 2019-04-24 12:10:46 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:10:46 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:10:46 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:10:46 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:10:46 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:10:46 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:10:46 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:10:46 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:10:46 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:10:46 --> Total execution time: 0.0700
+DEBUG - 2019-04-24 12:10:46 --> Total execution time: 0.0725
+DEBUG - 2019-04-24 12:10:46 --> Total execution time: 0.0725
+DEBUG - 2019-04-24 12:12:42 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:42 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:42 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 12:12:42 --> Severity: Notice --> Undefined index: approve_spb C:\xampp\htdocs\tembagabaru\application\views\resmi\matching\matching_invoice.php 228
+ERROR - 2019-04-24 12:12:42 --> Severity: Notice --> Undefined index: reject_spb C:\xampp\htdocs\tembagabaru\application\views\resmi\matching\matching_invoice.php 232
+DEBUG - 2019-04-24 12:12:42 --> Total execution time: 0.0725
+DEBUG - 2019-04-24 12:12:42 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:42 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:42 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:42 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:42 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:42 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:42 --> Total execution time: 0.0650
+DEBUG - 2019-04-24 12:12:42 --> Total execution time: 0.0700
+DEBUG - 2019-04-24 12:12:42 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:42 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:42 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:42 --> Total execution time: 0.0425
+DEBUG - 2019-04-24 12:12:43 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:43 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:43 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 12:12:43 --> Query error: Unknown column 'favicon.ico' in 'where clause' - Invalid query: Select ir.*, fi.no_invoice, u.realname as pic
+            from r_t_invoice ir
+            left join f_invoice fi on fi.id = ir.invoice_id
+            left join users u on (ir.created_by = u.id)
+            where ir.id =favicon.ico
+DEBUG - 2019-04-24 12:12:44 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:44 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:45 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:45 --> Total execution time: 0.0550
+DEBUG - 2019-04-24 12:12:47 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:47 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:47 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:47 --> Total execution time: 0.0525
+DEBUG - 2019-04-24 12:12:48 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:48 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:48 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:48 --> Total execution time: 0.1425
+DEBUG - 2019-04-24 12:12:48 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:48 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:48 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:48 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:48 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:48 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:48 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:48 --> Total execution time: 0.0675
+DEBUG - 2019-04-24 12:12:48 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:48 --> Total execution time: 0.0900
+DEBUG - 2019-04-24 12:12:48 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:48 --> Total execution time: 0.0550
+DEBUG - 2019-04-24 12:12:51 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:51 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:51 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:51 --> Total execution time: 0.2031
+DEBUG - 2019-04-24 12:12:51 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:51 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:51 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:51 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:51 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:51 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:51 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:51 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:51 --> Total execution time: 0.0700
+DEBUG - 2019-04-24 12:12:51 --> Total execution time: 0.0825
+DEBUG - 2019-04-24 12:12:51 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:51 --> Total execution time: 0.0925
+DEBUG - 2019-04-24 12:12:53 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:53 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:53 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:54 --> Total execution time: 0.2275
+DEBUG - 2019-04-24 12:12:54 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:54 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:54 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:54 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:12:54 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:54 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:12:54 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:54 --> Total execution time: 0.0575
+DEBUG - 2019-04-24 12:12:54 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:54 --> Total execution time: 0.0475
+DEBUG - 2019-04-24 12:12:54 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:12:54 --> Total execution time: 0.0725
+DEBUG - 2019-04-24 12:14:22 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:14:22 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:14:22 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 12:14:22 --> Severity: Notice --> Undefined index: approve_spb C:\xampp\htdocs\tembagabaru\application\views\resmi\matching\matching_invoice.php 228
+ERROR - 2019-04-24 12:14:22 --> Severity: Notice --> Undefined index: reject_spb C:\xampp\htdocs\tembagabaru\application\views\resmi\matching\matching_invoice.php 232
+DEBUG - 2019-04-24 12:14:22 --> Total execution time: 0.0850
+DEBUG - 2019-04-24 12:14:22 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:14:22 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:14:22 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:14:22 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:14:22 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:14:22 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:14:22 --> Total execution time: 0.0400
+DEBUG - 2019-04-24 12:14:22 --> Total execution time: 0.0550
+DEBUG - 2019-04-24 12:14:22 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:14:22 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:14:22 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:14:22 --> Total execution time: 0.0525
+DEBUG - 2019-04-24 12:14:23 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:14:23 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:14:23 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 12:14:23 --> Query error: Unknown column 'favicon.ico' in 'where clause' - Invalid query: Select ir.*, fi.no_invoice, u.realname as pic
+            from r_t_invoice ir
+            left join f_invoice fi on fi.id = ir.invoice_id
+            left join users u on (ir.created_by = u.id)
+            where ir.id =favicon.ico
+DEBUG - 2019-04-24 12:14:25 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:14:25 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:14:25 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:14:25 --> Total execution time: 0.0525
+DEBUG - 2019-04-24 12:14:27 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:14:27 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:14:27 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:14:28 --> Total execution time: 0.3037
+DEBUG - 2019-04-24 12:14:28 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:14:28 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:14:28 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:14:28 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:14:28 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:14:28 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:14:28 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:14:28 --> Total execution time: 0.0650
+DEBUG - 2019-04-24 12:14:28 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:14:28 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:14:28 --> Total execution time: 0.0650
+DEBUG - 2019-04-24 12:14:28 --> Total execution time: 0.0775
+DEBUG - 2019-04-24 12:17:46 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:17:46 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:17:46 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 12:17:46 --> Severity: Notice --> Undefined index: approve_spb C:\xampp\htdocs\tembagabaru\application\views\resmi\matching\matching_invoice.php 228
+ERROR - 2019-04-24 12:17:46 --> Severity: Notice --> Undefined index: reject_spb C:\xampp\htdocs\tembagabaru\application\views\resmi\matching\matching_invoice.php 232
+DEBUG - 2019-04-24 12:17:46 --> Total execution time: 0.0825
+DEBUG - 2019-04-24 12:17:47 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:17:47 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:17:47 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:17:47 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:17:47 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:17:47 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:17:47 --> Total execution time: 0.0600
+DEBUG - 2019-04-24 12:17:47 --> Total execution time: 0.0825
+DEBUG - 2019-04-24 12:17:47 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:17:47 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:17:47 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:17:47 --> Total execution time: 0.0575
+DEBUG - 2019-04-24 12:17:47 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:17:47 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:17:47 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 12:17:47 --> Query error: Unknown column 'favicon.ico' in 'where clause' - Invalid query: Select ir.*, fi.no_invoice, u.realname as pic
+            from r_t_invoice ir
+            left join f_invoice fi on fi.id = ir.invoice_id
+            left join users u on (ir.created_by = u.id)
+            where ir.id =favicon.ico
+DEBUG - 2019-04-24 12:18:53 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:18:53 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:18:53 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 12:18:53 --> Severity: Notice --> Undefined index: approve_spb C:\xampp\htdocs\tembagabaru\application\views\resmi\matching\matching_invoice.php 228
+ERROR - 2019-04-24 12:18:53 --> Severity: Notice --> Undefined index: reject_spb C:\xampp\htdocs\tembagabaru\application\views\resmi\matching\matching_invoice.php 232
+DEBUG - 2019-04-24 12:18:53 --> Total execution time: 0.0850
+DEBUG - 2019-04-24 12:18:54 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:18:54 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:18:54 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:18:54 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:18:54 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:18:54 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:18:54 --> Total execution time: 0.0650
+DEBUG - 2019-04-24 12:18:54 --> Total execution time: 0.0725
+DEBUG - 2019-04-24 12:18:54 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:18:54 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:18:54 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:18:54 --> Total execution time: 0.0650
+DEBUG - 2019-04-24 12:18:55 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:18:55 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:18:55 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 12:18:55 --> Query error: Unknown column 'favicon.ico' in 'where clause' - Invalid query: Select ir.*, fi.no_invoice, u.realname as pic
+            from r_t_invoice ir
+            left join f_invoice fi on fi.id = ir.invoice_id
+            left join users u on (ir.created_by = u.id)
+            where ir.id =favicon.ico
+DEBUG - 2019-04-24 12:19:24 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:24 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:24 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 12:19:24 --> Severity: Notice --> Undefined index: approve_spb C:\xampp\htdocs\tembagabaru\application\views\resmi\matching\matching_invoice.php 228
+ERROR - 2019-04-24 12:19:24 --> Severity: Notice --> Undefined index: reject_spb C:\xampp\htdocs\tembagabaru\application\views\resmi\matching\matching_invoice.php 232
+DEBUG - 2019-04-24 12:19:24 --> Total execution time: 0.0625
+DEBUG - 2019-04-24 12:19:25 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:25 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:25 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:25 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:25 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:25 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:25 --> Total execution time: 0.0500
+DEBUG - 2019-04-24 12:19:25 --> Total execution time: 0.0550
+DEBUG - 2019-04-24 12:19:25 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:25 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:25 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:25 --> Total execution time: 0.0500
+DEBUG - 2019-04-24 12:19:25 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:25 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:25 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+ERROR - 2019-04-24 12:19:25 --> Query error: Unknown column 'favicon.ico' in 'where clause' - Invalid query: Select ir.*, fi.no_invoice, u.realname as pic
+            from r_t_invoice ir
+            left join f_invoice fi on fi.id = ir.invoice_id
+            left join users u on (ir.created_by = u.id)
+            where ir.id =favicon.ico
+DEBUG - 2019-04-24 12:19:28 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:28 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:28 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:28 --> Total execution time: 0.0550
+DEBUG - 2019-04-24 12:19:29 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:29 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:29 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:29 --> Total execution time: 0.1631
+DEBUG - 2019-04-24 12:19:29 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:29 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:29 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:29 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:29 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:29 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:29 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:29 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:29 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:29 --> Total execution time: 0.0700
+DEBUG - 2019-04-24 12:19:29 --> Total execution time: 0.0750
+DEBUG - 2019-04-24 12:19:29 --> Total execution time: 0.0850
+DEBUG - 2019-04-24 12:19:32 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:32 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:32 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:32 --> Total execution time: 0.2150
+DEBUG - 2019-04-24 12:19:32 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:32 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:32 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:32 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:32 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:32 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:32 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:32 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:32 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:32 --> Total execution time: 0.0800
+DEBUG - 2019-04-24 12:19:32 --> Total execution time: 0.0850
+DEBUG - 2019-04-24 12:19:32 --> Total execution time: 0.0725
+DEBUG - 2019-04-24 12:19:35 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:35 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:35 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:35 --> Total execution time: 0.1950
+DEBUG - 2019-04-24 12:19:35 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:35 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:35 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:35 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:35 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:35 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:35 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:35 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:35 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:35 --> Total execution time: 0.0800
+DEBUG - 2019-04-24 12:19:35 --> Total execution time: 0.0850
+DEBUG - 2019-04-24 12:19:35 --> Total execution time: 0.0850
+DEBUG - 2019-04-24 12:19:37 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:37 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:37 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:38 --> Total execution time: 0.3250
+DEBUG - 2019-04-24 12:19:38 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:38 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:38 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:38 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:38 --> UTF-8 Support Enabled
+DEBUG - 2019-04-24 12:19:38 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:38 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-24 12:19:38 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:38 --> Total execution time: 0.0575
+DEBUG - 2019-04-24 12:19:38 --> Total execution time: 0.0700
+DEBUG - 2019-04-24 12:19:38 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-24 12:19:38 --> Total execution time: 0.0325

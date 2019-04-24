@@ -326,6 +326,7 @@ class R_Matching extends CI_Controller{
         ))){
             $return_data['message_type']= "sukses";
             $return_data['id_dtr'] = $this->input->post('id_dtr');
+            $return_data['jenis_barang'] = $this->input->post('id_barang');
             $return_data['flag_taken'] = $check;
             $return_data['dtr_detail_id'] = $this->input->post('dtr_detail_id');
         }else{
@@ -352,6 +353,7 @@ class R_Matching extends CI_Controller{
         if($this->db->delete('r_t_invoice_detail')){
             $return_data['message_type']= "sukses";
             $return_data['dtr_id'] = $id_dtr;
+            $return_data['jenis_barang'] = $this->input->post('id_barang');
             $return_data['check'] = $check;
         }else{
             $return_data['message_type']= "error";
@@ -381,7 +383,7 @@ class R_Matching extends CI_Controller{
             $tabel .= '<td>'.$row->no_pallete.'</td>';
             $tabel .= '<td>'.$row->line_remarks.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                    . 'red" onclick="hapusDetail('.$row->dtr_detail_id.');" style="margin-top:5px"> '
+                    . 'red" onclick="hapusDetail('.$row->dtr_detail_id.','.$row->jenis_barang_id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';
             $total += $row->netto;

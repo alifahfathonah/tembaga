@@ -170,7 +170,10 @@ function simpanData(){
     } else if($.trim($("#qty").val()) == ""){
         $('#message').html("Jumlah harus diisi, tidak boleh kosong!");
         $('.alert-danger').show();
-    }else{     
+    } else if($.trim($("#persentase").val()) == ""){
+        $('#message').html("Persentase harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else{          
         $('#formku').submit(); 
     };
 };

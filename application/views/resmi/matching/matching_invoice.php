@@ -147,7 +147,7 @@
             <div class="portlet box green-seagreen">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class="fa fa-file-word-o"></i>Input DTR
+                        <i class="fa fa-file-word-o"></i>Input Jenis Barang
                     </div>
                     <div class="tools">    
                     
@@ -156,7 +156,7 @@
                 <div class="portlet-body">
                     <div class="row">
                         <div class="col-md-4">
-                            Pilih DTR
+                            Pilih Jenis Barang
                             <select class="form-control select2me myline" id="dtr_id" name="dtr_id" onchange="loadDetailJb(this.value);">
                                 <!-- <?php foreach ($list_dtr as $row) {
                                 ?>
@@ -340,11 +340,11 @@ function saveDetail(id){
                     if (result['flag_taken'] == 1) {
                         $('#dtr_id').select2('val', '');  
                     } else {
-                        $('#dtr_id').select2('val', result['id_dtr']);
+                        $('#dtr_id').select2('val', result['jenis_barang']);
                     }
                     load_list_dtr();
                     // load_dtr();
-                    loadDetail(result['id_dtr']);
+                    loadDetailJb(result['jenis_barang']);
                     loadDetailInvoice($('#id').val());
                     $('#message').html("");
                     $('.alert-danger').hide(); 
@@ -356,10 +356,8 @@ function saveDetail(id){
         });
 }
 
-function hapusDetail(id){
-    console.log(id);
+function hapusDetail(id,jb){
     var dtr_id = $('#dtr_id_'+id).val();
-    console.log(dtr_id)
     var r=confirm("Anda yakin menghapus item Rongsok ini?");
     if (r==true){
         $.ajax({
@@ -367,7 +365,8 @@ function hapusDetail(id){
             url:'<?php echo base_url('index.php/R_Matching/delete_invoice_detail'); ?>',
             data:{
                 id_dtr: dtr_id,
-                id_dtr_detail:id
+                id_dtr_detail:id,
+                id_barang: jb
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
@@ -376,7 +375,7 @@ function hapusDetail(id){
                     }
                     load_list_dtr();
                     // load_dtr();
-                    loadDetail(result['dtr_id']);
+                    loadDetailJb(result['jenis_barang']);
                     loadDetailInvoice($('#id').val());
                 }else{
                     alert(result['message']);
