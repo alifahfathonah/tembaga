@@ -23,6 +23,7 @@ class Sparepart extends CI_Controller{
         $data['content']= "sparepart/index";
         $this->load->model('Model_sparepart');
         $data['list_data'] = $this->Model_sparepart->list_data()->result();
+        $data['list_group'] = $this->Model_sparepart->list_group()->result();
 
         $this->load->view('layout', $data);
     }
@@ -42,6 +43,7 @@ class Sparepart extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         
         $data = array(
+                    'sparepart_group'=> $this->input->post('group_id'),
                     'nama_item'=> $this->input->post('nama_item'),
                     'uom'=> $this->input->post('uom'),
                     'description'=> $this->input->post('description'),
@@ -81,6 +83,7 @@ class Sparepart extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         
         $data = array(
+                'sparepart_group'=> $this->input->post('group_id'),
                 'nama_item'=> $this->input->post('nama_item'),
                 'uom'=> $this->input->post('uom'),
                 'description'=> $this->input->post('description'),
@@ -97,5 +100,4 @@ class Sparepart extends CI_Controller{
         $this->session->set_flashdata('flash_msg', 'Data sparepart berhasil disimpan');
         redirect('index.php/Sparepart');
     }
-    
 }

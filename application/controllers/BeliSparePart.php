@@ -52,10 +52,11 @@ class BeliSparePart extends CI_Controller{
         }else{
             $tgl_spare_part = NULL;
         }
-        $this->load->model('Model_m_numberings');
+
         if($user_ppn==1){
-            $code = $this->Model_m_numberings->getNumbering('PPS-KMP', $tgl_pengajuan);
+            $code = $this->input->post('no_pengajuan');
         }else{
+            $this->load->model('Model_m_numberings');
             $code = $this->Model_m_numberings->getNumbering('PPS', $tgl_pengajuan); 
         }
 
@@ -88,14 +89,34 @@ class BeliSparePart extends CI_Controller{
     
     function delete(){
         $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
+
         if(!empty($id)){
             $this->db->where('id', $id);
             $this->db->delete('beli_sparepart');  
             
             $this->db->where('beli_sparepart_id', $id);
-            $this->db->delete('beli_sparepart_detail');  
+            $this->db->delete('beli_sparepart_detail');
+
+            if($user_ppn == 1){
+
+                $this->load->helper('target_url');
+
+                $url = target_url().'api/BeliSparepartAPI/pps/id/'.$id;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: tembagaresmi'));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+
+                $result = curl_exec($ch);
+                $result = json_decode($result);
+                curl_close($ch);
+            }
         }
-        $this->session->set_flashdata('flash_msg', 'Data pembelian spare pat berhasil dihapus');
+        $this->session->set_flashdata('flash_msg', 'Data pembelian sparepart berhasil dihapus');
         redirect('index.php/BeliSparePart');
     }
     
@@ -135,6 +156,7 @@ class BeliSparePart extends CI_Controller{
         }
         
         $data = array(
+                'no_pengajuan'=> $this->input->post('no_pengajuan'),
                 'jenis_kebutuhan'=> $this->input->post('jenis_kebutuhan'),
                 'tgl_sparepart_dibutuhkan'=> $tgl_spare_part,
                 'nama_pengaju' => $this->input->post('nama_pengaju'),
@@ -301,7 +323,7 @@ class BeliSparePart extends CI_Controller{
             $this->load->model('Model_beli_sparepart');
             $data['myData'] = $this->Model_beli_sparepart->show_data($id)->row_array();           
             $data['myDetail'] = $this->Model_beli_sparepart->load_detail($id)->result(); 
-            
+
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/BeliSparePart');
@@ -310,7 +332,15 @@ class BeliSparePart extends CI_Controller{
     
     function approve(){
         $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+
         $tanggal  = date('Y-m-d h:m:s');
+        $tgl_pengajuan = date('Y-m-d', strtotime($this->input->post('tgl_pengajuan')));
+        if($this->input->post('tgl_spare_part')==NULL){
+            $tgl_spare_part = date('Y-m-d', strtotime($this->input->post('tgl_spare_part')));
+        }else{
+            $tgl_spare_part = '0000-00-00';
+        }
         
         $data = array(
                 'status'=> 1,
@@ -320,7 +350,53 @@ class BeliSparePart extends CI_Controller{
         
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('beli_sparepart', $data);
-        
+
+        /** API HANDLER FOR PPN TRANSACTION **/
+        if($user_ppn == 1){
+            $this->load->helper('target_url');
+
+            $data_post = [
+                'reff_id' => $this->input->post('id'),
+                'no_pengajuan' => $this->input->post('no_pengajuan'),
+                'tgl_pengajuan' => $tgl_pengajuan,
+                'jenis_kebutuhan' => $this->input->post('jn_kebutuhan'),
+                'nama_pengaju' => $this->input->post('nama_pengaju'),
+                'remarks' => $this->input->post('keterangan'),
+                'tgl_sparepart_dibutuhkan' => $tgl_spare_part,
+                'status' => 1
+            ];
+
+            $ch = curl_init(target_url().'api/BeliSparepartAPI/pps');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: tembagaresmi'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $result = json_decode($response, true);
+            curl_close($ch);
+
+            if ($result['id'] > 0){
+
+                $this->load->model('Model_beli_sparepart');
+                $detail = $this->Model_beli_sparepart->load_detail_only($this->input->post('id'))->result_array();
+                foreach($detail as $i => $item) {
+                    unset($detail[$i]['id']);
+                    $detail[$i]['beli_sparepart_id'] = $result['id'];
+                    $detail[$i]['flag_po'] = 1;
+                }
+
+                $detail_post = json_encode($detail);
+
+                $ch2 = curl_init(target_url().'api/BeliSparepartAPI/pps_detail');
+                curl_setopt($ch2, CURLOPT_POST, true);
+                curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: tembagaresmi'));
+                curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+                $result2 = curl_exec($ch2);
+                curl_close($ch2);
+            }
+        }
+
         $this->session->set_flashdata('flash_msg', 'Data pengajuan pembelian spare part berhasil diapprove');
         redirect('index.php/BeliSparePart');
     }
@@ -383,10 +459,10 @@ class BeliSparePart extends CI_Controller{
         $user_ppn  = $this->session->userdata('user_ppn');
 
         $this->db->trans_start();
-        $this->load->model('Model_m_numberings');
         if($user_ppn==1){
-            $code = $this->Model_m_numberings->getNumbering('POSP-KMP', $tgl_input); 
+            $code = $this->input->post('no_po'); 
         }else{
+            $this->load->model('Model_m_numberings');
             $code = $this->Model_m_numberings->getNumbering('POSP', $tgl_input);
         }
 
@@ -411,23 +487,59 @@ class BeliSparePart extends CI_Controller{
                     );
             $this->db->insert('po', $data);
             $po_id = $this->db->insert_id();
-            $details = $this->input->post('myDetails');
-            foreach ($details as $row){
-                if(isset($row['check']) && $row['check']==1){
-                    $this->db->insert('po_detail', array(
-                        'po_id'=>$po_id,
-                        'beli_sparepart_detail_id'=>$row['beli_sparepart_detail_id'],
-                        'sparepart_id'=>$row['sparepart_id'],
-                        'amount'=>str_replace('.', '', $row['harga']),
-                        'qty'=>str_replace('.', '', $row['qty']),
-                        'total_amount'=>str_replace('.', '', $row['total_harga'])
-                    ));
+            // $details = $this->input->post('myDetails');
+            // foreach ($details as $row){
+            //     if(isset($row['check']) && $row['check']==1){
+            //         $this->db->insert('po_detail', array(
+            //             'po_id'=>$po_id,
+            //             'beli_sparepart_detail_id'=>$row['beli_sparepart_detail_id'],
+            //             'sparepart_id'=>$row['sparepart_id'],
+            //             'amount'=>str_replace('.', '', $row['harga']),
+            //             'qty'=>str_replace('.', '', $row['qty']),
+            //             'total_amount'=>str_replace('.', '', $row['total_harga'])
+            //         ));
                     
-                    $this->db->where('id', $row['beli_sparepart_detail_id']);
-                    $this->db->update('beli_sparepart_detail', array('flag_po'=>1));
+            //         $this->db->where('id', $row['beli_sparepart_detail_id']);
+            //         $this->db->update('beli_sparepart_detail', array('flag_po'=>1));
+            //     }
+            // }
+            
+            if($user_ppn==1){
+                $data_id = array('reff_id' => $po_id);
+                $data_post = array_merge($data, $data_id);
+
+                
+                $ch = curl_init(target_url().'api/BeliSparepartAPI/po');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: tembagaresmi'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+
+                if ($result['id'] > 0){
+
+                    $this->load->model('Model_beli_sparepart');
+                    $detail = $this->Model_beli_sparepart->load_detail_only($this->input->post('id'))->result_array();
+                    foreach($detail as $i => $item) {
+                        unset($detail[$i]['id']);
+                        $detail[$i]['beli_sparepart_id'] = $result['id'];
+                        $detail[$i]['flag_po'] = 1;
+                    }
+
+                    $detail_post = json_encode($detail);
+
+                    $ch2 = curl_init(target_url().'api/BeliSparepartAPI/pps_detail');
+                    curl_setopt($ch2, CURLOPT_POST, true);
+                    curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: tembagaresmi'));
+                    curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_post);
+                    curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+                    $result2 = curl_exec($ch2);
+                    curl_close($ch2);
                 }
             }
-            
+
             if($this->db->trans_complete()){    
                 $this->session->set_flashdata('flash_msg', 'PO berhasil di-create dengan nomor : '.$code);                 
             }else{

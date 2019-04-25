@@ -27,6 +27,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $http = 'http'.((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')? 's://' : '://');
 $newurl = str_replace("index.php", "", $_SERVER['SCRIPT_NAME']);
 $config['base_url'] = "$http".$_SERVER['SERVER_NAME']."".$newurl;
+
+//url API
+$config['target_url'] = 'http://localhost/tembaga_resmi/index.php/';
 // $config['base_url'] = 'http://localhost/tembagabaru/';
 
 /*

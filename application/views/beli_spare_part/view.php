@@ -90,11 +90,13 @@
                             <input type="text" id="jenis_kebutuhan" name="jenis_kebutuhan" class="form-control myline" 
                                    style="margin-bottom:5px" readonly="readonly" 
                                    value="<?php echo (($myData['jenis_kebutuhan']==1)? 'Segera': 'Tanggal'); ?>">
+                            <input type="hidden" name="jn_kebutuhan" value="<?=$myData['jenis_kebutuhan'];?>">
                         </div>
                         <div class="col-md-5" id="boxTanggal" <?php echo (($myData['jenis_kebutuhan']==1)? 'style="display:none"': ''); ?>>
                             <input type="text" id="tgl_spare_part" name="tgl_spare_part" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
                                 value="<?php echo date('d-m-Y', strtotime($myData['tgl_sparepart_dibutuhkan'])); ?>">
+                            <input type="hidden" name="jn_kebutuhan" value="<?=$myData['jenis_kebutuhan'];?>">
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>

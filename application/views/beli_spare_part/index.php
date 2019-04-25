@@ -104,13 +104,13 @@
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-truck"></i> Create PO &nbsp; </a>
                             <?php
                                 }
-                                if( ($group_id==1)||($hak_akses['edit']==1) && $data->status==0 ){
+                                if( ($group_id==1||$hak_akses['edit']==1) && $data->status==0 ){
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/BeliSparePart/edit/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                             <?php 
                                 }
-                                if( ($group_id==1)||($hak_akses['delete']==1)&& $data->status==0 ){
+                                if( ($group_id==1||$hak_akses['delete']==1)&& $data->status==0 ){
                             ?>
                             <a href="<?php echo base_url(); ?>index.php/BeliSparePart/delete/<?php echo $data->id; ?>" 
                                class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus data ini?');">

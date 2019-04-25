@@ -33,9 +33,13 @@
                             No Pengajuan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
+                        <?php if($this->session->userdata('user_ppn') == 1 ){?>
+                            <input type="text" id="no_pengajuan" name="no_pengajuan" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
+                        <?php }else{ ?>
                             <input type="text" id="no_pengajuan" name="no_pengajuan" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="Auto generate">
+                        <?php } ?>
                         </div>
                     </div>
                     <div class="row">
@@ -122,7 +126,10 @@ function showTanggal(nilai){
 }
 
 function simpanData(){
-    if($.trim($("#jenis_kebutuhan").val()) == ""){
+    if($.trim($("#no_pengajuan").val()) == ""){
+        $('#message').html("Nomor Pengajuan harus diisi!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#jenis_kebutuhan").val()) == ""){
         $('#message').html("Silahkan pilih jenis kebutuhan!");
         $('.alert-danger').show(); 
     }else{     

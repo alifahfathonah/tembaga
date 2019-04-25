@@ -58,7 +58,23 @@
                                         class="form-control myline" style="margin-bottom:5px" 
                                         onkeyup="this.value = this.value.toUpperCase()">
                                 </div>
-                            </div>  
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Group <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <select id="group_id" name="group_id" class="form-control myline select2me" 
+                                        data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                        <option value=""></option>
+                                        <?php
+                                            foreach ($list_group as $row){
+                                                echo '<option value="'.$row->id.'">('.$row->kode_group.') '.$row->deskripsi.'</option>';
+                                            }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-5">
                                     Description
@@ -132,7 +148,7 @@
                         <td style="text-align:center"><?php echo $no; ?></td>
                         <td><?php echo $data->nama_item; ?></td>
                         <td><?php echo $data->uom; ?></td>
-                        <td><?php echo $data->description; ?></td>
+                        <td><?php echo $data->deskripsi; ?></td>
                         <td><?php echo $data->alias; ?></td>
                         <td style="text-align:center"> 
                             <?php
@@ -231,6 +247,7 @@ function editData(id){
         success: function (result){
             $('#nama_item').val(result['nama_item']);
             $('#uom').val(result['uom']);
+            $('#group_id').select2('val',result['sparepart_group'])
             $('#description').val(result['description']);
             $('#alias').val(result['alias']);
             $('#id').val(result['id']);

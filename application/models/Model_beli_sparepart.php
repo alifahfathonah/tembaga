@@ -32,6 +32,12 @@ class Model_beli_sparepart extends CI_Model{
                 Where bsd.beli_sparepart_id=".$id);
         return $data;
     }
+
+    function load_detail_only($id){
+        $data = $this->db->query("Select * From beli_sparepart_detail
+                Where beli_sparepart_id=".$id);
+        return $data;
+    }
     
     function supplier_list(){
         $data = $this->db->query("Select * From supplier Order By nama_supplier");

@@ -33,9 +33,12 @@
                             No Pengajuan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
+                        <?php if($this->session->userdata('user_ppn') == 1 ){?>
+                            <input type="text" id="no_pengajuan" name="no_pengajuan" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $myData['no_pengajuan']; ?>">
+                        <?php }else{ ?>
                             <input type="text" id="no_pengajuan" name="no_pengajuan" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $myData['no_pengajuan']; ?>">
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $myData['no_pengajuan']; ?>">
+                        <?php } ?>
                             
                             <input type="hidden" id="id" name="id" value="<?php echo $myData['id']; ?>">
                             <input type="hidden" id="status" name="status" value="<?php echo $myData['status']; ?>">
