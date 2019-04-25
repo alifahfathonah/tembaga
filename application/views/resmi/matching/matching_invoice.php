@@ -29,6 +29,65 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">&nbsp;</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-danger display-hide" id="box_error_modal">
+                                    <button class="close" data-close="alert"></button>
+                                    <span id="msg_modal">&nbsp;</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <form class="eventInsForm" method="post" target="_self" name="formku" 
+                              id="formku">                             -->
+                            <!-- <input type="hidden" id="status_vc" name="status_vc"> -->
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Netto
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="netto" name="netto" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        readonly="readonly">
+                                    
+                                    <input type="hidden" id="id_dtr_detail" name="id_dtr_detail" class="form-control">
+                                    <input type="hidden" id="id_dtr" name="id_dtr">
+                                    <input type="hidden" id="id_barang" name="id_barang">
+                                    <input type="hidden" id="nama_item" name="nama_item">
+                                    <input type="hidden" id="bruto" name="bruto">
+                                    <input type="hidden" id="berat_palette" name="berat_palette">
+                                    <input type="hidden" id="no_pallete" name="no_pallete">
+                                    <input type="hidden" id="line_remarks" name="line_remarks">
+                                    
+                                </div>
+                            </div>                  
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Netto diambil <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="number" id="netto_ambil" name="netto_ambil" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        >                                                                       
+                                </div>
+                            </div> 
+                            
+                        <!-- </form> -->
+                    </div>
+                    <div class="modal-footer">                        
+                        <button type="button" class="btn blue" onClick="saveDetailParsial();">Simpan</button>
+                        <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <?php
             if( ($group_id==9)||($hak_akses['view']==1) ){
         ?>
@@ -117,7 +176,7 @@
                 </div>              
             </div>
             
-            <div class="portlet box yellow-gold">
+            <!-- <div class="portlet box yellow-gold">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="fa fa-file-word-o"></i>Data DTR
@@ -135,7 +194,7 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div> -->
             <div class="row">
                 <div class="col-md-12">
                     <div class="alert alert-danger display-hide" id="alert-danger2">
@@ -170,7 +229,7 @@
                     </div>
                     <div>
                         <br>
-                        <table class="table table-striped table-bordered table-hover" id="sample_6">
+                        <table class="table table-striped table-bordered table-hover">
                             <thead>
                                 <th></th>
                                 <th style="width:40px">No</th>
@@ -179,7 +238,7 @@
                                 <th>Netto (Kg)</th>
                                 <th>Berat Pallete (Kg)</th>
                                 <th>Nomor Pallete</th>
-                                <th>Keterangan</th>
+                                <th style="text-align: center;">Action</th>
                             </thead>
                             <tbody id="boxDetail">
                             
@@ -258,6 +317,93 @@
     </div>
 </div> 
 <script>
+function saveParsial(no,jb) {
+    var netto = $('#netto_'+no).val();
+    var id_dtr_detail = $('#dtr_detail_id_'+no).val();
+    var id_dtr = $('#dtr_id_'+no).val();
+    var id_barang = $('#id_barang_'+no).val();
+    var nama_item = $('#nama_item_'+no).val();
+    var bruto = $('#bruto_'+no).val();
+    var berat_palette = $('#berat_palette_'+no).val();
+    var no_pallete = $('#no_pallete_'+no).val();
+    var line_remarks = $('#line_remarks_'+no).val();
+    // console.log(id_dtr_detail);
+
+    $("#netto").val(netto);
+    $("#id_dtr_detail").val(id_dtr_detail);
+    $("#id_dtr").val(id_dtr);
+    $("#id_barang").val(id_barang);
+    $("#nama_item").val(nama_item);
+    $("#bruto").val(bruto);
+    $("#berat_palette").val(berat_palette);
+    $("#no_pallete").val(no_pallete);
+    $("#line_remarks").val(line_remarks);
+
+    $("#netto_ambil").attr({
+        "min" : 0,
+        "max" : netto
+    });
+
+    $("#myModal").find('.modal-title').text(jb);
+    $("#myModal").modal('show',{backdrop: 'true'});
+}
+
+function saveDetailParsial(){
+    var dtr_id = $('#id_dtr').val();
+    var netto = $('#netto').val();
+    var u_netto = $('#netto_ambil').val();
+    var id_barang = $('#id_barang').val();
+    var id_dtr_detail = $('#id_dtr_detail').val();
+
+    var nama_item = $("#nama_item").val();
+    var bruto = $("#bruto").val();
+    var berat_palette= $("#berat_palette").val();
+    var no_pallete = $("#no_pallete").val();
+    var line_remarks = $("#line_remarks").val();
+    // console.log(u_netto+" > "+netto);
+
+    if(Number(u_netto) > Number(netto)){
+        $('#msg_modal').html("Jumlah netto diambil tidak boleh lebih dari netto!");
+        $('#box_error_modal').show();
+    } else {
+        $.ajax({
+        type:"POST",
+        url:'<?php echo base_url('index.php/R_Matching/save_invoice_detail_parsial'); ?>',
+        data:{
+            id_dtr : dtr_id,
+            invoice_resmi_id : $('#id').val(),
+            id_barang: id_barang,
+            dtr_detail_id: id_dtr_detail,
+            bruto : bruto,
+            netto : netto,
+            u_netto : u_netto,
+            berat_pallete: berat_palette,
+            keterangan: line_remarks
+        },
+        success:function(result){
+            if(result['message_type']=="sukses"){
+                if (result['flag_taken'] == 1) {
+                    $('#dtr_id').select2('val', '');  
+                } else {
+                    $('#dtr_id').select2('val', result['jenis_barang']);
+                }
+                load_list_dtr();
+                // load_dtr();
+                loadDetailJb(result['jenis_barang']);
+                loadDetailInvoice($('#id').val());
+                $('#message').html("");
+                $('.alert-danger').hide(); 
+                $('#myModal').modal('hide');
+                $('#netto_ambil').val('');
+            }else{
+                $('#message').html(result['message']);
+                $('.alert-danger').show(); 
+            }            
+        }
+    });
+    }
+}
+
 function load_list_dtr(){
     $.ajax({
         url:'<?php echo base_url('index.php/R_Matching/load_list_dtr'); ?>',
@@ -356,8 +502,9 @@ function saveDetail(id){
         });
 }
 
-function hapusDetail(id,jb){
+function hapusDetail(id,jb,netto, detail_id_matching){
     var dtr_id = $('#dtr_id_'+id).val();
+    console.log(detail_id_matching);
     var r=confirm("Anda yakin menghapus item Rongsok ini?");
     if (r==true){
         $.ajax({
@@ -366,7 +513,9 @@ function hapusDetail(id,jb){
             data:{
                 id_dtr: dtr_id,
                 id_dtr_detail:id,
-                id_barang: jb
+                id_barang: jb,
+                netto: netto,
+                detail_id_matching: detail_id_matching
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
@@ -385,11 +534,15 @@ function hapusDetail(id,jb){
     }
 }
 
+
 function loadDetailInvoice(id){
     $.ajax({
         type:"POST",
         url:'<?php echo base_url('index.php/R_Matching/load_detail_invoice'); ?>',
-        data:"id="+ id,
+        data:{
+            id: id,
+            permintaan: $('#total').val()
+        },
         success:function(result){
             $('#boxDetail2').html(result);     
         }
