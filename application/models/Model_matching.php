@@ -41,8 +41,11 @@ class Model_matching extends CI_Model{
     }
 
     function jenis_barang_list(){
-        $this->db->where('type_barang', 'Rongsok');
-        $data = $this->db->get('rongsok');
+        $data = $this->db->query("select r.id, r.nama_item from dtr_detail dtrd
+            left join rongsok r on r.id = dtrd.rongsok_id
+            where r.type_barang = \"Rongsok\"
+            group by rongsok_id
+            order by r.nama_item");
         return $data;
     }
 
