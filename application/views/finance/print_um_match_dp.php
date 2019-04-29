@@ -73,10 +73,10 @@
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
                             <td style="border-left:1px solid #000;"><?=$row->no_invoice;?></td>
                             <td style="text-align:right; border-left:1px solid #000;"></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=number_format($row->total,0,',', '.');?></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=number_format($header['nominal'],0,',', '.');?></td>
                         </tr>
                         <?php
-                                $total += $row->total;
+                                $total += $header['nominal'];
                                 $no++;
                             }
                         ?>

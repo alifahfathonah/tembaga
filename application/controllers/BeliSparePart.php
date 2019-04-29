@@ -508,7 +508,7 @@ class BeliSparePart extends CI_Controller{
                 $data_id = array('reff_id' => $po_id);
                 $data_post = array_merge($data, $data_id);
 
-                
+                die();
                 $ch = curl_init(target_url().'api/BeliSparepartAPI/po');
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: tembagaresmi'));
@@ -1037,10 +1037,14 @@ class BeliSparePart extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        $this->load->model('Model_beli_sparepart');
+        if($user_ppn==1){
+            $data['list_data'] = $this->Model_beli_sparepart->voucher_list_ppn($user_ppn)->result();
+        }else{
+            $data['list_data'] = $this->Model_beli_sparepart->voucher_list($user_ppn)->result();
+        }
 
         $data['content']= "beli_spare_part/voucher_list";
-        $this->load->model('Model_beli_sparepart');
-        $data['list_data'] = $this->Model_beli_sparepart->voucher_list($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }

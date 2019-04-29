@@ -6,12 +6,14 @@ class Model_voucher_cost extends CI_Model{
                 cost.nama_cost,
                 mc.nama_customer,
                 supp.nama_supplier,
-                COALESCE(nm_cost, mc.nama_customer, supp.nama_supplier) as nama_trx
+                COALESCE(nm_cost, mc.nama_customer, supp.nama_supplier) as nama_trx,
+                fk.nomor
                 From voucher 
                     Left Join group_cost gc On (voucher.group_cost_id = gc.id) 
                     Left Join cost On (voucher.cost_id = cost.id)
                     Left Join m_customers mc ON (voucher.customer_id = mc.id)
-                    left join supplier supp on (voucher.supplier_id = supp.id)
+                    Left join supplier supp on (voucher.supplier_id = supp.id)
+                    Left Join f_kas fk On (voucher.id = fk.id_vc)
                 Where voucher.jenis_voucher='Manual' and voucher.flag_ppn =".$ppn."
                 Order By voucher.no_voucher");
         return $data;

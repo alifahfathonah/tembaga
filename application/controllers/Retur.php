@@ -1855,6 +1855,7 @@ class Retur extends CI_Controller{
         $user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $user_ppn = $this->session->userdata('user_ppn');
 
         // $details = $this->input->post('details');
         // foreach ($details as $v) {
@@ -1870,11 +1871,16 @@ class Retur extends CI_Controller{
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('INV-RTR', $tgl_input);
+        if($user_ppn == 1){
+            $code = $this->Model_m_numberings->getNumbering('INVR-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('INV-RTR', $tgl_input);
+        }
 
         $data = array(
             'jenis_trx'=>1,
             'no_invoice'=> $code,
+            'flag_ppn'=> $user_ppn,
             'tanggal'=> $tgl_input,
             'tgl_jatuh_tempo'=> $this->input->post('tanggal_jatuh'),
             'id_customer'=> $this->input->post('customer_id'),
@@ -1887,6 +1893,8 @@ class Retur extends CI_Controller{
         $id_new=$this->db->insert_id();
 
         $details = $this->input->post('details');
+
+        $nilai_invoice = 0;
         foreach ($details as $v) {
             $this->db->insert('f_invoice_detail', array(
                 'id_invoice'=>$id_new,
@@ -1897,7 +1905,18 @@ class Retur extends CI_Controller{
                 'total_harga'=>str_replace('.', '', $v['total']),
                 'keterangan'=>$v['line_remarks']
             ));
+            $nilai_invoice += str_replace('.', '', $v['total']);
         }
+
+        if($user_ppn == 1){
+            $total_invoice = $nilai_invoice*110/100;
+        }else{
+            $total_invoice = $nilai_invoice;
+        }
+        $this->db->where('id', $id_new);
+        $this->db->update('f_invoice', array(
+            'nilai_invoice'=>$total_invoice
+        ));
 
         $this->db->where('id',$this->input->post('id_retur'));
         $this->db->update('retur', array(

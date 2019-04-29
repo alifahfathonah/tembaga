@@ -182,9 +182,9 @@
                     <th>Tanggal</th> 
                     <th>Nama Cost</th>  
                     <th>Nama Group Cost</th>   
-                    <th>Katerangan</th>
+                    <th>Keterangan</th>
                     <th>Amount (Rp)</th> 
-                    <!-- <th>Actions</th> -->
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -195,21 +195,20 @@
                     ?>
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
-                        <td><?php echo $data->no_voucher; ?></td>
+                        <td><?php echo $data->nomor; ?></td>
                         <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->nama_trx; ?></td>
                         <td><?php echo $data->nama_group_cost; ?></td>
                         <td><?php echo $data->keterangan; ?></td>
                         <td style="text-align:right"><?php echo number_format($data->amount,0,',','.'); ?></td>
-                        <!-- <td style="text-align:center">                             
+                        <td style="text-align:center">                             
                             <?php 
-                                if( ($group_id==1)||($hak_akses['delete']==1) ){
+                                if( ($group_id==1)||($hak_akses['print']==1) ){
                             ?>
-                            <a href="<?php echo base_url(); ?>index.php/VoucherCost/delete/<?php echo $data->id; ?>" 
-                               class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus data ini?');">
-                                <i class="fa fa-trash-o"></i> Hapus </a>
+                            <a href="<?php echo base_url(); ?>index.php/VoucherCost/print_voucher/<?php echo $data->id; ?>" 
+                               class="btn btn-circle btn-xs blue-ebonyclay" style="margin-bottom:4px"><i class="fa fa-print"></i> Print &nbsp; </a> 
                             <?php }?>
-                        </td> -->
+                        </td>
                     </tr>
                     <?php
                         }

@@ -227,6 +227,17 @@ class Model_beli_fg extends CI_Model
         return $data;
     }
 
+    function voucher_list_ppn($user_ppn){
+        $data = $this->db->query("Select voucher.*, 
+                po.no_po, po.tanggal As tanggal_po, fk.nomor
+                From voucher 
+                    Left Join po On (voucher.po_id = po.id) 
+                    Left Join f_kas fk On (voucher.id = fk.id_vc)
+                Where voucher.jenis_barang='FG' and voucher.flag_ppn = ".$user_ppn."
+                Order By voucher.no_voucher");
+        return $data;
+    }
+
     function voucher_list($user_ppn){
         $data = $this->db->query("Select voucher.*, 
                 po.no_po, po.tanggal As tanggal_po

@@ -597,6 +597,7 @@ class BeliWIP extends CI_Controller{
         $this->load->model('Model_beli_wip');
         $data = $this->Model_beli_wip->voucher_po_wip($id)->row_array();
         if($data['ppn']==1){
+            $data['nilai_before_ppn'] = number_format($data['nilai_po'],0,',','.');
             $nilai_po = $data['nilai_po']*110/100;
             $data['nilai_ppn'] = number_format($data['nilai_po']*10/100,0,',','.');
         }else{
@@ -628,12 +629,14 @@ class BeliWIP extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('VWIP', $tgl_input);
-        if($nilai_po-($nilai_dp+$amount)>0){
-            $jenis_voucher = 'DP';
-        }else{
+        if($nilai_po-($nilai_dp+$amount)>0 && $this->input->post('status_vc')==3){
             $jenis_voucher = 'Pelunasan';
             $this->db->where('id', $id);
             $this->db->update('po', array('flag_pelunasan'=>1,'status'=>4));
+        }else{
+            $jenis_voucher = 'DP';
+            $this->db->where('id', $id);
+            $this->db->update('po', array('flag_dp'=>1));
         } 
 
         if($code){ 
@@ -681,9 +684,9 @@ class BeliWIP extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         if($ppn==1){
-            $code = $this->Model_m_numberings->getNumbering('VFG-KMP', $tgl_input);
+            $code = $this->Model_m_numberings->getNumbering('VWIP-KMP', $tgl_input);
         }else{
-            $code = $this->Model_m_numberings->getNumbering('VFG', $tgl_input); 
+            $code = $this->Model_m_numberings->getNumbering('VWIP', $tgl_input); 
         }
 
         if($code){ 
@@ -776,6 +779,7 @@ class BeliWIP extends CI_Controller{
     function print_voucher(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
         if($id){
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -785,17 +789,33 @@ class BeliWIP extends CI_Controller{
             }
 
             $this->load->helper('terbilang_helper');
-            $this->load->model('Model_finance');
-            $data['header'] = $this->Model_finance->show_header_voucher($id)->row_array();
-            $data['list_data'] = $this->Model_finance->show_detail_voucher($id)->result();
-            $total = 0;
-            foreach ($data['list_data'] as $row) {
-                $total += $row->amount;
+            if($user_ppn==1){
+                $this->load->model('Model_beli_rongsok');
+                $data['header'] = $this->Model_beli_rongsok->show_header_voucher($id)->row_array();
+                $data['list_data'] = $this->Model_beli_rongsok->show_detail_voucher($id)->result();
+                $total = 0;
+                foreach ($data['list_data'] as $row) {
+                    $total += $row->amount;
+                }
+
+                $data['total'] = $total;
+
+                $this->load->view('beli_wip/print_voucher_ppn', $data);   
+            }else{
+                $this->load->model('Model_finance');
+                $data['header'] = $this->Model_finance->show_header_voucher($id)->row_array();
+                $data['list_data'] = $this->Model_finance->show_detail_voucher($id)->result();
+
+                $total = 0;
+                foreach ($data['list_data'] as $row) {
+                    $total += $row->amount;
+                }
+
+                $data['total'] = $total;
+
+                $this->load->view('beli_wip/print_voucher', $data);   
             }
 
-            $data['total'] = $total;
-
-            $this->load->view('beli_wip/print_voucher', $data);   
         }else{
             redirect('index.php/BeliWIP');
         }
