@@ -352,6 +352,7 @@ class BeliRongsok extends CI_Controller{
         $this->load->model('Model_beli_rongsok');
         $data = $this->Model_beli_rongsok->voucher_po_rsk($id)->row_array();
          if($data['ppn']==1){
+            $data['nilai_before_ppn'] = number_format($data['nilai_po'],0,',','.');
             $nilai_po = $data['nilai_po']*110/100;
             $data['nilai_ppn'] = number_format($data['nilai_po']*10/100,0,',','.');
         }else{
@@ -1474,9 +1475,14 @@ class BeliRongsok extends CI_Controller{
         }
         $data['group_id']  = $group_id;
 
-        $data['content']= "beli_rongsok/voucher_list";
         $this->load->model('Model_beli_rongsok');
-        $data['list_data'] = $this->Model_beli_rongsok->voucher_list($user_ppn)->result();
+        if($user_ppn==1){
+            $data['content']= "beli_rongsok/voucher_list_ppn";
+            $data['list_data'] = $this->Model_beli_rongsok->voucher_list_ppn($user_ppn)->result();
+        }else{
+            $data['content']= "beli_rongsok/voucher_list";
+            $data['list_data'] = $this->Model_beli_rongsok->voucher_list($user_ppn)->result();
+        }
 
         $this->load->view('layout', $data);
     }
@@ -1626,6 +1632,8 @@ class BeliRongsok extends CI_Controller{
     function print_voucher(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
+
         if($id){
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -1635,18 +1643,32 @@ class BeliRongsok extends CI_Controller{
             }
 
             $this->load->helper('terbilang_helper');
-            $this->load->model('Model_finance');
-            $data['header'] = $this->Model_finance->show_header_voucher($id)->row_array();
-            $data['list_data'] = $this->Model_finance->show_detail_voucher($id)->result();
+            if($user_ppn==1){
+                $this->load->model('Model_beli_rongsok');
+                $data['header'] = $this->Model_beli_rongsok->show_header_voucher($id)->row_array();
+                $data['list_data'] = $this->Model_beli_rongsok->show_detail_voucher($id)->result();
+                $total = 0;
+                foreach ($data['list_data'] as $row) {
+                    $total += $row->amount;
+                }
 
-            $total = 0;
-            foreach ($data['list_data'] as $row) {
-                $total += $row->amount;
+                $data['total'] = $total;
+
+                $this->load->view('beli_rongsok/print_voucher_ppn', $data);   
+            }else{
+                $this->load->model('Model_finance');
+                $data['header'] = $this->Model_finance->show_header_voucher($id)->row_array();
+                $data['list_data'] = $this->Model_finance->show_detail_voucher($id)->result();
+
+                $total = 0;
+                foreach ($data['list_data'] as $row) {
+                    $total += $row->amount;
+                }
+
+                $data['total'] = $total;
+
+                $this->load->view('beli_rongsok/print_voucher', $data);   
             }
-
-            $data['total'] = $total;
-
-            $this->load->view('beli_rongsok/print_voucher', $data);   
         }else{
             redirect('index.php/BeliRongsok');
         }

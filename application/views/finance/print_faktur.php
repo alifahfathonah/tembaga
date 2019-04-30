@@ -127,7 +127,7 @@
                                 $no++;
                             }
                         if($header['flag_ppn']==1){
-                            $harga_ppn = ($total+$header['diskon']) * 10/100;
+                            $harga_ppn = ($total-$header['diskon']-$header['add_cost']) * 10/100;
                         }
                         ?>
                         <tr style="height:100px">
@@ -158,7 +158,7 @@
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>Dasar Pengenaan Pajak</strong></td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">Rp.</td>
-                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($total-$header['diskon'],0,',', '.');?></td>
+                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($total-$header['diskon']-$header['add_cost'],0,',', '.');?></td>
                         </tr>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>PPN = 10% x Dasar Pengenaan Pajak</strong></td>

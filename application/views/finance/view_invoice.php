@@ -242,7 +242,7 @@
                                                 $total_all += $row->total_harga;
                                             }
                                             if($header['flag_ppn']==1){
-                                                $ppn1 = $total_all - $header['diskon'];
+                                                $ppn1 = $total_all - $header['diskon'] - $header['add_cost'];
                                                 $ppn = $ppn1*10/100;
                                             }
                                         ?>

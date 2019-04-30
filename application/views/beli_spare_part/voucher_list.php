@@ -32,7 +32,7 @@
                 <thead>
                 <tr>
                     <th style="width:50px;">No</th>
-                    <th>No. Voucher</th> 
+                    <th>Nomor Bukti</th> 
                     <th>Tanggal</th> 
                     <th>Jenis Voucher</th>  
                     <th>No. VK</th>
@@ -49,7 +49,7 @@
                     ?>
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
-                        <td><?php echo $data->no_voucher; ?></td>
+                        <td><?php echo ($this->session->userdata('user_ppn')==1) ? $data->nomor : $data->no_voucher; ?></td>
                         <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->jenis_voucher; ?></td>
                         <td><?php echo $data->no_vk; ?></td>

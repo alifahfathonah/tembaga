@@ -3,9 +3,9 @@
         <h4 style="color:navy">
             <i class="fa fa-angle-right"></i> Pembelian 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>"> Pembelian Finish Good </a> 
+            <a href="<?php echo base_url('index.php/BeliRongsok'); ?>"> Pembelian Rongsok </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood/voucher_list'); ?>"> Voucher List </a> 
+            <a href="<?php echo base_url('index.php/BeliRongsok/voucher_list'); ?>"> Voucher List </a> 
         </h4>          
     </div>
 </div>
@@ -47,7 +47,7 @@
                     ?>
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
-                        <td><?php echo $data->no_voucher; ?></td>
+                        <td><?php echo $data->nomor; ?></td>
                         <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->jenis_voucher; ?></td>
                         <td><?php echo $data->no_po; ?></td>

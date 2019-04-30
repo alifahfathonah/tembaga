@@ -381,6 +381,17 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
 
+    function voucher_list_ppn($user_ppn){
+        $data = $this->db->query("Select voucher.*, fk.nomor, 
+                po.no_po, po.tanggal As tanggal_po
+                From voucher 
+                    Left Join po On (voucher.po_id = po.id)
+                    Left Join f_kas fk on (fk.id_vc =  voucher.id) 
+                Where voucher.jenis_barang='RONGSOK' And po.flag_ppn = ".$user_ppn."
+                Order By voucher.no_voucher");
+        return $data;
+    }
+
     function update_stok_tersedia($id, $stok){
         $this->db->select('stok');
         $this->db->where('id',$id);
@@ -514,6 +525,28 @@ class Model_beli_rongsok extends CI_Model{
 
     function check_urut(){
         $data = $this->db->query("select count(id) as no_urut from dtr_detail;");
+        return $data;
+    }
+
+    function show_header_voucher($id){
+        $data = $this->db->query("select v.*, fk.tgl_jatuh_tempo, fk.no_giro, b.no_acc, b.nama_bank, s.nama_supplier, p.no_po, u.realname as pic, fk.nomor
+            from voucher v 
+            left join f_kas fk on (fk.id_vc = v.id)
+            left join bank b on (b.id = fk.id_bank)
+            left join po p on (p.id = v.po_id)
+            left join supplier s on (s.id = v.supplier_id)
+            left join users u on (u.id = v.created_by)
+            where v.id = ".$id);
+        return $data;
+    }
+
+    function show_detail_voucher($id){
+        $data = $this->db->query("Select voucher.*, supplier.nama_supplier, 
+                po.no_po, po.tanggal As tanggal_po
+                From voucher 
+                    Left Join po On (voucher.po_id = po.id)
+                    left join supplier on (supplier.id = po.supplier_id)
+                where voucher.id = ".$id);
         return $data;
     }
 }

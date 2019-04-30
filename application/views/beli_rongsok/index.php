@@ -117,10 +117,10 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-5">
-                                    Nilai PO (Rp) <font color="#f00">*</font>
+                                    Nilai Sebelum PPN (Rp) <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-7">
-                                    <input type="text" id="nilai_po" name="nilai_po" 
+                                    <input type="text" id="nilai_before_ppn" name="nilai_before_ppn" 
                                         class="form-control myline" style="margin-bottom:5px" 
                                         readonly="readonly">                                                                       
                                 </div>
@@ -133,6 +133,16 @@
                                     <input type="text" id="nilai_ppn" name="nilai_ppn" 
                                         class="form-control myline" style="margin-bottom:5px" 
                                         readonly="readonly">      
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Nilai PO (Rp) <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="nilai_po" name="nilai_po" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        readonly="readonly">                                                                       
                                 </div>
                             </div>
                             <div class="row">
@@ -538,6 +548,7 @@ function createVoucher(id){
             $('#terbilang').val(result['terbilang']);
             $('#nilai_dp').val(result['nilai_dp']);
             $('#nilai_ppn').val(result['nilai_ppn']);
+            $('#nilai_before_ppn').val(result['nilai_before_ppn']);
             $('#amount').val(result['sisa']);
             $('#keterangan').val('');
             $('#status_vc').val(result['status']);

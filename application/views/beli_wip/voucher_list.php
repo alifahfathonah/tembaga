@@ -35,6 +35,7 @@
                     <th>Tanggal PO</th>                    
                     <th>Amount (Rp)</th> 
                     <th>Keterangan</th>
+                    <th></th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -52,9 +53,18 @@
                         <td><?php echo $data->no_po; ?></td>
                         <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal_po)); ?></td>
                         <td style="text-align:right"><?php echo number_format($data->amount,0,',','.'); ?></td>
-                        <td><?php echo $data->keterangan; ?></td>                        
+                        <td><?php echo $data->keterangan; ?></td>
+                        <td style="text-align:center">
+                            <?php 
+                                if($data->status==0){ 
+                                    echo '<div style="background-color:bisque; padding:4px">Belum Dibayar</div>';
+                                }else if($data->status==1){ 
+                                    echo '<div style="background-color:green; color:white; padding:4px">Sudah Dibayar</div>';
+                                }
+                            ?>
+                        </td>                 
                         <td style="text-align:center">                             
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" target="_blank" href="<?php echo base_url(); ?>index.php/BeliWIP/print_voucher/<?php echo $data->id; ?>" 
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" target="_blank" href="<?php echo base_url(); ?>index.php/BeliRongsok/print_voucher/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-print"></i> Print &nbsp; </a>    
                         </td>
                     </tr>

@@ -45,11 +45,11 @@
                             <input type="hidden" id="id_modal" name="id_modal">
                             <div class="row">
                                 <div class="col-md-4">
-                                    No. Invoice<font color="#f00">*</font>
+                                    No. Uang Masuk<font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" id="no_invoice" name="no_invoice" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
-                                    <input type="hidden" id="invoice_id" name="invoice_id">
+                                    <input type="text" id="no_um" name="no_um" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                                    <input type="hidden" id="um_id" name="um_id">
                                 </div>
                             </div>
                             <div class="row">
@@ -103,8 +103,8 @@
                         </form>
                     </div>
                     <div class="modal-footer">                        
-                        <button type="button" class="btn blue" id="tambah" onclick="addInv();">Tambah</button>
-                        <button type="button" class="btn blue" id="simpan" onclick="saveInv();">Simpan</button>
+                        <button type="button" class="btn blue" id="tambah" onclick="addUM();">Tambah</button>
+                        <button type="button" class="btn blue" id="simpan" onclick="saveUM();">Simpan</button>
                         <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
                     </div>
                 </div>
@@ -341,7 +341,7 @@ function hitungSubTotal(){
     nominal = $('#nominal').val().toString().replace(/\./g, "");
     b1 = $('#b_1').val().toString().replace(/\./g, "");
     b2 = $('#b_2').val().toString().replace(/\./g, "");
-    total_harga = Number(nominal) - (Number(b1) + Number(b2));
+    total_harga = Number(nominal) + (Number(b1) + Number(b2));
     $('#total_nominal').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
 
@@ -357,25 +357,25 @@ function list_inv(id){
     });
 }
 
-// function addInv(id){
-//     $.ajax({
-//         type:"POST",
-//         url:'<?php echo base_url('index.php/Finance/add_inv_match'); ?>',
-//         data:{
-//            id:$('#id').val(),
-//            id_inv:id
-//         },
-//         success:function(result){
-//             if(result['message_type']=="sukses"){
-//                 list_inv(<?php echo $header['id_customer'];?>);
-//                 data_inv(<?php echo $header['id'];?>);
-//             }else{
-//                 $('#message').html(result['message']);
-//                 $('.alert-danger').show(); 
-//             }            
-//         }
-//     });
-// }
+function addInv(id){
+    $.ajax({
+        type:"POST",
+        url:'<?php echo base_url('index.php/Finance/add_inv_match'); ?>',
+        data:{
+           id:$('#id').val(),
+           id_inv:id
+        },
+        success:function(result){
+            if(result['message_type']=="sukses"){
+                list_inv(<?php echo $header['id_customer'];?>);
+                data_inv(<?php echo $header['id'];?>);
+            }else{
+                $('#message').html(result['message']);
+                $('.alert-danger').show(); 
+            }            
+        }
+    });
+}
 
 function delInv(id,id_inv){
     $.ajax({
@@ -409,66 +409,6 @@ function data_inv(id){
     });
 }
 
-function addInv(){
-    var result = confirm("Anda yakin untuk menambahnya ?");
-    if (result) {
-        $('#frmDetail').attr("action", "<?php echo base_url(); ?>index.php/Finance/add_inv_match");
-        $('#frmDetail').submit(); 
-    }
-}
-
-function saveInv(){
-    var result = confirm("Anda yakin untuk menyimpan ?");
-    if (result) {
-        $('#frmDetail').attr("action", "<?php echo base_url(); ?>index.php/Finance/save_inv_match");
-        $('#frmDetail').submit(); 
-    }
-}
-
-function input_inv(id){
-    $.ajax({
-        url: "<?php echo base_url('index.php/Finance/get_data_invoice'); ?>",
-        type: "POST",
-        data: "id="+id,
-        dataType: "json",
-        success: function(result){
-            $("#myModal").find('.modal-title').text('Input Matching');
-            $("#myModal").modal('show',{backdrop: 'true'});
-            $("#tambah").show();
-            $("#simpan").hide();
-            $("#id_modal").val(<?php echo $header['id'];?>);
-            $("#no_invoice").val(result['no_invoice']);
-            $("#invoice_id").val(result['id']);
-            $("#nominal").val(numberWithCommas(result['total']));
-            $("#total_nominal").val(numberWithCommas(result['total']));
-        }
-    });
-}
-
-function view_inv(id){
-    $.ajax({
-        url: "<?php echo base_url('index.php/Finance/view_data_invoice'); ?>",
-        type: "POST",
-        data: "id="+id,
-        dataType: "json",
-        success: function(result){
-            $("#myModal").find('.modal-title').text('Edit Matching');
-            $("#myModal").modal('show',{backdrop: 'true'});
-            $("#tambah").hide();
-            $("#simpan").show();
-            $("#id_modal").val(<?php echo $header['id'];?>);
-            $("#no_invoice").val(result['no_invoice']);
-            $("#invoice_id").val(id);
-            $('#b_1').val(numberWithCommas(result['biaya1']));
-            $('#k_1').val(result['ket1'])
-            $('#b_2').val(numberWithCommas(result['biaya2']));
-            $('#k_2').val(result['ket2']);
-            $("#nominal").val(numberWithCommas(result['total']));
-            $("#total_nominal").val(numberWithCommas(Number(result['total'])-(Number(result['biaya1'])+Number(result['biaya2']))));
-        }
-    });
-}
-
 /** UM DIBAWAH **/
 
 function list_um(id){
@@ -483,22 +423,62 @@ function list_um(id){
     });
 }
 
-function addUM(id){
+function input_um(id){
     $.ajax({
-        type:"POST",
-        url:'<?php echo base_url('index.php/Finance/add_um_match'); ?>',
-        data:{
-           id:$('#id').val(),
-           id_um:id
-        },
-        success:function(result){
-            if(result['message_type']=="sukses"){
-                list_um(<?php echo $header['id_customer'];?>);
-                data_um(<?php echo $header['id'];?>);
-            }else{
-                $('#message').html(result['message']);
-                $('.alert-danger').show(); 
-            }            
+        url: "<?php echo base_url('index.php/Finance/get_data_um'); ?>",
+        type: "POST",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result){
+            $("#myModal").find('.modal-title').text('Input Matching');
+            $("#myModal").modal('show',{backdrop: 'true'});
+            $("#tambah").show();
+            $("#simpan").hide();
+            $("#id_modal").val(<?php echo $header['id'];?>);
+            $("#no_um").val(result['no_uang_masuk']);
+            $("#um_id").val(result['id']);
+            $("#nominal").val(numberWithCommas(result['nominal']));
+            $("#total_nominal").val(numberWithCommas(result['nominal']));
+        }
+    });
+}
+
+function addUM(){
+    var result = confirm("Anda yakin untuk menambahnya ?");
+    if (result) {
+        $('#frmDetail').attr("action", "<?php echo base_url(); ?>index.php/Finance/add_um_match");
+        $('#frmDetail').submit(); 
+    }
+}
+
+function saveUM(){
+    var result = confirm("Anda yakin untuk menyimpan ?");
+    if (result) {
+        $('#frmDetail').attr("action", "<?php echo base_url(); ?>index.php/Finance/save_um_match");
+        $('#frmDetail').submit(); 
+    }
+}
+
+function view_um(id){
+    $.ajax({
+        url: "<?php echo base_url('index.php/Finance/view_data_um'); ?>",
+        type: "POST",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result){
+            $("#myModal").find('.modal-title').text('Edit Matching');
+            $("#myModal").modal('show',{backdrop: 'true'});
+            $("#tambah").hide();
+            $("#simpan").show();
+            $("#id_modal").val(<?php echo $header['id'];?>);
+            $("#no_um").val(result['no_uang_masuk']);
+            $("#um_id").val(id);
+            $('#b_1').val(numberWithCommas(result['biaya1']));
+            $('#k_1').val(result['ket1'])
+            $('#b_2').val(numberWithCommas(result['biaya2']));
+            $('#k_2').val(result['ket2']);
+            $("#nominal").val(numberWithCommas(result['nominal']));
+            $("#total_nominal").val(numberWithCommas(Number(result['nominal'])+(Number(result['biaya1'])+Number(result['biaya2']))));
         }
     });
 }

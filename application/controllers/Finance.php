@@ -125,7 +125,7 @@ class Finance extends CI_Controller{
         // echo $code;
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        if($this->input->post('jenis_id') == ('Cek' || 'Cek Mundur')){
+        if(($this->input->post('jenis_id') == 'Cek')||($this->input->post('jenis_id') == 'Cek Mundur')){
             if($user_ppn == 1){
                 $code = $this->Model_m_numberings->getNumbering('CM-KMP');
             }else{
@@ -1196,6 +1196,7 @@ class Finance extends CI_Controller{
 
         $data = array(
             'no_invoice'=> $code,
+            'flag_ppn'=> $user_ppn,
             'term_of_payment'=> $this->input->post('term_of_payment'),
             'bank_id'=> $this->input->post('bank_id'),
             'diskon'=> str_replace('.', '', $this->input->post('diskon')),
@@ -1226,6 +1227,7 @@ class Finance extends CI_Controller{
             $loop_detail = $this->Model_finance->load_detail_invoice($id_sj)->result();//sudah group by
         // }
 
+        $nilai_invoice = 0;
         foreach($loop_detail as $row){
             $total = $row->amount * $row->netto;
             $this->db->insert('f_invoice_detail', array(
@@ -1237,7 +1239,19 @@ class Finance extends CI_Controller{
                     'harga'=>$row->amount,
                     'total_harga'=>$total,
             ));
+            $nilai_invoice += $total;
         }
+
+        if($ppn == 1){
+            $total_invoice = ($nilai_invoice-str_replace('.', '', $this->input->post('diskon'))-str_replace('.', '', $this->input->post('add_cost')))*110/100 + str_replace('.', '', $this->input->post('materai'));
+        }else{
+            $total_invoice = ($nilai_invoice-str_replace('.', '', $this->input->post('diskon'))-str_replace('.', '', $this->input->post('add_cost'))) + str_replace('.', '', $this->input->post('materai'));
+        }
+
+        $this->db->where('id',$id_new);
+        $this->db->update('f_invoice', array(
+            'nilai_invoice' => $total_invoice
+        ));
 
         $cek = $this->Model_finance->get_sj_list($id_so)->result();
         if(empty($cek)){
@@ -1525,7 +1539,7 @@ class Finance extends CI_Controller{
 
         $this->db->trans_start();
 
-        if($this->input->post('total_invoice') == $this->input->post('total_nominal')){
+        if($this->input->post('total_invoice') == $this->input->post('total_nominal') && $this->input->post('total_invoice') != 0 && $this->input->post('total_nominal') != 0){
             $status = 1;
         }else{
             $status = 0;
@@ -1597,8 +1611,13 @@ class Finance extends CI_Controller{
             $data['header'] = $this->Model_finance->matching_header_um_print($id)->row_array();
             $idm = $data['header']['flag_matching'];
             $data['details'] = $this->Model_finance->load_invoice_print_um_match($idm)->result();
+            $row = $this->Model_finance->load_invoice_print_um_match($idm)->num_rows();
 
-            $this->load->view('finance/print_um_match', $data);
+            if($row == 1){
+                $this->load->view('finance/print_um_match_dp', $data);
+            }else{
+                $this->load->view('finance/print_um_match', $data);
+            }
         }else{
             redirect('index.php'); 
         }
@@ -1625,7 +1644,7 @@ class Finance extends CI_Controller{
                 }
             $tabel .= '<td>'.$row->no_invoice.'</td>';
             $tabel .= '<td style="text-align:right;">'.number_format($row->total,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="input_inv('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addInv"><i class="fa fa-plus"></i> Tambah </a></td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="addInv('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addInv"><i class="fa fa-plus"></i> Tambah </a></td>';
 
             $no++;
         }
@@ -1661,8 +1680,7 @@ class Finance extends CI_Controller{
                 }
             $tabel .= '<td>'.$row->no_invoice.'</td>';
             $tabel .= '<td style="text-align:right;">'.number_format($row->total,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle blue" onclick="view_inv('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-floppy-o"></i> View </a>';
-            $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle red" onclick="delInv('.$row->id.','.$row->id_inv.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-trash"></i> Delete </a></td>';
+            $tabel .= '<td><a href="javascript:;" class="btn btn-xs btn-circle red" onclick="delInv('.$row->id.','.$row->id_inv.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-trash"></i> Delete </a></td>';
 
             $no++;
         }
@@ -1679,20 +1697,20 @@ class Finance extends CI_Controller{
         echo json_encode($tabel); 
     }
 
-    function add_inv_match(){
+    function add_um_match(){
         $user_id   = $this->session->userdata('user_id');
         $return_data = array();
         $tanggal   = date('Y-m-d h:m:s');
         
-        $this->db->where('id',$this->input->post('invoice_id'));
-        $this->db->update('f_invoice', array(
+        $this->db->where('id',$this->input->post('um_id'));
+        $this->db->update('f_uang_masuk', array(
             'flag_matching'=>$this->input->post('id_modal')
         ));
 
         $data = array(
             'id_match'=>$this->input->post('id_modal'),
-            'id_um'=>0,
-            'id_inv'=>$this->input->post('invoice_id'),
+            'id_um'=>$this->input->post('um_id'),
+            'id_inv'=>0,
             'biaya1'=>str_replace('.', '',$this->input->post('b_1')),
             'ket1'=>$this->input->post('k_1'),
             'biaya2'=>str_replace('.', '',$this->input->post('b_2')),
@@ -1708,7 +1726,7 @@ class Finance extends CI_Controller{
         redirect('index.php/Finance/matching_invoice/'.$this->input->post('id_modal'));
     }
 
-    function save_inv_match(){
+    function save_um_match(){
         $user_id   = $this->session->userdata('user_id');
         $return_data = array();
         $tanggal   = date('Y-m-d h:m:s');
@@ -1720,7 +1738,7 @@ class Finance extends CI_Controller{
             'ket2'=>$this->input->post('k_2')
         );
 
-        $this->db->where('id', $this->input->post('invoice_id'));
+        $this->db->where('id', $this->input->post('um_id'));
         if($this->db->update('f_match_detail', $data)){
             $this->session->set_flashdata('flash_msg', 'Matching sudah diupdate');    
         }else{
@@ -1730,11 +1748,11 @@ class Finance extends CI_Controller{
         redirect('index.php/Finance/matching_invoice/'.$this->input->post('id_modal'));
     }
 
-    function view_data_invoice(){
+    function view_data_um(){
         $id = $this->input->post('id');
 
         $this->load->model('Model_finance');
-        $result= $this->Model_finance->view_invoice_match($id)->row_array();
+        $result= $this->Model_finance->view_um_match($id)->row_array();
 
         header('Content-Type: application/json');
         echo json_encode($result);
@@ -1791,7 +1809,7 @@ class Finance extends CI_Controller{
             $tabel .= '</td>';
             $tabel .= '<td>'.$row->currency.'</td>';
             $tabel .= '<td style="text-align:right;">'.number_format($row->nominal,0,',', '.').'</td>';
-            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="addUM('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addUM"><i class="fa fa-plus"></i> Tambah </a></td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="input_um('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addUM"><i class="fa fa-plus"></i> Tambah </a></td>';
             $tabel .= '</tr>';            
             $no++;
             $total_nominal += $row->nominal;
@@ -1837,7 +1855,8 @@ class Finance extends CI_Controller{
             $tabel .= '</td>';
             $tabel .= '<td>'.$row->currency.'</td>';
             $tabel .= '<td style="text-align:right;">'.number_format($row->nominal,0,',', '.').'</td>';
-            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle red" onclick="delUM('.$row->id.','.$row->id_um.');" style="margin-top:2px; margin-bottom:2px;" id="addUM"><i class="fa fa-trash"></i> Delete </a></td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle blue" onclick="view_um('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-floppy-o"></i> View </a>';
+            $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle red" onclick="delUM('.$row->id.','.$row->id_um.');" style="margin-top:2px; margin-bottom:2px;" id="addUM"><i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';            
             $no++;
             $total_nominal += $row->nominal;
@@ -1855,20 +1874,20 @@ class Finance extends CI_Controller{
         echo json_encode($tabel); 
     }
 
-    function add_um_match(){
+    function add_inv_match(){
         $user_id   = $this->session->userdata('user_id');
         $return_data = array();
         $tanggal   = date('Y-m-d h:m:s');
         
-        $this->db->where('id',$this->input->post('id_um'));
-        $this->db->update('f_uang_masuk', array(
+        $this->db->where('id',$this->input->post('id_inv'));
+        $this->db->update('f_invoice', array(
             'flag_matching'=>$this->input->post('id')
         ));
 
         $data = array(
             'id_match'=>$this->input->post('id'),
-            'id_um'=>$this->input->post('id_um'),
-            'id_inv'=>0
+            'id_inv'=>$this->input->post('id_inv'),
+            'id_um'=>0
         );
 
         if($this->db->insert('f_match_detail', $data)){
@@ -1941,16 +1960,6 @@ class Finance extends CI_Controller{
             $arr_so[$row->id] = $row->nomor;
         } 
         print form_dropdown('invoice_id', $arr_so);
-    }
-
-    function get_data_invoice(){
-        $id = $this->input->post('id');
-
-        $this->load->model('Model_finance');
-        $result= $this->Model_finance->get_data_invoice($id)->row_array();
-
-        header('Content-Type: application/json');
-        echo json_encode($result);
     }
 
     function get_data_hutang(){

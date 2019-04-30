@@ -5,7 +5,7 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br>VOUCHER PEMBELIAN WIP</h3>
+        <h3 style="text-align: center; text-decoration: underline;">VOUCHER PEMBELIAN WIP</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="60%">
@@ -105,25 +105,19 @@
                             <td style="text-align:center">Mengetahui</td>
                             <td style="text-align:center">Disetujui</td>
                             <td style="text-align:center">Pembukuan</td>
-                            <td style="text-align:center">Kassa</td>
-                            <td style="text-align:center">Keuangan</td>
-                            <td style="text-align:center">Dibuat Oleh</td>
+                            <td style="text-align:center">Kassa/Keuangan</td>
                         </tr>
                         <tr style="height:55">
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
-                            <td style="text-align:center">&nbsp;</td>
-                            <td style="text-align:center">&nbsp;</td>
                         </tr>
                         <tr>
-                            <td style="text-align:center"></td>
-                            <td style="text-align:center">&nbsp;</td>
-                            <td style="text-align:center">&nbsp;</td>
-                            <td style="text-align:center"></td>
-                            <td style="text-align:center"></td>
-                            <td style="text-align:center"> <?=$header['pic'];?> </td>
+                            <td style="text-align:center">(______________)</td>
+                            <td style="text-align:center">(______________)</td>
+                            <td style="text-align:center">(______________)</td>
+                            <td style="text-align:center">(______________)</td>
                         </tr>
                     </table>
                 </td>
