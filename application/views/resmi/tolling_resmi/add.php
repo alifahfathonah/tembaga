@@ -52,8 +52,8 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="nama_customer" name="nama_customer" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['nama_cv'];?>">
-                            <input type="hidden" id="customer_id" name="customer_id" value="<?php echo $header['m_cv_id'];?>">
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['nama_customer'];?>">
+                            <input type="hidden" id="customer_id" name="customer_id" value="<?php echo $header['customer_id'];?>">
                         </div>
                     </div>
                     <div class="row">

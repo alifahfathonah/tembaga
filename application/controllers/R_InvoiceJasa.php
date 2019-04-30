@@ -13,7 +13,8 @@ class R_InvoiceJasa extends CI_Controller{
 
     function index(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');   
+        $reff_cv = $this->session->userdata('cv_id');     
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -22,7 +23,14 @@ class R_InvoiceJasa extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "resmi/invoice_jasa/index";
-        $data['list_data']= $this->Model_invoice_jasa->list_inv()->result();
+        if ($group_id == 9) {
+            $data['list_data']= $this->Model_invoice_jasa->list_inv()->result();    
+        } elseif ($group_id == 14) {
+            $data['list_data']= $this->Model_invoice_jasa->list_inv_for_cv($reff_cv)->result(); 
+        } elseif ($group_id == 16) {
+            $data['list_data']= $this->Model_invoice_jasa->list_inv_for_kmp()->result();
+        }
+        
 
         $this->load->view('layout', $data);
     }
@@ -51,7 +59,8 @@ class R_InvoiceJasa extends CI_Controller{
     function save(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));        
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));       
+        $tgl_jth_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jth_tempo')));    
 
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('INV-KMP', $tgl_input);
@@ -60,6 +69,8 @@ class R_InvoiceJasa extends CI_Controller{
 
             $data = array(
                 'no_invoice_jasa'=> $code,
+                'term_of_payment' => $this->input->post('term_of_payment'),
+                'jatuh_tempo' => $tgl_jth_tempo,
                 'sjr_id' => $this->input->post('id_sj'),
                 'r_t_so_id' => $this->input->post('id_so'),
                 'r_t_po_id' => $this->input->post('id_po'),
@@ -139,6 +150,7 @@ class R_InvoiceJasa extends CI_Controller{
         $user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_jth_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jth_tempo')));   
 
         $this->db->trans_start();
         $jenis = $this->input->jenis_barang;
@@ -164,6 +176,8 @@ class R_InvoiceJasa extends CI_Controller{
         $data = array(
                 'no_invoice_jasa'=> $this->input->post('no_inv_jasa'),
                 'tanggal'=> $tgl_input,
+                'term_of_payment' => $this->input->post('term_of_payment'),
+                'jatuh_tempo' => $tgl_jth_tempo,
                 'remarks'=>$this->input->post('remarks'),
                 'modified_at'=> $tanggal,
                 'modified_by'=> $user_id
@@ -194,6 +208,7 @@ class R_InvoiceJasa extends CI_Controller{
             $data['content']   = "resmi/invoice_jasa/view_invoice_jasa";
 
             $data['header'] = $this->Model_invoice_jasa->show_header_inv_jasa($id)->row_array();
+            $data['jenis_invoice'] = $data['header']['jenis_invoice'];
             $data['myDetail'] = $this->Model_invoice_jasa->show_detail_inv_jasa($id)->result();
 
             $this->load->view('layout', $data);   
@@ -226,13 +241,16 @@ class R_InvoiceJasa extends CI_Controller{
     function save_inv_cust(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));        
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));    
+        $tgl_jth_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jth_tempo')));        
         
         $this->db->trans_start();
 
             $data = array(
                 'no_invoice_jasa'=> $this->input->post('no_inv_jasa'),
                 'sjr_id' => $this->input->post('id_sj'),
+                'term_of_payment' => $this->input->post('term_of_payment'),
+                'jatuh_tempo' => $tgl_jth_tempo,
                 'r_t_so_id' => $this->input->post('id_so'),
                 'r_t_po_id' => $this->input->post('id_po'),
                 'flag_sjr' => 1,
@@ -240,6 +258,8 @@ class R_InvoiceJasa extends CI_Controller{
                 'tanggal'=> $tgl_input,
                 'customer_id'=>$this->input->post('customer_id'),
                 'remarks'=>$this->input->post('remarks'),
+                'cv_id'=>$this->session->userdata('cv_id'),
+                'reff_cv'=>$this->session->userdata('cv_id'),
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id,
                 'modified_at'=> $tanggal,
@@ -310,6 +330,7 @@ class R_InvoiceJasa extends CI_Controller{
         $user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_jth_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jth_tempo')));
 
         $this->db->trans_start();
         $jenis = $this->input->jenis_barang;
@@ -335,6 +356,8 @@ class R_InvoiceJasa extends CI_Controller{
         $data = array(
                 'no_invoice_jasa'=> $this->input->post('no_inv_jasa'),
                 'tanggal'=> $tgl_input,
+                'term_of_payment' => $this->input->post('term_of_payment'),
+                'jatuh_tempo'=> $tgl_jth_tempo,
                 'remarks'=>$this->input->post('remarks'),
                 'modified_at'=> $tanggal,
                 'modified_by'=> $user_id
@@ -353,7 +376,7 @@ class R_InvoiceJasa extends CI_Controller{
     function print_invoice(){
         $id = $this->uri->segment(3);
         if($id){        
-            $data['header'] = $this->Model_invoice_jasa->show_header_inv_jasa($id)->row_array();
+            $data['header'] = $this->Model_invoice_jasa->show_header_print_inv_jasa($id)->row_array();
             $data['myDetail'] = $this->Model_invoice_jasa->show_detail_inv_jasa($id)->result();
 
             if($data['header']['jenis_invoice'] == "INVOICE KMP KE CV"){

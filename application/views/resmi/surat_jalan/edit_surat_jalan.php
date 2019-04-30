@@ -92,9 +92,12 @@
                             CV <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="m_cv_id" name="m_cv_id" readonly="readonly"
+                            <input type="text" id="nama_cv" name="nama_cv" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['nama_customer']; ?>">
+                                <input type="hidden" id="m_cv_id" name="m_cv_id" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['m_cv_id']; ?>">
                         </div>
                     </div>
                 <?php } else if($header['r_invoice_id'] > 0 && $header['r_sj_id'] > 0){ ?>    
@@ -293,7 +296,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            No. Kendaraan <font color="#f00">*</font>
+                            No. Kendaraan
                         </div>
                         <div class="col-md-8">
                             <input type="text" name="no_kendaraan" id="no_kendaraan" class="form-control myline" 

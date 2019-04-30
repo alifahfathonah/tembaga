@@ -138,6 +138,15 @@ function simpanData(){
     }else if($.trim($("#term_of_payment").val()) == ""){
         $('#message').html("Term of payment harus diisi!");
         $('.alert-danger').show(); 
+    }else if($.trim($("#no_so").val()) == ""){
+        $('#message').html("Nomor SO harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#tanggal_so").val()) == ""){
+        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#customer_id").val()) == ""){
+        $('#message').html("Silahkan pilih customer!");
+        $('.alert-danger').show(); 
     }else{     
         $('#formku').submit(); 
     };

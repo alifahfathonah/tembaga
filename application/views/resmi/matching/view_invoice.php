@@ -38,7 +38,7 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            No. Invoice<font color="#f00">*</font>
+                            No. Matching<font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_invoice_resmi" name="no_invoice_resmi" readonly="readonly"

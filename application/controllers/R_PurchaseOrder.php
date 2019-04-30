@@ -13,7 +13,8 @@ class R_PurchaseOrder extends CI_Controller{
 
     function index(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');   
+        $reff_cv = $this->session->userdata('cv_id');     
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -22,8 +23,13 @@ class R_PurchaseOrder extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "resmi/purchase_order/index";
-        $data['list_data'] = $this->Model_purchase_order->po_list()->result();
-
+        if($group_id == 9){
+            $data['list_data'] = $this->Model_purchase_order->po_list()->result();
+        } else if($group_id == 14) {
+            $data['list_data'] = $this->Model_purchase_order->po_list_for_cv($reff_cv)->result();
+        } else if($group_id == 16) {
+            $data['list_data'] = $this->Model_purchase_order->po_list_for_kmp()->result();
+        }
         $this->load->view('layout', $data);
     }
 
@@ -72,9 +78,10 @@ class R_PurchaseOrder extends CI_Controller{
             'no_po'=> $this->input->post('no_po'),
             'tanggal'=> $tgl_input,
             'f_invoice_id'=> $this->input->post('f_invoice_id'),
-            'cv_id'=> $this->input->post('customer_id'),
+            'cv_id'=> $this->session->userdata('cv_id'),
             'term_of_payment'=> $this->input->post('term_of_payment'),
             'jenis_po'=> 'PO CV KE KMP',
+            'reff_cv'=> $this->session->userdata('cv_id'),
             'created_at'=> $tanggal,
             'created_by'=> $user_id
         );
@@ -205,7 +212,7 @@ class R_PurchaseOrder extends CI_Controller{
         $data = array(
             'no_po'=> $this->input->post('no_po'),
             'tanggal'=> $tgl_input,
-            'cv_id'=>$this->input->post('customer_id'),
+            'cv_id'=>$this->session->userdata('cv_id'),
             'term_of_payment'=>$this->input->post('term_of_payment'),
             'jenis_po'=>'PO CV KE KMP',
             'remarks'=>$this->input->post('remarks'),
@@ -270,6 +277,7 @@ class R_PurchaseOrder extends CI_Controller{
             'customer_id'=> $this->input->post('customer_id'),
             'term_of_payment'=> $this->input->post('term_of_payment'),
             'jenis_po'=> 'PO CUSTOMER KE CV',
+            'reff_cv'=> $this->session->userdata('cv_id'),
             'created_at'=> $tanggal,
             'created_by'=> $user_id
         );
@@ -290,6 +298,7 @@ class R_PurchaseOrder extends CI_Controller{
             'tgl_po' => $tgl_input,
             'jenis_so' => 'SO CV',
             'jenis_barang' => 'FG',
+            'reff_cv' => $this->session->userdata('cv_id'),
             'created_at'=> $tanggal,
             'created_by'=> $user_id
         );
@@ -398,8 +407,15 @@ class R_PurchaseOrder extends CI_Controller{
             'modified_by'=> $user_id
         );
 
+        $data_so = array(
+            'remarks'=>$this->input->post('remarks')
+        );
+
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('r_t_po', $data);
+
+        $this->db->where('po_id', $this->input->post('id'));
+        $this->db->update('r_t_so', $data_so);
         
         $this->session->set_flashdata('flash_msg', 'Data PO Jasa Finish Good berhasil disimpan');
         redirect('index.php/R_PurchaseOrder');

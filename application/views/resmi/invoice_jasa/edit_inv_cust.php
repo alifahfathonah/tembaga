@@ -133,6 +133,25 @@
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
                                    class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['pic']; ?>">
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Term of payment <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="term_of_payment" name="term_of_payment" 
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?= $header['term_of_payment'] ?>">                      
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jatuh Tempo <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tgl_jth_tempo" name="tgl_jth_tempo" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('d-m-Y', strtotime($header['jatuh_tempo'])); ?>">
+                        </div>
                     </div>                
                     <div class="row">
                         <div class="col-md-4">
@@ -248,11 +267,17 @@ function hitungSubTotal(id){
 }
 
 function simpanData(){
-    if($.trim($("#no_inv_jasa").val()) == ""){
-        $('#message').html("Nomor PO harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show();
-    }else if($.trim($("#tanggal").val()) == ""){
+    if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#no_inv_jasa").val()) == ""){
+        $('#message').html("Silahkan isi Nomor Invoice!");
+        $('.alert-danger').show();
+    }else if($.trim($("#term_of_payment").val()) == ""){
+        $('#message').html("Silahkan isi term of payment!");
+        $('.alert-danger').show();
+    }else if($.trim($("#tgl_jth_tempo").val()) == ""){
+        $('#message').html("Silahkan isi Tanggal Jatuh Tempo!");
         $('.alert-danger').show();
     }else{     
         $('#formku').submit(); 
@@ -266,6 +291,16 @@ function simpanData(){
 <script>
 $(function(){        
     $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    }); 
+
+    $("#tgl_jth_tempo").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,

@@ -13,7 +13,8 @@ class R_Matching extends CI_Controller{
     
     function index(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');  
+        $reff_cv = $this->session->userdata('cv_id');      
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -21,7 +22,7 @@ class R_Matching extends CI_Controller{
         }
         $this->load->model('Model_matching');
         $data['group_id']  = $group_id;
-        $data['list_data'] = $this->Model_matching->list_invoice()->result();
+        $data['list_data'] = $this->Model_matching->list_invoice($reff_cv)->result();
         $data['content']= "resmi/matching/index";
 
         $this->load->view('layout', $data);
@@ -72,6 +73,7 @@ class R_Matching extends CI_Controller{
             'persentase'=> $this->input->post('persentase'),
             'total'=> $this->input->post('total'),
             'remarks'=> $this->input->post('remarks'),
+            'reff_cv'=> $this->session->userdata('cv_id'),
             'created_at'=> $tanggal,
             'created_by'=> $user_id
         );
@@ -273,7 +275,7 @@ class R_Matching extends CI_Controller{
         $total = $this->input->post('total');
         $qty_pemenuhan = $this->input->post('qty_pemenuhan');
 
-        if ($total < $qty_pemenuhan) {
+        if ($total <= $qty_pemenuhan) {
             $this->db->trans_start();
 
             $this->db->where('id', $id);

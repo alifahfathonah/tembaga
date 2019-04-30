@@ -245,7 +245,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Jenis Barang <font color="#f00">*</font>
+                            Jenis Barang
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="jenis_barang" name="jenis_barang" 
@@ -254,7 +254,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            No. PO
+                            No. PO <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <select id="flag_po" name="flag_po" class="form-control myline select2me" 
@@ -270,7 +270,7 @@
                     </div> 
                     <div class="row">
                         <div class="col-md-4">
-                            CV <font color="#f00">*</font>
+                            CV
                         </div>
                         <div class="col-md-8">
                             <!-- <select id="m_cv_id" name="m_cv_id" class="form-control myline select2me" 
@@ -314,10 +314,27 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            PO <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="po_id" name="po_id" class="form-control myline select2me " 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_customer(this.value)" 
+                                >
+                                <option value=""></option>
+                                <?php
+                                    foreach ($po_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->no_po.'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me " 
+                            <!-- <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me " 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
                                 >
                                 <option value=""></option>
@@ -326,7 +343,12 @@
                                         echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
                                     }
                                 ?>
-                            </select>
+                            </select> -->
+                            <input type="text" id="nama_customer" name="nama_customer" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+
+                            <input type="hidden" id="m_customer_id" name="m_customer_id" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly">
                         </div>
                     </div>
                     <?php } ?>

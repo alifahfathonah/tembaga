@@ -14,13 +14,13 @@ class Model_surat_jalan extends CI_Model{
 		return $data;
 	}
 
-	function list_sj_cv(){
+	function list_sj_cv($reff_cv){
 		$data = $this->db->query("select tsj.*, mc.nama_cv as nama_customer, ti.no_invoice_resmi as no_reff, 
 			(select count(tsjd.id) from r_t_surat_jalan_detail tsjd where tsjd.sj_resmi_id = tsj.id) as jumlah_item
 			from r_t_surat_jalan tsj
 			left join r_t_invoice ti on ti.id = tsj.r_invoice_id
 			left join m_cv mc on mc.id = tsj.m_customer_id
-			where tsj.r_invoice_id > 0
+			where tsj.reff_cv = ".$reff_cv." 
 			order by id desc");
     	return $data;
 	}
@@ -31,7 +31,7 @@ class Model_surat_jalan extends CI_Model{
 			from r_t_surat_jalan tsj
         	left join r_t_so ts on ts.id = tsj.r_so_id
     		left join m_cv mc on mc.id = tsj.m_customer_id
-			where tsj.r_so_id > 0
+			where tsj.r_so_id > 0 || tsj.r_invoice_id > 0 && tsj.jenis_surat_jalan NOT LIKE '%CUSTOMER%' 
 			order by id desc");
 		return $data;
 	}
@@ -74,7 +74,7 @@ class Model_surat_jalan extends CI_Model{
 
 	function customer_list(){
 		$this->db->order_by('nama_customer', 'asc');
-		$data = $this->db->get('m_customers');
+		$data = $this->db->get('m_customers_cv');
 		return $data;
 	}
 
@@ -92,14 +92,14 @@ class Model_surat_jalan extends CI_Model{
 	// }
 
 	function show_header_sj($id){
-		$data = $this->db->query("select sjr.*, c.id as id_customer, coalesce(c.nama_customer, cv.nama_cv) as nama_customer, coalesce(c.alamat, cv.alamat) as alamat, tri.no_invoice_resmi, ts.no_so, ts.tanggal as tgl_so, coalesce(tp.no_po,tpo.no_po) as no_po, tp.tanggal as tgl_po, bpb.no_bpb, bpb.tanggal as tanggal_bpb
+		$data = $this->db->query("select sjr.*, c.id as id_customer, coalesce(c.nama_customer, cv.nama_cv) as nama_customer, coalesce(c.alamat, cv.alamat) as alamat, tri.no_invoice_resmi, ts.no_so, ts.tanggal as tgl_so, coalesce(tp.no_po,tpo.no_po) as no_po, tpo.tanggal as tgl_po, bpb.no_bpb, bpb.tanggal as tanggal_bpb
 			from r_t_surat_jalan sjr
 			left join r_t_invoice tri on (tri.id = sjr.r_invoice_id)
             left join r_t_so ts on (ts.id = sjr.r_so_id)
             left join r_t_po tp on (sjr.r_invoice_id > 0 and tp.flag_sj = sjr.id)
             left join r_t_po tpo on (tpo.id = sjr.r_po_id)
             left join r_t_bpb bpb on (bpb.id = sjr.r_bpb_id)
-			left join m_customers c on (sjr.m_customer_id = c.id)
+			left join m_customers_cv c on (sjr.m_customer_id = c.id)
 			left join m_cv cv on (sjr.m_cv_id = cv.id)
 			where sjr.id =".$id);
 		return $data;
@@ -120,7 +120,7 @@ class Model_surat_jalan extends CI_Model{
     }
 
     function get_customer($id){
-    	$data = $this->db->query("select c.* from m_customers c
+    	$data = $this->db->query("select c.id, c.nama_customer from m_customers_cv c
     		left join r_t_po rpo on c.id = rpo.customer_id where rpo.id = ".$id);
     	return $data;
     }
@@ -170,6 +170,19 @@ class Model_surat_jalan extends CI_Model{
     	return $data;
     }
 
+    function show_header_print_sj_cv_cs($id){
+    	$data = $this->db->query("select rtsj.*, rtpo.no_po, cv.nama_cv, cs.nama_customer, bpb.no_bpb, coalesce(rtso.no_so, rtso2.no_so) as no_so from r_t_surat_jalan rtsj
+			left join r_t_po rtpo on rtsj.r_po_id = rtpo.id
+            left join r_t_so rtso on rtsj.r_so_id = rtso.id
+            left join r_t_bpb bpb on bpb.id = rtsj.r_bpb_id
+			left join m_cv cv on rtsj.reff_cv = cv.id
+			left join r_t_surat_jalan rtsj2 on rtsj.r_sj_id = rtsj2.id
+			left join m_customers_cv cs on rtsj.m_customer_id = cs.id
+            left join r_t_so rtso2 on rtso2.id = rtsj2.r_so_id
+			where rtsj.id = ".$id);
+    	return $data;
+    }
+
     function list_detail_print_sj($id){
     	$data = $this->db->query("select tsjd.*, sum(tsjd.netto) as total_netto, rsk.nama_item, jb.jenis_barang, coalesce(rsk.uom, jb.uom) as uom from r_t_surat_jalan_detail tsjd 
 			left join r_t_surat_jalan tsj on tsj.id = tsjd.sj_resmi_id
@@ -185,6 +198,11 @@ class Model_surat_jalan extends CI_Model{
             left join m_cv cv on bpb.m_cv_id = cv.id
             left join m_customers cs on bpb.m_customer_id = cs.id
             where bpb.id = ".$id);
+    	return $data;
+    }
+
+    function po_list($reff_cv){
+    	$data = $this->db->query("select *from r_t_po rpo where rpo.flag_sj = 0 and reff_cv = ".$reff_cv);
     	return $data;
     }
 }

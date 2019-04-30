@@ -11,6 +11,28 @@ class Model_invoice_jasa extends CI_Model{
 		return $data;
 	}
 
+	function list_inv_for_cv($reff_cv){
+		$data = $this->db->query("select tij.*, tsj.id as sjr_id, tsj.no_sj_resmi, ts.no_so, tp.no_po, mc.nama_customer, mc.pic from r_t_inv_jasa tij
+		left join r_t_surat_jalan tsj on tsj.id = tij.sjr_id
+	    left join r_t_so ts on ts.id = tij.r_t_so_id
+	    left join r_t_po tp on tp.id = tij.r_t_po_id
+	    left join m_customers_cv mc on mc.id = tij.customer_id
+	    where tij.cv_id = ".$reff_cv." 
+	    order by tij.tanggal");
+		return $data;
+	}
+
+	function list_inv_for_kmp(){
+		$data = $this->db->query("select tij.*, tsj.id as sjr_id, tsj.no_sj_resmi, ts.no_so, tp.no_po, mc.nama_customer, mc.pic from r_t_inv_jasa tij
+		left join r_t_surat_jalan tsj on tsj.id = tij.sjr_id
+	    left join r_t_so ts on ts.id = tij.r_t_so_id
+	    left join r_t_po tp on tp.id = tij.r_t_po_id
+	    left join m_customers mc on mc.id = tij.customer_id
+	    where tij.jenis_invoice = 'INVOICE KMP KE CV'
+	    order by tij.tanggal");
+		return $data;
+	}
+
 	function list_sj_so($id){
 		$data = $this->db->query("select tsjd.*, jb.jenis_barang, jb.uom, (select so.amount from r_t_so_detail so where so.so_id = rtsj.r_so_id and so.jenis_barang_id = tsjd.jenis_barang_id ) as amount from r_t_surat_jalan_detail tsjd 
 		left join r_t_surat_jalan rtsj on rtsj.id = tsjd.sj_resmi_id
@@ -60,7 +82,7 @@ class Model_invoice_jasa extends CI_Model{
 		left join r_t_surat_jalan tsj on tsj.id = tij.sjr_id
 	    left join r_t_so ts on ts.id = tij.r_t_so_id
 	    left join r_t_po tp on tp.id = tij.r_t_po_id
-	    left join m_customers mc on mc.id = tij.customer_id
+	    left join m_customers_cv mc on mc.id = tij.customer_id
 	    left join m_cv cv on cv.id = tij.cv_id
 	    where tij.id =".$id);
 		return $data;
@@ -70,6 +92,17 @@ class Model_invoice_jasa extends CI_Model{
 		$data = $this->db->query("select tijd.*, sum(tijd.total_amount) as sum_total_amount, sum(tijd.bruto) as sum_bruto, sum(tijd.netto) as sum_netto, jb.jenis_barang, jb.uom FROM r_t_inv_jasa_detail tijd
 		left join jenis_barang jb on jb.id = tijd.jenis_barang_id
 		where tijd.inv_jasa_id=".$id." group by jb.jenis_barang");
+		return $data;
+	}
+
+	function show_header_print_inv_jasa($id){
+		$data = $this->db->query("select tij.*, tsj.no_sj_resmi, ts.no_so,ts.tanggal as tgl_so, tp.no_po, tp.tanggal as tgl_po, mc.nama_customer, cv.nama_cv, mc.pic, cv.pic as pic_cv from r_t_inv_jasa tij
+		left join r_t_surat_jalan tsj on tsj.id = tij.sjr_id
+	    left join r_t_so ts on ts.id = tij.r_t_so_id
+	    left join r_t_po tp on tp.id = tij.r_t_po_id
+	    left join m_customers_cv mc on mc.id = tij.customer_id
+	    left join m_cv cv on cv.id = tij.cv_id
+	    where tij.id =".$id);
 		return $data;
 	}
 }

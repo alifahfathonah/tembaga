@@ -20,7 +20,7 @@
                         </tr> 
                         <tr>
                             <td>Customer</td>
-                            <td>: <?= $header['nama_customer'] ?></td>
+                            <td>: <?= $header['nama_cv'] ?></td>
                         </tr>  
                         <tr>
                             <td>No. Surat Jalan</td>

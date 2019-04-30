@@ -20,7 +20,7 @@
                         </tr>
                         <tr>
                             <td>Kepada</td>
-                            <td>: <?= $header['nama'] ?></td>
+                            <td>: <?= $header['nama_cv'] ?><br><?= $header['alamat_cv'] ?></td>
                         </tr>
                         
                     </table>
@@ -44,6 +44,7 @@
                 <th>Jenis Barang</th>
                 <th width="20%">Quantity</th>
                 <th>Harga</th>
+                <th>Sub Total</th>
             </thead>
             <tbody>
                 <?php
@@ -56,6 +57,7 @@
                         <td align="center"><?= $no ?></td>
                         <td>Jasa Tolling <?= $v->jenis_barang ?></td>
                         <td align="center"><?= number_format($v->netto,2,".",",")." ".$v->uom ?></td>
+                        <td align="right"><?= "Rp ".number_format($v->amount,2,".",",") ?></td>
                         <td align="right"><?= "Rp ".number_format($v->total_amount,2,".",",") ?></td>
                     </tr>
                 <?php
@@ -67,6 +69,7 @@
                 <tr>
                     <td colspan="2" align="right"><b>TOTAL</b></td>
                     <td align="center"><b><?= number_format($total,2,".",",")." ".$v->uom ?></b></td>
+                    <td></td>
                     <td align="right"><?= "Rp ".number_format($total_harga,2,".",",") ?></td>
                 </tr>
                 <tr><!-- 

@@ -65,7 +65,7 @@
                         <div class="col-md-8">
                             <input type="text" id="nama_customer" name="nama_customer" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['nama_cv']; ?>">
+                                value="<?php echo $header['nama_customer']; ?>">
                         </div>
                     </div> 
                     <div class="row">

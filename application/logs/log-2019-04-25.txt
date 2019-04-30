@@ -1,0 +1,12 @@
+DEBUG - 2019-04-25 20:43:37 --> UTF-8 Support Enabled
+DEBUG - 2019-04-25 20:43:37 --> Global POST, GET and COOKIE data sanitized
+ERROR - 2019-04-25 20:43:40 --> Severity: Warning --> mysqli::real_connect(): (HY000/2002): No connection could be made because the target machine actively refused it.
+ C:\xampp\htdocs\tembagabaru\system\database\drivers\mysqli\mysqli_driver.php 201
+ERROR - 2019-04-25 20:43:40 --> Unable to connect to the database
+DEBUG - 2019-04-25 20:44:33 --> UTF-8 Support Enabled
+DEBUG - 2019-04-25 20:44:33 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-25 20:44:33 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-25 20:44:35 --> UTF-8 Support Enabled
+DEBUG - 2019-04-25 20:44:35 --> Global POST, GET and COOKIE data sanitized
+DEBUG - 2019-04-25 20:44:35 --> Session: "sess_save_path" is empty; using "session.save_path" value from php.ini.
+DEBUG - 2019-04-25 20:44:35 --> Total execution time: 0.2298

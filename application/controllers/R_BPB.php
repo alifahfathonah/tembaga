@@ -14,7 +14,8 @@ class R_BPB extends CI_Controller{
     
     function index(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');       
+        $reff_cv = $this->session->userdata('cv_id'); 
         if($group_id != 9){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -23,13 +24,13 @@ class R_BPB extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "resmi/bpb/index";
-        if($group_id == 14 || $group_id == 15){
-            $data['list_sj']= $this->Model_surat_jalan->list_sj_cv()->result();
-        }else if($group_id == 17){
-            $data['list_sj']= $this->Model_surat_jalan->list_sj_so()->result();
-        }else{
-            $data['list_bpb']= $this->Model_bpb->list_bpb()->result();
-        }
+        // if($group_id == 14 || $group_id == 15){
+        //     $data['list_sj']= $this->Model_surat_jalan->list_sj_cv()->result();
+        // }else if($group_id == 17){
+        //     $data['list_sj']= $this->Model_surat_jalan->list_sj_so()->result();
+        // }else{
+            $data['list_bpb']= $this->Model_bpb->list_bpb($reff_cv)->result();
+        // }
         $this->load->view('layout', $data);
     }
 
@@ -53,7 +54,7 @@ class R_BPB extends CI_Controller{
             $this->load->model('Model_purchase_order');
             $data['header'] = $this->Model_surat_jalan->show_header_invoice($id)->row_array();
             $data['customer_list'] = $this->Model_purchase_order->customer_list($id)->result();
-            $data['po_list'] = $this->Model_matching->po_free()->result();
+            $data['po_list'] = $this->Model_bpb->po_free()->result();
         }
         $data['tipe_kendaraan_list'] = $this->Model_surat_jalan->tipe_kendaraan_list()->result();
 
@@ -82,6 +83,7 @@ class R_BPB extends CI_Controller{
                 'no_kendaraan'=>$this->input->post('no_kendaraan'),
                 'supir'=>$this->input->post('supir'),
                 'remarks'=>$this->input->post('remarks'),
+                'reff_cv'=>$this->session->userdata('cv_id'),
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id,
                 'modified_at'=> $tanggal,
@@ -140,8 +142,9 @@ class R_BPB extends CI_Controller{
 
             $data['content']= "resmi/bpb/edit_bpb";
             $data['header'] = $this->Model_bpb->show_header_bpb($id)->row_array();
-            $this->load->model('Model_sales_order');
-            $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+            $data['jenis_bpb'] = $data['header']['jenis_bpb'];
+            $this->load->model('Model_surat_jalan');
+            $data['customer_list'] = $this->Model_surat_jalan->customer_list()->result();
             $data['list_bpb_detail'] = $this->Model_bpb->list_bpb_detail($id)->result();
             $jenis = $data['header']['jenis_barang'];
             $this->load->model('Model_sales_order');
@@ -233,7 +236,7 @@ class R_BPB extends CI_Controller{
         }   
     }
 
-    function view_surat_jalan(){
+    function view_bpb(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
         if($id){
@@ -245,14 +248,12 @@ class R_BPB extends CI_Controller{
             }
             $data['group_id']  = $group_id;
 
-            $data['content']= "resmi/surat_jalan/view_surat_jalan";
-            $data['header'] = $this->Model_surat_jalan->show_header_sj($id)->row_array();  
-            $this->load->model('Model_sales_order');
-            $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
-            $this->load->model('Model_so');
-            $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
-
-            $data['list_sj_detail'] = $this->Model_surat_jalan->list_sj_detail($id)->result();
+            $data['content']= "resmi/bpb/view_bpb";
+            $data['header'] = $this->Model_bpb->show_header_bpb($id)->row_array();
+            $data['jenis_bpb'] = $data['header']['jenis_bpb'];
+            $this->load->model('Model_surat_jalan');
+            $data['customer_list'] = $this->Model_surat_jalan->customer_list()->result();
+            $data['list_bpb_detail'] = $this->Model_bpb->list_bpb_detail($id)->result();
             $jenis = $data['header']['jenis_barang'];
             $this->load->model('Model_sales_order');
             if($jenis == 'FG'){
@@ -260,10 +261,9 @@ class R_BPB extends CI_Controller{
             }else{
                 $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_rsk()->result();
             }
-
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/R_SuratJalan/surat_jalan');
+            redirect('index.php/R_BPB/');
         }
     }
 

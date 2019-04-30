@@ -13,7 +13,8 @@ class R_SO extends CI_Controller{
 
     function index(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');    
+        $reff_cv = $this->session->userdata('cv_id');    
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -22,7 +23,13 @@ class R_SO extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "resmi/salesorder/index";
-        $data['list_data'] = $this->Model_so->so_list()->result();
+        if ($group_id == 9) {
+            $data['list_data'] = $this->Model_so->so_list()->result();
+        } else if ($group_id == 14) {
+            $data['list_data'] = $this->Model_so->so_list_for_cv($reff_cv)->result();
+        } else if ($group_id == 16) {
+            $data['list_data'] = $this->Model_so->so_list_for_kmp()->result();
+        }
 
         $this->load->view('layout', $data);
     }
@@ -127,8 +134,14 @@ class R_SO extends CI_Controller{
             $data['content']= "resmi/salesorder/edit_so";
             $this->load->model('Model_sales_order');
             $data['header'] = $this->Model_so->show_header_so($id)->row_array(); 
-            $this->load->model('Model_matching'); 
-            $data['customer_list'] = $this->Model_matching->cv_list()->result();
+            $data['jenis_so'] = $data['header']['jenis_so'];
+            if($data['jenis_so'] == 'SO KMP'){
+                $this->load->model('Model_matching'); 
+                $data['customer_list'] = $this->Model_matching->cv_list()->result();
+            }else if($data['jenis_so'] == 'SO CV'){
+                $this->load->model('Model_purchase_order'); 
+                $data['customer_list'] = $this->Model_purchase_order->customer_list()->result();
+            }
             $data['marketing_list'] = $this->Model_sales_order->marketing_list()->result();
             $data['jenis_barang'] = $this->Model_so->jenis_barang_list()->result();
             $this->load->view('layout', $data);   
@@ -152,6 +165,7 @@ class R_SO extends CI_Controller{
             $data['content']= "resmi/salesorder/view_so";
             $this->load->model('Model_sales_order');
             $data['header'] = $this->Model_so->show_header_so($id)->row_array();
+            $data['jenis_so'] = $data['header']['jenis_so'];
             $data['myDetails'] = $this->Model_so->load_detail_so($id)->result();
             $this->load->view('layout', $data);   
         }else{
@@ -165,7 +179,7 @@ class R_SO extends CI_Controller{
         if(isset($id)){
             $this->load->model('Model_surat_jalan');
             $this->load->helper('tanggal_indo');
-            $data['header'] = $this->Model_so->show_header_so($id)->row_array();
+            $data['header'] = $this->Model_so->show_header_print_so($id)->row_array();
             $data['myDetails'] = $this->Model_so->load_detail_so($id)->result();
             if ($data['header']['jenis_so'] == "SO KMP") {
                 $this->load->view('resmi/salesorder/print_so_kmp', $data);

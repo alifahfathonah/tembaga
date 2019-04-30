@@ -102,6 +102,7 @@
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
+                            <?php if($jenis_so == 'SO KMP'){ ?>
                             <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
                                 <option value=""></option>
@@ -111,6 +112,17 @@
                                     }
                                 ?>
                             </select>
+                            <?php } else if ($jenis_so == 'SO CV'){ ?>
+                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($customer_list as $row){
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['customer_id'])? 'selected="selected"': '').'>'.$row->nama_customer.'</option>';
+                                    }
+                                ?>
+                            </select>
+                            <?php } ?>
                         </div>
                     </div>
                     <div class="row">
