@@ -10,7 +10,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==9)||($hak_akses['index']==1) ){
+            if( ($group_id==9 || $group_id==14)||($group_id == 16 && $hak_akses['index']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -75,7 +75,7 @@
                         <td><?php echo $data->remarks; ?></td>
                         <td style="text-align:center"> 
                             <?php
-                                if( ($group_id==9 || $hak_akses['create_so']==1) && $data->flag_so == 0 && $data->cv_id != 0){
+                                if( (($group_id==9) || ($group_id == 16 && $hak_akses['create_so']==1)) && $data->flag_so == 0 && $data->cv_id != 0){
                             ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/R_SO/add_so/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-truck"></i> Create SO &nbsp; </a>
@@ -91,7 +91,7 @@
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                             <?php
                                 }
-                                if($group_id==9 || $hak_akses['print']==1){
+                                if($group_id==9 || $group_id==14 || $group_id==16 || $hak_akses['print']==1){
                             ?>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_PurchaseOrder/print_po/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>

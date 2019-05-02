@@ -10,6 +10,26 @@ class Model_purchase_order extends CI_Model{
 		return $data;
 	}
 
+	function po_list_for_cv($reff_cv){
+		$data = $this->db->query("select rpo.*, coalesce(cs.nama_customer,c.nama_cv) as nama_cv, coalesce(cs.pic, c.pic) as pic, (select count(tpd.id) from r_t_po_detail tpd where tpd.po_id = rpo.id)as jumlah_item
+			from r_t_po rpo
+			left join m_customers_cv cs on (rpo.customer_id = cs.id)
+			left join m_cv c on (rpo.cv_id = c.id)
+			where rpo.reff_cv = ".$reff_cv." 
+			order by rpo.created_at desc");
+		return $data;
+	}
+
+	function po_list_for_kmp(){
+		$data = $this->db->query("select rpo.*, coalesce(cs.nama_customer,c.nama_cv) as nama_cv, coalesce(cs.pic, c.pic) as pic, (select count(tpd.id) from r_t_po_detail tpd where tpd.po_id = rpo.id)as jumlah_item
+			from r_t_po rpo
+			left join m_customers cs on (rpo.customer_id = cs.id)
+			left join m_cv c on (rpo.cv_id = c.id)
+			where rpo.cv_id != 0
+			order by rpo.created_at desc");
+		return $data;
+	}
+
 	function invoice_list($id){
 		$data = $this->db->query("select ti.id, ti.invoice_id, ti.no_invoice_resmi, fi.no_invoice, mc.id as customer_id, mc.nama_cv, mc.pic from r_t_invoice ti
 			left join f_invoice fi on fi.id = ti.invoice_id
@@ -19,7 +39,7 @@ class Model_purchase_order extends CI_Model{
 	}
 
 	function get_po_customer($id){
-		$data = $this->db->query("select rpo.* from r_t_po rpo where id=".$id);
+		$data = $this->db->query("select rpo.*, cv.nama_cv from r_t_po rpo left join m_cv cv on cv.id = rpo.reff_cv where rpo.id=".$id);
 		return $data;
 	}
 
@@ -36,7 +56,7 @@ class Model_purchase_order extends CI_Model{
 
 	function customer_list(){
 		$this->db->order_by('nama_customer','ASC');
-		$data = $this->db->get('m_customers');
+		$data = $this->db->get('m_customers_cv');
 		return $data;
 	}
 
@@ -101,11 +121,11 @@ class Model_purchase_order extends CI_Model{
 	}
 
 	function show_header_print_po($id){
-		$data = $this->db->query("select rpo.*, coalesce(cs.nama_customer, cv.nama_cv) as nama, coalesce(cs.pic, cv.pic) as pic, coalesce(cs.alamat, cv.alamat) as alamat, rtsj.tanggal as tgl_kirim
+		$data = $this->db->query("select rpo.*, cv.nama_cv, cs.nama_customer as nama, cs.pic, cv.pic as pic_cv, cs.alamat, cv.alamat as alamat_cv, rtsj.tanggal as tgl_kirim
 			from r_t_po rpo
             left join r_t_surat_jalan rtsj on rtsj.id = rpo.flag_sj
 			left join m_customers cs on (rpo.customer_id = cs.id)
-            left join m_cv cv on (rpo.cv_id = cv.id)
+            left join m_cv cv on (rpo.reff_cv = cv.id)
 			where rpo.id = ".$id);
 		return $data;
 	}

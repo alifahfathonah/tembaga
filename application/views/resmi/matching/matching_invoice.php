@@ -299,7 +299,7 @@
                                 .'<i class="fa fa-save"></i> Simpan </a> ';
                         }
                     ?>
-                    <a href="<?php echo base_url('index.php/Matching/'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/R_Matching/'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>

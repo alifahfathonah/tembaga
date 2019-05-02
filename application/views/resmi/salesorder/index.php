@@ -60,7 +60,7 @@
                         <?php
                         }
                         ?>
-                        <td><?php echo $data->nama_cv; ?></td>
+                        <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->pic; ?></td>
                         </td>
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>

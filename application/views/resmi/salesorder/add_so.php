@@ -55,7 +55,7 @@
                                 <option value=""></option>
                                 <?php
                                     foreach ($marketing_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->realname.'</option>';
+                                        echo '<option value="'.$row->id.'" '.(($row->id == $this->session->userdata('user_id'))? 'selected="selected"' : '').'>'.$row->realname.'</option>';
                                     }
                                 ?>
                             </select>

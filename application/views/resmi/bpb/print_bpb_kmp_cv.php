@@ -6,7 +6,7 @@
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
         <h3><?= $header['nama_cv']; ?></h3>
-        <h3 align="center"><u>BUKTI PENERIMAAN BAHAN BARANG</u></h3>
+        <h3 align="center"><u>BUKTI PENERIMAAN BARANG</u></h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="40%">
@@ -22,10 +22,6 @@
                         <tr>
                             <td>No. PO</td>
                             <td>: <?= $header['no_po'] ?></td>
-                        </tr>
-                        <tr>
-                            <td>No. Surat Jalan</td>
-                            <td>: </td>
                         </tr>
                         
                     </table>
@@ -62,11 +58,11 @@
                     <tr>
                         <td align="center"><?= $no ?></td>
                         <td><?= $v->jenis_barang ?></td>
-                        <td align="center"><?= number_format($v->netto,2,".",",")." ".$v->uom ?></td>
+                        <td align="center"><?= number_format($v->total_netto,2,".",",")." ".$v->uom ?></td>
                         <td><?= $v->line_remarks ?></td>
                     </tr>
                 <?php
-                        $total += $v->netto;
+                        $total += $v->total_netto;
                         $no++; 
                     } 
                 ?>

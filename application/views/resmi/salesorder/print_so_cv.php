@@ -5,7 +5,7 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3><u>NAMA CV</u></h3>
+        <h3><u><?= $header['nama_cv'] ?></u></h3>
         <h3 align="center"><u>SALES ORDER</u></h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>

@@ -5,7 +5,7 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3><?= $header['nama_cv']; ?></h3>
+        <h3><?= $header_cv_cs['nama_cv']; ?></h3>
         <h3 align="center"><u>SURAT JALAN</u></h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
@@ -13,15 +13,15 @@
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>No. Surat Jalan</td>
-                            <td>: <?= $header['no_sj_resmi'] ?></td>
+                            <td>: <?= $header_cv_cs['no_sj_resmi'] ?></td>
                         </tr>
                         <tr>
                             <td>No. SO</td>
-                            <td>: <?= $header['no_so'] ?></td>
+                            <td>: <?= $header_cv_cs['no_so'] ?></td>
                         </tr>
                         <tr>
                             <td>No. PO</td>
-                            <td>: <?= $header['no_po'] ?></td>
+                            <td>: <?= $header_cv_cs['no_po'] ?></td>
                         </tr>
                         
                     </table>
@@ -31,15 +31,15 @@
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>Tanggal</td>
-                            <td>: <?= $header['tanggal'] ?></td>
+                            <td>: <?= $header_cv_cs['tanggal'] ?></td>
                         </tr>
                         <tr>
                             <td>Customer</td>
-                            <td>: <?= $header['nama_customer'] ?></td>
+                            <td>: <?= $header_cv_cs['nama_customer'] ?></td>
                         </tr>                      
                         <tr>
                             <td>Catatan</td>
-                            <td>: <?= $header['remarks'] ?></td>
+                            <td>: <?= $header_cv_cs['remarks'] ?></td>
                         </tr>
                     </table>
                 </td>

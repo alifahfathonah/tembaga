@@ -58,7 +58,7 @@
                     </div> -->
                     <div class="row">
                         <div class="col-md-4">
-                            No. PO. Customer <font color="#f00">*</font>
+                            No. PO. Customer
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_po_customer" name="no_po_customer" class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_po'];?>" readonly="readonly">
@@ -90,7 +90,7 @@
                             CV <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="customer_id" name="customer_id" class="form-control myline select2me" 
+                            <!-- <select id="customer_id" name="customer_id" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
                             <option value=""></option>
                                 <?php
@@ -98,7 +98,9 @@
                                         echo '<option value="'.$row->id.'">'.$row->nama_cv.'</option>';
                                     }
                                 ?>
-                             </select>
+                             </select> -->
+                             <input type="text" id="nama_cv" name="nama_cv" 
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?= $header['nama_cv']?>" readonly="readonly">
                         </div>
                     </div>
                 </div>              

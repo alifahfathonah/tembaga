@@ -3,10 +3,28 @@ class Model_so extends CI_Model{
 	
 	function so_list(){
 		$data = $this->db->query("select rso.*, 
-			c.nama_cv, c.pic,
+			c.nama_cv as nama_customer, c.pic,
 			(select count(rsod.id) from r_t_so_detail rsod where rsod.so_id = rso.id) as jumlah_item
 			from r_t_so rso
 			left join m_cv c on(rso.customer_id = c.id)");
+		return $data;
+	}
+
+	function so_list_for_cv($reff_cv){
+		$data = $this->db->query("select rso.*, 
+			c.nama_customer, c.pic,
+			(select count(rsod.id) from r_t_so_detail rsod where rsod.so_id = rso.id) as jumlah_item
+			from r_t_so rso
+			left join m_customers_cv c on(rso.customer_id = c.id) where rso.jenis_so = 'SO CV' and reff_cv = ".$reff_cv);
+		return $data;
+	}
+
+	function so_list_for_kmp(){
+		$data = $this->db->query("select rso.*, 
+			c.nama_cv as nama_customer, c.pic,
+			(select count(rsod.id) from r_t_so_detail rsod where rsod.so_id = rso.id) as jumlah_item
+			from r_t_so rso
+			left join m_cv c on(rso.cv_id = c.id) where rso.jenis_so = 'SO KMP'");
 		return $data;
 	}
 
@@ -30,7 +48,7 @@ class Model_so extends CI_Model{
 			from r_t_so rso
 			left join r_t_po rpo on (rpo.id = rso.po_id)
 			left join m_cv c on (rso.cv_id = c.id)
-            left join m_customers cs on (rso.customer_id = cs.id)
+            left join m_customers_cv cs on (rso.customer_id = cs.id)
 			left join users u on (rso.marketing_id = u.id)
 			where rso.id = ".$id);
 		return $data;
@@ -84,6 +102,22 @@ class Model_so extends CI_Model{
 			left join r_t_po rtp on rtp.id = rts.po_id
 			left join r_t_gudang_fg rtg on rtg.f_invoice_id = rtp.f_invoice_id
 			where rts.id = ".$id);
+		return $data;
+	}
+
+	function show_header_print_so($id){
+		$data = $this->db->query("select rso.*, 
+			rpo.no_po, rpo.id as po_id, 
+			coalesce(c2.nama_cv, c.nama_cv) as nama_cv, coalesce(c2.pic, c.pic) as pic, coalesce(c2.alamat, c.alamat) as alamat,
+            cs.nama_customer, cs.pic as pic_cs, cs.alamat as alamat_cs, cs.telepon as telepon_cs,
+			u.realname as nama_marketing 
+			from r_t_so rso
+			left join r_t_po rpo on (rpo.id = rso.po_id)
+            left join m_cv c on (rso.cv_id = c.id)
+			left join m_cv c2 on (rso.reff_cv = c2.id)
+            left join m_customers_cv cs on (rso.customer_id = cs.id)
+			left join users u on (rso.marketing_id = u.id)
+			where rso.id = ".$id);
 		return $data;
 	}
 }

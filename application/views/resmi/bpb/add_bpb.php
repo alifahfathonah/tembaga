@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==9)||($hak_akses['add_surat_jalan']==1) ){
+            if( ($group_id==9 || $group_id == 14) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -202,6 +202,12 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
+    }else if($.trim($("#no_surat_jalan").val()) == ""){
+        $('#message').html("Nomor BPB Harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else if($.trim($("#flag_po").val()) == ""){
+        $('#message').html("Silahkan pilih PO!");
+        $('.alert-danger').show();
     }else if($.trim($("#jenis_barang").val()) == ""){
         $('#message').html("Silahkan pilih jenis barang!");
         $('.alert-danger').show();

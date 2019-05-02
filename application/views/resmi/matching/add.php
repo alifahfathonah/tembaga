@@ -91,7 +91,7 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
-                            Jumlah (Kg)
+                            Jumlah (Kg) <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="qty" name="qty" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
@@ -99,7 +99,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Persentase (%)
+                            Persentase (%) <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <input type="text" name="persentase" id="persentase" class="form-control myline" style="margin-bottom: 5px" onkeyup="hitungTotal()">
@@ -107,7 +107,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Total (Kg)
+                            Total (Kg) <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <input type="text" name="total" id="total" class="form-control myline" style="margin-bottom: 5px" readonly="readonly">
@@ -165,7 +165,10 @@ function simpanData(){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     } else if($.trim($("#no_invoice").val()) == ""){
-        $('#message').html("No Invoice harus diisi, tidak boleh kosong!");
+        $('#message').html("No Matching harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    } else if($.trim($("#invoice_id").val()) == ""){
+        $('#message').html("No Invoice FG harus diisi, tidak boleh kosong!");
         $('.alert-danger').show();
     } else if($.trim($("#qty").val()) == ""){
         $('#message').html("Jumlah harus diisi, tidak boleh kosong!");

@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> 
             <a href="<?php echo base_url('index.php/R_SO'); ?>"> Sales Order </a> 
-            <i class="fa fa-angle-right"></i> Edit Sales Order
+            <i class="fa fa-angle-right"></i> View Sales Order
         </h5>          
     </div>
 </div>
@@ -75,7 +75,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_po" name="no_po"
-                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $header['no_so']; ?>" readonly="readonly">
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $header['no_po']; ?>" readonly="readonly">
 
                             <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['id']; ?>">
                         </div>
@@ -94,10 +94,17 @@
                         <div class="col-md-4">
                             Customer <font color="#f00">*</font>
                         </div>
+                        <?php if($jenis_so == 'SO KMP'){ ?>
                         <div class="col-md-8">
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_cv']; ?>">
                         </div>
+                        <?php } else if($jenis_so == 'SO CV'){ ?>
+                        <div class="col-md-8">
+                            <input type="text" id="contact_person" name="contact_person" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_customer']; ?>">
+                        </div>
+                        <?php } ?>
                     </div>
                     <div class="row">
                         <div class="col-md-4">

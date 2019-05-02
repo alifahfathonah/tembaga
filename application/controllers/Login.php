@@ -26,7 +26,8 @@ class Login extends CI_Controller{
                     'group_id'=>$cek['group_id'],
                     'status' => "login",
                     'photo_profile_url'=>$cek['photo_profile_url'],
-                    'user_ppn'=>$cek['user_ppn']
+                    'user_ppn'=>$cek['user_ppn'],
+                    'cv_id'=>$cek['cv_id']
                     );
                     
             $this->session->set_userdata($data_session);

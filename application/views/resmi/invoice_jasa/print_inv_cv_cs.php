@@ -5,7 +5,7 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3>Nama CV</h3>
+        <h3><u><?= $header['nama_cv'] ?></u></h3>
         <h3 align="center"><u>INVOICE</u></h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
@@ -36,7 +36,15 @@
                         <tr>
                             <td>No. PO</td>
                             <td>: <?= $header['no_po'] ?></td>
-                        </tr>                   
+                        </tr>           
+                        <tr>
+                            <td>Pembayaran</td>
+                            <td>: <?= $header['term_of_payment'] ?></td>
+                        </tr>
+                        <tr>
+                            <td>Tanggal Jatuh Tempo</td>
+                            <td>: <?= $header['jatuh_tempo'] ?></td>
+                        </tr>        
                         <tr>
                             <td>Catatan</td>
                             <td>: <?= $header['remarks'] ?></td>

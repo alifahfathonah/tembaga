@@ -69,18 +69,26 @@
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/view_invoice_jasa/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-book"></i> View &nbsp; </a>
                             <?php
-                                }if( ($group_id==9 || $hak_akses['edit']==1)){
+                                }if($this->session->userdata('cv_id') != 0){ 
+                                    if(($group_id==9)||($hak_akses['edit']==1) && $data->reff_cv != 0){
+                            ?>
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/edit_inv_jasa/<?php echo $data->id; ?>" style="margin-bottom:4px">
+                                &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
+                            <?php } 
+                            }else {
+                                    if(($group_id==9)||($hak_akses['edit']==1) && $data->reff_cv == 0){
+                                
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/edit_inv_jasa/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                             <?php
-                                }
-                                if($group_id==9 || $hak_akses['print_po']==1){
+                                } 
+                            }if($group_id==9 || $hak_akses['print_po']==1){
                             ?>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/print_invoice/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
-                                }if(($group_id==9 || $hak_akses['print_po']==1) && $data->flag_sjr == 0 ){
+                                }if((($group_id==9) || ($group_id == 14)) && $data->flag_sjr == 0 ){
                             ?>
                             <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_SuratJalan/add_surat_jalan/sj_customer/<?php echo $data->sjr_id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-truck"></i> Create Surat Jalan CV &nbsp; </a>

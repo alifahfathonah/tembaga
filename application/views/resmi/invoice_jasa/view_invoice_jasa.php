@@ -60,6 +60,20 @@
                             <input type="hidden" id="id_sj" name="id_sj" value="<?php echo $header['sjr_id']; ?>">
                         </div>
                     </div>
+                    <?php if($jenis_invoice == 'INVOICE CV KE CUSTOMER'){ ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Purchase Order <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_po" name="no_po"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['no_po']; ?>" readonly="readonly">
+
+                            <input type="hidden" id="id_so" name="id_so" value="<?php echo $header['r_t_so_id']; ?>">
+                        </div>
+                    </div>
+                    <?php } else if ($jenis_invoice == 'INVOICE KMP KE CV'){ ?>
                     <div class="row">
                         <div class="col-md-4">
                             No. Sales Order Resmi <font color="#f00">*</font>
@@ -72,6 +86,7 @@
                             <input type="hidden" id="id_so" name="id_so" value="<?php echo $header['r_t_so_id']; ?>">
                         </div>
                     </div>
+                    <?php } ?>
                     <div class="row">
                         <div class="col-md-4">
                             Tanggal <font color="#f00">*</font>

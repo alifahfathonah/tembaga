@@ -57,13 +57,23 @@
                         <td><?php echo $row->jumlah_item; ?></td>
                         <td><?php echo $row->remarks; ?></td>
                         <td style="text-align: center;">
-                            <?php
-                                if( ($group_id==9)||($hak_akses['edit_surat_jalan']==1)){
-                            ?>
+                            
+                            <?php if($this->session->userdata('cv_id') != 0){ 
+                                    if(($group_id==9)||($hak_akses['edit_surat_jalan']==1) && $row->reff_cv != 0){
+                                ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/R_SuratJalan/edit_surat_jalan/<?php echo $row->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
+                            <?php } 
+                            }else {
+                                    if(($group_id==9)||($hak_akses['edit_surat_jalan']==1) && $row->reff_cv == 0){
+                             ?>
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/R_SuratJalan/edit_surat_jalan/<?php echo $row->id; ?>" 
+                               style="margin-bottom:4px"> &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
+
+                            
                             <?php
-                                } if( ($group_id==9)||($hak_akses['view_surat_jalan']==1)){
+                                } 
+                            }if( ($group_id==9)||($hak_akses['view_surat_jalan']==1)){
                             ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/R_SuratJalan/view_surat_jalan/<?php echo $row->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-file-text-o"></i> View &nbsp; </a>
@@ -73,7 +83,7 @@
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_SuratJalan/print_surat_jalan/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
-                                }if(($group_id==9 || $hak_akses['create_tolling']==1) && ($row->flag_tolling==0 && $row->r_invoice_id > 0)){
+                                }if((($group_id==9) || ($group_id == 16 || $hak_akses['create_tolling']==1)) && ($row->flag_tolling==0 && $row->r_invoice_id > 0)){
                             ?>
                             <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_TollingResmi/add/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-truck"></i> Create Tolling &nbsp; </a>

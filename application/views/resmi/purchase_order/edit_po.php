@@ -65,7 +65,7 @@
                 </div>
                 <div class="col-md-2">&nbsp;</div>
                 <div class="col-md-5">
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-4">
                             CV <font color="#f00">*</font>
                         </div>
@@ -89,7 +89,7 @@
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
                                    class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['pic']; ?>">
                         </div>
-                    </div>                
+                    </div>               -->  
                     <div class="row">
                         <div class="col-md-4">
                             Keterangan
@@ -207,9 +207,6 @@ function simpanData(){
         $('.alert-danger').show();
     }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#customer_id").val()) == ""){
-        $('#message').html("Silahkan pilih nama customer!");
         $('.alert-danger').show(); 
     }else if($.trim($("#term_of_payment").val()) == ""){
         $('#message').html("Term of payment harus diisi!");

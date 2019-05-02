@@ -5,7 +5,7 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3><?= $header['nama'] ?></h3>
+        <h3><?= $header['nama_cv'] ?></h3>
         <h2 align="center"><u>SURAT PESANAN</u></h2>
         <h3 align="center" style="margin-top: -20px;">PURCHASE ORDER</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
@@ -14,7 +14,7 @@
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td><u>Kepada Yth.</u></td>
-                            <td rowspan="2" valign="middle">: <?= $header['nama'] ?></td>
+                            <td rowspan="2" valign="middle">: PT. KAWAT MAS PRAKASA</td>
                         </tr>
                         <tr>
                             <td>To.</td>
@@ -77,6 +77,7 @@
                 <th>URAIAN / DESCRIPTION</th>
                 <th width="20%">Quantity</th>
                 <th>HARGA SATUAN / UNIT PRICE</th>
+                <th>SUB TOTAL</th>
             </thead>
             <tbody>
                 <?php
@@ -89,6 +90,7 @@
                         <td align="center"><?= $no ?></td>
                         <td><?= $v->jenis_barang ?><br>(Ongkos Kerja)</td>
                         <td align="center"><?= number_format($v->netto,2,".",",")." ".$v->uom ?></td>
+                        <td align="right"><?= "Rp ".number_format($v->amount,2,".",",") ?></td>
                         <td align="right"><?= "Rp ".number_format($v->total_amount,2,".",",") ?></td>
                     </tr>
                 <?php
@@ -100,6 +102,7 @@
                 <tr>
                     <td colspan="2" align="right"><b>TOTAL</b></td>
                     <td align="center"><b><?= number_format($total,2,".",",")." ".$v->uom ?></b></td>
+                    <td></td>
                     <td align="right"><?= "Rp ".number_format($total_harga,2,".",",") ?></td>
                 </tr>
                 <tr><!-- 

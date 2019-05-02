@@ -3,8 +3,9 @@
 <meta charset="utf-8"/>
 <?php
 $module_name = $this->uri->segment(1);
+$cv = $this->db->query("SELECT cv.nama_cv FROM m_cv cv JOIN users u ON cv.id = u.cv_id WHERE u.id = ".$this->session->userdata('user_id'))->row_array();
 ?>
-<title>Tembaga :: <?php echo $module_name; ?></title>
+<title><?= (isset($cv['nama_cv'])? $cv['nama_cv'] : 'KMP') ?><?php echo " :: ".$module_name; ?></title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="" name="description"/>
@@ -56,7 +57,12 @@ $module_name = $this->uri->segment(1);
         <!-- LOGO -->
         <div class="page-logo">
             <a href="<?php echo base_url(); ?>">
-                <img src="<?php echo base_url(); ?>img/logo.png" alt="logo" class="logo-default" width="98px"/>
+                <?php if (isset($cv['nama_cv'])) { ?>
+                    <h5><?= $cv['nama_cv']; ?></h5>
+                <?php } else { ?>
+                    <img src="<?php echo base_url(); ?>img/logo.png" alt="logo" class="logo-default" width="98px"/>
+                <?php } ?>
+                
             </a>
             <div class="menu-toggler sidebar-toggler hide"></div>
         </div>

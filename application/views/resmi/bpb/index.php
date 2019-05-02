@@ -57,31 +57,25 @@
                         <td><?php echo $row->jumlah_item; ?></td>
                         <td><?php echo $row->remarks; ?></td>
                         <td style="text-align: center;">
-                            <?php
-                                if( ($group_id==9)||($hak_akses['edit_surat_jalan']==1)){
-                            ?>
-                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/R_SuratJalan/edit_surat_jalan/<?php echo $row->id; ?>" 
+                            
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/R_BPB/edit_bpb/<?php echo $row->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
-                            <?php
-                                } if( ($group_id==9)||($hak_akses['view_surat_jalan']==1)){
-                            ?>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/R_SuratJalan/view_surat_jalan/<?php echo $row->id; ?>" 
+
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/R_BPB/view_bpb/<?php echo $row->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-file-text-o"></i> View &nbsp; </a>
-                            <?php 
-                                }if($group_id==9 || $hak_akses['print']==1){
-                            ?><br>
+                            <br>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_BPB/print_bpb/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             
-                            <?php }if(($group_id==9 || $hak_akses['create_invoice_jasa']) && ($row->flag_tolling==0 && ($row->r_so_id == 0 || $row->r_po_id == 0) && $row->r_inv_jasa_id == 0) && $row->jenis_barang == 'FG' && $row->r_sj_id == 0){ ?>
+                            <?php if( ($row->flag_tolling==0 && ($row->r_so_id == 0 || $row->r_po_id == 0) && $row->r_inv_jasa_id == 0) && $row->jenis_barang == 'FG' && $row->r_sj_id == 0){ ?>
                             <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/add/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-truck"></i> Create Invoice Jasa &nbsp; </a>
                             
-                            <?php }if(($group_id==9 || $hak_akses['create_invoice_jasa']) && ($row->flag_tolling==0 && ($row->r_so_id == 0 || $row->r_po_id == 0) && $row->r_inv_jasa_id == 0) && $row->jenis_barang == 'FG' && $row->r_sj_id != 0 && $row->jenis_bpb != 'BPB FG'){ ?>
+                            <?php }if(($row->flag_tolling==0 && ($row->r_so_id == 0 || $row->r_po_id == 0) && $row->r_inv_jasa_id == 0) && $row->jenis_barang == 'FG' && $row->r_sj_id != 0 && $row->jenis_bpb != 'BPB FG'){ ?>
                             <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/add_inv_cust/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-truck"></i> Create Invoice Jasa&nbsp; </a>
                             
-                            <?php }if($group_id==9 && ($row->jenis_bpb == 'BPB RONGSOK' && $row->r_sj_id == 0 && $row->flag_sj_cv == 0)){
+                            <?php }if(($row->jenis_bpb == 'BPB RONGSOK' && $row->r_sj_id == 0 && $row->flag_sj_cv == 0)){
                             ?>
                             <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_SuratJalan/add_surat_jalan/sj_cv/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-truck"></i> Create Surat Jalan CV &nbsp; </a>

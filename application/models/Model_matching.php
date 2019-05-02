@@ -1,9 +1,9 @@
 <?php
 class Model_matching extends CI_Model{
 
-    function list_invoice(){
+    function list_invoice($reff_cv){
         $data = $this->db->query("Select ir.*, (select count(tid.id) from r_t_invoice_detail tid where tid.invoice_resmi_id = ir.id) as jumlah_item
-            from r_t_invoice ir");
+            from r_t_invoice ir where reff_cv = ".$reff_cv);
         return $data;
     }
 
@@ -71,7 +71,7 @@ class Model_matching extends CI_Model{
         $data = $this->db->query("select dtrd.*, r.nama_item, (select sum(netto) from dtr_detail where dtr_id = dtrd.id) as total_netto
             from dtr_detail dtrd
             left join rongsok r on (dtrd.rongsok_id = r.id)
-            where dtrd.flag_resmi = 0 and r.id = ".$id);
+            where dtrd.flag_resmi = 0 and r.id = ".$id." order by dtrd.id desc limit 10");
         return $data;
     }
 
@@ -100,8 +100,8 @@ class Model_matching extends CI_Model{
         return $data;
     }
 
-    function po_free_cv(){
-        $data = $this->db->query("select * from r_t_po where flag_sj = 0 and customer_id = 0");
+    function po_free_cv($reff_cv){
+        $data = $this->db->query("select * from r_t_po where flag_sj = 0 and flag_so = 0 and reff_cv = ".$reff_cv." and customer_id = 0");
         return $data;
     }
 
