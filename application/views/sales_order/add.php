@@ -33,9 +33,14 @@
                             No. Sales Order <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_so" name="no_so" readonly="readonly"
+                            <?php if($this->session->userdata('user_ppn') == 1){
+                            echo '<input type="text" id="no_so" name="no_so" placeholder="Silahkan isi Nomor SO..."
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">';
+                            }else{
+                            echo '<input type="text" id="no_so" name="no_so" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="Auto generate">
+                                value="Auto generate">';
+                            }?>
                         </div>
                     </div>
                     <div class="row">
@@ -69,7 +74,8 @@
                                 <option value="FG">FINISH GOOD</option>
                                 <option value="WIP">WIP</option>
                                 <option value="RONGSOK">RONGSOK</option>
-                                <!-- <option value="AMPAS">AMPAS</option> -->
+                                <option value="AMPAS">AMPAS</option>
+                                <option value="LAIN">LAIN - LAIN</option>
                             </select>
                         </div>
                     </div>
@@ -164,21 +170,23 @@
 </div> 
 <script>
 function simpanData(){
-    if($.trim($("#tanggal").val()) == ""){
+    if($.trim($('#no_so').val()) == ""){
+        $('#message').html("Nomor SO Harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show(); 
+        $('.alert-danger').show();
+    }else if($.trim($("#jenis_barang").val()) == ""){
+        $('#message').html("Silahkan pilih Jenis Barang!");
+        $('.alert-danger').show();
     }else if($.trim($("#m_customer_id").val()) == ""){
         $('#message').html("Silahkan pilih nama customer!");
         $('.alert-danger').show(); 
     }else if($.trim($("#no_po").val()) == ""){
-        $('#message').html("Silahkan pilih nama customer!");
-        $('.alert-danger').show();
-    }else if($.trim($("#marketing_id").val()) == ""){
-        $('#message').html("Silahkan pilih marketing!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#alias").val()) == ""){
-        $('#message').html("Silahkan tulis Alias Customer!");
-        $('.alert-danger').show(); 
+        var result = confirm("No PO Belum Diisi, Lanjutkan ?");
+        if (result) {
+            $('#formku').submit();
+        }
     }else{   
         $('#formku').submit(); 
     };

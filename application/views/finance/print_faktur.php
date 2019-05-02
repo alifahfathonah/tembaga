@@ -52,7 +52,7 @@
                         <tr>
                             <td>Nama</td>
                             <td>:</td>
-                            <td> <?php echo $header['alias'];?></td>
+                            <td> <?php echo ($header['alias'] == NULL) ? $header['nama_customer'] : $header['alias']; ?></td>
                         </tr>
                         <tr>
                             <td>Alamat</td>
@@ -115,7 +115,7 @@
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
                             <td colspan="4" style="border-left:1px solid #000;"><?=$row->jenis_barang;?></td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=$row->qty;?></td>
-                            <td style="text-align:right; border-left:1px solid #000;"><?=$row->netto.' '.$row->uom;?></td>
+                            <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->netto,0,',','.').' '.$row->uom;?></td>
                             <td style="border-left:1px solid #000;">Rp.</td>
                             <td style="text-align:right;"><?=number_format($row->harga,0,',', '.');?></td>
                             <td style="border-left:1px solid #000;">Rp.</td>
@@ -208,32 +208,6 @@
                                 <strong style="text-decoration: underline;"><?php echo '('.$header['nama_direktur'].')';?></strong><br>
                                 <span>Direktur</span>
                             </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr><td colspan="3">
-                    <p>&nbsp;</p>
-                    <table border="0" width="100%">
-                        <tr>
-                            <td style="text-align:center"></td>
-                            <td style="text-align:center"></td>
-                            <td style="text-align:center"></td>
-                            <td style="text-align:center"></td>
-                            <td style="text-align:center">Dibuat Oleh</td>
-                        </tr>
-                        <tr style="height:35">
-                            <td style="text-align:center">&nbsp;</td>
-                            <td style="text-align:center">&nbsp;</td>
-                            <td style="text-align:center">&nbsp;</td>
-                            <td style="text-align:center">&nbsp;</td>
-                            <td style="text-align:center"><?=$header['realname'];?></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align:center"></td>
-                            <td style="text-align:center">&nbsp;</td>
-                            <td style="text-align:center">&nbsp;</td>
-                            <td style="text-align:center"></td>
                         </tr>
                     </table>
                 </td>

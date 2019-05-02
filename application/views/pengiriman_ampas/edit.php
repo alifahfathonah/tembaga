@@ -89,8 +89,15 @@
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
                                    class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['pic']; ?>">
                         </div>
-                    </div>                    
-                    
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Catatan
+                        </div>
+                        <div class="col-md-8">
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px"><?php echo $header['remarks'];?></textarea>
+                        </div>
+                    </div>
                 </div>              
             </div>
             <div class="row">

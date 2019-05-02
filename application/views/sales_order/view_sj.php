@@ -245,8 +245,8 @@
                                     <?php } ?>
                                     <td><?php echo $row->uom; ?></td>
                                     <td><?php echo $row->no_packing; ?></td>
-                                    <td><?php echo $row->bruto; ?></td>
-                                    <td><?php echo $row->netto; ?></td>
+                                    <td><?php echo number_format($row->bruto,0,',','.'); ?></td>
+                                    <td><?php echo number_format($row->netto,0,',','.'); ?></td>
                                     <td><?php echo $row->nomor_bobbin; ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
                                 </tr>
@@ -273,15 +273,43 @@
                                     <td><?php echo $row->jenis_barang; ?></td>
                                     <td><?php echo $row->uom; ?></td>
                                     <td><?php echo $row->qty; ?></td>
-                                    <td><?php echo $row->netto; ?></td>
+                                    <td><?php echo number_format($row->netto,0,',','.'); ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
                                 </tr>
                                 <?php $no++; } ?>
                             </tbody>
                         </table>
                     <?php
-                    }else{
+                    }else if($header['jenis_barang']=='LAIN'){
                     ?>
+                        <table class="table table-bordered table-striped table-hover" id="tabel_barang">
+                            <thead>
+                                <th>No</th>
+                                <th>Nama Item</th>
+                                <th style="width: 6%;">UOM</th>
+                                <th style="width: 8%;">Bruto</th>
+                                <th style="width: 8%;">Netto (Kg)</th>
+                                <th style="width: 6%;">Berat Palette</th>
+                                <th>Keterangan</th>
+                            </thead>
+                            <tbody id="boxDetail">
+                                <?php 
+                                    $no=1; 
+                                    foreach ($list_sj as $row) { 
+                                ?>
+                                <tr>
+                                    <td><?php echo $no; ?></td>
+                                    <td><?php echo $row->jenis_barang; ?></td>
+                                    <td><?php echo $row->uom; ?></td>
+                                    <td><?php echo number_format($row->bruto,0,',','.');?></td>
+                                    <td><?php echo number_format($row->netto,0,',','.'); ?></td>
+                                    <td><?php echo ($row->bruto - $row->netto); ?></td>
+                                    <td><?php echo $row->line_remarks; ?></td>
+                                </tr>
+                                <?php $no++; } ?>
+                            </tbody>
+                        </table>
+                    <?php } else { ?>
                         <table class="table table-bordered table-striped table-hover" id="tabel_barang">
                             <thead>
                                 <th>No</th>

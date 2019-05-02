@@ -90,6 +90,7 @@
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Uang Masuk</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nominal</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Biaya 1</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Biaya 2</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;"><strong>Jumlah Uang Masuk</strong></td>
@@ -102,9 +103,10 @@
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$row->no_uang_masuk;?></td>
+                            <td style="text-align:center; border-left:1px solid #000;"><?=number_format($row->nominal,0,',','.');?></td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->biaya1,0,',','.').' ('.$row->ket1.')';?></td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->biaya2,0,',','.').' ('.$row->ket2.')';?></td>
-                            <td style="text-align:center; border-left:1px solid #000; border-right:1px solid #000;"><?=number_format($row->nominal,0,',','.');?></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-right:1px solid #000;"><?=number_format($row->total,0,',','.');?></td>
                         </tr>
                         <?php $nominal += $row->nominal; $no++; } ?>
                         <tr style="height:50px">
@@ -112,10 +114,11 @@
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000;"><strong>Total</strong></td>
+                            <td colspan="5" style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000;"><strong>Total</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;"><strong><?=number_format($nominal,0,',','.');?></strong></td>
                         </tr>
                     </table>

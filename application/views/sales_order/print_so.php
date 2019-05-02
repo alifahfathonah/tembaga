@@ -5,14 +5,14 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p><h3 style="text-align: center; text-decoration: underline;">
-        <?php if($this->session->userdata('user_ppn')==1){echo 'PT. KAWATMAS PRAKASA<br>DATA TERIMA RONGSOK (DTR)';}?><br>SALES ORDER</h3>
+        <?php if($this->session->userdata('user_ppn')==1){echo 'PT. KAWATMAS PRAKASA';}?><br>SALES ORDER</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>Kepada</td>
-                            <td>: <?php echo $header['alias']; ?></td>
+                            <td>: <?php echo ($header['alias'] == NULL) ? $header['nama_customer'] : $header['alias']; ?></td>
                         </tr>
                         <tr>
                             <td>UP.</td>
@@ -62,7 +62,13 @@
                                 echo '<td style="border-left:1px solid #000">'.$row->jenis_barang.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->uom.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->amount,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->netto,0,',', '.').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">';
+                                if($row->netto != 0){
+                                        echo number_format($row->netto,0,',', '.');
+                                    }else{
+                                        echo number_format($row->qty,0,',', '.');
+                                    }
+                                echo '</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.number_format($row->total_amount,0,',', '.').'</td>';
                                 echo '</tr>';
                                 $total += $row->total_amount;

@@ -107,7 +107,7 @@ class BeliSparePart extends CI_Controller{
                 curl_setopt($ch, CURLOPT_URL, $url);
                 // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
                 // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: tembagaresmi'));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_HEADER, 0);
 
@@ -368,7 +368,7 @@ class BeliSparePart extends CI_Controller{
 
             $ch = curl_init(target_url().'api/BeliSparepartAPI/pps');
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: tembagaresmi'));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response = curl_exec($ch);
@@ -383,13 +383,14 @@ class BeliSparePart extends CI_Controller{
                     unset($detail[$i]['id']);
                     $detail[$i]['beli_sparepart_id'] = $result['id'];
                     $detail[$i]['flag_po'] = 1;
+                    $detail[$i]['reff_id'] = $item['id'];
                 }
 
                 $detail_post = json_encode($detail);
 
                 $ch2 = curl_init(target_url().'api/BeliSparepartAPI/pps_detail');
                 curl_setopt($ch2, CURLOPT_POST, true);
-                curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: tembagaresmi'));
+                curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
                 curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_post);
                 curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
                 $result2 = curl_exec($ch2);
@@ -487,52 +488,52 @@ class BeliSparePart extends CI_Controller{
                     );
             $this->db->insert('po', $data);
             $po_id = $this->db->insert_id();
-            // $details = $this->input->post('myDetails');
-            // foreach ($details as $row){
-            //     if(isset($row['check']) && $row['check']==1){
-            //         $this->db->insert('po_detail', array(
-            //             'po_id'=>$po_id,
-            //             'beli_sparepart_detail_id'=>$row['beli_sparepart_detail_id'],
-            //             'sparepart_id'=>$row['sparepart_id'],
-            //             'amount'=>str_replace('.', '', $row['harga']),
-            //             'qty'=>str_replace('.', '', $row['qty']),
-            //             'total_amount'=>str_replace('.', '', $row['total_harga'])
-            //         ));
+            $details = $this->input->post('myDetails');
+            foreach ($details as $row){
+                if(isset($row['check']) && $row['check']==1){
+                    $this->db->insert('po_detail', array(
+                        'po_id'=>$po_id,
+                        'beli_sparepart_detail_id'=>$row['beli_sparepart_detail_id'],
+                        'sparepart_id'=>$row['sparepart_id'],
+                        'amount'=>str_replace('.', '', $row['harga']),
+                        'qty'=>str_replace('.', '', $row['qty']),
+                        'total_amount'=>str_replace('.', '', $row['total_harga'])
+                    ));
                     
-            //         $this->db->where('id', $row['beli_sparepart_detail_id']);
-            //         $this->db->update('beli_sparepart_detail', array('flag_po'=>1));
-            //     }
-            // }
+                    $this->db->where('id', $row['beli_sparepart_detail_id']);
+                    $this->db->update('beli_sparepart_detail', array('flag_po'=>1));
+                }
+            }
             
             if($user_ppn==1){
+                $this->load->helper('target_url');
                 $data_id = array('reff_id' => $po_id);
                 $data_post = array_merge($data, $data_id);
 
-                die();
                 $ch = curl_init(target_url().'api/BeliSparepartAPI/po');
                 curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: tembagaresmi'));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 $response = curl_exec($ch);
-                $result = json_decode($response, true);
+                $result2 = json_decode($response, true);
                 curl_close($ch);
 
-                if ($result['id'] > 0){
+                if ($result2['id'] > 0){
 
                     $this->load->model('Model_beli_sparepart');
-                    $detail = $this->Model_beli_sparepart->load_detail_only($this->input->post('id'))->result_array();
-                    foreach($detail as $i => $item) {
+                    $detail = $this->Model_beli_sparepart->show_detail_po_only($po_id)->result_array();
+                    foreach ($detail as $i => $value) {
+                        $detail[$i]['po_id'] = $result2['id'];
+                        $detail[$i]['reff_id'] = $detail[$i]['id'];
                         unset($detail[$i]['id']);
-                        $detail[$i]['beli_sparepart_id'] = $result['id'];
-                        $detail[$i]['flag_po'] = 1;
                     }
 
                     $detail_post = json_encode($detail);
 
-                    $ch2 = curl_init(target_url().'api/BeliSparepartAPI/pps_detail');
+                    $ch2 = curl_init(target_url().'api/BeliSparepartAPI/po_detail');
                     curl_setopt($ch2, CURLOPT_POST, true);
-                    curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: tembagaresmi'));
+                    curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
                     curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_post);
                     curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
                     $result2 = curl_exec($ch2);
@@ -713,7 +714,7 @@ class BeliSparePart extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         if($user_ppn==1){
-            $code = $this->Model_m_numberings->getNumbering('BPB-KMP', $tgl_input); 
+            $code = $this->input->post('no_bpb'); 
         }else{
             $code = $this->Model_m_numberings->getNumbering('BPB', $tgl_input);
         }
@@ -732,6 +733,7 @@ class BeliSparePart extends CI_Controller{
                     );
             $this->db->insert('lpb', $data);
             $lpb_id = $this->db->insert_id();
+
             $details = $this->input->post('myDetails');
             foreach ($details as $row){
                 if(isset($row['check']) && $row['check']==1){
@@ -744,11 +746,14 @@ class BeliSparePart extends CI_Controller{
                     ));
                     
                     $this->db->where('id', $row['po_detail_id']);
+
                     if($row['qty'] >= $row['qty_full']){
-                    $this->db->update('po_detail', array('flag_lpb'=>1));
+                        $flag_lpb = 1;
                     } else {
-                    $this->db->update('po_detail', array('flag_lpb'=>0));
+                        $flag_lpb = 0;
                     }
+
+                    $this->db->update('po_detail', array('flag_lpb'=>$flag_lpb));
                     
                     #Update Stok Rongsok
                     $this->load->model('Model_beli_rongsok');
@@ -778,7 +783,7 @@ class BeliSparePart extends CI_Controller{
                     #Save data ke tabel t_inventory_detail
                     $this->db->insert('t_inventory_detail', array(
                         't_inventory_id'=>$stok_id,
-                        'tanggal'=>$tanggal,
+                        'tanggal'=>$tgl_input,
                         'bruto_masuk'=>$row['qty'],
                         'netto_masuk'=>$row['qty'],
                         'remarks'=>'Pembelian spare part',
@@ -797,13 +802,54 @@ class BeliSparePart extends CI_Controller{
                                 'modified'=>$tanggal, 
                                 'modified_by'=>$user_id));
             }else{
-            #Update status PO
-            $this->db->where('id', $this->input->post('po_id'));
-            $this->db->update('po', array(
-                'status'=>2,
-                'flag_pelunasan'=>0,
-                'modified'=>$tanggal, 
-                'modified_by'=>$user_id));
+                        #Update status PO
+                        $this->db->where('id', $this->input->post('po_id'));
+                        $this->db->update('po', array(
+                            'status'=>2,
+                            'flag_pelunasan'=>0,
+                            'modified'=>$tanggal, 
+                            'modified_by'=>$user_id));
+            }
+
+
+            /** API **/
+            if($this->session->userdata('user_ppn')==1){
+                $this->load->helper('target_url');
+
+                $data_id = array('reff_id' => $lpb_id, 'po_old' => $this->input->post('po_id'));
+                $data_post = array_merge($data, $data_id);
+                $ch = curl_init(target_url().'api/BeliSparepartAPI/bpb');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+
+                if($result['id'] > 0){
+                    $detail = array();
+
+                    $this->load->model('Model_beli_sparepart');
+                    $detail['tgl_input'] = $tgl_input;
+                    $detail['po_id'] = $result['po_id'];
+                    $detail['lpb_id'] = $result['id'];
+                    $detail['flag_lpb'] = $flag_lpb;
+                    $detail['lpb_detail'] = $this->Model_beli_sparepart->show_detail_po_lpb_only($lpb_id)->result_array();
+                    $detail_post = json_encode($detail);
+
+                    // print("<pre>".print_r($detail_post,true)."</pre>");
+                    // die();
+
+                    $ch2 = curl_init(target_url().'api/BeliSparepartAPI/bpb_detail');
+                    curl_setopt($ch2, CURLOPT_POST, true);
+                    curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                    curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_post);
+                    curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+                    $response2 = curl_exec($ch2);
+                    $result2 = json_decode($response2, true);
+                    curl_close($ch2);
+                }
             }
                     
             if($this->db->trans_complete()){    

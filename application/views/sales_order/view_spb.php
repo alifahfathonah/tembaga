@@ -152,8 +152,11 @@
                         <a href="<?php echo base_url();?>index.php/Ingot/view_spb/<?php echo $myData['no_spb']; ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Menuju Pemenuhan SPB Rongsok</a>
                     <?php                        
+                        }else if($myData['jenis_barang']=='AMPAS'){?>
+                        <a href="<?php echo base_url();?>index.php/PengirimanAmpas/view_spb/<?php echo $myData['no_spb']; ?>" class="btn blue-hoki"> 
+                        <i class="fa fa-angle-left"></i> Menuju Pemenuhan SPB Ampas</a>
+                    <?php
                         }
-
                      } else { ?>
                     <div class="row">
                         <div class="col-md-12">

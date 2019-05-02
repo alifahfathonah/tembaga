@@ -267,12 +267,13 @@ class Model_finance extends CI_Model{
     }
 
     function show_detail_invoice($id){
-        $data = $this->db->query("select fid.*, COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom) as uom
+        $data = $this->db->query("select fid.*, COALESCE(jb.jenis_barang,r.nama_item,s.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom,s.uom) as uom
         from f_invoice_detail fid
         left join f_invoice fi on fi.id = fid.id_invoice
         left join t_sales_order tso on tso.so_id=fi.id_sales_order
-        left join jenis_barang jb on tso.jenis_barang != 'RONGSOK' and jb.id = fid.jenis_barang_id
+        left join jenis_barang jb on tso.jenis_barang != 'RONGSOK' and tso.jenis_barang != 'LAIN' and jb.id = fid.jenis_barang_id
         left join rongsok r on tso.jenis_barang = 'RONGSOK' and r.id = fid.jenis_barang_id
+        left join sparepart s on tso.jenis_barang = 'LAIN' and s.id = fid.jenis_barang_id
         where fid.id_invoice =".$id);
         return $data;
     }
@@ -413,7 +414,7 @@ class Model_finance extends CI_Model{
     }
 
     function load_um_match($id){
-        $data = $this->db->query("select fmd.*, fum.no_uang_masuk, fum.jenis_pembayaran, fum.bank_pembayaran, fum.currency, (fum.nominal + fmd.biaya1 + fmd.biaya2) as nominal, fum.status  from f_match_detail fmd
+        $data = $this->db->query("select fmd.*, fum.no_uang_masuk, fum.jenis_pembayaran, fum.bank_pembayaran, fum.currency, fum.nominal, (fum.nominal + fmd.biaya1 + fmd.biaya2) as total, fum.status  from f_match_detail fmd
             left join f_uang_masuk fum on fum.id = fmd.id_um
             where fmd.id_match =".$id." and fmd.id_inv = 0");
         return $data;

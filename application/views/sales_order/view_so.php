@@ -187,6 +187,7 @@
                         </div>
                     </div>
                 </div>
+                <?php if($header['jenis_barang'] != 'LAIN'){ ?>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12">
@@ -253,6 +254,7 @@
                         </div>
                     </div>
                 </div>
+                <?php } ?>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12">

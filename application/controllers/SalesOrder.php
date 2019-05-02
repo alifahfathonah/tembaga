@@ -82,6 +82,9 @@ class SalesOrder extends CI_Controller{
             $data['detailSPB'] = $this->Model_sales_order->show_detail_spb_fulfilment_rsk($id)->result();
             $data['details'] = $this->Model_sales_order->show_detail_so_rsk($id)->result();
             $data['detailSJ'] = $this->Model_sales_order->load_detail_view_sj_rsk($id)->result();
+            }else if($data['header']['jenis_barang'] == 'LAIN'){
+            $data['details'] = $this->Model_sales_order->show_detail_so_sp($id)->result();
+            $data['detailSJ'] = $this->Model_sales_order->load_detail_view_sj_sp($id)->result();
             }else{
             $data['detailSPB'] = $this->Model_sales_order->show_detail_spb_fulfilment($id)->result();
             $data['details'] = $this->Model_sales_order->show_detail_so($id)->result();
@@ -116,6 +119,8 @@ class SalesOrder extends CI_Controller{
         
         if($jenis == 'RONGSOK'){
             $jenis_barang= $this->Model_sales_order->get_uom_so($id)->row_array();
+        }else if($jenis == 'LAIN'){
+            $jenis_barang= $this->Model_sales_order->get_uom_sp($id)->row_array();
         }else{
             $jenis_barang= $this->Model_sales_order->show_data($id)->row_array();
         }
@@ -129,7 +134,13 @@ class SalesOrder extends CI_Controller{
         if($id){        
             $this->load->model('Model_sales_order');
             $data['header']  = $this->Model_sales_order->show_header_so($id)->row_array();
-            $data['details'] = $this->Model_sales_order->show_detail_so($id)->result();
+            if($data['header']['jenis_barang']=='RONGSOK'){
+                $data['details'] = $this->Model_sales_order->show_detail_so_rsk($id)->result();
+            }else if($data['header']['jenis_barang']=='LAIN'){
+                $data['details'] = $this->Model_sales_order->show_detail_so_sp($id)->result();
+            }else{
+                $data['details'] = $this->Model_sales_order->show_detail_so($id)->result();
+            }
 
             $this->load->view('sales_order/print_so', $data);
         }else{
@@ -151,6 +162,8 @@ class SalesOrder extends CI_Controller{
         $this->load->model('Model_sales_order');  
         if($jenis == 'RONGSOK'){
         $myDetail = $this->Model_sales_order->load_detail_so_rongsok($id)->result();
+        }else if($jenis == 'LAIN'){
+        $myDetail = $this->Model_sales_order->load_detail_so_sp($id)->result();
         }else{
         $myDetail = $this->Model_sales_order->load_detail_so($id)->result();
         }
@@ -312,7 +325,7 @@ class SalesOrder extends CI_Controller{
         
         $this->load->model('Model_m_numberings');
         if($user_ppn == 1){
-            $code = $this->Model_m_numberings->getNumbering('SO-KMP', $tgl_input);
+            $code = $this->input->post('no_so');
         }else{
             $code = $this->Model_m_numberings->getNumbering('SO', $tgl_input); 
         }
@@ -357,7 +370,7 @@ class SalesOrder extends CI_Controller{
                 $this->db->insert('spb', $dataC);
                 $insert_id = $this->db->insert_id();
             }else if($category == 'AMPAS'){
-                $num = $this->Model_m_numberings->getNumbering('SPB-APS', $tgl_input);
+                $num = $this->Model_m_numberings->getNumbering('SPB-AMP', $tgl_input);
                 $dataC = array(
                     'no_spb_ampas' => $num,
                     'tanggal' => $tgl_input,
@@ -367,6 +380,8 @@ class SalesOrder extends CI_Controller{
                 );
                 $this->db->insert('t_spb_ampas', $dataC);
                 $insert_id = $this->db->insert_id();
+            }else if($category == 'LAIN'){
+                $tgl_po = '0000-00-00';
             }
 
             $data = array(
@@ -430,6 +445,8 @@ class SalesOrder extends CI_Controller{
             $jenis = $data['header']['jenis_barang'];
             if($jenis == 'RONGSOK'){
             $data['list_barang'] = $this->Model_sales_order->list_barang_so_rongsok()->result();
+            }else if($jenis == 'LAIN'){
+            $data['list_barang'] =  $this->Model_sales_order->list_barang_sp()->result();
             }else{
             $data['list_barang'] = $this->Model_sales_order->list_barang_so($jenis)->result();
             }
@@ -463,7 +480,7 @@ class SalesOrder extends CI_Controller{
                 'tanggal' => $tanggal,
                 'jenis_barang_id' => $this->input->post('barang_id'),
                 'uom' => $this->input->post('uom'),
-                'netto' => str_replace('.', '',$this->input->post('qty')),
+                'netto' => str_replace('.', '',$this->input->post('netto')),
                 'keterangan' => 'SALES ORDER'
             );
             $this->db->insert('t_spb_ampas_detail', $dataC);
@@ -492,9 +509,11 @@ class SalesOrder extends CI_Controller{
 
             $this->db->insert('spb_detail', $dataC);
             $insert_id = $this->db->insert_id();
+        }else if($jenis == 'LAIN'){
+            $insert_id = 0;
         }
 
-        if($jenis == 'RONGSOK'){
+        if($jenis == 'RONGSOK' || $jenis == 'LAIN'){
             $data_so_detail = array(
                 't_so_id'=>$this->input->post('id'),
                 'no_spb_detail'=>$insert_id,
@@ -734,7 +753,7 @@ class SalesOrder extends CI_Controller{
         
         $this->load->model('Model_m_numberings');
         if($user_ppn == 1){
-            $code = $this->Model_m_numberings->getNumbering('SJ-KMP', $tgl_input);
+            $code = $this->input->post('no_surat_jalan');
         }else{
             $code = $this->Model_m_numberings->getNumbering('SJ', $tgl_input); 
         }
@@ -796,6 +815,10 @@ class SalesOrder extends CI_Controller{
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_wip($soid)->result();
                 $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_wip()->result();
                 $data['content']= "sales_order/edit_surat_jalan";
+            }else if($jenis == 'LAIN'){
+                $data['list_produksi'] = $this->Model_sales_order->list_item_sj_lain($soid)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->list_barang_sp()->result();
+                $data['content']= "sales_order/edit_surat_jalan_lain";
             }else{
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_rsk($soid)->result();
                 $data['jenis_barang'] = $this->Model_sales_order->rongsok_in_so($soid)->result();
@@ -878,6 +901,21 @@ class SalesOrder extends CI_Controller{
                         'created_by'=>$user_id,
                         'created_at'=>$tanggal
                     ));
+                }else if($jenis=='LAIN'){
+                    $this->db->insert('t_surat_jalan_detail', array(
+                        't_sj_id'=>$this->input->post('id'),
+                        'gudang_id'=>0,
+                        'jenis_barang_id'=>$v['jenis_barang_id'],
+                        'jenis_barang_alias'=>0,
+                        'no_packing'=>'',
+                        'qty'=>1,
+                        'bruto'=>str_replace('.', '', $v['bruto']),
+                        'netto'=>str_replace('.', '', $v['netto']),
+                        'nomor_bobbin'=>0,
+                        'line_remarks'=>$v['line_remarks'],
+                        'created_by'=>$user_id,
+                        'created_at'=>$tanggal
+                    ));
                 }
             }
         }
@@ -925,6 +963,8 @@ class SalesOrder extends CI_Controller{
                 $data['list_sj'] = $this->Model_sales_order->load_view_sjd($id)->result();
             }else if($jenis == 'WIP'){
                 $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
+            }else if($jenis == 'LAIN'){
+                $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_lain($id)->result();
             }else{
                 $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id)->result();
             }
@@ -1070,6 +1110,9 @@ class SalesOrder extends CI_Controller{
             }else if($jenis=='WIP'){
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
                 $this->load->view('sales_order/print_sj_wip', $data);
+            }else if($jenis=='LAIN'){
+                $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_lain($id)->result();
+                $this->load->view('sales_order/print_sj_lain', $data);
             }else{
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id)->result();
                 $this->load->view('sales_order/print_sj_rsk', $data);

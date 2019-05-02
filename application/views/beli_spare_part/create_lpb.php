@@ -33,9 +33,13 @@
                             No. BPB <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_bpb" name="no_bpb" readonly="readonly"
+                        <?php if($this->session->userdata('user_ppn')==1){
+                            echo '<input type="text" id="no_bpb" name="no_bpb" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor BPB..." onkeyup="this.value = this.value.toUpperCase()">';
+                        }else{
+                            echo '<input type="text" id="no_bpb" name="no_bpb" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="Auto Generate">
+                                value="Auto Generate">';
+                        }?>
                         </div>
                     </div>
                     <div class="row">
@@ -239,7 +243,10 @@ function simpanData(){
         }
     });
     
-    if($.trim($("#tanggal").val()) == ""){
+    if($.trim($("#no_bpb").val()) == ""){
+        $('#message').html("Nomor harus diisi, tidak boleh kososng!");
+        $('.alert-danger').show();
+    }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kososng!");
         $('.alert-danger').show();
     }else{    

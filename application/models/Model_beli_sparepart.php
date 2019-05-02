@@ -131,12 +131,27 @@ class Model_beli_sparepart extends CI_Model{
         return $data;
     }
 
+    function show_detail_po_only($id){
+        $data = $this->db->query("Select pod.*
+                    From po_detail pod 
+                    Where pod.po_id=".$id);
+        return $data;
+    }
+
     function show_detail_po_lpb($id){
-        $data = $this->db->query("select l.id, s.nama_item, s.uom, pd.amount, ld.qty, (pd.amount*ld.qty) as total_amount from lpb_detail ld
+        $data = $this->db->query("select l.id, s.alias, s.nama_item, s.uom, pd.amount, ld.qty, (pd.amount*ld.qty) as total_amount from lpb_detail ld
                     left join lpb l on l.id = ld.lpb_id
                     left join po_detail pd on pd.id = ld.po_detail_id
                     left join sparepart s on s.id = ld.sparepart_id
                     where l.po_id =".$id);
+        return $data;
+    }
+
+    function show_detail_po_lpb_only($id){
+        $data = $this->db->query("select ld.*, s.alias, s.nama_item, pd.amount, (pd.amount*ld.qty) as total_amount from lpb_detail ld
+                    left join po_detail pd on pd.id = ld.po_detail_id
+                    left join sparepart s on s.id = ld.sparepart_id
+                    where ld.lpb_id =".$id);
         return $data;
     }
 
@@ -187,6 +202,11 @@ class Model_beli_sparepart extends CI_Model{
                     Left Join users usr On (lpb.created_by = usr.id)
                 Where po.flag_ppn =".$ppn."
                 Order By lpb.id Desc");
+        return $data;
+    }
+
+    function lpb_only($id){
+        $data = $this->db->query("select * from lpb where lpb.id =".$id);
         return $data;
     }
     

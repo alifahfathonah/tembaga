@@ -50,14 +50,18 @@ class PengirimanAmpas extends CI_Controller{
         $user_ppn  = $this->session->userdata('user_ppn');
         
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('POAPS', $tgl_input); 
+        $code = $this->Model_m_numberings->getNumbering('POAMP', $tgl_input); 
         
         if($code){        
             $data = array(
                 'no_po'=> $code,
                 'tanggal'=> $tgl_input,
-                'ppn'=>$user_ppn,
+                'flag_ppn'=> $user_ppn,
+                'ppn'=> $this->input->post('ppn'),
+                'currency'=> $this->input->post('currency'),
+                'kurs'=> $this->input->post('kurs'),
                 'supplier_id'=>$this->input->post('supplier_id'),
+                'remarks'=> $this->input->post('remarks'),
                 'term_of_payment'=>$this->input->post('term_of_payment'),
                 'jenis_po'=>'Ampas',
                 'created'=> $tanggal,
@@ -130,10 +134,9 @@ class PengirimanAmpas extends CI_Controller{
         $no    = 1;
         $total = 0;
         $netto = 0;
-        $this->load->model('Model_ampas');
-        $list_ampas = $this->Model_ampas->list_data()->result();
         
         $this->load->model('Model_pengiriman_ampas'); 
+        $list_ampas = $this->Model_pengiriman_ampas->ampas()->result();
         $myDetail = $this->Model_pengiriman_ampas->load_detail($id)->result(); 
         foreach ($myDetail as $row){
             $tabel .= '<tr>';

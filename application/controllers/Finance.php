@@ -1196,7 +1196,7 @@ class Finance extends CI_Controller{
 
         $data = array(
             'no_invoice'=> $code,
-            'flag_ppn'=> $user_ppn,
+            'flag_ppn'=> $ppn,
             'term_of_payment'=> $this->input->post('term_of_payment'),
             'bank_id'=> $this->input->post('bank_id'),
             'diskon'=> str_replace('.', '', $this->input->post('diskon')),

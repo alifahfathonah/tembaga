@@ -185,9 +185,9 @@ class Model_pengiriman_ampas extends CI_Model{
     }
 
     function show_detail_bpb($id){
-        $data = $this->db->query("select tbad.*, jb.jenis_barang
+        $data = $this->db->query("select tbad.*, r.nama_item as jenis_barang
             from t_bpb_ampas_detail tbad
-            left join jenis_barang jb on (tbad.jenis_barang_id = jb.id)
+            left join rongsok r on (tbad.jenis_barang_id = r.id)
             where tbad.bpb_ampas_id = ".$id);
         return $data;
     }
@@ -227,6 +227,11 @@ class Model_pengiriman_ampas extends CI_Model{
 
     function rongsok(){
         $data = $this->db->query("select id, nama_item from rongsok");
+        return $data;
+    }
+
+    function ampas(){
+        $data = $this->db->query("Select id, nama_item from rongsok where type_barang = 'Ampas'");
         return $data;
     }
     /*function get_dtr($po_id){
