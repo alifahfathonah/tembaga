@@ -4,7 +4,7 @@ class Model_purchase_order extends CI_Model{
 	function po_list(){
 		$data = $this->db->query("select rpo.*, coalesce(cs.nama_customer,c.nama_cv) as nama_cv, coalesce(cs.pic, c.pic) as pic, (select count(tpd.id) from r_t_po_detail tpd where tpd.po_id = rpo.id)as jumlah_item
 			from r_t_po rpo
-			left join m_customers cs on (rpo.customer_id = cs.id)
+			left join m_customers_cv cs on (rpo.customer_id = cs.id)
 			left join m_cv c on (rpo.cv_id = c.id)
 			order by rpo.created_at desc");
 		return $data;
@@ -80,9 +80,10 @@ class Model_purchase_order extends CI_Model{
 	}
 
 	function show_header_po($id){
-		$data = $this->db->query("select rpo.*, c.nama_cv, c.pic, c.alamat
+		$data = $this->db->query("select rpo.*, c.nama_cv, c.pic, c.alamat, rso.id as so_id, rso.no_so
 			from r_t_po rpo
 			left join m_cv c on (rpo.cv_id = c.id)
+			left join r_t_so  rso on (rso.po_id = rpo.id)
 			where rpo.id = ".$id);
 		return $data;
 	}
@@ -128,5 +129,13 @@ class Model_purchase_order extends CI_Model{
             left join m_cv cv on (rpo.reff_cv = cv.id)
 			where rpo.id = ".$id);
 		return $data;
+	}
+
+	function get_no_po($id){
+		return $this->db->get('r_t_po', ['id' => $id]);
+	}
+
+	function get_po_detail_only($id){
+		return $this->db->query('select id, po_id, jenis_barang_id, qty, netto, amount, total_amount from r_t_po_detail where po_id = '.$id);
 	}
 }

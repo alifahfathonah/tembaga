@@ -3,10 +3,11 @@ class Model_so extends CI_Model{
 	
 	function so_list(){
 		$data = $this->db->query("select rso.*, 
-			c.nama_cv as nama_customer, c.pic,
+			coalesce(c.nama_cv, cs.nama_customer) as nama_customer, c.pic,
 			(select count(rsod.id) from r_t_so_detail rsod where rsod.so_id = rso.id) as jumlah_item
 			from r_t_so rso
-			left join m_cv c on(rso.customer_id = c.id)");
+			left join m_cv c on(rso.cv_id = c.id)
+            left join m_customers_cv cs on (rso.customer_id = cs.id)");
 		return $data;
 	}
 
@@ -119,5 +120,9 @@ class Model_so extends CI_Model{
 			left join users u on (rso.marketing_id = u.id)
 			where rso.id = ".$id);
 		return $data;
+	}
+
+	function get_so_detail_only($id){
+		return $this->db->query('select id, so_id, jenis_barang_id, qty, netto, amount, total_amount from r_t_so_detail where so_id = '.$id);
 	}
 }

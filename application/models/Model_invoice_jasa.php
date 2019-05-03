@@ -2,11 +2,12 @@
 class Model_invoice_jasa extends CI_Model{
 
 	function list_inv(){
-		$data = $this->db->query("select tij.*, tsj.id as sjr_id, tsj.no_sj_resmi, ts.no_so, tp.no_po, mc.nama_customer, mc.pic from r_t_inv_jasa tij
+		$data = $this->db->query("select tij.*, tsj.id as sjr_id, tsj.no_sj_resmi, ts.no_so, tp.no_po, coalesce(mc.nama_customer, cv.nama_cv) as nama_customer, coalesce(mc.pic, cv.pic) as pic from r_t_inv_jasa tij
 		left join r_t_surat_jalan tsj on tsj.id = tij.sjr_id
 	    left join r_t_so ts on ts.id = tij.r_t_so_id
 	    left join r_t_po tp on tp.id = tij.r_t_po_id
-	    left join m_customers mc on mc.id = tij.customer_id
+	    left join m_customers_cv mc on mc.id = tij.customer_id
+	    left join m_cv cv on cv.id = tij.cv_id
 	    order by tij.tanggal");
 		return $data;
 	}
@@ -23,11 +24,11 @@ class Model_invoice_jasa extends CI_Model{
 	}
 
 	function list_inv_for_kmp(){
-		$data = $this->db->query("select tij.*, tsj.id as sjr_id, tsj.no_sj_resmi, ts.no_so, tp.no_po, mc.nama_customer, mc.pic from r_t_inv_jasa tij
+		$data = $this->db->query("select tij.*, tsj.id as sjr_id, tsj.no_sj_resmi, ts.no_so, tp.no_po, mc.nama_cv as nama_customer, mc.pic from r_t_inv_jasa tij
 		left join r_t_surat_jalan tsj on tsj.id = tij.sjr_id
 	    left join r_t_so ts on ts.id = tij.r_t_so_id
 	    left join r_t_po tp on tp.id = tij.r_t_po_id
-	    left join m_customers mc on mc.id = tij.customer_id
+	    left join m_cv mc on mc.id = tij.cv_id
 	    where tij.jenis_invoice = 'INVOICE KMP KE CV'
 	    order by tij.tanggal");
 		return $data;

@@ -29,7 +29,11 @@ class R_BPB extends CI_Controller{
         // }else if($group_id == 17){
         //     $data['list_sj']= $this->Model_surat_jalan->list_sj_so()->result();
         // }else{
+        if ($group_id == 9) {
+            $data['list_bpb']= $this->Model_bpb->list_bpb()->result();
+        } else {
             $data['list_bpb']= $this->Model_bpb->list_bpb($reff_cv)->result();
+        }
         // }
         $this->load->view('layout', $data);
     }
@@ -118,6 +122,57 @@ class R_BPB extends CI_Controller{
                     'flag_bpb' => $bpb_id
                 ));
             }
+
+            // $data_api = array(
+            //     'no_bpb'=> $this->input->post('no_surat_jalan'),
+            //     'no_po'=> $this->input->post('no_po'),
+            //     'tanggal'=> $tgl_input,
+            //     'jenis_barang'=>$this->input->post('jenis_barang'),
+            //     'm_customer_id'=>$this->input->post('m_customer_id'),
+            //     'jenis_bpb'=>'BPB RONGSOK',
+            //     'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+            //     'no_kendaraan'=>$this->input->post('no_kendaraan'),
+            //     'supir'=>$this->input->post('supir'),
+            //     'remarks'=>$this->input->post('remarks'),
+            //     'reff'=>$bpb_id,
+            // );
+
+            // $this->load->helper('target_url');
+
+            // $ch = curl_init(target_url().'api/BPBAPI/bpb');
+            // curl_setopt($ch, CURLOPT_POST, true);
+            // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            // curl_setopt($ch, CURLOPT_POSTFIELDS, $data_api);
+            // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            // $response = curl_exec($ch);
+            // $result = json_decode($response, true);
+            // curl_close($ch);
+
+            // log_message('debug', print_r($result,1));
+
+
+            // $this->load->model('Model_bpb');
+            // $bpb_detail_api = $this->Model_bpb->list_bpb_detail_only($bpb_id)->result_array();
+            // foreach ($bpb_detail_api as $i => $value) {
+            //     $bpb_detail_api[$i]['reff'] = $bpb_detail_api[$i]['id'];
+            //     $bpb_detail_api[$i]['bpb_id'] = $result['id'];
+            //     unset($bpb_detail_api[$i]['id']);
+            // }
+
+            // $detail_api = json_encode($bpb_detail_api);
+
+            // // print_r($detail_api);
+
+            // $ch2 = curl_init(target_url().'api/BPBAPI/bpb_detail');
+            // curl_setopt($ch2, CURLOPT_POST, true);
+            // curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            // curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_api);
+            // curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+            // $response2 = curl_exec($ch2);
+            // $result2 = json_decode($response2, true);
+            // curl_close($ch2);
+
+            // log_message('debug', print_r($result2,1));
         }
 
         if($this->db->trans_complete()){
@@ -228,6 +283,58 @@ class R_BPB extends CI_Controller{
         $this->db->where('id',$this->input->post('id'));
         $this->db->update('r_t_bpb', $data);
 
+        $data_api = array(
+                'id' => $this->input->post('id'),
+                'no_bpb'=> $this->input->post('no_bpb'),
+                'tanggal'=> $tgl_input,
+                'm_customer_id'=>$this->input->post('m_customer_id'),
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
+                'supir'=>$this->input->post('supir'),
+                'remarks'=>$this->input->post('remarks'),
+            );
+
+        // $this->load->helper('target_url');
+
+        // $ch = curl_init(target_url().'api/BPBAPI/bpbupdt');
+        // curl_setopt($ch, CURLOPT_POST, true);
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, $data_api);
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $response = curl_exec($ch);
+        // $result = json_decode($response, true);
+        // curl_close($ch);
+
+        // log_message('debug', 'updt = '.print_r($result));
+
+        // if($result['status'] == 1){
+        //     $this->load->model('Model_bpb');
+        //     $update_details = $this->Model_bpb->list_bpb_detail_only($this->input->post('id'))->result_array();
+        //     foreach ($update_details as $i => $value) {
+        //         $update_details[$i]['reff'] = $update_details[$i]['id'];
+        //         $update_details[$i]['bpb_id'] = $this->input->post('id');
+        //         unset($update_details[$i]['id']);
+        //     }
+
+        //     $data_details = json_encode($update_details);
+
+        //     log_message('debug', 'data details = '.print_r($data_details, 1));
+        //     // die();
+
+        //     $ch2 = curl_init(target_url().'api/BPBAPI/bpb_detail');
+        //     curl_setopt($ch2, CURLOPT_POST, true);
+        //     curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+        //     curl_setopt($ch2, CURLOPT_POSTFIELDS, $data_details);
+        //     curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+        //     $response2 = curl_exec($ch2);
+        //     $result2 = json_decode($response2, true);
+        //     curl_close($ch2);
+
+        //     log_message('debug', print_r($result2,1));
+        // } else {
+        //     log_message('debug', 'failed update delete');
+        // }
+
         if($this->db->trans_complete()){
             redirect(base_url('index.php/R_BPB/'));
         }else{
@@ -292,6 +399,15 @@ class R_BPB extends CI_Controller{
 
         header('Content-Type: application/json');
         echo json_encode($customer); 
+    }
+
+    function get_no_po(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_purchase_order');
+        $po = $this->Model_purchase_order->get_no_po($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($po); 
     }
 
     function print_bpb(){

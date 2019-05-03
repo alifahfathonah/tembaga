@@ -83,6 +83,16 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            No. Sales Order
+                        </div>
+                        <div class="col-md-8">
+                            <input type="hidden" name="so_id" id="so_id" value="<?= $header['so_id'] ?>">
+                            <input type="text" id="no_so" name="no_so"
+                                   class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_so']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Contact Person
                         </div>
                         <div class="col-md-8">

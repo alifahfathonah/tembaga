@@ -22,7 +22,12 @@ class R_Matching extends CI_Controller{
         }
         $this->load->model('Model_matching');
         $data['group_id']  = $group_id;
-        $data['list_data'] = $this->Model_matching->list_invoice($reff_cv)->result();
+        if($group_id == 9){
+            $data['list_data'] = $this->Model_matching->list_invoice()->result();
+        } else {
+            $data['list_data'] = $this->Model_matching->list_invoice($reff_cv)->result();    
+        }
+        
         $data['content']= "resmi/matching/index";
 
         $this->load->view('layout', $data);

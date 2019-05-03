@@ -1,9 +1,14 @@
 <?php
 class Model_matching extends CI_Model{
 
-    function list_invoice($reff_cv){
-        $data = $this->db->query("Select ir.*, (select count(tid.id) from r_t_invoice_detail tid where tid.invoice_resmi_id = ir.id) as jumlah_item
-            from r_t_invoice ir where reff_cv = ".$reff_cv);
+    function list_invoice($reff_cv = null){
+        if ($reff_cv === null) {
+            $data = $this->db->query("Select ir.*, (select count(tid.id) from r_t_invoice_detail tid where tid.invoice_resmi_id = ir.id) as jumlah_item
+                from r_t_invoice ir");
+        } else {
+            $data = $this->db->query("Select ir.*, (select count(tid.id) from r_t_invoice_detail tid where tid.invoice_resmi_id = ir.id) as jumlah_item
+                from r_t_invoice ir where reff_cv = ".$reff_cv);
+        }
         return $data;
     }
 
@@ -111,6 +116,15 @@ class Model_matching extends CI_Model{
             left join f_invoice fi on fi.id = tsj.inv_id
             left join t_gudang_fg tgfg on tgfg.id = tsjd.gudang_id
             where fi.id = ".$id);
+        return $data;
+    }
+
+     function list_invoice_detail_only($id){
+        $data = $this->db->query("select ird.id, ird.jenis_barang_id, dtrd.no_pallete as no_packing, dtrd.qty, ird.bruto, ird.netto
+            from r_t_invoice_detail ird
+            left join dtr_detail dtrd on (ird.dtr_detail_id = dtrd.id)
+            left join dtr on (dtrd.dtr_id = dtr.id)
+            where ird.invoice_resmi_id = ".$id);
         return $data;
     }
 }

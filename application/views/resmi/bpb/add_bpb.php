@@ -85,7 +85,7 @@
                         </div>
                         <div class="col-md-8">
                             <select id="flag_po" name="flag_po" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_customer(this.value)">
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_customer(this.value);get_no_po(this.value)">
                                 <option value=""></option>
                                 <?php
                                     foreach ($po_list as $row){
@@ -93,6 +93,7 @@
                                     }
                                 ?>
                             </select>
+                            <input type="hidden" name="no_po" id="no_po">
                         </div>
                     </div> 
                     <div class="row">
@@ -239,6 +240,17 @@ function get_customer(id){
             $("#m_customer_id").val(result['id']);     
             $("#nama_customer").val(result['nama_customer']);           
         } 
+    });
+}
+
+function get_no_po(id){
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url('index.php/R_BPB/get_no_po'); ?>",
+        data: {id: id},
+        success: function(result) {
+            $("#no_po").val(result['no_po']);
+        }
     });
 }
 

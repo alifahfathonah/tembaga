@@ -1,16 +1,28 @@
 <?php
 class Model_bpb extends CI_Model{
 
-    function list_bpb($reff_cv){
-        $data = $this->db->query("select bpb.*, mc.nama_customer, coalesce(ts.no_so, tp.no_po) as no_reff, 
-        (select count(bpbd.id) from r_t_bpb_detail bpbd where bpbd.bpb_resmi_id = bpb.id) as jumlah_item
-        from r_t_bpb bpb
-        left join r_t_invoice ti on ti.id = bpb.r_invoice_id
-        left join r_t_so ts on ts.id = bpb.r_so_id
-        left join r_t_po tp on tp.id = bpb.r_po_id
-        left join m_customers_cv mc on mc.id = bpb.m_customer_id
-        where bpb.reff_cv = ".$reff_cv." 
-        order by id desc");
+    function list_bpb($reff_cv = null){
+        if ($reff_cv === null) {
+            $data = $this->db->query("select bpb.*, mc.nama_customer, coalesce(ts.no_so, tp.no_po) as no_reff, 
+            (select count(bpbd.id) from r_t_bpb_detail bpbd where bpbd.bpb_resmi_id = bpb.id) as jumlah_item
+            from r_t_bpb bpb
+            left join r_t_invoice ti on ti.id = bpb.r_invoice_id
+            left join r_t_so ts on ts.id = bpb.r_so_id
+            left join r_t_po tp on tp.id = bpb.r_po_id
+            left join m_customers_cv mc on mc.id = bpb.m_customer_id
+            order by id desc");
+        } else {
+            $data = $this->db->query("select bpb.*, mc.nama_customer, coalesce(ts.no_so, tp.no_po) as no_reff, 
+            (select count(bpbd.id) from r_t_bpb_detail bpbd where bpbd.bpb_resmi_id = bpb.id) as jumlah_item
+            from r_t_bpb bpb
+            left join r_t_invoice ti on ti.id = bpb.r_invoice_id
+            left join r_t_so ts on ts.id = bpb.r_so_id
+            left join r_t_po tp on tp.id = bpb.r_po_id
+            left join m_customers_cv mc on mc.id = bpb.m_customer_id
+            where bpb.reff_cv = ".$reff_cv." 
+            order by id desc");
+        }
+
         return $data;
     }
 
@@ -48,5 +60,9 @@ class Model_bpb extends CI_Model{
     function po_free(){
         $data = $this->db->query("select * from r_t_po where flag_bpb = 0 and cv_id = 0");
         return $data;
+    }
+
+    function list_bpb_detail_only($id){
+        return $this->db->query('select id, bpb_resmi_id as bpb_id, jenis_barang_id, no_packing, qty, bruto, netto, nomor_bobbin, line_remarks from r_t_bpb_detail where bpb_resmi_id = '.$id);
     }
 }
