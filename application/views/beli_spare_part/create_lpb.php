@@ -134,6 +134,7 @@
                                     echo '<td>';
                                     echo '<input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
                                             onclick="check();" class="form-control">';
+                                    echo '<input type="hidden" id="alias_'.$no.'" name="myDetails['.$no.'][alias]" value="'.$row->alias.'">';
                                     echo '<input type="hidden" id="po_detail_id_'.$no.'" name="myDetails['.$no.'][po_detail_id]" value="'.$row->id.'">';
                                     echo '<input type="hidden" id="sparepart_id_'.$no.'" name="myDetails['.$no.'][sparepart_id]" value="'.$row->sparepart_id.'">';
                                     echo '</td>';

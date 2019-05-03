@@ -363,7 +363,7 @@ class Model_beli_rongsok extends CI_Model{
     }
 
     function cek_stok($produk, $jenis_item=null){
-        $sql  = "Select * From t_inventory Where nama_produk='".$produk."'";    
+        $sql  = "Select * From t_inventory Where kode='".$produk."'";    
         if(!empty($jenis_item)){
             $sql .= " And jenis_item='".$jenis_item."'";
         }

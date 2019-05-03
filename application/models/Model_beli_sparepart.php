@@ -156,7 +156,7 @@ class Model_beli_sparepart extends CI_Model{
     }
 
     function show_detail_po_create_lpb($id){
-        $data = $this->db->query("Select pod.*, spr.nama_item, spr.uom
+        $data = $this->db->query("Select pod.*, spr.nama_item, spr.uom, spr.alias
                     From po_detail pod 
                         Left Join sparepart spr On (pod.sparepart_id = spr.id) 
                     Where pod.po_id=".$id." and pod.flag_lpb=0");

@@ -117,6 +117,9 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
+    }else if($.trim($("#supplier_id").val()) == ""){
+        $('#message').html("Supplier Belum Dipilih!");
+        $('.alert-danger').show(); 
     }else{     
         $('#formku').submit(); 
     };
@@ -135,7 +138,7 @@ $(function(){
         buttonText: "Select date",
         changeMonth: true,
         changeYear: true,
-        dateFormat: 'dd-mm-yy'
+        dateFormat: 'yy-mm-dd'
     });       
 });
 </script>

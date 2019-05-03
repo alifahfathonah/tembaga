@@ -757,7 +757,7 @@ class BeliSparePart extends CI_Controller{
                     
                     #Update Stok Rongsok
                     $this->load->model('Model_beli_rongsok');
-                    $get_stok = $this->Model_beli_rongsok->cek_stok($row['nama_item'], 'SPARE PART')->row_array(); 
+                    $get_stok = $this->Model_beli_rongsok->cek_stok($row['alias'], 'SPARE PART')->row_array(); 
                     if($get_stok){
                         $stok_id  = $get_stok['id'];            
                         $this->db->where('id', $stok_id);
@@ -768,6 +768,7 @@ class BeliSparePart extends CI_Controller{
                                 'modified_by'=>$user_id));
                     }else{
                         $this->db->insert('t_inventory', array(
+                                'kode'=>$row['alias'],
                                 'nama_produk'=>$row['nama_item'],
                                 'jenis_item'=>'SPARE PART',
                                 'stok_bruto'=>$row['qty'], 
@@ -1738,12 +1739,25 @@ class BeliSparePart extends CI_Controller{
             'flag_ppn'=> $user_ppn,
             'supplier_id'=> $this->input->post('supplier_id'),
             'tanggal'=> $this->input->post('tanggal'),
-            'keterangan'=> $this->input->post('remarks'),
-            'created_at'=> $tanggal,
-            'created_by'=> $user_id
+            'keterangan'=> $this->input->post('remarks')
         );
         $this->db->insert('f_vk', $data);
         $id_new=$this->db->insert_id();
+
+        if($user_ppn==1){
+            $this->load->helper('target_url');
+            $data_id = array('reff_id' => $id_new);
+            $data_post = array_merge($data, $data_id);
+
+            $ch = curl_init(target_url().'api/BeliSparepartAPI/vk');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data_post));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $result = json_decode($response, true);
+            curl_close($ch);
+        }
 
         if($this->db->trans_complete()){
             redirect(base_url('index.php/BeliSparePart/matching_voucher/'.$id_new));
@@ -1924,7 +1938,7 @@ class BeliSparePart extends CI_Controller{
         }
         $tabel .= '<tr>';
         $tabel .= '<td></td>';
-        $tabel .= '<td><a <a href="'.base_url().'index.php/BeliSparePart/bpb_list" onclick="window.open(\''.base_url().'index.php/BeliSparePart/bpb_list\',\'newwindow\',\'width=1200,height=550\'); return false;" class="btn btn-primary" style="width:100%;">Lihat daftar Penerimaan Barang</a></td>';
+        $tabel .= '<td><a <a href="'.base_url().'index.php/BeliSparePart/bpb_list" onclick="window.open(\''.base_url().'index.php/BeliSparePart/lpb_list\',\'newwindow\',\'width=1200,height=550\'); return false;" class="btn btn-primary" style="width:100%;">Lihat daftar Penerimaan Barang</a></td>';
         $tabel .= '<td style="text-align:right" colspan="2"><strong>Total </strong></td>';
         $tabel .= '<td><input type="text" id="total_lpb" name="total_lpb" style="background-color: green; color: white;" class="form-control" data-myvalue="'.$total_lpb.'" value="'.number_format($total_lpb,0,',','.').'" readonly="readonly"></td>';
         $tabel .= '<td colspan="2"></td>';
