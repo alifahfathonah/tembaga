@@ -105,6 +105,7 @@
                                 <tr>
                                 </tr>
                         <?php
+                            $c = $header['currency'];
                             $no = 1;
                             $total = 0;
                             $total_netto = 0;
@@ -116,9 +117,9 @@
                             <td colspan="4" style="border-left:1px solid #000;"><?=$row->jenis_barang;?></td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=$row->qty;?></td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->netto,0,',','.').' '.$row->uom;?></td>
-                            <td style="border-left:1px solid #000;">Rp.</td>
+                            <td style="border-left:1px solid #000;"><?=$c;?></td>
                             <td style="text-align:right;"><?=number_format($row->harga,0,',', '.');?></td>
-                            <td style="border-left:1px solid #000;">Rp.</td>
+                            <td style="border-left:1px solid #000;"><?=$c;?></td>
                             <td style="text-align:right; border-right:1px solid #000;"><?=number_format($row->total_harga,0,',', '.');?></td>
                         </tr>
                         <?php
@@ -142,44 +143,44 @@
                         </tr>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>Jumlah Harga Jual</strong></td>
-                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">Rp.</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
                             <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($total,0,',', '.');?></td>
                         </tr>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>Dikurangi Potongan Harga</strong></td>
-                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">Rp.</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
                             <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($header['diskon'],0,',', '.');?></td>
                         </tr>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>Lain Lain</strong></td>
-                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">Rp.</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
                             <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($header['add_cost'],0,',', '.');?></td>
                         </tr>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>Dasar Pengenaan Pajak</strong></td>
-                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">Rp.</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
                             <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($total-$header['diskon']-$header['add_cost'],0,',', '.');?></td>
                         </tr>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>PPN = 10% x Dasar Pengenaan Pajak</strong></td>
-                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">Rp.</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
                             <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($harga_ppn,0,',', '.');?></td>
                         </tr>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>Materai</strong></td>
-                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">Rp.</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
                             <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($header['materai'],0,',', '.');?></td>
                         </tr>
                         <?php $total_bersih = $total-$header['diskon']-$header['add_cost']+$header['materai']+$harga_ppn;?>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>T O T A L</strong></td>
-                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">Rp.</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
                             <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($total_bersih,0,',', '.');?></td>
                         </tr>
                         <tr>
                             <td colspan="2" style="border-left: 1px solid #000;">Terbilang</td>
                             <td>:</td>
-                            <td colspan="5" rowspan="2">** <?php echo ucwords(number_to_words($total)); ?> **</td>
+                            <td colspan="5" rowspan="2">** <?php echo ucwords(number_to_words_d($total, $c)); ?> **</td>
                             <td colspan="3"  style="border-right: 1px solid #000;">Tanggerang, <? =tanggal_indo($header['tanggal']);?></td>
                         </tr>
                         <tr>

@@ -53,7 +53,6 @@
                             <tbody>
                             <?php 
                                 $no = 0;
-                                $total_saldo = 0;
                                 foreach ($saldo as $data){
                                     $no++;
                             ?>
@@ -66,13 +65,8 @@
                                 <td style="text-align:right"><?php echo number_format($total,0,',','.'); ?></td>
                             </tr>
                             <?php
-                                $total_saldo += $total;
                                 }
                             ?>
-                            <tr>
-                                <td colspan="4" style="text-align: right; font-weight: bold;"> Total</td>
-                                <td style="background-color: green; color: white;"><?php echo number_format($total_saldo,0,',','.');?></td>
-                            </tr>
                             </tbody>
                         </table>
                     </div>

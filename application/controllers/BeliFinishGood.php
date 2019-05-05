@@ -88,6 +88,7 @@ class BeliFinishGood extends CI_Controller{
             'kurs'=> $this->input->post('kurs'),
             'supplier_id'=>$this->input->post('supplier_id'),
             'term_of_payment'=>$this->input->post('term_of_payment'),
+            'remarks'=>$this->input->post('remarks'),
             'jenis_po'=>'FG',
             'created'=> $tanggal,
             'created_by'=> $user_id,
@@ -258,6 +259,7 @@ class BeliFinishGood extends CI_Controller{
                 'tanggal'=> $tgl_input,
                 'supplier_id'=>$this->input->post('supplier_id'),
                 'term_of_payment'=>$this->input->post('term_of_payment'),
+                'remarks'=>$this->input->post('remarks'),
                 'modified'=> $tanggal,
                 'modified_by'=> $user_id
             );

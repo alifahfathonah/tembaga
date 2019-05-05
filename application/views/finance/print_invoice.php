@@ -24,7 +24,7 @@
                         </tr>
                         <tr>
                             <td valign="top">Sejumlah</td>
-                            <td>: <?php echo ucwords(number_to_words($total)); ?></td>
+                            <td>:**<?php echo ucwords(number_to_words_d($total, $header['currency'])); ?>**</td>
                         </tr>
                     </table>
                 </td>
@@ -82,7 +82,7 @@
                             <td style="border-left:1px solid #000;"><?=$row->jenis_barang.$ok;?></td>
                             <td style="border-left:1px solid #000;"><?=$row->uom;?></td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=$row->qty;?></td>
-                            <td style="text-align:right; border-left:1px solid #000;"><?=$row->netto;?></td>
+                            <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->netto,0,',','.');?></td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->harga,0,',', '.');?></td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->total_harga,0,',', '.');?></td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000;<?=$row->keterangan;?>">&nbsp;</td>
@@ -106,7 +106,7 @@
                         <tr>
                             <td style="text-align:right;" colspan="4"><strong>Total</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
-                                <strong><?=$total_netto;?></strong>
+                                <strong><?=number_format($total_netto,0,',','.');?></strong>
                             </td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
                                 <strong></strong>

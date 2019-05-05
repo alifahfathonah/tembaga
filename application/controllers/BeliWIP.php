@@ -89,9 +89,10 @@ class BeliWIP extends CI_Controller{
             'kurs'=> $this->input->post('kurs'),
             'supplier_id'=>$this->input->post('supplier_id'),
             'term_of_payment'=>$this->input->post('term_of_payment'),
+            'remarks'=>$this->input->post('remarks'),
             'jenis_po'=>'WIP',
             'created'=> $tanggal,
-            'created_by'=> $user_id,
+            'created_by'=> $user_id
         );
 
         if($this->db->insert('po', $data)){
@@ -217,6 +218,7 @@ class BeliWIP extends CI_Controller{
                 'tanggal'=> $tgl_input,
                 'supplier_id'=>$this->input->post('supplier_id'),
                 'term_of_payment'=>$this->input->post('term_of_payment'),
+                'remarks'=>$this->input->post('remarks'),
                 'modified'=> $tanggal,
                 'modified_by'=> $user_id
             );
@@ -788,7 +790,7 @@ class BeliWIP extends CI_Controller{
                 $data['hak_akses'] = $roles;
             }
 
-            $this->load->helper('terbilang_helper');
+            $this->load->helper('terbilang_d_helper');
             if($user_ppn==1){
                 $this->load->model('Model_beli_rongsok');
                 $data['header'] = $this->Model_beli_rongsok->show_header_voucher($id)->row_array();

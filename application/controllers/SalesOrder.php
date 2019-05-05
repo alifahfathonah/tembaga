@@ -407,6 +407,8 @@ class SalesOrder extends CI_Controller{
                 'no_spb'=>$insert_id,
                 'tgl_po'=>$tgl_po,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
+                'currency'=>$this->input->post('currency'),
+                'kurs'=>$this->input->post('kurs'),
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id,
                 'modified_at'=> $tanggal,

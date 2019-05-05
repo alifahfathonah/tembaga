@@ -29,7 +29,6 @@ TRUNCATE `m_bobbin_peminjaman`;
 TRUNCATE `m_bobbin_peminjaman_detail`;
 TRUNCATE `m_bobbin_penerimaan`;
 TRUNCATE `m_bobbin_penerimaan_detail`;
-TRUNCATE `m_numbering_details`;
 TRUNCATE `po`;
 TRUNCATE `po_detail`;
 TRUNCATE `produksi_ampas`;

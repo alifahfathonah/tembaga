@@ -188,7 +188,7 @@ class Model_beli_rongsok extends CI_Model{
     }
     
     function show_header_dtr($id){
-        $data = $this->db->query("Select dtr.*, 
+        $data = $this->db->query("Select dtr.*, po.currency,
                     COALESCE(po.no_po,r.no_retur) as no_po,
                     COALESCE(spl.nama_supplier,c.nama_customer) as nama_supplier,
                     usr.realname As penimbang,
@@ -529,7 +529,7 @@ class Model_beli_rongsok extends CI_Model{
     }
 
     function show_header_voucher($id){
-        $data = $this->db->query("select v.*, fk.tgl_jatuh_tempo, fk.no_giro, b.no_acc, b.nama_bank, s.nama_supplier, p.no_po, u.realname as pic, fk.nomor
+        $data = $this->db->query("select v.*, p.currency, fk.tgl_jatuh_tempo, fk.no_giro, b.no_acc, b.nama_bank, s.nama_supplier, p.no_po, u.realname as pic, fk.nomor
             from voucher v 
             left join f_kas fk on (fk.id_vc = v.id)
             left join bank b on (b.id = fk.id_bank)

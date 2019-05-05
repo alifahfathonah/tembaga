@@ -146,6 +146,16 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-5">
+                                    Currency <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="currency_po" name="currency_po" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        readonly="readonly">                                                                       
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
                                     Terbilang
                                 </div>
                                 <div class="col-md-7">
@@ -552,6 +562,7 @@ function createVoucher(id){
             $('#nilai_dp').val(result['nilai_dp']);
             $('#nilai_ppn').val(result['nilai_ppn']);
             $('#nilai_before_ppn').val(result['nilai_before_ppn']);
+            $('#currency_po').val(result['currency']);
             $('#amount').val(result['sisa']);
             $('#status_vc').val(result['status']);
             $('#keterangan').val('');

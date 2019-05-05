@@ -1154,6 +1154,15 @@ class Finance extends CI_Controller{
         echo json_encode($data);
     }
 
+    function get_currency_so(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_finance');
+        $data = $this->Model_finance->get_currency_so($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+
     function get_so_list(){ 
         $id = $this->input->post('id');
         $ppn = $this->input->post('ppn');
@@ -1202,6 +1211,8 @@ class Finance extends CI_Controller{
             'diskon'=> str_replace('.', '', $this->input->post('diskon')),
             'add_cost'=> str_replace('.', '', $this->input->post('add_cost')),
             'materai'=> str_replace('.', '', $this->input->post('materai')),
+            'currency'=> $this->input->post('currency'),
+            'kurs'=> $this->input->post('kurs'),
             'nama_direktur'=> $this->input->post('nama_direktur'),
             'tanggal'=> $tgl_input,
             'tgl_jatuh_tempo'=> $this->input->post('tanggal_jatuh'),
@@ -1323,7 +1334,7 @@ class Finance extends CI_Controller{
     function print_invoice(){
         $id = $this->uri->segment(3);
         if($id){       
-            $this->load->helper('terbilang_helper');
+            $this->load->helper('terbilang_d_helper');
             $this->load->helper('tanggal_indo');
             $this->load->model('Model_finance');
             $data['header'] = $this->Model_finance->show_header_invoice($id)->row_array();

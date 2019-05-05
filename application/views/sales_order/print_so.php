@@ -49,9 +49,9 @@
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nama Item</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>UOM</strong></td>
-                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Harga (Rp)</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Harga (<?=$header['currency'];?>)</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Qty</strong></td>
-                            <td style="text-align:center; border:1px solid #000"><strong>Sub Total (Rp)</strong></td>
+                            <td style="text-align:center; border:1px solid #000"><strong>Sub Total (<?=$header['currency'];?>)</strong></td>
                         </tr>
                         <?php
                             $no = 1;
@@ -84,7 +84,7 @@
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                         </tr>
                         <tr>
-                            <td style="text-align:right;" colspan="5"><strong>Total Harga (Rp) </strong></td>
+                            <td style="text-align:right;" colspan="5"><strong>Total Harga (<?=$header['currency'];?>) </strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">
                                 <strong><?php echo number_format($total,0,',','.'); ?></strong>
                             </td>

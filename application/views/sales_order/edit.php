@@ -158,14 +158,21 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-2">
+                            Currency
+                        </div>
                         <div class="col-md-4">
-                            Contact Person
+                            <input type="text" id="currency" name="currency" class="form-control myline" value="<?=$header['currency'];?>" readonly="readonly">
                         </div>
-                        <div class="col-md-8">
-                            <input type="text" id="contact_person" name="contact_person" readonly="readonly"
-                                   class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['pic']; ?>">
+                        <div id="show_kurs">
+                        <div class="col-md-2">
+                            Kurs
                         </div>
-                    </div>                   
+                        <div class="col-md-4">
+                            <input type="text" id="kurs" name="kurs" class="form-control myline" value="<?=$header['kurs'];?>" readonly="readonly">
+                        </div>
+                        </div>
+                    </div>
                 </div>              
             </div>
             <div class="row">&nbsp;</div>
@@ -178,7 +185,7 @@
                                 <th>No</th>
                                 <th style="width: 20%;">Nama Item</th>
                                 <th>Unit of Measure</th>
-                                <th>Harga (Rp)</th>
+                                <th>Harga (<?=$header['currency'];?>)</th>
                         <?php
                         if($header['jenis_barang'] == 'WIP'){
                         ?>
@@ -195,7 +202,7 @@
                         <?php
                         }
                         ?>
-                                <th>Sub Total(Rp)</th>
+                                <th>Sub Total(<?=$header['currency'];?>)</th>
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
@@ -252,7 +259,7 @@
                                 <th>No</th>
                                 <th style="width: 20%;">Nama Item</th>
                                 <th>Unit of Measure</th>
-                                <th>Harga (Rp)</th>
+                                <th>Harga (<?=$header['currency'];?>)</th>
                         <?php
                         if($header['jenis_barang'] == 'WIP'){
                         ?>
@@ -269,7 +276,7 @@
                         <?php
                         }
                         ?>
-                                <th>Sub Total(Rp)</th>
+                                <th>Sub Total(<?=$header['currency'];?>)</th>
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetailEdit">

@@ -30,7 +30,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function customer_list(){
-        $data = $this->db->query("Select * From m_customers_cv Order By nama_customer");
+        $data = $this->db->query("Select * From m_customers Order By nama_customer");
         return $data;
     }
     

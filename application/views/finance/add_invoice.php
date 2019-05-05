@@ -128,6 +128,22 @@
                                 value="<?php echo date('Y-m-d'); ?>">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            Currency
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="currency" name="currency" class="form-control myline" readonly="readonly">
+                        </div>
+                        <div id="show_kurs">
+                        <div class="col-md-2">
+                            Kurs
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="kurs" name="kurs" class="form-control myline" readonly="readonly">
+                        </div>
+                        </div>
+                    </div>
                 </div>         
             </div>
             <?php if($ppn == 1){ ?>
@@ -242,7 +258,6 @@ function get_no_so(id){
 function get_no_sj(id){
     $.ajax({
         url: "<?php echo base_url('index.php/Finance/get_sj_list'); ?>",
-        async: false,
         type: "POST",
         data: "id="+id,
         dataType: "html",
@@ -259,7 +274,17 @@ function get_no_sj(id){
         dataType: "json",
         success: function(result) {
             $('#flag_tolling').val(result['flag_tolling']);
-            console.log($('#flag_tolling').val());
+        }
+    });
+
+    $.ajax({
+        url: "<?php echo base_url('index.php/Finance/get_currency_so'); ?>",
+        type: "POST",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result) {
+            $('#currency').val(result['currency']);
+            $('#kurs').val(result['kurs']);
         }
     });
 }

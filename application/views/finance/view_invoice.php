@@ -184,6 +184,7 @@
                             <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px" readonly="readonly"><?php echo $header['keterangan']; ?></textarea>                           
                         </div>
                     </div>
+                    <?php if($this->session->userdata('user_ppn')==1){?>
                     <div class="row">
                         <div class="col-md-4">
                             Nama Bank <font color="#f00">*</font>
@@ -202,6 +203,23 @@
                             <input type="text" id="no_rek" name="no_rek" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['nomor_rekening']; ?>">
+                        </div>
+                    </div>
+                    <?php } ?>
+                    <div class="row">
+                        <div class="col-md-2">
+                            Currency
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="currency" name="currency" class="form-control myline" readonly="readonly" value="<?=$header['currency'];?>">
+                        </div>
+                        <div id="show_kurs">
+                        <div class="col-md-2">
+                            Kurs
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="kurs" name="kurs" class="form-control myline" readonly="readonly" value="<?=$header['kurs'];?>">
+                        </div>
                         </div>
                     </div>
                 </div>              
@@ -261,7 +279,7 @@
                                     <table class="table table-bordered table-striped table-hover">
                                         <tr>
                                             <td>Harga Total Invoice</td>
-                                            <td>Rp. <?=number_format($total_all,0,',','.');?></td>
+                                            <td><?=$header['currency'].' '.number_format($total_all,0,',','.');?></td>
                                         </tr>
                                         <tr>
                                             <td>Diskon</td>
@@ -285,7 +303,7 @@
                                         ?>
                                         <tr>
                                             <td style="text-align: right;"><strong>Total Bersih</strong></td>
-                                            <td style="background-color: green; color: white;">Rp. <?=number_format($total_bersih,0,',','.');?></td>
+                                            <td style="background-color: green; color: white;"><?=$header['currency'].' '.number_format($total_bersih,0,',','.');?></td>
                                         </tr>
                                     </table>
                                 </div>
