@@ -172,6 +172,22 @@
                 ?>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            Currency
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="currency" name="currency" class="form-control myline" readonly="readonly" value="<?=$header['currency'];?>">
+                        </div>
+                        <div id="show_kurs">
+                        <div class="col-md-2">
+                            Kurs
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="kurs" name="kurs" class="form-control myline" readonly="readonly" value="<?=$header['kurs'];?>">
+                        </div>
+                        </div>
+                    </div>
                 </div>              
             </div>
             <?php
@@ -185,7 +201,7 @@
                                 <th style="width: 40px">No</th>
                                 <th style="width: 20%">Nama Item Rongsok</th>
                                 <th>Unit of Measure</th>
-                                <th>Harga (Rp)</th>
+                                <th>Harga (<?$header['currency'];?>)</th>
                                 <th>Jumlah</th>
                                 <th>Sub Total (Rp)</th>
                                 <th>Actions</th>

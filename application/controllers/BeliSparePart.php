@@ -1729,6 +1729,21 @@ class BeliSparePart extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         if($user_ppn==1){
+                $this->load->helper('target_url');
+
+                // $url = target_url().'api/BeliSparepartAPI/vk?id=VK-KMP&tgl='.$tgl_input;
+                // $ch = curl_init();
+                // curl_setopt($ch, CURLOPT_URL, $url);
+                // // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                // // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+                // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                // curl_setopt($ch, CURLOPT_HEADER, 0);
+
+                // $result = curl_exec($ch);
+                // $result = json_decode($result);
+                // curl_close($ch);
+
             $code = $this->Model_m_numberings->getNumbering('VK-KMP', $tgl_input);
         }else{
             $code = $this->Model_m_numberings->getNumbering('VK', $tgl_input);
@@ -1744,20 +1759,19 @@ class BeliSparePart extends CI_Controller{
         $this->db->insert('f_vk', $data);
         $id_new=$this->db->insert_id();
 
-        if($user_ppn==1){
-            $this->load->helper('target_url');
-            $data_id = array('reff_id' => $id_new);
-            $data_post = array_merge($data, $data_id);
+        // if($user_ppn==1){
+        //     $data_id = array('reff_id' => $id_new);
+        //     $data_post = array_merge($data, $data_id);
 
-            $ch = curl_init(target_url().'api/BeliSparepartAPI/vk');
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data_post));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $response = curl_exec($ch);
-            $result = json_decode($response, true);
-            curl_close($ch);
-        }
+        //     $ch = curl_init(target_url().'api/BeliSparepartAPI/vk');
+        //     curl_setopt($ch, CURLOPT_POST, true);
+        //     curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+        //     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data_post));
+        //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        //     $response = curl_exec($ch);
+        //     $result = json_decode($response, true);
+        //     curl_close($ch);
+        // }
 
         if($this->db->trans_complete()){
             redirect(base_url('index.php/BeliSparePart/matching_voucher/'.$id_new));

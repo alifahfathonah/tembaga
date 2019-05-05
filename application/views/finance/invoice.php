@@ -40,6 +40,7 @@
                     <th>No. Invoice</th>
                     <th>No. Sales Order</th>
                     <th>No. Surat Jalan</th>
+                    <th>Currency</th>
                     <th>Nama Customer</th>
                     <th>Tanggal</th>
                     <?php if($this->session->userdata('user_ppn') == 0){ echo '<th>PPN</th>'; }?> 
@@ -60,6 +61,7 @@
                         <td><?php echo $data->no_invoice; ?></td>
                         <td><?php echo $data->no_sales_order; ?></td>
                         <td><?php echo $data->no_surat_jalan; ?></td>
+                        <td><?php echo $data->currency; ?></td>
                         <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->tanggal;?></td>
                         <?php if($this->session->userdata('user_ppn') == 0){ 

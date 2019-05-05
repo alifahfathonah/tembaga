@@ -23,6 +23,7 @@
         </div>
         <?php
             if( ($group_id==1)||($hak_akses['view_so']==1) ){
+                $c = $header['currency'];
         ?> 
             <div class="row">
                 <div class="col-md-6">
@@ -162,8 +163,8 @@
                                                     }
                                                 ?>    
                                             </td>
-                                            <td><?php echo 'Rp '.number_format($row->amount,0,',','.');?></td>
-                                            <td><?php echo 'Rp '.number_format($row->total_amount,0,',','.');?></td>
+                                            <td><?php echo $c.' '.number_format($row->amount,0,',','.');?></td>
+                                            <td><?php echo $c.' '.number_format($row->total_amount,0,',','.');?></td>
                                         </tr>
                                             <?php
                                                 $no++;
@@ -180,7 +181,7 @@
                                             <td colspan="3" style="text-align: right; font-weight: bold;">Total Jumlah</td>
                                             <td style="background-color: green; color: white;"><?php echo number_format($jumlah,0,',','.');?></td>
                                             <td style="text-align: right; font-weight: bold;">Total Harga</td>
-                                            <td style="background-color: green; color: white;"><?php echo 'Rp '.number_format($total,0,',','.');?></td>
+                                            <td style="background-color: green; color: white;"><?php echo $c.' '.number_format($total,0,',','.');?></td>
                                         </tr>
                                     </table>
                                 </div>

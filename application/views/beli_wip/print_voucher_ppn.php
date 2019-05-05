@@ -24,7 +24,7 @@
                         </tr>
                         <tr>
                             <td valign="top">Sejumlah</td>
-                            <td>: **<?php echo ucwords(number_to_words($total)); ?>**</td>
+                            <td>: **<?php echo ucwords(number_to_words_d($total,$header['currency'])); ?>**</td>
                         </tr>
                         <tr>
                             <td>Catatan</td>
@@ -70,7 +70,7 @@
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nomor Voucher</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nomor PO</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Keterangan</strong></td>
-                            <td rowspan="2" style="text-align:center; border:1px solid #000;"><strong>Amount (Rp)</strong></td>
+                            <td rowspan="2" style="text-align:center; border:1px solid #000;"><strong>Amount (<?=$header['currency'];?>)</strong></td>
                         </tr>
                        
                                 <tr>

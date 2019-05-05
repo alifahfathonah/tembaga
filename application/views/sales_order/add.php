@@ -150,7 +150,27 @@
                         <div class="col-md-8">
                             <input type="text" id="alias" name="alias" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
                         </div>
-                    </div>                    
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            Currency
+                        </div>
+                        <div class="col-md-4">
+                            <select id="currency" name="currency" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cur(this.value);">
+                                <option value="IDR">IDR</option>
+                                <option value="USD">USD</option>
+                            </select>
+                        </div>
+                        <div id="show_kurs">
+                        <div class="col-md-2">
+                            Kurs
+                        </div>
+                        <div class="col-md-4">
+                            <input type="number" id="kurs" name="kurs" class="form-control myline" value="0">
+                        </div>
+                        </div>
+                    </div>           
                 </div>              
             </div>
             
@@ -203,13 +223,23 @@ function get_contact(id){
         } 
     });
 }
+
+function get_cur(id){
+    if(id=='USD'){
+        $('#show_kurs').show();
+    }else if(id=='IDR'){
+        $('#show_kurs').hide();
+        $('#kurs').val(0);
+    }
+}
 </script>
 
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-$(function(){        
+$(function(){
+    $('#show_kurs').hide();
     $("#tanggal").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
@@ -219,9 +249,6 @@ $(function(){
         changeYear: true,
         dateFormat: 'dd-mm-yy'
     });       
-});
-
-$(function(){        
     $("#tanggal_po").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",

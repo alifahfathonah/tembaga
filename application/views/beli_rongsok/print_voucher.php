@@ -28,7 +28,7 @@
                         </tr>
                         <tr>
                             <td valign="top">Sejumlah</td>
-                            <td>: <?php echo ucwords(number_to_words($total)); ?></td>
+                            <td>: <?php echo ucwords(number_to_words_d($total, $header['currency'])); ?></td>
                         </tr>
                     </table>
                 </td>

@@ -50,6 +50,11 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function get_currency_so($id){
+        $data = $this->db->query("Select currency, kurs From t_sales_order where so_id =".$id);
+        return $data;
+    }
+
     function list_data_slip_setoran(){
         $data = $this->db->query("Select fss.*, fp.no_pembayaran, fp.tanggal, b.nama_bank From f_slip_setoran fss
             left join f_pembayaran fp on fp.id = fss.id_pembayaran
@@ -289,7 +294,7 @@ class Model_finance extends CI_Model{
     }
 
     function show_header_voucher($id){
-        $data = $this->db->query("select v.*, s.nama_supplier, p.no_po, pmb.no_pembayaran, u.realname as pic 
+        $data = $this->db->query("select v.*, s.nama_supplier, p.no_po, p.currency, pmb.no_pembayaran, u.realname as pic 
             from voucher v 
             left join po p on (p.id = v.po_id)
             left join supplier s on (s.id = p.supplier_id)
