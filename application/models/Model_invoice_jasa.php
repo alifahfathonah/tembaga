@@ -45,7 +45,7 @@ class Model_invoice_jasa extends CI_Model{
 	function list_sj_so_v2($id,$id_inv){
 		$data = $this->db->query("select tsjd.jenis_barang_id, sum(bruto) as bruto, sum(tsjd.netto) as netto, tsjd.so_detail_id, tsjd.po_detail_id, sum(tsjd.qty) as qty, tsjd.line_remarks, (select tpod.amount from r_t_po_detail tpod
 	left join r_t_po tp on tp.id = tpod.po_id
-	where tp.f_invoice_id =".$id_inv." and cv_id = 0 and tpod.jenis_barang_id = tsjd.jenis_barang_id ) as amount from r_t_surat_jalan_detail tsjd 
+	where tp.f_invoice_id =".$id_inv." and cv_id = 0 and tpod.jenis_barang_id = tsjd.jenis_barang_id group by tpod.jenis_barang_id ) as amount from r_t_surat_jalan_detail tsjd 
 		left join r_t_surat_jalan rtsj on rtsj.id = tsjd.sj_resmi_id
 		left join jenis_barang jb on jb.id = tsjd.jenis_barang_id
 		where tsjd.sj_resmi_id =".$id." group by tsjd.jenis_barang_id");
