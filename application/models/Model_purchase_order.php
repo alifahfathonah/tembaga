@@ -132,7 +132,7 @@ class Model_purchase_order extends CI_Model{
 	}
 
 	function get_no_po($id){
-		return $this->db->get('r_t_po', ['id' => $id]);
+		return $this->db->get_where('r_t_po', ['id' => $id]);
 	}
 
 	function get_po_detail_only($id){

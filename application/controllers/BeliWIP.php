@@ -254,8 +254,12 @@ class BeliWIP extends CI_Controller{
             $this->load->model('Model_beli_wip');
             $data['header']  = $this->Model_beli_wip->show_header_po($id)->row_array();
             $data['details'] = $this->Model_beli_wip->load_detail_po($id)->result();
-
-            $this->load->view('beli_wip/print_po', $data);
+            $data['rows'] = count($data['details']);
+            if ($this->session->userdata('user_ppn') == 0) {
+                $this->load->view('beli_wip/print_po', $data);
+            } else {
+                $this->load->view('beli_wip/print_po_ppn', $data);
+            }
         }else{
             redirect('index.php'); 
         }

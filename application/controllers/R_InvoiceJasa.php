@@ -9,6 +9,7 @@ class R_InvoiceJasa extends CI_Controller{
             redirect(base_url("index.php/Login"));
         }
         $this->load->model('Model_invoice_jasa');
+        $this->load->helper('target_url');
     }
 
     function index(){
@@ -240,6 +241,7 @@ class R_InvoiceJasa extends CI_Controller{
 
     function save_inv_cust(){
         $user_id  = $this->session->userdata('user_id');
+        $reff_cv   = $this->session->userdata('cv_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));    
         $tgl_jth_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jth_tempo')));        
@@ -294,6 +296,53 @@ class R_InvoiceJasa extends CI_Controller{
                 $this->db->insert('r_t_inv_jasa_detail', $detail);
             }
 
+            $data_api = array(
+                'no_inv'=> $this->input->post('no_inv_jasa'),
+                'term_of_payment' => $this->input->post('term_of_payment'),
+                'jatuh_tempo' => $tgl_jth_tempo,
+                'sj_id' => $this->input->post('id_sj'),
+                'no_po' => $this->input->post('no_po'),
+                'flag_sjr' => 1,
+                'tanggal'=> $tgl_input,
+                'customer_id'=>$this->input->post('customer_id'),
+                'jenis_invoice'=>'INVOICE CV KE CUSTOMER',
+                'remarks'=>$this->input->post('remarks'),
+                'reff' => $inv_jasa_id
+            );
+
+            $ch = curl_init(target_url_cv($reff_cv).'api/InvoiceAPI/inv');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data_api);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $result = json_decode($response, true);
+            curl_close($ch);
+
+            log_message('debug', print_r($result,1));
+
+            $inv_jasa_detail_api = $this->Model_invoice_jasa->get_inv_jasa_detail_only($inv_jasa_id)->result_array();
+            foreach ($inv_jasa_detail_api as $i => $value) {
+                $inv_jasa_detail_api[$i]['reff'] = $inv_jasa_detail_api[$i]['id'];
+                $inv_jasa_detail_api[$i]['inv_id'] = $result['id'];
+                unset($inv_jasa_detail_api[$i]['id']);
+            }
+
+            $detail_api = json_encode($inv_jasa_detail_api);
+
+            // print_r($detail_api);
+
+            $ch2 = curl_init(target_url_cv($reff_cv).'api/InvoiceAPI/inv_detail');
+            curl_setopt($ch2, CURLOPT_POST, true);
+            curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_api);
+            curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+            $response2 = curl_exec($ch2);
+            $result2 = json_decode($response2, true);
+            curl_close($ch2);
+
+            log_message('debug', print_r($result2,1));
+
             if($this->db->trans_complete()){
                 redirect('index.php/R_InvoiceJasa/edit_inv_cust/'.$inv_jasa_id);  
             }else{
@@ -328,6 +377,7 @@ class R_InvoiceJasa extends CI_Controller{
 
     function update_inv_cust(){
         $user_id   = $this->session->userdata('user_id');
+        $reff_cv   = $this->session->userdata('cv_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_jth_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jth_tempo')));
@@ -364,6 +414,52 @@ class R_InvoiceJasa extends CI_Controller{
             );
         $this->db->where('id',$this->input->post('id'));
         $this->db->update('r_t_inv_jasa', $data);
+
+        $data_api = array(
+                'id' => $this->input->post('id'),
+                'no_inv'=> $this->input->post('no_inv_jasa'),
+                'tanggal'=> $tgl_input,
+                'term_of_payment' => $this->input->post('term_of_payment'),
+                'jatuh_tempo'=> $tgl_jth_tempo,
+                'remarks'=>$this->input->post('remarks'),
+            );
+
+        $ch = curl_init(target_url_cv($reff_cv).'api/InvoiceAPI/invupdt');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_api);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        $result = json_decode($response, true);
+        curl_close($ch);
+
+        log_message('debug', 'updt = '.print_r($result,1));
+
+        if($result['status'] == 1){
+            $update_details = $this->Model_invoice_jasa->get_inv_jasa_detail_only($this->input->post('id'))->result_array();
+            foreach ($update_details as $i => $value) {
+                $update_details[$i]['reff'] = $update_details[$i]['id'];
+                $update_details[$i]['inv_id'] = $result['id'];
+                unset($update_details[$i]['id']);
+            }
+
+            $data_details = json_encode($update_details);
+
+            log_message('debug', 'data details = '.print_r($data_details, 1));
+
+            $ch2 = curl_init(target_url_cv($reff_cv).'api/InvoiceAPI/inv_detail');
+            curl_setopt($ch2, CURLOPT_POST, true);
+            curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch2, CURLOPT_POSTFIELDS, $data_details);
+            curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+            $response2 = curl_exec($ch2);
+            $result2 = json_decode($response2, true);
+            curl_close($ch2);
+
+            log_message('debug', print_r($result2,1));
+        } else {
+            log_message('debug', 'failed update delete');
+        }
 
         if($this->db->trans_complete()){
             redirect(base_url('index.php/R_InvoiceJasa/'));

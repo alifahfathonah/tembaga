@@ -381,8 +381,13 @@ class BeliRongsok extends CI_Controller{
             $this->load->model('Model_beli_rongsok');
             $data['header']  = $this->Model_beli_rongsok->show_header_po($id)->row_array();
             $data['details'] = $this->Model_beli_rongsok->show_detail_po($id)->result();
-
-            $this->load->view('print_po_rongsok', $data);
+            $data['rows'] = count($data['details']);
+            if ($this->session->userdata('user_ppn') == 0) {
+                $this->load->view('print_po_rongsok', $data);    
+            } else {
+                $this->load->view('print_po_rongsok_ppn', $data); 
+            }
+            
         }else{
             redirect('index.php'); 
         }

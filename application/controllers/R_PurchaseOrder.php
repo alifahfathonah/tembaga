@@ -72,6 +72,7 @@ class R_PurchaseOrder extends CI_Controller{
     	$user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $reff_cv = $this->session->userdata('cv_id');
         
         $this->db->trans_start();
 
@@ -100,7 +101,7 @@ class R_PurchaseOrder extends CI_Controller{
             'jenis_po'=> 'PO CV KE KMP',
         );
 
-        $ch = curl_init(target_url().'api/PurchaseOrderAPI/po');
+        $ch = curl_init(target_url_cv($reff_cv).'api/PurchaseOrderAPI/po');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post_api);
@@ -138,7 +139,7 @@ class R_PurchaseOrder extends CI_Controller{
 
         $detail_api = json_encode($detail_api);
 
-        $ch2 = curl_init(target_url().'api/PurchaseOrderAPI/po_detail');
+        $ch2 = curl_init(target_url_cv($reff_cv).'api/PurchaseOrderAPI/po_detail');
         curl_setopt($ch2, CURLOPT_POST, true);
         curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
         curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_api);
@@ -231,6 +232,7 @@ class R_PurchaseOrder extends CI_Controller{
 
     function update_po(){
     	$user_id   = $this->session->userdata('user_id');
+        $reff_cv   = $this->session->userdata('cv_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
@@ -272,7 +274,7 @@ class R_PurchaseOrder extends CI_Controller{
             'remarks'=>$this->input->post('remarks'),
         );
 
-        $ch = curl_init(target_url().'api/PurchaseOrderAPI/poupdt');
+        $ch = curl_init(target_url_cv($reff_cv).'api/PurchaseOrderAPI/poupdt');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_api);
@@ -287,16 +289,15 @@ class R_PurchaseOrder extends CI_Controller{
             $update_details = $this->Model_purchase_order->get_po_detail_only($this->input->post('id'))->result_array();
             foreach ($update_details as $i => $value) {
                 $update_details[$i]['reff'] = $update_details[$i]['id'];
-                $update_details[$i]['po_id'] = $this->input->post('id');
+                $update_details[$i]['po_id'] = $result['id'];
                 unset($update_details[$i]['id']);
             }
 
             $data_details = json_encode($update_details);
 
             log_message('debug', 'data details = '.print_r($data_details, 1));
-            // die();
-// ga ke update
-            $ch2 = curl_init(target_url().'api/PurchaseOrderAPI/po_detail');
+            
+            $ch2 = curl_init(target_url_cv($reff_cv).'api/PurchaseOrderAPI/po_detail');
             curl_setopt($ch2, CURLOPT_POST, true);
             curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
             curl_setopt($ch2, CURLOPT_POSTFIELDS, $data_details);
@@ -351,6 +352,7 @@ class R_PurchaseOrder extends CI_Controller{
 
     function save_po_fcustomer(){
         $user_id   = $this->session->userdata('user_id');
+        $reff_cv   = $this->session->userdata('cv_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tanggal_so = date('Y-m-d', strtotime($this->input->post('tanggal_so')));
@@ -409,7 +411,7 @@ class R_PurchaseOrder extends CI_Controller{
             'created_by'=> $user_id
         );
 
-        $ch = curl_init(target_url().'api/SalesOrderAPI/so');
+        $ch = curl_init(target_url_cv($reff_cv).'api/SalesOrderAPI/so');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post_api);
@@ -455,7 +457,8 @@ class R_PurchaseOrder extends CI_Controller{
 
         $detail_api = json_encode($so_detail);
 
-        $ch2 = curl_init(target_url().'api/SalesOrderAPI/so_detail');
+
+        $ch2 = curl_init(target_url_cv($reff_cv).'api/SalesOrderAPI/so_detail');
         curl_setopt($ch2, CURLOPT_POST, true);
         curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
         curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_api);
@@ -503,6 +506,7 @@ class R_PurchaseOrder extends CI_Controller{
 
     function update_po_fcustomer(){
         $user_id   = $this->session->userdata('user_id');
+        $reff_cv   = $this->session->userdata('cv_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
@@ -558,21 +562,7 @@ class R_PurchaseOrder extends CI_Controller{
 
         $this->load->helper('target_url');
 
-        // $url = target_url().'api/BeliSparepartAPI/so';
-        // $ch = curl_init();
-        // curl_setopt($ch, CURLOPT_URL, $url);
-        // // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-        // curl_setopt($ch, CURLOPT_POSTFIELDS, $data_so);
-        // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-        // curl_setopt($ch, CURLOPT_HEADER, 0);
-
-        // $response = curl_exec($ch);
-        // $result = json_decode($response);
-        // curl_close($ch);
-
-        $ch = curl_init(target_url().'api/SalesOrderAPI/soupdt');
+        $ch = curl_init(target_url_cv($reff_cv).'api/SalesOrderAPI/soupdt');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_so);
@@ -588,7 +578,7 @@ class R_PurchaseOrder extends CI_Controller{
             $update_details = $this->Model_so->get_so_detail_only($this->input->post('so_id'))->result_array();
             foreach ($update_details as $i => $value) {
                 $update_details[$i]['reff_id'] = $update_details[$i]['id'];
-                $update_details[$i]['so_id'] = $this->input->post('so_id');
+                $update_details[$i]['so_id'] = $result['id'];
                 unset($update_details[$i]['id']);
             }
 
@@ -597,7 +587,7 @@ class R_PurchaseOrder extends CI_Controller{
             log_message('debug', 'data details = '.print_r($data_details, 1));
             // die();
 
-            $ch2 = curl_init(target_url().'api/SalesOrderAPI/so_detail');
+            $ch2 = curl_init(target_url_cv($reff_cv).'api/SalesOrderAPI/so_detail');
             curl_setopt($ch2, CURLOPT_POST, true);
             curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
             curl_setopt($ch2, CURLOPT_POSTFIELDS, $data_details);

@@ -67,6 +67,7 @@ class R_BPB extends CI_Controller{
 
     function save_bpb(){
         $user_id  = $this->session->userdata('user_id');
+        $reff_cv   = $this->session->userdata('cv_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis');    
@@ -139,7 +140,7 @@ class R_BPB extends CI_Controller{
 
             $this->load->helper('target_url');
 
-            $ch = curl_init(target_url().'api/BPBAPI/bpb');
+            $ch = curl_init(target_url_cv($reff_cv).'api/BPBAPI/bpb');
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data_api);
@@ -163,7 +164,7 @@ class R_BPB extends CI_Controller{
 
             // print_r($detail_api);
 
-            $ch2 = curl_init(target_url().'api/BPBAPI/bpb_detail');
+            $ch2 = curl_init(target_url_cv($reff_cv).'api/BPBAPI/bpb_detail');
             curl_setopt($ch2, CURLOPT_POST, true);
             curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
             curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_api);
@@ -216,6 +217,7 @@ class R_BPB extends CI_Controller{
 
     function update_bpb(){
         $user_id   = $this->session->userdata('user_id');
+        $reff_cv   = $this->session->userdata('cv_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
@@ -296,7 +298,7 @@ class R_BPB extends CI_Controller{
 
         $this->load->helper('target_url');
 
-        $ch = curl_init(target_url().'api/BPBAPI/bpbupdt');
+        $ch = curl_init(target_url_cv($reff_cv).'api/BPBAPI/bpbupdt');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_api);
@@ -312,16 +314,15 @@ class R_BPB extends CI_Controller{
             $update_details = $this->Model_bpb->list_bpb_detail_only($this->input->post('id'))->result_array();
             foreach ($update_details as $i => $value) {
                 $update_details[$i]['reff'] = $update_details[$i]['id'];
-                $update_details[$i]['bpb_id'] = $this->input->post('id');
+                $update_details[$i]['bpb_id'] = $result['id'];
                 unset($update_details[$i]['id']);
             }
 
             $data_details = json_encode($update_details);
 
             log_message('debug', 'data details = '.print_r($data_details, 1));
-            // die();
 
-            $ch2 = curl_init(target_url().'api/BPBAPI/bpb_detail');
+            $ch2 = curl_init(target_url_cv($reff_cv).'api/BPBAPI/bpb_detail');
             curl_setopt($ch2, CURLOPT_POST, true);
             curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
             curl_setopt($ch2, CURLOPT_POSTFIELDS, $data_details);

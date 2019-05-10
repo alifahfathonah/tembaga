@@ -246,7 +246,7 @@ class R_Matching extends CI_Controller{
             $tabel .= '<td style="text-align:right"><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" value="'.${'sisa_netto_'.$row->dtr_id}.'" class="form-control myline" readonly /></td>';
             $tabel .= '<td style="text-align:right"><input type="text" id="berat_palette_'.$no.'" name="details['.$no.'][berat_palette]" value="'.$row->berat_palette.'" class="form-control myline" readonly /></td>';
             $tabel .= '<td><input type="text" id="no_pallete_'.$no.'" name="details['.$no.'][no_pallete]" value="'.$row->no_pallete.'" class="form-control myline" readonly /></td>';
-            $tabel .= '<td><input type="text" id="line_remarks_'.$no.'" name="details['.$no.'][line_remarks]" value="'.$row->line_remarks.'" class="form-control myline" readonly /></td>';
+            // $tabel .= '<td><input type="text" id="line_remarks_'.$no.'" name="details['.$no.'][line_remarks]" value="'.$row->line_remarks.'" class="form-control myline" readonly /></td>';
             $tabel .= '<td align="center"><a href="javascript:;"  class="btn btn-xs btn-circle yellow-gold"  onclick="saveDetail('.$no.');" style="margin-top:5px" id="btnSaveDetail" ><i class="fa fa-plus"></i> Tambah </a><a href="javascript:;"  class="btn btn-xs btn-circle green"  onclick="saveParsial('.$no.',\''.$row->nama_item.'\');" style="margin-top:5px" id="btnSaveDetail" ><i class="fa fa-plus"></i> Parsial </a></td>';
             // $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
             //         . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
@@ -288,6 +288,8 @@ class R_Matching extends CI_Controller{
                 'no_invoice_resmi' => $this->input->post('no_invoice_resmi'),
                 'remarks' => $this->input->post('remarks'),
                 'tanggal' => $tgl_input,
+                'total' => $this->input->post('total'),
+                'persentase' => $this->input->post('persentase'),
                 'jumlah' => $this->input->post('qty')
             ));
 

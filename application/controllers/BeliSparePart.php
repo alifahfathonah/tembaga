@@ -598,6 +598,12 @@ class BeliSparePart extends CI_Controller{
             $this->load->model('Model_beli_sparepart');
             $data['header']  = $this->Model_beli_sparepart->show_header_po($id)->row_array();
             $data['details'] = $this->Model_beli_sparepart->show_detail_po($id)->result();
+            $data['rows'] = count($data['details']);
+            if ($this->session->userdata('user_ppn') == 0) {
+                $this->load->view('print_po', $data);
+            } else {
+                $this->load->view('print_po_ppn', $data);
+            }
 
             $this->load->view('beli_spare_part/print_po', $data);
         }else{
