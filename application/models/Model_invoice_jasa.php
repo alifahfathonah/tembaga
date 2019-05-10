@@ -106,4 +106,8 @@ class Model_invoice_jasa extends CI_Model{
 	    where tij.id =".$id);
 		return $data;
 	}
+
+	function get_inv_jasa_detail_only($id){
+		return $this->db->query("select id, inv_jasa_id as inv_id, jenis_barang_id, qty, bruto, netto, amount, total_amount, line_remarks from r_t_inv_jasa_detail where inv_jasa_id =".$id);
+	}
 }

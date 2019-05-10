@@ -35,7 +35,7 @@
                         <div class="col-md-8">
                             <input type="text" id="no_inv_jasa" name="no_inv_jasa"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['no_invoice_jasa']; ?>">
+                                value="<?php echo $header['no_invoice_jasa']; ?>" onkeyup="this.value = this.value.toUpperCase()">
                             
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>

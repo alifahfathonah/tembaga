@@ -92,7 +92,7 @@ class Model_surat_jalan extends CI_Model{
 	// }
 
 	function show_header_sj($id){
-		$data = $this->db->query("select sjr.*, c.id as id_customer, coalesce(c.nama_customer, cv.nama_cv) as nama_customer, coalesce(c.alamat, cv.alamat) as alamat, tri.no_invoice_resmi, ts.no_so, ts.tanggal as tgl_so, coalesce(tp.no_po,tpo.no_po) as no_po, tpo.tanggal as tgl_po, bpb.no_bpb, bpb.tanggal as tanggal_bpb
+		$data = $this->db->query("select sjr.*, c.id as id_customer, coalesce(c.nama_customer, cv.nama_cv) as nama_customer, coalesce(c.alamat, cv.alamat) as alamat, tri.no_invoice_resmi, ts.no_so, ts.tanggal as tgl_so, coalesce(tp.no_po,tpo.no_po) as no_po, tpo.tanggal as tgl_po, bpb.id as bpb_id, bpb.no_bpb, bpb.tanggal as tanggal_bpb
 			from r_t_surat_jalan sjr
 			left join r_t_invoice tri on (tri.id = sjr.r_invoice_id)
             left join r_t_so ts on (ts.id = sjr.r_so_id)
@@ -202,7 +202,13 @@ class Model_surat_jalan extends CI_Model{
     }
 
     function po_list($reff_cv){
-    	$data = $this->db->query("select *from r_t_po rpo where rpo.flag_sj = 0 and reff_cv = ".$reff_cv);
+    	$data = $this->db->query("select *from r_t_po rpo where jenis_po = 'PO CUSTOMER KE CV' and rpo.flag_sj = 0 and reff_cv = ".$reff_cv);
     	return $data;
+    }
+
+    function get_sj_detail_only($id)
+    {
+    	return $this->db->query('select id, sj_resmi_id as sj_id, jenis_barang_id, no_packing, qty, bruto, netto, nomor_bobbin, line_remarks
+    			from r_t_surat_jalan_detail where sj_resmi_id = '.$id);
     }
 }

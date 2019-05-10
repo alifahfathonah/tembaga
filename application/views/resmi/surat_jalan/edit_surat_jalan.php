@@ -254,7 +254,8 @@
                         <div class="col-md-8">
                             <input type="text" id="no_bpb" name="no_bpb"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['no_bpb']; ?>">
+                                value="<?php echo $header['no_bpb']; ?>" onkeyup="this.value=this.value.toUpperCase()">
+                            <input type="hidden" name="bpb_id" id="bpb_id" value="<?= $header['bpb_id'] ?>">
                         </div>
                     </div>
                     <div class="row">
