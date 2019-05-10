@@ -26,7 +26,16 @@
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-beer"></i>DTR List
-                </div>                
+                </div>
+                <div class="tools">
+                <?php
+                    if( ($group_id==1)||($hak_akses['create_dtr']==1) ){
+                ?>
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/PengirimanAmpas/create_dta"> <i class="fa fa-plus"></i> Tambah DTA</a>
+                <?php
+                    }
+                ?>
+                </div>           
             </div>
             <div class="portlet-body">
                 <table class="table table-striped table-bordered table-hover" id="sample_6">

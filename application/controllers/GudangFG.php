@@ -772,59 +772,67 @@ class GudangFG extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
-        $this->load->model('Model_gudang_fg');
-        $id_produksi = $this->input->post('id');
-        #update status produksi FG
-        $data = array(
-                'flag_result' => 1,
-                'remarks' => $this->input->post('remarks'),
-                'modified_date'=> $tanggal,
-                'modified_by'=> $user_id
-            );
-        
-        $this->db->where('id', $id_produksi);
-        $this->db->update('produksi_fg', $data);
 
-        $jenis_barang_id = $this->input->post('jenis_barang_id'); 
-        #create bpb ke gundang fg
-        $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('BPB-SDM',$tgl_input);
-        $data_bpb = array(
-                'no_bpb_fg' => $code,
-                'tanggal' => $tgl_input,
-                'produksi_fg_id' => $id_produksi,
-                'jenis_barang_id' => $jenis_barang_id,
-                'created_at' => $tanggal,
-                'created_by' => $user_id,
-                'status' => 0
-            );
-        $this->db->insert('t_bpb_fg',$data_bpb);
-        $id_bpb = $this->db->insert_id();
+            $this->load->model('Model_gudang_fg');
+            $id_produksi = $this->input->post('id');
+            $cek = $this->Model_gudang_fg->produksi_fg_count($id_produksi)->row_array();
 
-        #create bpb_detail ke gudang fg
-        $details = $this->Model_gudang_fg->load_detail($id_produksi)->result();
-        foreach ($details as $k => $v) {
-            $this->db->insert('t_bpb_fg_detail',
-                        array(
-                            't_bpb_fg_id' => $id_bpb,
-                            'jenis_barang_id' => $jenis_barang_id,
-                            'no_packing_barcode' => $v->no_packing_barcode,
-                            'no_produksi' => $v->no_produksi,
-                            'bruto' => (int)$v->bruto,
-                            'netto' => $v->netto,
-                            'berat_bobbin' => $v->berat_bobbin,
-                            'bobbin_id' => $v->bobbin_id,
-                            'flag_taken' => 0
-                        ));
-        }
-
-
-        if($this->db->trans_complete()){   
-            $this->session->set_flashdata('flash_msg', 'Data Produksi FG berhasil disimpan beserta Laporan BPB Gudang FG dengan nomor '.$code);
+        if($cek['count']==0){
+            $this->session->set_flashdata('flash_msg', 'Data belum ada detailnya');
             redirect('index.php/GudangFG/produksi_fg');
-        } else {
-            $this->session->set_flashdata('flash_msg', 'Data Produksi FG gagal disimpan');
-            redirect('index.php/GudangFG/produksi_fg/'.$id_produksi);
+        }else{
+                #update status produksi FG
+                $data = array(
+                        'flag_result' => 1,
+                        'remarks' => $this->input->post('remarks'),
+                        'modified_date'=> $tanggal,
+                        'modified_by'=> $user_id
+                    );
+                
+                $this->db->where('id', $id_produksi);
+                $this->db->update('produksi_fg', $data);
+
+                $jenis_barang_id = $this->input->post('jenis_barang_id'); 
+                #create bpb ke gundang fg
+                $this->load->model('Model_m_numberings');
+                $code = $this->Model_m_numberings->getNumbering('BPB-SDM',$tgl_input);
+                $data_bpb = array(
+                        'no_bpb_fg' => $code,
+                        'tanggal' => $tgl_input,
+                        'produksi_fg_id' => $id_produksi,
+                        'jenis_barang_id' => $jenis_barang_id,
+                        'created_at' => $tanggal,
+                        'created_by' => $user_id,
+                        'status' => 0
+                    );
+                $this->db->insert('t_bpb_fg',$data_bpb);
+                $id_bpb = $this->db->insert_id();
+
+                #create bpb_detail ke gudang fg
+                $details = $this->Model_gudang_fg->load_detail($id_produksi)->result();
+                foreach ($details as $k => $v) {
+                    $this->db->insert('t_bpb_fg_detail',
+                                array(
+                                    't_bpb_fg_id' => $id_bpb,
+                                    'jenis_barang_id' => $jenis_barang_id,
+                                    'no_packing_barcode' => $v->no_packing_barcode,
+                                    'no_produksi' => $v->no_produksi,
+                                    'bruto' => (int)$v->bruto,
+                                    'netto' => $v->netto,
+                                    'berat_bobbin' => $v->berat_bobbin,
+                                    'bobbin_id' => $v->bobbin_id,
+                                    'flag_taken' => 0
+                                ));
+                }
+
+
+            if($this->db->trans_complete()){   
+                $this->session->set_flashdata('flash_msg', 'Data Produksi FG berhasil disimpan beserta Laporan BPB Gudang FG dengan nomor '.$code);
+                redirect('index.php/GudangFG/produksi_fg');
+            } else {
+                $this->session->set_flashdata('flash_msg', 'Data Produksi FG gagal disimpan');
+                redirect('index.php/GudangFG/produksi_fg/'.$id_produksi);
+            }
         }
     }
 

@@ -339,8 +339,13 @@ class Retur extends CI_Controller{
 
     function save_detail_rsk(){
         $return_data = array();
-        $ran1 = rand(10,99);
-        $tgl = date("dmy", strtotime($this->input->post('tgl')));
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tgl')));
+        $tgl_code = date('dmy', strtotime($this->input->post('tgl')));
+
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
+        
+        $no_pallete = $tgl_code.substr($code,13,4);
         
         if($this->db->insert('retur_detail', array(
             'retur_id'=>$this->input->post('id'),
@@ -348,7 +353,7 @@ class Retur extends CI_Controller{
             'bruto'=>$this->input->post('bruto'),
             'netto'=>$this->input->post('netto'),
             'berat_palette'=>$this->input->post('berat'),
-            'no_packing'=>date($tgl.'His').$ran1,
+            'no_packing'=>$no_pallete.'RTR',
             'line_remarks'=>$this->input->post('line_remarks')
         ))){
             $return_data['message_type']= "sukses";
@@ -1687,6 +1692,8 @@ class Retur extends CI_Controller{
         $retur_id = $this->input->post('retur_id');
         $spbid = $this->input->post('spb_id');
         $sjid = $this->input->post('id');
+
+        $this->db->trans_start();
         #Insert Surat Jalan
         $details = $this->input->post('details');
         if($jenis == 'WIP'){
@@ -1806,8 +1813,14 @@ class Retur extends CI_Controller{
         
         $this->db->where('id', $sjid);
         $this->db->update('t_surat_jalan', $data);
-        $this->session->set_flashdata('flash_msg', 'Data surat jalan berhasil disimpan');
-        redirect('index.php/Retur/surat_jalan');
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Data surat jalan berhasil disimpan');
+            redirect('index.php/Retur/surat_jalan');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data surat jalan gagal disimpan');
+            redirect('index.php/Retur/edit_surat_jalan/'.$sjid);
+        }
     }
 
     // function print_surat_jalan(){

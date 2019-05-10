@@ -156,12 +156,8 @@
                         <div class="col-md-2">
                             Discount
                         </div>
-                        <div class="col-md-3">
-                            <input type="text" id="diskon" name="diskon" 
-                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
-                        </div>
-                        <div class="col-md-1">
-                            <h4>%</h4>
+                        <div class="col-md-4">
+                            <input type="text" id="diskon" name="diskon" class="form-control myline" style="margin-bottom:5px" onkeyup="getComa(this.value, this.id)">
                         </div>
                     <?php if($this->session->userdata('user_ppn')==1){?>
                         <div class="col-md-2">
@@ -264,6 +260,11 @@ function get_contact(id){
             $("#contact_person").val(result['pic']);
         } 
     });
+}
+
+function getComa(value, id){
+    angka = value.toString().replace(/\./g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
 
 function get_cur(id){

@@ -33,9 +33,13 @@
                             No. PO <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
+                            <?php if($this->session->userdata('user_ppn')==1){ ?>
+                            <input type="text" id="no_po" name="no_po" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor PO ..." value="PO-KMP.">
+                            <?php }else{ ?>
                             <input type="text" id="no_po" name="no_po" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px"
                                 value="Auto generate">
+                            <?php } ?>
                         </div>
                     </div>
                     <div class="row">
@@ -102,6 +106,25 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-2">
+                            Discount
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="diskon" name="diskon" class="form-control myline" style="margin-bottom:5px" onkeyup="getComa(this.value, this.id)">
+                        </div>
+                        <div class="col-md-2">
+                            Materai
+                        </div>
+                        <div class="col-md-4">
+                            <select id="materai" name="materai" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option></option>
+                                <option value="3000">Materai 3000</option>
+                                <option value="6000">Materai 6000</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-4">
                             Currency
                         </div>
@@ -137,6 +160,7 @@
                     <?php } else{ ?>
                         <input type="hidden" id="ppn" name="ppn" value="0">
                     <?php } ?>
+                    </div>
                 </div>              
             </div>
             
@@ -169,6 +193,11 @@ function simpanData(){
         $('#formku').submit(); 
     };
 };
+
+function getComa(value, id){
+    angka = value.toString().replace(/\./g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+}
 
 function get_contact(id){
     $.ajax({

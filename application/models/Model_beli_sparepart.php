@@ -461,7 +461,7 @@ class Model_beli_sparepart extends CI_Model{
     }
 
     function get_data_lpb($id){
-        $data = $this->db->query("select lpb.id, lpb.remarks, po.no_po, po.ppn,
+        $data = $this->db->query("select lpb.id, lpb.remarks, po.no_po, po.ppn, po.currency,
                 (select if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount)) from lpb_detail ld
                  left join po_detail pd on pd.id = ld.po_detail_id
                  left join po p on p.id = pd.po_id
@@ -473,7 +473,7 @@ class Model_beli_sparepart extends CI_Model{
     }
 
     function load_detail_lpb($id){
-        $data = $this->db->query("select lpb.id, lpb.no_bpb, lpb.remarks, po.no_po, po.ppn,
+        $data = $this->db->query("select lpb.id, lpb.no_bpb, lpb.remarks, po.no_po, po.ppn, po.currency,
                 (select if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount)) from lpb_detail ld
                  left join po_detail pd on pd.id = ld.po_detail_id
                  left join po p on p.id = pd.po_id
@@ -481,6 +481,11 @@ class Model_beli_sparepart extends CI_Model{
             from lpb
             left join po on po.id = lpb.po_id
             where lpb.vk_id =".$id);
+        return $data;
+    }
+
+    function load_detail_lpb_only($id){
+        $data = $this->db->query("select lpb.id from lpb left join po on po.id = lpb.po_id where lpb.vk_id =".$id);
         return $data;
     }
 

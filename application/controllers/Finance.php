@@ -1340,15 +1340,11 @@ class Finance extends CI_Controller{
             $data['header'] = $this->Model_finance->show_header_invoice($id)->row_array();
             $data['details'] = $this->Model_finance->show_detail_invoice($id)->result();
 
-            $total = 0;
-            foreach ($data['details'] as $row) {
-                $total += $row->total_harga;
-            }
-
-            $data['total'] = $total;
             if($data['header']['flag_ppn'] == 1){
+            $data['total'] = $data['header']['nilai_invoice']*110/100;
             $this->load->view('finance/print_faktur', $data);
             }else{
+            $data['total'] = $data['header']['nilai_invoice'];
             $this->load->view('finance/print_invoice', $data);
             }
         }else{

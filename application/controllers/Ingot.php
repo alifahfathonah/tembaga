@@ -20,7 +20,7 @@ class Ingot extends CI_Controller{
         }
         $data['group_id']  = $group_id;
 
-        $data['content']= "Ingot/index";
+        $data['content']= "ingot/index";
         $this->load->model('Model_ingot');
         $data['list_data'] = $this->Model_ingot->list_data()->result();
 
@@ -654,34 +654,59 @@ class Ingot extends CI_Controller{
         $id_masak = $this->db->insert_id();
 
         if($this->input->post('bs') != 0){
+            //CREATE DTR
+        $this->load->model('Model_m_numberings');
+        $code_dtr = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
+        
+            #insert dtr
+            $data_dtr = array(
+                        'no_dtr'=> $code_dtr,
+                        'tanggal'=> $tgl_input,
+                        'jenis_barang'=> 'RONGSOK',
+                        'remarks'=> 'SISA PRODUKSI INGOT',
+                        'created'=> $tanggal,
+                        'created_by'=> $user_id
+                    );
+            $this->db->insert('dtr', $data_dtr);
+            $dtr_id = $this->db->insert_id();
+
+            //CREATE DTR_DETAIL
+        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+
+        $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
+        
+        $bs_packing = $tgl_code.substr($bs_code,13,4);
             #insert bs ke gudang bs
-            $data_bs = array(
-                'id_produksi' => $id_masak,
-                'jenis_produksi' => 'INGOT',
-                'jenis_barang_id' => 22,//BS Ingot
-                'berat' => $this->input->post('bs'),
-                'tanggal' => $tgl_input,
-                'status' => 0,
-                'created_by' => $user_id,
-                'created_at' => $tanggal
-            );
-            $this->db->insert('t_gudang_bs', $data_bs);
+                    $this->db->insert('dtr_detail', array(
+                        'dtr_id'=>$dtr_id,
+                        'rongsok_id'=>22,
+                        'qty'=>0,
+                        'bruto'=>$this->input->post('bs'),
+                        'netto'=>$this->input->post('bs'),
+                        'line_remarks'=>'SISA PRODUKSI',
+                        'no_pallete'=>$bs_packing,
+                        'created'=>$tanggal,
+                        'created_by'=>$user_id,
+                        'modified'=>$tanggal,
+                        'modified_by'=>$user_id,
+                        'tanggal_masuk'=>$tgl_input
+                    ));
         }
 
-        if($this->input->post('serbuk') != 0){
-            #insert serbuk ke gudang bs
-            $data_serbuk = array(
-                'id_produksi' => $id_masak,
-                'jenis_produksi' => 'INGOT',
-                'berat' => $this->input->post('serbuk'),
-                'jenis_barang_id' => 31,//Serbuk Drawing SDM
-                'tanggal' => $tgl_input,
-                'status' => 0,
-                'created_by' => $user_id,
-                'created_at' => $tanggal
-            );
-            $this->db->insert('t_gudang_bs', $data_serbuk);
-        }
+        // if($this->input->post('serbuk') != 0){
+        //     #insert serbuk ke gudang bs
+        //     $data_serbuk = array(
+        //         'id_produksi' => $id_masak,
+        //         'jenis_produksi' => 'INGOT',
+        //         'berat' => $this->input->post('serbuk'),
+        //         'jenis_barang_id' => 31,//Serbuk Drawing SDM
+        //         'tanggal' => $tgl_input,
+        //         'status' => 0,
+        //         'created_by' => $user_id,
+        //         'created_at' => $tanggal
+        //     );
+        //     $this->db->insert('t_gudang_bs', $data_serbuk);
+        // }
 
         // if($this->input->post('ampas') != 0){
         //     #insert ampas ke gudang bs

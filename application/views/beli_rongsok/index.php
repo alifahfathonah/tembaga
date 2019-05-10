@@ -553,6 +553,8 @@ function createVoucher(id){
             $('#tanggal_po').val(result['tanggal']);
             $('#nama_supplier').val(result['nama_supplier']);
             $('#supplier_id').val(result['supplier_id']);
+            $('#diskon').val(result['diskon']);
+            $('#materai').val(result['materai']);
             $('#amount').val('0');
             $('#nilai_po').val(result['nilai_po']);
             $('#terbilang').val(result['terbilang']);

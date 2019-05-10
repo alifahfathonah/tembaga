@@ -5,7 +5,7 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWATMAS PRAKASA<br>'; }?>BANK KELUAR PEMBELIAN SPARE PART</h3>
+        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWATMAS PRAKASA<br>'; }?>VOUCHER PEMBELIAN SPARE PART</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="60%">
@@ -124,10 +124,10 @@
                             <td style="text-align:center">&nbsp;</td>
                         </tr>
                         <tr>
-                            <td style="text-align:center">(______________)</td>
-                            <td style="text-align:center">(______________)</td>
-                            <td style="text-align:center">(______________)</td>
-                            <td style="text-align:center">(______________)</td>
+                            <td style="text-align:center">(_____________)</td>
+                            <td style="text-align:center">(_____________)</td>
+                            <td style="text-align:center">(_____________)</td>
+                            <td style="text-align:center">(_____________)</td>
                         </tr>
                     </table>
                 </td>

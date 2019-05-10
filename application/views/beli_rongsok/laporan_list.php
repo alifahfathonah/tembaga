@@ -60,8 +60,12 @@
                         <td><?= number_format($data['netto_masuk'], 2, '.', ',') ;?></td>
                         <td><?= number_format($data['bruto_keluar'], 2, '.', ',') ;?></td>
                         <td><?= number_format($data['netto_keluar'], 2, '.', ',') ;?></td>
-                        <td style="background-color: turquoise;"><?=number_format($arr['bruto_awal'][$no] + ($data['bruto_masuk'] - $data['bruto_keluar']), 2, '.', ',') ;?></td>
-                        <td style="background-color: turquoise;"><?=number_format($arr['netto_awal'][$no] + ($data['netto_masuk'] - $data['netto_keluar']), 2, '.', ',') ;?></td>
+                        <?php 
+                        $bruto_akhir = $arr['bruto_awal'][$no] + ($data['bruto_masuk'] - $data['bruto_keluar']);
+                        $netto_akhir = $arr['netto_awal'][$no] + ($data['netto_masuk'] - $data['netto_keluar']);
+                        ?>
+                        <td style="background-color: turquoise;"><?=number_format($bruto_akhir, 2, '.', ',') ;?></td>
+                        <td style="background-color: turquoise;"><?=number_format($netto_akhir, 2, '.', ',') ;?></td>
                         <td><?php
                         if($group_id==1 || $hak_akses['view_laporan']==1){
                         ?>
@@ -69,8 +73,8 @@
                         <?php
                             }//if group
                             $no++;
-                        $arr['bruto_awal'][$no] = $data['bruto_masuk'] - $data['bruto_keluar'];
-                        $arr['netto_awal'][$no] = $data['netto_masuk'] - $data['netto_keluar'];
+                        $arr['bruto_awal'][$no] = $bruto_akhir;
+                        $arr['netto_awal'][$no] = $netto_akhir;
                         }//foreach
                     echo '</tr>';
                     }//if ?>

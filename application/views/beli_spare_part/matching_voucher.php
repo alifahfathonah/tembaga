@@ -160,6 +160,7 @@
                                 <th style="width: 20%;">No LPB</th>
                                 <th>No. PO</th>
                                 <th>PPN</th>
+                                <th>Currency</th>
                                 <th>Amount</th>
                                 <th>Keterangan</th>
                                 <th>Actions</th>
@@ -176,6 +177,7 @@
                                 </td>
                                 <td><input type="text" id="no_po" name="no_po" class="form-control myline" readonly="readonly"></td>
                                 <td><input type="text" id="ppn" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="currency_add" class="form-control myline" readonly="readonly"></td>
                                 <td><input type="text" id="amount_lpb" name="amount_lpb" class="form-control myline" readonly="readonly"/></td>
                                 <td><input type="text" id="keterangan_lpb" name="keterangan_lpb" class="form-control myline" readonly="readonly" onkeyup="this.value = this.value.toUpperCase()"></td>      
                                 <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail_lpb();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
@@ -322,6 +324,7 @@ function get_data_lpb(id){
                 }else{
                     $('#ppn').val('NON PPN');
                 }
+                $('#currency_add').val(result['currency']);
                 $('#amount_lpb').val(numberWithCommas(result['amount']));
                 $('#keterangan_lpb').val(result['remarks']);
             }
@@ -359,6 +362,7 @@ function saveDetail_lpb(){
                     $("#lpb_id").select2("val", "");
                     $("#no_po").val('');
                     $("#ppn").val('');
+                    $("#currency_add").val('');
                     $("#amount_lpb").val('');
                     $("#keterangan_lpb").val('');
                     $('#message').html("");

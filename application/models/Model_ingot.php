@@ -263,8 +263,7 @@ class Model_ingot extends CI_Model{
                 from dtr_detail
                 left join rongsok on rongsok.id = dtr_detail.rongsok_id
                 left join ttr on ttr.dtr_id = dtr_detail.dtr_id
-                where no_pallete='".$no_pallete."' and flag_taken=0"
-                );
+                where no_pallete='".$no_pallete."' and flag_taken=0 and ttr.ttr_status = 1");
         return $data;
     }
 

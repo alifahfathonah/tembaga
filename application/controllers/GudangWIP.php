@@ -99,6 +99,12 @@ class GudangWIP extends CI_Controller{
                     'flag_produksi'=>1
                     ));
             }
+
+            if($this->input->post('jenis_masak') == 'CUCI'){
+                $susut = (int)$this->input->post('susut_berat_keras');
+            }else{
+                $susut = 0;
+            }
             #insert hasil WIP
             $data = array(
                     'no_produksi_wip' => $code,
@@ -109,7 +115,7 @@ class GudangWIP extends CI_Controller{
                     'qty'=>(int)($this->input->post('qty_kh')!= null) ? $this->input->post('qty_kh'): $this->input->post('qty_km'),
                     'uom' => 'ROLL',
                     'berat' => (int)($this->input->post('berat_kh')!=null) ? $this->input->post('berat_kh') : $this->input->post('berat_km'),
-                    'susut' => (int)$this->input->post('susut_berat_keras'),
+                    'susut' => $susut,
                     'keras' => (int)$this->input->post('berat_keras'),
                     'qty_keras' => (int)$this->input->post('jml_keras'),
                     'bs' => (int)($this->input->post('bs')!= null)? $this->input->post('bs') : $this->input->post('bs_rolling'),
@@ -167,8 +173,8 @@ class GudangWIP extends CI_Controller{
                         'jenis_trx'=>1,
                         't_hasil_wip_id'=>$insert_id,
                         'jenis_barang_id'=>15,
-                        'qty'=>$this->input->post('jml_ingot_keras'),
-                        'berat'=>$this->input->post('jml_berat_keras'),
+                        'qty'=>(int)$this->input->post('jml_ingot_keras') - (int)$this->input->post('susut_jumlah_keras'),
+                        'berat'=>(int)$this->input->post('jml_berat_keras') - (int)$this->input->post('susut_berat_keras'),
                         'created_at'=>$tanggal,
                         'created_by'=>$user_id
                     ));
@@ -191,7 +197,7 @@ class GudangWIP extends CI_Controller{
 
         if($this->input->post('bs') != 0 || $this->input->post('bs_rolling') != 0 || $this->input->post('bs_ingot') != 0 || $this->input->post('serbuk') != 0){
 
-        $code = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
+            $code = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
         
             #insert dtr
             $data_dtr = array(
@@ -210,14 +216,20 @@ class GudangWIP extends CI_Controller{
                 #insert bs rolling ke rongsok
                 if($this->input->post('bs_rolling') != 0){
 
-                    $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
+                $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+
+                $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
+
+                $bs_packing = $tgl_code.substr($bs_code,13,4);
+
                     $this->db->insert('dtr_detail', array(
                         'dtr_id'=>$dtr_id,
                         'rongsok_id'=>20,
                         'qty'=>0,
+                        'bruto'=>$this->input->post('bs_rolling'),
                         'netto'=>$this->input->post('bs_rolling'),
                         'line_remarks'=>'SISA PRODUKSI',
-                        'no_pallete'=>date("dmyHis").$rand,
+                        'no_pallete'=>$bs_packing,
                         'created'=>$tanggal,
                         'created_by'=>$user_id,
                         'modified'=>$tanggal,
@@ -228,14 +240,19 @@ class GudangWIP extends CI_Controller{
                 #insert bs ingot ke rongsok
                 if($this->input->post('bs_ingot') != 0){
 
-                    $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
+                $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+
+                $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
+
+                $bs_packing = $tgl_code.substr($bs_code,13,4);
                     $this->db->insert('dtr_detail', array(
                         'dtr_id'=>$dtr_id,
                         'rongsok_id'=>22,
                         'qty'=>0,
+                        'bruto'=>$this->input->post('bs_ingot'),
                         'netto'=>$this->input->post('bs_ingot'),
                         'line_remarks'=>'SISA PRODUKSI',
-                        'no_pallete'=>date("dmyHis").$rand,
+                        'no_pallete'=>$bs_packing,
                         'created'=>$tanggal,
                         'created_by'=>$user_id,
                         'modified'=>$tanggal,
@@ -246,14 +263,19 @@ class GudangWIP extends CI_Controller{
             }else if($this->input->post('jenis_masak') == 'BAKAR ULANG'){
                 #insert bs ke rongsok
                 if($this->input->post('bs') != 0){
-                $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
+                    $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+
+                    $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
+
+                    $bs_packing = $tgl_code.substr($bs_code,13,4);
                     $this->db->insert('dtr_detail', array(
                         'dtr_id'=>$dtr_id,
                         'rongsok_id'=>52,
                         'qty'=>0,
+                        'bruto'=>$this->input->post('bs'),
                         'netto'=>$this->input->post('bs'),
                         'line_remarks'=>'SISA PRODUKSI',
-                        'no_pallete'=>date("dmyHis").$rand,
+                        'no_pallete'=>$bs_packing,
                         'created'=>$tanggal,
                         'created_by'=>$user_id,
                         'modified'=>$tanggal,
@@ -264,14 +286,18 @@ class GudangWIP extends CI_Controller{
 
             }else if($this->input->post('jenis_masak') == 'CUCI'){
                 #insert bs ke gudang bs
-                $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
+                $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+
+                $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
+
+                $bs_packing = $tgl_code.substr($bs_code,13,4);
                     $this->db->insert('dtr_detail', array(
                         'dtr_id'=>$dtr_id,
                         'rongsok_id'=>51,
                         'qty'=>0,
                         'netto'=>$this->input->post('bs'),
                         'line_remarks'=>'SISA PRODUKSI',
-                        'no_pallete'=>date("dmyHis").$rand,
+                        'no_pallete'=>$bs_packing,
                         'created'=>$tanggal,
                         'created_by'=>$user_id,
                         'modified'=>$tanggal,
@@ -281,41 +307,41 @@ class GudangWIP extends CI_Controller{
             }
         }
 
-        if($this->input->post('serbuk') != 0){
-            if($this->input->post('jenis_masak') == 'CUCI'){
-                #insert serbuk ke rongsok
-                $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
-                    $this->db->insert('dtr_detail', array(
-                        'dtr_id'=>$dtr_id,
-                        'rongsok_id'=>53,
-                        'qty'=>0,
-                        'netto'=>$this->input->post('serbuk'),
-                        'line_remarks'=>'SISA PRODUKSI',
-                        'no_pallete'=>date("dmyHis").$rand,
-                        'created'=>$tanggal,
-                        'created_by'=>$user_id,
-                        'modified'=>$tanggal,
-                        'modified_by'=>$user_id,
-                        'tanggal_masuk'=>$tgl_input
-                    ));
-            }else{
-                #insert serbuk ke rongsok
-                $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
-                    $this->db->insert('dtr_detail', array(
-                        'dtr_id'=>$dtr_id,
-                        'rongsok_id'=>30,
-                        'qty'=>0,
-                        'netto'=>$this->input->post('serbuk'),
-                        'line_remarks'=>'SISA PRODUKSI',
-                        'no_pallete'=>date("dmyHis").$rand,
-                        'created'=>$tanggal,
-                        'created_by'=>$user_id,
-                        'modified'=>$tanggal,
-                        'modified_by'=>$user_id,
-                        'tanggal_masuk'=>$tgl_input
-                    ));
-            }
-        }
+        // if($this->input->post('serbuk') != 0){
+        //     if($this->input->post('jenis_masak') == 'CUCI'){
+        //         #insert serbuk ke rongsok
+        //         $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
+        //             $this->db->insert('dtr_detail', array(
+        //                 'dtr_id'=>$dtr_id,
+        //                 'rongsok_id'=>53,
+        //                 'qty'=>0,
+        //                 'netto'=>$this->input->post('serbuk'),
+        //                 'line_remarks'=>'SISA PRODUKSI',
+        //                 'no_pallete'=>date("dmyHis").$rand,
+        //                 'created'=>$tanggal,
+        //                 'created_by'=>$user_id,
+        //                 'modified'=>$tanggal,
+        //                 'modified_by'=>$user_id,
+        //                 'tanggal_masuk'=>$tgl_input
+        //             ));
+        //     }else{
+        //         #insert serbuk ke rongsok
+        //         $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
+        //             $this->db->insert('dtr_detail', array(
+        //                 'dtr_id'=>$dtr_id,
+        //                 'rongsok_id'=>30,
+        //                 'qty'=>0,
+        //                 'netto'=>$this->input->post('serbuk'),
+        //                 'line_remarks'=>'SISA PRODUKSI',
+        //                 'no_pallete'=>date("dmyHis").$rand,
+        //                 'created'=>$tanggal,
+        //                 'created_by'=>$user_id,
+        //                 'modified'=>$tanggal,
+        //                 'modified_by'=>$user_id,
+        //                 'tanggal_masuk'=>$tgl_input
+        //             ));
+        //     }
+        // }
 
         //     if($this->input->post('jenis_masak') == 'ROLLING'){
         //         #insert bs ke gudang bs
@@ -469,7 +495,7 @@ class GudangWIP extends CI_Controller{
             //     $this->db->insert('dtr_detail',$data_dtr_detail_bs);
             // }
 
-            if ($this->db->trans_complete()){
+            if($this->db->trans_complete()){
                 $this->session->set_flashdata('flash_msg','Simpan Data Produksi WIP Berhasil.');
             } else{
                 $this->session->set_flashdata('flash_msg','Simpan Data Produksi WIP Gagal, Silahkan Coba Lagi.');
