@@ -174,7 +174,11 @@
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/SalesOrder/print_so/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
-                                }
+                                }if(($group_id==1 || $hak_akses['delete_so']==1) && $data->jumlah_item == 0){?>
+                            <a href="<?php echo base_url(); ?>index.php/SalesOrder/delete/<?php echo $data->id; ?>" 
+                               class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus data ini?');"><i class="fa fa-trash-o"></i> Hapus </a>
+                            <?php
+                            }
                             ?>
                         </td>
                     </tr>

@@ -180,7 +180,7 @@
                         <tr>
                             <td colspan="2" style="border-left: 1px solid #000;">Terbilang</td>
                             <td>:</td>
-                            <td colspan="5" rowspan="2">** <?php echo ucwords(number_to_words_d($total, $c)); ?> **</td>
+                            <td colspan="5" rowspan="2">** <?php echo ucwords(number_to_words_d($total_bersih, $c)); ?> **</td>
                             <td colspan="3"  style="border-right: 1px solid #000;">Tanggerang, <? =tanggal_indo($header['tanggal']);?></td>
                         </tr>
                         <tr>

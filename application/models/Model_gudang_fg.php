@@ -365,6 +365,11 @@ class Model_gudang_fg extends CI_Model{
                     ");
         return $data;
     }
+
+    function produksi_fg_count($id){
+        $data = $this->db->query("Select count(id) as count from produksi_fg_detail where produksi_fg_id =".$id);
+        return $data;
+    }
     /*
     cara membuat view stok fg
     CREATE OR REPLACE VIEW stok_fg(jenis_barang_id, jenis_barang, total_qty, total_netto)

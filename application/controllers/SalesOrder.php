@@ -320,12 +320,13 @@ class SalesOrder extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_so = date('Ym', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
         $user_ppn  = $this->session->userdata('user_ppn');
         
         $this->load->model('Model_m_numberings');
         if($user_ppn == 1){
-            $code = $this->input->post('no_so');
+            $code = 'SO-KMP.'.$tgl_so.'.'.$this->input->post('no_so');
         }else{
             $code = $this->Model_m_numberings->getNumbering('SO', $tgl_input); 
         }
@@ -426,6 +427,45 @@ class SalesOrder extends CI_Controller{
             redirect('index.php/SalesOrder');
         }
     }    
+
+    function delete(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $id = $this->uri->segment(3);
+
+        $this->db->trans_start();
+
+        $get = $this->db->query("select so_id, no_spb, jenis_barang from t_sales_order
+                where id =".$id)->row_array();
+
+        $this->db->where('id', $id);
+        $this->db->delete('t_sales_order');
+
+        $this->db->where('id', $get['so_id']);
+        $this->db->delete('sales_order');
+
+        if($get['jenis_barang'] == 'FG'){
+            $this->db->where('id', $get['no_spb']);
+            $this->db->delete('t_spb_fg');
+        }else if($get['jenis_barang'] == 'WIP'){
+            $this->db->where('id', $get['no_spb']);
+            $this->db->delete('t_spb_wip');
+        }else if($get['jenis_barang'] == 'RONGSOK'){
+            $this->db->where('id', $get['no_spb']);
+            $this->db->delete('spb');
+        }else if($get['jenis_barang'] == 'AMPAS'){
+            $this->db->where('id', $get['no_spb']);
+            $this->db->delete('t_spb_ampas');
+        }
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Sales Order berhasil di hapus');
+            redirect('index.php/SalesOrder');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Sales order gagal dihapus');
+            redirect('index.php/SalesOrder');
+        }
+    }
     
     function edit(){
         $module_name = $this->uri->segment(1);
@@ -1021,11 +1061,18 @@ class SalesOrder extends CI_Controller{
             'flag_invoice'=>0
         ));
 
-        if(empty($list_produksi) && $this->input->post('status_spb') == 1){
+        if($jenis == 'LAIN'){
             $this->db->where('id',$so_id);
             $this->db->update('sales_order', array(
                 'flag_sj'=>1
             ));
+        }else{
+            if(empty($list_produksi) && $this->input->post('status_spb') == 1){
+                $this->db->where('id',$so_id);
+                $this->db->update('sales_order', array(
+                    'flag_sj'=>1
+                ));
+            }
         }
 
         if($jenis=='FG'){

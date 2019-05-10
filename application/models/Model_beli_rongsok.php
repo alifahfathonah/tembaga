@@ -156,6 +156,11 @@ class Model_beli_rongsok extends CI_Model{
                 Where pod.po_id=".$id);
         return $data;
     }
+
+    function load_detail_only($id){
+        $data = $this->db->query("Select * from po_detail where po_id=".$id);
+        return $data;
+    }
     
     // function dtr_list(){
     //     $data = $this->db->query("Select dtr.*, 
@@ -547,6 +552,11 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join po On (voucher.po_id = po.id)
                     left join supplier on (supplier.id = po.supplier_id)
                 where voucher.id = ".$id);
+        return $data;
+    }
+
+    function count_po_detail($id){
+        $data = $this->db->query("select sum(id) as count from po_detail where po_id =".$id);
         return $data;
     }
 }

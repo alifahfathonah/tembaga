@@ -94,11 +94,12 @@ class BeliRongsok extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
         
-        $this->load->model('Model_m_numberings');
+        $this->db->trans_start();
         if($user_ppn == 0){
+            $this->load->model('Model_m_numberings');
             $code = $this->Model_m_numberings->getNumbering('PO', $tgl_input); 
         }else{
-            $code = $this->Model_m_numberings->getNumbering('PO-KMP', $tgl_input);
+            $code = $this->input->post('no_po');
         }
         
         $data = array(
@@ -106,6 +107,8 @@ class BeliRongsok extends CI_Controller{
             'tanggal'=> $tgl_input,
             'flag_ppn'=> $user_ppn,
             'ppn'=> $this->input->post('ppn'),
+            'diskon'=>str_replace('.', '', $this->input->post('diskon')),
+            'materai'=>$this->input->post('materai'),
             'currency'=> $this->input->post('currency'),
             'kurs'=> $this->input->post('kurs'),
             'supplier_id'=>$this->input->post('supplier_id'),
@@ -117,9 +120,29 @@ class BeliRongsok extends CI_Controller{
             'modified'=> $tanggal,
             'modified_by'=> $user_id
         );
+        $this->db->insert('po', $data);
+        $po_id = $this->db->insert_id();
+/**
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
 
-        if($this->db->insert('po', $data)){
-            redirect('index.php/BeliRongsok/edit/'.$this->db->insert_id());  
+                $data_id = array('reff1' => $po_id);
+                $data_post = array_merge($data, $data_id);
+
+                $data_post = http_build_query($data_post);
+
+                $ch = curl_init(target_url().'api/BeliRongsokAPI/po');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }**/
+
+        if($this->db->trans_complete()){
+            redirect('index.php/BeliRongsok/edit/'.$po_id);  
         }else{
             $this->session->set_flashdata('flash_msg', 'PO rongsok gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/BeliRongsok');  
@@ -142,10 +165,14 @@ class BeliRongsok extends CI_Controller{
             $data['content']= "beli_rongsok/edit";
             $this->load->model('Model_beli_rongsok');
             $data['header'] = $this->Model_beli_rongsok->show_header_po($id)->row_array();  
-            $data['list_data'] = $this->Model_beli_rongsok->load_detail($id)->result();
-            $data['list_detail'] = $this->Model_beli_rongsok->show_data_po($id)->result();
-            $this->load->model('Model_rongsok');
-            $data['list_rongsok'] = $this->Model_rongsok->list_data()->result();
+            if($data['header']['status']==0 || $data['header']['status']==2){    
+                $this->load->model('Model_rongsok');
+                $data['list_rongsok'] = $this->Model_rongsok->list_data()->result();
+                $data['count'] = $this->Model_beli_rongsok->count_po_detail($id)->row_array();
+            }else{
+                $data['list_data'] = $this->Model_beli_rongsok->load_detail($id)->result();
+                $data['list_detail'] = $this->Model_beli_rongsok->show_data_po($id)->result();
+            }
 
             $this->load->model('Model_beli_sparepart');
             $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
@@ -172,6 +199,27 @@ class BeliRongsok extends CI_Controller{
         
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('po', $data);
+/**
+        if($this->session->userdata('user_ppn')==1){
+            $this->load->helper('target_url');
+            
+            $data_post['master'] = $data;
+            $data_post['po_id'] = $this->input->post('id');
+
+            $this->load->model('Model_beli_rongsok');
+            $data_post['details'] = $this->Model_beli_rongsok->load_detail_only($this->input->post('id'))->result();
+
+            $detail_post = json_encode($data_post);
+
+            $ch = curl_init(target_url().'api/BeliRongsokAPI/po_detail');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $result = json_decode($response, true);
+            curl_close($ch);
+        }**/
         
         $this->session->set_flashdata('flash_msg', 'Data PO rongsok berhasil disimpan');
         redirect('index.php/BeliRongsok');
@@ -181,13 +229,15 @@ class BeliRongsok extends CI_Controller{
         $id = $this->input->post('id');
         
         $tabel = "";
-        $no    = 1;
+        $no    = 0;
         $total = 0;
         $qty = 0;
+        $cek = 0;
         
         $this->load->model('Model_beli_rongsok'); 
         $myDetail = $this->Model_beli_rongsok->load_detail($id)->result(); 
         foreach ($myDetail as $row){
+            $no++;
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
             $tabel .= '<td>'.$row->nama_item.'</td>';
@@ -199,13 +249,14 @@ class BeliRongsok extends CI_Controller{
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';
+            $cek += $row->id;
             $qty += $row->qty;
             $total += $row->total_amount;
-            $no++;
         }
 
         $tabel .= '<tr>';
         $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
+        $tabel .= '<input type="hidden" id="count2" value="'.$cek.'">';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($qty,0,',','.').'</strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
         $tabel .= '</tr>';
@@ -352,16 +403,28 @@ class BeliRongsok extends CI_Controller{
         $this->load->model('Model_beli_rongsok');
         $data = $this->Model_beli_rongsok->voucher_po_rsk($id)->row_array();
          if($data['ppn']==1){
-            $data['nilai_before_ppn'] = number_format($data['nilai_po'],0,',','.');
-            $nilai_po = $data['nilai_po']*110/100;
-            $data['nilai_ppn'] = number_format($data['nilai_po']*10/100,0,',','.');
+            if($data['nilai_po']==0){
+                $nilai_po = 0;
+                $data['nilai_ppn'] = 0;
+            }else{
+                $data['nilai_before_ppn'] = number_format($data['nilai_po'],0,',','.');
+                $nilai_po = ($data['nilai_po']-$data['diskon'])*110/100+$data['materai'];
+                $data['nilai_ppn'] = number_format($data['nilai_po']*10/100,0,',','.');
+            }
         }else{
-            $nilai_po = $data['nilai_po'];
-            $data['nilai_ppn'] = 0;
+            if($data['nilai_po']==0){
+                $nilai_po = 0;
+                $data['nilai_ppn'] = 0;
+            }else{
+                $nilai_po = $data['nilai_po']-$data['diskon'];
+                $data['nilai_ppn'] = 0;
+            }
         }
 
         $terbilang = $nilai_po;
         $sisa = $nilai_po - $data['nilai_dp'];
+        $data['materai'] = number_format($data['materai'],0,',','.');
+        $data['diskon'] = number_format($data['diskon'],0,',','.');
         $data['nilai_po'] = number_format($nilai_po,0,',','.');
         $data['nilai_dp'] = number_format($data['nilai_dp'],0,',','.');
         $data['sisa']     = number_format($sisa,0,',','.');
@@ -1360,8 +1423,11 @@ class BeliRongsok extends CI_Controller{
             $this->load->helper('tanggal_indo');
             $data['header']  = $this->Model_beli_rongsok->show_header_ttr($id)->row_array();
             $data['details'] = $this->Model_beli_rongsok->show_detail_ttr_group($id)->result();
-
-            $this->load->view('print_ttr', $data);
+            if($this->session->userdata('user_ppn')==1){
+                $this->load->view('print_ttr_ppn', $data);
+            }else{
+                $this->load->view('print_ttr', $data);
+            }
         }else{
             redirect('index.php'); 
         }

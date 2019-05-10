@@ -126,7 +126,7 @@
                             <textarea id="keterangan" name="keterangan" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px"></textarea>
                         </div>
                     </div>
-                    <!-- ROLLING 
+                    <!-- ROLLING -->
                     <div class="hidden disabled" id="div_data_spb">
                         <div class="row">
                             <div class="col-md-3">
@@ -157,7 +157,7 @@
                             </div>
                         </div>
                     </div>
-                     ROLLING -->
+                    <!-- ROLLING -->
                     <!-- CUCI -->
                     <div class="hidden disabled" id="div_data_spb_kh">
                         <div class="row">
@@ -195,18 +195,18 @@
             <!-- BAKAR ULANG-->
             <div class="col-md-8 hidden disabled" id="div_stok_keras">
                 <div class="row">
-                    <?php $jumlah = $stok_keras['total_qty_in'] - $stok_keras['total_qty_out'];?>
-                    <!-- <div class="col-md-2">
+                    <div class="col-md-2">
                         Stok Jumlah
                     </div>
                     <div class="col-md-2">
+                    <?php $jumlah = $stok_keras['total_qty_in'] - $stok_keras['total_qty_out'];?>
                     <input type="text" id="stok_jumlah" name="stok_jumlah" class="form-control myline" style="margin-bottom:5px;float:left;" value="<?php echo $jumlah;?>" readonly>
-                    </div> -->
+                    </div>
                     <div class="col-md-2">
                         Jumlah yang Digunakan
                     </div>
                     <div class="col-md-2">
-                        <input type="text" id="jml_ingot_keras" name="jml_ingot_keras" class="form-control myline" style="margin-bottom: 5px;float: left;" value="<?php echo $jumlah;?>" readonly="readonly">
+                        <input type="text" id="jml_ingot_keras" name="jml_ingot_keras" class="form-control myline" style="margin-bottom: 5px;float: left;" onchange="cek_jumlah();">
                     </div>
                     <div class="col-md-2">
                         Susut Jumlah
@@ -216,18 +216,18 @@
                     </div>
                 </div>
                 <div class="row">
-                    <?php $berat = $stok_keras['total_berat_in'] - $stok_keras['total_berat_out'];?>
-                    <!-- <div class="col-md-2"> 
+                    <div class="col-md-2"> 
                         Stok Berat
                     </div>
                     <div class="col-md-2">
+                    <?php $berat = $stok_keras['total_berat_in'] - $stok_keras['total_berat_out'];?>
                     <input type="text" id="stok_keras" name="stok_keras" class="form-control myline" style="margin-bottom:5px;float:left;" value="<?php echo $berat;?>" readonly>
-                    </div> -->
+                    </div>
                     <div class="col-md-2">
                         Berat yang Digunakan
                     </div>
                     <div class="col-md-2">
-                        <input type="text" id="jml_berat_keras" name="jml_berat_keras" class="form-control myline" style="margin-bottom: 5px;float: left;" value="<?=$berat;?>" readonly>
+                        <input type="text" id="jml_berat_keras" name="jml_berat_keras" class="form-control myline" style="margin-bottom: 5px;float: left;" onchange="cek_berat();">
                     </div>
                     <div class="col-md-2">
                         Susut Berat
@@ -258,7 +258,7 @@
                                 <label>Jumlah Kawat Hitam </label>
                                 <input type="text" id="qty_kh_in" name="qty_kh" 
                                 class="form-control myline" size="25" 
-                                value="" placeholder="Jumlah Kawat Hitam" onchange="hitung_susut_jumlah();"/>
+                                value="" placeholder="Jumlah Kawat Hitam" onchange="hitung_susut_jumlah();" />
                                 <!-- <input type="hidden" id="id_jenis_barang" name="id_jenis_barang"> -->
                                 <label> Roll </label>
                             </div>
@@ -284,7 +284,7 @@
                                 <label>Jumlah Kawat Keras </label>
                                 <input type="text" id="jml_keras_in" name="jml_keras" 
                                 class="form-control myline" size="25" 
-                                value="" placeholder="Berat Kawat Hitam Keras"/>
+                                value="" placeholder="Berat Kawat Hitam Keras" onchange="hitung_susut_jumlah();"/>
                                 <label> Roll</label>
                             </div>
                         </div>
@@ -295,7 +295,7 @@
                                 <label>Berat Kawat Keras </label>
                                 <input type="text" id="berat_keras_in" name="berat_keras" 
                                 class="form-control myline" size="25" 
-                                value="" placeholder="Berat Kawat Hitam Keras"/>
+                                value="" placeholder="Berat Kawat Hitam Keras" onchange="hitung_susut_berat();"/>
                                 <label> Kg </label>
                             </div>
                         </div>
@@ -303,7 +303,7 @@
                 </div>
                 <br/>
                 <div class="row">
-                    <!-- <div class="col-md-6">
+                    <div class="col-md-6">
                         <div class="form-inline">
                             <div class="form-group">
                             <label>Berat Serbuk</label>
@@ -313,7 +313,7 @@
                                 <label> Kg </label>
                             </div>
                         </div>
-                    </div> -->
+                    </div>
                     <div class="col-md-6" id="div_berat_bs">
                         <div class="form-inline">
                             <div class="form-group">
@@ -331,7 +331,7 @@
                                 <label>Berat BS Rolling</label>
                                 <input type="text" id="berat_bs_rolling" name="bs_rolling" 
                                 class="form-control myline" size="25" 
-                                value="" placeholder="Berat BS Rolling">
+                                value="" placeholder="Berat BS Rolling" onchange="hitung_susut_berat();"/>
                                 <label> Kg</label>
                             </div>
                         </div>
@@ -345,7 +345,7 @@
                                 <label>Berat Tali Rolling </label>
                                 <input type="text" id="berat_tali_rolling" name="tali_rolling" 
                                 class="form-control myline" size="25" 
-                                value="" placeholder="Berat Tali Rolling"/>
+                                value="" placeholder="Berat Tali Rolling" onchange="hitung_susut_berat();"/>
                                 <label> Kg</label>
                             </div>
                         </div>
@@ -356,7 +356,7 @@
                                 <label>Berat BS Ingot </label>
                                 <input type="text" id="berat_bs_ingot" name="bs_ingot" 
                                 class="form-control myline" size="25" 
-                                value="" placeholder="Berat BS Ingot"/>
+                                value="" placeholder="Berat BS Ingot" onchange="hitung_susut_berat();"/>
                                 <label> Kg</label>
                             </div>
                         </div>
@@ -469,7 +469,7 @@ function hitung_susut_berat(){
         var susut = Number(Number($('#berat_ingot').val()) - (Number($('#berat_kh_in').val()) + Number($('#berat_keras_in').val()) + Number($('#berat_tali_rolling').val()) + Number($('#berat_bs_rolling').val()) + Number($('#berat_serbuk_in').val()) + Number($('#berat_bs_ingot').val())));
         $('#susut_berat_ingot').val(susut);
     }else if($('#jenis_masak').val()=='BAKAR ULANG'){
-        var susut = Number(Number($('#jml_berat_keras').val()) - (Number($('#berat_kh_in').val()) + Number($('#berat_keras_in').val()) + Number($('#berat_bs_in').val())));
+        var susut = Number(Number($('#jml_berat_keras').val()) - (Number($('#berat_kh_in').val()) + Number($('#berat_keras_in').val()) + Number($('#berat_tali_rolling').val()) + Number($('#berat_bs_in').val()) + Number($('#berat_serbuk_in').val())));
         $('#susut_berat_keras').val(susut);
     }else if($('#jenis_masak').val()=='CUCI'){
         var susut = Number(Number($('#berat_kawat_hitam').val()) - Number($('#berat_km_in').val()));
@@ -562,7 +562,7 @@ function pilih_data(id){
         $('#div_data_spb :input').attr('disabled', true);
         $('#div_data_spb_kh :input').attr('disabled', true);
         $('#div_stok_keras :input').attr('disabled', false);
-        $('#div_tali_rolling').hide();
+        $('#div_tali_rolling').show();
         $('#div_kawat_keras').hide();
         reset_values();
     }else if(id == 'CUCI'){

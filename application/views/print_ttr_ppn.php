@@ -140,8 +140,8 @@
                             <td width="400px" style="text-align:center"></td>
                         </tr>
                         <tr>
-                            <td style="text-align:center">(A Weng) </td>
-                            <td style="text-align:center">(Kevin)</td>
+                            <td style="text-align:center">(Gunawan) </td>
+                            <td style="text-align:center">(Amin)</td>
                         </tr>
                     </table>
                 </td>

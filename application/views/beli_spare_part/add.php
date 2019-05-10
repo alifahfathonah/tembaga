@@ -47,9 +47,7 @@
                             Tgl Pengajuan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="tgl_pengajuan" name="tgl_pengajuan" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                            <input type="text" id="tgl_pengajuan" name="tgl_pengajuan" class="form-control myline input-small" style="margin-bottom:5px; float:left;" value="<?php echo date('d-m-Y'); ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -142,7 +140,16 @@ function simpanData(){
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-$(function(){        
+$(function(){
+    $("#tgl_pengajuan").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });       
     $("#tgl_spare_part").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",

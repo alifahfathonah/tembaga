@@ -62,6 +62,7 @@
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
+                        <input type="hidden" id="count" value="<?=$count['count'];?>">
                         <div class="col-md-4">
                             No. PO <font color="#f00">*</font>
                         </div>
@@ -240,7 +241,7 @@
                                 <i class="fa fa-lock"></i> Close PO </a>';
                         }
                     ?>
-                    <a href="<?php echo base_url('index.php/BeliRongsok'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/BeliRongsok'); ?>" id="btn_kembali" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -412,7 +413,12 @@ function loadDetail(id){
         url:'<?php echo base_url('index.php/BeliRongsok/load_detail'); ?>',
         data:"id="+ id,
         success:function(result){
-            $('#boxDetail').html(result);   
+            $('#boxDetail').html(result);
+            if($('#count').val()==$('#count2').val()){
+                $('#btn_kembali').show();
+            }else{
+                $('#btn_kembali').hide();
+            }
         }
     });
 }
