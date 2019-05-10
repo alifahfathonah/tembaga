@@ -97,7 +97,7 @@ class BeliSparePart extends CI_Controller{
             
             $this->db->where('beli_sparepart_id', $id);
             $this->db->delete('beli_sparepart_detail');
-
+            /**
             if($user_ppn == 1){
 
                 $this->load->helper('target_url');
@@ -114,7 +114,7 @@ class BeliSparePart extends CI_Controller{
                 $result = curl_exec($ch);
                 $result = json_decode($result);
                 curl_close($ch);
-            }
+            }**/
         }
         $this->session->set_flashdata('flash_msg', 'Data pembelian sparepart berhasil dihapus');
         redirect('index.php/BeliSparePart');

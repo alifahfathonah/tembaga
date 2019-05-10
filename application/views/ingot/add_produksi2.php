@@ -83,17 +83,17 @@
                                 <div class="panel panel-default">
                                     <div class="panel-body">
                                         <div class="row">
-                                            <div class="col-md-3">
+                                            <div class="col-md-2">
                                                 INGOT <font color="#f00">*</font>
                                             </div>
                                             <div class="col-md-3">
                                                 <input type="text" id="ingot_balok" name="ingot"
-                                                    class="form-control myline" placeholder="ingot/batang" style="margin-bottom:5px; width:120px;" required="required">
+                                                    class="form-control myline" placeholder="ingot/batang" style="margin-bottom:5px; width:110px;" required="required">
                                             </div>
                                             <div class="col-md-2">
                                                 <span>Batang</span>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-4">
                                                 <input type="text" id="ingot_berat" name="berat_ingot"
                                                     class="form-control myline" placeholder="kg" style="margin-bottom:5px; width:100px;"  required="required" onchange="hitung_susut()">
                                             </div>

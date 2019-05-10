@@ -119,7 +119,7 @@
             <?php
                                 if($group_id==1 || $hak_akses['view_spb']==1){
                             ?>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangBobbin/view_penerimaan_bobbin/<?php echo $row->id; ?>" 
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/GudangBobbin/view_penerimaan_bobbin/<?php echo $row->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
                            
                             <?php   
@@ -127,6 +127,9 @@
                                 if($group_id==1 || $hak_akses['print']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangBobbin/print_bobbin_terima/'.$row->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
+                                }
+                                if(($group_id==1 || $hak_akses['edit']==1) && $row->status == 1){
+                                  echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/GudangBobbin/edit_penerimaan_bobbin/'.$row->id.'" style="margin-bottom:4px"> &nbsp;<i class="fa fa-edit"></i> Edit &nbsp;</a> ';
                                 }
                             ?>
           </td>
