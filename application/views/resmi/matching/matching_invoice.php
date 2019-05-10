@@ -153,7 +153,7 @@
                             Persentase (%)
                         </div>
                         <div class="col-md-8">
-                            <input type="text" name="persentase" id="persentase" class="form-control myline" style="margin-bottom: 5px" readonly="readonly" value="<?= $header['persentase'] ?>">
+                            <input type="text" name="persentase" id="persentase" class="form-control myline" style="margin-bottom: 5px" value="<?= $header['persentase'] ?>" onkeyup="hitungTotal()">
                         </div>
                     </div>
                     <div class="row">
@@ -231,7 +231,6 @@
                         <br>
                         <table class="table table-striped table-bordered table-hover">
                             <thead>
-                                <th></th>
                                 <th style="width:40px">No</th>
                                 <th>Nama Item</th>
                                 <th>Bruto (Kg)</th>
@@ -317,6 +316,16 @@
     </div>
 </div> 
 <script>
+function hitungTotal(){
+    var jumlah = $("#qty").val();
+    var persentase = $("#persentase").val();
+    var x = 1-(persentase/100);
+    var total = 0;
+
+    total = ((Number(jumlah) / Number(x))).toFixed(0);
+
+    $("#total").val(total);
+}
 function saveParsial(no,jb) {
     var netto = $('#netto_'+no).val();
     var id_dtr_detail = $('#dtr_detail_id_'+no).val();

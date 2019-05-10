@@ -83,6 +83,7 @@ class R_SuratJalan extends CI_Controller{
 
     function save_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
+        $reff_cv   = $this->session->userdata('cv_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis');    
@@ -376,99 +377,99 @@ class R_SuratJalan extends CI_Controller{
                 $this->db->insert('r_t_bpb_detail', $detail_bpb);
             }
 
-            // $data_sj_api = array(
-            //     'no_sj'=> $this->input->post('no_surat_jalan'),
-            //     'no_po' => $this->input->post('no_po'),
-            //     'tanggal'=> $tgl_input,
-            //     'jenis_barang'=>$this->input->post('jenis_barang'),
-            //     'm_customer_id'=>$this->input->post('m_customer_id'),
-            //     'jenis_surat_jalan'=>'SURAT JALAN CV KE CUSTOMER',
-            //     'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
-            //     'no_kendaraan'=>$this->input->post('no_kendaraan'),
-            //     'supir'=>$this->input->post('supir'),
-            //     'remarks'=>$this->input->post('remarks'),
-            //     'reff'=>$sjr_id,
-            // );
+            $data_sj_api = array(
+                'no_sj'=> $this->input->post('no_surat_jalan'),
+                'no_po' => $this->input->post('no_po'),
+                'tanggal'=> $tgl_input,
+                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'm_customer_id'=>$this->input->post('m_customer_id'),
+                'jenis_surat_jalan'=>'SURAT JALAN CV KE CUSTOMER',
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
+                'supir'=>$this->input->post('supir'),
+                'remarks'=>$this->input->post('remarks'),
+                'reff'=>$sjr_id,
+            );
 
-            // $ch = curl_init(target_url().'api/SuratJalanAPI/sj');
-            // curl_setopt($ch, CURLOPT_POST, true);
-            // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-            // curl_setopt($ch, CURLOPT_POSTFIELDS, $data_sj_api);
-            // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            // $response = curl_exec($ch);
-            // $result = json_decode($response, true);
-            // curl_close($ch);
+            $ch = curl_init(target_url_cv($reff_cv).'api/SuratJalanAPI/sj');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data_sj_api);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $result = json_decode($response, true);
+            curl_close($ch);
 
-            // log_message('debug', print_r($result,1));
+            log_message('debug', print_r($result,1));
 
-            // $this->load->model('Model_surat_jalan');
-            // $sj_detail_api = $this->Model_surat_jalan->get_sj_detail_only($sjr_id)->result_array();
-            // foreach ($sj_detail_api as $i => $value) {
-            //     $sj_detail_api[$i]['reff'] = $sj_detail_api[$i]['id'];
-            //     $sj_detail_api[$i]['sj_id'] = $result['id'];
-            //     unset($sj_detail_api[$i]['id']);
-            //     unset($sj_detail_api[$i]['sj_resmi_id']);
-            // }
+            $this->load->model('Model_surat_jalan');
+            $sj_detail_api = $this->Model_surat_jalan->get_sj_detail_only($sjr_id)->result_array();
+            foreach ($sj_detail_api as $i => $value) {
+                $sj_detail_api[$i]['reff'] = $sj_detail_api[$i]['id'];
+                $sj_detail_api[$i]['sj_id'] = $result['id'];
+                unset($sj_detail_api[$i]['id']);
+                unset($sj_detail_api[$i]['sj_resmi_id']);
+            }
 
-            // $detail_api = json_encode($sj_detail_api);
+            $detail_api = json_encode($sj_detail_api);
 
-            // $ch2 = curl_init(target_url().'api/SuratJalanAPI/sj_detail');
-            // curl_setopt($ch2, CURLOPT_POST, true);
-            // curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-            // curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_api);
-            // curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-            // $response2 = curl_exec($ch2);
-            // $result2 = json_decode($response2, true);
-            // curl_close($ch2);
+            $ch2 = curl_init(target_url_cv($reff_cv).'api/SuratJalanAPI/sj_detail');
+            curl_setopt($ch2, CURLOPT_POST, true);
+            curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_api);
+            curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+            $response2 = curl_exec($ch2);
+            $result2 = json_decode($response2, true);
+            curl_close($ch2);
 
-            // log_message('debug', print_r($result2,1));
+            log_message('debug', print_r($result2,1));
 
 
-            // $data_bpb_api = array(
-            //     'no_bpb'=> $this->input->post('no_bpb'),
-            //     'no_po'=> $this->input->post('no_po'),
-            //     'tanggal'=> $tanggal_bpb,
-            //     'jenis_barang'=>$this->input->post('jenis_barang'),
-            //     'm_customer_id'=>$this->input->post('m_customer_id'),
-            //     'jenis_bpb'=>'BPB RONGSOK',
-            //     'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
-            //     'no_kendaraan'=>$this->input->post('no_kendaraan'),
-            //     'supir'=>$this->input->post('supir'),
-            //     'remarks'=>$this->input->post('remarks'),
-            //     'reff'=>$bpb_id,
-            // );
+            $data_bpb_api = array(
+                'no_bpb'=> $this->input->post('no_bpb'),
+                'no_po'=> $this->input->post('no_po'),
+                'tanggal'=> $tanggal_bpb,
+                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'm_customer_id'=>$this->input->post('m_customer_id'),
+                'jenis_bpb'=>'BPB RONGSOK',
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
+                'supir'=>$this->input->post('supir'),
+                'remarks'=>$this->input->post('remarks'),
+                'reff'=>$bpb_id,
+            );
 
-            // $ch = curl_init(target_url().'api/BPBAPI/bpb');
-            // curl_setopt($ch, CURLOPT_POST, true);
-            // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-            // curl_setopt($ch, CURLOPT_POSTFIELDS, $data_bpb_api);
-            // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            // $response = curl_exec($ch);
-            // $result = json_decode($response, true);
-            // curl_close($ch);
+            $ch = curl_init(target_url_cv($reff_cv).'api/BPBAPI/bpb');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data_bpb_api);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $result = json_decode($response, true);
+            curl_close($ch);
 
-            // log_message('debug', print_r($result,1));
+            log_message('debug', print_r($result,1));
 
-            // $this->load->model('Model_bpb');
-            // $bpb_detail_api = $this->Model_bpb->list_bpb_detail_only($bpb_id)->result_array();
-            // foreach ($bpb_detail_api as $i => $value) {
-            //     $bpb_detail_api[$i]['reff'] = $bpb_detail_api[$i]['id'];
-            //     $bpb_detail_api[$i]['bpb_id'] = $result['id'];
-            //     unset($bpb_detail_api[$i]['id']);
-            // }
+            $this->load->model('Model_bpb');
+            $bpb_detail_api = $this->Model_bpb->list_bpb_detail_only($bpb_id)->result_array();
+            foreach ($bpb_detail_api as $i => $value) {
+                $bpb_detail_api[$i]['reff'] = $bpb_detail_api[$i]['id'];
+                $bpb_detail_api[$i]['bpb_id'] = $result['id'];
+                unset($bpb_detail_api[$i]['id']);
+            }
 
-            // $detail_bpb_api = json_encode($bpb_detail_api);
+            $detail_bpb_api = json_encode($bpb_detail_api);
 
-            // $ch2 = curl_init(target_url().'api/BPBAPI/bpb_detail');
-            // curl_setopt($ch2, CURLOPT_POST, true);
-            // curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-            // curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_bpb_api);
-            // curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-            // $response2 = curl_exec($ch2);
-            // $result2 = json_decode($response2, true);
-            // curl_close($ch2);
+            $ch2 = curl_init(target_url_cv($reff_cv).'api/BPBAPI/bpb_detail');
+            curl_setopt($ch2, CURLOPT_POST, true);
+            curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_bpb_api);
+            curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+            $response2 = curl_exec($ch2);
+            $result2 = json_decode($response2, true);
+            curl_close($ch2);
 
-            // log_message('debug', print_r($result2,1));
+            log_message('debug', print_r($result2,1));
         }
 
             if($this->db->trans_complete()){
@@ -525,6 +526,7 @@ class R_SuratJalan extends CI_Controller{
 
     function update_surat_jalan(){
         $user_id   = $this->session->userdata('user_id');
+        $reff_cv   = $this->session->userdata('cv_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
@@ -621,102 +623,102 @@ class R_SuratJalan extends CI_Controller{
         $this->db->where('r_sj_id',$this->input->post('id'));
         $this->db->update('r_t_bpb', $data_bpb);
 
-        // $data_sj_api = array(
-        //         'id' => $this->input->post('id'),
-        //         'no_sj'=> $this->input->post('no_surat_jalan'),
-        //         'tanggal'=> $tgl_input,
-        //         'm_customer_id'=>$this->input->post('m_customer_id'),
-        //         'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
-        //         'no_kendaraan'=>$this->input->post('no_kendaraan'),
-        //         'supir'=>$this->input->post('supir'),
-        //         'remarks'=>$this->input->post('remarks'),
-        //     );
+        $data_sj_api = array(
+                'id' => $this->input->post('id'),
+                'no_sj'=> $this->input->post('no_surat_jalan'),
+                'tanggal'=> $tgl_input,
+                'm_customer_id'=>$this->input->post('m_customer_id'),
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
+                'supir'=>$this->input->post('supir'),
+                'remarks'=>$this->input->post('remarks'),
+            );
 
-        // $ch = curl_init(target_url().'api/SuratJalanAPI/sjupdt');
-        // curl_setopt($ch, CURLOPT_POST, true);
-        // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-        // curl_setopt($ch, CURLOPT_POSTFIELDS, $data_sj_api);
-        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // $response = curl_exec($ch);
-        // $result = json_decode($response, true);
-        // curl_close($ch);
+        $ch = curl_init(target_url_cv($reff_cv).'api/SuratJalanAPI/sjupdt');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_sj_api);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        $result = json_decode($response, true);
+        curl_close($ch);
 
-        // log_message('debug', 'updt = '.print_r($result, 1));
+        log_message('debug', 'updt = '.print_r($result, 1));
 
-        // if($result['status'] == 1){
-        //     $update_sj_details = $this->Model_surat_jalan->get_sj_detail_only($this->input->post('id'))->result_array();
-        //     foreach ($update_sj_details as $i => $value) {
-        //         $update_sj_details[$i]['reff'] = $update_sj_details[$i]['id'];
-        //         $update_sj_details[$i]['sj_id'] = $result['id'];
-        //         unset($update_sj_details[$i]['id']);
-        //     }
+        if($result['status'] == 1){
+            $update_sj_details = $this->Model_surat_jalan->get_sj_detail_only($this->input->post('id'))->result_array();
+            foreach ($update_sj_details as $i => $value) {
+                $update_sj_details[$i]['reff'] = $update_sj_details[$i]['id'];
+                $update_sj_details[$i]['sj_id'] = $result['id'];
+                unset($update_sj_details[$i]['id']);
+            }
 
-        //     $data_sj_details = json_encode($update_sj_details);
+            $data_sj_details = json_encode($update_sj_details);
 
-        //     log_message('debug', 'data details = '.print_r($data_sj_details, 1));
+            log_message('debug', 'data details = '.print_r($data_sj_details, 1));
 
-        //     $ch2 = curl_init(target_url().'api/SuratJalanAPI/sj_detail');
-        //     curl_setopt($ch2, CURLOPT_POST, true);
-        //     curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-        //     curl_setopt($ch2, CURLOPT_POSTFIELDS, $data_sj_details);
-        //     curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-        //     $response2 = curl_exec($ch2);
-        //     $result2 = json_decode($response2, true);
-        //     curl_close($ch2);
+            $ch2 = curl_init(target_url_cv($reff_cv).'api/SuratJalanAPI/sj_detail');
+            curl_setopt($ch2, CURLOPT_POST, true);
+            curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch2, CURLOPT_POSTFIELDS, $data_sj_details);
+            curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+            $response2 = curl_exec($ch2);
+            $result2 = json_decode($response2, true);
+            curl_close($ch2);
 
-        //     log_message('debug', print_r($result2,1));
-        // } else {
-        //     log_message('debug', 'failed update delete');
-        // }
+            log_message('debug', print_r($result2,1));
+        } else {
+            log_message('debug', 'failed update delete');
+        }
 
-        // $data_bpb_api = array(
-        //         'id' => $this->input->post('bpb_id'),
-        //         'no_bpb'=> $this->input->post('no_bpb'),
-        //         'tanggal'=> $tgl_input,
-        //         'm_customer_id'=>$this->input->post('m_customer_id'),
-        //         'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
-        //         'no_kendaraan'=>$this->input->post('no_kendaraan'),
-        //         'supir'=>$this->input->post('supir'),
-        //         'remarks'=>$this->input->post('remarks'),
-        //     );
+        $data_bpb_api = array(
+                'id' => $this->input->post('bpb_id'),
+                'no_bpb'=> $this->input->post('no_bpb'),
+                'tanggal'=> $tgl_input,
+                'm_customer_id'=>$this->input->post('m_customer_id'),
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
+                'supir'=>$this->input->post('supir'),
+                'remarks'=>$this->input->post('remarks'),
+            );
 
-        // $ch = curl_init(target_url().'api/BPBAPI/bpbupdt');
-        // curl_setopt($ch, CURLOPT_POST, true);
-        // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-        // curl_setopt($ch, CURLOPT_POSTFIELDS, $data_bpb_api);
-        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // $response = curl_exec($ch);
-        // $result = json_decode($response, true);
-        // curl_close($ch);
+        $ch = curl_init(target_url_cv($reff_cv).'api/BPBAPI/bpbupdt');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_bpb_api);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        $result = json_decode($response, true);
+        curl_close($ch);
 
-        // log_message('debug', 'updt = '.print_r($result));
+        log_message('debug', 'updt = '.print_r($result));
 
-        // if($result['status'] == 1){
-        //     $this->load->model('Model_bpb');
-        //     $update_details = $this->Model_bpb->list_bpb_detail_only($this->input->post('bpb_id'))->result_array();
-        //     foreach ($update_details as $i => $value) {
-        //         $update_details[$i]['reff'] = $update_details[$i]['id'];
-        //         $update_details[$i]['bpb_id'] = $result['id'];
-        //         unset($update_details[$i]['id']);
-        //     }
+        if($result['status'] == 1){
+            $this->load->model('Model_bpb');
+            $update_details = $this->Model_bpb->list_bpb_detail_only($this->input->post('bpb_id'))->result_array();
+            foreach ($update_details as $i => $value) {
+                $update_details[$i]['reff'] = $update_details[$i]['id'];
+                $update_details[$i]['bpb_id'] = $result['id'];
+                unset($update_details[$i]['id']);
+            }
 
-        //     $data_details = json_encode($update_details);
+            $data_details = json_encode($update_details);
 
-        //     log_message('debug', 'data details = '.print_r($data_details, 1));
+            log_message('debug', 'data details = '.print_r($data_details, 1));
 
-        //     $ch2 = curl_init(target_url().'api/BPBAPI/bpb_detail');
-        //     curl_setopt($ch2, CURLOPT_POST, true);
-        //     curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-        //     curl_setopt($ch2, CURLOPT_POSTFIELDS, $data_details);
-        //     curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-        //     $response2 = curl_exec($ch2);
-        //     $result2 = json_decode($response2, true);
-        //     curl_close($ch2);
+            $ch2 = curl_init(target_url_cv($reff_cv).'api/BPBAPI/bpb_detail');
+            curl_setopt($ch2, CURLOPT_POST, true);
+            curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch2, CURLOPT_POSTFIELDS, $data_details);
+            curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+            $response2 = curl_exec($ch2);
+            $result2 = json_decode($response2, true);
+            curl_close($ch2);
 
-        //     log_message('debug', print_r($result2,1));
-        // } else {
-        //     log_message('debug', 'failed update delete');
-        // }
+            log_message('debug', print_r($result2,1));
+        } else {
+            log_message('debug', 'failed update delete');
+        }
 
         if($this->db->trans_complete()){
             redirect(base_url('index.php/R_SuratJalan/'));

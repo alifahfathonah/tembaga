@@ -142,9 +142,10 @@
 function hitungTotal(){
     var jumlah = $("#qty").val();
     var persentase = $("#persentase").val();
+    var x = 1-(persentase/100);
     var total = 0;
 
-    total = (Number(jumlah) * Number(persentase)/100) + Number(jumlah);
+    total = ((Number(jumlah) / Number(x))).toFixed(0);
 
     $("#total").val(total);
 }
