@@ -39,7 +39,11 @@
                         <tr>
                             <td>No. PO</td>
                             <td>: <?= $header['no_po'] ?></td>
-                        </tr>       
+                        </tr> 
+                        <tr>
+                            <td>PPN</td>
+                            <td>: 10%</td>
+                        </tr>      
                         <tr>
                             <td>Catatan</td>
                             <td>: <?= $header['remarks'] ?></td>
@@ -76,10 +80,11 @@
                         $total += $v->total_amount;
                         $no++; 
                     } 
+                    $total_amount = $total*110/100;
                 ?>
                 <tr>
                     <td colspan="4" align="right"><b>TOTAL</b></td>
-                    <td align="right"><b><?= "Rp ".number_format($total,2,".",",") ?></b></td>
+                    <td align="right"><b><?= "Rp ".number_format($total_amount,2,".",",") ?></b></td>
                     <td></td>
                 </tr>
             </tbody>

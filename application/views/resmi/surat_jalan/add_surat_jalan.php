@@ -258,7 +258,7 @@
                         </div>
                         <div class="col-md-8">
                             <select id="flag_po" name="flag_po" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cv(this.value)">
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cv(this.value); get_no_po(this.value)">
                                 <option value=""></option>
                                 <?php
                                     foreach ($po_list as $row){
@@ -266,6 +266,7 @@
                                     }
                                 ?>
                             </select>
+                            <input type="hidden" name="no_po" id="no_po">
                         </div>
                     </div> 
                     <div class="row">

@@ -93,62 +93,62 @@ class R_PurchaseOrder extends CI_Controller{
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('r_t_po', array('flag_po_cv'=>$po_id));
 
-        $post_api = array(
-            'reff' => $po_id,
-            'no_po'=> $this->input->post('no_po'),
-            'tanggal'=> $tgl_input,
-            'term_of_payment'=> $this->input->post('term_of_payment'),
-            'jenis_po'=> 'PO CV KE KMP',
-        );
+        // $post_api = array(
+        //     'reff' => $po_id,
+        //     'no_po'=> $this->input->post('no_po'),
+        //     'tanggal'=> $tgl_input,
+        //     'term_of_payment'=> $this->input->post('term_of_payment'),
+        //     'jenis_po'=> 'PO CV KE KMP',
+        // );
 
-        $ch = curl_init(target_url_cv($reff_cv).'api/PurchaseOrderAPI/po');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_api);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        $result = json_decode($response, true);
-        curl_close($ch);
+        // $ch = curl_init(target_url_cv($reff_cv).'api/PurchaseOrderAPI/po');
+        // curl_setopt($ch, CURLOPT_POST, true);
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, $post_api);
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $response = curl_exec($ch);
+        // $result = json_decode($response, true);
+        // curl_close($ch);
 
-        log_message('debug', print_r($result,1));
+        // log_message('debug', print_r($result,1));
 
-        // $this->db->where('id', $this->input->post('r_invoice_id'));
-        // $this->db->update('r_t_invoice', array(
-        //     'r_po_id' => $po_id
-        // ));
+        // // $this->db->where('id', $this->input->post('r_invoice_id'));
+        // // $this->db->update('r_t_invoice', array(
+        // //     'r_po_id' => $po_id
+        // // ));
 
-        $po_detail = $this->Model_purchase_order->po_detail($this->input->post('id'))->result();
-        foreach ($po_detail as $row) {
-            $detail = array(
-                    'po_id' => $po_id,
-                    'jenis_barang_id' => $row->jenis_barang_id,
-                    'qty' => $row->qty,
-                    'netto' => $row->netto,
-                    'amount' => $row->amount,
-                    'total_amount' => $row->total_amount,
-                );
-            $this->db->insert('r_t_po_detail', $detail);
-        }
+        // $po_detail = $this->Model_purchase_order->po_detail($this->input->post('id'))->result();
+        // foreach ($po_detail as $row) {
+        //     $detail = array(
+        //             'po_id' => $po_id,
+        //             'jenis_barang_id' => $row->jenis_barang_id,
+        //             'qty' => $row->qty,
+        //             'netto' => $row->netto,
+        //             'amount' => $row->amount,
+        //             'total_amount' => $row->total_amount,
+        //         );
+        //     $this->db->insert('r_t_po_detail', $detail);
+        // }
 
-        $detail_api = $this->Model_purchase_order->get_po_detail_only($po_id)->result_array();
-        foreach ($detail_api as $i => $value) {
-            $detail_api[$i]['reff'] = $detail_api[$i]['id'];
-            $detail_api[$i]['po_id'] = $result['id'];
-            unset($detail_api[$i]['id']);
-        }
+        // $detail_api = $this->Model_purchase_order->get_po_detail_only($po_id)->result_array();
+        // foreach ($detail_api as $i => $value) {
+        //     $detail_api[$i]['reff'] = $detail_api[$i]['id'];
+        //     $detail_api[$i]['po_id'] = $result['id'];
+        //     unset($detail_api[$i]['id']);
+        // }
 
-        $detail_api = json_encode($detail_api);
+        // $detail_api = json_encode($detail_api);
 
-        $ch2 = curl_init(target_url_cv($reff_cv).'api/PurchaseOrderAPI/po_detail');
-        curl_setopt($ch2, CURLOPT_POST, true);
-        curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-        curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_api);
-        curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-        $response2 = curl_exec($ch2);
-        $result2 = json_decode($response2, true);
-        curl_close($ch2);
+        // $ch2 = curl_init(target_url_cv($reff_cv).'api/PurchaseOrderAPI/po_detail');
+        // curl_setopt($ch2, CURLOPT_POST, true);
+        // curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+        // curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_api);
+        // curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+        // $response2 = curl_exec($ch2);
+        // $result2 = json_decode($response2, true);
+        // curl_close($ch2);
 
-        log_message('debug', print_r($result2,1));
+        // log_message('debug', print_r($result2,1));
 
         // $invoice_detail = $this->Model_purchase_order->invoice_detail($this->input->post('id_invoice'))->result();
         // foreach ($invoice_detail as $row) {
@@ -265,51 +265,51 @@ class R_PurchaseOrder extends CI_Controller{
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('r_t_po', $data);
         
-        $data_api = array(
-            'id' => $this->input->post('id'),
-            'no_po'=> $this->input->post('no_po'),
-            'tanggal'=> $tgl_input,
-            'term_of_payment'=>$this->input->post('term_of_payment'),
-            'jenis_po'=>'PO CV KE KMP',
-            'remarks'=>$this->input->post('remarks'),
-        );
+        // $data_api = array(
+        //     'id' => $this->input->post('id'),
+        //     'no_po'=> $this->input->post('no_po'),
+        //     'tanggal'=> $tgl_input,
+        //     'term_of_payment'=>$this->input->post('term_of_payment'),
+        //     'jenis_po'=>'PO CV KE KMP',
+        //     'remarks'=>$this->input->post('remarks'),
+        // );
 
-        $ch = curl_init(target_url_cv($reff_cv).'api/PurchaseOrderAPI/poupdt');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_api);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        $result = json_decode($response, true);
-        curl_close($ch);
+        // $ch = curl_init(target_url_cv($reff_cv).'api/PurchaseOrderAPI/poupdt');
+        // curl_setopt($ch, CURLOPT_POST, true);
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, $data_api);
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $response = curl_exec($ch);
+        // $result = json_decode($response, true);
+        // curl_close($ch);
 
-        log_message('debug', 'updt = '.print_r($result, 1));
+        // log_message('debug', 'updt = '.print_r($result, 1));
 
-        if($result['status'] == 1){
-            $update_details = $this->Model_purchase_order->get_po_detail_only($this->input->post('id'))->result_array();
-            foreach ($update_details as $i => $value) {
-                $update_details[$i]['reff'] = $update_details[$i]['id'];
-                $update_details[$i]['po_id'] = $result['id'];
-                unset($update_details[$i]['id']);
-            }
+        // if($result['status'] == 1){
+        //     $update_details = $this->Model_purchase_order->get_po_detail_only($this->input->post('id'))->result_array();
+        //     foreach ($update_details as $i => $value) {
+        //         $update_details[$i]['reff'] = $update_details[$i]['id'];
+        //         $update_details[$i]['po_id'] = $result['id'];
+        //         unset($update_details[$i]['id']);
+        //     }
 
-            $data_details = json_encode($update_details);
+        //     $data_details = json_encode($update_details);
 
-            log_message('debug', 'data details = '.print_r($data_details, 1));
+        //     log_message('debug', 'data details = '.print_r($data_details, 1));
             
-            $ch2 = curl_init(target_url_cv($reff_cv).'api/PurchaseOrderAPI/po_detail');
-            curl_setopt($ch2, CURLOPT_POST, true);
-            curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-            curl_setopt($ch2, CURLOPT_POSTFIELDS, $data_details);
-            curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-            $response2 = curl_exec($ch2);
-            $result2 = json_decode($response2, true);
-            curl_close($ch2);
+        //     $ch2 = curl_init(target_url_cv($reff_cv).'api/PurchaseOrderAPI/po_detail');
+        //     curl_setopt($ch2, CURLOPT_POST, true);
+        //     curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+        //     curl_setopt($ch2, CURLOPT_POSTFIELDS, $data_details);
+        //     curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+        //     $response2 = curl_exec($ch2);
+        //     $result2 = json_decode($response2, true);
+        //     curl_close($ch2);
 
-            log_message('debug', print_r($result2,1));
-        } else {
-            log_message('debug', 'failed update delete');
-        }
+        //     log_message('debug', print_r($result2,1));
+        // } else {
+        //     log_message('debug', 'failed update delete');
+        // }
 
         $this->session->set_flashdata('flash_msg', 'Data PO Jasa Finish Good berhasil disimpan');
         redirect('index.php/R_PurchaseOrder');
@@ -396,31 +396,31 @@ class R_PurchaseOrder extends CI_Controller{
         $this->db->insert('r_t_so', $data_so);
         $so_id = $this->db->insert_id();
 
-        $post_api = array(
-            'reff_id' => $so_id,
-            'no_so' => $this->input->post('no_so'),
-            'tanggal' => $tanggal_so,
-            'marketing_id' => $user_id,
-            'customer_id' => $this->input->post('customer_id'),
-            'no_po' => $this->input->post('no_po'),
-            'tgl_po' => $tgl_input,
-            'jenis_so' => 'SO CV',
-            'jenis_barang' => 'FG',
-            'reff_cv' => $this->session->userdata('cv_id'),
-            'created_at'=> $tanggal,
-            'created_by'=> $user_id
-        );
+        // $post_api = array(
+        //     'reff_id' => $so_id,
+        //     'no_so' => $this->input->post('no_so'),
+        //     'tanggal' => $tanggal_so,
+        //     'marketing_id' => $user_id,
+        //     'customer_id' => $this->input->post('customer_id'),
+        //     'no_po' => $this->input->post('no_po'),
+        //     'tgl_po' => $tgl_input,
+        //     'jenis_so' => 'SO CV',
+        //     'jenis_barang' => 'FG',
+        //     'reff_cv' => $this->session->userdata('cv_id'),
+        //     'created_at'=> $tanggal,
+        //     'created_by'=> $user_id
+        // );
 
-        $ch = curl_init(target_url_cv($reff_cv).'api/SalesOrderAPI/so');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_api);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        $result = json_decode($response, true);
-        curl_close($ch);
+        // $ch = curl_init(target_url_cv($reff_cv).'api/SalesOrderAPI/so');
+        // curl_setopt($ch, CURLOPT_POST, true);
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, $post_api);
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $response = curl_exec($ch);
+        // $result = json_decode($response, true);
+        // curl_close($ch);
 
-        log_message('debug', print_r($result,1));
+        // log_message('debug', print_r($result,1));
 
         $invoice_detail = $this->Model_purchase_order->invoice_detail($this->input->post('id_invoice'))->result();
         foreach ($invoice_detail as $row) {
@@ -455,19 +455,19 @@ class R_PurchaseOrder extends CI_Controller{
             unset($so_detail[$i]['id']);
         }
 
-        $detail_api = json_encode($so_detail);
+        // $detail_api = json_encode($so_detail);
 
 
-        $ch2 = curl_init(target_url_cv($reff_cv).'api/SalesOrderAPI/so_detail');
-        curl_setopt($ch2, CURLOPT_POST, true);
-        curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-        curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_api);
-        curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-        $response2 = curl_exec($ch2);
-        $result2 = json_decode($response2, true);
-        curl_close($ch2);
+        // $ch2 = curl_init(target_url_cv($reff_cv).'api/SalesOrderAPI/so_detail');
+        // curl_setopt($ch2, CURLOPT_POST, true);
+        // curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+        // curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_api);
+        // curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+        // $response2 = curl_exec($ch2);
+        // $result2 = json_decode($response2, true);
+        // curl_close($ch2);
 
-        log_message('debug', print_r($result2,1));
+        // log_message('debug', print_r($result2,1));
 
 
         if($this->db->trans_complete()){
@@ -562,44 +562,44 @@ class R_PurchaseOrder extends CI_Controller{
 
         $this->load->helper('target_url');
 
-        $ch = curl_init(target_url_cv($reff_cv).'api/SalesOrderAPI/soupdt');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_so);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        $result = json_decode($response, true);
-        curl_close($ch);
+        // $ch = curl_init(target_url_cv($reff_cv).'api/SalesOrderAPI/soupdt');
+        // curl_setopt($ch, CURLOPT_POST, true);
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, $data_so);
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $response = curl_exec($ch);
+        // $result = json_decode($response, true);
+        // curl_close($ch);
 
-        log_message('debug', 'updt = '.print_r($result));
+        // log_message('debug', 'updt = '.print_r($result));
 
-        if($result['status'] == 1){
-            $this->load->model('Model_so');
-            $update_details = $this->Model_so->get_so_detail_only($this->input->post('so_id'))->result_array();
-            foreach ($update_details as $i => $value) {
-                $update_details[$i]['reff_id'] = $update_details[$i]['id'];
-                $update_details[$i]['so_id'] = $result['id'];
-                unset($update_details[$i]['id']);
-            }
+        // if($result['status'] == 1){
+        //     $this->load->model('Model_so');
+        //     $update_details = $this->Model_so->get_so_detail_only($this->input->post('so_id'))->result_array();
+        //     foreach ($update_details as $i => $value) {
+        //         $update_details[$i]['reff_id'] = $update_details[$i]['id'];
+        //         $update_details[$i]['so_id'] = $result['id'];
+        //         unset($update_details[$i]['id']);
+        //     }
 
-            $data_details = json_encode($update_details);
+        //     $data_details = json_encode($update_details);
 
-            log_message('debug', 'data details = '.print_r($data_details, 1));
-            // die();
+        //     log_message('debug', 'data details = '.print_r($data_details, 1));
+        //     // die();
 
-            $ch2 = curl_init(target_url_cv($reff_cv).'api/SalesOrderAPI/so_detail');
-            curl_setopt($ch2, CURLOPT_POST, true);
-            curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-            curl_setopt($ch2, CURLOPT_POSTFIELDS, $data_details);
-            curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-            $response2 = curl_exec($ch2);
-            $result2 = json_decode($response2, true);
-            curl_close($ch2);
+        //     $ch2 = curl_init(target_url_cv($reff_cv).'api/SalesOrderAPI/so_detail');
+        //     curl_setopt($ch2, CURLOPT_POST, true);
+        //     curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+        //     curl_setopt($ch2, CURLOPT_POSTFIELDS, $data_details);
+        //     curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+        //     $response2 = curl_exec($ch2);
+        //     $result2 = json_decode($response2, true);
+        //     curl_close($ch2);
 
-            log_message('debug', print_r($result2,1));
-        } else {
-            log_message('debug', 'failed update delete');
-        }
+        //     log_message('debug', print_r($result2,1));
+        // } else {
+        //     log_message('debug', 'failed update delete');
+        // }
 
         // $details_api = json_encode($this->input->post());
         
