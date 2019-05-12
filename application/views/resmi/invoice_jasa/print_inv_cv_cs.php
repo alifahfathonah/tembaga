@@ -44,7 +44,11 @@
                         <tr>
                             <td>Tanggal Jatuh Tempo</td>
                             <td>: <?= $header['jatuh_tempo'] ?></td>
-                        </tr>        
+                        </tr>   
+                        <tr>
+                            <td>PPN</td>
+                            <td>: 10%</td>
+                        </tr>     
                         <tr>
                             <td>Catatan</td>
                             <td>: <?= $header['remarks'] ?></td>
@@ -84,10 +88,11 @@
                         $total_jual += $v->sum_total_amount;
                         $no++; 
                     } 
+                    $total_amount = $total_jual*110/100;
                 ?>
                 <tr>
                     <td colspan="4" align="right"><b>TOTAL</b></td>
-                    <td align="right"><b><?= "Rp ".number_format($total_jual,2,".",",") ?></b></td>
+                    <td align="right"><b><?= "Rp ".number_format($total_amount,2,".",",") ?></b></td>
                     <td></td>
                 </tr>
             </tbody>
