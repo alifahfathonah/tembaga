@@ -813,7 +813,7 @@ class Ingot extends CI_Controller{
             $data_bpb_detail_ampas = array(
                     'bpb_ampas_id' => $this->db->insert_id(),
                     'created' => $tgl_input,
-                    'jenis_barang_id' => 3,
+                    'jenis_barang_id' => 30,
                     'uom' => 'KG',
                     'berat' => $this->input->post('ampas'),
                     'keterangan' => 'SISA PRODUKSI INGOT',

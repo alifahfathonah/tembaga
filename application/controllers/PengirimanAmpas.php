@@ -1144,84 +1144,78 @@ class PengirimanAmpas extends CI_Controller{
             redirect('index.php/BeliRongsok/ttr_list');
         }
     }*/
-    // function create_dtr(){
-    //     $module_name = $this->uri->segment(1);
-    //     $id = $this->uri->segment(3);
-    //     if($id){
-    //         $group_id    = $this->session->userdata('group_id');        
-    //         if($group_id != 1){
-    //             $this->load->model('Model_modules');
-    //             $roles = $this->Model_modules->get_akses($module_name, $group_id);
-    //             $data['hak_akses'] = $roles;
-    //         }
-    //         $data['group_id']  = $group_id;
+    function create_dta(){
+        $module_name = $this->uri->segment(1);
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
 
-    //         $data['content']= "pengiriman_ampas/create_dtr";
-    //         $this->load->model('Model_pengiriman_ampas');
-    //         $data['header'] = $this->Model_pengiriman_ampas->show_header_po($id)->row_array();           
-    //         $data['details'] = $this->Model_pengiriman_ampas->show_detail_po($id)->result(); 
-            
-    //         $this->load->view('layout', $data);   
-    //     }else{
-    //         redirect('index.php/PengirimanAmpas');
-    //     }
-    // }
+            $data['content']= "pengiriman_ampas/create_dta";
+            $this->load->model('Model_beli_rongsok');
+            $data['rongsok'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
+            $data['supplier_list'] = $this->Model_beli_rongsok->supplier_list()->result();
+            $this->load->view('layout', $data);
+    }
 
-    // function save_dtr(){
-    //     $user_id  = $this->session->userdata('user_id');
-    //     $tanggal  = date('Y-m-d h:m:s');
-    //     $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+    function save_dta(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
-    //     $this->db->trans_start();
-    //     $this->load->model('Model_m_numberings');
-    //     $code = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
+        $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('DTA', $tgl_input); 
         
-    //     if($code){        
-    //         $data = array(
-    //                     'no_dtr'=> $code,
-    //                     'tanggal'=> $tgl_input,
-    //                     'po_id'=> $this->input->post('po_id'),
-    //                     'jenis_barang'=> $this->input->post('jenis_barang'),
-    //                     'remarks'=> $this->input->post('remarks'),
-    //                     'created'=> $tanggal,
-    //                     'created_by'=> $user_id,
-    //                     'modified'=> $tanggal,
-    //                     'modified_by'=> $user_id
-    //                 );
-    //         $this->db->insert('dtr', $data);
-    //         $dtr_id = $this->db->insert_id();
-    //         $details = $this->input->post('myDetails');
-    //         foreach ($details as $row){
-    //             if(isset($row['check']) && $row['check']==1){
-    //                 $this->db->insert('dtr_detail', array(
-    //                     'dtr_id'=>$dtr_id,
-    //                     'po_detail_id'=>$row['po_detail_id'],
-    //                     'ampas_id'=>$row['ampas_id'],
-    //                     'qty'=>str_replace('.', '', $row['qty']),
-    //                     'bruto'=>str_replace('.', '', $row['bruto']),
-    //                     'netto'=>str_replace('.', '', $row['netto']),
-    //                     'line_remarks'=>$row['line_remarks'],
-    //                     'created'=>$tanggal,
-    //                     'created_by'=>$user_id,
-    //                     'modified'=>$tanggal,
-    //                     'modified_by'=>$user_id
-    //                 ));
+        if($code){        
+            $data = array(
+                        'no_dtr'=> $code,
+                        'tanggal'=> $tgl_input,
+                        'po_id'=> $this->input->post('po_id'),
+                        'jenis_barang'=> $this->input->post('jenis_barang'),
+                        'remarks'=> $this->input->post('remarks'),
+                        'created'=> $tanggal,
+                        'created_by'=> $user_id,
+                        'modified'=> $tanggal,
+                        'modified_by'=> $user_id
+                    );
+            $this->db->insert('dtr', $data);
+            $dtr_id = $this->db->insert_id();
+            $details = $this->input->post('myDetails');
+            foreach ($details as $row){
+                if(isset($row['check']) && $row['check']==1){
+                    $this->db->insert('dtr_detail', array(
+                        'dtr_id'=>$dtr_id,
+                        'po_detail_id'=>$row['po_detail_id'],
+                        'ampas_id'=>$row['ampas_id'],
+                        'qty'=>str_replace('.', '', $row['qty']),
+                        'bruto'=>str_replace('.', '', $row['bruto']),
+                        'netto'=>str_replace('.', '', $row['netto']),
+                        'line_remarks'=>$row['line_remarks'],
+                        'created'=>$tanggal,
+                        'created_by'=>$user_id,
+                        'modified'=>$tanggal,
+                        'modified_by'=>$user_id
+                    ));
                     
-    //                 $this->db->where('id', $row['po_detail_id']);
-    //                 $this->db->update('po_detail', array('flag_dtr'=>1));
-    //             }
-    //         }
+                    $this->db->where('id', $row['po_detail_id']);
+                    $this->db->update('po_detail', array('flag_dtr'=>1));
+                }
+            }
             
-    //         if($this->db->trans_complete()){    
-    //             $this->session->set_flashdata('flash_msg', 'DTR berhasil di-create dengan nomor : '.$code);                 
-    //         }else{
-    //             $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTR, silahkan coba kembali!');
-    //         }                      
-    //     }else{
-    //         $this->session->set_flashdata('flash_msg', 'Pembuatan DTR gagal, penomoran belum disetup!');
-    //     }
-    //     redirect('index.php/PengirimanAmpas'); 
-    // }
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'DTR berhasil di-create dengan nomor : '.$code);                 
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTR, silahkan coba kembali!');
+            }                      
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Pembuatan DTR gagal, penomoran belum disetup!');
+        }
+        redirect('index.php/PengirimanAmpas'); 
+    }
     
     // function dtr_list(){
     //     $module_name = $this->uri->segment(1);
