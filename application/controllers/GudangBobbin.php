@@ -88,55 +88,61 @@ class GudangBobbin extends CI_Controller{
         $tanggal = date('Y-m-d H:i:s');
 
         $this->load->model('Model_bobbin');
-        $this->load->model('Model_m_numberings');
+        // $this->load->model('Model_m_numberings');
         
-        $format_penomoran = $this->Model_bobbin->get_format_penomoran($this->input->post('tipe'));
-        if ($format_penomoran['penomoran']){
-            $str_code = $format_penomoran['bobbin_size']; 
-        } else {
-            //BB merupakan kode penomoran bobbin
-            $str_code = 'BB-FG';
-        }
+        // $format_penomoran = $this->Model_bobbin->get_format_penomoran($this->input->post('tipe'));
+        // if ($format_penomoran['penomoran']){
+        //     $str_code = $format_penomoran['bobbin_size']; 
+        // } else {
+        //     //BB merupakan kode penomoran bobbin
+        //     $str_code = 'BB-FG';
+        // }
 
-        $code_bobbin = $this->Model_m_numberings->getNumbering($format_penomoran['bobbin_size'], $tgl_input);
-        if($code_bobbin == null){ 
-            //jika penomoran belum di setup, akan insert
-            $data_numbering = array(
-                            'prefix'=>$str_code,
-                            'date_info'=>0,
-                            'padding' => 4,
-                            'prefix_separator' => '.',
-                            'date_separator' => '.'
-                            );
-            $this->db->insert('m_numberings',$data_numbering);
-            $code_bobbin = $this->Model_m_numberings->getNumbering($str_code, $tgl_input);
-        }
+        // $code_bobbin = $this->Model_m_numberings->getNumbering($format_penomoran['bobbin_size'], $tgl_input);
+        // if($code_bobbin == null){ 
+        //     //jika penomoran belum di setup, akan insert
+        //     $data_numbering = array(
+        //                     'prefix'=>$str_code,
+        //                     'date_info'=>0,
+        //                     'padding' => 4,
+        //                     'prefix_separator' => '.',
+        //                     'date_separator' => '.'
+        //                     );
+        //     $this->db->insert('m_numberings',$data_numbering);
+        //     $code_bobbin = $this->Model_m_numberings->getNumbering($str_code, $tgl_input);
+        // }
 
-        $code_bobbin = str_replace('.', '', $code_bobbin);
-        $code_bobbin = str_replace('BB-FG', $format_penomoran['bobbin_size'], $code_bobbin);
-        if($format_penomoran['bobbin_size'] == 'K'){
-            $nomor = substr($code_bobbin, 2, 3);
-            $nomor_urut = 'A'.$nomor;
-            $code_bobbin = 'KA'.$nomor;
-        }else{
-            $nomor_urut = substr($code_bobbin, 1,4);
-        }
+        // $code_bobbin = str_replace('.', '', $code_bobbin);
+        // $code_bobbin = str_replace('BB-FG', $format_penomoran['bobbin_size'], $code_bobbin);
+        // if($format_penomoran['bobbin_size'] == 'K'){
+        //     $nomor = substr($code_bobbin, 2, 3);
+        //     $nomor_urut = 'A'.$nomor;
+        //     $code_bobbin = 'KA'.$nomor;
+        // }else{
+        //     $nomor_urut = substr($code_bobbin, 1,4);
+        // }
 
-        $data = array(
+        $nomor_bobbin = $this->input->post('bobbin_s2').$this->input->post('nomor_b');
+
+                $data = array(
                     'tanggal' => $tgl_input,
-                    'nomor_bobbin' => $code_bobbin,
+                    'nomor_bobbin' => $nomor_bobbin,
                     'm_jenis_packing_id' => $this->input->post('id_packing_2'),
                     'm_bobbin_size_id'=> $this->input->post('tipe'),
                     'owner_id'=> $this->input->post('owner'),
                     'berat'=> $this->input->post('berat'),
-                    'nomor_urut'=> $nomor_urut,
+                    'nomor_urut'=> $this->input->post('nomor_b'),
                     'status' => 0, //ready
                     'created_at'=> $tanggal,
                     'created_by'=> $user_id,
                 );
-        $this->db->insert('m_bobbin', $data); 
-        $this->session->set_flashdata('flash_msg', 'Data bobbin berhasil disimpan');
-        redirect('index.php/GudangBobbin');       
+        if($this->db->insert('m_bobbin', $data)){ 
+            $this->session->set_flashdata('flash_msg', 'Data bobbin berhasil disimpan');
+            redirect('index.php/GudangBobbin');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data bobbin gagal disimpan');
+            redirect('index.php/GudangBobbin');
+        }
     }
     
     function delete(){
@@ -158,6 +164,36 @@ class GudangBobbin extends CI_Controller{
         echo json_encode($data);       
     }
     
+    function cek_bobbin_unique(){
+        $nomor_bobbin = $this->input->post('bobbin_size').$this->input->post('nomor_urut');
+
+        $this->load->model('Model_bobbin');
+        $cek = $this->Model_bobbin->cek_bobbin_unique($nomor_bobbin)->result();
+        if(empty($cek)){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan bobbin! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
+
+    function cek_bobbin_unique_id(){
+        $nomor_bobbin = $this->input->post('bobbin_size').$this->input->post('nomor_urut');
+
+        $this->load->model('Model_bobbin');
+        $cek = $this->Model_bobbin->cek_bobbin_unique($nomor_bobbin)->row_array();
+        if(empty($cek) || $cek['id']==$this->input->post('id')){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan bobbin! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
+
     function get_packing(){
         $id = $this->input->post('id');
         $this->load->model('Model_bobbin');
@@ -172,50 +208,55 @@ class GudangBobbin extends CI_Controller{
         $id = $this->input->post('id');
         $tanggal = date('Y-m-d H:i:s');
 
-        $this->load->model('Model_bobbin');
-        $this->load->model('Model_m_numberings');
+        // $this->load->model('Model_bobbin');
+        // $this->load->model('Model_m_numberings');
         
-        $prev_value = $this->Model_bobbin->show_data($id)->row_array();
-        if($prev_value['m_bobbin_size_id'] == $this->input->post('tipe')){
-            $code_bobbin = $prev_value['nomor_bobbin'];
-        } else {
-            $format_penomoran = $this->Model_bobbin->get_format_penomoran($this->input->post('tipe'));
-            if ($format_penomoran['penomoran']){
-                $str_code = $format_penomoran['bobbin_size']; 
-            } else {
-                //BB merupakan kode penomoran bobbin
-                $str_code = 'BB-FG';
-            }
+        // $prev_value = $this->Model_bobbin->show_data($id)->row_array();
+        // if($prev_value['m_bobbin_size_id'] == $this->input->post('tipe')){
+        //     $code_bobbin = $prev_value['nomor_bobbin'];
+        // } else {
+        //     $format_penomoran = $this->Model_bobbin->get_format_penomoran($this->input->post('tipe'));
+        //     if ($format_penomoran['penomoran']){
+        //         $str_code = $format_penomoran['bobbin_size']; 
+        //     } else {
+        //         //BB merupakan kode penomoran bobbin
+        //         $str_code = 'BB-FG';
+        //     }
 
-            $code_bobbin = $this->Model_m_numberings->getNumbering($format_penomoran['bobbin_size'], $tgl_input);
-            if($code_bobbin == null){ 
-                //jika penomoran belum di setup, akan insert
-                $data_numbering = array(
-                                'prefix'=>$str_code,
-                                'date_info'=>0,
-                                'padding' => 4,
-                                'prefix_separator' => '.',
-                                'date_separator' => '.'
-                                );
-                $this->db->insert('m_numberings',$data_numbering);
-                $code_bobbin = $this->Model_m_numberings->getNumbering($str_code, $tgl_input);
-            }
+        //     $code_bobbin = $this->Model_m_numberings->getNumbering($format_penomoran['bobbin_size'], $tgl_input);
+        //     if($code_bobbin == null){ 
+        //         //jika penomoran belum di setup, akan insert
+        //         $data_numbering = array(
+        //                         'prefix'=>$str_code,
+        //                         'date_info'=>0,
+        //                         'padding' => 4,
+        //                         'prefix_separator' => '.',
+        //                         'date_separator' => '.'
+        //                         );
+        //         $this->db->insert('m_numberings',$data_numbering);
+        //         $code_bobbin = $this->Model_m_numberings->getNumbering($str_code, $tgl_input);
+        //     }
 
-            $code_bobbin = str_replace('.', '', $code_bobbin);
-            $code_bobbin = str_replace('BB-FG', $format_penomoran['bobbin_size'], $code_bobbin);
-        }
+        //     $code_bobbin = str_replace('.', '', $code_bobbin);
+        //     $code_bobbin = str_replace('BB-FG', $format_penomoran['bobbin_size'], $code_bobbin);
+        // }
         
-        $data = array(
-                    'nomor_bobbin' => $code_bobbin,
+        $nomor_bobbin = $this->input->post('bobbin_s').$this->input->post('nomor_urut_edit');
+
+                $data = array(
+                    'nomor_bobbin' => $nomor_bobbin,
                     'm_bobbin_size_id'=> $this->input->post('tipe'),
                     'm_jenis_packing_id' => $this->input->post('id_packing'),
                     'owner_id'=> $this->input->post('owner'),
+                    'nomor_urut'=> $this->input->post('nomor_urut_edit'),
                     'berat'=> $this->input->post('berat'),
                     'modified_at'=> $tanggal,
                     'modified_by'=> $user_id,
                 );
        
-        $this->db->where('id', $this->input->post('id'));
+        // print_r($data);
+        // die();
+        $this->db->where('id', $id);
         $this->db->update('m_bobbin', $data);
         
         $this->session->set_flashdata('flash_msg', 'Data bobbin berhasil diperbaharui');
@@ -582,20 +623,12 @@ class GudangBobbin extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        
-        $data = array(
-                'remarks'=>$this->input->post('remarks'),
-                'received_at'=> $tanggal,
-                'received_by'=> $user_id
-            );
-        
-        $this->db->where('id', $this->input->post('id'));
-        $this->db->update('m_bobbin_penerimaan', $data);
 
         $details = $this->input->post('details');
+        $no = 0;
         foreach ($details as $v){
             if($v['id_bobbin']!=''){
-
+                $no++;
                 if($this->db->insert('m_bobbin_penerimaan_detail', array(
                     'id_bobbin_penerimaan'=>$this->input->post('id'),
                     'nomor_bobbin'=>$v['nomor_bobbin']
@@ -614,6 +647,21 @@ class GudangBobbin extends CI_Controller{
                 // ));
             }
         }
+        if($no == 0){
+            $status = 1;
+        }else{
+            $status = 0;
+        }
+
+        $data = array(
+                'status'=>$status,
+                'remarks'=>$this->input->post('remarks'),
+                'received_at'=> $tanggal,
+                'received_by'=> $user_id
+            );
+        
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('m_bobbin_penerimaan', $data);
 
         // $id = $this->input->post('id_peminjaman');
         // $this->load->model('Model_bobbin');

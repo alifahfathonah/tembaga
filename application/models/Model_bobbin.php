@@ -29,7 +29,9 @@ class Model_bobbin extends CI_Model{
     }
     
     function show_data($id){
-        $data = $this->db->query("Select b.* From m_bobbin b Where id=".$id);        
+        $data = $this->db->query("Select b.*, bobbin_size From m_bobbin b
+            left join m_bobbin_size mbs on mbs.id = b.m_bobbin_size_id
+            Where b.id=".$id);        
         return $data;
     }
 
@@ -108,7 +110,7 @@ class Model_bobbin extends CI_Model{
 
 
     function show_detail_spb_fulfilment($id){
-        $data = $this->db->query("select mb.nomor_bobbin, mb.berat");
+        // $data = $this->db->query("select mb.nomor_bobbin, mb.berat");
 
         $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.uom from t_gudang_fg tgf 
                 left join jenis_barang jb on jb.id = tgf.jenis_barang_id
@@ -259,6 +261,11 @@ class Model_bobbin extends CI_Model{
 
     function list_supplier(){
         $data = $this->db->query("select * from supplier order by nama_supplier");
+        return $data;
+    }
+
+    function cek_bobbin_unique($id){
+        $data = $this->db->query("select id from m_bobbin where nomor_bobbin ='".$id."'");
         return $data;
     }
 

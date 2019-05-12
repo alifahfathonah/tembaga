@@ -33,7 +33,7 @@
                                     Nomor Bobbin <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-7">
-                                    <input type="text" id="nomor_bobin" name="nomor_bobbin" readonly="readonly" 
+                                    <input type="text" id="nomor_bobbin" name="nomor_bobbin" readonly="readonly" 
                                         class="form-control myline" style="margin-bottom:5px">
                                     
                                     <input type="hidden" id="id" name="id">
@@ -54,6 +54,15 @@
                             </div> 
                             <div class="row">
                                 <div class="col-md-5">
+                                    Nomor Urut <font color="#f00">*</font><br/>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="nomor_urut_edit" name="nomor_urut_edit" maxlength="10"
+                                        class="form-control myline" style="margin-bottom:5px">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
                                     Milik <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-7">
@@ -64,13 +73,13 @@
                                         }?>
                                     </select>
                                     <input type="hidden" name="id_packing" id="id_packing">
+                                    <input type="hidden" name="bobbin_s" id="bobbin_s">
                                 </div>
                             </div> 
                             <div class="row">
                                 <div class="col-md-5">
                                     Berat (Kg) <font color="#f00">*</font><br/>
                                     <a href="javascript:;" class="btn btn-circle btn-xs blue" onclick="hitung_berat()"><i class="fa fa-dashboard"></i> Hitung </a>
-
                                 </div>
                                 <div class="col-md-7">
                                     <input type="text" id="berat_edit" name="berat" maxlength="10"
@@ -91,6 +100,14 @@
         <?php
             if( ($group_id==1)||($hak_akses['index']==1) ){
         ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger display-hide">
+                    <button class="close" data-close="alert"></button>
+                    <span id="message_index">&nbsp;</span>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
@@ -119,7 +136,7 @@
                             Tipe <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select required="required" class="form-control myline select2me" name="tipe" onchange="get_packing_2(this.value)" placeholder="Silahkan pilih">
+                            <select required="required" class="form-control myline select2me" name="tipe" onchange="get_packing_2(this.value)" placeholder="Silahkan pilih" style="margin-bottom:5px" >
                                 <option value=""></option>
                                 <?php foreach ($size_list as $v) {
                                     echo '<option value="'.$v->id.'">'.$v->bobbin_size.' ('.$v->jenis_packing.')</option>';
@@ -127,6 +144,16 @@
                             </select>
                         </div>
                             <input type="hidden" name="id_packing_2" id="id_packing_2">
+                            <input type="hidden" name="bobbin_s2" id="bobbin_s2">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nomor Bobbin <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input required="required" type="text" id="nomor_b2" name="nomor_b" placeholder="Nomor Bobbin ..." 
+                                class="form-control myline" style="margin-bottom:5px" value="" onkeyup="this.value = this.value.toUpperCase()">
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-2">&nbsp;</div>
@@ -151,8 +178,7 @@
                         </div>
                         <div class="col-md-8">
                             <input required="required" type="number" id="berat" name="berat" placeholder="Berat Bobbin/Keranjang" 
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="">
+                                class="form-control myline" style="margin-bottom:5px" value="">
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
@@ -166,10 +192,10 @@
             </div>
         </form>
         <hr class="divider"/>
-        </div>
+    </div>
     <div class="collapse well" id="form_filter" >
-        <form class="eventInsForm" method="post" target="_self" name="formku" 
-        id="formku">
+        <form class="eventInsForm" method="post" target="_self" name="filter" 
+        id="filter">
             <div class="row">
                 <div class="col-md-12">
                     <div class="row">
@@ -305,7 +331,24 @@ function getComa(value, id){
 }
 
 function simpanBobbin(){
-    $('#formbobbin').submit();
+    $.ajax({
+        url: "<?php echo base_url('index.php/GudangBobbin/cek_bobbin_unique'); ?>",
+        async: false,
+        type: "POST",
+        data: {
+            nomor_urut:$('#nomor_b2').val(),
+            bobbin_size:$('#bobbin_s2').val()
+        },
+        dataType: "json",
+        success: function(result) {
+            if(result['message_type']=='sukses'){
+                $('#formbobbin').submit();
+            }else if(result['message_type']=='error'){
+                $('#message_index').html("Nomor Bobbin ada yang sama!");
+                $('.alert-danger').show(); 
+            }
+        }
+    });
 }
 
 function newData(){
@@ -324,10 +367,27 @@ function newData(){
 }
 
 function simpandata(){
-    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/GudangBobbin/update");
-    $('#formku').submit(); 
-     
-};
+    $.ajax({
+        url: "<?php echo base_url('index.php/GudangBobbin/cek_bobbin_unique_id'); ?>",
+        async: false,
+        type: "POST",
+        data: {
+            id: $('#id').val(),
+            nomor_urut:$('#nomor_urut_edit').val(),
+            bobbin_size:$('#bobbin_s').val()
+        },
+        dataType: "json",
+        success: function(result) {
+            if(result['message_type']=='sukses'){           
+                $('#formku').attr("action", "<?php echo base_url(); ?>index.php/GudangBobbin/update");
+                $('#formku').submit();
+            }else if(result['message_type']=='error'){
+                $('#message').html("Nomor Bobbin ada yang sama!");
+                $('.alert-danger').show(); 
+            }
+        }
+    });
+}
 
 function get_packing_2(id){
     $.ajax({
@@ -337,8 +397,8 @@ function get_packing_2(id){
             data: "id="+id,
             dataType: "json",
             success: function(result) {
-                console.log(result);
                     $('#id_packing_2').val(result['id_packing']);
+                    $('#bobbin_s2').val(result['bobbin_size']);
             }
         });
 }
@@ -351,8 +411,8 @@ function get_packing(id){
             data: "id="+id,
             dataType: "json",
             success: function(result) {
-                console.log(result);
-                    $('#id_packing').val(result['id_packing']);
+                $('#id_packing').val(result['id_packing']);
+                $('#bobbin_s').val(result['bobbin_size']);
             }
         });
 }
@@ -364,11 +424,13 @@ function editData(id){
         type: "POST",
         data : {id: id},
         success: function (result){
-            $('#nomor_bobin').val(result['nomor_bobbin']);
+            $('#nomor_bobbin').val(result['nomor_bobbin']);
             $('#tipe_edit').val(result['m_bobbin_size_id']);
             $('#id_packing').val(result['m_jenis_packing_id']);
             $('#milik_edit').val(result['owner_id']);
             $('#berat_edit').val(result['berat']);
+            $('#nomor_urut_edit').val(result['nomor_urut']);
+            $('#bobbin_s').val(result['bobbin_size']);
             $('#id').val(result['id']);
             
             $("#myModal").find('.modal-title').text('Edit Bobin');
