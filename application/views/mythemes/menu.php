@@ -511,13 +511,13 @@
                             <a href="<?php echo base_url(); ?>index.php/PengirimanAmpas">
                             <i class="fa fa-file-word-o"></i>
                             PO List </a>
-                        </li>
+                        </li><!-- 
                         <?php } if($group_id==1 || (isset($akses_menu['dtr_list']) && $akses_menu['dtr_list']==1)){ ?>
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/PengirimanAmpas/dtr_list">
                             <i class="fa fa-file-excel-o"></i>
-                            DTR List </a>
-                        </li>
+                            DTA List </a>
+                        </li> -->
                         <?php } if($group_id==1 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/PengirimanAmpas/spb_list">

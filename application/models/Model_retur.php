@@ -229,7 +229,7 @@ class Model_retur extends CI_Model{
     }
 
     function get_uom($id){
-        $data = $this->db->query("select uom from jenis_barang where id=".$id);
+        $data = $this->db->query("select ukuran, uom from jenis_barang where id=".$id);
         return $data;
     }
 
@@ -354,6 +354,13 @@ class Model_retur extends CI_Model{
 
     function get_jenis_barang($id){
         $data = $this->db->query("Select jenis_barang from retur where id=".$id);
+        return $data;
+    }
+
+    function get_retur_detail($id){
+        $data = $this->db->query("Select rd.*, jb.jenis_barang, jb.kode from retur_detail rd
+                    left join jenis_barang jb on jb.id = rd.jenis_barang_id
+                    where rd.id=".$id);
         return $data;
     }
 

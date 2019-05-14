@@ -117,11 +117,28 @@ class Retur extends CI_Controller{
 
             $this->load->model('Model_retur');
             $data['customer_list'] = $this->Model_retur->customer_list()->result();
-            $data['header'] = $this->Model_retur->show_header_retur($id)->row_array();  
+            $data['header'] = $this->Model_retur->show_header_retur($id)->row_array();
             $jb = $data['header']['jenis_barang'];
+
             if($jb == 'FG'){
+                $jp = $data['header']['jenis_packing_id'];  
+                if($jp == 1){
+                    $data['content']= "retur/edit";
+                }elseif($jp == 2){
+                    $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('KERANJANG')->result();
+                    $data['content']= "retur/detail_laporan_keranjang";
+                }elseif($jp == 3){
+                    $this->load->model('Model_gudang_fg');
+                    $data['packing'] = $this->Model_gudang_fg->get_bobbin_g($jp)->result();
+                    $data['content']= "retur/detail_laporan_rambut";
+                }elseif($jp == 4){
+                    $data['content']= "retur/detail_laporan_roll";
+                }elseif($jp == 5){
+                    $this->load->model('Model_gudang_fg');
+                    $data['packing'] = $this->Model_gudang_fg->get_bobbin_g($jp)->result();
+                    $data['content']= "retur/detail_laporan_b600g";
+                }
                 $data['jenis_barang_list'] = $this->Model_retur->jenis_barang_list()->result();
-                $data['content']= "retur/edit";
             }else if($jb == 'WIP'){
                 $data['jenis_barang_list'] = $this->Model_retur->jenis_wip_retur()->result();
                 $data['content']= "retur/edit_wip";
@@ -193,6 +210,50 @@ class Retur extends CI_Controller{
         $tabel .= '</tr>';
        
         
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function load_detail_rambut(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $no    = 1;
+        $this->load->model('Model_retur');
+        $jenis_barang_list = $this->Model_retur->jenis_barang_list()->result();
+         
+        $myDetail = $this->Model_retur->load_detail($id)->result(); 
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->jenis_barang.'</td>';
+            $tabel .= '<td>'.$row->bruto.'</td>';
+            $tabel .= '<td>'.$row->berat_palette.'</td>';
+            $tabel .= '<td><a href="javascript:;" onclick="timbang(this)" class="btn btn-xs btn-circle blue disabled"><i class="fa fa-dashboard"></i> Timbang</a></td>';
+            $tabel .= '<td>'.$row->netto.'</td>';
+            $tabel .= '<td>'.$row->no_packing.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a>'
+                    . '<a href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay"'
+                    . 'onclick="printBarcode('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-print"></i> Print Barcode </a></td>';
+            $tabel .= '</tr>';            
+            $no++;
+        }
+            
+        // $tabel .= '<tr>';
+        // $tabel .= '<td style="text-align:center">'.$no.'</td>';
+        // $tabel .= '<td><a href="javascript:;" onclick="timbang(this)" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>';
+        // $tabel .= '<td><input type="text" id="bruto" name="bruto" class="form-control myline"/></td>';
+        // $tabel .= '<td><input type="number" id="berat_bobbin" = name="berat_bobbin" class="form-control myline"/></td>';
+        // $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" onclick="timbang_netto();" readonly="readonly"/></td>';
+        // $tabel .= '<td><input type="text" id="no_packing" value="Auto" name="no_packing" class="form-control myline" readonly="readonly"></td>';
+        // $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+        //         . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
+        //         . '<i class="fa fa-plus"></i> Tambah </a></td>';
+        // $tabel .= '</tr>';
+
         header('Content-Type: application/json');
         echo json_encode($tabel); 
     }
@@ -313,6 +374,76 @@ class Retur extends CI_Controller{
         echo json_encode($return_data); 
     }
 
+    function save_detail_rambut(){
+        $return_data = array();
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+
+        $this->db->trans_start();
+
+        $this->load->model('Model_m_numberings');
+
+        $code = $this->Model_m_numberings->getNumbering('KARDUS',$tgl_input);
+
+        $first = $this->input->post('no_packing');
+        $ukuran = $this->input->post('ukuran');
+        $no_packing = $tgl_code.$first.$ukuran.substr($code,12,4);
+        
+        $this->db->insert('retur_detail', array(
+            'retur_id' => $this->input->post('id'),
+            'jenis_barang_id' => $this->input->post('jenis_barang_id'),
+            'bruto' => $this->input->post('bruto'),
+            'netto' => $this->input->post('netto'),
+            'no_packing' =>$no_packing,
+            'berat_palette' => $this->input->post('berat_bobbin'),
+            'bobbin_id' => 0,
+            'line_remarks' =>$this->input->post('keterangan')
+        ));
+        if ($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function save_detail_b600g(){
+        $return_data = array();
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+
+        $this->db->trans_start();
+
+        $this->load->model('Model_m_numberings');
+
+        $code = $this->Model_m_numberings->getNumbering('BOBBIN',$tgl_input);
+
+        $first = $this->input->post('no_packing');
+        $ukuran = $this->input->post('ukuran');
+        $no_packing = $tgl_code.$first.$ukuran.substr($code,12,4);
+        
+        $this->db->insert('retur_detail', array(
+            'retur_id' => $this->input->post('id'),
+            'jenis_barang_id' => $this->input->post('jenis_barang_id'),
+            'bruto' => $this->input->post('bruto'),
+            'netto' => $this->input->post('netto'),
+            'no_packing' =>$no_packing,
+            'berat_palette' => $this->input->post('berat_bobbin'),
+            'bobbin_id' => 0,
+            'line_remarks' =>$this->input->post('keterangan')
+        ));
+        if($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
     function save_detail_wip(){
         $return_data = array();
         $no_bobbin = $this->input->post('no_bobbin');
@@ -368,6 +499,7 @@ class Retur extends CI_Controller{
     function delete_detail(){
         $id = $this->input->post('id');
         $return_data = array();
+
         $this->db->where('id', $id);
         if($this->db->delete('retur_detail')){
             $return_data['message_type']= "sukses";
@@ -784,10 +916,12 @@ class Retur extends CI_Controller{
                     ));
 
                     #update status bobbin
-                    $this->db->where('id' ,$row2->bobbin_id);
-                    $this->db->update('m_bobbin', array(
-                         'status' => 1
-                    ));
+                    if($row2->bobbin_id > 0){
+                        $this->db->where('id' ,$row2->bobbin_id);
+                        $this->db->update('m_bobbin', array(
+                             'status' => 1
+                        ));
+                    }
                 }
             }
 
@@ -1942,5 +2076,38 @@ class Retur extends CI_Controller{
             $this->session->set_flashdata('flash_msg', 'Uang Masuk gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/Finance');  
         }            
+    }
+
+    function print_barcode_kardus(){
+        $id = $_GET['id'];
+        if($id){
+
+        $this->load->model('Model_retur');
+        $data = $this->Model_retur->get_retur_detail($id)->row_array();
+        $berat = $data['bruto'] - $data['netto'];
+
+        $current = '';
+        $data_printer = $this->db->query("select * from m_print_barcode_line where m_print_barcode_id = 1")->result_array();
+        $data_printer[17]['string1'] = 'BARCODE 488,335,"39",41,0,180,2,6,"'.$data['kode'].'"';
+        $data_printer[18]['string1'] = 'TEXT 386,289,"ROMAN.TTF",180,1,8,"'.$data['kode'].'"';
+        $data_printer[22]['string1'] = 'BARCODE 612,101,"39",41,0,180,2,6,"'.$data['no_packing'].'"';
+        $data_printer[23]['string1'] = 'TEXT 426,55,"ROMAN.TTF",180,1,8,"'.$data['no_packing'].'"';
+        $data_printer[24]['string1'] = 'TEXT 499,260,"4",180,1,1,"'.$data['no_packing'].'"';
+        $data_printer[25]['string1'] = 'TEXT 495,226,"ROMAN.TTF",180,1,14,"'.$data['bruto'].'"';
+        $data_printer[26]['string1'] = 'TEXT 495,188,"ROMAN.TTF",180,1,14,"'.$berat.'"';
+        $data_printer[27]['string1'] = 'TEXT 495,147,"0",180,14,14,"'.$data['netto'].'"';
+        $data_printer[31]['string1'] = 'TEXT 496,373,"2",180,1,1,"'.$data['jenis_barang'].'"';
+        $data_printer[32]['string1'] = 'TEXT 497,407,"4",180,1,1,"'.$data['kode'].'"';
+        $jumlah = count($data_printer);
+        for($i=0;$i<$jumlah;$i++){
+        $current .= $data_printer[$i]['string1']."\n";
+        }
+        echo "<form method='post' id=\"coba\" action=\"http://localhost/print/print.php\">";
+        echo "<input type='hidden' id='nospb' name='nospb' value='".$current."'>";
+        echo "</form>";
+        echo '<script type="text/javascript">document.getElementById(\'coba\').submit();</script>';
+        }else{
+            'GAGAL';
+        }
     }
 }

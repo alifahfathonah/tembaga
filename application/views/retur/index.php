@@ -84,7 +84,7 @@
                             <?php
                                 if( ($group_id==1 || $hak_akses['view_retur']==1)/* && $data->ready_to_ttr>0*/){
                                     echo '<a class="btn btn-circle btn-xs green-seagreen" href="'.base_url().'index.php/Retur/view/'.$data->id.'" 
-                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> View &nbsp; </a>';
+                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-book"></i> View &nbsp; </a>';
                                 }                                                      
                                 if($group_id==1 || $hak_akses['print_retur']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Retur/print/'.$data->id.'" 
@@ -93,6 +93,9 @@
                                 if(($group_id==1 || $hak_akses['create_invoice']==1) && $data->jenis_retur==1 && $data->status==1 && $data->flag_taken==0){
                                     echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/Retur/add_invoice/'.$data->id.'" 
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Create Hutang Invoice &nbsp; </a> ';
+                                }
+                                if(($group_id==1 || $hak_akses['edit']==1) && $data->status==0){
+                                     echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/Retur/edit/'.$data->id.'" style="margin-bottom:4px"><i class="fa fa-edit"></i> Edit &nbsp;</a> ';
                                 }
                             ?>
                         </td>

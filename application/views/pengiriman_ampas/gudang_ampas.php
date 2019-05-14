@@ -33,6 +33,7 @@
                 <thead>
                 <tr>
                     <th style="text-align: center; width:50px;">No</th>
+                    <th>Rongsok</th>
                     <th>No. Produksi</th>
                     <th style="text-align:center">Berat</th>
                     <th>Tanggal</th>
@@ -46,6 +47,7 @@
                     ?>
                     <tr>
                         <td style="text-align:center;"><?php echo $no; ?></td>
+                        <td><?=$data->nama_item;?></td>
                         <td style="background-color: "><?php echo $data->no_produksi; ?></td>
                         <td style="text-align:center;"><?php echo $data->berat ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->created_at)); ?></td>    

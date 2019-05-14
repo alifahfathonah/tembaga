@@ -46,6 +46,8 @@ class GudangBobbin extends CI_Controller{
 
             $this->load->model('Model_bobbin');
             $data['list_data'] = $this->Model_bobbin->list_data($id)->result();
+            $data['size_list'] = $this->Model_bobbin->get_size_list()->result();
+            $data['owner_list'] = $this->Model_bobbin->get_owner_list()->result();
 
             $this->load->view('layout', $data);
         }else{
@@ -245,6 +247,7 @@ class GudangBobbin extends CI_Controller{
 
                 $data = array(
                     'nomor_bobbin' => $nomor_bobbin,
+                    'status' => $this->input->post('status_edit'),
                     'm_bobbin_size_id'=> $this->input->post('tipe'),
                     'm_jenis_packing_id' => $this->input->post('id_packing'),
                     'owner_id'=> $this->input->post('owner'),
@@ -252,8 +255,7 @@ class GudangBobbin extends CI_Controller{
                     'berat'=> $this->input->post('berat'),
                     'modified_at'=> $tanggal,
                     'modified_by'=> $user_id,
-                );
-       
+                );       
         // print_r($data);
         // die();
         $this->db->where('id', $id);

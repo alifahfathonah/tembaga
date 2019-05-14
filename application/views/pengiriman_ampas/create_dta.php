@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Pengiriman Ampas  
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/PengirimanAmpas/create_dta'); ?>"> Create Daf Ampas </a> 
+            <a href="<?php echo base_url('index.php/PengirimanAmpas/create_dta'); ?>"> Create Daftar Timbang Ampas </a> 
         </h5>          
     </div>
 </div>
@@ -101,9 +101,10 @@
                         <table class="table table-bordered table-striped table-hover" id="tabel_barang">
                             <thead>
                                 <th style="width:40px">No</th>
-                                <th>No. Produksi</th>
+                                <th>Jenis Barang</th>
                                 <th>UOM</th>
                                 <th>Berat</th>
+                                <th>Keterangan</th>
                                 <th>Action</th>
                             </thead>
                             <tbody id="boxDetail">
@@ -120,6 +121,7 @@
                                     <input type="hidden" name="details[1][jenis_barang_id]" id="jenis_barang_id_1">
                                     <td><input type="text" id="uom_1" name="details[1][uom]" class="form-control myline" readonly="readonly"></td>
                                     <td><input type="text" id="berat_1" name="details[1][berat]" class="form-control myline"></td>
+                                    <td><input type="text" id="ket_1" name="details[1][ket]" class="form-control myline"></td>
                                     <td style="text-align:center">
                                         <a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input(1);" style="margin-top:5px" id="save_1"><i class="fa fa-plus"></i> Tambah </a>
                                         <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
@@ -162,7 +164,7 @@ function create_new_input(id){
         $('#message').html("Berat tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else{
-        $("#id_produksi_"+id).attr('disabled','disabled');
+        $("#jenis_barang_"+id).attr('disabled','disabled');
         $("#save_"+id).attr('disabled','disabled');
         $("#delete_"+id).removeClass('disabled');
         var new_id = id+1; 
@@ -178,6 +180,7 @@ function create_new_input(id){
             '<input type="hidden" name="details['+new_id+'][jenis_barang_id]" id="jenis_barang_id_'+new_id+'">'+
             '<td><input type="text" id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
             '<td><input type="text" id="berat_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline"></td>'+
+            '<td><input type="text" id="ket_'+new_id+'" name="details['+new_id+'][ket]" class="form-control myline"></td>'+
             '<td style="text-align:center">'+
                 '<a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input('+new_id+');" style="margin-top:5px" id="save_'+new_id+'"><i class="fa fa-plus"></i> Tambah </a>'+
                 '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>'+
@@ -213,8 +216,8 @@ function create_new_input(id){
 //         }
 //     }
 // }
+
 function get_uom(id, nmr){
-    // var idpo = $('#po_id').val();
     if($.trim($('#jenis_barang_'+nmr).val())!=''){
         $.ajax({
             url: "<?php echo base_url('index.php/BeliRongsok/get_uom_po'); ?>",
@@ -228,7 +231,6 @@ function get_uom(id, nmr){
         });
     }
 }
-
 
 function hapusDetail(id){
     var r=confirm("Anda yakin menghapus item barang ini?");

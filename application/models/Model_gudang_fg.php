@@ -271,7 +271,7 @@ class Model_gudang_fg extends CI_Model{
     }
 
     function show_data_packing($id){
-        $data = $this->db->query("select mjp.jenis_packing as packing
+        $data = $this->db->query("select id, mjp.jenis_packing as packing
                 from m_jenis_packing mjp 
                 where mjp.id = ".$id
                 );
@@ -368,6 +368,11 @@ class Model_gudang_fg extends CI_Model{
 
     function produksi_fg_count($id){
         $data = $this->db->query("Select count(id) as count from produksi_fg_detail where produksi_fg_id =".$id);
+        return $data;
+    }
+
+    function get_bobbin_g($id){
+        $data = $this->db->query("Select bobbin_size from m_bobbin_size where jenis_packing_id =".$id);
         return $data;
     }
     /*

@@ -173,7 +173,22 @@ class BeliFinishGood extends CI_Controller{
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('KARDUS',$tgl_input);
 
-        $first = substr($this->input->post('no_packing'),0,1);
+        $first = $this->input->post('no_packing');
+        $ukuran = $this->input->post('ukuran');
+        $data['no_packing'] = $tgl_code.$first.$ukuran.substr($code,12,4);
+
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+
+    function get_packing_b600g(){
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('BOBBIN',$tgl_input);
+
+        $first = $this->input->post('no_packing');
         $ukuran = $this->input->post('ukuran');
         $data['no_packing'] = $tgl_code.$first.$ukuran.substr($code,12,4);
 
@@ -462,22 +477,21 @@ class BeliFinishGood extends CI_Controller{
             $data['header'] = $this->Model_beli_fg->show_header_dtbj($id)->row_array();
             echo $data['header']['jenis_packing'];
             $this->load->model('Model_gudang_fg');
-            $packing = $this->Model_gudang_fg->show_data_packing($data['header']['jenis_packing'])->row_array()['packing'];
-            if($packing=="BOBBIN"){
+            $packing = $this->Model_gudang_fg->show_data_packing($data['header']['jenis_packing'])->row_array();
+            if($packing['packing']=="BOBBIN"){
                 $data['content']   = "beli_fg/create_dtbj_bobbin";
-                $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result();
-            } else if ($packing == "KERANJANG") {
+            } else if ($packing['packing'] == "KERANJANG") {
                 $data['content'] = "beli_fg/create_dtbj_keranjang";
                 $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('KERANJANG')->result();
-                $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result(); 
-            } else if ($packing == "ROLL") {
+            } else if ($packing['packing'] == "ROLL") {
                 $data['content'] = "beli_fg/create_dtbj_roll";
                 $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('ROLL')->result();
-                $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result(); 
+            } else if ($packing['packing'] == "BOBBIN 600g") {
+                $data['content'] = "beli_fg/create_dtbj_b600g";
+                $data['packing'] = $this->Model_gudang_fg->get_bobbin_g($packing['id'])->result();
             } else {
                 $data['content'] = "beli_fg/create_dtbj_rambut";
-                $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('KARDUS')->result();
-                $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result();
+                $data['packing'] = $this->Model_gudang_fg->get_bobbin_g($packing['id'])->result();
             }
             $this->load->model('Model_beli_rongsok');
             $data['list_rongsok_on_po'] = $this->Model_beli_rongsok->show_data_rongsok()->result();

@@ -275,68 +275,6 @@ class PengirimanAmpas extends CI_Controller{
         echo json_encode($bs_detail); 
     }
     
-    function save_dtr(){
-        $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-
-        $this->db->trans_start();
-        $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
-        
-        if($code){        
-            #insert dtr
-            $data = array(
-                        'no_dtr'=> $code,
-                        'tanggal'=> $tgl_input,
-                        'jenis_barang'=> 'RONGSOK',
-                        'remarks'=> $this->input->post('remarks'),
-                        'created'=> $tanggal,
-                        'created_by'=> $user_id,
-                    );
-            $this->db->insert('dtr', $data);
-            $dtr_id = $this->db->insert_id();
-
-            #update status gudang bs
-            $details = $this->input->post('details');
-            $sum =0;
-            foreach ($details as $row){
-                if($row['produksi_id']!=''){
-                    $sum += $row['berat'];
-                    $this->db->where('id', $row['produksi_id']);
-                    $this->db->update('t_gudang_bs', array(
-                        'status' => 1
-                    ));
-                }
-            }
-
-            #insert dtr details
-            $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
-            $this->db->insert('dtr_detail', array(
-                'dtr_id'=>$dtr_id,
-                'rongsok_id'=>$this->input->post('jb_id'),
-                'qty'=>$sum,
-                'netto'=>$sum,
-                'line_remarks'=>'BARANG BS TRANSFER KE RONGSOK',
-                'no_pallete'=>date("dmyHis").$rand,
-                'created'=>$tanggal,
-                'created_by'=>$user_id,
-                'modified'=>$tanggal,
-                'modified_by'=>$user_id
-            ));
-            
-            
-            if($this->db->trans_complete()){    
-                $this->session->set_flashdata('flash_msg', 'DTR berhasil di-create dengan nomor : '.$code);                 
-            }else{
-                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTR, silahkan coba kembali!');
-            }                      
-        }else{
-            $this->session->set_flashdata('flash_msg', 'Pembuatan DTR gagal, penomoran belum disetup!');
-        }
-        redirect('index.php/BeliRongsok/dtr_list'); 
-    }
-    
     function dtr_list(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
@@ -760,6 +698,7 @@ class PengirimanAmpas extends CI_Controller{
                 $this->db->insert('t_gudang_ampas', array(
                     'tanggal' => $tgl_input,
                     'jenis_barang_id' => 3,
+                    'rongsok_id' => $row->jenis_barang_id,
                     'berat' => $row->berat,
                     'id_produksi' => $row->id_produksi,
                     'created_by' => $user_id,
@@ -767,14 +706,12 @@ class PengirimanAmpas extends CI_Controller{
                 ));
             }
             
-        if($this->db->trans_complete()){  
-                
+            if($this->db->trans_complete()){  
                 $this->session->set_flashdata("message", "Penerimaan Ampas sudah dibuat dan masuk gudang");
             }else{
                 $this->session->set_flashdata("message","Penerimaan Ampas gagal, silahkan coba lagi!");
             }                  
-        
-      redirect("index.php/PengirimanAmpas/bpb_list");
+        redirect("index.php/PengirimanAmpas/bpb_list");
     }
 
     function reject_bpb(){
@@ -1168,53 +1105,44 @@ class PengirimanAmpas extends CI_Controller{
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('DTA', $tgl_input); 
-        
+
+        $code = $this->Model_m_numberings->getNumbering('BPB-AMP', $tgl_input);
+
         if($code){        
             $data = array(
-                        'no_dtr'=> $code,
+                        'no_bpb'=> $code,
                         'tanggal'=> $tgl_input,
-                        'po_id'=> $this->input->post('po_id'),
-                        'jenis_barang'=> $this->input->post('jenis_barang'),
-                        'remarks'=> $this->input->post('remarks'),
+                        'status'=> 0,
+                        'hasil_masak_id'=> 0,
+                        'keterangan'=> $this->input->post('remarks'),
                         'created'=> $tanggal,
-                        'created_by'=> $user_id,
-                        'modified'=> $tanggal,
-                        'modified_by'=> $user_id
+                        'created_by'=> $user_id
                     );
-            $this->db->insert('dtr', $data);
-            $dtr_id = $this->db->insert_id();
-            $details = $this->input->post('myDetails');
+            $this->db->insert('t_bpb_ampas', $data);
+            $insert_id = $this->db->insert_id();
+            $details = $this->input->post('details');
             foreach ($details as $row){
-                if(isset($row['check']) && $row['check']==1){
-                    $this->db->insert('dtr_detail', array(
-                        'dtr_id'=>$dtr_id,
-                        'po_detail_id'=>$row['po_detail_id'],
-                        'ampas_id'=>$row['ampas_id'],
-                        'qty'=>str_replace('.', '', $row['qty']),
-                        'bruto'=>str_replace('.', '', $row['bruto']),
-                        'netto'=>str_replace('.', '', $row['netto']),
-                        'line_remarks'=>$row['line_remarks'],
-                        'created'=>$tanggal,
-                        'created_by'=>$user_id,
-                        'modified'=>$tanggal,
-                        'modified_by'=>$user_id
+                if($row['jenis_barang_id']!=0){
+                    $this->db->insert('t_bpb_ampas_detail', array(
+                        'bpb_ampas_id'=>$insert_id,
+                        'jenis_barang_id'=>$row['jenis_barang_id'],
+                        'qty'=>0,
+                        'berat'=>$row['berat'],
+                        'keterangan'=>$row['ket']
                     ));
-                    
-                    $this->db->where('id', $row['po_detail_id']);
-                    $this->db->update('po_detail', array('flag_dtr'=>1));
                 }
             }
-            
+                    
             if($this->db->trans_complete()){    
-                $this->session->set_flashdata('flash_msg', 'DTR berhasil di-create dengan nomor : '.$code);                 
+                $this->session->set_flashdata('flash_msg', 'DTWIP berhasil di-create dengan nomor : '.$code);                 
             }else{
-                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTR, silahkan coba kembali!');
-            }                      
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTWIP, silahkan coba kembali!');
+            }
+            redirect('index.php/PengirimanAmpas/bpb_list');           
         }else{
-            $this->session->set_flashdata('flash_msg', 'Pembuatan DTR gagal, penomoran belum disetup!');
+            $this->session->set_flashdata('flash_msg', 'Pembuatan DTWIP gagal, penomoran belum disetup!');
+            redirect('index.php/PengirimanAmpas/bpb_list');
         }
-        redirect('index.php/PengirimanAmpas'); 
     }
     
     // function dtr_list(){
