@@ -95,7 +95,7 @@
                 <td height="60">&nbsp;</td>
             </tr>
             <tr>
-                <td> <?= $header['pic'] ?> </td>
+                <td> <?= $header['nama'] ?> </td>
             </tr>
         </table>
         <p>&nbsp;</p>

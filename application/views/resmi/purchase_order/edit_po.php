@@ -197,7 +197,8 @@ function getComa(value, id, no){
 function hitungSubTotal(id){
     harga = $('#amount_'+id).val().toString().replace(/\./g, "");
     netto = $('#netto_'+id).val();
-    total_harga = Number(harga)* Number(netto);
+    total = Number(harga)* Number(netto);
+    total_harga = total.toFixed(0);
     $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
 

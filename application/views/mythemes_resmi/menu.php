@@ -83,10 +83,10 @@
                         <span class="title">INVOICE JASA</span>
                     </a>
                 </li>
-                <?php } if($group_id==9){ ?>
+                <?php } if($group_id==9 || $group_id==14){ ?>
                 <li <?php if($module_name=="MNumberings" || $module_name=="Apolo"
                         || $module_name=="MProvinces" || $module_name=="MCities" 
-                        || $module_name=="Customer" || $module_name=="Supplier" 
+                        || $module_name=="Customer" || $module_name=="CustomerCV" || $module_name=="Supplier" 
                         || $module_name=="Bank" || $module_name=="Rongsok" 
                         || $module_name=="Sparepart" || $module_name=="JenisBarang" 
                         || $module_name=="Ampas" || $module_name=="TypeKendaraan" 
@@ -108,6 +108,13 @@
                             <i class="fa fa-user"></i>
                             Data Customer </a>
                         </li>
+                        <?php if($group_id==9 || $group_id == 14){ ?>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/CustomerCV">
+                            <i class="fa fa-user"></i>
+                            Data Customer CV </a>
+                        </li>
+                        <?php } ?>
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/Rongsok">
                             <i class="fa fa-beer"></i>

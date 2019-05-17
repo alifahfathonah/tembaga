@@ -56,7 +56,7 @@
                     <?php if($header['id_um']==0 && $header['id_slip_setoran'] == 0){?>
                     <div class="row">
                         <div class="col-md-4">
-                            Nomor Rekening
+                            Giro / Cek
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_rek" name="no_rek" readonly="readonly"
@@ -95,7 +95,7 @@
                             Catatan
                         </div>
                         <div class="col-md-8">
-                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
+                            <textarea readonly="readonly" id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
                                 class="form-control myline" style="margin-bottom:5px"><?php echo $header['keterangan']; ?></textarea>                           
                         </div>
                     </div>

@@ -23,7 +23,7 @@ class Model_purchase_order extends CI_Model{
 	function po_list_for_kmp(){
 		$data = $this->db->query("select rpo.*, coalesce(cs.nama_customer,c.nama_cv) as nama_cv, coalesce(cs.pic, c.pic) as pic, (select count(tpd.id) from r_t_po_detail tpd where tpd.po_id = rpo.id)as jumlah_item
 			from r_t_po rpo
-			left join m_customers cs on (rpo.customer_id = cs.id)
+			left join m_customers_cv cs on (rpo.customer_id = cs.id)
 			left join m_cv c on (rpo.cv_id = c.id)
 			where rpo.cv_id != 0
 			order by rpo.created_at desc");
@@ -75,7 +75,7 @@ class Model_purchase_order extends CI_Model{
 	function get_contact_name_customer($id){
 		$this->db->select('pic');
 		$this->db->where('id', $id);
-		$data = $this->db->get('m_customers');
+		$data = $this->db->get('m_customers_cv');
 		return $data;
 	}
 
@@ -125,7 +125,7 @@ class Model_purchase_order extends CI_Model{
 		$data = $this->db->query("select rpo.*, cv.nama_cv, cs.nama_customer as nama, cs.pic, cv.pic as pic_cv, cs.alamat, cv.alamat as alamat_cv, rtsj.tanggal as tgl_kirim
 			from r_t_po rpo
             left join r_t_surat_jalan rtsj on rtsj.id = rpo.flag_sj
-			left join m_customers cs on (rpo.customer_id = cs.id)
+			left join m_customers_cv cs on (rpo.customer_id = cs.id)
             left join m_cv cv on (rpo.reff_cv = cv.id)
 			where rpo.id = ".$id);
 		return $data;
