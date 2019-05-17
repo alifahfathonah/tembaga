@@ -297,6 +297,7 @@ class Model_beli_rongsok extends CI_Model{
     function ttr_list($user_ppn){
         $data = $this->db->query("Select ttr.*, 
                     dtr.no_dtr,
+                    dtr.tanggal as tgl_dtr,
                     po.no_po, 
                     spl.nama_supplier,
                 (Select count(ttrd.id) From ttr_detail ttrd Where ttrd.ttr_id = ttr.id)As jumlah_item,
@@ -315,6 +316,7 @@ class Model_beli_rongsok extends CI_Model{
         $data = $this->db->query("Select ttr.*, 
                     dtr.no_dtr,
                     dtr.po_id,
+                    dtr.tanggal as tgl_dtr,
                     po.no_po,
                     po.tanggal as tanggal_po,
                     spl.nama_supplier,
@@ -565,6 +567,22 @@ class Model_beli_rongsok extends CI_Model{
 
     function count_po_detail($id){
         $data = $this->db->query("select sum(id) as count from po_detail where po_id =".$id);
+        return $data;
+    }
+
+    function ttr_dtr_only($id){
+        $data = $this->db->query("select ttr.id, ttr.no_ttr, ttr.dtr_id, dtr.no_dtr, ttr.tanggal as tgl_ttr, dtr.tanggal as tgl_dtr, ttr.no_sj, ttr.jmlh_afkiran, ttr.jmlh_pengepakan, ttr.jmlh_lain, ttr.remarks as remarks_ttr, dtr.remarks as remarks_dtr, ttr.ttr_status as ttr_status, dtr.status as dtr_status, dtr.po_id, po.status as po_status, dtr.supplier_id, dtr.jenis_barang
+                from ttr
+                left join dtr on dtr.id = ttr.dtr_id
+                left join po on po.id = dtr.po_id
+                where ttr.id =".$id);
+        return $data;
+    }
+
+    function ttr_dtr_detail_only($id){
+        $data = $this->db->query("select td.id, td.dtr_detail_id, td.rongsok_id, td.qty, td.bruto, td.netto, td.line_remarks, dd.po_detail_id, dd.berat_palette, dd.no_pallete, dd.tanggal_masuk from ttr_detail td
+                left join dtr_detail dd on dd.id = td.dtr_detail_id
+                where td.ttr_id =".$id);
         return $data;
     }
 }

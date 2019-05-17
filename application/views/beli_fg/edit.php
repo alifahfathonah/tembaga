@@ -192,6 +192,7 @@
             <?php
                 if ($header['status']==0 || $header['status']==2){
             ?>
+            <input type="hidden" id="count" value="<?=$count['count'];?>">
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
@@ -236,12 +237,12 @@
                         
                     <?php
                         if( ($group_id==1)||($hak_akses['close_po']==1) ){
-                            echo '<a href="javascript:;" class="btn red-sunglo" onclick="showRejectBox();"> 
+                            echo '<a href="javascript:;" class="btn red-sunglo" id="btn_simpan" onclick="showRejectBox();"> 
                                 <i class="fa fa-lock"></i> Close PO </a>';
                         }
                     ?>
                         
-                    <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>" id="btn_kembali" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -406,7 +407,12 @@ function loadDetail(id){
         url:'<?php echo base_url('index.php/BeliFinishGood/load_detail'); ?>',
         data:"id="+ id,
         success:function(result){
-            $('#boxDetail').html(result);   
+            $('#boxDetail').html(result);
+            if($('#count').val()==$('#count2').val()){
+                $('#btn_kembali').show();
+            }else{
+                $('#btn_kembali').hide();
+            }
         }
     });
 }
@@ -443,7 +449,6 @@ function saveDetail(){
                 total_harga:$('#total_harga').val()
             },
             success:function(result){
-                console.log(result);
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
                     $("#fg_id").select2("val", "");

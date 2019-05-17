@@ -248,6 +248,15 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
+    function list_item_sj_ampas($soid){
+        $data = $this->db->query("select tsa.*, r.nama_item as jenis_barang, r.uom from t_sales_order_detail tsod
+            left join t_sales_order tso on tso.id = tsod.t_so_id
+            left join t_spb_ampas_fulfilment tsa on tsa.t_spb_ampas_id = tso.no_spb
+            left join rongsok r on r.id = tsa.jenis_barang_id
+            where tso.so_id=".$soid);
+        return $data;
+    }
+
     function jenis_barang_rsk(){
         $data = $this->db->query("select id, kode_rongsok, nama_item from rongsok 
                 where type_barang ='Rongsok'");
@@ -398,8 +407,8 @@ class Model_sales_order extends CI_Model{
 
     function show_header_sj($id){
         $data = $this->db->query("Select tsj.*, cust.id as id_customer, cust.nama_customer, cust.alamat, so.tanggal as tanggal_so, 
-                    COALESCE(tsf.no_spb, tsw.no_spb_wip, s.no_spb) as nomor_spb,
-                    COALESCE(tsf.status, tsw.status, s.status) as status_spb,
+                    COALESCE(tsf.no_spb, tsw.no_spb_wip, s.no_spb, tsa.no_spb_ampas) as nomor_spb,
+                    COALESCE(tsf.status, tsw.status, s.status, tsa.status) as status_spb,
                     tso.no_spb, so.no_sales_order, tso.no_po,
                     tkdr.type_kendaraan,
                     usr.realname,
@@ -411,6 +420,7 @@ class Model_sales_order extends CI_Model{
                     Left Join t_spb_fg tsf On (tso.jenis_barang = 'FG' and tsf.id = tso.no_spb)
                     Left Join t_spb_wip tsw On (tso.jenis_barang = 'WIP' and tsw.id = tso.no_spb)
                     Left Join spb s On (tso.jenis_barang = 'RONGSOK' and s.id = tso.no_spb)
+                    Left Join t_spb_ampas tsa on (tso.jenis_barang = 'AMPAS' and tsa.id = tso.no_spb)
                     Left Join sales_order so On (so.id = tso.so_id)
                     Left Join m_type_kendaraan tkdr On (tsj.m_type_kendaraan_id = tkdr.id) 
                     Left Join users usr On (tsj.created_by = usr.id)

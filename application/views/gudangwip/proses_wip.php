@@ -339,13 +339,13 @@
                 </div>
                 <br/>
                 <div class="row">
-                    <div class="col-md-6" id="div_tali_rolling">
+                    <div class="col-md-6" id="div_bs_8m">
                         <div class="form-inline">
                             <div class="form-group">
-                                <label>Berat Tali Rolling </label>
-                                <input type="text" id="berat_tali_rolling" name="tali_rolling" 
+                                <label>Berat BS 8mm </label>
+                                <input type="text" id="berat_bs_8mm" name="bs_8m" 
                                 class="form-control myline" size="25" 
-                                value="" placeholder="Berat Tali Rolling"/>
+                                value="" placeholder="Berat BS 8mm"/>
                                 <label> Kg</label>
                             </div>
                         </div>
@@ -448,7 +448,7 @@ function reset_values(){
     $('#jml_keras_in').val('');
     $('#berat_kh_in').val('');
     $('#berat_keras_in').val('');
-    $('#berat_tali_rolling').val('');
+    $('#berat_bs_8m').val('');
     $('#berat_bs_in').val('');
     $('#berat_serbuk_in').val('');
 }
@@ -466,7 +466,7 @@ function hitung_susut_jumlah(){
 }
 function hitung_susut_berat(){
     if($('#jenis_masak').val()=='ROLLING'){
-        var susut = Number(Number($('#berat_ingot').val()) - (Number($('#berat_kh_in').val()) + Number($('#berat_keras_in').val()) + Number($('#berat_tali_rolling').val()) + Number($('#berat_bs_rolling').val()) + Number($('#berat_serbuk_in').val()) + Number($('#berat_bs_ingot').val())));
+        var susut = Number(Number($('#berat_ingot').val()) - (Number($('#berat_kh_in').val()) + Number($('#berat_keras_in').val()) + Number($('#berat_bs_8m').val()) + Number($('#berat_bs_rolling').val()) + Number($('#berat_serbuk_in').val()) + Number($('#berat_bs_ingot').val())));
         $('#susut_berat_ingot').val(susut);
     }else if($('#jenis_masak').val()=='BAKAR ULANG'){
         var susut = Number(Number($('#jml_berat_keras').val()) - (Number($('#berat_kh_in').val()) + Number($('#berat_keras_in').val()) + Number($('#berat_bs_in').val())));
@@ -539,7 +539,7 @@ function pilih_data(id){
         $('#div_data_spb :input').attr('disabled', false);
         $('#div_data_spb_kh :input').attr('disabled', true);
         $('#div_stok_keras :input').attr('disabled', true);
-        $('#div_tali_rolling').hide();
+        $('#div_bs_8m').show();
         $('#div_kawat_keras').show();
         reset_values();
         $("#id_spb_ingot").select2("val", "");
@@ -562,7 +562,7 @@ function pilih_data(id){
         $('#div_data_spb :input').attr('disabled', true);
         $('#div_data_spb_kh :input').attr('disabled', true);
         $('#div_stok_keras :input').attr('disabled', false);
-        $('#div_tali_rolling').hide();
+        $('#div_bs_8m').hide();
         $('#div_kawat_keras').hide();
         reset_values();
     }else if(id == 'CUCI'){

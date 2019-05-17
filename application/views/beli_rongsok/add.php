@@ -34,7 +34,7 @@
                         </div>
                         <div class="col-md-8">
                             <?php if($this->session->userdata('user_ppn')==1){ ?>
-                            <input type="text" id="no_po" name="no_po" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor PO ..." value="PO-KMP.">
+                            <input type="text" id="no_po" name="no_po" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor PO ..." onkeyup="this.value = this.value.toUpperCase()">
                             <?php }else{ ?>
                             <input type="text" id="no_po" name="no_po" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px"

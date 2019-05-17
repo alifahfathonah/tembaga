@@ -41,7 +41,8 @@
                     <th>Tanggal</th>
                     <th>No. PO</th>
                     <th>Supplier</th>
-                    <th>No. Reff/ DTR</th>                    
+                    <th>No. Reff/ DTR</th>
+                    <th>Tanggal DTR</th>
                     <th>Jumlah <br>Items</th>
                     <th>Status</th>
                     <th>Bruto (Kg)</th>
@@ -64,7 +65,8 @@
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->no_po; ?></td>
                         <td><?php echo $data->nama_supplier; ?></td>
-                        <td><?php echo $data->no_dtr; ?></td>                        
+                        <td><?php echo $data->no_dtr; ?></td>                   
+                        <td><?php echo date('d-m-Y', strtotime($data->tgl_dtr)); ?></td>     
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <?php ($data->ttr_status=='0') ? $status = '<div class="bg-yellow">Waiting Approval</div>': (($data->ttr_status <> '1') ? $status = '<div class="bg-red">Rejected</div>' :  $status = '<div class="bg-green">Approved</div>'); ?>
                         <td style="text-align:center"><?php echo $status; ?></td>

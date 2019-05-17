@@ -32,10 +32,20 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Tanggal <font color="#f00">*</font>
+                            Tanggal DTR <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="tanggal" name="tanggal" readonly="readonly"
+                            <input type="text" id="tgl-dtr" name="tgl_dtr" readonly="readonly"
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('d-m-Y', strtotime($header['tgl_dtr'])); ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal TTR<font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tanggal" name="tanggal"
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
                                 value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
@@ -199,7 +209,8 @@ function approveTTR(id_ttr){
             id: id_ttr,
             jumlah_afkir: jumlah_afkir,
             jumlah_packing: jumlah_packing,
-            jumlah_lain: jumlah_lain
+            jumlah_lain: jumlah_lain,
+            tanggal: $('#tanggal').val()
         },
         success: function (result){
             if(result['status']){
@@ -237,4 +248,20 @@ function rejectTTR(id_ttr){
         });
     }
 }
+</script>
+<link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+<script>
+$(function(){        
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });
+});
 </script>

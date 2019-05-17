@@ -242,14 +242,14 @@
                                     }
                                     ?>
                                     <tr>
-                                        <td style="text-align:right;" colspan="4"><strong>Total (Kg) </strong></td>
+                                        <td style="text-align:right;" colspan="3"><strong>Total (Kg) </strong></td>
                                         <td style="text-align:right;">
                                             <strong><?php echo number_format($bruto,0,',','.'); ?></strong>
                                         </td>
                                         <td style="text-align:right;">
                                             <strong><?php echo number_format($netto,0,',','.'); ?></strong>
                                         </td>
-                                        <td>&nbsp;</td>
+                                        <td colspan="2">&nbsp;</td>
                                     </tr>
                                 </tbody>
                             </table>                            
@@ -431,7 +431,7 @@ function approve(id){
         success: function (result){            
             // if(result['type_message']=="sukses"){
             // //     alert(result['message']);
-                location.reload();
+                // location.reload();
             // }else{
             //     alert(result['message']);
             // }

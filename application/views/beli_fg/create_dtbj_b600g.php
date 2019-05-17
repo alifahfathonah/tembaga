@@ -34,7 +34,7 @@
                             No. DTBJ <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
+                            <input type="text" id="no_dtbj" name="no_dtbj"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?= $header['no_dtbj'];?>">
 
@@ -167,6 +167,8 @@
                                 <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(1);" id="timbang_1"> <i class="fa fa-dashboard"></i> Timbang </a></td>
                                 <td><input type="text" id="netto_1" name="myDetails[1][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly"></td>
                                 <td><input type="text" name="myDetails[1][no_packing]" id="no_packing_1" class="form-control myline" readonly placeholder="Auto"></td>
+                                <input type="hidden" name="myDetails[1][no_bobbin]" class="form-control myline" value="">
+                                <input type="hidden" name="myDetails[1][line_remarks]" class="form-control myline" value="">
                                 <td style="text-align:center"><a id="save_1" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(1);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
                                     <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
                                     <a id="print_1" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(1);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>
@@ -208,7 +210,10 @@ function timbang_netto(id){
 }
 
 function simpanData(){
-    if($.trim($("#tanggal").val()) == ""){
+    if($.trim($("#no_dtbj").val()) == ""){
+        $('#message').html("Nomor DTBJ harus diisi, tidak boleh kososng!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kososng!");
         $('.alert-danger').show(); 
     }else if($.trim($("#supplier_id").val()) == ""){
@@ -307,6 +312,8 @@ function saveDetail(id){
                 '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('+new_id+');" id="timbang_'+new_id+'"> <i class="fa fa-dashboard"></i> Timbang </a></td>'+
                 '<td><input type="text" id="netto_'+new_id+'" name="myDetails['+new_id+'][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly"></td>'+
                 '<td><input type="text" name="myDetails['+new_id+'][no_packing]" id="no_packing_'+new_id+'" class="form-control myline" readonly placeholder="Auto"></td>'+
+                '<input type="hidden" name="myDetails['+new_id+'][no_bobbin]" class="form-control myline" value="">'+
+                '<input type="hidden" name="myDetails['+new_id+'][line_remarks]" class="form-control myline" value="">'+
                 '<td style="text-align:center"><a id="save_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail('+new_id+');" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>'+
                     '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>'+
                     '<a id="print_'+new_id+'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('+new_id+');" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a></td>'+

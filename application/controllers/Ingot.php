@@ -679,7 +679,7 @@ class Ingot extends CI_Controller{
             #insert bs ke gudang bs
                     $this->db->insert('dtr_detail', array(
                         'dtr_id'=>$dtr_id,
-                        'rongsok_id'=>22,
+                        'rongsok_id'=>21,//BS APOLLO
                         'qty'=>0,
                         'bruto'=>$this->input->post('bs'),
                         'netto'=>$this->input->post('bs'),
@@ -812,12 +812,10 @@ class Ingot extends CI_Controller{
             #Create BPB Detail Ampas ke gudang ampas
             $data_bpb_detail_ampas = array(
                     'bpb_ampas_id' => $this->db->insert_id(),
-                    'created' => $tgl_input,
                     'jenis_barang_id' => 30,
                     'uom' => 'KG',
                     'berat' => $this->input->post('ampas'),
-                    'keterangan' => 'SISA PRODUKSI INGOT',
-                    'created_by' => $user_id
+                    'keterangan' => 'SISA PRODUKSI INGOT'
                     );
             $this->db->insert('t_bpb_ampas_detail',$data_bpb_detail_ampas);
         }

@@ -7,7 +7,7 @@ class Model_gudang_wip extends CI_Model{
                     Left Join users usr On (tgw.created_by = usr.id)
                     left join jenis_barang jb on (jb.id = tgw.jenis_barang_id)
                     left join t_bpb_wip_detail tbwd on (tbwd.id = tgw.t_bpb_wip_detail_id)
-                    left join t_bpb_wip tbw on (tbw.id = tbwd.bpb_wip_id)    
+                    left join t_bpb_wip tbw on (tbw.id = tbwd.bpb_wip_id)
                 Where tgw.flag_taken=0 
                 Order By tgw.id Desc");
         return $data;
@@ -24,14 +24,16 @@ class Model_gudang_wip extends CI_Model{
         return $data;
     } 
 
-    function bpb_list($ppn){
-        $data = $this->db->query("Select bpbwip.*, tsw.no_spb_wip,
+    function bpb_list(){
+        $data = $this->db->query("Select bpbwip.*,
                     (select count(id) from t_bpb_wip_detail bpbwipd where bpbwip.id = bpbwipd.bpb_wip_id)as jumlah_item,
-                    usr.realname As pengirim
+                    usr.realname As pengirim, a.tipe_apolo
                 From t_bpb_wip bpbwip
                     Left join users usr On (bpbwip.created_by = usr.id)
-                    left join t_spb_wip tsw on (tsw.id = bpbwip.spb_wip_id)
-                Where flag_ppn =".$ppn."
+                    Left join t_hasil_wip thw On (thw.id = bpbwip.hasil_wip_id)
+                    Left join t_hasil_masak thm On (thm.id = thw.hasil_masak_id)
+                    Left join produksi_ingot pi On (pi.id = thm.id_produksi)
+                    Left join apolo a On (a.id = pi.id_apolo)
                 Order By bpbwip.id Desc");
         return $data;
     }
@@ -65,7 +67,8 @@ class Model_gudang_wip extends CI_Model{
                     aprv.realname As approved_name,
                     rjt.realname As rejected_name,
                     rcv.realname As receiver_name,
-                (Select count(tswd.id)As jumlah_item From t_spb_wip_detail tswd Where tswd.t_spb_wip_id = tsw.id)As jumlah_item
+                (Select count(tswd.id)As jumlah_item From t_spb_wip_detail tswd Where tswd.t_spb_wip_id = tsw.id)As jumlah_item,
+                (Select count(tswf.id) from t_spb_wip_fulfilment tswf where tswf.t_spb_wip_id = tsw.id)As jumlah_fulfilment
                 From t_spb_wip tsw
                     Left Join users usr On (tsw.created_by = usr.id)
                     Left Join users aprv On (tsw.approved_by = aprv.id)
@@ -163,7 +166,7 @@ class Model_gudang_wip extends CI_Model{
     function check_spb($id){
         $data = $this->db->query("select tsw.id, 
                 (select sum(tswd.berat) from t_spb_wip_detail tswd where tswd.t_spb_wip_id=tsw.id) as tot_spb,
-                (select sum(tswf.berat) from t_spb_wip_fulfilment tswf where tswf.approved_by=1 and tswf.t_spb_wip_id =tsw.id) as tot_fulfilment
+                (select sum(tswf.berat) from t_spb_wip_fulfilment tswf where tswf.approved_by > 0 and tswf.t_spb_wip_id =tsw.id) as tot_fulfilment
                 from t_spb_wip tsw
                 where tsw.id =".$id);
         return $data;

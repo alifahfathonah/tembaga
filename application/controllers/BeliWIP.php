@@ -357,6 +357,29 @@ class BeliWIP extends CI_Controller{
         }
     }
 
+    function proses_dtwip(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "beli_wip/proses_dtwip";
+            $this->load->model('Model_beli_wip');
+            $data['header']  = $this->Model_beli_wip->show_header_dtwip($id)->row_array(); 
+            $data['details'] = $this->Model_beli_wip->show_detail_dtwip($id)->result();
+            
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/BeliRongsok');
+        }
+    }
+
     function edit_dtwip(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
@@ -595,6 +618,71 @@ class BeliWIP extends CI_Controller{
         
        // header('Content-Type: application/json');
        // echo json_encode($return_data);
+    }
+
+    function save_proses_dtwip(){
+        $dtwip_id = $this->input->post('id');
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+
+        $this->load->model('Model_beli_wip');
+
+         #Update status DTBJ
+        $this->db->where('id', $dtwip_id);
+        $this->db->update('dtwip', array(
+                'status'=>1,
+                'approved'=>$tanggal,
+                'approved_by'=>$user_id));
+                        
+            #Create BPB WIP
+            $this->load->model('Model_m_numberings');
+            $loop1 = $this->db->query("select dtwipd.dtwip_id, dtwipd.jenis_barang_id, jb.jenis_barang
+                from dtwip_detail dtwipd
+                left join jenis_barang jb on (jb.id = dtwipd.jenis_barang_id)
+                where dtwipd.dtwip_id = ".$dtwip_id." group by jb.jenis_barang")->result();
+            foreach ($loop1 as $k1) {
+                #insert t_bpb_fg
+                if($user_ppn==1){
+                    $code = $this->Model_m_numberings->getNumbering('BPB-KMP', $tgl_input);
+                }else{
+                    $code = $this->Model_m_numberings->getNumbering('BPB-PO',$tgl_input);
+                }
+
+                $data_bpb = array(
+                        'no_bpb' => $code,
+                        'flag_ppn' => $user_ppn,
+                        'created' => $tanggal,
+                        'created_by' => $user_id,
+                        'keterangan' => $this->input->post('remarks'),
+                        'status' => 0
+                    );
+                $this->db->insert('t_bpb_wip',$data_bpb);
+                $id_bpb = $this->db->insert_id();
+
+                #insert t_bpb_detail
+                $loop2 = $this->db->query("select dtwip_detail.*, jb.uom from dtwip_detail left join jenis_barang jb on (jb.id = dtwip_detail.jenis_barang_id) where jenis_barang_id = ".$k1->jenis_barang_id." and dtwip_id = ".$dtwip_id)->result();
+                foreach ($loop2 as $k2) {
+                    $this->db->insert('t_bpb_wip_detail', array(
+                        'bpb_wip_id' => $id_bpb,
+                        'created' => $tgl_input,
+                        'jenis_barang_id' => $k2->jenis_barang_id,
+                        'qty' => $k2->qty,
+                        'berat' => $k2->berat,
+                        'uom' => $k2->uom,
+                        'keterangan' => $k2->line_remarks,
+                        'created_by' => $user_id
+                    ));
+                }
+            }
+        
+        $this->db->trans_start();   
+        if($this->db->trans_complete()){  
+            redirect('index.php/BeliWIP/dtwip_list');
+        }else{
+            redirect('index.php/BeliWIP/dtwip_list');
+        }
     }
 
     function create_voucher(){

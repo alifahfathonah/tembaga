@@ -34,7 +34,7 @@
                             No. DTBJ <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
+                            <input type="text" id="no_dtbj" name="no_dtbj"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?= $header['no_dtbj'];?>">
 
@@ -202,11 +202,19 @@
 // }
 
 function simpanData(){
-    if($.trim($("#tanggal").val()) == ""){
-        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
+    if($.trim($("#no_dtbj").val()) == ""){
+        $('#message').html("Nomor DTBJ harus diisi, tidak boleh kososng!");
         $('.alert-danger').show(); 
-    }else{     
-        $('#formku').submit(); 
+    }else if($.trim($("#tanggal").val()) == ""){
+        $('#message').html("Tanggal harus diisi, tidak boleh kososng!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#supplier_id").val()) == ""){
+        $('#message').html("Supplier harus diisi, tidak boleh kososng!");
+        $('.alert-danger').show(); 
+    }else{   
+        $('#message').html("");
+        $('.alert-danger').hide(); 
+        $('#formku').submit();
     };
 };
 

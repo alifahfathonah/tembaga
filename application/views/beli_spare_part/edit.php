@@ -105,11 +105,11 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th style="width:40px">No</th>
-                                <th>Nama Item Spare Part</th>
-                                <th>Unit of Measure</th>
-                                <th>Jumlah</th>
-                                <th>Keterangan</th>
-                                <th>Actions</th>
+                                <th width="30%">Nama Item Spare Part</th>
+                                <th width="15%">Unit of Measure</th>
+                                <th width="15%">Jumlah</th>
+                                <th width="20%">Keterangan</th>
+                                <th width="20%">Actions</th>
                             </thead>
                             <tbody>
                                 <tbody id="boxDetail">

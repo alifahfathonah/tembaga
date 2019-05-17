@@ -88,6 +88,24 @@
                             </select>
                         </div>
                     </div>
+                    <?php if($this->session->userdata('user_ppn')==1){?>
+                    <div class="row" id="show_bank_tuj">
+                        <div class="col-md-4">
+                            Rekening Tujuan <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="bank_id" name="bank_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value="0"></option>
+                                <?php
+                                    foreach ($bank_list as $row){
+                                        echo '<option value="'.$row->id.'">('.$row->kode_bank.') '.$row->nomor_rekening.'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <?php } ?>
                     <div class="row" id="show_rek_tuj">
                         <div class="col-md-4">
                             Rekening Tujuan <font color="#f00">*</font>
@@ -171,7 +189,7 @@
                         </div>
                         <div class="col-md-8">
                             <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px"></textarea>                           
+                                class="form-control myline" style="margin-bottom:5px"></textarea>
                         </div>
                     </div>
                     <div class="row" id="show_replace">
@@ -214,7 +232,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Tangga Cek Mundur Lama
+                            Tanggal Cek Mundur Lama
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="cek_mundur_lama" name="cek_mundur_lama" 
@@ -361,11 +379,11 @@ function get_cek(id){
         resetAllValues();
         $('#show_rek').hide();
         $("#show_rek_tuj").hide();
-        $("#show_bank").hide();
         $("#show_cek_mu").hide();
         $("#show_nomor_cek").hide();
         $("#show_replace").hide();
 
+        $('#show_bank_tuj').show();
         $("#show_bank").show();
         $("#show_replace").show();
         $("#show_nomor_cek").show();
@@ -374,11 +392,9 @@ function get_cek(id){
         resetAllValues();
         $('#show_rek').hide();
         $("#show_rek_tuj").hide();
-        $("#show_bank").hide();
-        $("#show_cek_mu").hide();
-        $("#show_nomor_cek").hide();
         $("#show_replace").hide();
 
+        $('#show_bank_tuj').show();
         $("#show_bank").show();
         $("#show_replace").show();
         $("#show_cek_mu").show();
@@ -398,11 +414,9 @@ function get_cek(id){
         $('#show_replace').hide();
         $('#show_replace_detail').hide();
         get_replace();
-        $('#show_rek').hide();
-        $("#show_rek_tuj").hide();
-        $("#show_bank").hide();
         $("#show_cek_mu").hide();
         $("#show_nomor_cek").hide();
+        $('#show_bank_tuj').hide();
 
         $("#show_rek_tuj").show();
         $("#show_bank").show();
@@ -412,11 +426,9 @@ function get_cek(id){
         $('#show_replace').hide();
         $('#show_replace_detail').hide();
         get_replace();
-        $('#show_rek').hide();
-        $("#show_rek_tuj").hide();
-        $("#show_bank").hide();
         $("#show_cek_mu").hide();
         $("#show_nomor_cek").hide();
+        $('#show_bank_tuj').hide();
 
         $("#show_rek_tuj").show();
         $("#show_bank").show();
@@ -431,6 +443,8 @@ function get_cek(id){
         $("#show_bank").hide();
         $("#show_cek_mu").hide();
         $("#show_nomor_cek").hide();
+
+        $('#show_bank_tuj').show();
     }
 };
 </script>
@@ -447,6 +461,7 @@ $(function(){
         $("#show_cek_mu").hide();
         $("#show_nomor_cek").hide();
         $("#show_replace").hide();
+        $("#show_bank_tuj").hide();
 });
 </script>
       

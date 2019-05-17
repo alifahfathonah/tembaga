@@ -75,6 +75,7 @@
                     <th>Nominal</th>
                     <th>Keterangan</th>
                     <th>Status</th>
+                    <th>Matching</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -107,6 +108,7 @@
                                 }
                             ?>
                         </td>
+                        <td><?= ($data->flag_matching > 0) ? '<div style="background-color:green; color:#fff; padding:3px">Sudah Matching</div>' : '<div style="background-color:darkkhaki; padding:3px">Belum Matching</div>';?></td>
                         <td style="text-align:center"> 
                             <?php
                                 if($group_id==1 || $hak_akses['view_um']==1){

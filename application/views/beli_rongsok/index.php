@@ -155,7 +155,7 @@
                                         readonly="readonly">                                                                       
                                 </div>
                             </div>
-                            <div class="row">
+                            <!-- <div class="row">
                                 <div class="col-md-5">
                                     Terbilang
                                 </div>
@@ -164,7 +164,7 @@
                                         class="form-control myline" style="margin-bottom:5px" 
                                         readonly="readonly"></textarea>                                                 
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="row">
                                 <div class="col-md-5">
                                     Total Pembayaran Sebelumnya (Rp) <font color="#f00">*</font>
@@ -173,6 +173,20 @@
                                     <input type="text" id="nilai_dp" name="jumlah_dibayar" 
                                         class="form-control myline" style="margin-bottom:5px" 
                                         readonly="readonly">                                                                       
+                                </div>
+                            </div>
+                            <hr>
+                            <div style="width: 100%; margin-bottom: 5px;text-align: center">
+                              <span>
+                                Data Uang Keluar <!--Padding is optional-->
+                              </span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Nomor Uang Keluar
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="no_uk" name="no_uk" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
                                 </div>
                             </div>
                             <div class="row">
@@ -235,7 +249,7 @@
                                 <div class="col-md-7">
                                     <textarea id="keterangan" name="keterangan" 
                                         class="form-control myline" style="margin-bottom:5px" 
-                                        onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>                                                                       
+                                        onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>           
                                 </div>
                             </div>
                         </form>
@@ -557,7 +571,7 @@ function createVoucher(id){
             $('#materai').val(result['materai']);
             $('#amount').val('0');
             $('#nilai_po').val(result['nilai_po']);
-            $('#terbilang').val(result['terbilang']);
+            // $('#terbilang').val(result['terbilang']);
             $('#nilai_dp').val(result['nilai_dp']);
             $('#nilai_ppn').val(result['nilai_ppn']);
             $('#nilai_before_ppn').val(result['nilai_before_ppn']);

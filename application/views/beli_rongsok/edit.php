@@ -192,7 +192,7 @@
                 </div>              
             </div>
             <?php
-                if ($header['status']==0 || $header['status']==2){
+                if ($header['status']==0){
             ?>
             <div class="row">
                 <div class="col-md-12">

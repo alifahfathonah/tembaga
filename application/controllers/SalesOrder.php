@@ -861,6 +861,10 @@ class SalesOrder extends CI_Controller{
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_lain($soid)->result();
                 $data['jenis_barang'] = $this->Model_sales_order->list_barang_sp()->result();
                 $data['content']= "sales_order/edit_surat_jalan_lain";
+            }else if($jenis == 'AMPAS'){
+                $data['list_produksi'] = $this->Model_sales_order->list_item_sj_ampas($soid)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->rongsok_in_so($soid)->result();
+                $data['content'] = "sales_order/edit_surat_jalan_ampas";
             }else{
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_rsk($soid)->result();
                 $data['jenis_barang'] = $this->Model_sales_order->rongsok_in_so($soid)->result();

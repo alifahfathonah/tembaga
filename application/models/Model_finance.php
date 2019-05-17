@@ -36,7 +36,7 @@ class Model_finance extends CI_Model{
     }
 
     function bank_list($ppn){
-        $data = $this->db->query("Select * From bank where ppn =".$ppn." Order By kode_bank ");
+        $data = $this->db->query("Select * From bank where ppn =".$ppn." Order By id ");
         return $data;
     }
 
@@ -183,7 +183,7 @@ class Model_finance extends CI_Model{
             left join t_surat_jalan tsj on tsj.id = fi.id_surat_jalan
             left join m_customers mc on mc.id = fi.id_customer
             left join retur r on r.id = fi.id_retur
-            where so.flag_ppn = ".$ppn." or r.flag_ppn = ".$ppn."
+            where fi.flag_ppn = ".$ppn."
             Order By id desc");
         return $data;
     }

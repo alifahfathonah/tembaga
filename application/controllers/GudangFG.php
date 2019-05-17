@@ -378,6 +378,7 @@ class GudangFG extends CI_Controller{
         header('Content-Type: application/json');
         echo json_encode($tabel); 
     }
+    
     function get_uom_spb(){
         $id = $this->input->post('id');
         $this->load->model('Model_gudang_fg');
@@ -1032,49 +1033,6 @@ class GudangFG extends CI_Controller{
             #Create Inventori FG
             $details = $this->input->post('details');
             $this->load->model('Model_gudang_fg');
-            // $packing = $this->Model_gudang_fg->show_data_packing($this->input->post('id_jenis_packing'))->row_array()['packing'];
-            // if($packing=="KARDUS"){
-            //     foreach ($details as $v) {  
-            //         $data_kardus = array(
-            //                 'tanggal'=> $tgl_input,
-            //                 'jenis_trx' => 0, //0 masuk
-            //                 'flag_taken'=>0, // 0 belum diambil
-            //                 't_bpb_fg_id' => $bpb_id,
-            //                 't_bpb_fg_detail_id' => $v['id_bpb_fg_detail'],
-            //                 'jenis_barang_id' => $v['id_jenis_barang'] ,
-            //                 'nomor_BPB' =>$this->input->post('no_bpb'),
-            //                 'no_packing' => $v['no_packing'],
-            //                 'netto' =>$v['netto'],
-            //                 'keterangan' => $this->input->post('remarks'),
-            //                 'tanggal_masuk' => $tgl_input,
-            //                 'created_by'=> $user_id,
-            //                 'created_at' => $tanggal
-            //         );
-            //         $this->db->insert('t_gudang_fg', $data_kardus);
-            //     }
-                
-            // } else if ($packing == "ROLL") {
-            //     foreach ($details as $v) {  
-            //         $data_kardus = array(
-            //                 'tanggal'=> $tgl_input,
-            //                 'jenis_trx' => 0, //0 masuk
-            //                 'flag_taken'=>0, // 0 belum diambil
-            //                 't_bpb_fg_id' => $bpb_id,
-            //                 't_bpb_fg_detail_id' => $v['id_bpb_fg_detail'],
-            //                 'jenis_barang_id' => $v['id_jenis_barang'] ,
-            //                 'nomor_BPB' =>$this->input->post('no_bpb'),
-            //                 'no_packing' => $v['no_packing'],
-            //                 'no_produksi' => $v['no_produksi'],
-            //                 'netto' =>$v['netto'],
-            //                 'keterangan' => $this->input->post('remarks'),
-            //                 'tanggal_masuk' => $tgl_input,
-            //                 'created_by'=> $user_id,
-            //                 'created_at' => $tanggal
-            //         );
-            //         $this->db->insert('t_gudang_fg', $data_kardus);
-            //     }
-               
-            // } else {
                 foreach ($details as $v) {  
                     $data_else = array(
                             'tanggal'=> $tgl_input,
@@ -1098,8 +1056,12 @@ class GudangFG extends CI_Controller{
                             'created_at' => $tanggal
                         );
                     $this->db->insert('t_gudang_fg', $data_else);
-                // }
-            }
+                }
+                /** API TRANSACTION **/
+                if($user_ppn==1){
+                    
+                }
+            
             
         if($this->db->trans_complete()){  
                 

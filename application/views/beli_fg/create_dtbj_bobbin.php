@@ -34,7 +34,7 @@
                             No. DTBJ <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
+                            <input type="text" id="no_dtbj" name="no_dtbj"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?= $header['no_dtbj'];?>">
 
@@ -132,6 +132,7 @@
                                 <th>No. Bobbin</th>
                                 <th>No. Packing</th>
                                 <th>Keterangan</th>
+                                <th>Action</th>
                             </thead>
                             <tbody id="boxDetail">
                             <tr>
@@ -209,6 +210,7 @@ function get_bobbin(id, nmr){
                     $('#berat_bobbin_'+nmr).val(result['berat']);
                     $('#id_bobbin_'+nmr).val(result['id']);
                     $('#no_packing_'+nmr).val(result['no_packing']);
+                    $('#netto_'+nmr).val(Number($('#bruto_'+nmr).val())-result['berat']);
                 } else {
                     alert('Bobbin/Keranjang tidak ditemukan atau belum dipesan, coba lagi');
                     $('#no_bobbin_'+nmr).val('');
@@ -229,7 +231,6 @@ function timbang_netto(id){
     $("#netto_"+id).val(total);
 }
 
-
 function myCurrency(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
@@ -244,7 +245,10 @@ function getComa(value, id){
 
 
 function simpanData(){
-    if($.trim($("#tanggal").val()) == ""){
+    if($.trim($("#no_dtbj").val()) == ""){
+        $('#message').html("Nomor DTBJ harus diisi, tidak boleh kososng!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kososng!");
         $('.alert-danger').show(); 
     }else if($.trim($("#supplier_id").val()) == ""){

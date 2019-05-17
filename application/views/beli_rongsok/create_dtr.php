@@ -34,9 +34,13 @@
                             No. DTR <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
+                        <?php if($this->session->userdata('user_ppn')==1){?>
+                            <input type="text" id="no_dtr" name="no_dtr" class="form-control myline" style="margin-bottom:5px" placeholder="Nomor DTR...">
+                        <?php }else{ ?>
                             <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="Auto Generate">
+                        <?php } ?>
                         </div>
                     </div>
                     <div class="row">
@@ -266,10 +270,10 @@ function getComa(value, id){
 
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
-        $('#message').html("Tanggal harus diisi, tidak boleh kososng!");
+        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#supplier_id").val()) == ""){
-        $('#message').html("Supplier harus diisi, tidak boleh kososng!");
+        $('#message').html("Supplier harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else{   
         $('#message').html("");
