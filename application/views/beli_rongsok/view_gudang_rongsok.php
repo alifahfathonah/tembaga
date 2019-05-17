@@ -24,7 +24,7 @@
        <tr >
             <th>No</th>
             <th>Item Rongsok</th>
-            <th>Jumlah Packing</th>
+            <th>No Palette</th>
             <th>Bruto</th>
             <th>Berat</th>
             <th>Netto</th>

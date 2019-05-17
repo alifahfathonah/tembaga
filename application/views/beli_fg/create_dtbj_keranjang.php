@@ -34,7 +34,7 @@
                             No. DTBJ <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
+                            <input type="text" id="no_dtbj" name="no_dtbj"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?= $header['no_dtbj'];?>">
 
@@ -241,7 +241,10 @@ function getComa(value, id){
 
 
 function simpanData(){
-    if($.trim($("#tanggal").val()) == ""){
+    if($.trim($("#no_dtbj").val()) == ""){
+        $('#message').html("Nomor DTBJ harus diisi, tidak boleh kososng!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kososng!");
         $('.alert-danger').show(); 
     }else if($.trim($("#supplier_id").val()) == ""){

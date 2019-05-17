@@ -92,6 +92,7 @@ class BeliRongsok extends CI_Controller{
         $user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
         
         $this->db->trans_start();
@@ -99,7 +100,7 @@ class BeliRongsok extends CI_Controller{
             $this->load->model('Model_m_numberings');
             $code = $this->Model_m_numberings->getNumbering('PO', $tgl_input); 
         }else{
-            $code = $this->input->post('no_po');
+            $code = 'PO-KMP.'.$tgl_po.'.'.$this->input->post('no_po'); 
         }
         
         $data = array(
@@ -122,7 +123,7 @@ class BeliRongsok extends CI_Controller{
         );
         $this->db->insert('po', $data);
         $po_id = $this->db->insert_id();
-/**
+
             if($user_ppn == 1){
                 $this->load->helper('target_url');
 
@@ -139,7 +140,7 @@ class BeliRongsok extends CI_Controller{
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
-            }**/
+            }
 
         if($this->db->trans_complete()){
             redirect('index.php/BeliRongsok/edit/'.$po_id);  
@@ -165,11 +166,12 @@ class BeliRongsok extends CI_Controller{
             $data['content']= "beli_rongsok/edit";
             $this->load->model('Model_beli_rongsok');
             $data['header'] = $this->Model_beli_rongsok->show_header_po($id)->row_array();  
-            if($data['header']['status']==0 || $data['header']['status']==2){    
+            if($data['header']['status']==0){    
                 $this->load->model('Model_rongsok');
                 $data['list_rongsok'] = $this->Model_rongsok->list_data()->result();
                 $data['count'] = $this->Model_beli_rongsok->count_po_detail($id)->row_array();
             }else{
+                $data['count'] = $this->Model_beli_rongsok->count_po_detail($id)->row_array();
                 $data['list_data'] = $this->Model_beli_rongsok->load_detail($id)->result();
                 $data['list_detail'] = $this->Model_beli_rongsok->show_data_po($id)->result();
             }
@@ -199,7 +201,7 @@ class BeliRongsok extends CI_Controller{
         
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('po', $data);
-/**
+
         if($this->session->userdata('user_ppn')==1){
             $this->load->helper('target_url');
             
@@ -219,7 +221,7 @@ class BeliRongsok extends CI_Controller{
             $response = curl_exec($ch);
             $result = json_decode($response, true);
             curl_close($ch);
-        }**/
+        }
         
         $this->session->set_flashdata('flash_msg', 'Data PO rongsok berhasil disimpan');
         redirect('index.php/BeliRongsok');
@@ -404,7 +406,7 @@ class BeliRongsok extends CI_Controller{
 
     function create_voucher(){
         $id = $this->input->post('id');
-        $this->load->helper('terbilang_d_helper');
+        // $this->load->helper('terbilang_d_helper');
         $this->load->model('Model_beli_rongsok');
         $data = $this->Model_beli_rongsok->voucher_po_rsk($id)->row_array();
          if($data['ppn']==1){
@@ -426,7 +428,7 @@ class BeliRongsok extends CI_Controller{
             }
         }
 
-        $terbilang = $nilai_po;
+        // $terbilang = $nilai_po;
         $sisa = $nilai_po - $data['nilai_dp'];
         $data['materai'] = number_format($data['materai'],0,',','.');
         $data['diskon'] = number_format($data['diskon'],0,',','.');
@@ -434,7 +436,7 @@ class BeliRongsok extends CI_Controller{
         $data['nilai_dp'] = number_format($data['nilai_dp'],0,',','.');
         $data['sisa']     = number_format($sisa,0,',','.');
         // $nilai_po = $data['nilai_po'];
-        $data['terbilang'] = ucwords(number_to_words_d($terbilang, $data['currency']));
+        // $data['terbilang'] = ucwords(number_to_words_d($terbilang, $data['currency']));
 
         header('Content-Type: application/json');
         echo json_encode($data);    
@@ -507,13 +509,27 @@ class BeliRongsok extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         if($ppn==1){
+            // $this->load->helper('target_url');
+            // $url = target_url().'api/BeliSparepartAPI/numbering?id=VRSK-KMP&tgl='.$tgl_input;
+            // $ch2 = curl_init();
+            // curl_setopt($ch2, CURLOPT_URL, $url);
+            // // curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "DELETE");
+            // // curl_setopt($ch2, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+            // curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            // curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+            // curl_setopt($ch2, CURLOPT_HEADER, 0);
+
+            // $result2 = curl_exec($ch2);
+            // $result2 = json_decode($result2);
+            // curl_close($ch2);
+            // $code = $result2->code;
             $code = $this->Model_m_numberings->getNumbering('VRSK-KMP', $tgl_input);
         }else{
             $code = $this->Model_m_numberings->getNumbering('VRSK', $tgl_input); 
         }
 
         if($code){ 
-            $this->db->insert('voucher', array(
+            $data_v = array(
                 'no_voucher'=>$code,
                 'tanggal'=>$tgl_input,
                 'jenis_voucher'=>$jenis_voucher,
@@ -528,33 +544,30 @@ class BeliRongsok extends CI_Controller{
                 'created_by'=> $user_id,
                 'modified'=> $tanggal,
                 'modified_by'=> $user_id
-            ));
+            );
+            $this->db->insert('voucher', $data_v);
             $id_vc = $this->db->insert_id();
             
             $this->db->where('id', $this->input->post('id'));
             if($jenis_voucher=='Pelunasan' && $this->input->post('status_vc')==3){
-                $this->db->update('po', array('flag_pelunasan'=>1, 'status'=>4));
+                $update_po = array('flag_pelunasan'=>1, 'status'=>4);
             }else{
-                $this->db->update('po', array('flag_dp'=>1));
+                $update_po = array('flag_dp'=>1);
             }
+            $this->db->update('po', $update_po);
 
-            if($this->input->post('bank_id')<=3){
-                if($this->input->post('ppn')==0){
+            if($ppn==0){
+                if($this->input->post('bank_id')<=3){
                     $num = 'KK';
                 }else{
-                    $num = 'KK-KMP';
-                }
-            }else{
-                if($this->input->post('ppn')==0){
                     $num = 'BK';
-                }else{
-                    $num = 'BK-KMP';
                 }
+                $code_um = $this->Model_m_numberings->getNumbering($num);
+            }else{
+                $code_um = $this->input->post('no_uk');
             }
 
-            $code_um = $this->Model_m_numberings->getNumbering($num);
-
-            $this->db->insert('f_kas', array(
+            $data_f = array(
                 'jenis_trx'=>1,
                 'nomor'=>$code_um,
                 'flag_ppn'=>$ppn,
@@ -567,8 +580,27 @@ class BeliRongsok extends CI_Controller{
                 'nominal'=>str_replace('.', '', $amount),
                 'created_at'=>$tanggal,
                 'created_by'=>$user_id
-            ));
+            );
+            $this->db->insert('f_kas', $data_f);
+            $fk_id = $this->db->insert_id();
             
+            if($ppn==1){
+                
+                $data_post['voucher'] = array_merge($data_v, array('reff1' => $id_vc));
+                $data_post['f_kas'] = array_merge($data_f, array('reff1' => $fk_id));
+                $data_post['update_po'] = $update_po;
+                $detail_post = json_encode($data_post);
+
+                $ch = curl_init(target_url().'api/BeliRongsokAPI/voucher');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
+
             if($this->db->trans_complete()){  
                 $this->session->set_flashdata('flash_msg', 'Voucher pembayaran Rongsok berhasil di-create dengan nomor : '.$code);
             }else{
@@ -615,12 +647,13 @@ class BeliRongsok extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         if($user_ppn==1){
-            $code = $this->Model_m_numberings->getNumbering('DTR-KMP', $tgl_input);
+            $code = 'DTR-KMP.'.$tgl_po.'.'.$this->input->post('no_dtr');
         }else{
             $code = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
         }
@@ -641,7 +674,7 @@ class BeliRongsok extends CI_Controller{
             $this->db->insert('dtr', $data);
             $dtr_id = $this->db->insert_id();
             $details = $this->input->post('myDetails');
-            foreach ($details as $row){
+            foreach ($details as $i => $row){
                 if($row['rongsok_id']!=''){
                     $this->db->insert('dtr_detail', array(
                         'dtr_id'=>$dtr_id,
@@ -721,7 +754,6 @@ class BeliRongsok extends CI_Controller{
         $this->load->model('Model_m_numberings');
         $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
         echo $rand;
-
     }
 
     function dtr_list(){
@@ -902,6 +934,7 @@ class BeliRongsok extends CI_Controller{
     function approve_ttr_resmi(){
         $ttr_id = $this->input->post('header_id');
         $tanggal = date('Y-m-d h:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_id = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
 
@@ -911,12 +944,34 @@ class BeliRongsok extends CI_Controller{
             $this->db->where('id',$ttr_id);
             $result = $this->db->update('ttr', array(
                     'no_ttr' => $this->input->post('nomor_ttr'),
+                    'tanggal' => $tgl_input,
+                    'no_sj' => $this->input->post('no_sj'),
                     'jmlh_afkiran' => $this->input->post('jml_afkir'),
                     'jmlh_pengepakan' => $this->input->post('jml_packing'),
                     'jmlh_lain'=> $this->input->post("jml_lain"),
                     'ttr_status'=>1,
                     'tgl_approve'=>$tanggal,
                     'approved_by'=>$user_id));
+
+            if($user_ppn==1){
+                $this->load->helper('target_url');
+
+                $this->load->model('Model_beli_rongsok');
+
+                $data_post['master'] = $this->Model_beli_rongsok->ttr_dtr_only($ttr_id)->row_array();
+                $data_post['detail'] = $this->Model_beli_rongsok->ttr_dtr_detail_only($ttr_id)->result();
+
+                $detail_post = json_encode($data_post);
+
+                $ch = curl_init(target_url().'api/BeliRongsokAPI/dtr');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
 
         // #Update Stok Rongsok Tersedia
         //     $this->load->model('Model_beli_rongsok');
@@ -937,6 +992,7 @@ class BeliRongsok extends CI_Controller{
     public function approve_ttr(){
         $ttr_id = $this->input->post('id');
         $tanggal = date('Y-m-d h:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_id = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
 
@@ -952,6 +1008,7 @@ class BeliRongsok extends CI_Controller{
             $this->db->where('id',$ttr_id);
             $result = $this->db->update('ttr', array(
                     'no_ttr' => $code,
+                    'tanggal' => $tgl_input,
                     'jmlh_afkiran' => $this->input->post('jumlah_afkir'),
                     'jmlh_pengepakan' => $this->input->post('jumlah_packing'),
                     'jmlh_lain'=> $this->input->post("jumlah_lain"),
@@ -1505,8 +1562,12 @@ class BeliRongsok extends CI_Controller{
     function close_po(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
+        $user_ppn = $this->session->userdata('user_ppn');
         
+        $this->db->trans_start();
+
         $data = array(
+                'flag_pelunasan'=> 1,
                 'status'=> 1,
                 'modified'=> $tanggal,
                 'modified_by'=>$user_id,
@@ -1516,8 +1577,32 @@ class BeliRongsok extends CI_Controller{
         $this->db->where('id', $this->input->post('header_id'));
         $this->db->update('po', $data);
         
-        $this->session->set_flashdata('flash_msg', 'PO Rongsok Berhasil di Close');
-        redirect('index.php/BeliRongsok');
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $data_post = $data;
+                $data_post['po_id'] = $this->input->post('header_id');
+
+                $data_post = http_build_query($data_post);
+
+                $ch = curl_init(target_url().'api/BeliRongsokAPI/close_po');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'PO Rongsok Berhasil di Close');
+            redirect('index.php/BeliRongsok');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'PO Rongsok GAGAL di Close');
+            redirect('index.php/BeliRongsok');
+        }
+
 
         // $id = $this->input->post('id');
         // $user_id  = $this->session->userdata('user_id');

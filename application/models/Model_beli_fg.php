@@ -256,4 +256,14 @@ class Model_beli_fg extends CI_Model
                 where d.jenis_packing =".$id);
         return $data;
     }
+
+    function load_dtbj_only($id){
+        $data = $this->db->query("Select * from dtbj where id=".$id);
+        return $data;
+    }
+
+    function load_dtbj_detail_only($id){
+        $data = $this->db->query("Select * from dtbj_detail where dtbj_id =".$id);
+        return $data;
+    }
 }

@@ -107,12 +107,12 @@
                                
                             <?php
                                 }
-                                #if($group_id==1 || $hak_akses['edit_spb']==1 && $hak_akses['status']!=1 ){
+                                if(($group_id==1 || $hak_akses['edit_spb']==1) && $data->jumlah_fulfilment==0){
                             ?>
-                            <!--a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/Ingot/edit_spb/<?php echo $data->id; ?>" 
-                               style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a-->
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/GudangWIP/edit_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/GudangWIP/delete_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-trash"></i> Hapus &nbsp; </a>
                             <?php   
-                                #}
+                                }
                                 if($group_id==1 || $hak_akses['print_spb']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangWIP/print_spb/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';

@@ -30,14 +30,14 @@ class Model_m_numberings extends CI_Model{
                 }else{				
                     $date =date('Y-m-d');
                 }
-                $prefix .= date('Ym', strtotime($date));
+                $prefix .= date('Ym', strtotime($date));//Reset Per Bulan
             }else if($MNumbers['date_info']==2){
                 if($date != null || $date !=""){
                     $date = $date;
                 }else{              
                     $date =date('Y-m-d');
                 }
-                $prefix .= date('Y', strtotime($date));
+                $prefix .= date('Y', strtotime($date));//Reset Per Tahun
             }
             $padding = $MNumbers['padding'];            
 

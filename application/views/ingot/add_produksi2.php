@@ -44,6 +44,27 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Tanggal Produksi
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tgl_prd" name="tgl_prd" readonly="readonly" placeholder="akan terisi otomatis" 
+                                class="form-control myline" style="margin-bottom:5px">
+                        </div>
+                    </div>                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tipe Apolo
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tipe_apolo" name="tipe_apolo" readonly="readonly" placeholder="akan terisi otomatis" 
+                                class="form-control myline" style="margin-bottom:5px">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1">&nbsp;</div>
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-4">
                             No. SPB <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -51,9 +72,6 @@
                                 class="form-control myline" style="margin-bottom:5px">
                         </div>
                     </div>
-                </div>
-                <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-5">
                      <div class="row">
                         <div class="col-md-4">
                             Total Rongsok <font color="#f00">*</font>
@@ -224,7 +242,8 @@ function get_detail_produksi(id){
         cache: false,
         success: function(result) {
             $("#no_spb").val(result['no_spb']);
-
+            $('#tgl_prd').val(result['tgl_prd']);
+            $('#tipe_apolo').val(result['tipe_apolo']);
             $("#total_rongsok").val(Number(result['total_rongsok']).toFixed(2)); 
             hitung_susut();
         } 

@@ -191,7 +191,16 @@
     <!-- BANK -->
             <div class="row">
                 <div class="col-md-12">
-                    <h4 align="center" style="font-weight: bold;">Detail Uang Keluar</h4>
+                    <h4 align="center" style="font-weight: bold;">Detail Uang Keluar</h4>  
+                    <div class="row">
+                        <div class="col-md-3">
+                            Nomor Kas/Bank Keluar
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" id="no_uk" name="no_uk" onkeyup="this.value = this.value.toUpperCase()"
+                                class="form-control myline" style="margin-bottom:5px" placeholder="Nomor Uang Keluar ...">   
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-3">
                             Nominal <font color="#f00">*</font>
@@ -282,7 +291,10 @@ function numberWithCommas(x) {
 }
 
 function simpanData(){
-    if($.trim($("#tanggal").val()) == ""){
+    if($.trim($("#no_uk").val()) == ""){
+        $('#message').html("Nomor Uang Keluar harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show();
     }else if($.trim($("#bank_id").val()) == ""){

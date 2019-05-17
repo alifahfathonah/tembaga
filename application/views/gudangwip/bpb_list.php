@@ -36,7 +36,8 @@
                 <tr>
                     <th style="width:50px;">No</th>
                     <th>Tanggal</th>
-                    <th>No. SPB WIP</th>
+                    <th>No. BPB WIP</th>
+                    <th>Tipe Apolo</th>
                     <th>Pengirim</th>
                     <th>Jumlah <br>Items</th>
                     <th>Remarks</th>
@@ -54,6 +55,7 @@
                         <td style="text-align:center;"><?php echo $no; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->created)); ?></td>
                         <td><?php echo $data->no_bpb; ?></td>
+                        <td><?php echo $data->tipe_apolo; ?></td>
                         <td><?php echo $data->pengirim; ?></td>                       
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td><?php echo $data->keterangan; ?></td>

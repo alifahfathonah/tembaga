@@ -36,6 +36,13 @@ class Model_pengiriman_ampas extends CI_Model{
                 Where pod.po_id=".$id);
         return $data;
     }
+
+    function load_detail_saved_item($id){
+        $data = $this->db->query("select tsaf.*, r.nama_item, r.uom from t_spb_ampas_fulfilment tsaf
+                left join rongsok r on r.id = tsaf.jenis_barang_id
+                where tsaf.approved_by = 0 and tsaf.t_spb_ampas_id =".$id);
+        return $data;
+    }
     
     function dtr_list(){
         $data = $this->db->query("Select dtr.*, 
@@ -149,12 +156,24 @@ class Model_pengiriman_ampas extends CI_Model{
 
     function show_detail_spb($id){
         $data = $this->db->query("Select tsad.*, jb.jenis_barang,
-                    (select jenis_barang from stok_fg sf where sf.jenis_barang_id= tsad.jenis_barang_id)as jenis_barang_stok,
-                    (select total_qty from stok_fg sf where sf.jenis_barang_id = tsad.jenis_barang_id)as total_qty,
-                    (select total_netto from stok_fg sf where sf.jenis_barang_id = tsad.jenis_barang_id)as total_netto
+                    (select sum(berat_masuk - berat_keluar) from stok_ampas) as stok
                     From t_spb_ampas_detail tsad 
                         Left Join jenis_barang jb On (jb.id = tsad.jenis_barang_id)
                     Where tsad.t_spb_ampas_id=".$id);
+        return $data;
+    }
+
+    function show_detail_spb_fulfilment($id){
+        $data = $this->db->query("Select saf.*, r.nama_item, r.uom from t_spb_ampas_fulfilment saf
+                    left join rongsok r on r.id = saf.jenis_barang_id
+                    where saf.approved_by = 0 and saf.t_spb_ampas_id=".$id);
+        return $data;
+    }
+
+    function show_spb_fulfilment($id){
+        $data = $this->db->query("Select saf.*, r.nama_item, r.uom from t_spb_ampas_fulfilment saf
+                    left join rongsok r on r.id = saf.jenis_barang_id
+                    where saf.approved_by = 1 and saf.t_spb_ampas_id=".$id);
         return $data;
     }
 
@@ -163,6 +182,12 @@ class Model_pengiriman_ampas extends CI_Model{
             from t_spb_ampas_detail tsad
             left join jenis_barang jb on (jb.id = tsad.jenis_barang_id)
             where tsad.t_spb_ampas_id = ".$id);
+        return $data;
+    }
+
+    function jenis_barang_stok(){
+        $data = $this->db->query("select rongsok_id, nama_item, berat_masuk, berat_keluar
+            from stok_ampas");
         return $data;
     }
 
@@ -235,78 +260,27 @@ class Model_pengiriman_ampas extends CI_Model{
         $data = $this->db->query("Select id, nama_item from rongsok where type_barang = 'Ampas'");
         return $data;
     }
-    /*function get_dtr($po_id){
-        $data = $this->db->query("Select dtr.*, 
-                    po.no_po, 
-                    spl.nama_supplier,
-                    usr.realname As penimbang,
-                    app.realname As approved_name,
-                    rjct.realname As rejected_name,
-                (Select count(dtrd.id)As jumlah_item From dtr_detail dtrd Where dtrd.dtr_id = dtr.id)As jumlah_item
-                From dtr
-                    Left Join po On (dtr.po_id = po.id) 
-                    Left Join supplier spl On (po.supplier_id = spl.id) 
-                    Left Join users usr On (dtr.created_by = usr.id) 
-                    Left Join users app On (dtr.approved_by = app.id) 
-                    Left Join users rjct On (dtr.rejected_by = rjct.id) 
-                Where dtr.po_id=".$po_id);
+
+    function get_stok($id){
+        $data = $this->db->query("Select * from stok_ampas where rongsok_id=".$id);
         return $data;
     }
-    
-    function ttr_list(){
-        $data = $this->db->query("Select ttr.*, 
-                    dtr.no_dtr,
-                    po.no_po, 
-                    spl.nama_supplier,
-                (Select count(ttrd.id) From ttr_detail ttrd Where ttrd.ttr_id = ttr.id)As jumlah_item,
-                (Select Sum(ttrd.bruto) From ttr_detail ttrd Where ttrd.ttr_id = ttr.id)As bruto, 
-                (Select Sum(ttrd.netto) From ttr_detail ttrd Where ttrd.ttr_id = ttr.id)As netto
-                From ttr 
-                    Left Join dtr On (ttr.dtr_id = dtr.id) 
-                    Left Join po On (dtr.po_id = po.id) 
-                    Left Join supplier spl On (po.supplier_id = spl.id) 
-                Where dtr.po_id>0 
-                Order By dtr.id Desc");
+
+    function check_spb($id){
+        $data = $this->db->query("Select 
+                (select sum(netto) from t_spb_ampas_detail tsad where tsad.t_spb_ampas_id = tsa.id)as spb,
+                (select sum(berat) from t_spb_ampas_fulfilment tsad where tsad.t_spb_ampas_id = tsa.id )as fulfilment
+                from t_spb_ampas tsa
+                where tsa.id =".$id);
         return $data;
     }
-    
-    function show_header_ttr($id){
-        $data = $this->db->query("Select ttr.*, 
-                    dtr.no_dtr,
-                    po.no_po,
-                    spl.nama_supplier
-                    From ttr 
-                        Left Join dtr On (ttr.dtr_id = dtr.id) 
-                        Left Join po On (dtr.po_id = po.id)
-                        Left Join supplier spl On (po.supplier_id = spl.id) 
-                    Where ttr.id=".$id);
-        return $data;
-    }
-    
-    function show_detail_ttr($id){
-        $data = $this->db->query("Select ttrd.*, rsk.nama_item, rsk.uom
-                    From ttr_detail ttrd 
-                        Left Join rongsok rsk On (ttrd.rongsok_id = rsk.id) 
-                    Where ttrd.ttr_id=".$id);
-        return $data;
-    }
-    
-    function get_data_pelunasan($id){
-        $data = $this->db->query("Select ttr.id,
-                    ttr.no_ttr,
-                    dtr.no_dtr,
-                    dtr.po_id,
-                    po.no_po,
-                    po.tanggal,
-                    po.supplier_id,
-                    supplier.nama_supplier,
-                    (Select Sum(po_detail.total_amount) From po_detail Where po_detail.po_id = po.id)As nilai_po,
-                    (Select voucher.amount From voucher Where voucher.po_id = po.id)As nilai_dp
-                From ttr 
-                    Left Join dtr On (ttr.dtr_id = dtr.id) 
-                    Left Join po On (dtr.po_id = po.id) 
-                    Left Join supplier On (po.supplier_id = supplier.id)
-                Where ttr.id=".$id);
-        return $data;
-    }*/
 }
+
+/**
+    CREATE OR REPLACE VIEW stok_ampas(rongsok_id,nama_item,berat_masuk,berat_keluar)
+    AS SELECT rongsok_id, r.nama_item,
+    sum(CASE WHEN jenis_trx = 0 THEN berat ELSE 0 END),
+    sum(CASE WHEN jenis_trx = 1 THEN berat ELSE 0 END)
+    from t_gudang_ampas
+    left join rongsok r on r.id = t_gudang_ampas.rongsok_id
+    GROUP by t_gudang_ampas.rongsok_id **/

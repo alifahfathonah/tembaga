@@ -16,6 +16,14 @@
         <?php
             if( ($group_id==1)||($hak_akses['dtbj_list']==1) ){
         ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger display-hide">
+                    <button class="close" data-close="alert"></button>
+                    <span id="message">&nbsp;</span>
+                </div>
+            </div>
+        </div>
         <div class="collapse well" id="form_add" >
     <form class="eventInsForm" method="post" target="_self" name="formku" id="formku" action="<?php echo base_url('index.php/BeliFinishGood/save_header_dtbj'); ?>">
         <div class="row">
@@ -53,30 +61,33 @@
                                 <font color="#f00">*</font>
                             </div>
                             <div class="col-md-12">
-                                <input type="text" id="no" name="no" readonly="readonly" value="Auto Generate" 
-                                class="form-control myline" style="margin-bottom:5px;">
-                                </div>
-                                <div class="col-md-12">
-                            Packing 
-                                    <font color="#f00">*</font>
-                                </div>
-                                <div class="col-md-12">
-                                    <select  id="packing" name="packing" placeholder="Silahkan pilih..."
+                                <?php if($this->session->userdata('user_ppn')==1){?>
+                                    <input type="text" id="no_dtbj" name="no_dtbj" class="form-control myline" style="margin-bottom:5px" placeholder="Nomor DTBJ...">
+                                <?php }else{ ?>
+                                    <input type="text" id="no_dtbj" name="no_dtbj" readonly="readonly"
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        value="Auto Generate">
+                                <?php } ?>
+                            </div>
+                            <div class="col-md-12">
+                            Packing <font color="#f00">*</font>
+                            </div>
+                            <div class="col-md-12">
+                                <select  id="packing" name="packing" placeholder="Silahkan pilih..."
                                 class="form-control myline select2me" style="margin-bottom:5px">
-                                        <option value=""></option>
-                                        <?php 
-                                        foreach($packing as $p){
-                                        ?>
-                                        <option value="<?=$p->id;?>"><?=$p->jenis_packing;?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                                <div class="col-md-12 text-right">
+                                    <option value=""></option>
+                                    <?php 
+                                    foreach($packing as $p){
+                                    ?>
+                                    <option value="<?=$p->id;?>"><?=$p->jenis_packing;?></option>
+                                    <?php } ?>
+                                 </select>
+                            </div>
+                            <div class="col-md-12 text-right">
                             &nbsp; &nbsp; 
-                                    <a href="javascript:;" onclick="simpanData()" class="btn green" >
-                                        <i class="fa fa-floppy-o"></i> Create DTBJ 
-                                    </a>
-                                </div>
+                                <a href="javascript:;" onclick="simpanData()" class="btn green" >
+                                    <i class="fa fa-floppy-o"></i> Create DTBJ </a>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -186,7 +197,18 @@
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
 function simpanData(){
-    $('#formku').submit();
+    if($.trim($("#no_dtbj").val()) == ""){
+        $('#message').html("Nomor DTBJ harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#tanggal").val()) == ""){
+        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#supplier_id").val()) == ""){
+        $('#message').html("Supplier harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{
+        $('#formku').submit();
+    }
 };
 $(function(){    
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);

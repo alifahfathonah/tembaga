@@ -384,7 +384,6 @@
             </div>
         </div> 
         <?php } ?>        
-        
         <div class="row">
             <div class="col-md-12">
                 <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">

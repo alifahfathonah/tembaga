@@ -607,20 +607,6 @@ class GudangBobbin extends CI_Controller{
     //     echo json_encode($return_data);
     // }
 
-    // function delete_penerimaan_bobbin_detail(){
-    //     $id = $this->input->post('id');
-    //     $return_data = array();
-    //     $this->db->where('id', $id);
-    //     if($this->db->delete('m_bobbin_penerimaan_detail')){
-    //         $return_data['message_type']= "sukses";
-    //     }else{
-    //         $return_data['message_type']= "error";
-    //         $return_data['message']= "Gagal menghapus item barang! Silahkan coba kembali";
-    //     }           
-    //     header('Content-Type: application/json');
-    //     echo json_encode($return_data);
-    // }
-
     function update_penerimaan_bobbin(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');        
@@ -712,6 +698,19 @@ class GudangBobbin extends CI_Controller{
         
         $this->session->set_flashdata('flash_msg', 'Data Penerimaan Bobbin berhasil disimpan');
         redirect('index.php/GudangBobbin/bobbin_terima');
+    }
+
+    function delete_penerimaan_bobbin(){
+        $id = $this->uri->segment(3);
+        $return_data = array();
+        $this->db->where('id', $id);
+        if($this->db->delete('m_bobbin_penerimaan')){
+            $this->session->set_flashdata('flash_msg', "Penerimaan Bobbin berhasil di Delete");
+            redirect('index.php/GudangBobbin/bobbin_terima');
+        }else{
+            $this->session->set_flashdata('flash_msg', "Gagal menghapus Penerimaan Bobbin! Silahkan coba kembali");
+            redirect('index.php/GudangBobbin/bobbin_terima');
+        }           
     }
 
     function view_penerimaan_bobbin($id){

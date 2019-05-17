@@ -87,14 +87,11 @@ class Model_ingot extends CI_Model{
     function spb_list(){
         $data = $this->db->query("Select spb.*, 
                     pi.no_produksi, 
-                    usr.realname As pic,
-                    aprv.realname As approved_name,
-                    rjt.realname As rejected_name
+                    usr.realname As pic, a.tipe_apolo
                 From spb
                     Left Join produksi_ingot pi On (spb.produksi_ingot_id = pi.id) 
                     Left Join users usr On (spb.created_by = usr.id) 
-                    Left Join users aprv On (spb.approved_by = aprv.id) 
-                    Left Join users rjt On (spb.rejected_by = rjt.id) 
+                    Left Join apolo a On (a.id = pi.id_apolo)
                 Order By spb.id Desc");
         return $data;
     }
@@ -105,9 +102,11 @@ class Model_ingot extends CI_Model{
                     jb.jenis_barang,
                     usr.realname As pic,
                     appr.realname As approved_name,
-                    rjct.realname As reject_name
+                    rjct.realname As reject_name,
+                    a.tipe_apolo
                     From spb
                         Left Join produksi_ingot pi On (spb.produksi_ingot_id = pi.id)
+                        Left Join apolo a On (a.id = pi.id_apolo)
                         Left join jenis_barang jb on (jb.id = spb.jenis_barang)
                         Left Join users usr On (spb.created_by = usr.id) 
                         Left Join users appr On (spb.approved_by = appr.id)
@@ -211,9 +210,11 @@ class Model_ingot extends CI_Model{
         $data = $this->db->query("Select no_spb,
                 (Select sum(dtrd.netto) From dtr_detail dtrd
                 left join spb_detail_fulfilment spbf on spbf.dtr_detail_id = dtrd.id
-                Where spbf.spb_id = spb.id)As total_rongsok
+                Where spbf.spb_id = spb.id)As total_rongsok,
+                pi.tanggal as tgl_prd, a.tipe_apolo
                 From spb 
                 Left Join produksi_ingot pi On (spb.produksi_ingot_id = pi.id) 
+                Left JOin apolo a on (a.id = pi.id_apolo)
                 where pi.id = ".$id."
                 Order By no_produksi");
         return $data;

@@ -70,13 +70,15 @@ class BeliFinishGood extends CI_Controller{
         $user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
         
-        $this->load->model('Model_m_numberings');
+        $this->db->trans_start();
         if($user_ppn == 0){
+            $this->load->model('Model_m_numberings');
             $code = $this->Model_m_numberings->getNumbering('POFG', $tgl_input);
         }else{
-            $code = $this->Model_m_numberings->getNumbering('POFG-KMP', $tgl_input);
+            $code = 'PO-KMP.'.$tgl_po.'.'.$this->input->post('no_po'); 
         }
 
         $data = array(
@@ -85,6 +87,8 @@ class BeliFinishGood extends CI_Controller{
             'flag_ppn'=> $user_ppn,
             'ppn'=> $this->input->post('ppn'),
             'currency'=> $this->input->post('currency'),
+            'diskon'=> $this->input->post('diskon'),
+            'materai'=> $this->input->post('materai'),
             'kurs'=> $this->input->post('kurs'),
             'supplier_id'=>$this->input->post('supplier_id'),
             'term_of_payment'=>$this->input->post('term_of_payment'),
@@ -95,33 +99,29 @@ class BeliFinishGood extends CI_Controller{
             'modified'=> $tanggal,
             'modified_by'=> $user_id
         );
+        $this->db->insert('po', $data);
+        $po_id = $this->db->insert_id();
 
-        // $html = [];
-        // $html[] = "<form method='post' action='http://192.168.100.5/tembagabaru/index.php/API/savePo' id='sendPo'>";
-        //     $html[] = "<input type='text' name='no_po' value='".$code."'>";
-        //     $html[] = "<input type='text' name='tanggal' value='".$tgl_input."'>";
-        //     $html[] = "<input type='text' name='flag_ppn' value='".$user_ppn."'>";
-        //     $html[] = "<input type='text' name='ppn' value='".$this->input->post('ppn')."'>";
-        //     $html[] = "<input type='text' name='currency' value='".$this->input->post('currency')."'>";
-        //     $html[] = "<input type='text' name='kurs' value='".$this->input->post('kurs')."'>";
-        //     $html[] = "<input type='text' name='supplier_id' value='".$this->input->post('supplier_id')."'>";
-        //     $html[] = "<input type='text' name='term_of_payment' value='".$this->input->post('currency')."'>";
-        //     $html[] = "<input type='text' name='jenis_po' value='FG'>";
-        //     $html[] = "<input type='text' name='created' value='".$tanggal."'>";
-        //     $html[] = "<input type='text' name='created_by' value='".$user_id."'>";
-        //     $html[] = "<input type='text' name='modified' value='".$tanggal."'>";
-        //     $html[] = "<input type='text' name='modified_by' value='".$user_id."'>";
-        //     $html[] = "<script type=\"text/javascript\">document.getElementById(\"sendPo\").submit(); </script>";
-        // $html[] = "</form>";
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
 
-        // print_r($html);
-        // $encode = json_encode($data);
-        // echo "<form method='post' action='http://192.168.100.5/tembagabaru/index.php/API/savePo' id='sendPo'><input type='text' name='datapo' id='datapo' value='".$encode."'><script type=\"text/javascript\">document.getElementById(\"sendPo\").submit(); </script></form>";
-        // die();
-        // echo "CONTINUE";
+                $data_id = array('reff1' => $po_id);
+                $data_post = array_merge($data, $data_id);
 
-        if($this->db->insert('po', $data)){
-            redirect('index.php/BeliFinishGood/edit/'.$this->db->insert_id());  
+                $data_post = http_build_query($data_post);
+
+                $ch = curl_init(target_url().'api/BeliFinishGoodAPI/po');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
+
+        if($this->db->trans_complete()){
+            redirect('index.php/BeliFinishGood/edit/'.$po_id);  
         }else{
             $this->session->set_flashdata('flash_msg', 'PO FG gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/BeliFinishGood');  
@@ -144,10 +144,15 @@ class BeliFinishGood extends CI_Controller{
             $data['content']= "beli_fg/edit";
             $this->load->model('Model_beli_fg');
             $data['header'] = $this->Model_beli_fg->show_header_po($id)->row_array();  
+            if($data['header']['status']==0){
             $data['list_data'] = $this->Model_beli_fg->load_detail_po($id)->result();
             $data['list_detail'] = $this->Model_beli_fg->get_jb($id)->result();
             $data['list_fg'] = $this->Model_beli_fg->list_fg()->result();
+            $this->load->model('Model_beli_rongsok');
+            $data['count'] = $this->Model_beli_rongsok->count_po_detail($id)->row_array();
+            }else{
             $data['list_terima'] = $this->Model_beli_fg->load_dtbj_detail($id)->result();
+            }
 
             $this->load->model('Model_beli_sparepart');
             $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
@@ -220,6 +225,7 @@ class BeliFinishGood extends CI_Controller{
         $id = $this->input->post('id');
         
         $tabel = "";
+        $cek   = 0;
         $no    = 1;
         $total = 0;
         
@@ -237,12 +243,14 @@ class BeliFinishGood extends CI_Controller{
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';
+            $cek += $row->id;
             $total += $row->total_amount;
             $no++;
         }
 
         $tabel .= '<tr>';
         $tabel .= '<td colspan="5" style="text-align:right"><strong>Total (Rp) </strong></td>';
+        $tabel .= '<input type="hidden" id="count2" value="'.$cek.'">';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
         $tabel .= '</tr>';
         
@@ -267,9 +275,9 @@ class BeliFinishGood extends CI_Controller{
     function update(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
-        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
+        $this->db->trans_start();
         $data = array(
                 'tanggal'=> $tgl_input,
                 'supplier_id'=>$this->input->post('supplier_id'),
@@ -281,9 +289,35 @@ class BeliFinishGood extends CI_Controller{
         
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('po', $data);
+
+        if($this->session->userdata('user_ppn')==1){
+            $this->load->helper('target_url');
+            
+            $data_post['master'] = $data;
+            $data_post['po_id'] = $this->input->post('id');
+
+            $this->load->model('Model_beli_rongsok');
+            $data_post['details'] = $this->Model_beli_rongsok->load_detail_only($this->input->post('id'))->result();
+
+            $detail_post = json_encode($data_post);
+
+            $ch = curl_init(target_url().'api/BeliFinishGoodAPI/po_detail');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $result = json_decode($response, true);
+            curl_close($ch);
+        }
         
-        $this->session->set_flashdata('flash_msg', 'Data PO Finish Good berhasil disimpan');
-        redirect('index.php/BeliFinishGood');
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Data PO Finish Good berhasil disimpan');
+            redirect('index.php/BeliFinishGood');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data PO Finish Good gagal disimpan');
+            redirect('index.php/BeliFinishGood');
+        }
     }
 
     function close_po(){
@@ -432,11 +466,12 @@ class BeliFinishGood extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_dtbj = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
 
         $this->load->model('Model_m_numberings');
         if($user_ppn==1){
-            $code = $this->Model_m_numberings->getNumbering('DTBJ-KMP', $tgl_input);
+            $code = 'DTBJ-KMP.'.$tgl_dtbj.'.'.$this->input->post('no_dtbj');
         }else{
             $code = $this->Model_m_numberings->getNumbering('DTBJ', $tgl_input); 
         }
@@ -533,6 +568,8 @@ class BeliFinishGood extends CI_Controller{
 
             $this->db->where('id', $this->input->post('id'));
             $this->db->update('dtbj', array(
+                'no_dtbj'=>$this->input->post('no_dtbj'),
+                'tanggal'=>$tgl_input,
                 'remarks'=>$this->input->post('remarks'),
                 'supplier_id'=>$this->input->post('supplier_id'),
                 'modified'=>$tanggal,
@@ -767,15 +804,16 @@ class BeliFinishGood extends CI_Controller{
                 }
 
                if(((int)$total_netto_dtbj) >= (0.9*((int)$total_qty))){
-                    $this->db->where('id',$po_id);
-                    $this->db->update('po',array(
+                    $update_po = array(
                                     'status'=>3,
-                                    'flag_pelunasan'=>0));
+                                    'flag_pelunasan'=>0);
                }else {
-                    $this->db->where('id',$po_id);
-                    $this->db->update('po',array(
-                                    'status'=>2));
+                    $update_po = array(
+                        'status'=>2
+                    );
                }
+               $this->db->where('id',$po_id);
+               $this->db->update('po', $update_po);
 
                 #Create BPB FG
                 $this->load->model('Model_m_numberings');
@@ -786,6 +824,21 @@ class BeliFinishGood extends CI_Controller{
                 foreach ($loop1 as $k1) {
                     #insert t_bpb_fg
                     if($user_ppn==1){
+
+                    // $this->load->helper('target_url');
+                    // $url = target_url().'api/BeliSparepartAPI/numbering?id=BPB-KMP&tgl='.$tgl_input;
+                    // $ch = curl_init();
+                    // curl_setopt($ch, CURLOPT_URL, $url);
+                    // // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                    // // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+                    // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                    // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    // curl_setopt($ch, CURLOPT_HEADER, 0);
+
+                    // $result = curl_exec($ch);
+                    // $result = json_decode($result);
+                    // curl_close($ch);
+                    // $code = $result->code;
                         $code = $this->Model_m_numberings->getNumbering('BPB-KMP',$tgl_input);
                     }else{
                         $code = $this->Model_m_numberings->getNumbering('BPB-PO',$tgl_input);
@@ -820,11 +873,34 @@ class BeliFinishGood extends CI_Controller{
                     }
                 }
 
-        if($this->db->trans_complete()){  
-            redirect('index.php/BeliFinishGood/proses_matching/'.$this->input->post('po_id'));
-        }else{
-            redirect('index.php/BeliFinishGood/proses_matching/'.$this->input->post('po_id'));
-        }                       
+            if($user_ppn==1){
+                $this->load->helper('target_url');
+            
+                $data_post['po'] = $update_po;
+                $data_post['po_id'] = $po_id;
+
+                $data_post['dtbj'] = $this->Model_beli_fg->load_dtbj_only($dtbj_id)->row_array();
+                $data_post['details'] = $this->Model_beli_fg->load_dtbj_detail_only($dtbj_id)->result();
+
+                $detail_post = json_encode($data_post);
+                print($detail_post);
+                die();
+
+                $ch = curl_init(target_url().'api/BeliFinishGoodAPI/dtbj_detail');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
+
+        // if($this->db->trans_complete()){  
+        //     redirect('index.php/BeliFinishGood/proses_matching/'.$this->input->post('po_id'));
+        // }else{
+        //     redirect('index.php/BeliFinishGood/proses_matching/'.$this->input->post('po_id'));
+        // }                       
         
        // header('Content-Type: application/json');
        // echo json_encode($return_data);

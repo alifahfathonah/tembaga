@@ -44,8 +44,17 @@
                                     <input type="hidden" id="jml_afkir" name="jml_afkir">
                                     <input type="hidden" id="jml_packing" name="jml_packing">
                                     <input type="hidden" id="jml_lain" name="jml_lain">
+                                    <input type="hidden" id="tgl" name="tanggal">
                                 </div>
-                            </div>                           
+                            </div>     
+                            <div class="row">
+                                <div class="col-md-4">
+                                    No Surat Jalan
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="no_sj" name="no_sj" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
+                                </div>
+                            </div>      
                         </form>
                     </div>
                     <div class="modal-footer">                        
@@ -74,10 +83,20 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Tanggal DTR <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tgl-dtr" name="tgl_dtr" readonly="readonly"
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('d-m-Y', strtotime($header['tgl_dtr'])); ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Tanggal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="tanggal" name="tanggal" readonly="readonly"
+                            <input type="text" id="tanggal" name="tanggal"
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
                                 value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
@@ -274,6 +293,7 @@ function approveTTR(id_ttr){
     $('#jml_afkir').val($('#jumlah_afkir').val());
     $('#jml_packing').val($('#jumlah_packing').val());
     $('#jml_lain').val($('#jumlah_lain').val());
+    $('#tgl').val($('#tanggal').val());
     $('#message').html("");
     $('.alert-danger').hide();
         
@@ -301,5 +321,21 @@ function rejectTTR(id_ttr){
         });
     }
 }
+</script>
+<link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+<script>
+$(function(){        
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });
+});
 </script>
       

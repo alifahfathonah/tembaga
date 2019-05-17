@@ -195,7 +195,7 @@ class GudangWIP extends CI_Controller{
             $this->db->insert('t_gudang_keras', $data);
         }
 
-        if($this->input->post('bs') != 0 || $this->input->post('bs_rolling') != 0 || $this->input->post('bs_ingot') != 0 || $this->input->post('serbuk') != 0){
+        if($this->input->post('bs') != 0 || $this->input->post('bs_rolling') != 0 || $this->input->post('bs_ingot') != 0 || $this->input->post('serbuk') != 0 || $this->input->post('bs_8m')){
 
             $code = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
         
@@ -260,6 +260,31 @@ class GudangWIP extends CI_Controller{
                         'tanggal_masuk'=>$tgl_input
                     ));
                 }
+
+                #insert bs 8mm ke rongsok
+                if($this->input->post('bs_ingot') != 0){
+
+                $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+
+                $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
+
+                $bs_packing = $tgl_code.substr($bs_code,13,4);
+                    $this->db->insert('dtr_detail', array(
+                        'dtr_id'=>$dtr_id,
+                        'rongsok_id'=>52,//BS 8,00MMM
+                        'qty'=>0,
+                        'bruto'=>$this->input->post('bs_8m'),
+                        'netto'=>$this->input->post('bs_8m'),
+                        'line_remarks'=>'SISA PRODUKSI',
+                        'no_pallete'=>$bs_packing,
+                        'created'=>$tanggal,
+                        'created_by'=>$user_id,
+                        'modified'=>$tanggal,
+                        'modified_by'=>$user_id,
+                        'tanggal_masuk'=>$tgl_input
+                    ));
+                }
+                
             }else if($this->input->post('jenis_masak') == 'BAKAR ULANG'){
                 #insert bs ke rongsok
                 if($this->input->post('bs') != 0){
@@ -843,6 +868,28 @@ class GudangWIP extends CI_Controller{
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/GudangWIP/spb_list');
+        }
+    }
+
+    function delete_spb(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $this->db->trans_start();
+
+            $this->db->where('id', $id);
+            $this->db->delete('t_spb_wip');
+
+            $this->db->where('t_spb_wip_id', $id);
+            $this->db->delete('t_spb_wip_detail');
+
+            if($this->db->trans_complete()){
+                $this->session->set_flashdata('flash_msg', 'Data SPB WIP berhasil dihapus');
+                redirect('index.php/GudangWIP/spb_list');
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data SPB WIP gagal dihapus');
+                redirect('index.php/GudangWIP/spb_list');
+            }
         }
     }
 

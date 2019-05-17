@@ -608,14 +608,171 @@ class PengirimanAmpas extends CI_Controller{
             // $data['myDetail'] = $this->Model_gudang_fg->show_detail_spb($id)->result(); 
             // $data['detailSPB'] = $this->Model_gudang_fg->show_detail_spb_fulfilment($id)->result();
             $this->load->model('Model_pengiriman_ampas');
-            $data['list_barang'] = $this->Model_pengiriman_ampas->jenis_barang_list_by_spb($id)->result();
+            $data['list_barang'] = $this->Model_pengiriman_ampas->jenis_barang_stok()->result();
 
             $data['myData'] = $this->Model_pengiriman_ampas->show_header_spb($id)->row_array();
             $data['myDetail'] = $this->Model_pengiriman_ampas->show_detail_spb($id)->result();
+            $data['detailSPB'] = $this->Model_pengiriman_ampas->show_detail_spb_fulfilment($id)->result();
+            $data['detailFulfilment'] = $this->Model_pengiriman_ampas->show_spb_fulfilment($id)->result();
+            
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/PengirimanAmpas/spb_list');
         }
+    }
+
+    function save_detail_spb(){
+        $return_data = array();
+        
+        if($this->db->insert('t_spb_ampas_fulfilment', array(
+            't_spb_ampas_id'=>$this->input->post('spb_id'),
+            'jenis_barang_id'=>$this->input->post('jenis_barang_id'),
+            'berat'=>str_replace('.', '', $this->input->post('berat')),
+            'keterangan'=>str_replace('.', '', $this->input->post('keterangan'))
+        ))){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item ampas! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function delete_detail_spb(){
+        $id = $this->input->post('id');
+
+        $this->db->where('id', $id);
+        if($this->db->delete('t_spb_ampas_fulfilment')){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menghapus item barang! Silahkan coba kembali";
+        }           
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
+
+    function save_spb_fulfilment(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $spb_id = $this->input->post('id');
+        
+        $this->db->trans_start();
+        
+        #Update status SPB
+        $this->db->where('id', $spb_id);
+        $this->db->update('t_spb_ampas', array(
+                        'status'=> 3,
+                        'keterangan' => $this->input->post('remarks'),
+                        'modified_at'=> $tanggal,
+                        'modified_by'=>$user_id
+        ));
+
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'Detail SPB sudah disimpan');            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }             
+        
+       redirect('index.php/PengirimanAmpas/spb_list');
+    }
+
+    function load_detail_saved_item(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $no    = 1;
+        $total = 0;
+        
+        $this->load->model('Model_pengiriman_ampas'); 
+        $myDetail = $this->Model_pengiriman_ampas->load_detail_saved_item($id)->result(); 
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->nama_item.'</td>';
+            $tabel .= '<td>'.$row->uom.'</td>';
+            $tabel .= '<td>'.$row->berat.'</td>';
+            $tabel .= '<td>'.$row->keterangan.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a></td>';
+            $tabel .= '</tr>';
+            $total += $row->berat;
+            $no++;
+        }
+
+        $tabel .= '<tr>';
+        $tabel .= '<td colspan="3" style="text-align:right"><strong>Total (Kg) </strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.$total.'</strong></td>';
+        $tabel .= '<td colspan="2"></td>';
+        $tabel .= '</tr>';
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel);
+    }
+
+    function approve_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $spb_id = $this->input->post('id');
+        
+        $this->db->trans_start();
+        $this->load->model('Model_pengiriman_ampas');
+        $data['check'] = $this->Model_pengiriman_ampas->check_spb($spb_id)->row_array();
+        if(((int)$data['check']['fulfilment']) >= (0.9*((int)$data['check']['spb']))){
+            $status = 1;
+        }else{
+            $status = 4;
+        }
+        
+        #Update status SPB
+        $this->db->where('id', $spb_id);
+        $this->db->update('t_spb_ampas', array(
+                        'status'=> $status,
+                        'keterangan' => $this->input->post('remarks'),
+                        'approved_at'=> $tanggal,
+                        'approved_by'=>$user_id
+        ));
+
+        $details = $this->Model_pengiriman_ampas->show_detail_spb_fulfilment($spb_id)->result();
+        foreach ($details as $v) {
+            $this->db->where('id', $v->id);
+            $this->db->update('t_spb_ampas_fulfilment', array(
+                            'approved_at'=> $tanggal,
+                            'approved_by'=> $user_id
+            ));
+
+            $this->db->insert('t_gudang_ampas', array(
+                'jenis_trx' => 1,
+                'id_spb' => $spb_id,
+                'tanggal' => $tgl_input,
+                'jenis_barang_id' => 3,
+                'rongsok_id' => $v->jenis_barang_id,
+                'berat' => $v->berat,
+                'created_by' => $user_id,
+                'created_at' => $tanggal
+            ));
+        }
+            
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'SPB sudah di-approve. Detail SPB sudah disimpan');            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }             
+        
+       redirect('index.php/PengirimanAmpas/spb_list');
+    }
+
+    function get_stok(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_pengiriman_ampas');
+        $barang= $this->Model_pengiriman_ampas->get_stok($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($barang);
     }
 
     function bpb_list(){
@@ -697,6 +854,7 @@ class PengirimanAmpas extends CI_Controller{
             foreach ($key as $row) {
                 $this->db->insert('t_gudang_ampas', array(
                     'tanggal' => $tgl_input,
+                    'jenis_trx' => 0,
                     'jenis_barang_id' => 3,
                     'rongsok_id' => $row->jenis_barang_id,
                     'berat' => $row->berat,

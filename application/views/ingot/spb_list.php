@@ -39,10 +39,10 @@
                     <th>No. SPB</th>
                     <th>Tanggal</th>
                     <th>No. Produksi</th>
+                    <th>Tipe Apolo</th>
                     <th>Pemohon</th>
                     <th>Remarks</th>
                     <th>Status</th>
-                    <th>Approve/<br>Reject Oleh</th> 
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -57,6 +57,7 @@
                         <td style="background-color: "><?php echo $data->no_spb; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->no_produksi; ?></td>
+                        <td><?php echo $data->tipe_apolo; ?></td>
                         <td><?php echo $data->pic; ?></td>                            
                         <td><?php echo $data->remarks; ?></td>
                         <td style="text-align:center">
@@ -73,15 +74,6 @@
                                     echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
                                 }else if($data->status==9){
                                     echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
-                                }
-                            ?>
-                        </td>
-                        <td style="text-align:center">
-                            <?php 
-                                if($data->status==1){
-                                    echo $data->approved_name; 
-                                }else if($data->status==9){
-                                    echo $data->rejected_name;
                                 }
                             ?>
                         </td>

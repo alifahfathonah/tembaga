@@ -33,6 +33,7 @@
                 <thead>
                 <tr>
                     <th style="text-align: center; width:50px;">No</th>
+                    <td>Jenis Trx</td>
                     <th>Rongsok</th>
                     <th>No. Produksi</th>
                     <th style="text-align:center">Berat</th>
@@ -47,6 +48,9 @@
                     ?>
                     <tr>
                         <td style="text-align:center;"><?php echo $no; ?></td>
+                            <?php ($data->jenis_trx) ? print('<td style="background-color:red; color: white;">
+                            <i class="fa fa-arrow-circle-up"></i> Keluar</td>'): print('
+                            <td style="background-color:green; color: white;"><i class="fa fa-arrow-circle-down"></i> Masuk</td>');?>
                         <td><?=$data->nama_item;?></td>
                         <td style="background-color: "><?php echo $data->no_produksi; ?></td>
                         <td style="text-align:center;"><?php echo $data->berat ?></td>
