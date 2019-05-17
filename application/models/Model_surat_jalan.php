@@ -8,7 +8,7 @@ class Model_surat_jalan extends CI_Model{
     	left join r_t_invoice ti on ti.id = tsj.r_invoice_id
         left join r_t_so ts on ts.id = tsj.r_so_id
         left join r_t_po tp on tp.id = tsj.r_po_id
-    	left join m_customers mc on mc.id = tsj.m_customer_id
+    	left join m_customers_cv mc on mc.id = tsj.m_customer_id
     	where tsj.jenis_surat_jalan != 'SURAT JALAN CUSTOMER KE CV'
     	order by id desc");
 		return $data;
@@ -41,7 +41,7 @@ class Model_surat_jalan extends CI_Model{
 			(select count(tsjd.id) from r_t_surat_jalan_detail tsjd where tsjd.sj_resmi_id = tsj.id) as jumlah_item
 			from r_t_surat_jalan tsj
         	left join r_t_po tp on tp.id = tsj.r_po_id
-    		left join m_customers mc on mc.id = tsj.m_customer_i
+    		left join m_customers_cv mc on mc.id = tsj.m_customer_i
 			where tsj.r_invoice_id > 0
 			order by id desc");
 		return $data;
@@ -54,7 +54,7 @@ class Model_surat_jalan extends CI_Model{
     	left join r_t_invoice ti on ti.id = tsj.r_invoice_id
         left join r_t_so ts on ts.id = tsj.r_so_id
         left join r_t_po tp on tp.id = tsj.r_po_id
-    	left join m_customers mc on mc.id = tsj.m_customer_id
+    	left join m_customers_cv mc on mc.id = tsj.m_customer_id
     	where tsj.jenis_surat_jalan = 'SURAT JALAN CUSTOMER KE CV'
     	order by id desc");
 		return $data;
@@ -164,7 +164,7 @@ class Model_surat_jalan extends CI_Model{
             left join r_t_bpb bpb on bpb.id = rtsj.r_bpb_id
 			left join m_cv cv on rtsj.m_cv_id = cv.id
 			left join r_t_surat_jalan rtsj2 on rtsj.r_sj_id = rtsj2.id
-			left join m_customers cs on rtsj2.m_customer_id = cs.id
+			left join m_customers_cv cs on rtsj2.m_customer_id = cs.id
             left join r_t_so rtso2 on rtso2.id = rtsj2.r_so_id
 			where rtsj.id = ".$id);
     	return $data;
@@ -196,7 +196,7 @@ class Model_surat_jalan extends CI_Model{
     	$data = $this->db->query("select bpb.*, rtpo.no_po, cv.nama_cv, cs.nama_customer from r_t_bpb bpb
             left join r_t_po rtpo on bpb.r_po_id = rtpo.id
             left join m_cv cv on bpb.m_cv_id = cv.id
-            left join m_customers cs on bpb.m_customer_id = cs.id
+            left join m_customers_cv cs on bpb.m_customer_id = cs.id
             where bpb.id = ".$id);
     	return $data;
     }

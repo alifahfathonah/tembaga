@@ -25,7 +25,7 @@ class Model_tolling_resmi extends CI_Model{
 
 	function get_customer_sj($id){
 		$data = $this->db->query("select tsj.m_customer_id, mc.nama_customer from r_t_surat_jalan tsj 
-			left join m_customers mc on mc.id=tsj.m_customer_id
+			left join m_customers_cv mc on mc.id=tsj.m_customer_id
 			where tsj.id=".$id);
 		return $data;
 	}
