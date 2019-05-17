@@ -25,9 +25,9 @@
             <th>No</th>
             <th>Item Rongsok</th>
             <th>Jumlah Packing</th>
-            <th>Stok Bruto</th>
-            <th>Stok Netto</th>
-            <th>Action</th>
+            <th>Bruto</th>
+            <th>Berat</th>
+            <th>Netto</th>
        </tr>
      </thead>
      <tbody>
@@ -35,19 +35,21 @@
         foreach($list_data as $data) { ?>
         <tr>
             <td><?= $no; ?></td>
-            <td><?= $data->kode_rongsok.' | '.$data->nama_item; ?></td>
-            <td><?= $data->jumlah_packing ;?></td>
-            <td><?= number_format($data->stok_bruto,2,',','.'); ?></td>
-            <td style="background-color: green; color: white;"><?= number_format($data->stok_netto,2,',','.'); ?></td>
-            <td><a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/BeliRongsok/view_gudang_rongsok/<?php echo $data->rongsok_id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
-            </td>
+            <td><?= $data->nama_item; ?></td>
+            <td><?= $data->no_pallete ;?></td>
+            <td><?= number_format($data->bruto,2,',','.'); ?></td>
+            <td><?= number_format($data->berat_palette,2,',','.'); ?></td>
+            <td style="background-color: green; color: white;"><?= number_format($data->netto,2,',','.'); ?></td>
         </tr>    
     <?php $no++; } ?>
      </tbody>   
    </table>
 </div>
 </div>
+            <a href="<?php echo base_url('index.php/BeliRongsok/gudang_rongsok'); ?>" class="btn blue-hoki"> 
+            <i class="fa fa-angle-left"></i> Kembali </a>
 </div>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+      

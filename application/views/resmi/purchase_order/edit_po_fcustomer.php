@@ -191,12 +191,6 @@ function get_contact_customer(id){
         } 
     });
 }
-function myCurrency(evt) {
-    var charCode = (evt.which) ? evt.which : event.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
-        return false;
-    return true;
-}
 
 function getComa(value, id, no){
     angka = value.toString().replace(/\./g, "");
@@ -207,7 +201,7 @@ function getComa(value, id, no){
 function hitungSubTotal(id){
     harga = $('#amount_'+id).val().toString().replace(/\./g, "");
     netto = $('#netto_'+id).val();
-    total_harga = Number(harga)* Number(netto);
+    total_harga = Number(harga)*Number(netto);
     $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
 

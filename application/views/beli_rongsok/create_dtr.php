@@ -122,9 +122,9 @@
                                 <th style="width:20%">Nama Item Rongsok</th>
                                 <th>UOM</th>
                                 <!-- <th>Jumlah Rongsok</th> -->
-                                <th>Bruto (Kg)</th>
-                                <th>Berat Palette</th>
-                                <th>Netto (Kg)</th>
+                                <th style="width: 15%;">Bruto (Kg)</th>
+                                <th style="width: 10%;">Berat Palette</th>
+                                <th style="width: 15%;">Netto (Kg)</th>
                                 <th></th>
                                 <th style="width:15%">No. Pallete</th>
                                 <th>Keterangan</th>
@@ -159,6 +159,14 @@
                                 </td>
                             </tr>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><strong>Total :</strong></td>
+                                    <td><input type="text" id="total_bruto" class="form-control" readonly="readonly"></td>
+                                    <td><input type="text" id="total_berat" class="form-control" readonly="readonly"></td>
+                                    <td><input type="text" id="total_netto" class="form-control" readonly="readonly"></td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -309,6 +317,9 @@ function saveDetail(id){
                 $('#no_pallete_'+id).val(result['no_packing']);
             }
         });
+        $('#total_bruto').val(Number($('#total_bruto').val())+Number($('#bruto_'+id).val()));
+        $('#total_berat').val(Number($('#total_berat').val())+Number($('#berat_palette_'+id).val()));
+        $('#total_netto').val(Number($('#total_netto').val())+Number($('#netto_'+id).val()));
         $("#name_rongsok_"+id).attr('disabled','disabled');
         $("#save_"+id).hide();
         $('#qty_'+id).attr('readonly','readonly');
@@ -348,6 +359,9 @@ function saveDetail(id){
 function deleteDetail(id){
     var r=confirm("Anda yakin menghapus item rongsok ini?");
     if (r==true){
+        $('#total_bruto').val(Number($('#total_bruto').val())-Number($('#bruto_'+id).val()));
+        $('#total_berat').val(Number($('#total_berat').val())-Number($('#berat_palette_'+id).val()));
+        $('#total_netto').val(Number($('#total_netto').val())-Number($('#netto_'+id).val()));
         $('#no_tabel_'+id).closest('tr').remove();
         }
 }

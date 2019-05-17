@@ -117,7 +117,7 @@ class Model_ingot extends CI_Model{
     }
     
     function show_detail_spb($id){
-        $data = $this->db->query("Select spbd.*, rsk.nama_item, rsk.uom, sr.stok
+        $data = $this->db->query("Select spbd.*, rsk.nama_item, rsk.uom, sr.stok_netto as stok
                     From spb_detail spbd 
                         Left Join rongsok rsk On (spbd.rongsok_id = rsk.id) 
                         Left Join stok_rsk sr On (sr.rongsok_id = rsk.id)
@@ -127,7 +127,7 @@ class Model_ingot extends CI_Model{
     }
     
     function show_detail_spb_fulfilment($id){
-        $data = $this->db->query("Select rsk.nama_item, rsk.uom, dtrd.no_pallete,dtrd.netto, sr.stok, dtrd.line_remarks
+        $data = $this->db->query("Select rsk.nama_item, rsk.uom, dtrd.no_pallete,dtrd.netto, sr.stok_netto as stok, dtrd.line_remarks
                     From spb_detail_fulfilment spdf 
                         left join dtr_detail dtrd on (dtrd.id = spdf.dtr_detail_id)
                         Left Join rongsok rsk On (dtrd.rongsok_id = rsk.id)

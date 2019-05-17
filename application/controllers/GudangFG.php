@@ -104,21 +104,25 @@ class GudangFG extends CI_Controller{
 
             $this->load->model('Model_gudang_fg');
             $data['header'] = $this->Model_gudang_fg->show_header_laporan($id)->row_array();
-            $packing = $this->Model_gudang_fg->show_data_packing($data['header']['jenis_packing_id'])->row_array()['packing'];
-            if($packing=="BOBBIN"){
+            $packing = $this->Model_gudang_fg->show_data_packing($data['header']['jenis_packing_id'])->row_array();
+            if($packing['packing']=="BOBBIN"){
                 $data['content']   = "gudang_fg/detail_laporan_bobbin";
                 $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result(); 
-            } else if ($packing == "KERANJANG") {
+            } else if ($packing['packing'] == "KERANJANG") {
                 $data['content'] = "gudang_fg/detail_laporan_keranjang";
                 $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('KERANJANG')->result();
                 $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result(); 
-            // } else if ($packing == "ROLL") {
+            // } else if ($packing['packing'] == "ROLL") {
             //     $data['content'] = "gudang_fg/detail_laporan_roll";
             //     $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('ROLL')->row_array();
             //     $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result(); 
-            } else if ($packing == 'KARDUS') {
+            } else if ($packing['packing'] == 'KARDUS') {
                 $data['content'] = "gudang_fg/detail_laporan_rambut";
                 $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('KARDUS')->result();
+                $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result();
+            } else if ($packing['packing'] == 'BOBBIN 600g') {
+                $data['content'] = "gudang_fg/detail_laporan_b600g";
+                $data['packing'] = $this->Model_gudang_fg->get_bobbin_g($packing['id'])->result();
                 $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result();
             } else {
                 $data['content'] = "gudang_fg/detail_laporan_roll";
@@ -153,7 +157,7 @@ class GudangFG extends CI_Controller{
                     . '<i class="fa fa-trash"></i> Delete </a>'
                     . '<a href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay"'
                     . 'onclick="printBarcode('.$row->id.');" style="margin-top:5px"> '
-                    . '<i class="fa fa-trash"></i> Print Barcode </a></td>';
+                    . '<i class="fa fa-print"></i> Print Barcode </a></td>';
             $tabel .= '</tr>';            
             $no++;
         }
@@ -587,6 +591,42 @@ class GudangFG extends CI_Controller{
         $code = $this->Model_m_numberings->getNumbering('KARDUS',$tgl_input);
 
         $first = substr($this->input->post('no_packing'),0,1);
+        $ukuran = $this->input->post('ukuran');
+        $no_packing = $tgl_code.$first.$ukuran.substr($code,12,4);
+        
+        $this->db->insert('produksi_fg_detail', array(
+            'tanggal' => $tgl_input,
+            'produksi_fg_id' =>$this->input->post('id'),
+            'no_produksi' => $this->input->post('no_produksi'),
+            'no_packing_barcode' =>$no_packing,
+            'bruto' => $this->input->post('bruto'),
+            'netto' => $this->input->post('netto'),
+            'berat_bobbin' => $this->input->post('berat_bobbin'),
+            'bobbin_id' =>$this->input->post('id_packing'),
+            'keterangan' =>$this->input->post('keterangan')
+        ));
+        if ($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function save_detail_b600g(){
+        $return_data = array();
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+
+        $this->db->trans_start();
+
+        $this->load->model('Model_m_numberings');
+
+        $code = $this->Model_m_numberings->getNumbering('BOBBIN',$tgl_input);
+
+        $first = $this->input->post('no_packing');
         $ukuran = $this->input->post('ukuran');
         $no_packing = $tgl_code.$first.$ukuran.substr($code,12,4);
         

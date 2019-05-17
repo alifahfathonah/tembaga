@@ -85,7 +85,20 @@
                                     <input type="text" id="berat_edit" name="berat" maxlength="10"
                                         class="form-control myline" style="margin-bottom:5px">
                                 </div>
-                            </div>                            
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Status <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <select class="form-control myline" name="status_edit" id="status_edit" placeholder="Silahkan pilih" style="margin-bottom:5px">
+                                        <option value="0" style="background-color: green; color: white;">Ready</option>
+                                        <option value="1" style="background-color: blue; color: white;">Used</option>
+                                        <option value="2" style="background-color: yellow; color: white;">Delivered</option>
+                                        <option value="3" style="background-color: orange; color: white;">Booked</option>
+                                    </select>
+                                </div>
+                            </div> 
                         </form>
                     </div>
                     <div class="modal-footer">                        
@@ -430,6 +443,7 @@ function editData(id){
             $('#milik_edit').val(result['owner_id']);
             $('#berat_edit').val(result['berat']);
             $('#nomor_urut_edit').val(result['nomor_urut']);
+            $('#status_edit').val(result['status']);
             $('#bobbin_s').val(result['bobbin_size']);
             $('#id').val(result['id']);
             

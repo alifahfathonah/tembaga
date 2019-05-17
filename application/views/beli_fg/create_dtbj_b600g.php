@@ -106,8 +106,7 @@
                             Pilih Packing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select  id="no_packing" name="no_packing" placeholder="Silahkan pilih..." 
-                                class="form-control myline select2me" style="margin-bottom:5px">
+                            <select  id="no_packing" name="no_packing" placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom:5px">
                                 <option value=""></option>
                                 <?php 
                                 foreach($packing as $p){
@@ -269,7 +268,7 @@ function saveDetail(id){
         $('.alert-danger').show();
     }else{
         $.ajax({
-            url: "<?php echo base_url('index.php/BeliFinishGood/get_packing_kardus'); ?>",
+            url: "<?php echo base_url('index.php/BeliFinishGood/get_packing_b600g'); ?>",
             type: "POST",
             data: {
                 id:id,

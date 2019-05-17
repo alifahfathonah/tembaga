@@ -118,8 +118,9 @@ class Model_beli_fg extends CI_Model
     }
 
     function get_po_list($user_ppn){
-    	$data = $this->db->query("Select id, no_po, jenis_po From po 
-            Where jenis_po= 'FG' And status != 1 And customer_id = 0 And flag_ppn = ".$user_ppn);
+    	$data = $this->db->query("Select po.id, po.no_po, po.jenis_po, s.nama_supplier From po 
+            Left join supplier s on s.id = po.supplier_id
+            Where po.jenis_po= 'FG' And po.status != 1 And po.customer_id = 0 And po.flag_ppn = ".$user_ppn);
     	return $data;
     }
 

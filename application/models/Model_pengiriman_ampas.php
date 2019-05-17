@@ -193,8 +193,9 @@ class Model_pengiriman_ampas extends CI_Model{
     }
 
     function gudang_ampas(){
-        $data = $this->db->query("select tga.*, pi.no_produksi
+        $data = $this->db->query("select tga.*, r.nama_item, pi.no_produksi
             from t_gudang_ampas tga
+            left join rongsok r on (r.id = tga.rongsok_id)
             left join produksi_ingot pi on (tga.id_produksi = pi.id)");
         return $data;
     }

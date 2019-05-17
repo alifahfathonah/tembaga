@@ -140,13 +140,13 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                     <th>No</th>
-                                    <th>Nama Barang</th>
+                                    <th width="20%">Nama Barang</th>
                                     <th>No Produksi</th>
-                                    <th>No Packing</th>
+                                    <th width="20%">No Packing</th>
                                     <th>Bruto (kg)</th>
                                     <th>Netto (kg)</th>
-                                    <th>Berat Bobbin</th>
-                                    <th>ID bobbin</th>
+                                    <th>Berat</th>
+                                    <th>Nomor Bobbin</th>
                                 <!-- <?php
                                 if($packing=="KARDUS") {
                                 ?>

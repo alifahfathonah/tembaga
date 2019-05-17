@@ -1700,6 +1700,30 @@ class BeliRongsok extends CI_Controller{
         $this->load->view('layout', $data);
     }
 
+    function view_gudang_rongsok(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');
+
+        if($id){
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Gudang Rongsok";
+            $data['content']   = "beli_rongsok/view_gudang_rongsok";
+            
+            $this->load->model('Model_beli_rongsok');
+            $data['list_data'] = $this->Model_beli_rongsok->view_gudang_rongsok($id)->result();
+            
+            $this->load->view('layout', $data);
+        }else{
+            redirect('index.php/BeliRongsok/gudang_rongsok');
+        }
+    }
+
     function print_voucher(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
