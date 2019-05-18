@@ -533,8 +533,9 @@ class Model_beli_rongsok extends CI_Model{
 
     function view_gudang_rongsok($id){
         $data = $this->db->query("select r.nama_item, dd.bruto, dd.netto, dd.berat_palette, dd.no_pallete from dtr_detail dd
+                left join dtr on dtr.id = dd.dtr_id
                 left join rongsok r on r.id = dd.rongsok_id
-                where dd.rongsok_id = ".$id." and dd.tanggal_keluar is null");
+                where dd.rongsok_id = ".$id." and dtr.status = 1 and dd.tanggal_keluar is null");
         return $data;
     }
 
@@ -591,6 +592,7 @@ class Model_beli_rongsok extends CI_Model{
 CREATE OR REPLACE VIEW stok_rsk(rongsok_id, nama_item, jumlah_packing, stok_bruto, stok_netto)
     AS SELECT dd.rongsok_id, rsk.nama_item, count(dd.id), sum(bruto), sum(netto)
     from dtr_detail dd
+        left join dtr on dtr.id = dd.dtr_id
         left join rongsok rsk on rsk.id = dd.rongsok_id
-            where rsk.type_barang = 'Rongsok' and dd.tanggal_keluar is null
+            where rsk.type_barang = 'Rongsok' and dd.tanggal_keluar is null and dtr.status = 1
             group by dd.rongsok_id**/

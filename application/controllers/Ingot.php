@@ -627,6 +627,7 @@ class Ingot extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_prd = date('Y-m-d', strtotime($this->input->post('tgl_prd')));
 
         $this->db->trans_start();
 
@@ -661,7 +662,7 @@ class Ingot extends CI_Controller{
             #insert dtr
             $data_dtr = array(
                         'no_dtr'=> $code_dtr,
-                        'tanggal'=> $tgl_input,
+                        'tanggal'=> $tgl_prd,
                         'jenis_barang'=> 'RONGSOK',
                         'remarks'=> 'SISA PRODUKSI INGOT',
                         'created'=> $tanggal,
@@ -756,7 +757,7 @@ class Ingot extends CI_Controller{
                 'status' => 0,
                 'hasil_wip_id'=> $id_hasil_wip,
                 'created_by' => $user_id,
-                'created' => $tgl_input
+                'created' => $tgl_prd
                 );
         $this->db->insert('t_bpb_wip',$data_bpb);
 

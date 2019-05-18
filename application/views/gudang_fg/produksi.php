@@ -168,6 +168,12 @@
                                         <i class="fa fa-book"></i> View &nbsp; 
                                     </a> ';
                 }
+                if(($group_id==1) && $data->total_barang==0){
+                    echo '
+                                    <a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/GudangFG/delete_produksi_fg/'.$data->id.'" style="margin-bottom:4px"> &nbsp; 
+                                        <i class="fa fa-trash"></i> Delete &nbsp; 
+                                    </a> ';
+                }
                 ?>
                                 </td>
                             </tr>
