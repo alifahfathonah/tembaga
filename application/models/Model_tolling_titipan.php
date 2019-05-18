@@ -40,7 +40,7 @@ class Model_tolling_titipan extends CI_Model{
     }
     
     function show_header_so($id){
-        $data = $this->db->query("Select so.*, tso.id as id_tso, tso.no_po, tso.tgl_po, tso.jenis_barang, tso.no_spb,
+        $data = $this->db->query("Select so.*, tso.id as id_tso, tso.no_po, tso.tgl_po, tso.jenis_barang, tso.no_spb, tso.currency, tso.kurs,
                     cust.nama_customer, cust.pic, cust.alamat, cust.telepon, COALESCE(tsf.no_spb,tsw.no_spb_wip) as nomor_spb, u.realname as nama_marketing
                     From sales_order so
                         Left Join t_sales_order tso on tso.so_id = so.id

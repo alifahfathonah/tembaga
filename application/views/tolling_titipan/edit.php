@@ -140,6 +140,23 @@
                             <textarea id="keterangan" name="keterangan" rows="2" onkeyup="this.value = this.value.toUpperCase()"
                                 class="form-control myline" style="margin-bottom:5px"><?php echo $header['keterangan'];?></textarea>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            Currency
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="currency" name="currency" class="form-control myline" value="<?=$header['currency'];?>" readonly="readonly">
+                        </div>
+                        <div id="show_kurs">
+                        <div class="col-md-2">
+                            Kurs
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="kurs" name="kurs" class="form-control myline" value="<?=$header['kurs'];?>" readonly="readonly">
+                        </div>
+                        </div>
+                    </div>
                 </div>              
             </div>
             <div class="row">&nbsp;</div>
