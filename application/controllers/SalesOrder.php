@@ -197,15 +197,15 @@ class SalesOrder extends CI_Controller{
         if($jenis == 'WIP'){
         $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total_qty,0,',','.').'</strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,2,',','.').'</strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
         }else if($jenis == 'FG'){
         $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,2,',','.').'</strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
         }else {
         $tabel .= '<td colspan="5" style="text-align:right"><strong>Total </strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,2,',','.').'</strong></td>';
         }
         $tabel .= '<td></td>';
         $tabel .= '</tr>';
@@ -524,7 +524,7 @@ class SalesOrder extends CI_Controller{
                 'tanggal' => $tanggal,
                 'jenis_barang_id' => $this->input->post('barang_id'),
                 'uom' => $this->input->post('uom'),
-                'netto' => $netto,
+                'netto' => $this->input->post('netto'),
                 'keterangan' => 'SALES ORDER'
             );
             $this->db->insert('t_spb_ampas_detail', $dataC);
@@ -536,7 +536,7 @@ class SalesOrder extends CI_Controller{
                 'jenis_barang_id'=>$this->input->post('barang_id'),
                 'qty'=> $this->input->post('qty'),
                 'uom'=> $this->input->post('uom'),
-                'berat'=> $netto,
+                'berat'=> $this->input->post('netto'),
                 'keterangan'=> 'SALES ORDER'
             );
             $this->db->insert('t_spb_wip_detail', $dataC);
@@ -545,7 +545,7 @@ class SalesOrder extends CI_Controller{
             $dataC = array(
                 'spb_id'=> $spb,
                 'rongsok_id'=> $this->input->post('barang_id'),
-                'qty'=> $netto,
+                'qty'=> $this->input->post('netto'),
                 'line_remarks'=> 'SALES ORDER',
                 'created'=> $tanggal,
                 'created_by'=> $user_id
@@ -563,7 +563,7 @@ class SalesOrder extends CI_Controller{
                 'no_spb_detail'=>$insert_id,
                 'jenis_barang_id'=>$this->input->post('barang_id'),
                 'amount'=>str_replace('.', '', $this->input->post('harga')),
-                'qty'=>$netto,
+                'qty'=>$this->input->post('netto'),
                 'total_amount'=>str_replace('.', '', $this->input->post('total_harga'))
             );
         }else {
@@ -575,7 +575,7 @@ class SalesOrder extends CI_Controller{
                 'qty'=>str_replace('.', '', $this->input->post('qty')),
                 'total_amount'=>str_replace('.', '', $this->input->post('total_harga')),
                 'bruto'=>str_replace('.', '', $this->input->post('bruto')),
-                'netto'=>$netto
+                'netto'=>$this->input->post('netto')
             );
         }
 

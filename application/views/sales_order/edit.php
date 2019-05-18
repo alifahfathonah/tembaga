@@ -375,16 +375,14 @@ function getComa_a(value, id, no){
 function hitungSubTotal_a(id){
     if($('#jenis_barang').val() == 'FG' || $('#jenis_barang').val() == 'AMPAS' || $('#jenis_barang').val() == 'WIP'){
         harga = $('#amount_'+id).val().toString().replace(/\./g, "");
-        netto = $('#netto_'+id).val().toString().replace(/\./g, "");
-        netto = $('#netto_'+id).val().toString().replace(/\,/g, ".");
+        netto = $('#netto_'+id).val();
         total_harga = Number(harga)* Number(netto);
-        $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+        $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")).toFixed(2);
     }else{
         harga = $('#amount_'+id).val().toString().replace(/\./g, "");
-        netto = $('#netto_'+id).val().toString().replace(/\./g, "");
-        netto = $('#netto_'+id).val().toString().replace(/\,/g, ".");
+        netto = $('#netto_'+id).val();
         total_harga = Number(harga)* Number(netto);
-        $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+        $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")).toFixed(2);
     }
 }
 function simpanData(){
