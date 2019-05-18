@@ -147,9 +147,9 @@ class GudangFG extends CI_Controller{
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
             $tabel .= '<td>'.$row->no_produksi.'</td>';
-            $tabel .= '<td><a href="javascript:;" onclick="timbang(this)" class="btn btn-xs btn-circle blue disabled"><i class="fa fa-dashboard"></i> Timbang</a></td>';
             $tabel .= '<td>'.$row->bruto.'</td>';
             $tabel .= '<td>'.$row->berat_bobbin.'</td>';
+            $tabel .= '<td><a href="javascript:;" onclick="timbang(this)" class="btn btn-xs btn-circle blue disabled"><i class="fa fa-dashboard"></i> Timbang</a></td>';
             $tabel .= '<td>'.$row->netto.'</td>';
             $tabel .= '<td>'.$row->no_packing_barcode.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
@@ -210,6 +210,23 @@ class GudangFG extends CI_Controller{
         
         header('Content-Type: application/json');
         echo json_encode($barang); 
+    }
+
+    function delete_produksi_fg(){
+        $id = $this->uri->segment(3);
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+
+        $this->db->where('id', $id);
+        if($this->db->delete('produksi_fg')){
+            $this->session->set_flashdata('flash_msg', 'Data berhasil di hapus');
+            redirect('index.php/GudangFG/produksi_fg');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data gagal di hapus');
+            redirect('index.php/GudangFG/produksi_fg');
+        }           
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
     }
 
     function delete_spb_fg_detail(){
@@ -589,11 +606,13 @@ class GudangFG extends CI_Controller{
 
         $this->load->model('Model_m_numberings');
 
-        $code = $this->Model_m_numberings->getNumbering('KARDUS',$tgl_input);
+        // $code = $this->Model_m_numberings->getNumbering('KARDUS',$tgl_input);
 
-        $first = substr($this->input->post('no_packing'),0,1);
-        $ukuran = $this->input->post('ukuran');
-        $no_packing = $tgl_code.$first.$ukuran.substr($code,12,4);
+        // $first = substr($this->input->post('no_packing'),0,1);
+        // $ukuran = $this->input->post('ukuran');
+        // $no_packing = $tgl_code.$first.$ukuran.substr($code,12,4);
+
+        $no_packing = $this->input->post('no_barcode');
         
         $this->db->insert('produksi_fg_detail', array(
             'tanggal' => $tgl_input,
