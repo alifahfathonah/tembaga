@@ -234,10 +234,9 @@ function getComa(value, id){
 
 function hitungSubTotal(){
     harga = $('#harga').val().toString().replace(/\./g, "");
-    qty   = $('#netto').val().toString().replace(/\./g, "");
-    qty   = $('#netto').val().toString().replace(/\,/g, ".");
+    qty   = $('#netto').val();
     total_harga = Number(harga)* Number(qty);
-    $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")).toFixed(0);
 }
 
 function simpanData(){

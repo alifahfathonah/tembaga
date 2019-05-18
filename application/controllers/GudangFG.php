@@ -588,7 +588,7 @@ class GudangFG extends CI_Controller{
         for($i=0;$i<$jumlah;$i++){
         $current .= $data_printer[$i]['string1']."\n";
         }
-        echo "<form method='post' id=\"coba\" action=\"http://localhost/print/print.php\">";
+        echo "<form method='post' id=\"coba\" action=\"http://localhost:8080/print/print.php\">";
         echo "<input type='hidden' id='nospb' name='nospb' value='".$current."'>";
         echo "</form>";
         echo '<script type="text/javascript">document.getElementById(\'coba\').submit();</script>';
