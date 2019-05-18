@@ -227,7 +227,7 @@ class Tolling extends CI_Controller{
             $tabel .= '<td>'.$row->jenis_barang.'</td>';
             $tabel .= '<td>'.$row->uom.'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->amount,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->netto,2,',','.').'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->total_amount,0,',','.').'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->id.','.$row->no_spb_detail.');" style="margin-top:5px"> '
@@ -240,7 +240,7 @@ class Tolling extends CI_Controller{
         
         $tabel .= '<tr>';
         $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,2,',','.').'</strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
         $tabel .= '<td></td>';
         $tabel .= '</tr>';
@@ -262,13 +262,16 @@ class Tolling extends CI_Controller{
     function save_detail(){
         $return_data = array();
         $tanggal = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $netto = str_replace('.', '',$this->input->post('netto'));
+        $netto = str_replace(',', '.',$netto);
+
         if($this->input->post('jb') == 'FG'){
             $dataC = array(
                 't_spb_fg_id'=>$this->input->post('id_spb'),
                 'tanggal'=>$tanggal,
                 'jenis_barang_id'=>$this->input->post('jenis_barang'),
                 'uom'=>$this->input->post('uom'),
-                'netto'=> str_replace('.', '', $this->input->post('netto')),
+                'netto'=> $netto,
                 'keterangan'=>'SO TOLLING'
             );
             $this->db->insert('t_spb_fg_detail', $dataC);
@@ -279,8 +282,8 @@ class Tolling extends CI_Controller{
                 'tanggal'=> $tanggal,
                 'jenis_barang_id'=> $this->input->post('jenis_barang'),
                 'uom'=> $this->input->post('uom'),
-                'qty'=>str_replace('.', '', $this->input->post('netto')),
-                'berat'=> str_replace('.', '', $this->input->post('netto')),
+                'qty'=>$netto,
+                'berat'=> $netto,
                 'keterangan'=> 'SO TOLLING'
             );
             $this->db->insert('t_spb_wip_detail', $dataC);
@@ -291,7 +294,7 @@ class Tolling extends CI_Controller{
             't_so_id'=>$this->input->post('id'),
             'no_spb_detail'=> $insert_id,
             'jenis_barang_id'=>$this->input->post('jenis_barang'),
-            'netto'=>str_replace('.', '', $this->input->post('netto')),
+            'netto'=>$netto,
             'amount'=>str_replace('.', '', $this->input->post('harga')),
             'total_amount'=>str_replace('.', '', $this->input->post('total_harga'))
         ))){

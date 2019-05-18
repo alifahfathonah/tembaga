@@ -171,7 +171,7 @@
                                 </td>
                                 <td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>
                                 <td><input type="text" id="harga" name="harga" class="form-control myline" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);"></td>
-                                <td><input type="text" id="netto" name="netto" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>
+                                <td><input type="text" id="netto" name="netto" class="form-control myline" maxlength="10" value="0" onkeyup="hitungSubTotal();"></td>
                                 <td><input type="text" id="total_harga" name="total_harga" class="form-control myline" readonly="readonly" value="0"></td>
                                 <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
                             </tr>
@@ -218,6 +218,7 @@ function getComa(value, id){
 function hitungSubTotal(){
     harga = $('#harga').val().toString().replace(/\./g, "");
     qty   = $('#netto').val().toString().replace(/\./g, "");
+    qty   = $('#netto').val().toString().replace(/\,/g, ".");
     total_harga = Number(harga)* Number(qty);
     $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
@@ -235,11 +236,13 @@ function simpanData(){
 };
 
 function loadDetail(id){
+    console.log(id);
     $.ajax({
         type:"POST",
         url:'<?php echo base_url('index.php/Tolling/load_detail'); ?>',
         data:"id="+ id,
         success:function(result){
+            console.log(result);
             $('#boxDetail').html(result);     
         }
     });
@@ -351,7 +354,7 @@ $(function(){
         dateFormat: 'dd-mm-yy'
     }); 
     
-    loadDetail(<?php echo $header['id_tso']; ?>);
+    loadDetail(<?php echo $header['id']; ?>);
 });
 </script>
       

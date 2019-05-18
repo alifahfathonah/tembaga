@@ -220,16 +220,16 @@
                         echo '</select>'.
                         '</td>'.
                         '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>'.
-                        '<td><input type="text" id="amount_1" name="harga" class="form-control myline" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id, 1);"></td>';
+                        '<td><input type="text" id="amount_1" name="harga" class="form-control myline" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id, 1);"></td>';
         if($header['jenis_barang'] == 'WIP'){
                     echo '<td><input type="text" id="qty_1" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="5" value="0"></td>'.
-                        '<td><input type="text" id="netto_1" name="netto" class="form-control myline" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id, 1);"></td>';  
+                        '<td><input type="text" id="netto_1" name="netto" class="form-control myline" maxlength="10" value="0" onkeyup="hitungSubTotal_a(1)"></td>';  
         } else if($header['jenis_barang'] == 'FG' || $header['jenis_barang'] == 'AMPAS') {
                     echo '<input type="hidden" id="qty_1" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="1">'.
                         '<input type="hidden" id="bruto" name="bruto" class="form-control myline" maxlength="10" value="0">'.
-                        '<td><input type="text" id="netto_1" name="netto" class="form-control myline" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id, 1);"></td>';
+                        '<td><input type="text" id="netto_1" name="netto" class="form-control myline" maxlength="10" value="0" onkeyup="hitungSubTotal_a(1)"></td>';
         } else {
-                    echo '<td><input type="text" id="netto_1" name="qty" class="form-control myline" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id, 1);"></td>';
+                    echo '<td><input type="text" id="netto_1" name="qty" class="form-control myline" maxlength="10" value="0" onkeyup="hitungSubTotal_a(1)"></td>';
         }
                     echo '<td><input type="text" id="total_amount_1" name="total_harga" class="form-control myline" readonly="readonly" value="0"></td>'.
                         '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>';
@@ -376,11 +376,13 @@ function hitungSubTotal_a(id){
     if($('#jenis_barang').val() == 'FG' || $('#jenis_barang').val() == 'AMPAS' || $('#jenis_barang').val() == 'WIP'){
         harga = $('#amount_'+id).val().toString().replace(/\./g, "");
         netto = $('#netto_'+id).val().toString().replace(/\./g, "");
+        netto = $('#netto_'+id).val().toString().replace(/\,/g, ".");
         total_harga = Number(harga)* Number(netto);
         $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
     }else{
         harga = $('#amount_'+id).val().toString().replace(/\./g, "");
         netto = $('#netto_'+id).val().toString().replace(/\./g, "");
+        netto = $('#netto_'+id).val().toString().replace(/\,/g, ".");
         total_harga = Number(harga)* Number(netto);
         $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
     }

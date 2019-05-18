@@ -175,11 +175,11 @@ class SalesOrder extends CI_Controller{
             $tabel .= '<td style="text-align:right">'.number_format($row->amount,0,',','.').'</td>';
             if($jenis == 'WIP'){
             $tabel .= '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->netto,2,',','.').'</td>';
             }else if($jenis == 'FG' || $jenis == 'AMPAS'){
-            $tabel .= '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->netto,2,',','.').'</td>';
             }else{
-            $tabel .= '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->qty,2,',','.').'</td>';
             }
             $tabel .= '<td style="text-align:right">'.number_format($row->total_amount,0,',','.').'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
@@ -504,6 +504,8 @@ class SalesOrder extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $spb = $this->input->post('no_spb');
         $jenis = $this->input->post('jenis');
+        $netto = str_replace('.', '',$this->input->post('netto'));
+        $netto = str_replace(',', '.',$netto);
 
         if($jenis == 'FG'){
             $dataC = array(
@@ -511,7 +513,7 @@ class SalesOrder extends CI_Controller{
                 'tanggal'=>$tanggal,
                 'jenis_barang_id'=>$this->input->post('barang_id'),
                 'uom'=>$this->input->post('uom'),
-                'netto'=>str_replace('.', '',$this->input->post('netto')),
+                'netto'=>$netto,
                 'keterangan'=>'SALES ORDER'
             );
             $this->db->insert('t_spb_fg_detail', $dataC);
@@ -522,7 +524,7 @@ class SalesOrder extends CI_Controller{
                 'tanggal' => $tanggal,
                 'jenis_barang_id' => $this->input->post('barang_id'),
                 'uom' => $this->input->post('uom'),
-                'netto' => str_replace('.', '',$this->input->post('netto')),
+                'netto' => $netto,
                 'keterangan' => 'SALES ORDER'
             );
             $this->db->insert('t_spb_ampas_detail', $dataC);
@@ -534,7 +536,7 @@ class SalesOrder extends CI_Controller{
                 'jenis_barang_id'=>$this->input->post('barang_id'),
                 'qty'=> $this->input->post('qty'),
                 'uom'=> $this->input->post('uom'),
-                'berat'=> str_replace('.', '',$this->input->post('netto')),
+                'berat'=> $netto,
                 'keterangan'=> 'SALES ORDER'
             );
             $this->db->insert('t_spb_wip_detail', $dataC);
@@ -543,7 +545,7 @@ class SalesOrder extends CI_Controller{
             $dataC = array(
                 'spb_id'=> $spb,
                 'rongsok_id'=> $this->input->post('barang_id'),
-                'qty'=> str_replace('.', '',$this->input->post('netto')),
+                'qty'=> $netto,
                 'line_remarks'=> 'SALES ORDER',
                 'created'=> $tanggal,
                 'created_by'=> $user_id
@@ -561,7 +563,7 @@ class SalesOrder extends CI_Controller{
                 'no_spb_detail'=>$insert_id,
                 'jenis_barang_id'=>$this->input->post('barang_id'),
                 'amount'=>str_replace('.', '', $this->input->post('harga')),
-                'qty'=>str_replace('.', '', $this->input->post('netto')),
+                'qty'=>$netto,
                 'total_amount'=>str_replace('.', '', $this->input->post('total_harga'))
             );
         }else {
@@ -573,7 +575,7 @@ class SalesOrder extends CI_Controller{
                 'qty'=>str_replace('.', '', $this->input->post('qty')),
                 'total_amount'=>str_replace('.', '', $this->input->post('total_harga')),
                 'bruto'=>str_replace('.', '', $this->input->post('bruto')),
-                'netto'=>str_replace('.', '', $this->input->post('netto'))
+                'netto'=>$netto
             );
         }
 
