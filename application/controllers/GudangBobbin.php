@@ -875,7 +875,8 @@ class GudangBobbin extends CI_Controller{
     function get_bobbin_deliver(){
         $this->load->model('Model_bobbin');
         $nomor_bobbin = $this->input->post('nomor_bobbin');
-        $result = $this->Model_bobbin->get_bobbin_deliver($nomor_bobbin)->row_array();
+        // $result = $this->Model_bobbin->get_bobbin_deliver($nomor_bobbin)->row_array();
+        $result = $this->Model_bobbin->get_bobbin($nomor_bobbin)->row_array();
         header('Content-Type: application/json');
         echo json_encode($result);
     }

@@ -464,17 +464,30 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
 
+    // function show_laporan(){
+    //     $data = $this->db->query("select DATE_FORMAT(d.tanggal,'%M %Y') as showdate, 
+    //         EXTRACT(YEAR_MONTH from d.tanggal) as tanggal, count(dd.id) as id, 
+    //         (select sum(qty) from dtr_detail dd where month(dd.tanggal_masuk) = month(d.tanggal)) as jumlah,
+    //         (select sum(bruto) from dtr_detail dd where month(dd.tanggal_masuk) = month(d.tanggal)) as bruto_masuk,
+    //         (select sum(netto) from dtr_detail dd where month(dd.tanggal_masuk) = month(d.tanggal)) as netto_masuk,
+    //         COALESCE((select sum(bruto) from dtr_detail dd where month(dd.tanggal_keluar) = month(d.tanggal)),0)as bruto_keluar,
+    //         COALESCE((select sum(netto) from dtr_detail dd where month(dd.tanggal_keluar) = month(d.tanggal)),0)as netto_keluar
+    //         from dtr_detail dd
+    //         left join dtr d on d.id = dd.dtr_id
+    //             where d.status = 1
+    //                 group by month(d.tanggal)");
+    //     return $data;
+    // }
+
     function show_laporan(){
         $data = $this->db->query("select DATE_FORMAT(d.tanggal,'%M %Y') as showdate, 
-            EXTRACT(YEAR_MONTH from d.tanggal) as tanggal, count(dd.id) as id, 
-            (select sum(qty) from dtr_detail dd where month(dd.tanggal_masuk) = month(d.tanggal)) as jumlah,
-            (select sum(bruto) from dtr_detail dd where month(dd.tanggal_masuk) = month(d.tanggal)) as bruto_masuk,
-            (select sum(netto) from dtr_detail dd where month(dd.tanggal_masuk) = month(d.tanggal)) as netto_masuk,
-            COALESCE((select sum(bruto) from dtr_detail dd where month(dd.tanggal_keluar) = month(d.tanggal)),0)as bruto_keluar,
-            COALESCE((select sum(netto) from dtr_detail dd where month(dd.tanggal_keluar) = month(d.tanggal)),0)as netto_keluar
+            EXTRACT(YEAR_MONTH from d.tanggal) as tanggal, count(dd.id) as jumlah, sum(bruto) as bruto_masuk, sum(netto) as netto_masuk,
+            COALESCE((select sum(bruto) from dtr_detail dd where month(dd.tanggal_keluar) = month(d.tanggal) and year(dd.tanggal_keluar) = year(d.tanggal)),0)as bruto_keluar,
+            COALESCE((select sum(netto) from dtr_detail dd where month(dd.tanggal_keluar) = month(d.tanggal) and year(dd.tanggal_keluar) = year(d.tanggal)),0)as netto_keluar
             from dtr_detail dd
             left join dtr d on d.id = dd.dtr_id
-                    group by month(d.tanggal)");
+                where d.status = 1
+                    group by year(d.tanggal), month(d.tanggal)");
         return $data;
     }
 
@@ -492,16 +505,28 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
 
+    // function show_view_laporan($bulan, $tahun){
+    //     $data = $this->db->query("select dd.rongsok_id, rsk.nama_item, count(dd.id) as jumlah, 
+    //             (select sum(bruto) from dtr_detail dd where month(dd.tanggal_masuk) =".$bulan." and year(dd.tanggal_masuk) =".$tahun." and dd.rongsok_id=rsk.id) as bruto_masuk,
+    //             (select sum(netto) from dtr_detail dd where month(dd.tanggal_masuk) =".$bulan." and year(dd.tanggal_masuk) =".$tahun." and dd.rongsok_id=rsk.id) as netto_masuk,
+    //             (select sum(bruto) from dtr_detail dd where month(dd.tanggal_keluar) =".$bulan." and year(dd.tanggal_keluar) =".$tahun." and dd.rongsok_id=rsk.id) as bruto_keluar,
+    //             (select sum(netto) from dtr_detail dd where month(dd.tanggal_keluar) =".$bulan." and year(dd.tanggal_keluar) =".$tahun." and dd.rongsok_id=rsk.id) as netto_keluar
+    //             from dtr_detail dd
+    //                 left join dtr d on d.id = dd.dtr_id
+    //                 left join rongsok rsk on rsk.id = dd.rongsok_id
+    //             where rsk.type_barang = 'Rongsok' and month(d.tanggal) =".$bulan." and year(d.tanggal) =".$tahun."
+    //         group by dd.rongsok_id");
+    //     return $data;
+    // }
+
     function show_view_laporan($bulan, $tahun){
-        $data = $this->db->query("select dd.rongsok_id, rsk.nama_item, count(dd.id) as jumlah, 
-                (select sum(bruto) from dtr_detail dd where month(dd.tanggal_masuk) =".$bulan." and year(dd.tanggal_masuk) =".$tahun." and dd.rongsok_id=rsk.id) as bruto_masuk,
-                (select sum(netto) from dtr_detail dd where month(dd.tanggal_masuk) =".$bulan." and year(dd.tanggal_masuk) =".$tahun." and dd.rongsok_id=rsk.id) as netto_masuk,
+        $data = $this->db->query("select dd.rongsok_id, rsk.nama_item, count(dd.id) as jumlah, sum(bruto) as bruto_masuk, sum(netto) as netto_masuk,
                 (select sum(bruto) from dtr_detail dd where month(dd.tanggal_keluar) =".$bulan." and year(dd.tanggal_keluar) =".$tahun." and dd.rongsok_id=rsk.id) as bruto_keluar,
                 (select sum(netto) from dtr_detail dd where month(dd.tanggal_keluar) =".$bulan." and year(dd.tanggal_keluar) =".$tahun." and dd.rongsok_id=rsk.id) as netto_keluar
                 from dtr_detail dd
                     left join dtr d on d.id = dd.dtr_id
                     left join rongsok rsk on rsk.id = dd.rongsok_id
-                where rsk.type_barang = 'Rongsok' and month(d.tanggal) =".$bulan." and year(d.tanggal) =".$tahun."
+                where rsk.type_barang = 'Rongsok' and month(d.tanggal) =".$bulan." and year(d.tanggal) =".$tahun." and d.status = 1
             group by dd.rongsok_id");
         return $data;
     }
@@ -511,8 +536,9 @@ class Model_beli_rongsok extends CI_Model{
                     dd.id, dd.rongsok_id, dd.no_pallete, r.nama_item, dd.bruto, dd.netto, dd.tanggal_masuk, dd.tanggal_keluar = null as tanggal_keluar, dd.tanggal_masuk as tanggal
                 FROM
                     dtr_detail dd 
+                    left join dtr d on d.id = dd.dtr_id
                     left join rongsok r on r.id = dd.rongsok_id
-                    where dd.rongsok_id =".$id_barang." and month(dd.tanggal_masuk) =".$bulan." and year(dd.tanggal_masuk) =".$tahun.")
+                    where d.status = 1 and dd.rongsok_id =".$id_barang." and month(dd.tanggal_masuk) =".$bulan." and year(dd.tanggal_masuk) =".$tahun.")
                 UNION ALL
                 (SELECT 
                     dtd.id, dtd.rongsok_id, dtd.no_pallete, rsk.nama_item, dtd.bruto, dtd.netto, dtd.tanggal_masuk = null, dtd.tanggal_keluar, dtd.tanggal_keluar as tanggal

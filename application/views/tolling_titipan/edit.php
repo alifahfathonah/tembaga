@@ -219,6 +219,10 @@
     </div>
 </div> 
 <script>
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
 function myCurrency(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
@@ -236,7 +240,8 @@ function hitungSubTotal(){
     harga = $('#harga').val().toString().replace(/\./g, "");
     qty   = $('#netto').val();
     total_harga = Number(harga)* Number(qty);
-    $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")).toFixed(0);
+    total_harga = total_harga.toFixed(0);
+    $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
 
 function simpanData(){
@@ -258,7 +263,6 @@ function loadDetail(id){
         url:'<?php echo base_url('index.php/Tolling/load_detail'); ?>',
         data:"id="+ id,
         success:function(result){
-            console.log(result);
             $('#boxDetail').html(result);     
         }
     });
@@ -303,7 +307,7 @@ function saveDetail(){
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
-                    loadDetail($('#id_tso').val());
+                    loadDetail($('#id').val());
                     $("#jenis_barang_id").select2("val", "");
                     $("#uom").val('');
                     $("#harga").val('');
@@ -334,7 +338,7 @@ function hapusDetail(id,id_spb){
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
-                    loadDetail($('#id_tso').val());
+                    loadDetail($('#id').val());
                 }else{
                     alert(result['message']);
                 }     

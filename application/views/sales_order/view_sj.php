@@ -233,6 +233,8 @@
                             <tbody id="boxDetail">
                                 <?php 
                                     $no=1; 
+                                    $bruto=0;
+                                    $netto=0;
                                     foreach ($list_sj as $row) { 
                                 ?>
                                 <tr>
@@ -245,12 +247,23 @@
                                     <?php } ?>
                                     <td><?php echo $row->uom; ?></td>
                                     <td><?php echo $row->no_packing; ?></td>
-                                    <td><?php echo number_format($row->bruto,0,',','.'); ?></td>
-                                    <td><?php echo number_format($row->netto,0,',','.'); ?></td>
+                                    <td><?php echo number_format($row->bruto,2,',','.'); ?></td>
+                                    <td><?php echo number_format($row->netto,2,',','.'); ?></td>
                                     <td><?php echo $row->nomor_bobbin; ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
                                 </tr>
-                                <?php $no++; } ?>
+                                <?php
+                                    $bruto += $row->bruto;
+                                    $netto += $row->netto; 
+                                    $no++; 
+                                    } 
+                                ?>
+                                <tr>
+                                    <td style="text-align: right;" colspan="5"><strong>Total</strong></td>
+                                    <td><?=number_format($bruto,2,',','.');?></td>
+                                    <td><?=number_format($netto,2,',','.');?></td>
+                                    <td colspan="2"></td>
+                                </tr>
                             </tbody>
                         </table>
                     <?php } else if($header['jenis_barang']=='WIP'){ ?>
@@ -324,6 +337,8 @@
                             <tbody id="boxDetail">
                                 <?php 
                                     $no=1; 
+                                    $bruto=0;
+                                    $netto=0;
                                     foreach ($list_sj as $row) { 
                                 ?>
                                 <tr>
@@ -336,7 +351,18 @@
                                     <td><?php echo ($row->bruto - $row->netto); ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
                                 </tr>
-                                <?php $no++; } ?>
+                                <?php
+                                    $bruto += $row->bruto;
+                                    $netto += $row->netto; 
+                                    $no++; 
+                                    } 
+                                ?>
+                                <tr>
+                                    <td style="text-align: right;" colspan="4"><strong>Total</strong></td>
+                                    <td><?=number_format($bruto,2,',','.');?></td>
+                                    <td><?=number_format($netto,2,',','.');?></td>
+                                    <td colspan="2"></td>
+                                </tr>
                             </tbody>
                         </table>
                     <?php

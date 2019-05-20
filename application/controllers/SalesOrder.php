@@ -339,7 +339,7 @@ class SalesOrder extends CI_Controller{
                 $dataC = array(
                     'no_spb'=> $num,
                     'tanggal'=> $tgl_input,
-                    'keterangan'=>'SALES ORDER FINISH GOOD',
+                    'keterangan'=>'SO : '.$code,
                     'created_at'=> $tanggal,
                     'created_by'=> $user_id
                 );
@@ -351,7 +351,7 @@ class SalesOrder extends CI_Controller{
                 $dataC = array(
                     'no_spb_wip'=> $num,
                     'tanggal'=> $tgl_input,
-                    'keterangan'=>'SALES ORDER WIP',
+                    'keterangan'=>'SO : '.$code,
                     'created'=> $tanggal,
                     'created_by'=> $user_id
                 );
@@ -364,7 +364,7 @@ class SalesOrder extends CI_Controller{
                     'no_spb'=> $num,
                     'jenis_barang'=> 1,
                     'tanggal'=> $tanggal,
-                    'remarks'=> 'SALES ORDER RONGSOK',
+                    'keterangan'=>'SO : '.$code,
                     'created'=> $tanggal,
                     'created_by'=> $user_id
                 );
@@ -375,7 +375,7 @@ class SalesOrder extends CI_Controller{
                 $dataC = array(
                     'no_spb_ampas' => $num,
                     'tanggal' => $tgl_input,
-                    'keterangan' => 'SALES ORDER AMPAS',
+                    'keterangan'=>'SO : '.$code,
                     'created_by' => $user_id,
                     'created_at' => $tanggal
                 );

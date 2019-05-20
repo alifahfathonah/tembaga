@@ -94,7 +94,7 @@ class Tolling extends CI_Controller{
                 $dataC = array(
                     'no_spb'=> $num,
                     'tanggal'=> $tgl_input,
-                    'keterangan'=>'TOLLING SO FINISH GOOD',
+                    'keterangan'=>'TOLLING '.$code,
                     'created_at'=> $tanggal,
                     'created_by'=> $user_id
                 );
@@ -105,7 +105,7 @@ class Tolling extends CI_Controller{
                 $dataC = array(
                     'no_spb_wip'=> $num,
                     'tanggal'=> $tgl_input,
-                    'keterangan'=> 'TOLLING SO WIP',
+                    'keterangan'=>'TOLLING '.$code,
                     'created'=> $tanggal,
                     'created_by'=> $user_id
                 );
@@ -265,8 +265,8 @@ class Tolling extends CI_Controller{
     function save_detail(){
         $return_data = array();
         $tanggal = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $netto = str_replace('.', '',$this->input->post('netto'));
-        $netto = str_replace(',', '.',$netto);
+        // $netto = str_replace('.', '',$this->input->post('netto'));
+        $netto = str_replace(',', '.',$this->input->post('netto'));
 
         if($this->input->post('jb') == 'FG'){
             $dataC = array(
@@ -619,7 +619,6 @@ class Tolling extends CI_Controller{
                 ));
             }
             
-            if($this->db->trans_complete()){  
                 $this->load->model('Model_tolling_titipan');
             
                 #update status PO, jika DTR sudah mencukupi
@@ -642,16 +641,16 @@ class Tolling extends CI_Controller{
                         }
                 }
 
-            $return_data['type_message']= "sukses";
-            $return_data['message'] = "TTR sudah diberikan ke bagian gudang";
-                //$return_data['message']= "TTR berhasil di-create dengan nomor : ".$code;                 
+        if($this->db->trans_complete()){  
+            // $this->session->set_flashdata('flash_msg', ' DTR Berhasil di Approve');      
+            redirect('index.php/Tolling/proses_matching/'.$this->input->post('so_id'));
         }else{
-            $return_data['type_message']= "error";
-            $return_data['message']= "Pembuatan TTR gagal, penomoran belum disetup!";
-        }                  
+            // $this->session->set_flashdata('flash_msg', ' DTR Gagal di Approve');    
+            redirect('index.php/Tolling/proses_matching/'.$this->input->post('so_id'));
+        }            
         
-       header('Content-Type: application/json');
-       echo json_encode($return_data);
+       // header('Content-Type: application/json');
+       // echo json_encode($return_data);
     }
 
     function print_so(){

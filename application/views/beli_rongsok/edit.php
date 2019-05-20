@@ -284,7 +284,7 @@
                             </tbody>
                             <tr>
                                 <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
-                                <td style="background-color: green; color: white;"><?=$total_qty;?></td>
+                                <td style="background-color: green; color: white;"><?=number_format($total_qty,2,',','.');?></td>
                                 <td><?=number_format($total,0,',','.');?></td>
                             </tr>
                         </table>
@@ -334,8 +334,8 @@
                             <tr>
                                 <td colspan="3" style="text-align: right; font-weight: bold;">Total</td>
                                 <td><?=$qty;?></td>
-                                <td><?=$bruto;?></td>
-                                <td style="background-color: green; color: white;"><?=$netto;?></td>
+                                <td><?=number_format($bruto,0,',','.');?></td>
+                                <td style="background-color: green; color: white;"><?=number_format($netto,0,',','.');?></td>
                                 <td><?=$ttr;?></td>
                             </tr>
                         </table>
