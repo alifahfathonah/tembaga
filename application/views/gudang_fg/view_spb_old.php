@@ -134,7 +134,7 @@
             
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <?php if ($myData['status']==0 || $myData['status']==4) { ?>
+                    <?php if ($myData['status']==0 || $myData['status']==2) { ?>
                     <div class="row">
                         <div class="col-md-12">
                                 <h4 align="center">Detail SPB FG dan Ketersediaan (Kuantitas dan Stok)</h4>
@@ -152,16 +152,15 @@
                                         <tbody>
                                         <?php
                                             $no = 1;
-                                            $netto = 0;
                                             foreach ($myDetail as $row){
                                             $total_qty = $row->total_qty;
                                             $total_netto = $row->total_netto;
-                                            $status = ($row->total_netto > $row->netto) ? 1 : 0;
+                                            $status = (($total_qty>0) && ($total_netto>0)) ? 1 : 0;
                                             ($status) ? $stat = '<div style="background:green;color:white;"><span class="fa fa-check"></span> OK </div>' : $stat = '<div style="background:red;color:white;"> <span class="fa fa-times"></span> NOK</div>';
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
                                                 echo '<td>'.$row->jenis_barang.'</td>';
-                                                echo '<td>'.number_format($row->netto,2,',','.').' '.$row->uom.'</td>';
+                                                echo '<td>'.$row->netto.' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
                                                 echo '<td>'.$stat.'</td>';
                                                 //total qty
@@ -174,19 +173,13 @@
                                                 if ($total_netto==0) {
                                                 echo '<td style="background:red;color:white;"> 0 '.$row->uom.'</td>';
                                                 } else {
-                                                echo '<td class="bg-primary">'.number_format($total_netto,2,',','.').' '.$row->uom.'</td>';
+                                                echo '<td class="bg-primary">'.$total_netto.' '.$row->uom.'</td>';
                                                 }
                                                 echo '</tr>';
                                                 $no++;
-                                                $netto += $row->netto;
                                             }
                                         ?>
                                         </tbody>
-                                        <tr>
-                                            <td colspan="2" style="text-align: right"><strong>Total :</strong></td>
-                                            <td style="color: white; background-color: green;"><?= number_format($netto,0,',','.'); ?></td>
-                                            <td colspan="4"></td>
-                                        </tr>
                                     </table>
                                 </div>
                         </div>
@@ -213,7 +206,7 @@
                                             $no = 1;
                                             $tb = 0;
                                             $tn = 0;
-                                            foreach ($detailSPB as $row){
+                                            foreach ($myDetailSaved as $row){
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
                                                 echo '<td>'.$row->jenis_barang.'</td>';
@@ -247,35 +240,54 @@
                                     <table class="table table-bordered table-striped table-hover" id="tabel_barang">
                                         <thead>
                                             <th style="width:40px">No</th>
-                                            <th style="width:20%">No Packing</th>
-                                            <th style="width:20%">Nama Barang</th>
-                                            <th>UOM</th>
-                                            <th>Netto</th>
+                                            <th style="width:25%">Nama Barang</th>
+                                            <th style="width:10%">UOM</th>
+                                            <th>No Packing</th>
+                                            <th>NETTO (kg)</th>
                                             <th>Keterangan</th>
                                             <th>Action</th>
                                         </thead>
+                                        <tbody id="boxSavedItem">
+                                            
+                                        </tbody>
                                         <tbody>
                                             <tr>
-                                                <td><div id="no_tabel_1">1</div></td>
-                                                <td><input type="text" id="no_packing_1" name="details[1][no_packing]" class="form-control myline" onchange="get_packing(1);"></td>
-                                                <input type="hidden" name="details[1][id_barang]" id="barang_id_1"><!-- ID GUDANG -->
-                                                <td><input type="text" id="nama_barang_1" name="details[1][nama_barang]" class="form-control myline" readonly="readonly"></td>
+                                                <td><div id="no_tabel_1">+</div><input type="hidden" id="tsfd_id" name="details[1][spb_detail_id]"/></td>
+                                                <td><select id="barang_1" class="form-control select2me myline" placeholder="pilih jenis barang" name="details[1][jenis_barang]" onchange="get_no_packing(1); get_tsfd_id(this.value);">
+                                                    <option value=""></option>
+                                                    <?php foreach($list_barang as $v){
+                                                        echo '<option value="'.$v->id.'">'.$v->jenis_barang.'</option>';
+                                                    } ?>
+                                                </select>
+                                                <input type="hidden" name="details[1][id_barang]" id="barang_id_1">
+                                                </td>
                                                 <td><input type="text" id="uom_1" name="details[1][uom]" class="form-control myline" readonly="readonly"></td>
+                                            <!--    <td><input type="text" id="qty_1" name="details[1][qty]" class="form-control myline"/></td>-->
+                                            <!--    <td><select id="no_packing_1" class="form-control" placeholder="pilih nomor packing" name="details[1][no_packing]">
+                                                    <option value=""></option>
+                                                    <?php// foreach($no_packing as $v){
+                                                        //echo '<option value="'.$v->id.'">'.$v->no_packing.'</option>';
+                                                    } ?>
+                                                </select>-->
+                                                <td id="no_packing">
+
+                                                </td>
+                                                <input type="hidden" name="details[1][no_produksi]" id="barang_id_1">
                                                 </td>
                                                 <td><input type="text" id="netto_1" name="details[1][berat]" class="form-control myline" readonly="readonly" /></td>
                                                 <td><input type="text" id="keterangan_1" name="details[1][keterangan]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
                                                 <td style="text-align:center">
-                                                    <a id="btn_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
+
+                                                    <a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
+
+                                                    <!--<a id="btn_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>-->
                                                 </td>
                                             </tr>
+
                                         </tbody>
-                                            <thead>
-                                                <th colspan="3">Total Netto</th>
-                                                <th><input type="text" id="total_netto" class="form-control" readonly="readonly" value="0"></th>
-                                                <th colspan="2"></th>
-                                            </thead>
                                     </table>
                                 </div>
+
                         </div>
                     </div>
                 <?php } else { ?>
@@ -309,53 +321,7 @@
                                 </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h4 align="center">SPB FG yang Sudah Dipenuhi</h4>
-                                <div class="table-scrollable">
-                                    <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
-                                        <thead>
-                                            <th style="width:40px">No</th>
-                                            <th>Nama Item</th>
-                                            <th>UOM</th>
-                                            <th>No Packing</th>
-                                            <th>Nomor Bobbin</th>
-                                            <th>Bruto</th>
-                                            <th>Netto (UOM)</th>
-                                            <th>Keterangan</th>
-                                        </thead>
-                                        <tbody>
-                                        <?php
-                                            $no = 1;
-                                            $tb = 0;
-                                            $tn = 0;
-                                            foreach ($detailSPB as $row){
-                                                echo '<tr>';
-                                                echo '<td style="text-align:center">'.$no.'</td>';
-                                                echo '<td>'.$row->jenis_barang.'</td>';
-                                                echo '<td>'.$row->uom.'</td>';
-                                                echo '<td>'.$row->no_packing.'</td>';
-                                                echo '<td>'.$row->nomor_bobbin.'</td>';
-                                                echo '<td>'.$row->bruto.'</td>';
-                                                echo '<td>'.$row->netto.' '.$row->uom.'</td>';
-                                                echo '<td>'.$row->keterangan.'</td>';
-                                                $tb += $row->bruto;
-                                                $tn += $row->netto;
-                                                $no++;
-                                            }
-                                        ?>
-                                        <tr>
-                                            <td colspan="5">Total</td>
-                                            <td style="background-color: green; color: white;"><?=$tb;?></td>
-                                            <td style="background-color: green; color: white;"><?=$tn;?></td>
-                                            <td></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                        </div>
-                    </div>
-                    <hr class="divider"/>
+
                     <div class="row">
                         <div class="col-md-12">
                             <h4 align="center">Pemenuhan SPB FG</h4>
@@ -370,7 +336,7 @@
                                             <th>Keterangan</th>
                                         </thead>
                                         <tbody>
-                                            <?php $no=1; $total_netto=0; foreach($myDetailSaved as $v) { ?>
+                                            <?php $no=1; $total_netto=0; foreach($detailSPB as $v) { ?>
                                             <tr>
                                                 <td><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
                                                 <td><?=$v->jenis_barang;?></td>
@@ -384,7 +350,7 @@
                                             $total_netto += $v->netto; } ?>
                                         </tbody>
                                         <tbody>
-                                            <td colspan="3">
+                                            <td colspan="4">
                                                 Total Netto (KG)
                                             </td>
                                             <td style="text-align:right; background-color:green; color:white"><strong><?php echo $total_netto;?></strong></td>
@@ -402,15 +368,11 @@
             <div class="row">
                 <div class="col-md-12">
                     <?php
-                        if( ($group_id==1 || $hak_akses['save_spb']==1) && ($myData['status']=="0" || $myData['status']=="4")){
-                            echo '<a href="javascript:;" class="btn green" onclick="saveFulfilment();"> '
-                                .'<i class="fa fa-check"></i> Save </a> ';
-                        }
-                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && ($myData['status']=='3')){
+                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && ($myData['status']=="0" || $myData['status']=='2')){
                             echo '<a href="javascript:;" class="btn green" onclick="approveData();"> '
                                 .'<i class="fa fa-check"></i> Approve </a> ';
                         }
-                        if( ($group_id==1 || $hak_akses['reject_spb']==1) &&  ($myData['status']=='3')){
+                        if( ($group_id==1 || $hak_akses['reject_spb']==1) &&  ($myData['status']=="0" || $myData['status']=='2')){
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
                         }
@@ -422,9 +384,6 @@
 
                     <a href="<?php echo base_url('index.php/GudangFG/spb_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
-                    <?php if($group_id==1 || $hak_akses['print_spb']==1){ ?>
-                    <a class="btn btn-circle blue-ebonyclay" href="<?php echo base_url('index.php/GudangFG/print_spb_fulfilment/').$myData['id'];?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
-                    <?php } ?>
                 </div>    
             </div>
         </form>
@@ -450,13 +409,6 @@
             data: {id: id_barang}, // Send the slected option to the PHP page
         });
     });*/
-function saveFulfilment(){
-    var r=confirm("Anda yakin meng-save permintaan barang ini?");
-    if (r==true){
-        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/GudangFG/save_fulfilment");    
-        $('#formku').submit(); 
-    }
-};
 
 function approveData(){
     var r=confirm("Anda yakin meng-approve permintaan barang ini?");
@@ -497,8 +449,8 @@ function rejectData(){
 
 function check_duplicate(){
     var valid = true;
-        $.each($("input[name$='[no_packing]']"), function (index1, item1) {
-            $.each($("input[name$='[no_packing]']").not(this), function (index2, item2) {
+        $.each($("input[name$='[id_barang]']"), function (index1, item1) {
+            $.each($("input[name$='[id_barang]']").not(this), function (index2, item2) {
                 if ($(item1).val() == $(item2).val()) {
                     valid = false;
                 }
@@ -507,74 +459,180 @@ function check_duplicate(){
         return valid;
 }
 
-function get_packing(id){
-    var no = $("#no_packing_"+id).val();
-    const new_id = id + 1;
-    if(no!=''){    
+function get_tsfd_id(id){
+    id_spb = $("#id").val();
+    console.log('id_spb' + id_spb);
+    console.log('id_barang' + id);
+    $.ajax({
+        type:"POST",
+        url:"<?php echo base_url('index.php/GudangFG/get_tsfd_id'); ?>",
+        data: {
+            id_spb : id_spb,
+            id_barang : id
+        },
+        success:function(result){
+            console.log('tsfd id =' + result['id']);
+            $('#tsfd_id').val(result['id']);     
+        }
+    });
+}
+
+function get_no_packing_detail(id){
+    $("#packing_id_"+id).val($("#packing_"+id).val());
+    var id_packing = $("#packing_"+id).val();
+    console.log('ID PACKING'+id_packing);
+    if(id_packing!=''){    
         var check = check_duplicate();
         if(check){
             $.ajax({
-                url: "<?php echo base_url('index.php/GudangFG/get_packing'); ?>",
+                url: "<?php echo base_url('index.php/GudangFG/get_no_packing_detail'); ?>",
                 type: "POST",
-                data : {id: no},
-                success: function (result){
-                    if (result!=null){
-                        $("#nama_barang_"+id).val(result['jenis_barang']);
-                        $("#barang_id_"+id).val(result['id']);
-                        $("#uom_"+id).val(result['uom']);
-                        $("#netto_"+id).val(result['netto']);
-                        $("#keterangan_"+id).val(result['keterangan']);
-                        $("#btn_"+id).removeClass('disabled');
-                        const total = (parseInt($('#total_netto').val()) + parseInt(result['netto']));
-                        $('#total_netto').val(total);
-                        create_new_input(id);
-                        $('#no_packing_'+id).prop('readonly',true);
-                        $('#no_packing_'+new_id).focus();
-                    } else {
-                        alert('No pallete tidak ditemukan, silahkan ulangi kembali');
-                        $("#no_packing_"+id).val('');
-                    }
+                data : {no_packing: id_packing},
+                dataType: "json",
+                success: function(result) {
+                    console.log('uom' + result['uom']);
+                    console.log('netto' + result['netto']);
+                    $('#uom_'+id).val(result['uom']);
+                    $('#netto_'+id).val(result['netto']);
                 }
             });
         } else {
-            //alert('Inputan pallete tidak boleh sama dengan inputan sebelumnya!');
-            $("#no_packing_"+id).val('');
+            alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
         }
     }
 }
 
+function get_no_packing(id){
+    $("#barang_id_"+id).val($("#barang_"+id).val());
+    var id_barang = $("#barang_"+id).val();
+    console.log(id_barang);
+    if(id_barang!=''){    
+        var check = check_duplicate();
+        if(check){
+            $.ajax({
+                url: "<?php echo base_url('index.php/GudangFG/get_no_packing'); ?>",
+                type: "POST",
+                data : {id: id_barang},
+                success:function(result){
+                    $('#no_packing').html(result);     
+                }
+            });
+        } else {
+            alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
+        }
+    }
+}
+
+/*function getBarang(id){
+    $("#barang_id_"+id).val($("#barang_"+id).val());
+    var id_barang = $("#barang_"+id).val();
+    console.log(id_barang);
+    if(id_barang!=''){    
+        var check = check_duplicate();
+        if(check){
+            $.ajax({
+                url: "<?php// echo base_url('index.php/GudangFG/get_uom_spb'); ?>",
+                type: "POST",
+                data : {id: id_barang},
+                success: function (result){
+                    if (result!=null){
+                        $("#spb_id_"+id).val(result['id']);
+                        $("#uom_"+id).val(result['uom']);
+                        $("#btn_"+id).removeClass('disabled');
+                        $("#barang_"+id).attr('disabled','disabled');
+    
+                        create_new_input(id);
+                    } else {
+                        alert('Gagal menambahkan, silahkan ulangi kembali');
+                        $("#barang_"+id).val('');
+                    }
+                }
+            });
+        } else {
+            alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
+            $("#no_pallete_"+id).val('');
+        }
+    }
+}*/
+
+function loadDetail(id){
+    $.ajax({
+        type:"POST",
+        url:"<?php echo base_url('index.php/GudangFG/load_detail_saved_item'); ?>",
+        data: "id="+ id,
+        success:function(result){
+            $('#boxSavedItem').html(result);     
+        }
+    });
+}
+
+function saveDetail(){
+    if($.trim($("#barang_1").val()) == ""){
+        $('#message').html("Silahkan pilih nama barang !");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#packing_1").val()) == ""){
+        $('#message').html("Silahkan pilih nomor packing !");
+        $('.alert-danger').show();
+    }else{
+        $.ajax({
+            type:"POST",
+            url:'<?php echo base_url('index.php/GudangFG/save_detail_spb_fg_detail'); ?>',
+            data:{
+                t_spb_fg_id:$('#id').val(),
+                tsfd_detail_id:$('#tsfd_id').val(),
+                no_spb:$('#no_spb').val(),
+                id_packing:$('#packing_1').val(),
+                keterangan:$('#keterangan_1').val()
+            },
+            success:function(result){
+                if(result['message_type']=="sukses"){
+                    $("#barang_1").select2("val", "");
+                    loadDetail(<?php echo $myData['id'];?>);
+                    $('#uom_1').val('');
+                    $('#packing_1').val('').hide();
+                    $('#netto_1').val('');
+                    $('#keterangan_1').val('');
+                    $('#message').html("");
+                    $('.alert-danger').hide(); 
+                }else{
+                    $('#message').html(result['message']);
+                    $('.alert-danger').show(); 
+                }            
+            }
+        });
+    }
+}
+/*
 function create_new_input(id){
        var new_id = id+1; 
-        $("#tabel_barang>tbody").append('<tr>'+
-                '<td><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
-                '<td><input type="text" id="no_packing_'+new_id+'" name="details['+new_id+'][no_packing]" class="form-control myline" onchange="get_packing('+new_id+');"></td>'+
-                '<input type="hidden" name="details['+new_id+'][id_barang]" id="barang_id_'+new_id+'">'+
-                '<td><input type="text" id="nama_barang_'+new_id+'" name="details['+new_id+'][nama_barang]" class="form-control myline" readonly="readonly"></td>'+
-                '<td><input type="text" id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
-                '</td>'+
-                '<td><input type="text" id="netto_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline" readonly="readonly" /></td>'+
-                '<td><input type="text" id="keterangan_'+new_id+'" name="details['+new_id+'][keterangan]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
-                '<td style="text-align:center">'+
-                '<a id="btn_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>'+
-                '</td>'+
-            '</tr>');
-}
+        $("#tabel_barang>tbody").append('<tr><td><div id="no_tabel_'+new_id+'">'+new_id+'</div><input id="spb_id_'+new_id+'" name="details['+new_id+'][spb_detail_id]" type="hidden"></td><td><select id="barang_'+new_id+'" class="form-control" placeholder="pilih jenis barang" name="details['+new_id+'][jenis_barang]" onchange="getBarang('+new_id+')"><option value=""></option><?php //foreach($list_barang as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}?></select><input name="details['+new_id+'][id_barang]" id="barang_id_'+new_id+'" type="hidden"></td><td><input id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly" type="text"></td><td><input id="qty_'+new_id+'" name="details['+new_id+'][qty]" class="form-control myline" type="text"></td><td><input id="berat_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline" type="text"></td><td><input id="keterangan_'+new_id+'" name="details['+new_id+'][keterangan]" class="form-control myline" type="text" onkeyup="this.value = this.value.toUpperCase()"></td><td style="text-align:center"><a id="btn_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td></tr>');
+}*/
 
 function hapusDetail(id){
-    var r=confirm("Anda yakin menghapus packing ini?");
+    var r=confirm("Anda yakin menghapus pemenuhan SPB FG ini?");
     if (r==true){
-        const total = $('#total_netto').val();
-        $('#total_netto').val(parseInt(total) - parseInt($('#netto_'+id).val()));
-        $('#no_packing_'+id).closest('tr').remove();
-        }
+        $.ajax({
+            type:"POST",
+            url:'<?php echo base_url('index.php/GudangFG/delete_spb_fg_detail'); ?>',
+            data:"id="+ id,
+            success:function(result){
+                if(result['message_type']=="sukses"){
+                    console.log('BERHASIL DELETE');
+                    loadDetail(<?php echo $myData['id'];?>);
+                }else{
+                    alert(result['message']);
+                }     
+            }
+        });
+    }
 }
-
 </script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script type="text/javascript">
-$(function(){
+$(function(){    
+    loadDetail(<?php echo $myData['id']; ?>);
     window.onbeforeunload = function() {
       return "Data Akan Terhapus Bila Page di Refresh, Anda Yakin?";
     };

@@ -67,7 +67,7 @@ class Model_sales_order extends CI_Model{
     }
     
     function show_detail_so($id){
-        $data = $this->db->query("Select tsod.*, jb.jenis_barang, jb.uom
+        $data = $this->db->query("Select tsod.*, jb.jenis_barang, jb.uom, jb.kode
                     From t_sales_order_detail tsod 
                         Left Join jenis_barang jb On (tsod.jenis_barang_id = jb.id) 
                     Where tsod.t_so_id=".$id);
@@ -75,7 +75,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function show_detail_so_rsk($id){
-        $data = $this->db->query("Select tsod.*, r.nama_item as jenis_barang, r.uom
+        $data = $this->db->query("Select tsod.*, r.nama_item as jenis_barang, r.kode_rongsok as kode, r.uom
                     From t_sales_order_detail tsod 
                         Left Join rongsok r On (tsod.jenis_barang_id = r.id) 
                     Where tsod.t_so_id=".$id);
@@ -83,7 +83,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function show_detail_so_sp($id){
-        $data = $this->db->query("Select tsod.*, s.nama_item as jenis_barang, s.uom
+        $data = $this->db->query("Select tsod.*, s.nama_item as jenis_barang, s.alias as kode, s.uom
                     From t_sales_order_detail tsod
                         Left Join sparepart s On (tsod.jenis_barang_id = s.id)
                     Where tsod.t_so_id=".$id);
@@ -180,7 +180,7 @@ class Model_sales_order extends CI_Model{
         $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.kode, jb.uom, jb.ukuran from t_sales_order tso
                 left join t_gudang_fg tgf on tgf.t_spb_fg_id = tso.no_spb
                 left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-                where tso.so_id = ".$soid." and flag_taken = 0");
+                where tso.so_id = ".$soid." and jenis_trx = 1 and flag_taken = 0");
         return $data;
     }
 

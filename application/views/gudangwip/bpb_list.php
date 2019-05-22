@@ -53,7 +53,7 @@
                     ?>
                     <tr>
                         <td style="text-align:center;"><?php echo $no; ?></td>
-                        <td><?php echo date('d-m-Y', strtotime($data->created)); ?></td>
+                        <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->no_bpb; ?></td>
                         <td><?php echo $data->tipe_apolo; ?></td>
                         <td><?php echo $data->pengirim; ?></td>                       

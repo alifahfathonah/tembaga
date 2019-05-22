@@ -174,6 +174,9 @@
                             <tbody>
                             <?php
                                 $no = 1;
+                                $bruto = 0;
+                                $netto = 0;
+                                $berat = 0;
                                 foreach ($details as $row){
                                     echo '<tr>';
                                     echo '<td style="text-align:center">'.$no.'
@@ -257,9 +260,19 @@
                                         //}
                                    
                                     echo '</tr>';
+                                    $bruto += $row->bruto;
+                                    $netto += $row->netto;
+                                    $berat += $row->berat_bobbin;
                                     $no++;
                                 }
                             ?>
+                                <tr>
+                                    <td colspan="4" style="text-align: right"><strong>Total :</strong></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($bruto,2,',','.');?></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($netto,2,',','.');?></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($berat,2,',','.');?></td>
+                                    <td></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

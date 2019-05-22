@@ -269,8 +269,13 @@ class Model_bobbin extends CI_Model{
         return $data;
     }
 
+    // function get_bobbin($id){
+    //     $data = $this->db->query("select id, berat from m_bobbin where status = 0 and nomor_bobbin ='".$id."'");
+    //     return $data;
+    // }
+
     function get_bobbin($id){
-        $data = $this->db->query("select id, berat from m_bobbin where status = 0 and nomor_bobbin ='".$id."'");
+        $data = $this->db->query("select id, berat from m_bobbin where nomor_bobbin ='".$id."'");
         return $data;
     }
 

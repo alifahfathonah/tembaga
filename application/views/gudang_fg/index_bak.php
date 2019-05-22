@@ -32,9 +32,13 @@
                     <tr >
                         <th>No</th>
                         <th>Jenis Barang</th>
-                        <th>Jumlah Packing</th>
-                        <th>Stok Bruto</th>
-                        <th>Stok Netto</th>
+                        <th>Jenis Packing</th>
+                        <th>No Produksi</th>
+                        <th>No Packing</th>
+                        <th>Netto(kg)</th>
+                        <th>No. Bobbin</th>
+                        <th>Milik</th>
+                        <th>Keterangan</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -50,15 +54,33 @@
                             <?= $data->jenis_barang?>
                         </td>
                         <td>
-                            <?= $data->total_qty ?>
+                            <?= $data->jenis_packing?>
                         </td>
                         <td>
-                            <?= number_format($data->total_bruto,2,',','.') ?>
+                            <?= $data->no_produksi ?>
                         </td>
-                        <td style="background-color: green; color: white;">
-                            <?= number_format($data->total_netto,2,',','.') ?>
+                        <td>
+                            <?= $data->no_packing ?>
                         </td>
-                        <td><a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangFG/view_gudang_fg/<?php echo $data->jenis_barang_id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                        <td>
+                            <?= $data->netto ?>
+                        </td>
+                        <td>
+                            <?= $data->nomor_bobbin ?>
+                        </td>
+                        <td>
+                            <?= $data->nama_owner ?>
+                        </td>
+                        <td>
+                            <?= $data->keterangan ?>
+                        </td>
+                        <td>
+                            <?php if(!$data->jenis_trx) {?>
+                            <a class="btn blue btn-xs btn-circle" href="
+                                <?= base_url('index.php/GudangFG/spb_kirim_rongsok/'.$data->id);?>">
+                                <i class="fa fa-exchange"></i> Rongsok
+                            </a>
+                            <?php }  $no++;?>
                         </td>
                     </tr>
                     <?php } ?>

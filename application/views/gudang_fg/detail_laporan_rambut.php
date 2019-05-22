@@ -301,7 +301,8 @@ function saveDetail(){
                     $('#netto').val('');
                     $('#no_barcode').val('');
                     $('#message').html("");
-                    $('.alert-danger').hide(); 
+                    $('.alert-danger').hide();
+                    $('#no_produksi').focus(); 
                 }else{
                     $('#message').html(result['message']);
                     $('.alert-danger').show(); 

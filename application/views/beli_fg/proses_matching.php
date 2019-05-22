@@ -429,12 +429,13 @@ function approve(id){
         type: "POST",
         data : {dtbj_id: id,po_id: $('#po_id').val()},
         success: function (result){            
-            // if(result['type_message']=="sukses"){
+            if(result['type_message']=="sukses"){
             // //     alert(result['message']);
-                // location.reload();
-            // }else{
+                location.reload();
+            }else{
             //     alert(result['message']);
-            // }
+                location.reload();
+            }
         }
     });
 };
@@ -462,6 +463,4 @@ function rejectData(){
         $('#frmReject').submit(); 
     }
 }
-
-
 </script>

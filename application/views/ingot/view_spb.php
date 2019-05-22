@@ -70,6 +70,7 @@
                                 value="<?php echo $myData['no_spb']; ?>">
 
                             <input type="hidden" id="id" name="id" value="<?php echo $myData['id']; ?>">
+                            <input type="hidden" id="id_pi" name="id_pi" value="<?php echo $myData['id_pi']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -103,43 +104,63 @@
                     <div class="row">&nbsp;</div>
 
                 </div>
-                <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-5">
+                <div class="col-md-6">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             Jenis Barang
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-9">
                             <input type="text" id="jenis_barang" name="jenis_barang" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $myData['jenis_barang']; ?>">
                         </div>
                     </div> 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             Nama Pemohon
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-9">
                             <input type="text" id="nama_penimbang" name="nama_penimbang" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $myData['pic']; ?>">
                         </div>
                     </div>
+                    <?php if($myData['status']==1){?>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             Tipe Apolo<font color="#f00">*</font>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-9">
                             <input type="text" id="tipe_apolo" name="tipe_apolo" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $myData['tipe_apolo']; ?>">
                         </div>
                     </div>
+                    <?php } else { ?>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            Tipe Apolo <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-6">
+                            <select id="id_apolo" name="id_apolo" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px; ">
+                                <option></option>
+                                <?php
+                                foreach ($apolo as $row) {
+                                echo "<option value='".$row->id."'".(($row->id==$myData['id_apolo'])? "selected='selected'":"").">".$row->tipe_apolo."</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <a style="margin-top:5px;" href="javascript:;" class="btn btn-circle btn-xs green" onclick="editApolo();"><i class="fa fa-check"></i> Save </a>
+                        </div>
+                    </div>
+                    <?php } ?>
+                    <div class="row">
+                        <div class="col-md-3">
                             Catatan
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-9">
                             <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly"><?php echo $myData['remarks']; ?></textarea>                           
                         </div>
@@ -148,19 +169,19 @@
                         if($myData['status']=="9"){
                     ?>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             Rejected By
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-9">
                             <input type="text" id="rejected_by" name="rejected_by" readonly="readonly"
                                    class="form-control myline" style="margin-bottom:5px" value="<?php echo $myData['reject_name']; ?>">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             Reject Remarks
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-9">
                             <textarea id="reject_remarks" name="reject_remarks" rows="3" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px"><?php echo $myData['reject_remarks']; ?></textarea>
                         </div>
@@ -370,6 +391,13 @@
     </div>
 </div> 
 <script>
+function editApolo(){
+    const id = $('#id').val();
+    const id_ap = $('#id_apolo').val();
+    const id_pi = $('#id_pi').val();
+    window.location= '<?php echo base_url(); ?>index.php/Ingot/edit_apolo?id_ap='+id_ap+'&id_pi='+id_pi+'&id='+id;
+}
+
 function saveFulfilment(){
     var r=confirm("Anda yakin meng-save permintaan barang ini?");
     if (r==true){

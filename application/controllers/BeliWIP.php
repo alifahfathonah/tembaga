@@ -71,11 +71,13 @@ class BeliWIP extends CI_Controller{
         $user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
         
+        $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         if($user_ppn == 0){
-            $code = $this->Model_m_numberings->getNumbering('POWIP', $tgl_input); 
+            $code = 'PO-KMP.'.$tgl_po.'.'.$this->input->post('no_po'); 
         }else{
             $code = $this->Model_m_numberings->getNumbering('POW-KMP', $tgl_input);
         }
@@ -94,9 +96,29 @@ class BeliWIP extends CI_Controller{
             'created'=> $tanggal,
             'created_by'=> $user_id
         );
+        $this->db->insert('po', $data);
+        $po_id = $this->db->insert_id();
 
-        if($this->db->insert('po', $data)){
-            redirect('index.php/BeliWIP/edit/'.$this->db->insert_id());  
+            // if($user_ppn == 1){
+            //     $this->load->helper('target_url');
+
+            //     $data_id = array('reff1' => $po_id);
+            //     $data_post = array_merge($data, $data_id);
+
+            //     $data_post = http_build_query($data_post);
+
+            //     $ch = curl_init(target_url().'api/BeliWIP/po');
+            //     curl_setopt($ch, CURLOPT_POST, true);
+            //     curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            //     curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+            //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            //     $response = curl_exec($ch);
+            //     $result = json_decode($response, true);
+            //     curl_close($ch);
+            // }
+
+        if($this->db->trans_complete()){
+            redirect('index.php/BeliWIP/edit/'.$po_id);  
         }else{
             $this->session->set_flashdata('flash_msg', 'PO WIP gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/BeliWIP');  

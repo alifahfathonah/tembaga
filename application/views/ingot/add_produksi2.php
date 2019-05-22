@@ -242,7 +242,7 @@
 </div> 
 <script>
 function hitung_susut(){
-    var susut = Number(Number($('#total_rongsok').val()) - (Number($('#ingot_berat').val()) + Number($('#bs').val()) + Number($('#ampas').val()) + Number($('#serbuk').val())));
+    var susut = Number(Number($('#total_rongsok').val()) - (Number($('#ingot_berat').val()) + Number($('#bs_service').val()) + Number($('#bs').val()) + Number($('#ampas').val()) + Number($('#serbuk').val())));
     $('#susut').val(susut.toFixed(2));
 }
 

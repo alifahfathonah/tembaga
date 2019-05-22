@@ -67,11 +67,16 @@ class Tolling extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_so = date('Ym', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
         $user_ppn  = $this->session->userdata('user_ppn');
         
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('SO', $tgl_input); 
+        if($user_ppn == 1){
+            $code = 'SO-KMP.'.$tgl_so.'.'.$this->input->post('no_so');
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('SO', $tgl_input); 
+        }
         
         if($code){        
             $data = array(

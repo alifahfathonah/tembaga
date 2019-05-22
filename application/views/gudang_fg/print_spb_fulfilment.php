@@ -5,7 +5,7 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br>PENGELUARAN BARANG FINISH GOOD</h3>
+        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWATMAS PRAKASA<br>'; }?>PACKING LIST SEMENTARA<br>FINISH GOOD</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="40%">
@@ -118,7 +118,7 @@
                     </table>
                 </td>
             </tr>
-            <tr><td colspan="3">
+            <!-- <tr><td colspan="3">
                     <p>&nbsp;</p>
                     <table border="0" width="100%">
                        <tr>
@@ -131,7 +131,7 @@
                         </tr>
                     </table>
                 </td>
-            </tr>
+            </tr> -->
         </table>
 	<body onLoad="window.print()">
     </body>

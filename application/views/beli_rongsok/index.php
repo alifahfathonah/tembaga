@@ -606,7 +606,10 @@ function saveVoucher(){
 };
 
 function prosesVoucher(){
-    if($.trim($("#tanggal").val()) == ""){
+    if($.trim($("#no_uk").val()) == ""){
+        $('#msg_voucher').html("Nomor Uang Keluar harus diisi, tidak boleh kosong!");
+        $('#box_error_voucher').show(); 
+    }else if($.trim($("#tanggal").val()) == ""){
         $('#msg_voucher').html("Tanggal harus diisi, tidak boleh kosong!");
         $('#box_error_voucher').show(); 
     }else if($.trim($("#amount").val()) == "" || $("#amount").val()=="0"){

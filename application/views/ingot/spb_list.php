@@ -22,12 +22,38 @@
                 </div>
             </div>
         </div>
+        <div class="collapse well" id="form_filter" >
+        <form class="eventInsForm" method="post" target="_self" name="formku" 
+        id="formku">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="col-md-8">
+                                <select id="filter" name="filter" placeholder="Silahkan pilih..."
+                                    class="form-control myline select2me" style="margin-bottom:5px">
+                                    <option value=""></option>
+                                    <option value="1">Permintaan Produksi</option>
+                                    <option value="0">Permintaan Lain</option>
+                                    <option value="2">Permintaan Semua</option>
+                                </select> 
+                            </div>
+                            <div class="col-md-4">
+                                &nbsp; &nbsp; <a href="javascript:;" onclick="filterData()" class="btn green"><i class="fa fa-search-plus"></i> Filter</a>        
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+            </div>
+        </form>
+        </div>
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-beer"></i>SPB List
                 </div>
                 <div class="tools">
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter"><i class="fa fa-search"></i> Filter Cek</a>
                     <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?php echo base_url('index.php/Ingot/add_spb_keluar');?>"><i class="fa fa-plus"></i> Create SPB Rongsok </a>
                 </div>
             </div>
@@ -122,6 +148,15 @@
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
+function filterData(){
+    var id=$('#filter').val();
+    if(id == 2){
+    window.location = '<?php echo base_url('index.php/Ingot/spb_list');?>';
+    }else{
+    window.location = 'filter_spb/'+id;
+    }
+}
+
 $(function(){    
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });
