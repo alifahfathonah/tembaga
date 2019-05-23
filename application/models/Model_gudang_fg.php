@@ -1,21 +1,33 @@
 <?php
 class Model_gudang_fg extends CI_Model{
+    // function gudang_fg_list(){
+    //     $data = $this->db->query("Select tgf.*, jb.jenis_barang, tbf.no_bpb_fg, mb.berat, o.nama_owner, mjp.jenis_packing,
+    //                 usr.realname As pengirim
+    //             From t_gudang_fg tgf
+    //                 Left Join users usr On (tgf.created_by = usr.id)
+    //                 left join jenis_barang jb on (jb.id = tgf.jenis_barang_id)
+    //                 left join t_bpb_fg_detail tbfd on (tbfd.id = tgf.t_bpb_fg_detail_id)
+    //                 left join t_bpb_fg tbf on (tbf.id = tbfd.t_bpb_fg_id)
+    //                 left join m_bobbin mb on (mb.id = tgf.bobbin_id)
+    //                 left join owner o on (o.id = mb.owner_id)
+    //                 left join produksi_fg pf on (pf.id = tbf.produksi_fg_id)
+    //                 left join m_jenis_packing mjp on (mjp.id = pf.jenis_packing_id)
+    //             Where tgf.flag_taken=0 
+    //             Order By tgf.id Desc");
+    //     return $data;
+    // }      
+
     function gudang_fg_list(){
-        $data = $this->db->query("Select tgf.*, jb.jenis_barang, tbf.no_bpb_fg, mb.berat, o.nama_owner, mjp.jenis_packing,
-                    usr.realname As pengirim
-                From t_gudang_fg tgf
-                    Left Join users usr On (tgf.created_by = usr.id)
-                    left join jenis_barang jb on (jb.id = tgf.jenis_barang_id)
-                    left join t_bpb_fg_detail tbfd on (tbfd.id = tgf.t_bpb_fg_detail_id)
-                    left join t_bpb_fg tbf on (tbf.id = tbfd.t_bpb_fg_id)
-                    left join m_bobbin mb on (mb.id = tgf.bobbin_id)
-                    left join owner o on (o.id = mb.owner_id)
-                    left join produksi_fg pf on (pf.id = tbf.produksi_fg_id)
-                    left join m_jenis_packing mjp on (mjp.id = pf.jenis_packing_id)
-                Where tgf.flag_taken=0 
-                Order By tgf.id Desc");
+        $data = $this->db->query("select * from stok_fg");
         return $data;
-    }          
+    }
+
+    function view_gudang_fg($id){
+        $data = $this->db->query("select tgf.*, jb.jenis_barang from t_gudang_fg tgf
+                left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tgf.jenis_trx = 0 and tgf.jenis_barang_id =".$id);
+        return $data;
+    }
 
     function gudang_fg_produksi_list(){
         $data = $this->db->query("Select pf.*, jb.jenis_barang, jp.jenis_packing,
@@ -215,12 +227,22 @@ class Model_gudang_fg extends CI_Model{
         return $data;
     }
 
+    //AFTER PRODUCTION TEST
+    // function show_data_bobbin($id){
+    //     $data = $this->db->query("select mb.berat, mb.id, o.nama_owner
+    //             from m_bobbin mb
+    //             left join owner o on (o.id = mb.owner_id)
+    //             where mb.nomor_bobbin = '".$id."' and mb.status = 3"
+    //             );
+    //     return $data;
+    // }
+
+    //WHEN PRODUCTION TEST
     function show_data_bobbin($id){
         $data = $this->db->query("select mb.berat, mb.id, o.nama_owner
                 from m_bobbin mb
                 left join owner o on (o.id = mb.owner_id)
-                where mb.nomor_bobbin = '".$id."' and mb.status = 3"
-                );
+                where mb.nomor_bobbin = '".$id."'");
         return $data;
     }
 
@@ -377,11 +399,11 @@ class Model_gudang_fg extends CI_Model{
     }
     /*
     cara membuat view stok fg
-    CREATE OR REPLACE VIEW stok_fg(jenis_barang_id, jenis_barang, total_qty, total_netto)
-    AS SELECT jenis_barang_id, jb.jenis_barang,COUNT(jenis_barang_id), SUM(netto)
+    CREATE OR REPLACE VIEW stok_fg(jenis_barang_id, jenis_barang, total_qty, total_bruto, total_netto)
+    AS SELECT jenis_barang_id, jb.jenis_barang,COUNT(jenis_barang_id), SUM(bruto), SUM(netto)
     from t_gudang_fg
     LEFT join jenis_barang jb on (jb.id = t_gudang_fg.jenis_barang_id)
-    WHERE t_gudang_fg.flag_taken = 0
+    WHERE t_gudang_fg.jenis_trx = 0
     GROUP by t_gudang_fg.jenis_barang_id
     */
 

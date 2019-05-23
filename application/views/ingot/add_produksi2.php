@@ -167,6 +167,18 @@
                                                 <span>KG</span>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                BS SERVICE
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="text" id="bs_service" name="bs_service"
+                                                    class="form-control myline" placeholder="bs/kg" style="margin-bottom:5px; width:100px;"  required="required" onchange="hitung_susut()">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <span>KG</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -230,7 +242,7 @@
 </div> 
 <script>
 function hitung_susut(){
-    var susut = Number(Number($('#total_rongsok').val()) - (Number($('#ingot_berat').val()) + Number($('#bs').val()) + Number($('#ampas').val()) + Number($('#serbuk').val())));
+    var susut = Number(Number($('#total_rongsok').val()) - (Number($('#ingot_berat').val()) + Number($('#bs_service').val()) + Number($('#bs').val()) + Number($('#ampas').val()) + Number($('#serbuk').val())));
     $('#susut').val(susut.toFixed(2));
 }
 

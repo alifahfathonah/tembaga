@@ -28,6 +28,30 @@ class GudangFG extends CI_Controller{
         $this->load->view('layout', $data);  
     }
 
+    function view_gudang_fg(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');
+
+        if($id){
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Gudang Finish Good";
+            $data['content']   = "gudang_fg/view_gudang_fg";
+            
+            $this->load->model('Model_gudang_fg');
+            $data['list_data'] = $this->Model_gudang_fg->view_gudang_fg($id)->result();
+            
+            $this->load->view('layout', $data);
+        }else{
+            redirect('index.php/GudangFG/view_gudang_fg');
+        }
+    }
+
     function produksi_fg(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
@@ -141,6 +165,9 @@ class GudangFG extends CI_Controller{
         
         $tabel = "";
         $no    = 1;
+        $bruto = 0;
+        $netto = 0;
+
         $this->load->model('Model_gudang_fg');
         $myDetail = $this->Model_gudang_fg->load_detail($id)->result(); 
         foreach ($myDetail as $row){
@@ -158,21 +185,19 @@ class GudangFG extends CI_Controller{
                     . '<a href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay"'
                     . 'onclick="printBarcode('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-print"></i> Print Barcode </a></td>';
-            $tabel .= '</tr>';            
+            $tabel .= '</tr>';        
             $no++;
+            $bruto += $row->bruto;
+            $netto += $row->netto;
         }
             
-        // $tabel .= '<tr>';
-        // $tabel .= '<td style="text-align:center">'.$no.'</td>';
-        // $tabel .= '<td><a href="javascript:;" onclick="timbang(this)" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>';
-        // $tabel .= '<td><input type="text" id="bruto" name="bruto" class="form-control myline"/></td>';
-        // $tabel .= '<td><input type="number" id="berat_bobbin" = name="berat_bobbin" class="form-control myline"/></td>';
-        // $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" onclick="timbang_netto();" readonly="readonly"/></td>';
-        // $tabel .= '<td><input type="text" id="no_packing" value="Auto" name="no_packing" class="form-control myline" readonly="readonly"></td>';
-        // $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-        //         . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
-        //         . '<i class="fa fa-plus"></i> Tambah </a></td>';
-        // $tabel .= '</tr>';
+        $tabel .= '<tr>';
+        $tabel .= '<td style="text-align:right;" colspan="2"><strong>Total :</strong></td>';
+        $tabel .= '<td>'.number_format($bruto,2,',','.').'</td>';
+        $tabel .= '<td colspan="2"></td>';
+        $tabel .= '<td style="background-color:green; color:white;">'.number_format($netto,2,',','.').'</td>';
+        $tabel .= '<td colspan="2"></td>';
+        $tabel .= '</tr>';
 
         header('Content-Type: application/json');
         echo json_encode($tabel); 
@@ -183,6 +208,7 @@ class GudangFG extends CI_Controller{
         
         $tabel = "";
         $no    = 1;
+        $netto = 0;
         $this->load->model('Model_gudang_fg');
         $myDetail = $this->Model_gudang_fg->load_detail($id)->result(); 
         foreach ($myDetail as $row){
@@ -197,7 +223,15 @@ class GudangFG extends CI_Controller{
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';            
             $no++;
+            $netto += $row->netto;
         }
+
+        $tabel .= '<tr>';
+        $tabel .= '<td style="text-align:right;" colspan="3"><strong>Total :</strong></td>';
+        $tabel .= '<td style="background-color:green; color:white;">'.number_format($netto,2,',','.').'</td>';
+        $tabel .= '<td colspan="2"></td>';
+        $tabel .= '</tr>';
+
             
         header('Content-Type: application/json');
         echo json_encode($tabel); 
@@ -991,6 +1025,7 @@ class GudangFG extends CI_Controller{
     function approve_spb(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
+        $tanggal_keluar = date('Y-m-d', strtotime($this->input->post('tanggal_keluar')));
         $tgl_input = date('Y-m-d');
         $spb_id = $this->input->post('id');
         
@@ -1019,7 +1054,7 @@ class GudangFG extends CI_Controller{
                         'jenis_trx'=> 1,
                         'modified_date'=>$tanggal,
                         'modified_by'=>$user_id,
-                        'tanggal_keluar'=>$tanggal
+                        'tanggal_keluar'=>$tanggal_keluar
         ));
             
             if($this->db->trans_complete()){    
@@ -1029,6 +1064,31 @@ class GudangFG extends CI_Controller{
             }             
         
        redirect('index.php/GudangFG/spb_list');
+    }
+
+    function tambah_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $spb_id = $this->input->post('id');
+        
+        $this->db->trans_start();
+
+        #Update status SPB
+        $this->db->where('id', $spb_id);
+        $this->db->update('t_spb_fg', array(
+                        'status'=> 4,
+                        'modified_at'=> $tanggal,
+                        'modified_by'=>$user_id
+        ));
+
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'Silahkan tambah barang');                 
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+        }                 
+
+       redirect('index.php/GudangFG/view_spb/'.$spb_id);
     }
 
     function approve_bpb(){
@@ -1386,7 +1446,7 @@ class GudangFG extends CI_Controller{
             }
             $data['group_id']  = $group_id;
 
-            $data['content']= "gudang_fg/view_spb_v1";
+            $data['content']= "gudang_fg/view_spb";
 
             $this->load->model('Model_gudang_fg');
             $data['list_barang'] = $this->Model_gudang_fg->barang_fg_stock_list()->result();
@@ -1487,7 +1547,8 @@ class GudangFG extends CI_Controller{
             $this->load->helper('tanggal_indo_helper');
             $this->load->model('Model_gudang_fg');
             $data['header']  = $this->Model_gudang_fg->show_header_spb($id)->row_array();
-            $data['details'] = $this->Model_gudang_fg->show_detail_spb_print_fulfilment($id)->result();
+            // $data['details'] = $this->Model_gudang_fg->show_detail_spb_print_fulfilment($id)->result();
+            $data['details'] = $this->Model_gudang_fg->show_detail_spb_fulfilment($id)->result();
 
             $this->load->view('gudang_fg/print_spb_fulfilment', $data);
         }else{

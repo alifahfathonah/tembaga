@@ -5,7 +5,7 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWATMAS PRAKASA<br>'; }?>PRINT SURAT JALAN</h3>
+        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWATMAS PRAKASA<br>'; }?>PACKING LIST</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="60%">
@@ -30,10 +30,10 @@
                             <td>Customer</td>
                             <td>: <?php echo $header['nama_customer']; ?></td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <td>Jenis Barang</td>
                             <td>: <?php echo $header['jenis_barang']; ?></td>
-                        </tr>
+                        </tr> -->
                     </table>
                 </td>
                 <td>&nbsp;</td>
@@ -136,11 +136,11 @@
                     <p>&nbsp;</p>
                     <table border="0" width="100%">
                         <tr>
-                            <td style="text-align:center">Pembawa/Supir</td>
+                            <td style="text-align:center">Tanda Terima</td>
+                            <td style="text-align:center">Pembawa / Supir</td>
                             <td style="text-align:center">Diperiksa</td>
                             <td style="text-align:center">Mengetahui</td>
                             <td style="text-align:center">Hormat Kami</td>
-                            <td style="text-align:center">Tanda Terima</td>
                         </tr>
                         <tr style="height:35">
                             <td style="text-align:center">&nbsp;</td>
@@ -149,12 +149,19 @@
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                         </tr>
-                        <tr>
-                            <td style="text-align:center"><?php echo $header['supir']; ?></td>
+                        <tr><?php if($this->session->userdata('user_ppn')==1){?>
                             <td style="text-align:center">(_____________)</td>
+                            <td style="text-align:center">No. Kend. </td>
                             <td style="text-align:center">(_____________)</td>
-                            <td style="text-align:center"><?php echo $header['realname']; ?></td>
+                            <td style="text-align:center"><strong>(Tjan Lin Oy)</strong></td>
+                            <td style="text-align:center"><strong>(Istadi)</strong></td>
+                            <?php }else{ ?>
                             <td style="text-align:center">(_____________)</td>
+                            <td style="text-align:center">No. Kend. </td>
+                            <td style="text-align:center">(_____________)</td>
+                            <td style="text-align:center"><strong>(Andi)</strong></td>
+                            <td style="text-align:center"><strong>(Bambang)</strong></td>
+                            <?php } ?>
                         </tr>
                     </table>
                 </td>

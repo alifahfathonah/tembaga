@@ -161,8 +161,8 @@
                                     <td><?=$row->jenis_barang;?></td>
                                     <td><?=$row->uom;?></td>
                                     <td><?=$row->no_packing;?></td>
-                                    <td><?=$row->bruto;?></td>
-                                    <td><?=$row->netto;?></td>
+                                    <td><?=number_format($row->bruto,2,',','.');?></td>
+                                    <td><?=number_format($row->netto,2,',','.');?></td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][netto_r]" value="'.$row->netto_r.'">';?></td>
                                     <td><?=$row->nomor_bobbin;?></td>
                                     <td><?=$row->line_remarks;?></td>

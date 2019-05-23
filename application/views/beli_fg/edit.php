@@ -190,7 +190,7 @@
                 </div>              
             </div>
             <?php
-                if ($header['status']==0 || $header['status']==2){
+                if ($header['status']==0){
             ?>
             <input type="hidden" id="count" value="<?=$count['count'];?>">
             <div class="row">

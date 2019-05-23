@@ -131,6 +131,7 @@ class GudangWIP extends CI_Controller{
             $code = $this->Model_m_numberings->getNumbering('BPB-WIP', $tgl_input);
             $data_t_bpb_wip = array(
                 'no_bpb' => $code,
+                'tanggal'=>$tgl_input,
                 'status' => '0',
                 'spb_wip_id' => 0,
                 'keterangan' => $this->input->post('keterangan'),
@@ -617,7 +618,7 @@ class GudangWIP extends CI_Controller{
 
         $hasil_wip_id = $this->input->post('id_hasil_wip');
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $return_data = array();
         
         $this->db->trans_start();       

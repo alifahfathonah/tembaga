@@ -422,6 +422,32 @@ class Ingot extends CI_Controller{
 
         $this->load->view('layout', $data);
     }
+
+    function filter_spb(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "ingot/spb_list";
+            $this->load->model('Model_ingot');
+            if($id == 0){
+                $data['list_data'] = $this->Model_ingot->spb_list_filter_0()->result();
+            }else if($id == 1){
+                $data['list_data'] = $this->Model_ingot->spb_list_filter_1()->result();
+            }
+
+            $this->load->view('layout', $data);
+        }else{
+            redirect('index.php/Ingot/spb_list');
+        }
+    }
     
     function print_spb(){
         $id = $this->uri->segment(3);
@@ -654,7 +680,7 @@ class Ingot extends CI_Controller{
 
         $id_masak = $this->db->insert_id();
 
-        if($this->input->post('bs') != 0){
+        if($this->input->post('bs') != 0 || $this->input->post('bs_service')!=0){
             //CREATE DTR
         $this->load->model('Model_m_numberings');
         $code_dtr = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
@@ -672,26 +698,51 @@ class Ingot extends CI_Controller{
             $dtr_id = $this->db->insert_id();
 
             //CREATE DTR_DETAIL
-        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+            $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
 
-        $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
-        
-        $bs_packing = $tgl_code.substr($bs_code,13,4);
-            #insert bs ke gudang bs
-                    $this->db->insert('dtr_detail', array(
-                        'dtr_id'=>$dtr_id,
-                        'rongsok_id'=>21,//BS APOLLO
-                        'qty'=>0,
-                        'bruto'=>$this->input->post('bs'),
-                        'netto'=>$this->input->post('bs'),
-                        'line_remarks'=>'SISA PRODUKSI',
-                        'no_pallete'=>$bs_packing,
-                        'created'=>$tanggal,
-                        'created_by'=>$user_id,
-                        'modified'=>$tanggal,
-                        'modified_by'=>$user_id,
-                        'tanggal_masuk'=>$tgl_input
-                    ));
+            if($this->input->post('bs')!=0){
+
+                $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
+                
+                $bs_packing = $tgl_code.substr($bs_code,13,4);
+                    #insert bs ke gudang bs
+                            $this->db->insert('dtr_detail', array(
+                                'dtr_id'=>$dtr_id,
+                                'rongsok_id'=>21,//BS APOLLO
+                                'qty'=>0,
+                                'bruto'=>$this->input->post('bs'),
+                                'netto'=>$this->input->post('bs'),
+                                'line_remarks'=>'SISA PRODUKSI',
+                                'no_pallete'=>$bs_packing,
+                                'created'=>$tanggal,
+                                'created_by'=>$user_id,
+                                'modified'=>$tanggal,
+                                'modified_by'=>$user_id,
+                                'tanggal_masuk'=>$tgl_input
+                            ));
+            }
+
+            if($this->input->post('bs_service')!=0){
+
+                $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
+                
+                $bs_packing = $tgl_code.substr($bs_code,13,4);
+                    #insert bs ke gudang bs
+                            $this->db->insert('dtr_detail', array(
+                                'dtr_id'=>$dtr_id,
+                                'rongsok_id'=>21,//BS APOLLO
+                                'qty'=>0,
+                                'bruto'=>$this->input->post('bs_service'),
+                                'netto'=>$this->input->post('bs_service'),
+                                'line_remarks'=>'BS SERVICE',
+                                'no_pallete'=>$bs_packing,
+                                'created'=>$tanggal,
+                                'created_by'=>$user_id,
+                                'modified'=>$tanggal,
+                                'modified_by'=>$user_id,
+                                'tanggal_masuk'=>$tgl_input
+                            ));
+            }
         }
 
         // if($this->input->post('serbuk') != 0){
@@ -1223,9 +1274,21 @@ class Ingot extends CI_Controller{
             $data['myData'] = $this->Model_ingot->show_header_spb($id)->row_array();           
             $data['myDetail'] = $this->Model_ingot->show_detail_spb($id)->result(); 
             $data['detailSPB'] = $this->Model_ingot->show_detail_spb_fulfilment($id)->result();
+            $data['apolo'] = $this->Model_ingot->show_apolo()->result();
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/Ingot/spb_list');
+        }
+    }
+
+    function edit_apolo(){
+        $id    = $_GET['id'];
+        $id_ap = $_GET['id_ap'];
+        $id_pi = $_GET['id_pi'];
+        if($id){
+            $this->db->where('id', $id_pi);
+            $this->db->update('produksi_ingot', array('id_apolo'=>$id_ap));
+            redirect('index.php/Ingot/view_spb/'.$id);
         }
     }
     

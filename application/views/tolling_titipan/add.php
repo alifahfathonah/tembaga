@@ -33,9 +33,14 @@
                             No. Sales Order <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_so" name="no_so" readonly="readonly"
+                            <?php if($this->session->userdata('user_ppn') == 1){
+                            echo '<input type="text" id="no_so" name="no_so" placeholder="Silahkan isi Nomor SO..."
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">';
+                            }else{
+                            echo '<input type="text" id="no_so" name="no_so" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="Auto generate">
+                                value="Auto generate">';
+                            }?>
                         </div>
                     </div>
                     <div class="row">
@@ -70,6 +75,16 @@
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $this->session->userdata('realname'); ?>">
                             <input type="hidden" id="marketing_id" name="marketing_id" value="<?= $this->session->userdata('user_id');?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Keterangan
+                        </div>
+                        <div class="col-md-8">
+                            <textarea id="keterangan" name="keterangan" rows="3"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                onkeyup="this.value = this.value.toUpperCase()"></textarea>
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
@@ -127,8 +142,25 @@
                         </div>
                     </div>
                     <div class="row">
-
-                    </div>                    
+                        <div class="col-md-2">
+                            Currency
+                        </div>
+                        <div class="col-md-4">
+                            <select id="currency" name="currency" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cur(this.value);">
+                                <option value="IDR">IDR</option>
+                                <option value="USD">USD</option>
+                            </select>
+                        </div>
+                        <div id="show_kurs">
+                        <div class="col-md-2">
+                            Kurs
+                        </div>
+                        <div class="col-md-4">
+                            <input type="number" id="kurs" name="kurs" class="form-control myline" value="0">
+                        </div>
+                        </div>
+                    </div>                
                 </div>              
             </div>
             
@@ -148,7 +180,10 @@
 </div> 
 <script>
 function simpanData(){
-    if($.trim($("#tanggal").val()) == ""){
+    if($.trim($('#no_so').val()) == ""){
+        $('#message').html("Nomor SO Harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#m_customer_id").val()) == ""){
@@ -176,6 +211,15 @@ function get_contact(id){
         } 
     });
 }
+
+function get_cur(id){
+    if(id=='USD'){
+        $('#show_kurs').show();
+    }else if(id=='IDR'){
+        $('#show_kurs').hide();
+        $('#kurs').val(0);
+    }
+}
 </script>
 
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
@@ -183,6 +227,7 @@ function get_contact(id){
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
 $(function(){        
+    $('#show_kurs').hide();
     $("#tanggal").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",

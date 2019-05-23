@@ -175,6 +175,20 @@
                                         readonly="readonly">                                                                       
                                 </div>
                             </div>
+                            <hr>
+                            <div style="width: 100%; margin-bottom: 5px;text-align: center">
+                              <span>
+                                Data Uang Keluar <!--Padding is optional-->
+                              </span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Nomor Uang Keluar
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="no_uk" name="no_uk" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-5">
                                     Nomor Giro
@@ -593,7 +607,10 @@ function saveVoucher(){
 };
 
 function prosesVoucher(){
-    if($.trim($("#tanggal").val()) == ""){
+    if($.trim($("#no_uk").val()) == ""){
+        $('#msg_voucher').html("Nomor Uang Keluar harus diisi, tidak boleh kosong!");
+        $('#box_error_voucher').show(); 
+    }else if($.trim($("#tanggal").val()) == ""){
         $('#msg_voucher').html("Tanggal harus diisi, tidak boleh kosong!");
         $('#box_error_voucher').show(); 
     }else if($.trim($("#amount").val()) == "" || $("#amount").val()=="0"){

@@ -33,9 +33,13 @@
                             No. PO <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
+                            <?php if($this->session->userdata('user_ppn')==1){ ?>
+                            <input type="text" id="no_po" name="no_po" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor PO ..." onkeyup="this.value = this.value.toUpperCase()">
+                            <?php }else{ ?>
                             <input type="text" id="no_po" name="no_po" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px"
                                 value="Auto generate">
+                            <?php } ?>
                         </div>
                     </div>
                     <div class="row">
@@ -111,6 +115,25 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-2">
+                            Discount
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="diskon" name="diskon" class="form-control myline" style="margin-bottom:5px" onkeyup="getComa(this.value, this.id)">
+                        </div>
+                        <div class="col-md-2">
+                            Materai
+                        </div>
+                        <div class="col-md-4">
+                            <select id="materai" name="materai" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option></option>
+                                <option value="3000">Materai 3000</option>
+                                <option value="6000">Materai 6000</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-4">
                             Currency
                         </div>
@@ -165,7 +188,10 @@
 </div> 
 <script>
 function simpanData(){
-    if($.trim($("#tanggal").val()) == ""){
+    if($.trim($("#no_po").val()) == ""){
+        $('#message').html("Nomor PO harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#supplier_id").val()) == ""){

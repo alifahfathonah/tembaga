@@ -189,8 +189,9 @@
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
-                                <?php $no=0; foreach ($list_produksi as $row) { $no++;
-                                echo '<tr>'.
+                                <?php $no=0; $bruto = 0; $netto = 0;
+                                foreach ($list_produksi as $row) { $no++;
+                                echo '<tr id="row_'.$no.'">'.
                                     '<td style="text-align: center;">'.$no.'</td>'.
                                     '<td><input type="text" id="nama_barang_'.$no.'" name="details['.$no.'][nama_barang]" class="form-control myline" readonly="readonly" value="'.$row->jenis_barang.'"></td>'.
                                     '<input type="hidden" name="details['.$no.'][id_barang]" id="id_barang_'.$no.'" value="'.$row->id.'">'.
@@ -211,9 +212,23 @@
                                     '<td><input type="text" id="bobbin_'.$no.'" name="details['.$no.'][bobbin]" class="form-control myline" readonly="readonly" value="'.$row->nomor_bobbin.'"></td>'.
                                     '<td><input type="text" id="line_remarks_'.$no.'" name="details['.$no.'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" value="'.$row->keterangan.'"></td>'.
                                     '<td style="text-align:center">'.
-                                    '<a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Print </a>'.
+                                    '<a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('.$no.');" style="margin-top:5px;"><i class="fa fa-print"></i> Print </a>'.
+                                    '<a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs red" onclick="delete_row('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Delete </a>'.
                                     '</td>'.
-                                '</tr>'; } ?>
+                                '</tr>'; 
+                                $bruto += $row->bruto;
+                                $netto += $row->netto;
+                                    }
+                                ?>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" style="text-align: right;"><strong>Total</strong></td>
+                                    <td><input type="text" class="form-control" style="margin-bottom: 5px" id="bruto" value="<?=$bruto;?>" readonly="readonly"></td>
+                                    <td><input type="text" class="form-control" style="margin-bottom: 5px" id="netto" value="<?=$netto;?>" readonly="readonly"></td>
+                                    <td colspan="3"></td>
+                                </tr>
+                            </tfoot>
                             </tbody>
                         </table>
                     <?php } else if($header['jenis_barang']=='WIP'){ ?>
@@ -326,6 +341,14 @@
     </div>
 </div> 
 <script>
+function delete_row(id){
+    const bruto = $('#bruto_'+id).val();
+    const netto = $('#netto_'+id).val();
+    $('#bruto').val(Math.round((Number($('#bruto').val())-Number(bruto))*100)/100);
+    $('#netto').val(Math.round((Number($('#netto').val())-Number(netto))*100)/100);
+    $('#row_'+id).remove();
+}
+
 function genPacking(id){
     const str = $('#no_packing_'+id).val();
     const res = str.substring(7, 11);

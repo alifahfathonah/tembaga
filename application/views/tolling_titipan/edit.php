@@ -140,6 +140,23 @@
                             <textarea id="keterangan" name="keterangan" rows="2" onkeyup="this.value = this.value.toUpperCase()"
                                 class="form-control myline" style="margin-bottom:5px"><?php echo $header['keterangan'];?></textarea>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            Currency
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="currency" name="currency" class="form-control myline" value="<?=$header['currency'];?>" readonly="readonly">
+                        </div>
+                        <div id="show_kurs">
+                        <div class="col-md-2">
+                            Kurs
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="kurs" name="kurs" class="form-control myline" value="<?=$header['kurs'];?>" readonly="readonly">
+                        </div>
+                        </div>
+                    </div>
                 </div>              
             </div>
             <div class="row">&nbsp;</div>
@@ -202,6 +219,10 @@
     </div>
 </div> 
 <script>
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
 function myCurrency(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
@@ -219,7 +240,8 @@ function hitungSubTotal(){
     harga = $('#harga').val().toString().replace(/\./g, "");
     qty   = $('#netto').val();
     total_harga = Number(harga)* Number(qty);
-    $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")).toFixed(0);
+    total_harga = total_harga.toFixed(0);
+    $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
 
 function simpanData(){
@@ -284,7 +306,7 @@ function saveDetail(){
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
-                    loadDetail($('#id_tso').val());
+                    loadDetail($('#id').val());
                     $("#jenis_barang_id").select2("val", "");
                     $("#uom").val('');
                     $("#harga").val('');
@@ -315,7 +337,7 @@ function hapusDetail(id,id_spb){
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
-                    loadDetail($('#id_tso').val());
+                    loadDetail($('#id').val());
                 }else{
                     alert(result['message']);
                 }     

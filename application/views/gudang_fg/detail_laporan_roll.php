@@ -296,6 +296,7 @@ function saveDetail(){
                     $('#netto').val('');
                     $('#message').html("");
                     $('.alert-danger').hide(); 
+                    $('#no_produksi').focus();
                 }else{
                     $('#message').html(result['message']);
                     $('.alert-danger').show(); 

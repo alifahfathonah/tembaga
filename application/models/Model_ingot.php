@@ -95,9 +95,35 @@ class Model_ingot extends CI_Model{
                 Order By spb.id Desc");
         return $data;
     }
+
+    function spb_list_filter_0(){
+        $data = $this->db->query("Select spb.*, 
+                    pi.no_produksi, 
+                    usr.realname As pic, a.tipe_apolo
+                From spb
+                    Left Join produksi_ingot pi On (spb.produksi_ingot_id = pi.id) 
+                    Left Join users usr On (spb.created_by = usr.id) 
+                    Left Join apolo a On (a.id = pi.id_apolo)
+                where produksi_ingot_id = 0
+                Order By spb.id Desc");
+        return $data;
+    }
+
+    function spb_list_filter_1(){
+        $data = $this->db->query("Select spb.*, 
+                    pi.no_produksi, 
+                    usr.realname As pic, a.tipe_apolo
+                From spb
+                    Left Join produksi_ingot pi On (spb.produksi_ingot_id = pi.id) 
+                    Left Join users usr On (spb.created_by = usr.id) 
+                    Left Join apolo a On (a.id = pi.id_apolo)
+                where produksi_ingot_id != 0
+                Order By spb.id Desc");
+        return $data;
+    }
     
     function show_header_spb($id){
-        $data = $this->db->query("Select spb.*, 
+        $data = $this->db->query("Select spb.*, pi.id_apolo, pi.id as id_pi,
                     pi.no_produksi,
                     jb.jenis_barang,
                     usr.realname As pic,
