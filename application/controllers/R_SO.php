@@ -309,4 +309,12 @@ class R_SO extends CI_Controller{
         $this->session->set_flashdata('flash_msg', 'Data sales order jasa berhasil disimpan');
         redirect('index.php/R_SO');
     }
+
+    function get_so(){
+        $id = $this->input->post('id');
+        $so = $this->Model_so->get_so($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($so); 
+    }
 }

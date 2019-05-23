@@ -235,13 +235,11 @@ function simpanData(){
 };
 
 function loadDetail(id){
-    console.log(id);
     $.ajax({
         type:"POST",
         url:'<?php echo base_url('index.php/Tolling/load_detail'); ?>',
         data:"id="+ id,
         success:function(result){
-            console.log(result);
             $('#boxDetail').html(result);     
         }
     });

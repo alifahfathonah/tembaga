@@ -289,17 +289,17 @@ class R_SuratJalan extends CI_Controller{
 
             $data_sj_api = array(
                 'no_sj'=> $this->input->post('no_surat_jalan'),
-                'no_po' => $this->input->post('no_po'),
+                'po_id' => $this->input->post('flag_po'),
                 'tanggal'=> $tgl_input,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
-                'm_customer_id'=>$this->input->post('m_customer_id'),
-                'jenis_surat_jalan'=>'SURAT JALAN CV KE KMP',
+                'supplier_id'=>1,
+                'jenis_surat_jalan'=>'SURAT JALAN KE SUPPLIER',
                 'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
                 'no_kendaraan'=>$this->input->post('no_kendaraan'),
                 'supir'=>$this->input->post('supir'),
                 'remarks'=>$this->input->post('remarks'),
                 'reff'=>$sjr_id,
-                'bpb_id' => $this->input->post('r_bpb_id'),
+                // 'bpb_id' => $this->input->post('r_bpb_id'),
             );
 
             $ch = curl_init(target_url_cv($reff_cv).'api/SuratJalanAPI/sj');
@@ -338,10 +338,11 @@ class R_SuratJalan extends CI_Controller{
             log_message('debug', print_r($result2,1));
             
         } else if($jenis == 'sj_customer'){
+            
             $data = array(
                 'no_sj_resmi'=> $this->input->post('no_surat_jalan'),
                 // 'r_invoice_id'=>$this->input->post('id_invoice_resmi'),
-                // 'r_so_id' => $this->input->post('so_id'),
+                'r_so_id' => $this->input->post('so_id'),
                 'r_po_id' => $this->input->post('po_id'),
                 'tanggal'=> $tgl_input,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
@@ -366,9 +367,13 @@ class R_SuratJalan extends CI_Controller{
 
             $tanggal_bpb = date('Y-m-d', strtotime($this->input->post('tanggal_bpb')));
 
+            $po_id = $this->db->query("select sj.r_po_id from r_t_bpb bpb
+                left join r_t_surat_jalan sj on bpb.r_sj_id = sj.id
+                where bpb.r_po_id = ".$this->input->post('po_id'))->row_array();
+
             $data_bpb = array(
                 'no_bpb' => $this->input->post('no_bpb'),
-                'r_po_id' => $this->input->post('po_id'),
+                'r_po_id' => $po_id['r_po_id'],
                 'tanggal'=> $tanggal_bpb,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'm_customer_id'=>$this->input->post('m_customer_id'),
@@ -431,19 +436,20 @@ class R_SuratJalan extends CI_Controller{
             $data_sj_api = array(
                 'no_sj'=> $this->input->post('no_surat_jalan'),
                 'no_po' => $this->input->post('no_po'),
+                'so_id' => $this->input->post('so_id'),
                 'tanggal'=> $tgl_input,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'm_customer_id'=>$this->input->post('m_customer_id'),
-                'jenis_surat_jalan'=>'SURAT JALAN CV KE CUSTOMER',
+                'jenis_surat_jalan'=>'SURAT JALAN KE CUSTOMER',
                 'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
                 'no_kendaraan'=>$this->input->post('no_kendaraan'),
                 'supir'=>$this->input->post('supir'),
                 'remarks'=>$this->input->post('remarks'),
                 'reff'=>$sjr_id,
-                'bpb_id'=>$bpb_id,
+                // 'bpb_id'=>$bpb_id,
             );
 
-            $ch = curl_init(target_url_cv($reff_cv).'api/SuratJalanAPI/sj');
+            $ch = curl_init(target_url_cv($reff_cv).'api/SuratJalanAPI/sjcs');
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data_sj_api);
@@ -481,11 +487,13 @@ class R_SuratJalan extends CI_Controller{
 
             $data_bpb_api = array(
                 'no_bpb'=> $this->input->post('no_bpb'),
-                'no_po'=> $this->input->post('no_po'),
+                'no_po'=> null,
+                'po_id'=> $po_id['r_po_id'],
                 'tanggal'=> $tanggal_bpb,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
-                'm_customer_id'=>$this->input->post('m_customer_id'),
-                'jenis_bpb'=>'BPB RONGSOK',
+                'm_customer_id'=>0,
+                'supplier_id'=>1,
+                'jenis_bpb'=>'BPB FG',
                 'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
                 'no_kendaraan'=>$this->input->post('no_kendaraan'),
                 'supir'=>$this->input->post('supir'),
@@ -493,7 +501,7 @@ class R_SuratJalan extends CI_Controller{
                 'reff'=>$bpb_id,
             );
 
-            $ch = curl_init(target_url_cv($reff_cv).'api/BPBAPI/bpb');
+            $ch = curl_init(target_url_cv($reff_cv).'api/BPBAPI/bpbs');
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data_bpb_api);
@@ -683,7 +691,7 @@ class R_SuratJalan extends CI_Controller{
                 'id' => $this->input->post('id'),
                 'no_sj'=> $this->input->post('no_surat_jalan'),
                 'tanggal'=> $tgl_input,
-                'm_customer_id'=>$this->input->post('m_customer_id'),
+                // 'm_customer_id'=>$this->input->post('m_customer_id'),
                 'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
                 'no_kendaraan'=>$this->input->post('no_kendaraan'),
                 'supir'=>$this->input->post('supir'),
@@ -731,7 +739,7 @@ class R_SuratJalan extends CI_Controller{
                 'id' => $this->input->post('bpb_id'),
                 'no_bpb'=> $this->input->post('no_bpb'),
                 'tanggal'=> $tgl_input,
-                'm_customer_id'=>$this->input->post('m_customer_id'),
+                // 'm_customer_id'=>$this->input->post('m_customer_id'),
                 'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
                 'no_kendaraan'=>$this->input->post('no_kendaraan'),
                 'supir'=>$this->input->post('supir'),

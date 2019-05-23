@@ -125,4 +125,8 @@ class Model_so extends CI_Model{
 	function get_so_detail_only($id){
 		return $this->db->query('select id, so_id, jenis_barang_id, qty, netto, amount, total_amount from r_t_so_detail where so_id = '.$id);
 	}
+
+	function get_so($id){
+		return $this->db->get_where('r_t_so', ['po_id' => $id]);
+	}
 }

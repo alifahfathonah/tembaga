@@ -72,7 +72,7 @@
                                 }if($this->session->userdata('cv_id') != 0){ 
                                     if(($group_id==9)||($hak_akses['edit']==1) && $data->reff_cv != 0){
                             ?>
-                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/edit_inv_jasa/<?php echo $data->id; ?>" style="margin-bottom:4px">
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/edit_inv_cust/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                             <?php } 
                             }else {

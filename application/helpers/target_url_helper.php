@@ -41,9 +41,9 @@ if ( ! function_exists('target_url'))
 				$url = 'http://localhost/tembaga_resmi/index.php/';
 				break;
 			
-			// default:
-			// 	# code...
-			// 	break;
+			default:
+				$url = '';
+				break;
 		}
 		
 		return $url;
@@ -81,9 +81,9 @@ if ( ! function_exists('target_url'))
 		// 		$url = 'http://tmtu.kmprakasa.com/index.php/';
 		// 		break;
 			
-		// 	// default:
-		// 	// 	# code...
-		// 	// 	break;
+			// default:
+			// 	$url = '';
+			// 	break;
 		// }
 		
 		// return $url;

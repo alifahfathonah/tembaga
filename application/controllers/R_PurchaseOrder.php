@@ -96,9 +96,9 @@ class R_PurchaseOrder extends CI_Controller{
         $post_api = array(
             'reff' => $po_id,
             'no_po'=> $this->input->post('no_po'),
+            'supplier_id'=> 1,
             'tanggal'=> $tgl_input,
             'term_of_payment'=> $this->input->post('term_of_payment'),
-            'jenis_po'=> 'PO CV KE KMP',
         );
 
         $ch = curl_init(target_url_cv($reff_cv).'api/PurchaseOrderAPI/po');
@@ -268,9 +268,9 @@ class R_PurchaseOrder extends CI_Controller{
         $data_api = array(
             'id' => $this->input->post('id'),
             'no_po'=> $this->input->post('no_po'),
+            'supplier_id'=> 1,
             'tanggal'=> $tgl_input,
             'term_of_payment'=>$this->input->post('term_of_payment'),
-            'jenis_po'=>'PO CV KE KMP',
             'remarks'=>$this->input->post('remarks'),
         );
 
@@ -397,18 +397,17 @@ class R_PurchaseOrder extends CI_Controller{
         $so_id = $this->db->insert_id();
 
         $post_api = array(
-            'reff_id' => $so_id,
+            'reff' => $so_id,
             'no_so' => $this->input->post('no_so'),
             'tanggal' => $tanggal_so,
             'marketing_id' => $user_id,
             'customer_id' => $this->input->post('customer_id'),
             'no_po' => $this->input->post('no_po'),
             'tgl_po' => $tgl_input,
-            'jenis_so' => 'SO CV',
+            // 'jenis_so' => 'SO CV',
             'jenis_barang' => 'FG',
-            'reff_cv' => $this->session->userdata('cv_id'),
-            'created_at'=> $tanggal,
-            'created_by'=> $user_id
+            // 'created_at'=> $tanggal,
+            // 'created_by'=> $user_id
         );
 
         $ch = curl_init(target_url_cv($reff_cv).'api/SalesOrderAPI/so');
@@ -450,7 +449,7 @@ class R_PurchaseOrder extends CI_Controller{
         $this->load->model('Model_so');
         $so_detail = $this->Model_so->get_so_detail_only($so_id)->result_array();
         foreach ($so_detail as $i => $value) {
-            $so_detail[$i]['reff_id'] = $so_detail[$i]['id'];
+            $so_detail[$i]['reff'] = $so_detail[$i]['id'];
             $so_detail[$i]['so_id'] = $result['id'];
             unset($so_detail[$i]['id']);
         }
@@ -577,7 +576,7 @@ class R_PurchaseOrder extends CI_Controller{
             $this->load->model('Model_so');
             $update_details = $this->Model_so->get_so_detail_only($this->input->post('so_id'))->result_array();
             foreach ($update_details as $i => $value) {
-                $update_details[$i]['reff_id'] = $update_details[$i]['id'];
+                $update_details[$i]['reff'] = $update_details[$i]['id'];
                 $update_details[$i]['so_id'] = $result['id'];
                 unset($update_details[$i]['id']);
             }

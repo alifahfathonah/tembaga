@@ -319,7 +319,7 @@
                         </div>
                         <div class="col-md-8">
                             <select id="po_id" name="po_id" class="form-control myline select2me " 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_customer(this.value);get_no_po(this.value)"> 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_customer(this.value);get_no_po(this.value); get_so(this.value)"> 
                                 >
                                 <option value=""></option>
                                 <?php
@@ -329,6 +329,7 @@
                                 ?>
                             </select>
                             <input type="hidden" name="no_po" id="no_po">
+                            <input type="hidden" name="so_id" id="so_id">
                         </div>
                     </div>
                     <div class="row">
@@ -505,6 +506,17 @@ function get_no_po(id){
         data: {id: id},
         success: function(result) {
             $("#no_po").val(result['no_po']);
+        }
+    });
+}
+
+function get_so(id){
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url('index.php/R_SO/get_so'); ?>",
+        data: {id: id},
+        success: function(result) {
+            $("#so_id").val(result['id']);
         }
     });
 }

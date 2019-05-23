@@ -83,9 +83,9 @@
         <br>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
-                <td></td>
-                <td width="80%" align="center"></td>
-                <td>Hormat Kami,</td>
+                <td>Disetujui Oleh,</td>
+                <td width="60%" align="center"></td>
+                <td>Dibuat oleh,</td>
             </tr>
         </table>
         <p>&nbsp;</p>

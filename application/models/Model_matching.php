@@ -76,7 +76,8 @@ class Model_matching extends CI_Model{
         $data = $this->db->query("select dtrd.*, r.nama_item, (select sum(netto) from dtr_detail where dtr_id = dtrd.id) as total_netto
             from dtr_detail dtrd
             left join rongsok r on (dtrd.rongsok_id = r.id)
-            where dtrd.flag_resmi = 0 and r.id = ".$id." order by dtrd.id desc limit 10");
+            left join dtr on (dtr.id = dtrd.dtr_id)
+            where dtrd.flag_resmi = 0 and r.id = ".$id." group by dtr.id order by dtr.tanggal asc limit 10");
         return $data;
     }
 

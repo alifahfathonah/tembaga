@@ -36,6 +36,7 @@ class CustomerCV extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         
         $data = array(
+                    'kode_customer'=> $this->input->post('kode_customer'),
                     'nama_customer'=> $this->input->post('nama_customer'),
                     'pic'=> $this->input->post('pic'),
                     'telepon'=> $this->input->post('telepon'),
@@ -93,6 +94,7 @@ class CustomerCV extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         
         $data = array(
+                'kode_customer'=> $this->input->post('kode_customer'),
                 'nama_customer'=> $this->input->post('nama_customer'),
                 'pic'=> $this->input->post('pic'),
                 'telepon'=> $this->input->post('telepon'),

@@ -196,9 +196,9 @@
                                     <td><?php echo '<input type="text" class="form-control myline " style="margin-bottom:5px;" id="uom_'.$no.'" value="'.$row->uom.'" readonly="readonly">';?>
                                     </td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="amount_'.$no.'" name="details['.$no.'][amount]" value="'.number_format($row->amount,0,',','.').'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
-                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="bruto_'.$no.'" name="details['.$no.'][bruto]" value="'.$row->bruto.'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
-                                    <td><?php echo '<input type="number" class="form-control myline" style="margin-bottom:5px;" id="netto_'.$no.'" name="details['.$no.'][netto]" value="'.$row->netto.'" onkeyup="hitungSubTotal('.$no.');">';?></td>
-                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="total_amount_'.$no.'" name="details['.$no.'][total_amount]" value="'.number_format($row->total_amount,0,',','.').'" readonly="readonly">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="bruto_'.$no.'" name="details['.$no.'][bruto]" value="'.$row->sum_bruto.'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
+                                    <td><?php echo '<input type="number" class="form-control myline" style="margin-bottom:5px;" id="netto_'.$no.'" name="details['.$no.'][netto]" value="'.$row->sum_netto.'" onkeyup="hitungSubTotal('.$no.');">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="total_amount_'.$no.'" name="details['.$no.'][total_amount]" value="'.number_format($row->sum_total_amount,0,',','.').'" readonly="readonly">';?></td>
                                      <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" name="details['.$no.'][line_remarks]" value="'.$row->line_remarks.'"  onkeyup="this.value = this.value.toUpperCase()">';?></td>
                                 </tr>
                                 <?php
