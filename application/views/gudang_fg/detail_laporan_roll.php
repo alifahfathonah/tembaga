@@ -175,6 +175,7 @@
                                 <th>Netto (Kg)</th>
                                 <th>Nomor Packing / Barcode</th>
                                 <th>Keterangan</th>
+                                <th>Action</th>
                             </thead>
                             <tbody>
                             <?php
@@ -188,6 +189,7 @@
                                 <td><?php echo $row->netto; ?></td>       
                                 <td><?php echo $row->no_packing_barcode; ?></td>
                                 <td><?php echo $row->keterangan; ?></td>
+                                <td style="text-align: center;"><a href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(<?=$row->id;?>);"><i class="fa fa-print"></i> Print Barcode </a></td>
                             </tr>
                             <?php
                                 }

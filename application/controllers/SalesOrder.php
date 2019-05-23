@@ -598,26 +598,28 @@ class SalesOrder extends CI_Controller{
         $id = $this->input->post('id');// t_sales_order_detail id
         $jenis = $this->input->post('jenis');// jenis barang FG/WIP/RONGSOK
 
+        $this->db->trans_start();
         $this->load->model('Model_sales_order');
-        $no_spb = $this->Model_sales_order->get_no_spb($id)->row();// t_sales_order_detail no_spb
+        $no_spb = $this->Model_sales_order->get_no_spb($id)->row_array();// t_sales_order_detail no_spb
 
         if($jenis == 'FG'){
-            $this->db->where('id',$no_spb->no_spb_detail);
+            $this->db->where('id',$no_spb['no_spb_detail']);
             $this->db->delete('t_spb_fg_detail');
         }else if($jenis == 'WIP'){
-            $this->db->where('id',$no_spb->no_spb_detail);
+            $this->db->where('id',$no_spb['no_spb_detail']);
             $this->db->delete('t_spb_wip_detail');
         }else if($jenis == 'RONGSOK'){
-            $this->db->where('id',$no_spb->no_spb_detail);
+            $this->db->where('id',$no_spb['no_spb_detail']);
             $this->db->delete('spb_detail');
         }else if($jenis == 'AMPAS'){
-            $this->db->where('id',$no_spb->no_spb_detail);
+            $this->db->where('id',$no_spb['no_spb_detail']);
             $this->db->delete('t_spb_ampas_detail');
         }
 
         $return_data = array();
         $this->db->where('id', $id);
-        if($this->db->delete('t_sales_order_detail')){
+        $this->db->delete('t_sales_order_detail');
+        if($this->db->trans_complete()){
             $return_data['message_type']= "sukses";
         }else{
             $return_data['message_type']= "error";

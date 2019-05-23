@@ -495,6 +495,7 @@ class GudangFG extends CI_Controller{
     function save_detail(){
         $return_data = array();
         $tgl_input = date("Y-m-d");
+        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
 
        /*  $this->db->insert('t_spb_fg_detail', array(
             't_spb_fg_detail'=>$this->input->post('id'),
@@ -508,7 +509,7 @@ class GudangFG extends CI_Controller{
         $kode_bobbin = substr($no_bobbin, 0,1);
         $urut_bobbin = substr($no_bobbin, 1,4);
         $ukuran = $this->input->post('ukuran');
-        $no_packing = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin;
+        $no_packing = $tgl_code.$kode_bobbin.$ukuran.$urut_bobbin;
         
        $this->db->insert('produksi_fg_detail', array(
             'tanggal' => $tgl_input,
@@ -622,7 +623,7 @@ class GudangFG extends CI_Controller{
         for($i=0;$i<$jumlah;$i++){
         $current .= $data_printer[$i]['string1']."\n";
         }
-        echo "<form method='post' id=\"coba\" action=\"http://localhost:8080/print/print.php\">";
+        echo "<form method='post' id=\"coba\" action=\"http://localhost/print/print.php\">";
         echo "<input type='hidden' id='nospb' name='nospb' value='".$current."'>";
         echo "</form>";
         echo '<script type="text/javascript">document.getElementById(\'coba\').submit();</script>';
