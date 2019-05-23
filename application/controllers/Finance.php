@@ -82,6 +82,7 @@ class Finance extends CI_Controller{
         $user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_cek   = date('Y-m-d', strtotime($this->input->post('tanggal_cek')));
         $user_ppn  = $this->session->userdata('user_ppn');
         $tglurut = date('ymd', strtotime($this->input->post('tanggal')));
 
@@ -118,7 +119,7 @@ class Finance extends CI_Controller{
         $data = array(
             'no_uang_masuk'=> $code,
             'm_customer_id'=> $this->input->post('customer_id'),
-            'tanggal'=> $this->input->post('tanggal'),
+            'tanggal'=> $tgl_input,
             'status'=> $status,
             'flag_ppn'=>$user_ppn,
             'jenis_pembayaran'=> $this->input->post('jenis_id'),
@@ -128,7 +129,7 @@ class Finance extends CI_Controller{
             'nomor_cek'=> $this->input->post('no_cek_pengirim'),
             'currency'=> $this->input->post('currency'),
             'nominal'=> str_replace('.', '', $this->input->post('nominal')),
-            'tgl_cair'=> $this->input->post('tanggal_cek'),
+            'tgl_cair'=> $tgl_cek,
             'keterangan'=> $this->input->post('remarks'),
             'created_at'=> $tanggal,
             'created_by'=> $user_id
@@ -1832,12 +1833,12 @@ class Finance extends CI_Controller{
                 }
             $tabel .= '</td>';
             $tabel .= '<td>'.$row->currency.'</td>';
-            $tabel .= '<td style="text-align:right;">'.number_format($row->nominal,0,',', '.').'</td>';
+            $tabel .= '<td style="text-align:right;">'.number_format($row->total,0,',', '.').'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle blue" onclick="view_um('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-floppy-o"></i> View </a>';
             $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle red" onclick="delUM('.$row->id.','.$row->id_um.');" style="margin-top:2px; margin-bottom:2px;" id="addUM"><i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';            
             $no++;
-            $total_nominal += $row->nominal;
+            $total_nominal += $row->total;
         }
         $tabel .= '<tr>';
         $tabel .= '<td style="text-align:right;" colspan="6"><strong>Total Harga </strong></td>';

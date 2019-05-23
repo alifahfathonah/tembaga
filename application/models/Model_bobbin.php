@@ -1,5 +1,15 @@
 <?php
 class Model_bobbin extends CI_Model{
+    function index_bobbin(){
+        $data = $this->db->query("Select b.*, mjp.jenis_packing, mbs.bobbin_size, mbs.keterangan, o.nama_owner
+            From m_bobbin b
+            left join m_bobbin_size mbs on (mbs.id = b.m_bobbin_size_id)
+            left join m_jenis_packing mjp on (mjp.id = b.m_jenis_packing_id)
+            left join owner o on (o.id = b.owner_id)
+            order by b.id desc
+            ");
+        return $data;
+    }
     function list_data($id){
         $data = $this->db->query("Select b.*, mjp.jenis_packing, mbs.bobbin_size, mbs.keterangan, o.nama_owner
             From m_bobbin b

@@ -219,10 +219,10 @@
                                                 echo '<td style="text-align:center">'.$no.'</td>';
                                                 echo '<td>'.$row->nama_item.'</td>';
                                                 echo '<td>'.$row->uom.'</td>';
-                                                echo '<td>'.$row->qty.'</td>';
+                                                echo '<td>'.number_format($row->qty,2,',','.').'</td>';
                                                 echo '<td>'.$row->line_remarks.'</td>';
                                                 echo '<td>'.$stat.'</td>';   
-                                                echo '<td>'.$row->stok.'</td>'; 
+                                                echo '<td>'.number_format($row->stok,2,',','.').'</td>'; 
                                                 echo '</tr>';
                                                 $no++;
                                                 $total += $row->qty;
@@ -231,9 +231,9 @@
                                         ?>
                                         <tr>
                                             <td colspan="3" style="text-align: right;"><strong>Total Permintaan</strong></td>
-                                            <td><?=$total;?></td>
+                                            <td><?=number_format($total,2,',','.');?></td>
                                             <td colspan="2" style="text-align: right;"></td>
-                                            <td><strong><?=$stok;?></strong></td>
+                                            <td><strong><?=number_format($stok,2,',','.');?></strong></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -257,12 +257,12 @@
                                             <th>Keterangan</th>
                                         </thead>
                                         <tbody>
-                                            <?php $no=1; $total_netto = 0; foreach($detailSPB as $v) { ?>
+                                            <?php $no=1; $total_netto = 0; foreach($detailSPBFulfilment as $v) { ?>
                                             <tr>
                                                 <td><?=$no;?></td>
                                                 <td><?=$v->nama_item;?></td>
                                                 <td><?=$v->no_pallete;?></td>
-                                                <td><?=$v->netto;?></td>
+                                                <td><?=number_format($v->netto,2,',','.');?></td>
                                                 <td><?=$v->uom;?></td>
                                                 <td><?=$v->line_remarks;?></td>
                                             </tr>
@@ -271,7 +271,7 @@
                                             $no++; } ?>
                                             <tr>
                                                 <td colspan="3"> Total</td>
-                                                <td><?=$total_netto;?></td>
+                                                <td><?=number_format($total_netto,2,',','.');?></td>
                                                 <td colspan="2"></td>
                                             </tr>
                                         </tbody>
@@ -318,7 +318,53 @@
                 <?php } else { ?>
                     <div class="row">
                         <div class="col-md-12">
+                            <h4 align="center">SPB Rongsok yang Sudah Dipenuhi</h4>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
+                                        <thead>
+                                            <th style="width:40px">No</th>
+                                            <th>Nama Item</th>
+                                            <th>No Pallete</th>
+                                            <th>Netto</th>
+                                            <th>Keterangan</th>
+                                        </thead>
+                                        <tbody>
+                                        <?php
+                                            $no = 1;
+                                            $tb = 0;
+                                            $tn = 0;
+                                            foreach ($detailSPBFulfilment as $row){
+                                                echo '<tr>';
+                                                echo '<td style="text-align:center">'.$no.'</td>';
+                                                echo '<td>'.$row->nama_item.'</td>';
+                                                echo '<td>'.$row->no_pallete.'</td>';
+                                                echo '<td>'.number_format($row->netto,2,',','.').' '.$row->uom.'</td>';
+                                                echo '<td>'.$row->line_remarks.'</td>';
+                                                $tn += $row->netto;
+                                                $no++;
+                                            }
+                                        ?>
+                                        <tr>
+                                            <td colspan="3">Total</td>
+                                            <td style="background-color: green; color: white;"><?=number_format($tn,2,',','.');?></td>
+                                            <td></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
                             <h4 align="center">Pemenuhan SPB</h4>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    Tanggal Keluar <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="tanggal_keluar" name="tanggal_keluar" class="form-control myline input-small" style="margin-bottom:5px; float: left;" value="<?php echo date('d-m-Y', strtotime($myData['tanggal'])); ?>">
+                                </div>
+                            </div>
                                 <div class="table-scrollable">
                                     <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
                                         <thead>
@@ -367,9 +413,13 @@
                             echo '<a href="javascript:;" class="btn green" onclick="approveData();"> '
                                 .'<i class="fa fa-check"></i> Approve </a> ';
                         }
-                        if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="3"){
+                        if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="0"){
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
+                        }
+                        if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="3"){
+                            echo '<a href="javascript:;" class="btn red" onclick="rejectFulfilment();"> '
+                                .'<i class="fa fa-ban"></i> Reject Pemenuhan </a>';
                         }
                     ?>
 
@@ -405,6 +455,15 @@ function saveFulfilment(){
         $('#formku').submit(); 
     }
 };
+
+function rejectFulfilment(){
+    var r=confirm("Anda yakin me-reject pemenuhan barang ini?");
+    if (r==true){
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Ingot/reject_fulfilment");    
+        $('#formku').submit(); 
+    }
+};
+
 
 function approveData(){
     var r=confirm("Anda yakin meng-approve permintaan barang ini?");
@@ -505,4 +564,20 @@ function hapusDetail(id){
 // $(window).load(function() {
 //     $('#no_pallete_1').focus();
 // });
+</script>
+<link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+<script>
+$(function(){        
+    $("#tanggal_keluar").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });       
+});
 </script>

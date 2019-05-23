@@ -251,9 +251,9 @@
                                                 echo '<td style="text-align:center">'.$no.'</td>';
                                                 echo '<td>'.$row->jenis_barang.'</td>';
                                                 echo '<td>'.$row->qty.'</td>';
-                                                echo '<td>'.$row->netto.' '.$row->uom.'</td>';
-                                                echo '<td>'.number_format($row->harga,0,',','.').'</td>';
-                                                echo '<td>'.number_format($row->total_harga,0,',','.').'</td>';
+                                                echo '<td>'.number_format($row->netto,2,',','.').' '.$row->uom.'</td>';
+                                                echo '<td>'.number_format($row->harga,2,',','.').'</td>';
+                                                echo '<td>'.number_format($row->total_harga,2,',','.').'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
                                                 echo '</tr>';
                                                 $no++;
@@ -266,7 +266,7 @@
                                         ?>
                                         <tr>
                                             <td colspan="5" style="text-align: right; font-weight: bold;">Total</td>
-                                            <td style="background-color: green; color: white;"><?php echo number_format($total_all,0,',','.');?></td>
+                                            <td style="background-color: green; color: white;"><?php echo number_format($total_all,2,',','.');?></td>
                                             <td></td>
                                         </tr>
                                         </tbody>

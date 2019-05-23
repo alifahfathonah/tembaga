@@ -322,7 +322,51 @@
                                 <?php $no++; } ?>
                             </tbody>
                         </table>
-                    <?php } else { ?>
+                    <?php } else if($header['jenis_barang']=='RONGSOK'){ ?>
+                        <table class="table table-bordered table-striped table-hover" id="tabel_barang">
+                            <thead>
+                                <th>No</th>
+                                <th style="width: 20%;">No Palette</th>
+                                <th>Nama Item</th>
+                                <th style="width: 6%;">UOM</th>
+                                <th style="width: 8%;">Bruto</th>
+                                <th style="width: 8%;">Netto (Kg)</th>
+                                <th style="width: 6%;">Berat<br>Palette</th>
+                                <th>Keterangan</th>
+                            </thead>
+                            <tbody id="boxDetail">
+                                <?php 
+                                    $no=1; 
+                                    $bruto=0;
+                                    $netto=0;
+                                    foreach ($list_sj as $row) { 
+                                ?>
+                                <tr>
+                                    <td><?php echo $no; ?></td>
+                                    <td><?php echo $row->no_packing; ?></td>
+                                    <td><?php echo ($row->nama_barang_alias==NULL)? $row->jenis_barang: $row->nama_barang_alias; ?></td>
+                                    <td><?php echo $row->uom; ?></td>
+                                    <td><?php echo $row->bruto; ?></td>
+                                    <td><?php echo $row->netto; ?></td>
+                                    <td><?php echo ($row->bruto - $row->netto); ?></td>
+                                    <td><?php echo $row->line_remarks; ?></td>
+                                </tr>
+                                <?php
+                                    $bruto += $row->bruto;
+                                    $netto += $row->netto; 
+                                    $no++; 
+                                    } 
+                                ?>
+                                <tr>
+                                    <td style="text-align: right;" colspan="4"><strong>Total</strong></td>
+                                    <td><?=number_format($bruto,2,',','.');?></td>
+                                    <td><?=number_format($netto,2,',','.');?></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    <?php
+                    }else { ?>
                         <table class="table table-bordered table-striped table-hover" id="tabel_barang">
                             <thead>
                                 <th>No</th>

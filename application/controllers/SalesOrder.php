@@ -171,8 +171,8 @@ class SalesOrder extends CI_Controller{
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
             $tabel .= '<td>'.$row->nama_barang.'</td>';
-            $tabel .= '<td>'.$row->uom.'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->amount,0,',','.').'</td>';
+            $tabel .= '<td>'.$row->nama_barang_alias.'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->amount,3,',','.').'</td>';
             if($jenis == 'WIP'){
             $tabel .= '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->netto,2,',','.').'</td>';
@@ -181,7 +181,7 @@ class SalesOrder extends CI_Controller{
             }else{
             $tabel .= '<td style="text-align:right">'.number_format($row->qty,2,',','.').'</td>';
             }
-            $tabel .= '<td style="text-align:right">'.number_format($row->total_amount,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->total_amount,2,',','.').'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
@@ -202,7 +202,7 @@ class SalesOrder extends CI_Controller{
         }else if($jenis == 'FG'){
         $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,2,',','.').'</strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,2,',','.').'</strong></td>';
         }else {
         $tabel .= '<td colspan="5" style="text-align:right"><strong>Total </strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,2,',','.').'</strong></td>';
@@ -364,7 +364,7 @@ class SalesOrder extends CI_Controller{
                     'no_spb'=> $num,
                     'jenis_barang'=> 1,
                     'tanggal'=> $tanggal,
-                    'keterangan'=>'SO : '.$code,
+                    'remarks'=>'SO : '.$code,
                     'created'=> $tanggal,
                     'created_by'=> $user_id
                 );
@@ -504,9 +504,10 @@ class SalesOrder extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $spb = $this->input->post('no_spb');
         $jenis = $this->input->post('jenis');
-        $netto = str_replace('.', '',$this->input->post('netto'));
-        $netto = str_replace(',', '.',$netto);
+        // $netto = str_replace('.', '',$this->input->post('netto'));
+        $netto = str_replace(',', '.',$this->input->post('netto'));
 
+        $this->db->trans_start();
         if($jenis == 'FG'){
             $dataC = array(
                 't_spb_fg_id'=>$spb,
@@ -562,24 +563,28 @@ class SalesOrder extends CI_Controller{
                 't_so_id'=>$this->input->post('id'),
                 'no_spb_detail'=>$insert_id,
                 'jenis_barang_id'=>$this->input->post('barang_id'),
-                'amount'=>str_replace('.', '', $this->input->post('harga')),
+                'nama_barang_alias'=>$this->input->post('nama_barang'),
+                'amount'=>str_replace(',', '', $this->input->post('harga')),
                 'qty'=>$this->input->post('netto'),
-                'total_amount'=>str_replace('.', '', $this->input->post('total_harga'))
+                'total_amount'=>str_replace(',', '', $this->input->post('total_harga'))
             );
         }else {
             $data_so_detail = array(
                 't_so_id'=>$this->input->post('id'),
                 'no_spb_detail'=>$insert_id,
                 'jenis_barang_id'=>$this->input->post('barang_id'),
-                'amount'=>str_replace('.', '', $this->input->post('harga')),
+                'nama_barang_alias'=>$this->input->post('nama_barang'),
+                'amount'=>str_replace(',', '', $this->input->post('harga')),
                 'qty'=>str_replace('.', '', $this->input->post('qty')),
-                'total_amount'=>str_replace('.', '', $this->input->post('total_harga')),
+                'total_amount'=>str_replace(',', '', $this->input->post('total_harga')),
                 'bruto'=>str_replace('.', '', $this->input->post('bruto')),
                 'netto'=>$this->input->post('netto')
             );
         }
-
-        if($this->db->insert('t_sales_order_detail',$data_so_detail)){
+        $this->db->insert('t_sales_order_detail',$data_so_detail);
+        // print_r($data_so_detail);
+        // die();
+        if($this->db->trans_complete()){
             $return_data['message_type']= "sukses";
         }else{
             $return_data['message_type']= "error";
@@ -793,11 +798,12 @@ class SalesOrder extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_sj = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
         
         $this->load->model('Model_m_numberings');
         if($user_ppn == 1){
-            $code = $this->input->post('no_surat_jalan');
+            $code = 'SJ-KMP.'.$tgl_sj.'.'.$this->input->post('no_surat_jalan');
         }else{
             $code = $this->Model_m_numberings->getNumbering('SJ', $tgl_input); 
         }
@@ -1014,7 +1020,7 @@ class SalesOrder extends CI_Controller{
             }else if($jenis == 'LAIN'){
                 $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_lain($id)->result();
             }else{
-                $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id)->result();
+                $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id,$soid)->result();
             }
             $this->load->view('layout', $data);   
         }else{
@@ -1158,6 +1164,7 @@ class SalesOrder extends CI_Controller{
             $this->load->model('Model_sales_order');
             $this->load->helper('tanggal_indo');
             $data['header']  = $this->Model_sales_order->show_header_sj($id)->row_array();
+            $soid = $data['header']['sales_order_id'];
             $jenis = $data['header']['jenis_barang'];
             if($jenis=='FG'){
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_fg($id)->result();
@@ -1169,7 +1176,7 @@ class SalesOrder extends CI_Controller{
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_lain($id)->result();
                 $this->load->view('sales_order/print_sj_lain', $data);
             }else{
-                $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id)->result();
+                $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id,$soid)->result();
                 $this->load->view('sales_order/print_sj_rsk', $data);
             }
         }else{

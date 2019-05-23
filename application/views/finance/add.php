@@ -44,7 +44,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" value="<?php echo date('Y-m-d'); ?>" readonly="readonly">
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" value="<?php echo date('d-m-Y'); ?>">
                         </div>
                     </div>  
                     <div class="row">
@@ -128,7 +128,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal_cek" name="tanggal_cek" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;">
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" value="<?php echo date('d-m-Y'); ?>">
                         </div>
                     </div> 
                     <div class="row" id="show_bank">
@@ -406,7 +406,7 @@ function get_cek(id){
             buttonText: "Select date",
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'yy-mm-dd'
+            dateFormat: 'dd-mm-yy'
         });
         get_replace('Cek Mundur');
     }else if(id === "Giro") {
@@ -462,6 +462,16 @@ $(function(){
         $("#show_nomor_cek").hide();
         $("#show_replace").hide();
         $("#show_bank_tuj").hide();
+
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });       
 });
 </script>
       

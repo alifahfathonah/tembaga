@@ -1273,6 +1273,7 @@ class Ingot extends CI_Controller{
             $this->load->model('Model_ingot');
             $data['myData'] = $this->Model_ingot->show_header_spb($id)->row_array();           
             $data['myDetail'] = $this->Model_ingot->show_detail_spb($id)->result(); 
+            $data['detailSPBFulfilment'] = $this->Model_ingot->show_detail_spb_fulfilment_approved($id)->result();
             $data['detailSPB'] = $this->Model_ingot->show_detail_spb_fulfilment($id)->result();
             $data['apolo'] = $this->Model_ingot->show_apolo()->result();
             $this->load->view('layout', $data);   
@@ -1330,8 +1331,42 @@ class Ingot extends CI_Controller{
        redirect('index.php/Ingot/spb_list');
     }
 
+    function reject_fulfilment(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $spb_id = $this->input->post('id');
+
+        $this->db->trans_start();
+
+            $this->load->model('Model_ingot');
+            $details = $this->Model_ingot->approve_loop($spb_id)->result();
+            // echo '<pre>';print_r($details);echo'</pre>';
+            // die();
+            foreach ($details as $v) {
+               $this->db->where('dtr_detail_id', $v->id);
+               $this->db->delete('spb_detail_fulfilment');
+            }
+
+            $check = $this->Model_ingot->check_spb_reject($spb_id)->row_array();
+            if($check['count'] > 0){
+                $status = 4;
+            }else{
+                $status = 0;
+            }
+            $this->db->update('spb',['status'=>$status],['id'=>$spb_id]);
+
+        if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'SPB sudah di-approve. Detail Pemenuhan SPB sudah disimpan');                 
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }
+       redirect('index.php/Ingot/view_spb/'.$spb_id);
+    }
+
     function approve_spb(){
         $user_id  = $this->session->userdata('user_id');
+        $tanggal_keluar = date('Y-m-d', strtotime($this->input->post('tanggal_keluar')));
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d');
         $spb_id = $this->input->post('id');
@@ -1360,7 +1395,7 @@ class Ingot extends CI_Controller{
             $this->db->where('flag_taken', 0);
         	$this->db->update('dtr_detail',array(
         					'flag_taken' => 1,
-                            'tanggal_keluar' => $tgl_input
+                            'tanggal_keluar' => $tanggal_keluar
         					));
         }
             

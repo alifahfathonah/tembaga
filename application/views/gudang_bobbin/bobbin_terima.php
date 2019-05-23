@@ -136,8 +136,8 @@
                                 }
                                 if(($group_id==1 || $hak_akses['edit']==1) && $row->jumlah_item == 0){
                                   echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/GudangBobbin/edit_penerimaan_bobbin/'.$row->id.'" style="margin-bottom:4px"> &nbsp;<i class="fa fa-edit"></i> Edit &nbsp;</a> ';
-                                  echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/GudangBobbin/delete_penerimaan_bobbin/'.$row->id.'" style="margin-bottom:4px"> &nbsp;<i class="fa fa-trash"></i> Hapus &nbsp;</a> ';
                                 }
+                                  echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/GudangBobbin/delete_penerimaan_bobbin/'.$row->id.'" style="margin-bottom:4px"> &nbsp;<i class="fa fa-trash"></i> Hapus &nbsp;</a> ';
                             ?>
           </td>
         </tr>
@@ -149,11 +149,6 @@
 </div>
 </div>
 </div>
-
-
-
-
-
 <script>
 function simpanData(){
         
@@ -161,7 +156,6 @@ function simpanData(){
     
 };
 </script>
-
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>

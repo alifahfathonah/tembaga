@@ -25,7 +25,7 @@ class GudangBobbin extends CI_Controller{
 
         $data['size_list'] = $this->Model_bobbin->get_size_list()->result();
         $data['owner_list'] = $this->Model_bobbin->get_owner_list()->result();
-        $data['list_data'] = $this->Model_bobbin->list_data(0)->result();
+        $data['list_data'] = $this->Model_bobbin->index_bobbin()->result();
 
         $this->load->view('layout', $data);
     }
@@ -703,8 +703,15 @@ class GudangBobbin extends CI_Controller{
     function delete_penerimaan_bobbin(){
         $id = $this->uri->segment(3);
         $return_data = array();
-        $this->db->where('id', $id);
-        if($this->db->delete('m_bobbin_penerimaan')){
+        $this->db->trans_start();
+        
+            $this->db->where('id_bobbin_penerimaan', $id);
+            $this->db->delete('m_bobbin_penerimaan_detail');
+
+            $this->db->where('id', $id);
+            $this->db->delete('m_bobbin_penerimaan');
+
+        if($this->db->trans_complete()){
             $this->session->set_flashdata('flash_msg', "Penerimaan Bobbin berhasil di Delete");
             redirect('index.php/GudangBobbin/bobbin_terima');
         }else{

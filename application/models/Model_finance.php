@@ -272,7 +272,7 @@ class Model_finance extends CI_Model{
     }
 
     function show_detail_invoice($id){
-        $data = $this->db->query("select fid.*, COALESCE(jb.jenis_barang,r.nama_item,s.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom,s.uom) as uom
+        $data = $this->db->query("select fid.*, COALESCE(NULLIF((select nama_barang_alias from t_sales_order_detail tsod where tsod.jenis_barang_id = fid.jenis_barang_id and tsod.t_so_id = tso.id),''),jb.jenis_barang,r.nama_item,s.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom,s.uom) as uom
         from f_invoice_detail fid
         left join f_invoice fi on fi.id = fid.id_invoice
         left join t_sales_order tso on tso.so_id=fi.id_sales_order

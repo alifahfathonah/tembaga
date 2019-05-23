@@ -151,13 +151,22 @@ class Model_ingot extends CI_Model{
         return $data;
     }
     
+    function show_detail_spb_fulfilment_approved($id){
+        $data = $this->db->query("Select rsk.nama_item, rsk.uom, dtrd.no_pallete,dtrd.netto, sr.stok_netto as stok, dtrd.line_remarks
+                    From spb_detail_fulfilment spdf 
+                        left join dtr_detail dtrd on (dtrd.id = spdf.dtr_detail_id)
+                        Left Join rongsok rsk On (dtrd.rongsok_id = rsk.id)
+                        Left join stok_rsk sr on (sr.rongsok_id = rsk.id)
+                    Where spdf.spb_id=".$id." and dtrd.flag_taken = 1");
+        return $data;
+    }
     function show_detail_spb_fulfilment($id){
         $data = $this->db->query("Select rsk.nama_item, rsk.uom, dtrd.no_pallete,dtrd.netto, sr.stok_netto as stok, dtrd.line_remarks
                     From spb_detail_fulfilment spdf 
                         left join dtr_detail dtrd on (dtrd.id = spdf.dtr_detail_id)
                         Left Join rongsok rsk On (dtrd.rongsok_id = rsk.id)
                         Left join stok_rsk sr on (sr.rongsok_id = rsk.id)
-                    Where spdf.spb_id=".$id);
+                    Where spdf.spb_id=".$id." and dtrd.so_id = 0 and flag_taken = 0");
         return $data;
     }
 
@@ -247,7 +256,14 @@ class Model_ingot extends CI_Model{
     }
 
     function approve_loop($id){
-        $data = $this->db->query("select * from spb_detail_fulfilment sdf where sdf.spb_id =".$id);
+        $data = $this->db->query("select * from spb_detail_fulfilment sdf 
+            left join dtr_detail dd on dd.id = sdf.dtr_detail_id 
+            where sdf.spb_id =".$id." and dd.so_id = 0 and flag_taken = 0");
+        return $data;
+    }
+
+    function check_spb_reject($id){
+        $data = $this->db->query("select count(id) as count from spb_detail_fulfilment where spb_id =".$id);
         return $data;
     }
 

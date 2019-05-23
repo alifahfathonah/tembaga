@@ -163,8 +163,8 @@
                                                     }
                                                 ?>    
                                             </td>
-                                            <td><?php echo $c.' '.number_format($row->amount,0,',','.');?></td>
-                                            <td><?php echo $c.' '.number_format($row->total_amount,0,',','.');?></td>
+                                            <td><?php echo $c.' '.number_format($row->amount,3,',','.');?></td>
+                                            <td><?php echo $c.' '.number_format($row->total_amount,2,',','.');?></td>
                                         </tr>
                                             <?php
                                                 $no++;
@@ -181,7 +181,7 @@
                                             <td colspan="3" style="text-align: right; font-weight: bold;">Total Jumlah</td>
                                             <td style="background-color: green; color: white;"><?php echo number_format($jumlah,0,',','.');?></td>
                                             <td style="text-align: right; font-weight: bold;">Total Harga</td>
-                                            <td style="background-color: green; color: white;"><?php echo $c.' '.number_format($total,0,',','.');?></td>
+                                            <td style="background-color: green; color: white;"><?php echo $c.' '.number_format($total,2,',','.');?></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -265,7 +265,6 @@
                                         <thead>
                                             <th style="width:40px">No</th>
                                             <th>Jenis Barang</th>
-                                            <th>UOM</th>
                                             <th>No Packing</th>
                                             <th>Bruto</th>
                                             <th>Netto</th>
@@ -275,12 +274,12 @@
                                         </thead>
                                         <tbody>
                                         <?php
+                                        $netto_sj=0;
                                         $no=1; foreach ($detailSJ as $row) {
                                         ?>
                                         <tr>
                                             <td><?php echo $no;?></td>
                                             <td><?php echo $row->jenis_barang;?></td>
-                                            <td><?php echo $row->uom;?></td>
                                             <td><?php 
                                             if($row->no_packing == 0){
                                                 echo ' - ';
@@ -311,8 +310,14 @@
                                         </tr>
                                         <?php
                                         $no++;
+                                        $netto_sj += $row->netto;
                                         }
                                         ?>
+                                        <tr>
+                                            <td colspan="5" style="text-align: right;"><strong>Total :</strong></td>
+                                            <td style="background-color: green; color: white;"><?=number_format($netto_sj,2,',','.');?></td>
+                                            <td colspan="3"></td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>

@@ -5,7 +5,7 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWATMAS PRAKASA<br>'; }?>PRINT SURAT JALAN</h3>
+        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWATMAS PRAKASA<br>'; }?>PACKING LIST</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="60%">
@@ -87,7 +87,7 @@
                                 $berat_palette = $row->bruto-$row->netto;
                                 echo '<tr>';
                                 echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
-                                echo '<td style="border-left:1px solid #000">'.$row->jenis_barang.'</td>';
+                                echo '<td style="border-left:1px solid #000">'.(($row->nama_barang_alias==NULL)? $row->jenis_barang: $row->nama_barang_alias).'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->uom.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->no_packing.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->bruto, 2, '.', ',').'</td>';

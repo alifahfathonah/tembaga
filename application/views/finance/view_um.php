@@ -155,7 +155,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" value="<?php echo date('d-m-y'); ?>" readonly="readonly">
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" value="<?php echo date('d-m-Y', strtotime($myData['tanggal'])); ?>" readonly="readonly">
                         </div>
                     </div>
                     <div class="row">
@@ -258,7 +258,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal_cek" name="tanggal_cek" readonly="readonly"
-                                class="form-control myline input-small" style="margin-bottom:5px" value="<?php echo $myData['tgl_cair']; ?>">
+                                class="form-control myline input-small" style="margin-bottom:5px" value="<?php echo date('d-m-Y', strtotime($myData['tgl_cair'])); ?>">
                         </div>
                     </div>
                     <?php

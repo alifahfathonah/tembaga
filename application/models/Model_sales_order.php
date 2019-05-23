@@ -12,7 +12,7 @@ class Model_sales_order extends CI_Model{
             Left Join t_spb_ampas tsa on (tso.jenis_barang='AMPAS') and (tsa.id=tso.no_spb)
             Left Join users usr On (so.marketing_id = usr.id)
             Where so.flag_tolling = 0 and so.flag_ppn =".$ppn."
-            Order by so.tanggal desc");
+            Order by so.id desc");
         return $data;
     }
 
@@ -26,7 +26,7 @@ class Model_sales_order extends CI_Model{
             Left Join t_spb_wip tsw on (tso.jenis_barang='WIP') and (tsw.id=tso.no_spb)
             Left Join spb on (tso.jenis_barang='RONGSOK') and (spb.id=tso.no_spb)
             Left Join users usr On (so.marketing_id = usr.id)
-            Where so.flag_sj = ".$id." Order by so.tanggal desc");
+            Where so.flag_sj = ".$id." Order by so.id desc");
         return $data;
     }
 
@@ -465,8 +465,17 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
-    function load_detail_surat_jalan_rsk($id){
-        $data = $this->db->query("select tsjd.*, rsk.nama_item as jenis_barang, rsk.uom 
+    // function load_detail_surat_jalan_rsk($id){
+    //     $data = $this->db->query("select tsjd.*, rsk.nama_item as jenis_barang, rsk.uom 
+    //             from t_surat_jalan_detail tsjd
+    //             left join rongsok rsk on rsk.id = tsjd.jenis_barang_id
+    //             where tsjd.t_sj_id =".$id);
+    //     return $data;
+    // }
+
+    function load_detail_surat_jalan_rsk($id,$soid){
+        $data =  $this->db->query("select tsjd.*, rsk.nama_item as jenis_barang, rsk.uom,
+            (select tsod.nama_barang_alias from t_sales_order_detail tsod left join t_sales_order tso on tso.so_id =".$soid." where tsod.t_so_id = tso.id and tsod.jenis_barang_id = tsjd.jenis_barang_id) as nama_barang_alias
                 from t_surat_jalan_detail tsjd
                 left join rongsok rsk on rsk.id = tsjd.jenis_barang_id
                 where tsjd.t_sj_id =".$id);

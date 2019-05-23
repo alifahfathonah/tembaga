@@ -184,7 +184,7 @@
                             <thead>
                                 <th>No</th>
                                 <th style="width: 20%;">Nama Item</th>
-                                <th>Unit of Measure</th>
+                                <th>Nama Barang Alias</th>
                                 <th>Harga (<?=$header['currency'];?>)</th>
                         <?php
                         if($header['jenis_barang'] == 'WIP'){
@@ -212,14 +212,15 @@
                 echo '<tr>'.
                         '<td style="text-align:center"><i class="fa fa-plus"></i></td>'.
                         '<td>'.
-                        '<select id="barang_id" name="barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">'.
+                        '<select id="barang_id" name="barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom(this.value);">'.
                         '<option value=""></option>';
                     foreach ($list_barang as $value){
                         echo "<option value='".$value->id."'>".$value->jenis_barang."</option>";
                     }
                         echo '</select>'.
                         '</td>'.
-                        '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>'.
+                        '<input type="hidden" id="uom" name="uom">'.
+                        '<td><input type="text" id="nama_barang_1" name="nama_barang" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'.
                         '<td><input type="text" id="amount_1" name="harga" class="form-control myline" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id, 1);"></td>';
         if($header['jenis_barang'] == 'WIP'){
                     echo '<td><input type="text" id="qty_1" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="5" value="0"></td>'.
@@ -367,22 +368,24 @@ function myCurrency_a(evt) {
 }
 
 function getComa_a(value, id, no){
-    angka = value.toString().replace(/\./g, "");
-    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    angka = value.toString().replace(/\,/g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     hitungSubTotal_a(no);
 }
 
 function hitungSubTotal_a(id){
     if($('#jenis_barang').val() == 'FG' || $('#jenis_barang').val() == 'AMPAS' || $('#jenis_barang').val() == 'WIP'){
-        harga = $('#amount_'+id).val().toString().replace(/\./g, "");
+        harga = $('#amount_'+id).val().toString().replace(/\,/g, "");
         netto = $('#netto_'+id).val();
         total_harga = Number(harga)* Number(netto);
-        $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")).toFixed(2);
+        total_harga = total_harga.toFixed(2);
+        $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     }else{
-        harga = $('#amount_'+id).val().toString().replace(/\./g, "");
+        harga = $('#amount_'+id).val().toString().replace(/\,/g, "");;
         netto = $('#netto_'+id).val();
         total_harga = Number(harga)* Number(netto);
-        $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")).toFixed(2);
+        total_harga = total_harga.toFixed(2);
+        $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     }
 }
 function simpanData(){
@@ -430,7 +433,6 @@ function loadDetailEdit(id){
     });
 }
 
-
 function get_uom(id){
     const jenis = $('#jenis_barang').val();
     $.ajax({
@@ -466,6 +468,7 @@ function saveDetail(){
                 barang_id:$('#barang_id').val(),
                 harga:$('#amount_1').val(),
                 uom:$('#uom').val(),
+                nama_barang:$('#nama_barang_1').val(),
                 qty:$('#qty_1').val(),
                 total_harga:$('#total_amount_1').val(),
                 bruto:$('#bruto').val(),
@@ -476,7 +479,8 @@ function saveDetail(){
             success:function(result){
                 console.log(result);
                 if(result['message_type']=="sukses"){
-                    $('#barang_id').select2("val", "");;
+                    $('#barang_id').select2("val", "");
+                    $('#nama_barang_1').val('');
                     $('#uom').val('');
                     $('#qty_1').val('');
                     $('#bruto').val('');
