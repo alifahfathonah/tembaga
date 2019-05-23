@@ -28,7 +28,17 @@
                             </div>
                         </div>
                         <form class="eventInsForm" method="post" target="_self" name="formku" 
-                              id="formku">                            
+                              id="formku">      
+                              <div class="row">
+                                <div class="col-md-5">
+                                    Kode Customer <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="kode_customer" name="kode_customer" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeyup="this.value = this.value.toUpperCase()">
+                                </div>
+                            </div>                      
                             <div class="row">
                                 <div class="col-md-5">
                                     Nama Customer <font color="#f00">*</font>
@@ -202,6 +212,7 @@
                 <thead>
                 <tr>
                     <th style="width:35px;">No</th>
+                    <th>Kode Customer</th>         
                     <th>Nama Customer</th>                     
                     <th>PIC</th>
                     <th>Telepon</th>
@@ -221,6 +232,7 @@
                     ?>
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
+                        <td><?php echo $data->kode_customer; ?></td>
                         <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->pic; ?></td>
                         <td><?php echo $data->telepon; ?></td>
@@ -271,6 +283,7 @@
 var dsState;
 
 function newData(){
+    $('#kode_customer').val('');    
     $('#nama_customer').val('');    
     $('#pic').val('');
     $('#telepon').val('');
@@ -294,20 +307,11 @@ function newData(){
 }
 
 function simpandata(){
-    if($.trim($("#nama_customer").val()) == ""){
+     if($.trim($("#kode_customer").val()) == ""){
+        $('#message').html("Kode customer harus diisi!");
+        $('.alert-danger').show();
+    } else if($.trim($("#nama_customer").val()) == ""){
         $('#message').html("Nama customer harus diisi!");
-        $('.alert-danger').show();
-    }else if($.trim($("#pic").val()) == ""){
-        $('#message').html("Nama penanggung jawab harus diisi!");
-        $('.alert-danger').show();
-    }else if($.trim($("#alamat").val()) == ""){
-        $('#message').html("Alamat harus diisi!");
-        $('.alert-danger').show();
-    }else if($.trim($("#m_province_id").val()) == ""){
-        $('#message').html("Silahkan pilih provinsi!");
-        $('.alert-danger').show();
-    }else if($.trim($("#m_city_id").val()) == ""){
-        $('#message').html("Silahkan pilih kota!");
         $('.alert-danger').show();
     }else{     
         $('#message').html("");
@@ -328,6 +332,7 @@ function editData(id){
         type: "POST",
         data : {id: id},
         success: function (result){
+            $('#kode_customer').val(result['kode_customer']);     
             $('#nama_customer').val(result['nama_customer']);            
             $('#pic').val(result['pic']);
             $('#telepon').val(result['telepon']);

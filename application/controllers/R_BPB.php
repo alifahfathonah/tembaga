@@ -110,7 +110,7 @@ class R_BPB extends CI_Controller{
                     'jenis_barang_id' => $row->jenis_barang_id,
                     'no_packing' => $row->no_pallete,
                     'qty' => $row->qty,
-                    'bruto' => $row->bruto,
+                    'bruto' => $row->netto,
                     'netto' => $row->netto,
                     'line_remarks' => $row->line_remarks
                 );
@@ -130,6 +130,7 @@ class R_BPB extends CI_Controller{
                 'tanggal'=> $tgl_input,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'm_customer_id'=>$this->input->post('m_customer_id'),
+                'supplier_id'=>0,
                 'jenis_bpb'=>'BPB RONGSOK',
                 'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
                 'no_kendaraan'=>$this->input->post('no_kendaraan'),
