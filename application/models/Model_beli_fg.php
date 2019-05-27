@@ -266,4 +266,9 @@ class Model_beli_fg extends CI_Model
         $data = $this->db->query("Select * from dtbj_detail where dtbj_id =".$id);
         return $data;
     }
+
+    function load_bpb_detail_only($id){
+        $data = $this->db->query("select * from t_bpb_fg_detail where t_bpb_fg_id =".$id);
+        return $data;
+    }
 }

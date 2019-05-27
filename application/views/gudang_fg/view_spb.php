@@ -207,6 +207,7 @@
                                             <th>Bruto</th>
                                             <th>Netto (UOM)</th>
                                             <th>Keterangan</th>
+                                            <th>Status</th>
                                         </thead>
                                         <tbody>
                                         <?php
@@ -214,6 +215,11 @@
                                             $tb = 0;
                                             $tn = 0;
                                             foreach ($detailSPB as $row){
+                                                if($row->flag_taken==1){
+                                                    $stat = '<td style="background-color: green; color: white">Sudah di Kirim</td>';
+                                                }else{
+                                                    $stat = '<td>Belum Dikirim</td>';
+                                                }
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
                                                 echo '<td>'.$row->jenis_barang.'</td>';
@@ -223,6 +229,7 @@
                                                 echo '<td>'.$row->bruto.'</td>';
                                                 echo '<td>'.$row->netto.' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
+                                                echo $stat;
                                                 $tb += $row->bruto;
                                                 $tn += $row->netto;
                                                 $no++;
@@ -330,6 +337,11 @@
                                             $tb = 0;
                                             $tn = 0;
                                             foreach ($detailSPB as $row){
+                                                if($row->flag_taken==1){
+                                                    $stat = '<td style="background-color: green; color: white">Sudah di Kirim</td>';
+                                                }else{
+                                                    $stat = '<td>Belum Dikirim</td>';
+                                                }
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
                                                 echo '<td>'.$row->jenis_barang.'</td>';
@@ -339,6 +351,7 @@
                                                 echo '<td>'.$row->bruto.'</td>';
                                                 echo '<td>'.$row->netto.' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
+                                                echo $stat;
                                                 $tb += $row->bruto;
                                                 $tn += $row->netto;
                                                 $no++;
@@ -409,7 +422,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <?php
-                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && ($myData['status']=='3')){
+                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && ($myData['status']=='3' || $myData['status']=='1')){
                             echo '<a href="javascript:;" class="btn blue" onclick="tambahData();"> '
                                 .'<i class="fa fa-plus"></i> Tambah </a> ';
                         }
@@ -421,7 +434,11 @@
                             echo '<a href="javascript:;" class="btn green" onclick="approveData();"> '
                                 .'<i class="fa fa-check"></i> Approve </a> ';
                         }
-                        if( ($group_id==1 || $hak_akses['reject_spb']==1) &&  ($myData['status']=='3')){
+                        if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="3"){
+                            echo '<a href="javascript:;" class="btn red" onclick="rejectFulfilment();"> '
+                                .'<i class="fa fa-ban"></i> Reject Pemenuhan </a>';
+                        }
+                        if( ($group_id==1 || $hak_akses['reject_spb']==1) &&  ($myData['status']=='0')){
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
                         }
@@ -461,6 +478,14 @@
             data: {id: id_barang}, // Send the slected option to the PHP page
         });
     });*/
+function rejectFulfilment(){
+    var r=confirm("Anda yakin me-reject pemenuhan barang ini?");
+    if (r==true){
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/GudangFG/reject_fulfilment");    
+        $('#formku').submit(); 
+    }
+};
+
 function saveFulfilment(){
     var r=confirm("Anda yakin meng-save permintaan barang ini?");
     if (r==true){
@@ -541,7 +566,7 @@ function get_packing(id){
                         $("#netto_"+id).val(result['netto']);
                         $("#keterangan_"+id).val(result['keterangan']);
                         $("#btn_"+id).removeClass('disabled');
-                        const total = (parseInt($('#total_netto').val()) + parseInt(result['netto']));
+                        const total = (parseFloat($('#total_netto').val()) + parseFloat(result['netto']));
                         $('#total_netto').val(total);
                         create_new_input(id);
                         $('#no_packing_'+id).prop('readonly',true);
@@ -580,7 +605,7 @@ function hapusDetail(id){
     var r=confirm("Anda yakin menghapus packing ini?");
     if (r==true){
         const total = $('#total_netto').val();
-        $('#total_netto').val(parseInt(total) - parseInt($('#netto_'+id).val()));
+        $('#total_netto').val(parseFloat(total) - parseFloat($('#netto_'+id).val()));
         $('#no_packing_'+id).closest('tr').remove();
         }
 }

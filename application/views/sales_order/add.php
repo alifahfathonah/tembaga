@@ -81,6 +81,15 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Term of Payment <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="term_of_payment" name="term_of_payment" 
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Keterangan
                         </div>
                         <div class="col-md-8">
@@ -145,7 +154,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Alias Customer <font color="#f00">*</font>
+                            Alias Customer
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="alias" name="alias" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
@@ -198,6 +207,9 @@ function simpanData(){
         $('.alert-danger').show();
     }else if($.trim($("#jenis_barang").val()) == ""){
         $('#message').html("Silahkan pilih Jenis Barang!");
+        $('.alert-danger').show();
+    }else if($.trim($("#term_of_payment").val()) == ""){
+        $('#message').html("Term Of Payment harus diisi!");
         $('.alert-danger').show();
     }else if($.trim($("#m_customer_id").val()) == ""){
         $('#message').html("Silahkan pilih nama customer!");

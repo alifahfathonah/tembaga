@@ -5,3 +5,5 @@ BS di Produksi INGOT adalah BS Apolo(Done)
 BS 8.00 MM DI ROLLING. (Done)
 TIPE APOLO DI SPB LIST WIP(Done)
 Print Barcode di view dtr(Done)
+
+Kalau SO USD, gaada PPN 10 % karena itu untuk export

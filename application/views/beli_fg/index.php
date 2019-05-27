@@ -692,6 +692,16 @@ $(function(){
         changeYear: true,
         dateFormat: 'dd-mm-yy'
     }); 
+
+    $("#tanggal_jatuh").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    }); 
     
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });

@@ -28,7 +28,17 @@
                             </div>
                         </div>
                         <form class="eventInsForm" method="post" target="_self" name="formku" 
-                              id="formku">                            
+                              id="formku">      
+                              <div class="row">
+                                <div class="col-md-5">
+                                    Kode Customer <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="kode_customer" name="kode_customer" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeyup="this.value = this.value.toUpperCase()">
+                                </div>
+                            </div>                      
                             <div class="row">
                                 <div class="col-md-5">
                                     Nama Customer <font color="#f00">*</font>
@@ -39,6 +49,16 @@
                                         onkeyup="this.value = this.value.toUpperCase()">
                                     
                                     <input type="hidden" id="id" name="id">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    NPWP
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="npwp" name="npwp" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeyup="this.value = this.value.toUpperCase()" value="__.___.___._.___.___">
                                 </div>
                             </div>
                             <div class="row">
@@ -75,8 +95,7 @@
                                 </div>
                                 <div class="col-md-7">
                                     <textarea id="alamat" name="alamat" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>
+                                        class="form-control myline" style="margin-bottom:5px" rows="3"></textarea>
                                 </div>
                             </div>  
                             <div class="row">
@@ -177,7 +196,7 @@
         </div>
 
         <?php
-            if( ($group_id==1)||($hak_akses['index']==1) ){
+            if( ($group_id==1 || $group_id==9 || $group_id==14)||($hak_akses['index']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -202,13 +221,11 @@
                 <thead>
                 <tr>
                     <th style="width:35px;">No</th>
+                    <th>Kode Customer</th>         
                     <th>Nama Customer</th>                     
                     <th>PIC</th>
                     <th>Telepon</th>
                     <th>Kota</th>
-                    <th>Provinsi</th>
-                    <th>Bank</th> 
-                    <th>KCP</th> 
                     <th>Bank Account</th> 
                     <th style="width:60px;">Actions</th>
                 </tr>
@@ -221,25 +238,23 @@
                     ?>
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
+                        <td><?php echo $data->kode_customer; ?></td>
                         <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->pic; ?></td>
                         <td><?php echo $data->telepon; ?></td>
                         <td><?php echo $data->city_name; ?></td>
-                        <td><?php echo $data->province_name; ?></td>
-                        <td><?php echo $data->kode_bank; ?></td> 
-                        <td><?php echo $data->kcp; ?></td>
                         <td><?php echo $data->no_rekening; ?></td>
                         <td style="text-align:center"> 
                             <?php
-                                if( ($group_id==1)||($hak_akses['edit']==1) ){
+                                if( ($group_id==1 || $group_id==9 || $group_id==14)||($hak_akses['edit']==1) ){
                             ?>
                             <a class="btn btn-circle btn-xs green" onclick="editData(<?php echo $data->id; ?>)" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                             <?php 
                                 }
-                                if( ($group_id==1)||($hak_akses['delete']==1) ){
+                                if( ($group_id==1 || $group_id==9 || $group_id==14)||($hak_akses['delete']==1) ){
                             ?>
-                            <a href="<?php echo base_url(); ?>index.php/Customer/delete/<?php echo $data->id; ?>" 
+                            <a href="<?php echo base_url(); ?>index.php/CustomerCV/delete/<?php echo $data->id; ?>" 
                                class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus data ini?');">
                                 <i class="fa fa-trash-o"></i> Hapus </a>
                             <?php }?>
@@ -271,6 +286,7 @@
 var dsState;
 
 function newData(){
+    $('#kode_customer').val('');    
     $('#nama_customer').val('');    
     $('#pic').val('');
     $('#telepon').val('');
@@ -297,17 +313,8 @@ function simpandata(){
     if($.trim($("#nama_customer").val()) == ""){
         $('#message').html("Nama customer harus diisi!");
         $('.alert-danger').show();
-    }else if($.trim($("#pic").val()) == ""){
-        $('#message').html("Nama penanggung jawab harus diisi!");
-        $('.alert-danger').show();
-    }else if($.trim($("#alamat").val()) == ""){
-        $('#message').html("Alamat harus diisi!");
-        $('.alert-danger').show();
-    }else if($.trim($("#m_province_id").val()) == ""){
-        $('#message').html("Silahkan pilih provinsi!");
-        $('.alert-danger').show();
-    }else if($.trim($("#m_city_id").val()) == ""){
-        $('#message').html("Silahkan pilih kota!");
+    }else if($.trim($("#kode_customer").val()) == ""){
+        $('#message').html("Kode Customer harus diisi!");
         $('.alert-danger').show();
     }else{     
         $('#message').html("");
@@ -328,6 +335,7 @@ function editData(id){
         type: "POST",
         data : {id: id},
         success: function (result){
+            $('#kode_customer').val(result['kode_customer']);
             $('#nama_customer').val(result['nama_customer']);            
             $('#pic').val(result['pic']);
             $('#telepon').val(result['telepon']);

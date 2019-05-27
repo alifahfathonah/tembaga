@@ -782,7 +782,7 @@ class Ingot extends CI_Controller{
 
         #Catat hasil WIP
         $data_wip = array(
-                'tanggal'=> $tgl_input,
+                'tanggal'=> $tgl_prd,
                 'jenis_barang_id'=>2,// INGOT
                 'jenis_masak' => 'INGOT',
                 'uom'=> 'BATANG',
@@ -805,6 +805,7 @@ class Ingot extends CI_Controller{
         $code_bpb_wip = $this->Model_m_numberings->getNumbering('BPB-WIP', $tgl_input);    
         $data_bpb = array(
                 'no_bpb' => $code_bpb_wip,
+                'tanggal' => $tgl_prd,
                 'status' => 0,
                 'hasil_wip_id'=> $id_hasil_wip,
                 'created_by' => $user_id,
@@ -864,7 +865,7 @@ class Ingot extends CI_Controller{
             #Create BPB Detail Ampas ke gudang ampas
             $data_bpb_detail_ampas = array(
                     'bpb_ampas_id' => $this->db->insert_id(),
-                    'jenis_barang_id' => 30,
+                    'jenis_barang_id' => 28,
                     'uom' => 'KG',
                     'berat' => $this->input->post('ampas'),
                     'keterangan' => 'SISA PRODUKSI INGOT'

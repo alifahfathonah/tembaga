@@ -96,13 +96,24 @@
                             <?php
                                 if($group_id==1 || $hak_akses['print_surat_jalan']==1){
                             ?>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Tolling/view_surat_jalan/<?php echo $data->id; ?>" 
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/Tolling/view_surat_jalan/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-book"></i> View &nbsp; </a>
+                            <?php
+                            }
+                                if(($group_id==1 || $hak_akses['edit_surat_jalan']==1) && $data->status==9){
+                            ?>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Tolling/edit_surat_jalan/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
+                            <?php
+                            }
+                                if(($group_id==1 || $hak_akses['revisi_surat_jalan']==1) && $data->jenis_barang=='FG' && $data->status==1 && $data->inv==NULL){
+                            ?>
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/SalesOrder/revisi_surat_jalan/<?php echo $data->id; ?>" 
+                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Revisi &nbsp; </a>
+                            <?php
+                            }
+                            ?>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/Tolling/print_surat_jalan/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
-                            <?php
-                                }
-                            ?>
                         </td>
                     </tr>
                     <?php

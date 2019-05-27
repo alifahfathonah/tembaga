@@ -95,10 +95,14 @@
                                 $total += $row->total_amount;
                                 $no++;
                             }
-                            if($this->session->userdata('user_ppn')==1){
-                                $ppn = $total*10/100;
-                            }else{
+                            if($header['currency']=='USD'){
                                 $ppn = 0;
+                            }else{
+                                if($this->session->userdata('user_ppn')==1){
+                                    $ppn = $total*10/100;
+                                }else{
+                                    $ppn = 0;
+                                }
                             }
                         ?>
                         <tr style="height:20px">
@@ -118,7 +122,7 @@
                         </tr>
                         <tr>
                             <td style="border-left: 1px solid #000;">Payment</td>
-                            <td colspan="3">: 30</td>
+                            <td colspan="3">: <?= $header['term_of_payment'];?></td>
                             <td style="text-align:left; border-left: 1px solid #000; border-bottom: 1px solid #000;"><strong>Discount</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">
                                 <strong><?php echo number_format(0,2,',','.'); ?></strong>

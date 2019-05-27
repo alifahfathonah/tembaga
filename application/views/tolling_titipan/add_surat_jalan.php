@@ -33,9 +33,13 @@
                             No. Surat Jalan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" readonly="readonly"
+                        <?php if($this->session->userdata('user_ppn')==1){
+                            echo '<input type="text" id="no_surat_jalan" name="no_surat_jalan" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor Surat Jalan..." onkeyup="this.value = this.value.toUpperCase()">';
+                        }else{
+                            echo '<input type="text" id="no_surat_jalan" name="no_surat_jalan" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="Auto generate">
+                                value="Auto generate">';
+                        }?>
                         </div>
                     </div>
                     <div class="row">
@@ -165,7 +169,10 @@
 </div> 
 <script>
 function simpanData(){
-    if($.trim($("#tanggal").val()) == ""){
+    if($.trim($("#no_surat_jalan").val()) == ""){
+        $('#message').html("Nomor Surat Jalan harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#m_customer_id").val()) == ""){

@@ -497,6 +497,7 @@ class BeliRongsok extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
         $nilai_po  = str_replace('.', '', $this->input->post('nilai_po'));
         $jumlah_dibayar  = str_replace('.', '', $this->input->post('jumlah_dibayar'));
         $amount  = str_replace('.', '', $this->input->post('amount'));
@@ -564,7 +565,11 @@ class BeliRongsok extends CI_Controller{
                 }
                 $code_um = $this->Model_m_numberings->getNumbering($num);
             }else{
-                $code_um = $this->input->post('no_uk');
+                if($this->input->post('bank_id')<=3){
+                    $code_um = 'KK-KMP.'.$tgl_code.'.'.$this->input->post('no_uk');
+                }else{
+                    $code_um = 'BK-KMP.'.$tgl_code.'.'.$this->input->post('no_uk');
+                }
             }
 
             $data_f = array(

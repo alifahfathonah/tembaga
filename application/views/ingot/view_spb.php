@@ -464,7 +464,6 @@ function rejectFulfilment(){
     }
 };
 
-
 function approveData(){
     var r=confirm("Anda yakin meng-approve permintaan barang ini?");
     if (r==true){
@@ -529,7 +528,7 @@ function getRongsok(id){
                         $("#netto_"+id).val(result['netto']);
                         $("#keterangan_"+id).val(result['line_remarks']);
                         $("#btn_"+id).removeClass('disabled');
-                        const total = (parseInt($('#total_netto').val()) + parseInt(result['netto']));
+                        const total = (parseFloat($('#total_netto').val()) + parseFloat(result['netto']));
                         $('#total_netto').val(total);
                         create_new_input(id);
                         $('#no_pallete_'+new_id).focus();
@@ -556,7 +555,7 @@ function hapusDetail(id){
     var r=confirm("Anda yakin menghapus item pallete ini?");
     if (r==true){
         const total = $('#total_netto').val();
-        $('#total_netto').val(parseInt(total) - parseInt($('#netto_'+id).val()));
+        $('#total_netto').val(parseFloat(total) - parseFloat($('#netto_'+id).val()));
         $('#no_pallete_'+id).closest('tr').remove();
         }
 }

@@ -323,6 +323,8 @@ class BeliFinishGood extends CI_Controller{
     function close_po(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $this->db->trans_start();
         
         $data = array(
                 'status'=> 1,
@@ -333,9 +335,32 @@ class BeliFinishGood extends CI_Controller{
         
         $this->db->where('id', $this->input->post('header_id'));
         $this->db->update('po', $data);
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $data_post = $data;
+                $data_post['po_id'] = $this->input->post('header_id');
+
+                $data_post = http_build_query($data_post);
+
+                $ch = curl_init(target_url().'api/BeliFinishGoodAPI/close_po');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
         
-        $this->session->set_flashdata('flash_msg', 'PO Finish Good Berhasil di Close');
-        redirect('index.php/BeliFinishGood');
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'PO Rongsok Berhasil di Close');
+            redirect('index.php/BeliFinishGood');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'PO Rongsok GAGAL di Close');
+            redirect('index.php/BeliFinishGood');
+        }
     }
 
     function print_po(){
@@ -824,11 +849,7 @@ class BeliFinishGood extends CI_Controller{
 
                 #Create BPB FG
                 $this->load->model('Model_m_numberings');
-                $loop1 = $this->db->query("select dtbjd.dtbj_id, dtbjd.jenis_barang_id, jb.jenis_barang
-                    from dtbj_detail dtbjd
-                    left join jenis_barang jb on (jb.id = dtbjd.jenis_barang_id)
-                    where dtbjd.dtbj_id = ".$dtbj_id." group by jb.jenis_barang")->result();
-                foreach ($loop1 as $k1) {
+
                     #insert t_bpb_fg
                     if($user_ppn==1){
 
@@ -855,7 +876,7 @@ class BeliFinishGood extends CI_Controller{
                             'tanggal' => $tgl_input,
                             'flag_ppn' => $user_ppn,
                             // 'produksi_fg_id' => $id_produksi,
-                            'jenis_barang_id' => $k1->jenis_barang_id,
+                            'jenis_barang_id' => 0,
                             'created_at' => $tanggal,
                             'created_by' => $user_id,
                             'keterangan' => 'BARANG PO FG',
@@ -864,8 +885,10 @@ class BeliFinishGood extends CI_Controller{
                     $this->db->insert('t_bpb_fg',$data_bpb);
                     $id_bpb = $this->db->insert_id();
 
-                    #insert t_bpb_detail
-                    $loop2 = $this->db->query("select dtbj_detail.*, m_bobbin.id as bobbin_id from dtbj_detail left join m_bobbin on (m_bobbin.nomor_bobbin = dtbj_detail.no_bobbin) where jenis_barang_id = ".$k1->jenis_barang_id." and dtbj_id = ".$dtbj_id)->result();
+                    $loop2 = $this->db->query("select dtbjd.*, m_bobbin.id as bobbin_id
+                    from dtbj_detail dtbjd
+                    left join m_bobbin on (m_bobbin.nomor_bobbin = dtbjd.no_bobbin) 
+                    where dtbjd.dtbj_id = ".$dtbj_id)->result();
                     foreach ($loop2 as $k2) {
                         $this->db->insert('t_bpb_fg_detail', array(
                             't_bpb_fg_id' => $id_bpb,
@@ -878,7 +901,6 @@ class BeliFinishGood extends CI_Controller{
                             'bobbin_id' => $k2->bobbin_id
                         ));
                     }
-                }
 
             if($user_ppn==1){
                 $this->load->helper('target_url');
@@ -888,6 +910,11 @@ class BeliFinishGood extends CI_Controller{
 
                 $data_post['dtbj'] = $this->Model_beli_fg->load_dtbj_only($dtbj_id)->row_array();
                 $data_post['details'] = $this->Model_beli_fg->load_dtbj_detail_only($dtbj_id)->result();
+
+                unset($data_bpb['flag_ppn']);
+                $data_id = array('reff1' => $id_bpb);
+                $data_post['data_bpb'] = array_merge($data_bpb, $data_id);
+                $data_post['details_bpb'] = $this->Model_beli_fg->load_bpb_detail_only($id_bpb)->result();
 
                 $detail_post = json_encode($data_post);
                 // print($detail_post);
@@ -901,6 +928,8 @@ class BeliFinishGood extends CI_Controller{
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
+                // print_r($response);
+                // die();
             }
 
         if($this->db->trans_complete()){  
@@ -1017,6 +1046,7 @@ class BeliFinishGood extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
         $nilai_po  = str_replace('.', '', $this->input->post('nilai_po'));
         $jumlah_dibayar  = str_replace('.', '', $this->input->post('jumlah_dibayar'));
         $amount  = str_replace('.', '', $this->input->post('amount'));
@@ -1099,7 +1129,11 @@ class BeliFinishGood extends CI_Controller{
                 }
                 $code_um = $this->Model_m_numberings->getNumbering($num);
             }else{
-                $code_um = $this->input->post('no_uk');
+                if($this->input->post('bank_id')<=3){
+                    $code_um = 'KK-KMP.'.$tgl_code.'.'.$this->input->post('no_uk');
+                }else{
+                    $code_um = 'BK-KMP.'.$tgl_code.'.'.$this->input->post('no_uk');
+                }
             }
 
             $data_f = array(
@@ -1117,8 +1151,10 @@ class BeliFinishGood extends CI_Controller{
                 'created_by'=>$user_id
             );
             $this->db->insert('f_kas', $data_f);
+            $fk_id = $this->db->insert_id();
 
             if($ppn==1){
+                $this->load->helper('target_url');
                 
                 $data_post['voucher'] = array_merge($data_v, array('reff1' => $id_vc));
                 $data_post['f_kas'] = array_merge($data_f, array('reff1' => $fk_id));

@@ -623,7 +623,7 @@ class GudangFG extends CI_Controller{
         for($i=0;$i<$jumlah;$i++){
         $current .= $data_printer[$i]['string1']."\n";
         }
-        echo "<form method='post' id=\"coba\" action=\"http://localhost/print/print.php\">";
+        echo "<form method='post' id=\"coba\" action=\"http://localhost:8080/print/print.php\">";
         echo "<input type='hidden' id='nospb' name='nospb' value='".$current."'>";
         echo "</form>";
         echo '<script type="text/javascript">document.getElementById(\'coba\').submit();</script>';
@@ -1023,6 +1023,38 @@ class GudangFG extends CI_Controller{
        redirect('index.php/GudangFG/spb_list');
     }
 
+    function reject_fulfilment(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $spb_id = $this->input->post('id');
+
+        $this->db->trans_start();
+
+            $this->load->model('Model_gudang_fg');
+            $details = $this->Model_gudang_fg->show_detail_spb_fulfilment($spb_id)->result();
+            // echo '<pre>';print_r($details);echo'</pre>';
+            // die();
+            foreach ($details as $v) {
+               $this->db->update('t_gudang_fg',['t_spb_fg_id'=>NULL],['id'=>$v->id]);
+            }
+
+            $check = $this->Model_gudang_fg->check_spb_reject($spb_id)->row_array();
+            if($check['count'] > 0){
+                $status = 4;
+            }else{
+                $status = 0;
+            }
+            $this->db->update('t_spb_fg',['status'=>$status],['id'=>$spb_id]);
+
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'SPB sudah di-approve. Detail Pemenuhan SPB sudah disimpan');                 
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }
+       redirect('index.php/GudangFG/view_spb/'.$spb_id);
+    }
+
     function approve_spb(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
@@ -1033,7 +1065,7 @@ class GudangFG extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_gudang_fg');
         $data['check'] = $this->Model_gudang_fg->check_spb($spb_id)->row_array();
-        if(((int)$data['check']['tot_so']) >= (0.9*((int)$data['check']['tot_spb']))){
+        if(((int)$data['check']['tot_so']) >= (0.95*((int)$data['check']['tot_spb']))){
             $status = 1;
         }else{
             $status = 4;
@@ -1048,7 +1080,7 @@ class GudangFG extends CI_Controller{
                         'approved_by'=>$user_id
         ));
 
-        #Update flag_taken t_gudang_fg
+        #Update jenis_trx t_gudang_fg
         $this->db->where('t_spb_fg_id', $spb_id);
         $this->db->where('jenis_trx', 0);
         $this->db->update('t_gudang_fg', array(

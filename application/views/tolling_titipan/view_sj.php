@@ -233,6 +233,8 @@
                             <tbody id="boxDetail">
                                 <?php 
                                     $no=1; 
+                                    $bruto=0;
+                                    $netto=0;
                                     foreach ($list_sj as $row) { 
                                 ?>
                                 <tr>
@@ -250,7 +252,16 @@
                                     <td><?php echo $row->nomor_bobbin; ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
                                 </tr>
-                                <?php $no++; } ?>
+                                <?php $no++;
+                                $bruto += $row->bruto;
+                                $netto += $row->netto;
+                                } ?>
+                                <tr>
+                                    <td style="text-align: right;" colspan="5"><strong>Total</strong></td>
+                                    <td><?=number_format($bruto,2,',','.');?></td>
+                                    <td><?=number_format($netto,2,',','.');?></td>
+                                    <td colspan="2"></td>
+                                </tr>
                             </tbody>
                         </table>
                     <?php } else if($header['jenis_barang']=='WIP'){ ?>

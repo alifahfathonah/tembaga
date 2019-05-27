@@ -339,7 +339,7 @@ class SalesOrder extends CI_Controller{
                 $dataC = array(
                     'no_spb'=> $num,
                     'tanggal'=> $tgl_input,
-                    'keterangan'=>'SO : '.$code,
+                    'keterangan'=>'SO : '.$code.' | '.$this->input->post('keterangan'),
                     'created_at'=> $tanggal,
                     'created_by'=> $user_id
                 );
@@ -351,7 +351,7 @@ class SalesOrder extends CI_Controller{
                 $dataC = array(
                     'no_spb_wip'=> $num,
                     'tanggal'=> $tgl_input,
-                    'keterangan'=>'SO : '.$code,
+                    'keterangan'=>'SO : '.$code.' | '.$this->input->post('keterangan'),
                     'created'=> $tanggal,
                     'created_by'=> $user_id
                 );
@@ -364,7 +364,7 @@ class SalesOrder extends CI_Controller{
                     'no_spb'=> $num,
                     'jenis_barang'=> 1,
                     'tanggal'=> $tanggal,
-                    'remarks'=>'SO : '.$code,
+                    'remarks'=>'SO : '.$code.' | '.$this->input->post('keterangan'),
                     'created'=> $tanggal,
                     'created_by'=> $user_id
                 );
@@ -375,13 +375,14 @@ class SalesOrder extends CI_Controller{
                 $dataC = array(
                     'no_spb_ampas' => $num,
                     'tanggal' => $tgl_input,
-                    'keterangan'=>'SO : '.$code,
+                    'keterangan'=>'SO : '.$code.' | '.$this->input->post('keterangan'),
                     'created_by' => $user_id,
                     'created_at' => $tanggal
                 );
                 $this->db->insert('t_spb_ampas', $dataC);
                 $insert_id = $this->db->insert_id();
             }else if($category == 'LAIN'){
+                $insert_id = '0';
                 $tgl_po = '0000-00-00';
             }
 
@@ -405,6 +406,7 @@ class SalesOrder extends CI_Controller{
                 'alias'=>$this->input->post('alias'),
                 'so_id'=>$so_id,
                 'no_po'=>$this->input->post('no_po'),
+                'term_of_payment'=>$this->input->post('term_of_payment'),
                 'no_spb'=>$insert_id,
                 'tgl_po'=>$tgl_po,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
@@ -505,7 +507,7 @@ class SalesOrder extends CI_Controller{
         $spb = $this->input->post('no_spb');
         $jenis = $this->input->post('jenis');
         // $netto = str_replace('.', '',$this->input->post('netto'));
-        $netto = str_replace(',', '.',$this->input->post('netto'));
+        $netto = str_replace(',', '',$this->input->post('netto'));
 
         $this->db->trans_start();
         if($jenis == 'FG'){
@@ -649,6 +651,7 @@ class SalesOrder extends CI_Controller{
 
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('t_sales_order', array(
+                'term_of_payment'=> $this->input->post('term_of_payment'),
                 'alias'=> $this->input->post('alias'),
                 'no_po'=> $this->input->post('no_po'),
                 'tgl_po'=> $tanggal_po,
@@ -803,10 +806,10 @@ class SalesOrder extends CI_Controller{
         $tgl_sj = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
         
-        $this->load->model('Model_m_numberings');
         if($user_ppn == 1){
             $code = 'SJ-KMP.'.$tgl_sj.'.'.$this->input->post('no_surat_jalan');
         }else{
+            $this->load->model('Model_m_numberings');
             $code = $this->Model_m_numberings->getNumbering('SJ', $tgl_input); 
         }
         

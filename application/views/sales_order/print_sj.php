@@ -67,67 +67,94 @@
                         <tr>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nama Item</strong></td>
-                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>UOM</strong></td>
                             <!-- <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Produksi</strong></td> -->
-                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No.Produksi</strong></td>
+                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No.Prd</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No.Packing</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nomor Bobbin</strong></td>
-                            <td colspan="3" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Qty</strong></td>
-                            <td rowspan="2" style="text-align:center; border:1px solid #000"><strong>Keterangan</strong></td>
+                            <td colspan="3" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;; border-right:1px solid #000"><strong>Quantity(KG)</strong></td>
+                            <!-- <td rowspan="2" style="text-align:center; border:1px solid #000"><strong>Keterangan</strong></td> -->
                         </tr>
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Bruto</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Bobbin</strong></td>
-                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Netto</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right:1px solid #000"><strong>Netto</strong></td>
                         </tr>
                         <?php
+                            $last_series = null;
                             $no = 1;
                             $bruto = 0;
                             $bobin = 0;
                             $netto = 0;
                             foreach ($details as $row){
-                                echo '<tr>';
+                                if($row->jenis_barang!=$last_series && $last_series!=null){
+                                    echo '<tr><td colspan="5" style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>Total :</strong></td>';
+                                    echo '<td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000">
+                                            <strong>'.number_format($bruto, 2, '.', ',').'</strong>
+                                        </td>
+                                        <td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000">
+                                            <strong>'.number_format($bobin, 2, '.', ',').'</strong>
+                                        </td>
+                                        <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;">
+                                            <strong>'.number_format($netto, 2, '.', ',').'</strong>
+                                        </td></tr>';
+                                    $bruto = 0;
+                                    $bobin = 0;
+                                    $netto = 0;
+                                    $no = 1;
+                                }else{
+                                    echo '<tr>';
+                                }
                                 echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->jenis_barang.'</td>';
-                                echo '<td style="border-left:1px solid #000">'.$row->uom.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->no_produksi.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->no_packing.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->nomor_bobbin.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->bruto, 2, '.', ',').'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->berat, 2, '.', ',').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->netto, 2, '.', ',').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->line_remarks.'</td>';
-                                echo '</tr>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.number_format($row->netto, 2, '.', ',').'</td>';
+                                // echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->line_remarks.'</td>';
+                                if($row->jenis_barang==$last_series){
+                                    echo '<tr>';
+                                }
+                                $last_series = $row->jenis_barang;
                                 $bruto += $row->bruto;
                                 $bobin += $row->berat;
                                 $netto += $row->netto;
                                 $no++;
                             }
+                            // $no = 1;
+                            // $bruto = 0;
+                            // $bobin = 0;
+                            // $netto = 0;
+                            // foreach ($details as $row){
+                            //     echo '<tr>';
+                            //     echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
+                            //     echo '<td style="border-left:1px solid #000">'.$row->jenis_barang.'</td>';
+                            //     echo '<td style="border-left:1px solid #000">'.$row->no_produksi.'</td>';
+                            //     echo '<td style="border-left:1px solid #000">'.$row->no_packing.'</td>';
+                            //     echo '<td style="border-left:1px solid #000">'.$row->nomor_bobbin.'</td>';
+                            //     echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->bruto, 2, '.', ',').'</td>';
+                            //     echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->berat, 2, '.', ',').'</td>';
+                            //     echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.number_format($row->netto, 2, '.', ',').'</td>';
+                            //     // echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->line_remarks.'</td>';
+                            //     echo '</tr>';
+                            //     $bruto += $row->bruto;
+                            //     $bobin += $row->berat;
+                            //     $netto += $row->netto;
+                            //     $no++;
+                            // }
                         ?>
-                        <tr style="height:100px">
-                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                        </tr>
                         <tr>
-                            <td style="text-align:right;" colspan="6"><strong>Total</strong></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
+                            <td colspan="5" style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>Total</strong></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000">
                                 <strong><?php echo number_format($bruto, 2, '.', ','); ?></strong>
                             </td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
+                            <td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000">
                                 <strong><?php echo number_format($bobin, 2, '.', ','); ?></strong>
                             </td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;">
                                 <strong><?php echo number_format($netto, 2, '.', ','); ?></strong>
                             </td>
-                            <td style="border-left:1px solid #000; "></td>
                         </tr>
                     </table>
                 </td>
@@ -137,7 +164,7 @@
                     <table border="0" width="100%">
                         <tr>
                             <td style="text-align:center">Tanda Terima</td>
-                            <td style="text-align:center">Pembawa / Supir</td>
+                            <!-- <td style="text-align:center">Pembawa / Supir</td> -->
                             <td style="text-align:center">Diperiksa</td>
                             <td style="text-align:center">Mengetahui</td>
                             <td style="text-align:center">Hormat Kami</td>
@@ -145,19 +172,19 @@
                         <tr style="height:35">
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
-                            <td style="text-align:center">&nbsp;</td>
+                            <!-- <td style="text-align:center">&nbsp;</td> -->
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                         </tr>
                         <tr><?php if($this->session->userdata('user_ppn')==1){?>
                             <td style="text-align:center">(_____________)</td>
-                            <td style="text-align:center">No. Kend. </td>
+                            <!-- <td style="text-align:center">No. Kend. </td> -->
                             <td style="text-align:center">(_____________)</td>
                             <td style="text-align:center"><strong>(Tjan Lin Oy)</strong></td>
                             <td style="text-align:center"><strong>(Istadi)</strong></td>
                             <?php }else{ ?>
                             <td style="text-align:center">(_____________)</td>
-                            <td style="text-align:center">No. Kend. </td>
+                            <!-- <td style="text-align:center">No. Kend. </td> -->
                             <td style="text-align:center">(_____________)</td>
                             <td style="text-align:center"><strong>(Andi)</strong></td>
                             <td style="text-align:center"><strong>(Bambang)</strong></td>

@@ -127,11 +127,10 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Alias Customer <font color="#f00">*</font>
+                            Term of Payment <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="alias" name="alias"
-                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['alias']; ?>" onkeyup="this.value = this.value.toUpperCase()">
+                            <input type="text" id="term_of_payment" name="term_of_payment" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?= $header['term_of_payment'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -155,6 +154,15 @@
                                 value="<?php echo $header['nama_customer']; ?>" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly">
                         <input type="hidden" id="m_customer_id" name="m_customer_id" value="<?php echo $header['m_customer_id'];?>">
                 <?php } ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Alias Customer
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="alias" name="alias"
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['alias']; ?>" onkeyup="this.value = this.value.toUpperCase()">
                         </div>
                     </div>
                     <div class="row">
@@ -221,7 +229,7 @@
                         '</td>'.
                         '<input type="hidden" id="uom" name="uom">'.
                         '<td><input type="text" id="nama_barang_1" name="nama_barang" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'.
-                        '<td><input type="text" id="amount_1" name="harga" class="form-control myline" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id, 1);"></td>';
+                        '<td><input type="text" id="amount_1" name="harga" class="form-control myline" value="0" onkeyup="getComa_a(this.value, this.id, 1);"></td>';
         if($header['jenis_barang'] == 'WIP'){
                     echo '<td><input type="text" id="qty_1" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="5" value="0"></td>'.
                         '<td><input type="text" id="netto_1" name="netto" class="form-control myline" maxlength="10" value="0" onkeyup="hitungSubTotal_a(1)"></td>';  
@@ -388,6 +396,7 @@ function hitungSubTotal_a(id){
         $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     }
 }
+
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");

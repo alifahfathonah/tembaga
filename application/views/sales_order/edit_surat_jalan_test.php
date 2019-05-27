@@ -283,8 +283,10 @@
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
-                                <?php $no=0; foreach ($list_produksi as $row) { $no++;
-                                echo '<tr>'.
+                                <?php $no=0; 
+                                $bruto = 0; $netto = 0;
+                                foreach ($list_produksi as $row) { $no++;
+                                echo '<tr id="row_'.$no.'">'.
                                     '<td style="text-align: center;">'.$no.'</td>'.
                                     '<input type="hidden" name="details['.$no.'][id_barang]" id="id_barang_'.$no.'" value="'.$row->id.'">'.
                                     '<input type="hidden" id="jenis_barang_id_'.$no.'" name="details['.$no.'][jenis_barang_id]" value="'.$row->rongsok_id.'">'.
@@ -303,12 +305,23 @@
                                     '<td><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" class="form-control myline" readonly="readonly" value="'.$row->netto.'"></td>'.
                                     '<td><input type="text" id="berat_palette_'.$no.'" name="details['.$no.'][berat_palette]" class="form-control myline" readonly="readonly" value="'.$row->berat_palette.'"></td>'.
                                     '<td><input type="text" id="line_remarks_'.$no.'" name="details['.$no.'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" value="'.$row->keterangan.'"></td>'.
-                                    '<td><a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcodeRsk('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Print </a></td>'.
+                                    '<td><a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcodeRsk('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Print </a>'.
+                                    '<a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs red" onclick="delete_row('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Delete </a></td>'.
                                     '</td>'.
                                 '</tr>';
+                                $bruto += $row->bruto;
+                                $netto += $row->netto;
                                     }
                                 ?>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" style="text-align: right;"><strong>Total</strong></td>
+                                    <td><input type="text" class="form-control" style="margin-bottom: 5px" id="bruto" value="<?=$bruto;?>" readonly="readonly"></td>
+                                    <td><input type="text" class="form-control" style="margin-bottom: 5px" id="netto" value="<?=$netto;?>" readonly="readonly"></td>
+                                    <td colspan="3"></td>
+                                </tr>
+                            </tfoot>
                         </table>
                     <?php
                     }

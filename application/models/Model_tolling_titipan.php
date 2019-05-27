@@ -40,8 +40,7 @@ class Model_tolling_titipan extends CI_Model{
     }
     
     function show_header_so($id){
-        $data = $this->db->query("Select so.*, tso.id as id_tso, tso.alias, tso.no_po, tso.tgl_po, tso.jenis_barang, tso.no_spb, tso.currency, tso.kurs,
-                    cust.nama_customer, cust.pic, cust.alamat, cust.telepon, COALESCE(tsf.no_spb,tsw.no_spb_wip) as nomor_spb, u.realname as nama_marketing
+        $data = $this->db->query("Select so.*, tso.id as id_tso, tso.alias, tso.no_po, tso.tgl_po, tso.term_of_payment, tso.jenis_barang, tso.no_spb, tso.currency, tso.kurs, cust.nama_customer, cust.pic, cust.alamat, cust.telepon, COALESCE(tsf.no_spb,tsw.no_spb_wip) as nomor_spb, u.realname as nama_marketing
                     From sales_order so
                         Left Join t_sales_order tso on tso.so_id = so.id
                         Left Join t_spb_fg tsf on tso.jenis_barang ='FG' and tsf.id = tso.no_spb
@@ -342,10 +341,10 @@ class Model_tolling_titipan extends CI_Model{
     }
 
     function list_item_sj_fg($soid){
-        $data = $this->db->query("select tgf.id, jb.jenis_barang, jb.uom, jb.ukuran, tgf.no_packing from t_sales_order tso
+        $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.kode, jb.uom, jb.ukuran from t_sales_order tso
                 left join t_gudang_fg tgf on tgf.t_spb_fg_id = tso.no_spb
                 left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-                where tso.so_id = ".$soid." and flag_taken = 0");
+                where tso.so_id = ".$soid." and jenis_trx = 1 and flag_taken = 0 order by tgf.jenis_barang_id");
         return $data;
     }
 
@@ -367,9 +366,10 @@ class Model_tolling_titipan extends CI_Model{
     }
     
     function show_header_sj($id){
-        $data = $this->db->query("Select tsj.*, cust.id as id_customer,
-                    cust.nama_customer, cust.alamat,
-                    tso.no_spb, so.no_sales_order, tso.no_po, tsf.no_spb as nomor_spb, tsf.status as status_spb,
+        $data = $this->db->query("Select tsj.*, cust.id as id_customer, cust.nama_customer, cust.alamat, so.tanggal as tanggal_so, 
+                    COALESCE(tsf.no_spb, tsw.no_spb_wip, s.no_spb, tsa.no_spb_ampas) as nomor_spb,
+                    COALESCE(tsf.status, tsw.status, s.status, tsa.status) as status_spb,
+                    tso.no_spb, so.no_sales_order, tso.no_po,
                     tkdr.type_kendaraan,
                     usr.realname,
                     aprv.realname as approved_name,
@@ -377,7 +377,10 @@ class Model_tolling_titipan extends CI_Model{
                 From t_surat_jalan tsj
                     Left Join m_customers cust On (tsj.m_customer_id = cust.id)
                     Left Join t_sales_order tso On (tsj.sales_order_id = tso.so_id) 
-                    Left Join t_spb_fg tsf On (tsf.id = tso.no_spb)
+                    Left Join t_spb_fg tsf On (tso.jenis_barang = 'FG' and tsf.id = tso.no_spb)
+                    Left Join t_spb_wip tsw On (tso.jenis_barang = 'WIP' and tsw.id = tso.no_spb)
+                    Left Join spb s On (tso.jenis_barang = 'RONGSOK' and s.id = tso.no_spb)
+                    Left Join t_spb_ampas tsa on (tso.jenis_barang = 'AMPAS' and tsa.id = tso.no_spb)
                     Left Join sales_order so On (so.id = tso.so_id)
                     Left Join m_type_kendaraan tkdr On (tsj.m_type_kendaraan_id = tkdr.id) 
                     Left Join users usr On (tsj.created_by = usr.id)
@@ -385,16 +388,19 @@ class Model_tolling_titipan extends CI_Model{
                     Left Join users rjct On (tsj.rejected_by = rjct.id)
                     Where tsj.id=".$id);
         return $data;
-    }
-    
+    }    
     function list_no_produksi(){
         $data = $this->db->query("Select id, no_produksi From produksi_ampas Order By no_produksi");
         return $data;
     }
     
     function load_detail_surat_jalan($id){
-        $data = $this->db->query("select tsjd.*, jb.jenis_barang, jb.uom from t_surat_jalan_detail tsjd
-                left join jenis_barang jb on jb.id = tsjd.jenis_barang_id
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jb.uom, tgf.no_produksi, mb.berat
+                from t_surat_jalan_detail tsjd
+                left join jenis_barang jb on jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
+                left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
+                left join t_gudang_fg tgf on tgf.id = tsjd.gudang_id
+                left join m_bobbin mb on tgf.bobbin_id>0 and mb.id = tgf.bobbin_id
                 where tsjd.t_sj_id =".$id);
         return $data;
     }

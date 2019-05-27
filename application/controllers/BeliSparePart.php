@@ -1847,6 +1847,7 @@ class BeliSparePart extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
         $tgl_jatuh = date('Y-m-d', strtotime($this->input->post('tanggal_jatuh')));
         $tgl_uk    = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
@@ -1919,7 +1920,7 @@ class BeliSparePart extends CI_Controller{
         }
 
         if($user_ppn==1){
-            $code_um = $num.'.'.$this->input->post('no_uk');
+            $code_um = $num.'.'.$tgl_code.'.'.$this->input->post('no_uk');
         }else{
             $code_um = $this->Model_m_numberings->getNumbering($num);
         }

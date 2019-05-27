@@ -1225,7 +1225,7 @@ class Finance extends CI_Controller{
             $nilai_invoice += $total;
         }
 
-        if($ppn == 1){
+        if($ppn == 1 && $this->input->post('currency')=='IDR'){
             $total_invoice = ($nilai_invoice-str_replace('.', '', $this->input->post('diskon'))-str_replace('.', '', $this->input->post('add_cost')))*110/100 + str_replace('.', '', $this->input->post('materai'));
         }else{
             $total_invoice = ($nilai_invoice-str_replace('.', '', $this->input->post('diskon'))-str_replace('.', '', $this->input->post('add_cost'))) + str_replace('.', '', $this->input->post('materai'));
