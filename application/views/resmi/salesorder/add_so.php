@@ -47,6 +47,14 @@
                     </div>  
                     <div class="row">
                         <div class="col-md-4">
+                            Term of Payment <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="term_of_payment" name="term_of_payment" class="form-control myline" style="margin-bottom: 5px;" onkeyup="this.value = this.value.toUpperCase()">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Marketing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -145,6 +153,9 @@ function simpanData(){
     }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
+    }else if($.trim($("#term_of_payment").val()) == ""){
+        $('#message').html("Term of Payment harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
     }else if($.trim($("#marketing_id").val()) == ""){
         $('#message').html("Silahkan pilih marketing!");
         $('.alert-danger').show();
