@@ -473,6 +473,7 @@ class Ingot extends CI_Controller{
 
             $this->load->view('ingot/print_afkir', $data);
         }else{
+            $this->session->set_flashdata('flash_msg', 'No DTR Afkir tidak di temukan'); 
             redirect('index.php'); 
         }
     }
