@@ -6,7 +6,7 @@ class Model_purchase_order extends CI_Model{
 			from r_t_po rpo
 			left join m_customers_cv cs on (rpo.customer_id = cs.id)
 			left join m_cv c on (rpo.cv_id = c.id)
-			order by rpo.created_at desc");
+			order by rpo.no_po desc");
 		return $data;
 	}
 
@@ -16,7 +16,7 @@ class Model_purchase_order extends CI_Model{
 			left join m_customers_cv cs on (rpo.customer_id = cs.id)
 			left join m_cv c on (rpo.cv_id = c.id)
 			where rpo.reff_cv = ".$reff_cv." 
-			order by rpo.created_at desc");
+			order by rpo.no_po desc");
 		return $data;
 	}
 
@@ -26,7 +26,7 @@ class Model_purchase_order extends CI_Model{
 			left join m_customers_cv cs on (rpo.customer_id = cs.id)
 			left join m_cv c on (rpo.cv_id = c.id)
 			where rpo.cv_id != 0
-			order by rpo.created_at desc");
+			order by rpo.no_po desc");
 		return $data;
 	}
 
