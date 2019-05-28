@@ -31,7 +31,7 @@
                             No. Sales Order <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_so" name="no_so" value="Auto Generate" readonly="readonly" maxlength="25" 
+                            <input type="text" id="no_so" name="no_so" maxlength="25" 
                                 class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
                         </div>
                     </div>

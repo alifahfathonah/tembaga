@@ -200,6 +200,7 @@ function hitungSubTotal_a(id){
     harga = $('#amount_'+id).val().toString().replace(/\./g, "");
     netto = $('#netto_'+id).val();
     total_harga = Number(harga)* Number(netto);
+    total_harga = total_harga.toFixed(0);
     $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
 }
 

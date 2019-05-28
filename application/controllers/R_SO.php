@@ -67,17 +67,18 @@ class R_SO extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
+        $no_so = 'SO-KMP.'.$tgl_input.'.'.$this->input->post('no_so');
 
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('SO-KMP', $tgl_input);
+        // $code = $this->Model_m_numberings->getNumbering('SO-KMP', $tgl_input);
                 
         $category = $this->input->post('jenis_barang');
 
-        if($code){
+        // if($code){
             $this->db->trans_start();
 
             $t_data = array(
-                'no_so'=>$code,
+                'no_so'=>$no_so,
                 'tanggal'=>$tgl_input,
                 'marketing_id'=>$this->input->post('marketing_id'),
                 'cv_id'=>$this->input->post('customer_id'),
@@ -116,7 +117,7 @@ class R_SO extends CI_Controller{
                 $this->session->set_flashdata('flash_msg', 'Sales order gagal disimpan, silahkan dicoba kembali!');
                 redirect('index.php/R_SO');  
             }
-        }
+        // }
     }
 
     function edit_so(){

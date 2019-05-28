@@ -152,6 +152,7 @@ class R_InvoiceJasa extends CI_Controller{
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_jth_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jth_tempo')));   
+        $nilai_invoice = 0;
 
         $this->db->trans_start();
         $jenis = $this->input->jenis_barang;
@@ -404,6 +405,7 @@ class R_InvoiceJasa extends CI_Controller{
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_jth_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jth_tempo')));
+        $nilai_invoice = 0;
 
         $this->db->trans_start();
         $jenis = $this->input->jenis_barang;

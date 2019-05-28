@@ -256,7 +256,7 @@ class R_PurchaseOrder extends CI_Controller{
             'tanggal'=> $tgl_input,
             'cv_id'=>$this->session->userdata('cv_id'),
             'term_of_payment'=>$this->input->post('term_of_payment'),
-            'jenis_po'=>'PO CV KE KMP',
+            // 'jenis_po'=>'PO CV KE KMP',
             'remarks'=>$this->input->post('remarks'),
             'modified_at'=> $tanggal,
             'modified_by'=> $user_id
@@ -540,7 +540,7 @@ class R_PurchaseOrder extends CI_Controller{
             'tanggal'=> $tgl_input,
             'customer_id'=>$this->input->post('customer_id'),
             'term_of_payment'=>$this->input->post('term_of_payment'),
-            'jenis_po'=>'PO CUSTOMER KE CV',
+            // 'jenis_po'=>'PO CUSTOMER KE CV',
             'remarks'=>$this->input->post('remarks'),
             'modified_at'=> $tanggal,
             'modified_by'=> $user_id
