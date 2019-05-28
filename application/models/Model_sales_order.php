@@ -300,7 +300,7 @@ class Model_sales_order extends CI_Model{
     }
     
     function list_barang_so($jenis){
-        $data = $this->db->query("Select id, jenis_barang, uom from jenis_barang where category = '".$jenis."'");
+        $data = $this->db->query("Select id, jenis_barang, kode, uom from jenis_barang where category = '".$jenis."'");
         return $data;
     }
 

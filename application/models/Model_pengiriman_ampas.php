@@ -30,9 +30,16 @@ class Model_pengiriman_ampas extends CI_Model{
         return $data;
     }
     
+    // function load_detail($id){
+    //     $data = $this->db->query("Select pod.*, ampas.nama_item, ampas.uom From po_detail pod 
+    //             Left Join ampas On(pod.ampas_id = ampas.id) 
+    //             Where pod.po_id=".$id);
+    //     return $data;
+    // }
+
     function load_detail($id){
-        $data = $this->db->query("Select pod.*, ampas.nama_item, ampas.uom From po_detail pod 
-                Left Join ampas On(pod.ampas_id = ampas.id) 
+        $data = $this->db->query("Select pod.*, r.nama_item, r.uom From po_detail pod 
+                Left Join rongsok r on (r.id=pod.ampas_id)
                 Where pod.po_id=".$id);
         return $data;
     }

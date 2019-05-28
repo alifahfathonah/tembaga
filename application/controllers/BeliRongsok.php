@@ -940,6 +940,7 @@ class BeliRongsok extends CI_Controller{
         $ttr_id = $this->input->post('header_id');
         $tanggal = date('Y-m-d h:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('Ym', strtotime($this->input->post('tanggal')));
         $user_id = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
 
@@ -948,7 +949,7 @@ class BeliRongsok extends CI_Controller{
         #Update status TTR
             $this->db->where('id',$ttr_id);
             $result = $this->db->update('ttr', array(
-                    'no_ttr' => $this->input->post('nomor_ttr'),
+                    'no_ttr' => 'TTR-KMP.'.$tgl_code.'.'.$this->input->post('nomor_ttr'),
                     'tanggal' => $tgl_input,
                     'no_sj' => $this->input->post('no_sj'),
                     'jmlh_afkiran' => $this->input->post('jml_afkir'),

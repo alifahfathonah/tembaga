@@ -5,14 +5,14 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br>BUKTI PENERIMAAN BARANG WIP</h3>
+        <h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br><u>BON AFKIR</u></h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>No. BPB</td>
-                            <td>: <?php echo $header['no_bpb']; ?></td>
+                            <td>: <?php echo $header['no_dtr']; ?></td>
                         </tr>
                         <tr>
                             <td>Tanggal</td>
@@ -25,13 +25,12 @@
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>No. Produksi</td>
-                            <td>: <?php echo $header['no_produksi_ingot']; ?></td>
+                            <td>: <?php echo $header['no_produksi_wip']; ?></td>
                         </tr>
-                        
-                        <!-- <tr>
-                            <td>Supplier</td>
-                            <td>: <?php echo $header['nama_supplier']; ?></td>
-                        </tr> -->
+                        <tr>
+                            <td>Bag. Penerima</td>
+                            <td>: GUDANG RONGSOK</td>
+                        </tr>
                     </table>
                 </td>
             </tr>
@@ -42,7 +41,7 @@
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nama Item</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>UOM</strong></td>
-                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Jumlah</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Jumlah Satuan</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Berat</strong></td>
                             <td style="text-align:center; border:1px solid #000"><strong>Keterangan</strong></td>
                         </tr>
@@ -53,15 +52,15 @@
                             foreach ($details as $row){
                                 echo '<tr>';
                                 echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
-                                echo '<td style="border-left:1px solid #000">'.$row->jenis_barang.'</td>';
+                                echo '<td style="border-left:1px solid #000">'.$row->nama_item.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->uom.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->qty,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->berat,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->keterangan.'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->netto,0,',', '.').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->line_remarks.'</td>';
                                 echo '</tr>';
                                 $no++;
                                 $qty += $row->qty;
-                                $netto += $row->berat;
+                                $netto += $row->netto;
                             }
                         ?>
                         <tr style="height:100px">

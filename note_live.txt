@@ -11,7 +11,7 @@ Print invoice belum beres yang kh(Done)
 dtbj tambahin tidak ada supplier untuk pecah barcode dan repacking finish good(Done)
 dtbj belum bisa approve jika tidak ada supplier(Done)
 
-view_surat_jalan belom di sort by nama barang kayak di surat jalan
+view_surat_jalan belom di sort by nama barang kayak di surat jalan(Done)
  f_invoice bisa diedit, tgl jatuh tempo, top, dll.
 
 Print Sales Order di Resmi belum sama kayak intern

@@ -560,8 +560,9 @@ class Model_beli_rongsok extends CI_Model{
     function view_gudang_rongsok($id){
         $data = $this->db->query("select r.nama_item, dd.bruto, dd.netto, dd.berat_palette, dd.no_pallete from dtr_detail dd
                 left join dtr on dtr.id = dd.dtr_id
+                left join ttr on ttr.dtr_id = dtr.id
                 left join rongsok r on r.id = dd.rongsok_id
-                where dd.rongsok_id = ".$id." and dtr.status = 1 and dd.tanggal_keluar is null");
+                where dd.rongsok_id = ".$id." and ttr.ttr_status = 1 and dd.tanggal_keluar is null");
         return $data;
     }
 

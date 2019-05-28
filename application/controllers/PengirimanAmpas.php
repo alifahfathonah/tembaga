@@ -98,6 +98,9 @@ class PengirimanAmpas extends CI_Controller{
             $this->load->model('Model_pengiriman_ampas');
             $data['header'] = $this->Model_pengiriman_ampas->show_header_po($id)->row_array();  
             
+            $this->load->model('Model_beli_rongsok');
+            $data['list_ampas'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
+            
             $this->load->model('Model_beli_sparepart');
             $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
             $this->load->view('layout', $data);   
@@ -136,7 +139,7 @@ class PengirimanAmpas extends CI_Controller{
         $netto = 0;
         
         $this->load->model('Model_pengiriman_ampas'); 
-        $list_ampas = $this->Model_pengiriman_ampas->ampas()->result();
+        // $list_ampas = $this->Model_pengiriman_ampas->ampas()->result();
         $myDetail = $this->Model_pengiriman_ampas->load_detail($id)->result(); 
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
@@ -154,36 +157,12 @@ class PengirimanAmpas extends CI_Controller{
             $netto += $row->netto;
             $no++;
         }
-            
-        $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:center">'.$no.'</td>';
-        $tabel .= '<td>';
-        $tabel .= '<select id="ampas_id" name="ampas_id" class="form-control select2me myline" ';
-            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">';
-            $tabel .= '<option value=""></option>';
-            foreach ($list_ampas as $value){
-                $tabel .= "<option value='".$value->id."'>".$value->nama_item."</option>";
-            }
-        $tabel .= '</select>';
-        $tabel .= '</td>';
-        $tabel .= '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td><input type="text" id="harga" name="qty" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-        $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-        $tabel .= '<td><input type="text" id="total_harga" name="total_harga" class="form-control myline" '
-                . 'readonly="readonly" value="0"></td>';
-        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
-                . '<i class="fa fa-plus"></i> Tambah </a></td>';
-        $tabel .= '</tr>';
-        
+
         $tabel .= '<tr>';
         $tabel .= '<td colspan="4" style="text-align:right"><strong>Total (Rp) </strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
         $tabel .= '</tr>';
-       
         
         header('Content-Type: application/json');
         echo json_encode($tabel); 

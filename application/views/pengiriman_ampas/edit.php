@@ -106,8 +106,8 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th style="width:40px">No</th>
-                                <th>Nama Item Ampas</th>
-                                <th>Unit of Measure</th>
+                                <th width="25%">Nama Item Ampas</th>
+                                <th width="5%">Unit of Measure</th>
                                 <th>Harga (Rp)</th>
                                 <th>Netto (Kg)</th>
                                 <th>Sub Total (Rp)</th>
@@ -116,6 +116,24 @@
                             <tbody id="boxDetail">
 
                             </tbody>
+                                <tr>
+                                    <td style="text-align:center"><i class="fa fa-plus"></td>
+                                    <td>
+                                    <select id="ampas_id" name="ampas_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
+                                        <option value=""></option>
+                                    <?php
+                                        foreach ($list_ampas as $value){
+                                            echo "<option value='".$value->id."'>".$value->nama_item."</option>";
+                                        }
+                                    ?>
+                                    </select>
+                                    </td>
+                                    <td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>
+                                    <td><input type="text" id="harga" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);"></td>
+                                    <td><input type="text" id="netto" name="netto" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>
+                                    <td><input type="text" id="total_harga" name="total_harga" class="form-control myline" readonly="readonly" value="0"></td>
+                                    <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
+                                </tr>
                         </table>
                     </div>
                 </div>
@@ -194,7 +212,7 @@ function loadDetail(id){
 
 function get_uom(id){
     $.ajax({
-        url: "<?php echo base_url('index.php/PengirimanAmpas/get_uom'); ?>",
+        url: "<?php echo base_url('index.php/BeliRongsok/get_uom'); ?>",
         async: false,
         type: "POST",
         data: "id="+id,
@@ -229,6 +247,11 @@ function saveDetail(){
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
+                    $('#ampas_id').select2('val','');
+                    $('#uom').val('');
+                    $('#harga').val('');
+                    $('#netto').val('');
+                    $('#total_harga').val('');
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{

@@ -461,6 +461,21 @@ class Ingot extends CI_Controller{
             redirect('index.php'); 
         }
     }
+
+    function print_afkir(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->helper('tanggal_indo');
+            $this->load->model('Model_beli_rongsok');
+            $this->load->model('Model_ingot');
+            $data['header']  = $this->Model_ingot->show_header_dtr($id)->row_array();
+            $data['details'] = $this->Model_beli_rongsok->show_detail_dtr($id)->result();
+
+            $this->load->view('ingot/print_afkir', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
     
     function create_skb(){
         $module_name = $this->uri->segment(1);
@@ -656,6 +671,8 @@ class Ingot extends CI_Controller{
         $tgl_prd = date('Y-m-d', strtotime($this->input->post('tgl_prd')));
 
         $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('PRD-WIP', $tgl_input);
 
         $data = array(
                 'tanggal'=> $tgl_input,
@@ -677,8 +694,23 @@ class Ingot extends CI_Controller{
 
         #insert data hasil masak
         $this->db->insert('t_hasil_masak', $data);
-
         $id_masak = $this->db->insert_id();
+
+        #Catat hasil WIP
+        $data_wip = array(
+                'no_produksi_wip'=> $code,
+                'tanggal'=> $tgl_prd,
+                'jenis_barang_id'=>2,// INGOT
+                'jenis_masak' => 'INGOT',
+                'uom'=> 'BATANG',
+                'hasil_masak_id'=> $id_masak,
+                'qty'=> $this->input->post('ingot'),
+                'berat'=> $this->input->post('berat_ingot'),
+                'created_by'=> $user_id,
+            );
+
+        $this->db->insert('t_hasil_wip', $data_wip);
+        $id_hasil_wip = $this->db->insert_id();
 
         if($this->input->post('bs') != 0 || $this->input->post('bs_service')!=0){
             //CREATE DTR
@@ -689,6 +721,7 @@ class Ingot extends CI_Controller{
             $data_dtr = array(
                         'no_dtr'=> $code_dtr,
                         'tanggal'=> $tgl_prd,
+                        'prd_id'=> $id_hasil_wip,
                         'jenis_barang'=> 'RONGSOK',
                         'remarks'=> 'SISA PRODUKSI INGOT',
                         'created'=> $tanggal,
@@ -780,21 +813,6 @@ class Ingot extends CI_Controller{
         $this->db->update('produksi_ingot',array(
                         'flag_result'=>1));
 
-        #Catat hasil WIP
-        $data_wip = array(
-                'tanggal'=> $tgl_prd,
-                'jenis_barang_id'=>2,// INGOT
-                'jenis_masak' => 'INGOT',
-                'uom'=> 'BATANG',
-                'hasil_masak_id'=> $id_masak,
-                'qty'=> $this->input->post('ingot'),
-                'berat'=> $this->input->post('berat_ingot'),
-                'created_by'=> $user_id,
-            );
-
-        $this->db->insert('t_hasil_wip', $data_wip);
-        $id_hasil_wip = $this->db->insert_id();
-
         /* 
         Hasil masak di distribusikan ke 3 gudang, masing-masing memiliki BPB dan BPB detail.
         3 gudang diantaranya adalah: gudang rongsok (BS), gudang ampas, gudang wip
@@ -856,7 +874,7 @@ class Ingot extends CI_Controller{
             $data_bpb_ampas = array(
                     'no_bpb' => $code_bpb_ampas,
                     'status' => 0,
-                    'hasil_masak_id'=> $id_masak,
+                    'hasil_masak_id'=> $id_hasil_wip,
                     'created_by' => $user_id,
                     'created' => $tgl_input
                     );

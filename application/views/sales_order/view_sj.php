@@ -232,10 +232,23 @@
                             </thead>
                             <tbody id="boxDetail">
                                 <?php 
+                                    $last_series = null;
                                     $no=1; 
                                     $bruto=0;
                                     $netto=0;
                                     foreach ($list_sj as $row) { 
+                                        if($row->jenis_barang!=$last_series && $last_series!=null){
+                                    echo '<tr>
+                                                <td style="text-align: right;" colspan="5"><strong>Total</strong></td>
+                                                <td style="background-color: green; color: white;">'.number_format($bruto,2,',','.').'</td>
+                                                <td style="background-color: green; color: white;">'.number_format($netto,2,',','.').'</td>
+                                                <td colspan="2"></td>
+                                            </tr>';
+                                            $bruto = 0;
+                                            $netto = 0;
+                                        }else{
+                                            echo '</tr>';
+                                        }
                                 ?>
                                 <tr>
                                     <td><?php echo $no; ?></td>
@@ -251,17 +264,20 @@
                                     <td><?php echo number_format($row->netto,2,',','.'); ?></td>
                                     <td><?php echo $row->nomor_bobbin; ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
-                                </tr>
                                 <?php
+                                        if($row->jenis_barang==$last_series){
+                                            echo '<tr>';
+                                        }
                                     $bruto += $row->bruto;
                                     $netto += $row->netto; 
                                     $no++; 
+                                $last_series = $row->jenis_barang;
                                     } 
                                 ?>
                                 <tr>
                                     <td style="text-align: right;" colspan="5"><strong>Total</strong></td>
-                                    <td><?=number_format($bruto,2,',','.');?></td>
-                                    <td><?=number_format($netto,2,',','.');?></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($bruto,2,',','.');?></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($netto,2,',','.');?></td>
                                     <td colspan="2"></td>
                                 </tr>
                             </tbody>

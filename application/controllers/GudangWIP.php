@@ -204,6 +204,7 @@ class GudangWIP extends CI_Controller{
             $data_dtr = array(
                         'no_dtr'=> $code,
                         'tanggal'=> $tgl_input,
+                        'prd_id'=> $insert_id,
                         'jenis_barang'=> 'RONGSOK',
                         'remarks'=> 'SISA PRODUKSI',
                         'created'=> $tanggal,

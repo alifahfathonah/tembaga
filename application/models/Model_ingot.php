@@ -215,13 +215,14 @@ class Model_ingot extends CI_Model{
     }    
         
     function hasil_produksi(){
-        $data = $this->db->query("Select thm.*,  pi.no_produksi,
+        $data = $this->db->query("Select thm.*,  pi.no_produksi, tbw.id as id_bpb, dtr.id as id_dtr,
                     usr.realname As pic, tbw.status as status_bpb_wip
                 From t_hasil_masak thm
                     Left Join users usr On (thm.created_by = usr.id)
                     Left Join produksi_ingot pi On (pi.id = thm.id_produksi)
                     Left Join t_hasil_wip thw ON (thw.hasil_masak_id = thm.id)
                     Left Join t_bpb_wip tbw On (tbw.hasil_wip_id = thw.id)
+                    Left Join dtr on (dtr.prd_id = thw.id)
                 Order By thm.id Desc");
         return $data;
     }
@@ -318,5 +319,16 @@ class Model_ingot extends CI_Model{
                 where spb.id =".$id);
         return $data;
     }
-    
+
+    function show_header_dtr($id){
+        $data = $this->db->query("Select dtr.*, thw.no_produksi_wip,
+                    usr.realname As penimbang,
+                    rjct.realname As rejected_name
+                    From dtr
+                        Left Join t_hasil_wip thw on thw.id = dtr.prd_id
+                        Left Join users usr On (dtr.created_by = usr.id) 
+                        Left Join users rjct On (dtr.rejected_by = rjct.id) 
+                    Where dtr.id=".$id);
+        return $data;
+    }
 }
