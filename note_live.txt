@@ -6,4 +6,12 @@ BS 8.00 MM DI ROLLING. (Done)
 TIPE APOLO DI SPB LIST WIP(Done)
 Print Barcode di view dtr(Done)
 
-Kalau SO USD, gaada PPN 10 % karena itu untuk export
+Kalau SO USD, gaada PPN 10 % karena itu untuk export(Done)
+Print invoice belum beres yang kh(Done)
+dtbj tambahin tidak ada supplier untuk pecah barcode dan repacking finish good(Done)
+dtbj belum bisa approve jika tidak ada supplier(Done)
+
+view_surat_jalan belom di sort by nama barang kayak di surat jalan
+ f_invoice bisa diedit, tgl jatuh tempo, top, dll.
+
+Print Sales Order di Resmi belum sama kayak intern

@@ -143,11 +143,13 @@ class Model_beli_fg extends CI_Model
     function show_header_dtbj($id){
         $data = $this->db->query("Select dtbj.*, 
                     po.no_po,
+                    mjp.jenis_packing as nama_jenis_packing,
                     spl.nama_supplier,
                     usr.realname As penimbang,
                     rjct.realname As rejected_name
                     From dtbj
                         Left Join po On (dtbj.po_id = po.id)
+                        Left Join m_jenis_packing mjp on (mjp.id = dtbj.jenis_packing)
                         Left Join supplier spl On (dtbj.supplier_id = spl.id) 
                         Left Join users usr On (dtbj.created_by = usr.id) 
                         Left Join users rjct On (dtbj.rejected_by = rjct.id) 

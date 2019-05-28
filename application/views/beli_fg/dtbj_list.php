@@ -47,6 +47,7 @@
                                 <select  id="supplier_id" name="supplier_id" placeholder="Silahkan pilih..."
                                 class="form-control myline select2me" style="margin-bottom:5px">
                                     <option value=""></option>
+                                    <option value="0">**TIDAK ADA SUPPLIER**</option>
                                     <?php 
                                         foreach($supplier_list as $jb){
                                     ?>
@@ -166,6 +167,10 @@
                                 //     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliFinishGood/proses_dtbj/'.$data->id.'" 
                                 //         style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
                                 // }
+                                if ($data->status==0 && ($data->supplier_id==0 || ($data->customer_id > 0 && $data->retur_id > 0)) ){
+                                    echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliFinishGood/proses_dtbj/'.$data->id.'" 
+                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
+                                }
                                 if($group_id==1 || $hak_akses['print_dtbj']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliFinishGood/print_dtbj/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
