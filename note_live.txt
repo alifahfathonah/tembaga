@@ -15,3 +15,4 @@ view_surat_jalan belom di sort by nama barang kayak di surat jalan(Done)
  f_invoice bisa diedit, tgl jatuh tempo, top, dll.
 
 Print Sales Order di Resmi belum sama kayak intern
+ttr ga resmi ada no surat jalan
