@@ -80,6 +80,7 @@ class R_SO extends CI_Controller{
             $t_data = array(
                 'no_so'=>$no_so,
                 'tanggal'=>$tgl_input,
+                'term_of_payment'=>$this->input->post('term_of_payment'),
                 'marketing_id'=>$this->input->post('marketing_id'),
                 'cv_id'=>$this->input->post('customer_id'),
                 'po_id'=>$this->input->post('po_id'),

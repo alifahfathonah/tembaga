@@ -56,7 +56,7 @@ class Model_so extends CI_Model{
 	}
 
 	function load_detail_so($id){
-		$data = $this->db->query("select rtsod.*, jb.jenis_barang, jb.uom from r_t_so_detail rtsod
+		$data = $this->db->query("select rtsod.*, jb.kode, jb.jenis_barang, jb.uom from r_t_so_detail rtsod
 			left join jenis_barang jb on jb.id = rtsod.jenis_barang_id
 			where rtsod.so_id=".$id);
 		return $data;
