@@ -84,6 +84,7 @@
                                 data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
                                 <option value=""></option>
                                 <?php
+                                    echo '<option value="0"'.(('0'==$header['supplier_id'])? 'selected="selected"': '').'>**TIDAK ADA SUPPLIER**</option>';
                                     foreach ($supplier_list as $row){
                                         echo '<option value="'.$row->id.'" '.(($row->id==$header['supplier_id'])? 'selected="selected"': '').'>'.$row->nama_supplier.'</option>';
                                     }
@@ -98,7 +99,7 @@
                         <div class="col-md-8">
                             <input type="text" id="jenis_barang" name="jenis_barang" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="KARDUS">
+                                value="BOBBIN 600g">
                         </div>
                     </div> 
                     <div class="row">

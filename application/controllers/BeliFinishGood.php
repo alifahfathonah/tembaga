@@ -535,7 +535,6 @@ class BeliFinishGood extends CI_Controller{
             $this->load->model('Model_beli_fg');
             $data['list_fg_on_po'] = $this->Model_beli_fg->list_fg()->result();
             $data['header'] = $this->Model_beli_fg->show_header_dtbj($id)->row_array();
-            echo $data['header']['jenis_packing'];
             $this->load->model('Model_gudang_fg');
             $packing = $this->Model_gudang_fg->show_data_packing($data['header']['jenis_packing'])->row_array();
             if($packing['packing']=="BOBBIN"){
@@ -793,6 +792,114 @@ class BeliFinishGood extends CI_Controller{
         $this->load->view('layout', $data);
     }
 
+    function proses_dtbj(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "beli_fg/proses_dtbj";
+            $this->load->model('Model_beli_fg');
+            $data['header']  = $this->Model_beli_fg->show_header_dtbj($id)->row_array(); 
+            $data['details'] = $this->Model_beli_fg->show_detail_dtbj($id)->result();
+            
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/BeliFinishGood');
+        }
+    }
+
+    function approve_proses_dtbj(){
+        $dtbj_id = $this->input->post('id');
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $return_data = array();
+        $this->load->model('Model_beli_fg');
+        
+            $this->db->trans_start();       
+
+            #Update status DTBJ
+            $this->db->where('id', $dtbj_id);
+            $this->db->update('dtbj', array(
+                    'status'=>1,
+                    'approved'=>$tanggal,
+                    'approved_by'=>$user_id));
+
+                #Create BPB FG
+                $this->load->model('Model_m_numberings');
+
+                    #insert t_bpb_fg
+                    if($user_ppn==1){
+
+                    // $this->load->helper('target_url');
+                    // $url = target_url().'api/BeliSparepartAPI/numbering?id=BPB-KMP&tgl='.$tgl_input;
+                    // $ch = curl_init();
+                    // curl_setopt($ch, CURLOPT_URL, $url);
+                    // // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                    // // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+                    // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                    // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    // curl_setopt($ch, CURLOPT_HEADER, 0);
+
+                    // $result = curl_exec($ch);
+                    // $result = json_decode($result);
+                    // curl_close($ch);
+                    // $code = $result->code;
+                        $code = $this->Model_m_numberings->getNumbering('BPB-KMP',$tgl_input);
+                    }else{
+                        $code = $this->Model_m_numberings->getNumbering('BPB-PO',$tgl_input);
+                    }
+                    $data_bpb = array(
+                            'no_bpb_fg' => $code,
+                            'tanggal' => $tgl_input,
+                            'flag_ppn' => $user_ppn,
+                            // 'produksi_fg_id' => $id_produksi,
+                            'jenis_barang_id' => 0,
+                            'created_at' => $tanggal,
+                            'created_by' => $user_id,
+                            'keterangan' => 'BARANG PO FG',
+                            'status' => 0
+                        );
+                    $this->db->insert('t_bpb_fg',$data_bpb);
+                    $id_bpb = $this->db->insert_id();
+
+                    $loop2 = $this->db->query("select dtbjd.*, m_bobbin.id as bobbin_id
+                    from dtbj_detail dtbjd
+                    left join m_bobbin on (m_bobbin.nomor_bobbin = dtbjd.no_bobbin) 
+                    where dtbjd.dtbj_id = ".$dtbj_id)->result();
+                    foreach ($loop2 as $k2) {
+                        $this->db->insert('t_bpb_fg_detail', array(
+                            't_bpb_fg_id' => $id_bpb,
+                            'jenis_barang_id' => $k2->jenis_barang_id,
+                            'no_produksi' => 0,
+                            'bruto' => $k2->bruto,
+                            'netto' => $k2->netto,
+                            'no_packing_barcode' => $k2->no_packing,
+                            'berat_bobbin' => $k2->berat_bobbin,
+                            'bobbin_id' => $k2->bobbin_id
+                        ));
+                    }
+
+        if($this->db->trans_complete()){  
+            $this->session->set_flashdata('flash_msg', 'DTBJ Berhasil di Approve');  
+            redirect('index.php/BeliFinishGood/dtbj_list/');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'DTBJ Gagal di Approve');  
+            redirect('index.php/BeliFinishGood/dtbj_list/');
+        }                       
+        
+       // header('Content-Type: application/json');
+       // echo json_encode($return_data);
+    }
+
     function approve(){
         $dtbj_id = $this->input->post('dtbj_id');
         $po_id = $this->input->post('po_id');
@@ -963,8 +1070,11 @@ class BeliFinishGood extends CI_Controller{
                 'status' => 3
             ));
         }
-
-        redirect('index.php/BeliFinishGood/proses_matching/'.$this->input->post('po_id'));
+        if(null !== ($this->input->post('po_id'))){
+            redirect('index.php/BeliFinishGood/proses_matching/'.$this->input->post('po_id'));
+        }else{
+            redirect('index.php/BeliFinishGood/dtbj_list');
+        }
     }
 
     function create_voucher(){
