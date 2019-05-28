@@ -34,7 +34,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_surat_jalan" name="no_surat_jalan" maxlength="25"
-                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="Auto Generate" readonly="readonly">
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
                         </div>
                             <?php } else if($jenis == 'matching'){ ?>
                         <div class="col-md-4">

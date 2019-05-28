@@ -86,6 +86,7 @@ class R_SuratJalan extends CI_Controller{
         $reff_cv   = $this->session->userdata('cv_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('Ym', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis');    
         
         $this->db->trans_start();
@@ -141,10 +142,10 @@ class R_SuratJalan extends CI_Controller{
                 ));
             }
         }else if($jenis == 'so'){
-            $this->load->model('Model_m_numberings');
-            $code = $this->Model_m_numberings->getNumbering('SJ-KMP', $tgl_input);
+            // $this->load->model('Model_m_numberings');
+            // $code = $this->Model_m_numberings->getNumbering('SJ-KMP', $tgl_input);
             $data = array(
-                'no_sj_resmi'=> $code,
+                'no_sj_resmi'=> "SJ-KMP.".$tgl_code.".".$this->input->post('no_surat_jalan'),
                 'r_invoice_id'=>$this->input->post('id_invoice_resmi'),
                 'r_so_id' => $this->input->post('so_id'),
                 'r_po_id' => $this->input->post('po_id'),
