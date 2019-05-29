@@ -112,7 +112,7 @@
                             No. Surat Jalan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="surat_jalan_id" name="surat_jalan_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                            <select id="surat_jalan_id" name="surat_jalan_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_tgl_sj(this.value);">
                                 <option value=""></option>
                             </select>
                         </div>
@@ -285,6 +285,18 @@ function get_no_sj(id){
         success: function(result) {
             $('#currency').val(result['currency']);
             $('#kurs').val(result['kurs']);
+        }
+    });
+}
+
+function get_tgl_sj(id){
+    $.ajax({
+        url: "<?php echo base_url('index.php/Finance/get_tgl_sj');?>",
+        type: "POST",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result) {
+            $('#tanggal').val(result['tanggal']);
         }
     });
 }

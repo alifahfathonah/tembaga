@@ -343,6 +343,8 @@
                             <tbody id="boxDetail">
                                 <?php 
                                     $no=1; 
+                                    $bruto = 0;
+                                    $netto = 0;
                                     foreach ($list_sj_detail as $row) {
                                 echo '<input type="hidden" name="details['.$no.'][id]" value="'.$row->id.'">';
                                 ?>
@@ -365,8 +367,16 @@
                                 </tr>
                                 <?php
                                     $no++;
+                                    $bruto += $row->bruto;
+                                    $netto += $row->netto;
                                     }
                                 ?>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><strong>Total :</strong></td>
+                                    <td style="background-color: green; color: white;"><?= $bruto;?></td>
+                                    <td style="background-color: green; color: white;"><?= $netto;?></td>
+                                    <td colspan="2"></td>
+                                </tr>
                             </tbody>
                         </table>
                     <?php
@@ -385,6 +395,8 @@
                             <tbody>
                                 <?php 
                                     $no = 1;
+                                    $bruto = 0;
+                                    $netto = 0;
                                     foreach ($list_sj_detail as $row) {
                                 echo '<input type="hidden" name="details['.$no.'][id]" value="'.$row->id.'">';
                                 ?>
@@ -406,8 +418,16 @@
                                 </tr>
                                 <?php
                                     $no++;
+                                    $bruto += $row->bruto;
+                                    $netto += $row->netto;
                                     }
                                 ?>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><strong>Total :</strong></td>
+                                    <td style="background-color: green; color: white;"><?= $bruto;?></td>
+                                    <td style="background-color: green; color: white;"><?= $netto;?></td>
+                                    <td colspan="2"></td>
+                                </tr>
                             </tbody>
                         </table>
                     <?php

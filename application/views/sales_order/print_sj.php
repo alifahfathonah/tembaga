@@ -110,7 +110,7 @@
                                 echo '<td style="border-left:1px solid #000">'.$row->no_packing.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->nomor_bobbin.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->bruto, 2, '.', ',').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->berat, 2, '.', ',').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->bruto-$row->netto, 2, '.', ',').'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.number_format($row->netto, 2, '.', ',').'</td>';
                                 // echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->line_remarks.'</td>';
                                 if($row->jenis_barang==$last_series){
@@ -118,7 +118,7 @@
                                 }
                                 $last_series = $row->jenis_barang;
                                 $bruto += $row->bruto;
-                                $bobin += $row->berat;
+                                $bobin += $row->bruto-$row->netto;
                                 $netto += $row->netto;
                                 $no++;
                             }
@@ -145,7 +145,7 @@
                             // }
                         ?>
                         <tr>
-                            <td colspan="5" style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>Total</strong></td>
+                            <td colspan="5" style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>Total :</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000">
                                 <strong><?php echo number_format($bruto, 2, '.', ','); ?></strong>
                             </td>
@@ -164,7 +164,7 @@
                     <table border="0" width="100%">
                         <tr>
                             <td style="text-align:center">Tanda Terima</td>
-                            <!-- <td style="text-align:center">Pembawa / Supir</td> -->
+                            <td style="text-align:center">Pembawa / Supir</td>
                             <td style="text-align:center">Diperiksa</td>
                             <td style="text-align:center">Mengetahui</td>
                             <td style="text-align:center">Hormat Kami</td>
@@ -178,13 +178,13 @@
                         </tr>
                         <tr><?php if($this->session->userdata('user_ppn')==1){?>
                             <td style="text-align:center">(_____________)</td>
-                            <!-- <td style="text-align:center">No. Kend. </td> -->
+                            <td style="text-align:center">(_____________)</td>
                             <td style="text-align:center">(_____________)</td>
                             <td style="text-align:center"><strong>(Tjan Lin Oy)</strong></td>
                             <td style="text-align:center"><strong>(Istadi)</strong></td>
                             <?php }else{ ?>
                             <td style="text-align:center">(_____________)</td>
-                            <!-- <td style="text-align:center">No. Kend. </td> -->
+                            <td style="text-align:center">(_____________)</td>
                             <td style="text-align:center">(_____________)</td>
                             <td style="text-align:center"><strong>(Andi)</strong></td>
                             <td style="text-align:center"><strong>(Bambang)</strong></td>

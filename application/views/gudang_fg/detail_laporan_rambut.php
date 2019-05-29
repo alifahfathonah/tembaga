@@ -174,6 +174,7 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th>No</th>
+                                <th>No. Produksi</th>
                                 <th>Bruto</th>
                                 <th>Netto (Kg)</th>
                                 <th>Nomor Packing / Barcode</th>
@@ -188,6 +189,7 @@
                             ?>
                             <tr>
                                 <td style="text-align:center;"><?php echo $no; ?></td>
+                                <td><?php echo $row->no_produksi; ?></td>
                                 <td><?php echo $row->bruto; ?></td>
                                 <td><?php echo $row->netto; ?></td>       
                                 <td><?php echo $row->no_packing_barcode; ?></td>

@@ -868,16 +868,20 @@ class R_SuratJalan extends CI_Controller{
 
         if(isset($id)){
             $this->load->model('Model_surat_jalan');
+            $this->load->helper('tanggal_indo');
             $data['header'] = $this->Model_surat_jalan->show_header_print_sj($id)->row_array();
-            $data['list_sj_detail'] = $this->Model_surat_jalan->list_detail_print_sj($id)->result();
             if ($data['header']['jenis_surat_jalan'] == "SURAT JALAN CUSTOMER KE CV") {
                 $data['headerbpb'] = $this->Model_surat_jalan->show_header_print_bpb($id)->row_array();
+            $data['list_sj_detail'] = $this->Model_surat_jalan->list_detail_print_sj($id)->result();
                 $this->load->view('resmi/bpb/print_bpb_cs_cv', $data);
             } else if ($data['header']['jenis_surat_jalan'] == "SURAT JALAN CV KE KMP") {
+            $data['list_sj_detail'] = $this->Model_surat_jalan->list_detail_print_sj($id)->result();
                 $this->load->view('resmi/surat_jalan/print_sj_cv_kmp', $data);
             } else if ($data['header']['jenis_surat_jalan'] == "SURAT JALAN KMP KE CV") {
+                $data['list_sj_detail'] = $this->Model_surat_jalan->list_detail_print_sj_fg($id)->result();
                 $this->load->view('resmi/surat_jalan/print_sj_kmp_cv', $data);
             } else if ($data['header']['jenis_surat_jalan'] == "SURAT JALAN CV KE CUSTOMER") {
+            $data['list_sj_detail'] = $this->Model_surat_jalan->list_detail_print_sj($id)->result();
                 $data['header_cv_cs'] = $this->Model_surat_jalan->show_header_print_sj_cv_cs($id)->row_array();
                 $this->load->view('resmi/surat_jalan/print_sj_cv_cust', $data);
             }

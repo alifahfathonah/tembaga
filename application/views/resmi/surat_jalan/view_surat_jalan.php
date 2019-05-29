@@ -116,15 +116,9 @@
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
-                                onchange="get_alamat(this.value);" disabled>
-                                <option value=""></option>
-                                <?php
-                                    foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['m_customer_id'])? 'selected="selected"': '').'>'.$row->nama_customer.'</option>';
-                                    }
-                                ?>
-                            </select>
+                            <input type="text" id="nama_customer" name="nama_customer" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['nama_customer']; ?>">
                         </div>
                     </div>                    
                     <div class="row">
@@ -215,6 +209,8 @@
                             <tbody id="boxDetail">
                                 <?php 
                                     $no=1; 
+                                    $bruto=0;
+                                    $netto=0;
                                     foreach ($list_sj_detail as $row) { 
                                 ?>
                                 <tr>
@@ -222,12 +218,22 @@
                                     <td><?php echo $row->jenis_barang; ?></td>
                                     <td><?php echo $row->uom; ?></td>
                                     <td><?php echo $row->no_packing; ?></td>
-                                    <td><?php echo $row->bruto; ?></td>
-                                    <td><?php echo $row->netto; ?></td>
+                                    <td><?php echo number_format($row->bruto,2,',','.'); ?></td>
+                                    <td><?php echo number_format($row->netto,2,',','.'); ?></td>
                                     <td><?php echo $row->nomor_bobbin; ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
                                 </tr>
-                                <?php $no++; } ?>
+                                <?php $no++;
+                                    $bruto += $row->bruto;
+                                    $netto += $row->netto; 
+                                    } 
+                                ?>
+                                <tr>
+                                    <td colspan="4" style="text-align: right;"><strong>Total :</strong></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($bruto,2,',','.');?></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($netto,2,',','.');?></td>
+                                    <td colspan="2"></td>
+                                </tr>
                             </tbody>
                         </table>
                     <?php

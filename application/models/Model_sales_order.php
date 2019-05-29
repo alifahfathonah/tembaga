@@ -305,12 +305,12 @@ class Model_sales_order extends CI_Model{
     }
 
     function list_barang_sp(){
-        $data = $this->db->query("Select id, nama_item as jenis_barang, uom from sparepart order by nama_item asc");
+        $data = $this->db->query("Select id, nama_item as jenis_barang, alias as kode, uom from sparepart order by nama_item asc");
         return $data;
     }
 
     function list_barang_so_rongsok(){
-        $data = $this->db->query("Select id, nama_item as jenis_barang, uom from rongsok where type_barang = 'Rongsok'");
+        $data = $this->db->query("Select id, nama_item as jenis_barang, kode_rongsok as kode, uom from rongsok where type_barang = 'Rongsok'");
         return $data;
     }
 
@@ -453,7 +453,7 @@ class Model_sales_order extends CI_Model{
                 left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
                 left join t_gudang_fg tgf on tgf.id = tsjd.gudang_id
                 left join m_bobbin mb on tgf.bobbin_id>0 and mb.id = tgf.bobbin_id
-                where tsjd.t_sj_id =".$id);
+                where tsjd.t_sj_id =".$id." order by tsjd.jenis_barang_id");
         return $data;
     }
 

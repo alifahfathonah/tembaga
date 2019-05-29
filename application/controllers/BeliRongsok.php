@@ -1014,6 +1014,7 @@ class BeliRongsok extends CI_Controller{
             $this->db->where('id',$ttr_id);
             $result = $this->db->update('ttr', array(
                     'no_ttr' => $code,
+                    'no_sj' => $this->input->post('no_sj'),
                     'tanggal' => $tgl_input,
                     'jmlh_afkiran' => $this->input->post('jumlah_afkir'),
                     'jmlh_pengepakan' => $this->input->post('jumlah_packing'),

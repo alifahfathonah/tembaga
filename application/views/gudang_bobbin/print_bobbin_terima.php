@@ -24,55 +24,108 @@
                         </tr>               
                     </table>
                 </td>
-                <td>&nbsp;</td>
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
-                        
-                        <tr>
-                            <td>Pembuat</td>
-                            <td>: <?php echo $header['realname']; ?></td>
-                        </tr>
                         <tr>
                             <td>Tanggal</td>
-                            <td>: <?php echo date('d-m-Y', strtotime($header['created_at'])); ?></td>
-                        </tr>  
+                            <td>: <?php echo date('d-m-Y', strtotime($header['tanggal'])); ?></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
                     </table>
                 </td>
             </tr>
             <tr><td colspan="3">&nbsp;</td></tr>
-            <tr><td colspan="3">
+            <tr>
+                <td colspan="3">
                     <table border="0" cellpadding="4" cellspacing="0" width="100%">
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
-                            <td style="text-align:center; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nomor Bobbin</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000; border-top:1px solid #000;"><strong>Ukuran Bobbin</strong></td>
+                            <td style="text-align:center; border-right:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nomor Bobbin</strong></td>
+                            <td style="text-align:center; border-right:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Berat Bobbin</strong></td>
                         </tr>
                         <?php
-                            $no = 1;
+                            $last_series = null;
+                            $no = 0;
+                            $qty = 1;
+                            $berat = 0;
+                            $total = 0;
                             foreach ($details as $row){
-                                echo '<tr>';
-                                echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
-                                echo '<td style="text-align:center; border-left:1px solid #000; border-right:1px solid #000;">'.$row->nomor_bobbin.'</td>';
-                                echo '</tr>';
+                                if($last_series==null){
+                                    echo '<tr><td colspan="4" style="border-left:1px solid #000; border-right:1px solid #000;"><u><strong>'.$row->ukuran_bobbin.'</strong></u><td></tr>';
+                                }
+                                if($row->m_bobbin_size_id!=$last_series && $last_series!=null){
+                                    echo '<tr><td style="border-left:1px solid #000;"></td>';
+                                    echo '<td style="text-align: center; border-top:1px solid #000; border-left:1px solid #000;border-right:1px solid #000; border-bottom:1px solid #000;">Sub Total</td>';
+                                    echo '<td style="text-align: center; border-top:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000;"><strong>'.$no.' BUAH</strong></td>';
+                                    echo '<td style="text-align: center; border-top:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000;"><strong>'.number_format($berat,2,',','.').' KG</strong></td>';
+                                    echo '<td>&nbsp;</td></tr>';
+                                    echo '<tr><td colspan="4" style="border-left:1px solid #000; border-right:1px solid #000;"><u><strong>'.$row->ukuran_bobbin.'</strong></u><td></tr>';
+                                    $no = 0;
+                                    $berat = 0;
+                                }else{
+                                    echo '<tr>';
+                                }
                                 $no++;
+                                echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
+                                echo '<td style="text-align:center; border-left:1px solid #000; border-right:1px solid #000;">'.$row->ukuran_bobbin.'</td>';
+                                echo '<td style="text-align:center; border-right:1px solid #000;">'.$row->nomor_bobbin.'</td>';
+                                echo '<td style="text-align:center; border-right:1px solid #000;">'.$row->berat.'</td>';
+                                echo '</tr>';
+                                if($row->m_bobbin_size_id==$last_series){
+                                    echo '</tr>';
+                                }
+                                $last_series = $row->m_bobbin_size_id;
+                                $berat+=$row->berat;
+                                $total+=$row->berat;
+                                $qty++;
                             }
+                                    echo '<tr><td style="border-left:1px solid #000; border-bottom:1px solid #000;"></td>';
+                                    echo '<td style="text-align: center; border-top:1px solid #000; border-left:1px solid #000;border-right:1px solid #000; border-bottom:1px solid #000;">Sub Total</td>';
+                                    echo '<td style="text-align: center; border-top:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000;"><strong>'.$no.' BUAH</strong></td>';
+                                    echo '<td style="text-align: center; border-top:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000;"><strong>'.number_format($berat,2,',','.').' KG</strong></td>';
+                                    echo '<td>&nbsp;</td></tr>';
                         ?>
-                        <tr style="height:100px">
-                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                            <td style="border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                        </tr>    
-              
+                            <tr>
+                                <td style="border-left:1px solid #000; border-bottom:1px solid #000;"></td>
+                                <td style="text-align: center; border-left:1px solid #000;border-right:1px solid #000; border-bottom:1px solid #000;"><strong>TOTAL</strong></td>
+                                <td style="text-align: center; border-right:1px solid #000; border-bottom:1px solid #000;"><strong><?=$qty.' BUAH';?></strong></td>
+                                <td style="text-align: center; border-right:1px solid #000; border-bottom:1px solid #000;"><strong><?=number_format($total,2,',','.');?> KG</strong></td>
+                            </tr>
                     </table>
                 </td>
             </tr>
-            <tr><td colspan="3">
-                    <p>&nbsp;</p>
-                    <table width="30%" align="right" border="0">
+            <tr>
+                <td colspan="3">
+                    <table width="100%" align="right" border="0">
                         <tr>
                             <td style="text-align:center">
-                                Yang Membuat,<br>
-                                <p>&nbsp;</p>
-                                <p>&nbsp;</p>
-                                <?php echo $header['realname']; ?>
+                                Disetujui
+                            </td>
+                            <td style="text-align:center">
+                                Diterima
+                            </td>
+                            <td style="text-align:center">
+                                Diserahkan Oleh
+                            </td>
+                        </tr>
+                        <tr height="50px">
+                            <tr>&nbsp;</tr>
+                            <tr>&nbsp;</tr>
+                            <tr>&nbsp;</tr>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center"><strong>(ISTIADI)</strong></td>
+                            <td style="text-align:center">
+                                <u><strong><?php echo $header['realname']; ?></strong></u><br>
+                                BAG.GUDANG
                             </td>
                         </tr>
                     </table>

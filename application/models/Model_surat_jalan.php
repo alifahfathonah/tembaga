@@ -30,7 +30,7 @@ class Model_surat_jalan extends CI_Model{
 			(select count(tsjd.id) from r_t_surat_jalan_detail tsjd where tsjd.sj_resmi_id = tsj.id) as jumlah_item
 			from r_t_surat_jalan tsj
         	left join r_t_so ts on ts.id = tsj.r_so_id
-    		left join m_cv mc on mc.id = tsj.m_customer_id
+    		left join m_cv mc on mc.id = tsj.m_cv_id
 			where tsj.jenis_surat_jalan NOT LIKE '%CUSTOMER%' 
 			order by id desc");
 		return $data;
@@ -158,7 +158,8 @@ class Model_surat_jalan extends CI_Model{
     // }
 
     function show_header_print_sj($id){
-    	$data = $this->db->query("select rtsj.*, rtpo.no_po, cv.nama_cv, cs.nama_customer, bpb.no_bpb, coalesce(rtso.no_so, rtso2.no_so) as no_so from r_t_surat_jalan rtsj
+    	$data = $this->db->query("select rtsj.*, rtpo.no_po, cv.nama_cv, cs.nama_customer, cv.alamat, bpb.no_bpb, coalesce(rtso.no_so, rtso2.no_so) as no_so,  COALESCE(rtso.tanggal, rtso2.tanggal) as tanggal_so, tkdr.type_kendaraan
+    		from r_t_surat_jalan rtsj
 			left join r_t_po rtpo on rtsj.r_po_id = rtpo.id
             left join r_t_so rtso on rtsj.r_so_id = rtso.id
             left join r_t_bpb bpb on bpb.id = rtsj.r_bpb_id
@@ -166,6 +167,7 @@ class Model_surat_jalan extends CI_Model{
 			left join r_t_surat_jalan rtsj2 on rtsj.r_sj_id = rtsj2.id
 			left join m_customers_cv cs on rtsj2.m_customer_id = cs.id
             left join r_t_so rtso2 on rtso2.id = rtsj2.r_so_id
+            left join m_type_kendaraan tkdr On (rtsj.m_type_kendaraan_id = tkdr.id) 
 			where rtsj.id = ".$id);
     	return $data;
     }
@@ -189,6 +191,15 @@ class Model_surat_jalan extends CI_Model{
 			left join rongsok rsk on tsj.jenis_barang = 'RONGSOK' and rsk.id = tsjd.jenis_barang_id
 			left join jenis_barang jb on tsj.jenis_barang = 'FG' and jb.id = tsjd.jenis_barang_id
 			where tsjd.sj_resmi_id =".$id." group by jb.jenis_barang");
+    	return $data;
+    }
+
+    function list_detail_print_sj_fg($id){
+    	$data = $this->db->query("select tsjd.*, rsk.nama_item, jb.jenis_barang, coalesce(rsk.uom, jb.uom) as uom from r_t_surat_jalan_detail tsjd 
+			left join r_t_surat_jalan tsj on tsj.id = tsjd.sj_resmi_id
+			left join rongsok rsk on tsj.jenis_barang = 'RONGSOK' and rsk.id = tsjd.jenis_barang_id
+			left join jenis_barang jb on tsj.jenis_barang = 'FG' and jb.id = tsjd.jenis_barang_id
+			where tsjd.sj_resmi_id =".$id);
     	return $data;
     }
 

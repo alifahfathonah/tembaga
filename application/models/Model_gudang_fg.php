@@ -354,13 +354,11 @@ class Model_gudang_fg extends CI_Model{
 
     function show_laporan(){
         $data = $this->db->query("select DATE_FORMAT(tg.tanggal,'%M %Y') as showdate, 
-            EXTRACT(YEAR_MONTH from tg.tanggal) as tanggal, count(tg.id) as jumlah, 
-            (select sum(bruto) from t_gudang_fg tgf where month(tgf.tanggal_masuk) = month(tg.tanggal)) as bruto_masuk,
-            (select sum(netto) from t_gudang_fg tgf where month(tgf.tanggal_masuk) = month(tg.tanggal)) as netto_masuk,
+            EXTRACT(YEAR_MONTH from tg.tanggal) as tanggal, count(tg.id) as jumlah, sum(bruto) as bruto_masuk, sum(netto) as netto_masuk,
             COALESCE((select sum(bruto) from t_gudang_fg tgf where month(tgf.tanggal_keluar) = month(tg.tanggal)),0)as bruto_keluar,
             COALESCE((select sum(netto) from t_gudang_fg tgf where month(tgf.tanggal_keluar) = month(tg.tanggal)),0)as netto_keluar
             from t_gudang_fg tg
-            group by month(tg.tanggal)");
+            group by year(tg.tanggal), month(tg.tanggal) order by tg.tanggal desc");
         return $data;
     }
 

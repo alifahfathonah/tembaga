@@ -13,6 +13,17 @@ dtbj belum bisa approve jika tidak ada supplier(Done)
 
 view_surat_jalan belom di sort by nama barang kayak di surat jalan(Done)
  f_invoice bisa diedit, tgl jatuh tempo, top, dll.
+invoice bisa di batalin atau di edit
 
-Print Sales Order di Resmi belum sama kayak intern
-ttr ga resmi ada no surat jalan
+Print Sales Order di Resmi belum sama kayak intern(Done)
+ttr ga resmi ada no surat jalan(Done)
+surat jalan belom ada nama customernya(Done)
+surat jalan belom ada total netto nya(Done)
+alamat cv belum pada ada
+tali rolling(rongsok) = 2,90 mm hard(fg)
+pemasukan 2,90 mm hard keranjang besar. khusus untuk stok tali rolling
+masih ada error di dtbj(Done)
+table dtr belum di update di hosting(Done)
+bobbin masih error print(Done)
+bobbin penerimaan dari customer benerin yak(Done)
+laporan fg masih berantakan(Done)

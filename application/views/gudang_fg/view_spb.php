@@ -227,7 +227,7 @@
                                                 echo '<td>'.$row->no_packing.'</td>';
                                                 echo '<td>'.$row->nomor_bobbin.'</td>';
                                                 echo '<td>'.$row->bruto.'</td>';
-                                                echo '<td>'.$row->netto.' '.$row->uom.'</td>';
+                                                echo '<td>'.number_format($row->netto,2,',','.').' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
                                                 echo $stat;
                                                 $tb += $row->bruto;
@@ -306,7 +306,7 @@
                                                 echo '<td style="text-align:center">'.$no.'</td>';
                                                 echo '<td>'.$row->jenis_barang.'</td>';
                                                 echo '<td>'.$row->uom.'</td>';
-                                                echo '<td>'.$row->netto.' '.$row->uom.'</td>';
+                                                echo '<td>'.number_format($row->netto,2,',','.').' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
                                                 $no++;
                                             }
@@ -349,7 +349,7 @@
                                                 echo '<td>'.$row->no_packing.'</td>';
                                                 echo '<td>'.$row->nomor_bobbin.'</td>';
                                                 echo '<td>'.$row->bruto.'</td>';
-                                                echo '<td>'.$row->netto.' '.$row->uom.'</td>';
+                                                echo '<td>'.number_format($row->netto,2,',','.').' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
                                                 echo $stat;
                                                 $tb += $row->bruto;
@@ -396,7 +396,7 @@
                                                 <td><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
                                                 <td><?=$v->jenis_barang;?></td>
                                                 <td><?=$v->uom;?></td>
-                                                <td><?=$v->netto;?></td>
+                                                <td><?=number_format($v->netto,2,',',',');?></td>
                                                 <td><?=$v->no_packing?></td>
                                                 <td><?=$v->keterangan;?></td>
                                             </tr>

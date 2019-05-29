@@ -66,8 +66,9 @@ class R_SO extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('Ym', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
-        $no_so = 'SO-KMP.'.$tgl_input.'.'.$this->input->post('no_so');
+        $no_so = 'SO-KMP.'.$tgl_code.'.'.$this->input->post('no_so');
 
         $this->load->model('Model_m_numberings');
         // $code = $this->Model_m_numberings->getNumbering('SO-KMP', $tgl_input);

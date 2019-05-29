@@ -258,8 +258,10 @@ class Model_bobbin extends CI_Model{
     }
 
     function load_bobbin_penerimaan_detail($id){
-        $data = $this->db->query("select mbtd.*, mb.nomor_bobbin, mb.status from m_bobbin_penerimaan_detail mbtd left join m_bobbin mb on (mb.nomor_bobbin = mbtd.nomor_bobbin) where mbtd.id_bobbin_penerimaan = ".$id);
-
+        $data = $this->db->query("select mbtd.*, mb.nomor_bobbin, mb.berat, mb.status, mb.m_bobbin_size_id, mbs.keterangan as ukuran_bobbin from m_bobbin_penerimaan_detail mbtd 
+            left join m_bobbin mb on (mb.nomor_bobbin = mbtd.nomor_bobbin) 
+            left join m_bobbin_size mbs on (mbs.id = mb.m_bobbin_size_id)
+            where mbtd.id_bobbin_penerimaan = ".$id." order by mb.m_bobbin_size_id");
         // $data = $this->db->query("select mbtd.*, mbt.id, mbt.id_peminjaman, mbp.id_surat_jalan, tsjd.nomor_bobbin 
         //     from m_bobbin_penerimaan_detail mbtd 
         //     left join m_bobbin_penerimaan mbt on (mbtd.id_bobbin_penerimaan = mbt.id) 

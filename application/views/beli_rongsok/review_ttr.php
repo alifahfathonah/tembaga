@@ -16,6 +16,14 @@
         <?php
             if( ($group_id==1)||($hak_akses['review_ttr']==1) ){
         ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger display-hide">
+                    <button class="close" data-close="alert"></button>
+                    <span id="message">&nbsp;</span>
+                </div>
+            </div>
+        </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku" action="#">  
             <div class="row">
@@ -59,6 +67,14 @@
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_po']; ?>">
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Surat Jalan 
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_sj" name="no_sj" class="form-control myline" style="margin-bottom:5px" placeholder="Nomor Surat Jalan dari supplier...">
                         </div>
                     </div>
                 </div>
@@ -202,30 +218,35 @@ function approveTTR(id_ttr){
     const jumlah_afkir = $('#jumlah_afkir').val();
     const jumlah_packing = $('#jumlah_packing').val();
     const jumlah_lain = $('#jumlah_lain').val();
-    $.ajax({
-        url: "<?php echo base_url('index.php/BeliRongsok/approve_ttr'); ?>",
-        type: "POST",
-        data : {
-            id: id_ttr,
-            jumlah_afkir: jumlah_afkir,
-            jumlah_packing: jumlah_packing,
-            jumlah_lain: jumlah_lain,
-            tanggal: $('#tanggal').val()
-        },
-        success: function (result){
-            if(result['status']){
-                alert(result['message']);
-                setTimeout(function(){
-                    if($('#no_dtr').val().substring(0, 5)=='DTR-T'){
-                        window.location="<?=base_url('index.php/Tolling/ttr_list');?>";
-                    }else{
-                    window.location="<?=base_url('index.php/BeliRongsok/ttr_list');?>";
-                    }
-                },1000);
+    if($.trim($("#no_sj").val()) == ""){
+        $('#message').html("Nomor surat jalan belom diisi!");
+        $('.alert-danger').show();
+    }else{  
+        $.ajax({
+            url: "<?php echo base_url('index.php/BeliRongsok/approve_ttr'); ?>",
+            type: "POST",
+            data : {
+                id: id_ttr,
+                no_sj: $('#no_sj').val(),
+                jumlah_afkir: jumlah_afkir,
+                jumlah_packing: jumlah_packing,
+                jumlah_lain: jumlah_lain,
+                tanggal: $('#tanggal').val()
+            },
+            success: function (result){
+                if(result['status']){
+                    alert(result['message']);
+                    setTimeout(function(){
+                        if($('#no_dtr').val().substring(0, 5)=='DTR-T'){
+                            window.location="<?=base_url('index.php/Tolling/ttr_list');?>";
+                        }else{
+                        window.location="<?=base_url('index.php/BeliRongsok/ttr_list');?>";
+                        }
+                    },1000);
+                }
             }
-        }
-    });
-
+        });
+    }
 }
 
 function rejectTTR(id_ttr){

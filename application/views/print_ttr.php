@@ -44,8 +44,8 @@
                             <td>: <?php echo $header['no_dtr']; ?></td>
                         </tr>
                         <tr>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
+                            <td>No. Surat Jalan</td>
+                            <td>: <?php echo $header['no_sj']; ?></td>
                         </tr>
                     </table>
                 </td>
@@ -123,21 +123,14 @@
             </tr>
             <tr>
                 <td colspan="3">
-                    <p>&nbsp;</p>
                     <table border="0" cellpadding="4" cellspacing="0" width="100%">
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
                         <tr>
                             <td width="400px" style="text-align:center">Ditimbang Oleh </td>
                             <td width="400px" style="text-align:center">Diterima Oleh </td>
                         </tr>
                         <tr>
-                            <td width="400px" style="text-align:center"></td>
-                            <td width="400px" style="text-align:center"></td>
+                            <td height="50px" style="text-align:center"></td>
+                            <td height="50px" style="text-align:center"></td>
                         </tr>
                         <tr>
                             <td style="text-align:center">(A Weng) </td>

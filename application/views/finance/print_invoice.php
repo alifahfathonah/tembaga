@@ -39,7 +39,7 @@
                             <td>: <?php echo $header['term_of_payment'];?></td>
                         </tr>
                         <tr>
-                            <td>Alamat</td>
+                            <td>Tgl Jatuh Tempo</td>
                             <td>: <?php echo tanggal_indo($header['tgl_jatuh_tempo']);?></td>
                         </tr>             
                         <tr>

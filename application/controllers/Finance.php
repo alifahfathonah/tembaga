@@ -1126,6 +1126,15 @@ class Finance extends CI_Controller{
         echo json_encode($data);
     }
 
+    function get_tgl_sj(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_finance');
+        $data = $this->Model_finance->get_tgl_sj($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+
     function get_currency_so(){
         $id = $this->input->post('id');
         $this->load->model('Model_finance');
