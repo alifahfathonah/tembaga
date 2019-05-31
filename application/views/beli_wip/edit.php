@@ -27,7 +27,7 @@
                               id="frmReject">                            
                             <div class="row">
                                 <div class="col-md-4">
-                                    Reject Remarks <font color="#f00">*</font>
+                                    Close Remarks <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-8">
                                     <textarea id="reject_remarks" name="reject_remarks" 
@@ -190,8 +190,9 @@
                 </div>              
             </div>
             <?php
-                if ($header['status']==0 || $header['status']==2){
+                if ($header['status']==0){
             ?>
+            <input type="hidden" id="count" value="<?=$count['count'];?>">
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
@@ -241,7 +242,7 @@
                         }
                     ?>
                         
-                    <a href="<?php echo base_url('index.php/BeliWIP'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/BeliWIP'); ?>" id="btn_kembali" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -250,6 +251,7 @@
             ?>
             <div class="row">
                 <div class="col-md-12">
+                    <h3 style="text-align: center">Permintaan PO</h3>
                     <div class="table-scrollable">
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
@@ -257,7 +259,7 @@
                                 <th>Nama Item WIP</th>
                                 <th>Unit of Measure</th>
                                 <th>Harga (<?=$header['currency'];?>)</th>
-                                <th>Jumlah</th>
+                                <th>Jumlah Berat</th>
                                 <th>Sub Total (<?=$header['currency'];?>)</th>
                             </thead>
                             <tbody>
@@ -282,24 +284,21 @@
                     </div>
                 </div>
                 <hr class="divider"/>
-                <h3></h3>
                 <div class="col-md-12">
+                <h3 style="text-align: center">Pemenuhan PO</h3>
                     <div class="table-scrollable">
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th style="width:40px">No</th>
                                 <th>Nama Item WIP</th>
                                 <th>Unit of Measure</th>
-                                <th>Jumlah</th>
-                                <th>Bruto</th>
-                                <th>Netto</th>
-                                <th>Jumlah TTR</th>
+                                <th>Qty</th>
+                                <th>Berat</th>
                             </thead>
                             <tbody>
                             <?php 
                                 $no = 0;
                                 $qty = 0;
-                                $bruto = 0;
                                 $netto = 0;
                                 $ttr = 0;
                                 foreach ($list_detail as $row){
@@ -309,23 +308,17 @@
                             echo '<td>'.$row->jenis_barang.'</td>';
                             echo '<td>'.$row->uom.'</td>';
                             echo '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
-                            echo '<td style="text-align:right">'.number_format($row->bruto,0,',','.').'</td>';
-                            echo '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
-                            echo '<td>'.$row->jml_ttr.'</td>';
+                            echo '<td style="text-align:right">'.number_format($row->berat,0,',','.').'</td>';
                             echo '</tr>';
                             $qty += $row->qty;
-                            $bruto += $row->bruto;
-                            $netto += $row->netto;
-                            $ttr += $row->jml_ttr;                            
+                            $netto += $row->berat;                        
                             }
                             ?>
                             </tbody>
                             <tr>
                                 <td colspan="3"></td>
                                 <td><?=$qty;?></td>
-                                <td><?=$bruto;?></td>
-                                <td><?=$netto;?></td>
-                                <td><?=$ttr;?></td>
+                                <td><?=number_format($netto,2,',','.');?></td>
                             </tr>
                         </table>
                     </div>
@@ -403,7 +396,12 @@ function loadDetail(id){
         url:'<?php echo base_url('index.php/BeliWIP/load_detail'); ?>',
         data:"id="+ id,
         success:function(result){
-            $('#boxDetail').html(result);   
+            $('#boxDetail').html(result);
+            if($('#count').val()==$('#count2').val()){
+                $('#btn_kembali').show();
+            }else{
+                $('#btn_kembali').hide();
+            }  
         }
     });
 }

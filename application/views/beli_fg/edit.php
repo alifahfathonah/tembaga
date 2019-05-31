@@ -241,7 +241,6 @@
                                 <i class="fa fa-lock"></i> Close PO </a>';
                         }
                     ?>
-                        
                     <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>" id="btn_kembali" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    

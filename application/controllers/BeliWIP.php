@@ -76,7 +76,7 @@ class BeliWIP extends CI_Controller{
         
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        if($user_ppn == 0){
+        if($user_ppn == 1){
             $code = 'PO-KMP.'.$tgl_po.'.'.$this->input->post('no_po'); 
         }else{
             $code = $this->Model_m_numberings->getNumbering('POW-KMP', $tgl_input);
@@ -88,34 +88,39 @@ class BeliWIP extends CI_Controller{
             'flag_ppn'=> $user_ppn,
             'ppn'=> $this->input->post('ppn'),
             'currency'=> $this->input->post('currency'),
+            'diskon'=> $this->input->post('diskon'),
+            'materai'=> $this->input->post('materai'),
             'kurs'=> $this->input->post('kurs'),
             'supplier_id'=>$this->input->post('supplier_id'),
             'term_of_payment'=>$this->input->post('term_of_payment'),
             'remarks'=>$this->input->post('remarks'),
             'jenis_po'=>'WIP',
             'created'=> $tanggal,
-            'created_by'=> $user_id
+            'created_by'=> $user_id,
+            'modified'=> $tanggal,
+            'modified_by'=> $user_id
         );
+
         $this->db->insert('po', $data);
         $po_id = $this->db->insert_id();
 
-            // if($user_ppn == 1){
-            //     $this->load->helper('target_url');
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
 
-            //     $data_id = array('reff1' => $po_id);
-            //     $data_post = array_merge($data, $data_id);
+                $data_id = array('reff1' => $po_id);
+                $data_post = array_merge($data, $data_id);
 
-            //     $data_post = http_build_query($data_post);
+                $data_post = http_build_query($data_post);
 
-            //     $ch = curl_init(target_url().'api/BeliWIP/po');
-            //     curl_setopt($ch, CURLOPT_POST, true);
-            //     curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-            //     curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
-            //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            //     $response = curl_exec($ch);
-            //     $result = json_decode($response, true);
-            //     curl_close($ch);
-            // }
+                $ch = curl_init(target_url().'api/BeliWIPAPI/po');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
 
         if($this->db->trans_complete()){
             redirect('index.php/BeliWIP/edit/'.$po_id);  
@@ -140,11 +145,16 @@ class BeliWIP extends CI_Controller{
 
             $data['content']= "beli_wip/edit";
             $this->load->model('Model_beli_wip');
-            $data['header'] = $this->Model_beli_wip->show_header_po($id)->row_array();  
-            $data['list_data'] = $this->Model_beli_wip->load_detail_po($id)->result();
-            $data['list_detail'] = $this->Model_beli_wip->show_data_po($id)->result();
-            $data['list_wip'] = $this->Model_beli_wip->list_wip()->result();
-
+            $data['header'] = $this->Model_beli_wip->show_header_po($id)->row_array(); 
+            if($data['header']['status']==0){ 
+                $data['list_detail'] = $this->Model_beli_wip->load_dtwip_detail($id)->result();
+                $data['list_wip'] = $this->Model_beli_wip->list_wip()->result();
+                $this->load->model('Model_beli_rongsok');
+                $data['count'] = $this->Model_beli_rongsok->count_po_detail($id)->row_array();
+            }else{
+                $data['list_data'] = $this->Model_beli_wip->load_detail_po($id)->result();
+            }
+            // $data['list_detail'] = $this->Model_beli_wip->show_data_po($id)->result();
             $this->load->model('Model_beli_sparepart');
             $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
             $this->load->view('layout', $data);   
@@ -186,6 +196,7 @@ class BeliWIP extends CI_Controller{
         $id = $this->input->post('id');
         
         $tabel = "";
+        $cek = 0;
         $no    = 1;
         $total = 0;
         
@@ -203,12 +214,14 @@ class BeliWIP extends CI_Controller{
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';
+            $cek += $row->id;
             $total += $row->total_amount;
             $no++;
         }
 
         $tabel .= '<tr>';
         $tabel .= '<td colspan="5" style="text-align:right"><strong>Total (Rp) </strong></td>';
+        $tabel .= '<input type="hidden" id="count2" value="'.$cek.'">';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
         $tabel .= '</tr>';
         
@@ -233,9 +246,9 @@ class BeliWIP extends CI_Controller{
     function update(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
-        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
+        $this->db->trans_start();
         $data = array(
                 'tanggal'=> $tgl_input,
                 'supplier_id'=>$this->input->post('supplier_id'),
@@ -247,9 +260,35 @@ class BeliWIP extends CI_Controller{
         
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('po', $data);
+
+        if($this->session->userdata('user_ppn')==1){
+            $this->load->helper('target_url');
+            
+            $data_post['master'] = $data;
+            $data_post['po_id'] = $this->input->post('id');
+
+            $this->load->model('Model_beli_rongsok');
+            $data_post['details'] = $this->Model_beli_rongsok->load_detail_only($this->input->post('id'))->result();
+
+            $detail_post = json_encode($data_post);
+
+            $ch = curl_init(target_url().'api/BeliWIPAPI/po_detail');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $result = json_decode($response, true);
+            curl_close($ch);
+        }
         
-        $this->session->set_flashdata('flash_msg', 'Data PO WIP berhasil disimpan');
-        redirect('index.php/BeliWIP');
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Data PO WIP berhasil disimpan');
+            redirect('index.php/BeliWIP');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data PO WIP gagal disimpan');
+            redirect('index.php/BeliWIP');
+        }
     }
 
     function close_po(){
@@ -581,24 +620,21 @@ class BeliWIP extends CI_Controller{
                 $total_berat_dtwip += $v->tot_berat;
             }
 
-           if(((int)$total_berat_dtwip) >= (0.9*((int)$total_qty))){
-                $this->db->where('id',$po_id);
-                $this->db->update('po',array(
-                                'status'=>3));
-           } else {
-                $this->db->where('id',$po_id);
-                $this->db->update('po',array(
-                                'status'=>2));
-           }
+            if(((int)$total_berat_dtwip) >= (0.9*((int)$total_qty))){
+                $update_po = array(
+                            'status'=>3,
+                            'flag_pelunasan'=>0);
+            } else {
+                $update_po = array(
+                    'status'=>2
+                );
+            }
+            $this->db->where('id',$po_id);
+            $this->db->update('po', $update_po);
 
             #Create BPB WIP
             $this->load->model('Model_m_numberings');
-            $loop1 = $this->db->query("select dtwipd.dtwip_id, dtwipd.jenis_barang_id, jb.jenis_barang
-                from dtwip_detail dtwipd
-                left join jenis_barang jb on (jb.id = dtwipd.jenis_barang_id)
-                where dtwipd.dtwip_id = ".$dtwip_id." group by jb.jenis_barang")->result();
-            foreach ($loop1 as $k1) {
-                #insert t_bpb_fg
+                #insert t_bpb_wip
                 if($user_ppn==1){
                     $code = $this->Model_m_numberings->getNumbering('BPB-KMP', $tgl_input);
                 }else{
@@ -617,7 +653,7 @@ class BeliWIP extends CI_Controller{
                 $id_bpb = $this->db->insert_id();
 
                 #insert t_bpb_detail
-                $loop2 = $this->db->query("select dtwip_detail.*, jb.uom from dtwip_detail left join jenis_barang jb on (jb.id = dtwip_detail.jenis_barang_id) where jenis_barang_id = ".$k1->jenis_barang_id." and dtwip_id = ".$dtwip_id)->result();
+                $loop2 = $this->db->query("select dtwip_detail.*, jb.uom from dtwip_detail left join jenis_barang jb on (jb.id = dtwip_detail.jenis_barang_id) where dtwip_id = ".$dtwip_id)->result();
                 foreach ($loop2 as $k2) {
                     $this->db->insert('t_bpb_wip_detail', array(
                         'bpb_wip_id' => $id_bpb,
@@ -630,6 +666,35 @@ class BeliWIP extends CI_Controller{
                         'created_by' => $user_id
                     ));
                 }
+
+            if($user_ppn==1){
+                $this->load->helper('target_url');
+            
+                $data_post['po'] = $update_po;
+                $data_post['po_id'] = $po_id;
+
+                $data_post['dtwip'] = $this->Model_beli_wip->load_dtwip_only($dtwip_id)->row_array();
+                $data_post['details'] = $this->Model_beli_wip->load_dtwip_detail_only($dtwip_id)->result();
+
+                unset($data_bpb['flag_ppn']);
+                $data_id = array('reff1' => $id_bpb);
+                $data_post['data_bpb'] = array_merge($data_bpb, $data_id);
+                $data_post['details_bpb'] = $this->Model_beli_wip->load_bpb_detail_only($id_bpb)->result();
+
+                $detail_post = json_encode($data_post);
+                // print($detail_post);
+                // die();
+
+                $ch = curl_init(target_url().'api/BeliWIPAPI/dtwip');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
             }
 
         if($this->db->trans_complete()){  
@@ -788,6 +853,7 @@ class BeliWIP extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
         $nilai_po  = str_replace('.', '', $this->input->post('nilai_po'));
         $jumlah_dibayar  = str_replace('.', '', $this->input->post('jumlah_dibayar'));
         $amount  = str_replace('.', '', $this->input->post('amount'));
@@ -831,21 +897,20 @@ class BeliWIP extends CI_Controller{
                 $this->db->update('po', array('flag_dp'=>1));
             }
 
-            if($this->input->post('bank_id')<=3){
-                if($this->input->post('ppn')==0){
+            if($ppn==0){
+                if($this->input->post('bank_id')<=3){
                     $num = 'KK';
                 }else{
-                    $num = 'KK-KMP';
-                }
-            }else{
-                if($this->input->post('ppn')==0){
                     $num = 'BK';
+                }
+                $code_um = $this->Model_m_numberings->getNumbering($num);
+            }else{
+                if($this->input->post('bank_id')<=3){
+                    $code_um = 'KK-KMP.'.$tgl_code.'.'.$this->input->post('no_uk');
                 }else{
-                    $num = 'BK-KMP';
+                    $code_um = 'BK-KMP.'.$tgl_code.'.'.$this->input->post('no_uk');
                 }
             }
-
-            $code_um = $this->Model_m_numberings->getNumbering($num);
 
             $this->db->insert('f_kas', array(
                 'jenis_trx'=>1,

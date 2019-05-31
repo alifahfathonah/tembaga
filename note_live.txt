@@ -12,8 +12,6 @@ dtbj tambahin tidak ada supplier untuk pecah barcode dan repacking finish good(D
 dtbj belum bisa approve jika tidak ada supplier(Done)
 
 view_surat_jalan belom di sort by nama barang kayak di surat jalan(Done)
- f_invoice bisa diedit, tgl jatuh tempo, top, dll.
-invoice bisa di batalin atau di edit
 
 Print Sales Order di Resmi belum sama kayak intern(Done)
 ttr ga resmi ada no surat jalan(Done)
@@ -27,3 +25,7 @@ table dtr belum di update di hosting(Done)
 bobbin masih error print(Done)
 bobbin penerimaan dari customer benerin yak(Done)
 laporan fg masih berantakan(Done)
+
+
+f_invoice bisa diedit, tgl jatuh tempo, top, dll.
+invoice bisa di batalin atau di edit

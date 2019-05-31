@@ -52,7 +52,7 @@
                                 <div class="col-md-7">
                                     <input type="text" id="tanggal" name="tanggal" 
                                         class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                        value="<?php echo date('Y-m-d'); ?>">
+                                        value="<?php echo date('d-m-Y'); ?>">
                                 </div>
                             </div> 
                             <div class="row">
@@ -62,7 +62,7 @@
                                 <div class="col-md-7">
                                     <input type="text" id="jenis_barang" name="jenis_barang" 
                                         class="form-control myline" style="margin-bottom:5px" 
-                                        readonly="readonly" value="WIP">                                                                       
+                                        readonly="readonly" value="WIP">
                                 </div>
                             </div> 
                             <div class="row">
@@ -174,6 +174,20 @@
                                         readonly="readonly">                                                                       
                                 </div>
                             </div>
+                            <hr>
+                            <div style="width: 100%; margin-bottom: 5px;text-align: center">
+                              <span>
+                                Data Uang Keluar <!--Padding is optional-->
+                              </span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Nomor Uang Keluar
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="no_uk" name="no_uk" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-5">
                                     Nomor Giro
@@ -206,7 +220,7 @@
                                 <div class="col-md-7">
                                     <input type="text" id="tanggal_jatuh" name="tanggal_jatuh" 
                                         class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                        value="<?php echo date('Y-m-d'); ?>">
+                                        value="<?php echo date('d-m-Y'); ?>">
                                 </div>
                             </div> 
                             <div class="row">
@@ -593,7 +607,10 @@ function saveVoucher(){
 };
 
 function prosesVoucher(){
-    if($.trim($("#tanggal").val()) == ""){
+    if($.trim($("#no_uk").val()) == ""){
+        $('#msg_voucher').html("Nomor Uang Keluar harus diisi, tidak boleh kosong!");
+        $('#box_error_voucher').show(); 
+    }else if($.trim($("#tanggal").val()) == ""){
         $('#msg_voucher').html("Tanggal harus diisi, tidak boleh kosong!");
         $('#box_error_voucher').show(); 
     }else if($.trim($("#amount").val()) == "" || $("#amount").val()=="0"){
@@ -666,6 +683,16 @@ $(function(){
     }); 
     
     $("#tanggal_pelunasan").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    }); 
+
+    $("#tanggal_jatuh").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,

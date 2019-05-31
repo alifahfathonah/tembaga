@@ -191,6 +191,15 @@ class Model_beli_wip extends CI_Model
         return $data;
     }
 
+    function load_dtwip_detail($id){
+        $data = $this->db->query("Select dd.*, jb.jenis_barang, jb.uom, (dd.berat*pd.amount) as jumlah from dtwip_detail dd
+                left join po_detail pd on (pd.id = dd.po_detail_id)
+                left join jenis_barang jb on (jb.id = dd.jenis_barang_id)
+                left join dtwip d on (d.id = dd.dtwip_id)
+                Where d.po_id=".$id);
+        return $data;
+    }
+
     function voucher_list($ppn){
         $data = $this->db->query("Select voucher.*, 
                 po.no_po, po.tanggal As tanggal_po
@@ -198,6 +207,21 @@ class Model_beli_wip extends CI_Model
                     Left Join po On (voucher.po_id = po.id) 
                 Where voucher.jenis_barang='WIP' And po.flag_ppn = ".$ppn."
                 Order By voucher.no_voucher");
+        return $data;
+    }
+
+    function load_dtwip_only($id){
+        $data = $this->db->query("Select * from dtwip where id =".$id);
+        return $data;
+    }
+
+    function load_dtwip_detail_only($id){
+        $data = $this->db->query("Select * from dtwip_detail where dtwip_id =".$id);
+        return $data;
+    }
+
+    function load_bpb_detail_only($id){
+        $data = $this->db->query("select * from t_bpb_wip_detail where bpb_wip_id =".$id);
         return $data;
     }
 }
