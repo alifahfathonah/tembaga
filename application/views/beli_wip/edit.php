@@ -265,6 +265,7 @@
                             <tbody>
                             <?php 
                                 $no = 0;
+                                $qty = 0;
                                 $total = 0;
                                 foreach ($list_data as $row){
                                 $no++;
@@ -276,9 +277,15 @@
                                 echo '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
                                 echo '<td style="text-align:right">'.number_format($row->total_amount,0,',','.').'</td>';
                                 echo '</tr>';
+                                $qty += $row->qty;
                                 $total += $row->total_amount;
                             }
                             ?>
+                            <tr>
+                                <td colspan="4"><strong>Total :</strong></td>
+                                <td><?=number_format($qty,2,',','.');?></td>
+                                <td><?=number_format($total,2,',','.');;?></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>

@@ -625,12 +625,15 @@ class GudangWIP extends CI_Controller{
         $this->db->trans_start();       
          
             #Update status BPB
-            $this->db->where('id', $bpb_id);
-            $this->db->update('t_bpb_wip', array(
+            $bpb_update = array(
                     'status'=>1,
+                    'tanggal'=>$tgl_input,
                     'keterangan' => $this->input->post('remarks'),
                     'approved_date'=>$tanggal,
-                    'approved_by'=>$user_id));
+                    'approved_by'=>$user_id);
+
+            $this->db->where('id', $bpb_id);
+            $this->db->update('t_bpb_wip', $bpb_update);
             
             #Create Inventori WIP
             $details = $this->input->post('details');
@@ -651,9 +654,30 @@ class GudangWIP extends CI_Controller{
                 );
                 $this->db->insert('t_gudang_wip', $data);
             }
-        
-            
-            if($this->db->trans_complete()){  
+
+                if(strpos($this->input->post('remarks'), 'BARANG PO') !== false ){
+                    $this->load->helper('target_url');
+
+                    $data_post['bpb_id'] = $bpb_id;
+                    $data_post['tgl_input'] = $tgl_input;
+                    $data_post['bpb'] = $bpb_update;
+                    $data_post['details'] = $details;
+                    $detail_post = json_encode($data_post);
+
+                    // print_r($detail_post);
+                    // die();
+
+                    $ch = curl_init(target_url().'api/BeliWIPAPI/bpb');
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    $response = curl_exec($ch);
+                    $result = json_decode($response, true);
+                    curl_close($ch);
+                }
+
+            if($this->db->trans_complete()){
                 
                 $this->session->set_flashdata("message", "Inventori WIP sudah dibuat dan masuk gudang");
             }else{

@@ -146,8 +146,8 @@ class BeliWIP extends CI_Controller{
             $data['content']= "beli_wip/edit";
             $this->load->model('Model_beli_wip');
             $data['header'] = $this->Model_beli_wip->show_header_po($id)->row_array(); 
-            if($data['header']['status']==0){ 
                 $data['list_detail'] = $this->Model_beli_wip->load_dtwip_detail($id)->result();
+            if($data['header']['status']==0){ 
                 $data['list_wip'] = $this->Model_beli_wip->list_wip()->result();
                 $this->load->model('Model_beli_rongsok');
                 $data['count'] = $this->Model_beli_rongsok->count_po_detail($id)->row_array();
@@ -292,8 +292,10 @@ class BeliWIP extends CI_Controller{
     }
 
     function close_po(){
-        $user_id  = $this->session->userdata('user_id');
+         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $this->db->trans_start();
         
         $data = array(
                 'status'=> 1,
@@ -304,9 +306,29 @@ class BeliWIP extends CI_Controller{
         
         $this->db->where('id', $this->input->post('header_id'));
         $this->db->update('po', $data);
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $data_post = $data;
+                $data_post['po_id'] = $this->input->post('header_id');
+
+                $data_post = http_build_query($data_post);
+
+                $ch = curl_init(target_url().'api/BeliWIPAPI/close_po');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
         
-        $this->session->set_flashdata('flash_msg', 'PO WIP Berhasil di Close');
-        redirect('index.php/BeliWIP');
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'PO WIP Berhasil di Close');
+            redirect('index.php/BeliWIP');
+        }
     }
 
     function print_po(){
@@ -643,6 +665,7 @@ class BeliWIP extends CI_Controller{
 
                 $data_bpb = array(
                         'no_bpb' => $code,
+                        'tanggal' => $tanggal,
                         'flag_ppn' => $user_ppn,
                         'created' => $tanggal,
                         'created_by' => $user_id,
@@ -872,7 +895,7 @@ class BeliWIP extends CI_Controller{
         }
 
         if($code){ 
-            $this->db->insert('voucher', array(
+            $data_v = array(
                 'no_voucher'=>$code,
                 'tanggal'=>$tgl_input,
                 'jenis_voucher'=>$jenis_voucher,
@@ -887,15 +910,17 @@ class BeliWIP extends CI_Controller{
                 'created_by'=> $user_id,
                 'modified'=> $tanggal,
                 'modified_by'=> $user_id
-            ));
+            );
+            $this->db->insert('voucher', $data_v);
             $id_vc = $this->db->insert_id();
             
             $this->db->where('id', $this->input->post('id'));
             if($jenis_voucher=='Pelunasan' && $this->input->post('status_vc')==3){
-                $this->db->update('po', array('flag_pelunasan'=>1, 'status'=>4));
+                $update_po = array('flag_pelunasan'=>1, 'status'=>4);
             }else{
-                $this->db->update('po', array('flag_dp'=>1));
+                $update_po = array('flag_dp'=>1);
             }
+            $this->db->update('po', $update_po);
 
             if($ppn==0){
                 if($this->input->post('bank_id')<=3){
@@ -912,7 +937,7 @@ class BeliWIP extends CI_Controller{
                 }
             }
 
-            $this->db->insert('f_kas', array(
+            $data_f = array(
                 'jenis_trx'=>1,
                 'nomor'=>$code_um,
                 'flag_ppn'=>$ppn,
@@ -925,7 +950,27 @@ class BeliWIP extends CI_Controller{
                 'nominal'=>str_replace('.', '', $amount),
                 'created_at'=>$tanggal,
                 'created_by'=>$user_id
-            ));
+            );
+            $this->db->insert('f_kas', $data_f);
+            $fk_id = $this->db->insert_id();
+
+            if($ppn==1){
+                $this->load->helper('target_url');
+                
+                $data_post['voucher'] = array_merge($data_v, array('reff1' => $id_vc));
+                $data_post['f_kas'] = array_merge($data_f, array('reff1' => $fk_id));
+                $data_post['update_po'] = $update_po;
+                $detail_post = json_encode($data_post);
+
+                $ch = curl_init(target_url().'api/BeliWIPAPI/voucher');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
             
             if($this->db->trans_complete()){  
                 $this->session->set_flashdata('flash_msg', 'Voucher pembayaran WIP berhasil di-create dengan nomor : '.$code);
