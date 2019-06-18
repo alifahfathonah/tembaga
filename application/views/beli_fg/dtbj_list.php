@@ -86,7 +86,7 @@
                             </div>
                             <div class="col-md-12 text-right">
                             &nbsp; &nbsp; 
-                                <a href="javascript:;" onclick="simpanData()" class="btn green" >
+                                <a href="javascript:;" id="simpanData" onclick="simpanData()" class="btn green" >
                                     <i class="fa fa-floppy-o"></i> Create DTBJ </a>
                             </div>
                             </div>
@@ -212,7 +212,25 @@ function simpanData(){
         $('#message').html("Supplier harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else{
-        $('#formku').submit();
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url('index.php/BeliFinishGood/get_no_dtbj'); ?>",
+            data: {
+                no_dtbj: $('#no_dtbj').val(),
+                tanggal: $('#tanggal').val()
+            },
+            cache: false,
+            success: function(result) {
+                var res = result['type'];
+                if(res=='duplicate'){
+                    $('#message').html("Nomor sudah ada, tolong coba lagi!");
+                    $('.alert-danger').show(); 
+                }else{
+                    $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+                    $('#formku').submit(); 
+                }
+            }
+        });
     }
 };
 $(function(){    

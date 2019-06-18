@@ -250,7 +250,7 @@
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
-                    <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                    <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
                         
                     <a href="<?php echo base_url('index.php/SalesOrder'); ?>" class="btn blue-hoki"> 
@@ -408,6 +408,7 @@ function simpanData(){
         $('#message').html("Silahkan pilih marketing!");
         $('.alert-danger').show(); 
     }else{
+        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').submit(); 
     };
 };

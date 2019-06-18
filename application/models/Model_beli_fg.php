@@ -75,7 +75,7 @@ class Model_beli_fg extends CI_Model
     }
 
 	function load_detail_po($id){
-		$data = $this->db->query("Select pod.*, jb.jenis_barang, jb.uom From po_detail pod 
+		$data = $this->db->query("Select pod.*, jb.jenis_barang, jb.uom, jb.kode From po_detail pod 
                 Left Join jenis_barang jb On(pod.jenis_barang_id = jb.id) 
                 Where pod.po_id=".$id);
 		return $data;

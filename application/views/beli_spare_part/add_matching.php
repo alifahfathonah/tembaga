@@ -60,12 +60,11 @@
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                            <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                                 <i class="fa fa-floppy-o"></i> Input Details </a>
                             <a href="<?php echo base_url('index.php/Finance/pembayaran'); ?>" class="btn blue-hoki"> 
                             <i class="fa fa-angle-left"></i> Kembali </a>
                         </div>
-
                     </div>
                 </div>
                 <div class="col-md-1">&nbsp;</div>
@@ -119,9 +118,10 @@ function simpanData(){
         $('.alert-danger').show(); 
     }else if($.trim($("#supplier_id").val()) == ""){
         $('#message').html("Supplier Belum Dipilih!");
-        $('.alert-danger').show(); 
-    }else{     
-        $('#formku').submit(); 
+        $('.alert-danger').show();
+    }else{
+        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+        $('#formku').submit();
     };
 };
 </script>

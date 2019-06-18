@@ -436,7 +436,7 @@
                 <div class="col-md-12">
                     <?php
                         if( ($group_id==1 || $hak_akses['approve_sj']==1) && $header['status']=="0"){
-                            echo '<a href="javascript:;" class="btn green" onclick="approveData();"> '
+                            echo '<a href="javascript:;" class="btn green" id="approveData" onclick="approveData();"> '
                                 .'<i class="fa fa-check"></i> Approve </a> ';
                         }
                         if( ($group_id==1 || $hak_akses['reject_sj']==1) && $header['status']=="0"){
@@ -468,7 +468,7 @@
 function approveData(){
     var r=confirm("Anda yakin me-approve surat jalan ini?");
     if(r == true){
-        
+        $('#approveData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').submit(); 
     }
 };

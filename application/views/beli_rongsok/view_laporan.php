@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Gudang Rongsok
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliRongsok/laporan_list'); ?>"> List Laporan Rongsok </a> 
+            <a href="<?php echo base_url('index.php/GudangRongsok/laporan_list'); ?>"> List Laporan Rongsok </a> 
         </h5>          
     </div>
 </div>
@@ -65,7 +65,7 @@
                         <td><?php
                         if($group_id==1 || $hak_akses['view_laporan']==1){
                         ?>
-                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/BeliRongsok/view_detail_laporan/<?php echo $tahun.$bulan.'/'.$row->rongsok_id;?>" style="margin-bottom:4px"> &nbsp; <i class="fa fa-file-text-o"></i> Detail &nbsp; </a>
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/GudangRongsok/view_detail_laporan/<?php echo $tahun.$bulan.'/'.$row->rongsok_id;?>" style="margin-bottom:4px"> &nbsp; <i class="fa fa-file-text-o"></i> Detail &nbsp; </a>
                         <?php
                             }
                         echo '</td>';
@@ -77,7 +77,7 @@
                     </div>
                 </div>
             </div>
-            <a href="<?php echo base_url('index.php/BeliRongsok/laporan_list'); ?>" class="btn blue-hoki"> 
+            <a href="<?php echo base_url('index.php/GudangRongsok/laporan_list'); ?>" class="btn blue-hoki"> 
             <i class="fa fa-angle-left"></i> Kembali </a>
         <?php
             }else{

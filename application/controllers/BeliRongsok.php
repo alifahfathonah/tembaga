@@ -100,9 +100,14 @@ class BeliRongsok extends CI_Controller{
             $this->load->model('Model_m_numberings');
             $code = $this->Model_m_numberings->getNumbering('PO', $tgl_input); 
         }else{
-            $code = 'PO-KMP.'.$tgl_po.'.'.$this->input->post('no_po'); 
+            $code = 'PO-KMP.'.$tgl_po.'.'.$this->input->post('no_po');
+            $count = $this->db->query("Select count(id) as count from po where no_po = '".$code."'")->row_array();
+            if($count['count']){
+                $this->session->set_flashdata('flash_msg', 'Nomor PO sudah Ada. Please try again!');
+                redirect('index.php/BeliRongsok/add');
+            }
         }
-        
+
         $data = array(
             'no_po'=> $code,
             'tanggal'=> $tgl_input,
@@ -244,9 +249,9 @@ class BeliRongsok extends CI_Controller{
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
             $tabel .= '<td>'.$row->nama_item.'</td>';
             $tabel .= '<td>'.$row->uom.'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->amount,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->total_amount,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->amount,2,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->qty,2,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->total_amount,2,',','.').'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
@@ -259,8 +264,8 @@ class BeliRongsok extends CI_Controller{
         $tabel .= '<tr>';
         $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
         $tabel .= '<input type="hidden" id="count2" value="'.$cek.'">';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($qty,0,',','.').'</strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($qty,2,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,2,',','.').'</strong></td>';
         $tabel .= '</tr>';
         
         header('Content-Type: application/json');
@@ -349,10 +354,10 @@ class BeliRongsok extends CI_Controller{
         if($this->db->insert('po_detail', array(
             'po_id'=>$this->input->post('id'),
             'rongsok_id'=>$this->input->post('rongsok_id'),
-            'amount'=>str_replace('.', '', $this->input->post('harga')),
-            'qty'=>str_replace('.', '', $this->input->post('qty')),
+            'amount'=>str_replace(',', '', $this->input->post('harga')),
+            'qty'=>str_replace(',', '', $this->input->post('qty')),
             'flag_dtr' => '1',
-            'total_amount'=>str_replace('.', '', $this->input->post('total_harga'))
+            'total_amount'=>str_replace(',', '', $this->input->post('total_harga'))
         ))){
             $return_data['message_type']= "sukses";
         }else{
@@ -441,7 +446,7 @@ class BeliRongsok extends CI_Controller{
         header('Content-Type: application/json');
         echo json_encode($data);    
     }
-    
+
     function save_voucher(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
@@ -492,6 +497,25 @@ class BeliRongsok extends CI_Controller{
         }
     }
     
+    function get_no_uang_keluar(){
+        $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
+
+        if($this->input->post('bank_id')<=3){
+            $code_um = 'KK-KMP.'.$tgl_code.'.'.$this->input->post('no_uk');
+        }else{
+            $code_um = 'BK-KMP.'.$tgl_code.'.'.$this->input->post('no_uk');
+        }
+
+        $count = $this->db->query("select count(id) as count from f_kas where nomor ='".$code_um."'")->row_array();
+        if($count['count']>0){
+            $data['type'] = 'duplicate';
+        }else{
+            $data['type'] = 'sukses';
+        }
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+    
     function save_voucher_pembayaran(){
         $ppn = $this->session->userdata('user_ppn');
         $user_id  = $this->session->userdata('user_id');
@@ -510,7 +534,7 @@ class BeliRongsok extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         if($ppn==1){
-            // $this->load->helper('target_url');
+            $this->load->helper('target_url');
             // $url = target_url().'api/BeliSparepartAPI/numbering?id=VRSK-KMP&tgl='.$tgl_input;
             // $ch2 = curl_init();
             // curl_setopt($ch2, CURLOPT_URL, $url);
@@ -618,8 +642,21 @@ class BeliRongsok extends CI_Controller{
         }
     }
 
+    function get_no_dtr(){
+        $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
+        $code = 'DTR-KMP.'.$tgl_po.'.'.$this->input->post('id');
+        $count = $this->db->query("select count(id) as count from dtr where no_dtr ='".$code."'")->row_array();
+        if($count['count']>0){
+            $data['type'] = 'duplicate';
+        }else{
+            $data['type'] = 'sukses';
+        }
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+
     function create_dtr(){
-        $module_name = $this->uri->segment(1);
+            $module_name = $this->uri->segment(1);
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
                 $this->load->model('Model_modules');
@@ -891,11 +928,8 @@ class BeliRongsok extends CI_Controller{
                     'modified_by'=> $user_id
                 ));
             }
-            
-            if($this->db->trans_complete()){  
                 
                 #update po_detail_id di dtr_detail
-
                 $po_dtr_check_update = $this->Model_beli_rongsok->check_to_update($po_id)->result();
                 foreach ($po_dtr_check_update as $u) {
                     $this->db->where('id',$u->dtr_detail_id );
@@ -924,14 +958,14 @@ class BeliRongsok extends CI_Controller{
                         }
                 }
 
+        if($this->db->trans_complete()){
             redirect('index.php/BeliRongsok/proses_matching/'.$this->input->post('po_id'));
             // $return_data['type_message']= "sukses";
             // $return_data['message'] = "TTR sudah diberikan ke bagian gudang";
-                //$return_data['message']= "TTR berhasil di-create dengan nomor : ".$code;                 
+            // $return_data['message']= "TTR berhasil di-create dengan nomor : ".$code;                 
         }else{
             redirect('index.php/BeliRongsok/proses_matching/'.$this->input->post('po_id'));
-        }                  
-        
+        }
        // header('Content-Type: application/json');
        // echo json_encode($return_data);
     }
@@ -946,10 +980,16 @@ class BeliRongsok extends CI_Controller{
 
         $this->db->trans_start();
 
+        $no_ttr = 'TTR-KMP.'.$tgl_code.'.'.$this->input->post('nomor_ttr');
+        $count = $this->db->query("Select count(id) as count from ttr where no_ttr = '".$no_ttr."'")->row_array();
+            if($count['count'] > 0){
+                $this->session->set_flashdata('flash_msg', 'Nomor TTR sudah Ada. Please try again!');
+                redirect('index.php/BeliRongsok/review_ttr/'.$ttr_id);
+            }
         #Update status TTR
             $this->db->where('id',$ttr_id);
             $result = $this->db->update('ttr', array(
-                    'no_ttr' => 'TTR-KMP.'.$tgl_code.'.'.$this->input->post('nomor_ttr'),
+                    'no_ttr' => $no_ttr,
                     'tanggal' => $tgl_input,
                     'no_sj' => $this->input->post('no_sj'),
                     'jmlh_afkiran' => $this->input->post('jml_afkir'),
@@ -985,10 +1025,9 @@ class BeliRongsok extends CI_Controller{
         //     foreach ($dtr_list as $k => $v) {
         //         $this->Model_beli_rongsok->update_stok_tersedia($v->rongsok_id,$v->netto);
         //     }
-        
             
         if($this->db->trans_complete()){    
-            $this->session->set_flashdata('flash_msg', 'TTR berhasil di-create dengan nomor : '.$this->input->post('nomor_ttr'));                 
+            $this->session->set_flashdata('flash_msg', 'TTR berhasil di-create dengan nomor : '.$no_ttr);                 
         }else{
             $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create TTR, silahkan coba kembali!');
         }

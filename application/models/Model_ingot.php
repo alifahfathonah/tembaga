@@ -215,7 +215,7 @@ class Model_ingot extends CI_Model{
     }    
         
     function hasil_produksi(){
-        $data = $this->db->query("Select thm.*,  pi.no_produksi, tbw.id as id_bpb, dtr.id as id_dtr,
+        $data = $this->db->query("Select thm.*,  pi.no_produksi, tbw.id as id_bpb, dtr.id as id_dtr, tba.id as id_ampas,
                     usr.realname As pic, tbw.status as status_bpb_wip
                 From t_hasil_masak thm
                     Left Join users usr On (thm.created_by = usr.id)
@@ -223,6 +223,7 @@ class Model_ingot extends CI_Model{
                     Left Join t_hasil_wip thw ON (thw.hasil_masak_id = thm.id)
                     Left Join t_bpb_wip tbw On (tbw.hasil_wip_id = thw.id)
                     Left Join dtr on (dtr.prd_id = thw.id)
+                    Left Join t_bpb_ampas tba on (tba.hasil_masak_id = thw.id)
                 Order By thm.id Desc");
         return $data;
     }

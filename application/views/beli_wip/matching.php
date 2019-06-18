@@ -37,13 +37,13 @@
             <div class="col-md-1">
                 No. PO <font color="#f00">*</font>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <select id="po_id" name="po_id" class="form-control myline select2me" 
                     data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                     <option value=""></option>
                     <?php
                         foreach ($po_list as $row){
-                            echo '<option value="'.$row->id.'">'.$row->no_po.'</option>';
+                            echo '<option value="'.$row->id.'">'.$row->no_po.' ('.$row->nama_supplier.')</option>';
                         }
                     ?>
                 </select>

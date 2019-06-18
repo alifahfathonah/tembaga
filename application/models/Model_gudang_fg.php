@@ -306,7 +306,7 @@ class Model_gudang_fg extends CI_Model{
     }
 
     function show_detail_spb_fulfilment($id){
-        $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.uom from t_gudang_fg tgf 
+        $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.uom, jb.kode from t_gudang_fg tgf 
                 left join jenis_barang jb on jb.id = tgf.jenis_barang_id
                 where tgf.t_spb_fg_id =".$id." and tgf.jenis_trx = 0
                 order by tgf.jenis_barang_id");

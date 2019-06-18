@@ -22,14 +22,6 @@
                         <h4 class="modal-title">&nbsp;</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="alert alert-danger display-hide" id="box_error_voucher">
-                                    <button class="close" data-close="alert"></button>
-                                    <span id="msg_voucher">&nbsp;</span>
-                                </div>
-                            </div>
-                        </div>
                         <form class="eventInsForm" method="post" target="_self" name="formku" 
                               id="formku">                            
                             <input type="hidden" id="status_vc" name="status_vc">
@@ -175,6 +167,14 @@
                                 </div>
                             </div>
                             <hr>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger display-hide" id="box_error_voucher">
+                                        <button class="close" data-close="alert"></button>
+                                        <span id="msg_voucher">&nbsp;</span>
+                                    </div>
+                                </div>
+                            </div>
                             <div style="width: 100%; margin-bottom: 5px;text-align: center">
                               <span>
                                 Data Uang Keluar <!--Padding is optional-->
@@ -254,7 +254,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">                        
-                        <button type="button" class="btn blue" onClick="prosesVoucher();">Simpan</button>
+                        <button type="button" class="btn blue" id="prosesVoucher" onClick="prosesVoucher();">Simpan</button>
                         <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
                     </div>
                 </div>
@@ -619,11 +619,30 @@ function prosesVoucher(){
     }else if($.trim($("#bank_id").val()) == ""){
         $('#msg_voucher').html("Bank harus dipilih!");
         $('#box_error_voucher').show();
-    }else{    
-        $('#msg_voucher').html("");
-        $('#box_error_voucher').hide();
-        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/BeliWIP/save_voucher_pembayaran");
-        $('#formku').submit(); 
+    }else{
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url('index.php/BeliRongsok/get_no_uang_keluar'); ?>",
+            data: {
+                no_uk: $('#no_uk').val(),
+                tanggal: $('#tanggal').val(),
+                bank_id: $('#bank_id').val()
+            },
+            cache: false,
+            success: function(result) {
+                var res = result['type'];
+                if(res=='duplicate'){
+                    $('#msg_voucher').html("Nomor Uang Keluar sudah ada, tolong coba lagi!");
+                    $('#box_error_voucher').show();
+                }else{
+                    $('#prosesVoucher').text('Please Wait ...').prop("onclick", null).off("click");
+                    $('#msg_voucher').html("");
+                    $('#box_error_voucher').hide();
+                    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/BeliWIP/save_voucher_pembayaran");
+                    $('#formku').submit();
+                }
+            }
+        });
     };
 };
 // function createVoucherPelunasan(id){

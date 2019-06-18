@@ -114,6 +114,7 @@ class GudangWIP extends CI_Controller{
                     't_spb_wip_id'=> $this->input->post('id_spb'),
                     'qty'=>(int)($this->input->post('qty_kh')!= null) ? $this->input->post('qty_kh'): $this->input->post('qty_km'),
                     'uom' => 'ROLL',
+                    'gas'=> (int)$this->input->post('gas'),
                     'berat' => (int)($this->input->post('berat_kh')!=null) ? $this->input->post('berat_kh') : $this->input->post('berat_km'),
                     'susut' => $susut,
                     'keras' => (int)$this->input->post('berat_keras'),

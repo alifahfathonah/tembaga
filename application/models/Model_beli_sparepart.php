@@ -247,15 +247,27 @@ class Model_beli_sparepart extends CI_Model{
         return $data;
     }
 
+    // function voucher_list_ppn($user_ppn){
+    //     $data = $this->db->query("Select voucher.*, v.no_vk, s.nama_supplier, fk.nomor
+    //             From voucher 
+    //                 Left Join po On (voucher.po_id = po.id) 
+    //                 Left Join f_kas fk On (fk.id_vc = voucher.id)
+    //                 Left Join f_vk v On (voucher.vk_id = v.id)
+    //                 Left Join supplier s On (s.id = voucher.supplier_id)
+    //             Where voucher.jenis_barang='SPARE PART' and po.flag_ppn = ".$user_ppn." or v.flag_ppn =".$user_ppn."
+    //             Order By voucher.no_voucher");
+    //     return $data;
+    // }
+
     function voucher_list_ppn($user_ppn){
-        $data = $this->db->query("Select voucher.*, v.no_vk, s.nama_supplier, fk.nomor
-                From voucher 
+        $data = $this->db->query("Select voucher.no_voucher, voucher.tanggal, voucher.jenis_voucher, voucher.keterangan, v.no_vk, s.nama_supplier, fk.nomor, v.id
+                From f_vk v 
+                    Left Join voucher On (voucher.vk_id = v.id)
                     Left Join po On (voucher.po_id = po.id) 
                     Left Join f_kas fk On (fk.id_vc = voucher.id)
-                    Left Join f_vk v On (voucher.vk_id = v.id)
                     Left Join supplier s On (s.id = voucher.supplier_id)
                 Where voucher.jenis_barang='SPARE PART' and po.flag_ppn = ".$user_ppn." or v.flag_ppn =".$user_ppn."
-                Order By voucher.no_voucher");
+                Order By fk.nomor desc");
         return $data;
     }
 

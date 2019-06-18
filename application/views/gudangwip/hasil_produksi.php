@@ -58,6 +58,7 @@
                         <th>Quantity</th>
                         <th>Berat</th>
                         <th>PIC</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -88,6 +89,16 @@
                         </td>
                         <td>
                             <?= $data->pembuat;?>
+                        </td>
+                        <td>
+                        <?php
+                            if($data->id_bpb > 0){
+                            echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangWIP/print_bpb/'.$data->id_bpb.'" style="margin-bottom:4px" target="_blank">&nbsp;<i class="fa fa-print"></i> Print BPB &nbsp;</a>';
+                            }
+                            if($data->id_dtr){
+                            echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Ingot/print_afkir/'.$data->id_dtr.'" target="_blank">&nbsp;<i class="fa fa-print"></i> Print AFKIR &nbsp;</a>';
+                            }
+                        ?>
                         </td>
                     </tr>
                     <?php } ?>

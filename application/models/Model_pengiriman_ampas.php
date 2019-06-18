@@ -201,7 +201,8 @@ class Model_pengiriman_ampas extends CI_Model{
     function bpb_list(){
         $data = $this->db->query("select tba.*, pi.no_produksi, (select count(id) as jumlah_item from t_bpb_ampas_detail tbad where tbad.bpb_ampas_id = tba.id) as jumlah_item
             from t_bpb_ampas tba
-            left join t_hasil_masak thm on (tba.hasil_masak_id = thm.id)
+            left join t_hasil_wip thw on (tba.hasil_masak_id = thw.id)
+            left join t_hasil_masak thm on (thm.id = thw.hasil_masak_id)
             left join produksi_ingot pi on (thm.id_produksi = pi.id)");
         return $data;
     }
@@ -210,7 +211,8 @@ class Model_pengiriman_ampas extends CI_Model{
         $data = $this->db->query("select tba.*, u.realname, pi.no_produksi
             from t_bpb_ampas tba
             left join users u on (tba.created_by = u.id)
-            left join t_hasil_masak thm on (tba.hasil_masak_id = thm.id)
+            left join t_hasil_wip thw on (tba.hasil_masak_id = thw.id)
+            left join t_hasil_masak thm on (thm.id = thw.hasil_masak_id)
             left join produksi_ingot pi on (thm.id_produksi = pi.id)
             where tba.id = ".$id);
         return $data;

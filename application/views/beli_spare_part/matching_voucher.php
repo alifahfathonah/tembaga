@@ -84,7 +84,7 @@
                         <div class="col-md-8">
                             <input type="text" id="nama_penimbang" name="nama_penimbang" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['realname']; ?>">
+                                value="<?php echo $this->session->userdata['realname']; ?>">
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
@@ -266,7 +266,7 @@
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
-                    <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                    <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Create </a>
                     <a href="<?php echo base_url('index.php/BeliSparePart/voucher_list'); ?>" class="btn blue-hoki">
                         <i class="fa fa-angle-left"></i> Kembali </a>
@@ -303,7 +303,8 @@ function simpanData(){
     }else if($.trim($("#nominal").val()) == ""){
         $('#message').html("Nominal tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else{    
+    }else{
+        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').attr("action", "<?php echo base_url(); ?>index.php/BeliSparePart/save_vk");  
         $('#formku').submit(); 
     };

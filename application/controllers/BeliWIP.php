@@ -78,6 +78,11 @@ class BeliWIP extends CI_Controller{
         $this->load->model('Model_m_numberings');
         if($user_ppn == 1){
             $code = 'PO-KMP.'.$tgl_po.'.'.$this->input->post('no_po'); 
+            $count = $this->db->query("Select count(id) as count from po where no_po = '".$code."'")->row_array();
+            if($count['count']){
+                $this->session->set_flashdata('flash_msg', 'Nomor PO sudah Ada. Please try again!');
+                redirect('index.php/BeliWIP/add');
+            }
         }else{
             $code = $this->Model_m_numberings->getNumbering('POW-KMP', $tgl_input);
         }

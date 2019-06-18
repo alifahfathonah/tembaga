@@ -263,22 +263,27 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
+    function load_detail_only($id){
+        $data = $this->db->query("select * from t_sales_order_detail where t_so_id =".$id);
+        return $data;
+    }
+
     function load_detail_so($id){
-        $data = $this->db->query("Select tsod.*, jb.jenis_barang as nama_barang, jb.category, jb.uom From t_sales_order_detail tsod 
+        $data = $this->db->query("Select tsod.*, jb.jenis_barang as nama_barang, jb.category, jb.uom, jb.kode From t_sales_order_detail tsod 
                 Left Join jenis_barang jb On(jb.id = tsod.jenis_barang_id) 
                 Where tsod.t_so_id= ".$id);
         return $data;
     }
 
     function load_detail_so_rongsok($id){
-        $data = $this->db->query("Select tsod.*, rsk.nama_item as nama_barang, rsk.type_barang, rsk.uom From t_sales_order_detail tsod 
+        $data = $this->db->query("Select tsod.*, rsk.nama_item as nama_barang, rsk.type_barang, rsk.uom, rsk.kode_rongsok as kode From t_sales_order_detail tsod 
                 Left Join rongsok rsk On(rsk.id = tsod.jenis_barang_id) 
                 Where tsod.t_so_id= ".$id);
         return $data;
     }
 
     function load_detail_so_sp($id){
-        $data = $this->db->query("Select tsod.*, s.nama_item as nama_barang, s.uom from t_sales_order_detail tsod
+        $data = $this->db->query("Select tsod.*, s.nama_item as nama_barang, s.uom, s.alias as kode from t_sales_order_detail tsod
                 Left join sparepart s On(s.id = tsod.jenis_barang_id)
                 Where tsod.t_so_id= ".$id);
         return $data;
@@ -447,12 +452,14 @@ class Model_sales_order extends CI_Model{
     }
 
     function load_detail_surat_jalan_fg($id){
-        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jb.uom, tgf.no_produksi, mb.berat
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jb.uom, tgf.no_produksi, mb.berat, jb1.kode as kode_lama, coalesce(jb2.kode, 0) as kode_baru
                 from t_surat_jalan_detail tsjd
                 left join jenis_barang jb on jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
                 left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
                 left join t_gudang_fg tgf on tgf.id = tsjd.gudang_id
                 left join m_bobbin mb on tgf.bobbin_id>0 and mb.id = tgf.bobbin_id
+                left join jenis_barang jb1 on jb1.id = tsjd.jenis_barang_id
+                left join jenis_barang jb2 on jb2.id = tsjd.jenis_barang_alias
                 where tsjd.t_sj_id =".$id." order by tsjd.jenis_barang_id");
         return $data;
     }
@@ -511,6 +518,32 @@ class Model_sales_order extends CI_Model{
 
     function get_rsk($id){
         $data = $this->db->query("Select * from rongsok where id =".$id);
+        return $data;
+    }
+
+    function tsj_header_only($id){
+        $data = $this->db->query("Select * from t_surat_jalan where id =".$id);
+        return $data;
+    }
+
+    function tsj_detail_only($id){
+        $data = $this->db->query("Select * from t_surat_jalan_detail where t_sj_id =".$id);
+        return $data;
+    }
+
+    function tsjd_get_gudang($id){
+        $data = $this->db->query("Select 
+                tsjd.id as id_sj_d, tsjd.t_sj_id, tsjd.gudang_id, tsjd.jenis_barang_id as sj_jb, tsjd.jenis_barang_alias, tsjd.qty as jb_qty, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks,
+                tgf.*, 
+                tbf.no_bpb_fg, tbf.tanggal as tgl_bpb, tbf.jenis_barang_id as jb_bpb, tbf.keterangan as ket_bpb,
+                tbfd.id as id_bpb_d, tbfd.jenis_barang_id as jbd, tbfd.no_produksi, tbfd.berat_bobbin,
+                pf.id as id_prd, pf.no_laporan_produksi, pf.tanggal as tgl_prd, pf.flag_result, pf.remarks as remarks_prd, pf.jenis_barang_id as jb_prd, pf.jenis_packing_id
+                from t_surat_jalan_detail tsjd
+                left join t_gudang_fg tgf on tgf.id = tsjd.gudang_id
+                left join t_bpb_fg tbf on tbf.id = tgf.t_bpb_fg_id
+                left join t_bpb_fg_detail tbfd on tbfd.id = tgf.t_bpb_fg_detail_id
+                left join produksi_fg pf on pf.id = tbf.produksi_fg_id
+                where tsjd.t_sj_id =".$id);
         return $data;
     }
 }

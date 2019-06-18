@@ -58,7 +58,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">                        
-                        <button type="button" class="btn blue" onClick="approveData();">Simpan</button>
+                        <button type="button" class="btn blue" id="approveData" onClick="approveData();">Simpan</button>
                         <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
                     </div>
                 </div>
@@ -67,6 +67,14 @@
         <?php
             if( ($group_id==1)||($hak_akses['review_ttr']==1) ){
         ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
+                    <button class="close" data-close="alert"></button>
+                    <span id="msg_sukses"><?php echo $this->session->flashdata('flash_msg'); ?></span>
+                </div>
+            </div>
+        </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku" action="#">  
             <div class="row">
@@ -98,7 +106,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal"
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
+                                value="<?php echo date('d-m-Y', strtotime($header['tgl_dtr'])); ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -181,39 +189,33 @@
                             <tbody>
                             <?php
                                 $no = 1;
+                                $bruto = 0;
+                                $berat = 0;
+                                $netto = 0;
                                 foreach ($details as $row){
                                     echo '<tr>';
                                     echo '<td style="text-align:center">'.$no.'</td>';
-                                    echo '<td><input type="text" name="myDetails['.$no.'][nama_item]" '
-                                            . 'class="form-control myline" value="'.$row->nama_item.'" '
-                                            . 'readonly="readonly">';
-                                    
-                                    echo '<input type="hidden" name="myDetails['.$no.'][id]" value="'.$row->id.'">';                                    
-                                    echo '</td>';
-                                    echo '<td><input type="text" name="myDetails['.$no.'][uom]" '
-                                            . 'class="form-control myline" value="'.$row->uom.'" '
-                                            . 'readonly="readonly"></td>';
-                                    
-                                    echo '<td><input type="text" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->bruto,2,'.',',').'" '
-                                            . 'readonly="readonly"></td>';
-
-                                    echo '<td><input type="text" id="berat_'.$no.'" name="myDetails['.$no.'][berat]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->berat_palette,2,'.',',').'" '
-                                            . 'readonly="readonly"></td>';
-                                    
-                                    echo '<td><input type="text" id="netto_'.$no.'" name="myDetails['.$no.'][netto]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->netto,2,'.',',').'" '
-                                            . 'readonly="readonly"></td>';
-                                    
-                                    echo '<td><input type="text" name="myDetails['.$no.'][no_pallete]" value="'.$row->no_pallete.'" '
-                                            . 'class="form-control myline" readonly="readonly"></td>';
-                                    echo '<td><input type="text" name="myDetails['.$no.'][line_remarks]" value="'.$row->line_remarks.'"'
-                                            . 'class="form-control myline" readonly="readonly"></td>';
+                                    echo '<td>'.$row->nama_item.'</td>';
+                                    echo '<td>'.$row->uom.'</td>';
+                                    echo '<td>'.number_format($row->bruto,2,'.',',').'</td>';
+                                    echo '<td>'.number_format($row->berat_palette,2,'.',',').'</td>';
+                                    echo '<td>'.number_format($row->netto,2,'.',',').'</td>';
+                                    echo '<td>'.$row->no_pallete.'</td>';
+                                    echo '<td>'.$row->line_remarks.'</td>';
                                     echo '</tr>';
                                     $no++;
+                                    $bruto += $row->bruto;
+                                    $berat += $row->berat_palette;
+                                    $netto += $row->netto;
                                 }
                             ?>
+                            <tr>
+                                <td colspan="3" style="text-align: right;"><b>Total :</b></td>
+                                <td style="background-color: green; color: white;"><?=number_format($bruto,2,',','.');?></td>
+                                <td style="background-color: green; color: white;"><?=number_format($berat,2,',','.');?></td>
+                                <td style="background-color: green; color: white;"><?=number_format($netto,2,',',',');?></td>
+                                <td colspan="2"></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -281,6 +283,7 @@ function approveData(){
         $('#message').html("Nomor TTR harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else{
+        $('#approveData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#message').html("");
         $('.alert-danger').hide();
         $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/BeliRongsok/approve_ttr_resmi");

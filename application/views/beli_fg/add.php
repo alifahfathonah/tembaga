@@ -18,9 +18,9 @@
         ?>
         <div class="row">
             <div class="col-md-12">
-                <div class="alert alert-danger display-hide">
+                <div class="alert alert-danger <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
                     <button class="close" data-close="alert"></button>
-                    <span id="message">&nbsp;</span>
+                    <span id="message"><?php echo $this->session->flashdata('flash_msg'); ?></span>
                 </div>
             </div>
         </div>

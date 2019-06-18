@@ -362,6 +362,20 @@
                         </div>
                     </div>
                 </div>
+                <br/>
+                <div class="row">
+                    <div class="col-md-6" id="div_gas">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label>Gas</label>
+                                <input type="text" id="gas" name="gas" 
+                                class="form-control myline" size="25" 
+                                value="0" placeholder="Input Gas...">
+                                <label> Kg</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                 <br/>
                 <br/>

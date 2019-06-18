@@ -272,13 +272,33 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
+    }else if($("#no_dtr").val() == ""){
+        $('#message').html("Supplier harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
     }else if($.trim($("#supplier_id").val()) == ""){
         $('#message').html("Supplier harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show(); 
+        $('.alert-danger').show();
     }else{   
-        $('#message').html("");
-        $('.alert-danger').hide(); 
-        $('#formku').submit();
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url('index.php/BeliRongsok/get_no_dtr'); ?>",
+            data: {
+                id: $('#no_dtr').val(),
+                tanggal: $('#tanggal').val()
+            },
+            cache: false,
+            success: function(result) {
+                var res = result['type'];
+                if(res=='duplicate'){
+                    $('#message').html("Nomor DTR sudah ada, tolong coba lagi!");
+                    $('.alert-danger').show();
+                }else{
+                    $('#message').html("");
+                    $('.alert-danger').hide(); 
+                    $('#formku').submit();
+                }
+            }
+        });
     };
 };
 

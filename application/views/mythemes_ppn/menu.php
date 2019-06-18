@@ -376,15 +376,41 @@
                     <?php } ?>
                     </ul>
                 </li>
-            <?php } if($group_id==1 || (isset($akses_menu['GudangWIP']) || isset($akses_menu['GudangFG'])) ){ ?>
-                <li <?php if(($module_name=="Gudang") || ($module_name=="GudangWIP") || ($module_name=="GudangFG")) echo 'class="start active open"'; ?>>
+            <?php } if($group_id==1 || ( (isset($akses_menu['GudangWIP'])&&$akses_menu['GudangWIP']==1) || (isset($akses_menu['GudangFG'])&&$akses_menu['GudangFG']==1) ) ){ ?>
+                <li <?php if(($module_name=="GudangRongsok") || ($module_name=="GudangWIP") || ($module_name=="GudangFG")) echo 'class="start active open"'; ?>>
                     <a href="#">
                     <i class="fa fa-cubes"></i>
                     <span class="title">GUDANG</span>
                     <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
-                       
+                        <li <?php if($module_name=="GudangRongsok") echo 'class="start active open"'; ?>>
+                        <a href="#">
+                        <i class="fa fa-circle"></i>
+                        <span class="title">RONGSOK</span>
+                        <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu">
+                        <?php if($group_id==1 || (isset($akses_menu['view_laporan']) && $akses_menu['view_laporan']==1)){ ?>
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/GudangRongsok/index">
+                                <i class="fa fa-search"></i>
+                                Laporan Rongsok </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/GudangRongsok/laporan_list">
+                                <i class="fa fa-briefcase"></i>
+                                Laporan Rongsok Bulanan</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/GudangRongsok/gudang_rongsok">
+                                <i class="fa fa-cubes"></i>
+                                Gudang Rongsok </a>
+                            </li>
+                            <?php } ?>
+                        </ul>
+                        </li>
+
                         <li <?php if($module_name=="GudangWIP") echo 'class="start active open"'; ?>>
                         <a href="#">
                         <i class="fa fa-circle"></i>
@@ -415,6 +441,12 @@
                                 <a href="<?php echo base_url(); ?>index.php/GudangWIP/produksi_wip">
                                 <i class="fa fa-hourglass"></i>
                                 Produksi WIP </a>
+                            </li>
+                        <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/GudangWIP/laporan_list">
+                                <i class="fa fa-briefcase"></i>
+                                Laporan WIP </a>
                             </li>
                         <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                             <li>
@@ -450,6 +482,12 @@
                                 <a href="<?php echo base_url(); ?>index.php/GudangFG/bpb_list">
                                 <i class="fa fa-file-excel-o"></i>
                                 BPB FG </a>
+                            </li>
+                        <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/GudangFG/laporan_list">
+                                <i class="fa fa-briefcase"></i>
+                                Laporan FG </a>
                             </li>
                         <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                             <li>

@@ -1765,7 +1765,7 @@ class BeliSparePart extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         if($user_ppn==1){
-                // $this->load->helper('target_url');
+                $this->load->helper('target_url');
 
                 // $url = target_url().'api/BeliSparepartAPI/numbering?id=VK-KMP&tgl='.$tgl_input;
                 // $ch = curl_init();
@@ -1885,7 +1885,7 @@ class BeliSparePart extends CI_Controller{
 
         $this->load->model('Model_m_numberings');
         if($user_ppn==1){
-                // $this->load->helper('target_url');
+                $this->load->helper('target_url');
 
                 // $url = target_url().'api/BeliSparepartAPI/numbering?id=VSP-KMP&tgl='.$tgl_input;
                 // $ch = curl_init();

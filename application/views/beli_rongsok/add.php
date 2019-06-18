@@ -18,9 +18,9 @@
         ?>
         <div class="row">
             <div class="col-md-12">
-                <div class="alert alert-danger display-hide">
+                <div class="alert alert-danger <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
                     <button class="close" data-close="alert"></button>
-                    <span id="message">&nbsp;</span>
+                    <span id="message"><?php echo $this->session->flashdata('flash_msg'); ?></span>
                 </div>
             </div>
         </div>
@@ -73,7 +73,7 @@
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                            <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                                 <i class="fa fa-floppy-o"></i> Input Details Rongsok </a>
                         </div>    
                     </div>
@@ -183,13 +183,17 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
+    }else if($.trim($("#no_po").val()) == ""){
+        $('#message').html("Nomor PO harus diisi!");
+        $('.alert-danger').show(); 
     }else if($.trim($("#supplier_id").val()) == ""){
         $('#message').html("Silahkan pilih nama supplier!");
         $('.alert-danger').show(); 
     }else if($.trim($("#term_of_payment").val()) == ""){
         $('#message').html("Term of payment harus diisi!");
         $('.alert-danger').show(); 
-    }else{     
+    }else{
+        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').submit(); 
     };
 };

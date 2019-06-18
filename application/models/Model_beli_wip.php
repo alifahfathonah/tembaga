@@ -85,7 +85,8 @@ class Model_beli_wip extends CI_Model
     }
 
     function get_po_list($user_ppn){
-        $data = $this->db->query("Select id, no_po, jenis_po From po 
+        $data = $this->db->query("Select po.id, po.no_po, po.jenis_po, s.nama_supplier From po 
+            Left join supplier s on s.id = po.supplier_id
             Where jenis_po= 'WIP' And (status= 0 or status = 2) And flag_ppn=".$user_ppn);
         return $data;
     }

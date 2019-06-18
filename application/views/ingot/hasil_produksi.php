@@ -80,8 +80,15 @@
                             echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/Ingot/edit_hasil/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit </a>';
                         }
                         if( (($group_id==1)||($hak_akses['print']==1))){
+                            if($data->id_bpb > 0){
                             echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangWIP/print_bpb/'.$data->id_bpb.'" style="margin-bottom:4px" target="_blank">&nbsp;<i class="fa fa-print"></i> Print BPB &nbsp;</a>';
+                            }
+                            if($data->id_dtr){
                             echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Ingot/print_afkir/'.$data->id_dtr.'" style="margin-bottom:4px" target="_blank">&nbsp;<i class="fa fa-print"></i> Print AFKIR &nbsp;</a>';
+                            }
+                            if($data->id_ampas){
+                            echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/PengirimanAmpas/print_bpb/'.$data->id_ampas.'" style="margin-bottom:4px" target="_blank">&nbsp;<i class="fa fa-print"></i> Print Ampas &nbsp;</a>';
+                            }
                         }
                         ?>
                         </td>                    

@@ -18,9 +18,9 @@
         ?>
         <div class="row">
             <div class="col-md-12">
-                <div class="alert alert-danger display-hide">
+                <div class="alert alert-danger <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
                     <button class="close" data-close="alert"></button>
-                    <span id="message">&nbsp;</span>
+                    <span id="message"><?php echo $this->session->flashdata('flash_msg'); ?></span>
                 </div>
             </div>
         </div>
@@ -73,7 +73,7 @@
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                            <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                                 <i class="fa fa-floppy-o"></i> Input Details WIP </a>
                         </div>    
                     </div>
@@ -201,6 +201,7 @@ function simpanData(){
         $('#message').html("Term of payment harus diisi!");
         $('.alert-danger').show(); 
     }else{     
+        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').submit(); 
     };
 };
@@ -226,7 +227,6 @@ function get_cur(id){
     }
 }
 </script>
-
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
@@ -244,4 +244,3 @@ $(function(){
     });       
 });
 </script>
-      

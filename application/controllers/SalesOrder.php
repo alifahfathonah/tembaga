@@ -45,6 +45,21 @@ class SalesOrder extends CI_Controller{
 
         $this->load->view('layout', $data);
     }
+
+    function get_penomoran_so(){
+        $tgl_so = date('Ym', strtotime($this->input->post('tanggal')));
+        
+        $code = 'SO-KMP.'.$tgl_so.'.'.$this->input->post('no_so');
+        
+        $count = $this->db->query("Select count(id) as count from sales_order where no_sales_order = '".$code."'")->row_array();
+        if($count['count']>0){
+            $data['type'] = 'duplicate';
+        }else{
+            $data['type'] = 'sukses';
+        }
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
     
     function add(){
         $module_name = $this->uri->segment(1);
@@ -170,7 +185,7 @@ class SalesOrder extends CI_Controller{
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
-            $tabel .= '<td>'.$row->nama_barang.'</td>';
+            $tabel .= '<td>('.$row->kode.') '.$row->nama_barang.'</td>';
             $tabel .= '<td>'.$row->nama_barang_alias.'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->amount,3,',','.').'</td>';
             if($jenis == 'WIP'){
@@ -324,6 +339,7 @@ class SalesOrder extends CI_Controller{
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
         $user_ppn  = $this->session->userdata('user_ppn');
         
+        $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         if($user_ppn == 1){
             $code = 'SO-KMP.'.$tgl_so.'.'.$this->input->post('no_so');
@@ -394,15 +410,14 @@ class SalesOrder extends CI_Controller{
                 'marketing_id'=>$this->input->post('marketing_id'),
                 'keterangan' => $this->input->post('keterangan'),
                 'created'=> $tanggal,
-                'created_by'=> $user_id,
-                'modified'=> $tanggal,
-                'modified_by'=> $user_id
+                'created_by'=> $user_id
             );
 
             $this->db->insert('sales_order', $data);
             $so_id = $this->db->insert_id();
 
             $t_data = array(
+                'id'=>$so_id,
                 'alias'=>$this->input->post('alias'),
                 'so_id'=>$so_id,
                 'no_po'=>$this->input->post('no_po'),
@@ -411,15 +426,33 @@ class SalesOrder extends CI_Controller{
                 'tgl_po'=>$tgl_po,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'currency'=>$this->input->post('currency'),
-                'kurs'=>$this->input->post('kurs'),
-                'created_at'=> $tanggal,
-                'created_by'=> $user_id,
-                'modified_at'=> $tanggal,
-                'modified_by'=> $user_id
+                'kurs'=>$this->input->post('kurs')
             );
+            $this->db->insert('t_sales_order', $t_data);
+            $tso_id = $this->db->insert_id();
 
-            if($this->db->insert('t_sales_order', $t_data)){
-                redirect('index.php/SalesOrder/edit/'.$this->db->insert_id());  
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $reff_so = array('reff1' => $so_id);
+                $reff_tso = array('reff1' => $tso_id);
+                $data_post['so'] = array_merge($data, $reff_so);
+                $data_post['tso'] = array_merge($t_data, $reff_tso);
+
+                $post = json_encode($data_post);
+
+                $ch = curl_init(target_url().'api/SalesOrderAPI/so');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
+
+            if($this->db->trans_complete()){
+                redirect('index.php/SalesOrder/edit/'.$tso_id);  
             }else{
                 $this->session->set_flashdata('flash_msg', 'Sales order gagal disimpan, silahkan dicoba kembali!');
                 redirect('index.php/SalesOrder');  
@@ -432,6 +465,7 @@ class SalesOrder extends CI_Controller{
 
     function delete(){
         $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');
         $id = $this->uri->segment(3);
 
@@ -459,6 +493,21 @@ class SalesOrder extends CI_Controller{
             $this->db->where('id', $get['no_spb']);
             $this->db->delete('t_spb_ampas');
         }
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+                $url = target_url().'api/SalesOrderAPI/so_del/id/'.$id;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                $result = curl_exec($ch);
+                $response = json_decode($result);
+                curl_close($ch);
+            }
 
         if($this->db->trans_complete()){
             $this->session->set_flashdata('flash_msg', 'Sales Order berhasil di hapus');
@@ -633,10 +682,12 @@ class SalesOrder extends CI_Controller{
 
     function update_so(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $user_ppn = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tanggal_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
         
+        $this->db->trans_start();
         $data = array(
                 'tanggal'=> $tgl_input,
                 'm_customer_id'=>$this->input->post('m_customer_id'),
@@ -645,22 +696,50 @@ class SalesOrder extends CI_Controller{
                 'modified'=> $tanggal,
                 'modified_by'=> $user_id
             );
-        
         $this->db->where('id', $this->input->post('so_id'));
         $this->db->update('sales_order', $data);
 
-        $this->db->where('id', $this->input->post('id'));
-        $this->db->update('t_sales_order', array(
+        $t_data = array(
                 'term_of_payment'=> $this->input->post('term_of_payment'),
                 'alias'=> $this->input->post('alias'),
                 'no_po'=> $this->input->post('no_po'),
                 'tgl_po'=> $tanggal_po,
                 'modified_at'=> $tanggal,
                 'modified_by'=> $user_id
-            ));
-        
-        $this->session->set_flashdata('flash_msg', 'Data sales order berhasil disimpan');
-        redirect('index.php/SalesOrder');
+            );
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('t_sales_order', $t_data);
+
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $data_post['so_id'] = $this->input->post('so_id');
+                $data_post['tso_id'] = $this->input->post('id');
+                $data_post['so'] = $data;
+                $data_post['tso'] = $t_data;
+                $this->load->model('Model_sales_order');
+                $data_post['details'] =$this->Model_sales_order->load_detail_only($this->input->post('id'))->result();
+
+                $post = json_encode($data_post);
+
+                $ch = curl_init(target_url().'api/SalesOrderAPI/so_detail');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Data sales order berhasil disimpan');
+            redirect('index.php/SalesOrder');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data sales order gagal disimpan');
+            redirect('index.php/SalesOrder/edit/'.$this->input->post('id'));
+        }
     }
 
     function spb_list(){
@@ -797,6 +876,21 @@ class SalesOrder extends CI_Controller{
         
         header('Content-Type: application/json');
         echo json_encode($jenis_barang); 
+    }
+
+    function get_penomoran_sj(){
+        $tgl_sj = date('Ym', strtotime($this->input->post('tanggal')));
+        
+        $code = 'SJ-KMP.'.$tgl_sj.'.'.$this->input->post('no_sj');
+        
+        $count = $this->db->query("Select count(id) as count from t_surat_jalan where no_surat_jalan = '".$code."'")->row_array();
+        if($count['count']>0){
+            $data['type'] = 'duplicate';
+        }else{
+            $data['type'] = 'sukses';
+        }
+        header('Content-Type: application/json');
+        echo json_encode($data);
     }
 
     function save_surat_jalan(){
@@ -1036,6 +1130,8 @@ class SalesOrder extends CI_Controller{
     function approve_surat_jalan(){
         $sjid = $this->input->post('id');
         $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $flag_sj = 0;
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d');
         $so_id = $this->input->post('so_id');
@@ -1044,8 +1140,9 @@ class SalesOrder extends CI_Controller{
 
         $this->db->trans_start();
         
+        $this->load->model('Model_sales_order');
         #set flag taken
-        $loop = $this->db->query("select *from t_surat_jalan_detail where t_sj_id = ".$sjid)->result();
+        $loop = $this->Model_sales_order->tsj_detail_only($sjid)->result();
         if ($jenis == 'FG') {
             foreach ($loop as $row) {
                 $this->db->where('id', $row->gudang_id);
@@ -1063,7 +1160,6 @@ class SalesOrder extends CI_Controller{
             }
         }
 
-        $this->load->model('Model_sales_order');
         #cek jika surat jalan sudah di kirim semua atau belum
         if($jenis == 'FG'){
             $list_produksi = $this->Model_sales_order->list_item_sj_fg($so_id)->result();
@@ -1079,18 +1175,16 @@ class SalesOrder extends CI_Controller{
         ));
 
         if($jenis == 'LAIN'){
-            $this->db->where('id',$so_id);
-            $this->db->update('sales_order', array(
-                'flag_sj'=>1
-            ));
+            $flag_sj = 1;
         }else{
             if(empty($list_produksi) && $this->input->post('status_spb') == 1){
-                $this->db->where('id',$so_id);
-                $this->db->update('sales_order', array(
-                    'flag_sj'=>1
-                ));
+                $flag_sj = 1;
             }
         }
+            $this->db->where('id',$so_id);
+            $this->db->update('sales_order', array(
+                'flag_sj'=>$flag_sj
+            ));
 
         if($jenis=='FG'){
             #insert bobbin_peminjaman
@@ -1130,6 +1224,27 @@ class SalesOrder extends CI_Controller{
         
         $this->db->where('id', $sjid);
         $this->db->update('t_surat_jalan', $data);
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $data_post['tsj'] = $this->Model_sales_order->tsj_header_only($sjid)->row_array();
+                $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang($sjid)->result();
+
+                $post = json_encode($data_post);
+                print_r($post);
+                die();
+                $ch = curl_init(target_url().'api/SalesOrderAPI/sj');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                print_r($response);
+                die();
+            }
 
         if($this->db->trans_complete()){    
             $this->session->set_flashdata('flash_msg', 'Surat jalan sudah di-approve. Detail Surat jalan sudah disimpan');            

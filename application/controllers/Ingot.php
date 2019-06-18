@@ -874,6 +874,7 @@ class Ingot extends CI_Controller{
             $code_bpb_ampas = $this->Model_m_numberings->getNumbering('BPB-AMP', $tgl_input);    
             $data_bpb_ampas = array(
                     'no_bpb' => $code_bpb_ampas,
+                    'tanggal' => $tgl_prd,
                     'status' => 0,
                     'hasil_masak_id'=> $id_hasil_wip,
                     'created_by' => $user_id,
@@ -1003,10 +1004,11 @@ class Ingot extends CI_Controller{
 
                 $data_bpb_ampas = array(
                         'no_bpb' => $code_bpb_ampas,
+                        'tanggal' => $tgl_input,
                         'status' => 0,
                         'hasil_masak_id'=> $id,
                         'created_by' => $user_id,
-                        'created' => $tgl_input
+                        'created' => $tanggal
                         );
                 $this->db->insert('t_bpb_ampas',$data_bpb_ampas);
 

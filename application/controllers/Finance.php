@@ -2062,7 +2062,7 @@ class Finance extends CI_Controller{
         $data_um = array(
             'no_uang_masuk'=> $code,
             'm_customer_id'=> 0,
-            'tanggal'=> $this->input->post('tanggal'),
+            'tanggal'=> $tgl_input,
             'status'=> 1,
             'flag_ppn'=> $user_ppn,
             'jenis_pembayaran'=> $jenis,

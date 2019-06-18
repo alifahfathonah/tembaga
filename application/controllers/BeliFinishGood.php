@@ -79,6 +79,11 @@ class BeliFinishGood extends CI_Controller{
             $code = $this->Model_m_numberings->getNumbering('POFG', $tgl_input);
         }else{
             $code = 'PO-KMP.'.$tgl_po.'.'.$this->input->post('no_po'); 
+            $count = $this->db->query("Select count(id) as count from po where no_po = '".$code."'")->row_array();
+            if($count['count']){
+                $this->session->set_flashdata('flash_msg', 'Nomor PO sudah Ada. Please try again!');
+                redirect('index.php/BeliFinishGood/add');
+            }
         }
 
         $data = array(
@@ -207,10 +212,10 @@ class BeliFinishGood extends CI_Controller{
         if($this->db->insert('po_detail', array(
             'po_id'=>$this->input->post('id'),
             'jenis_barang_id'=>$this->input->post('fg_id'),
-            'amount'=>str_replace('.', '', $this->input->post('harga')),
-            'qty'=>str_replace('.', '', $this->input->post('qty')),
+            'amount'=>str_replace(',', '', $this->input->post('harga')),
+            'qty'=>str_replace(',', '', $this->input->post('qty')),
             'flag_dtbj' => 0,
-            'total_amount'=>str_replace('.', '', $this->input->post('total_harga'))
+            'total_amount'=>str_replace(',', '', $this->input->post('total_harga'))
         ))){
             $return_data['message_type']= "sukses";
         }else{
@@ -234,11 +239,11 @@ class BeliFinishGood extends CI_Controller{
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
-            $tabel .= '<td>'.$row->jenis_barang.'</td>';
+            $tabel .= '<td>('.$row->kode.') '.$row->jenis_barang.'</td>';
             $tabel .= '<td>'.$row->uom.'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->amount,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->total_amount,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->amount,2,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->qty,2,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->total_amount,2,',','.').'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
@@ -485,6 +490,20 @@ class BeliFinishGood extends CI_Controller{
 
         header('Content-Type: application/json');
         echo json_encode($barang); 
+    }
+
+    function get_no_dtbj(){
+        $tgl_dtbj = date('Ym', strtotime($this->input->post('tanggal')));
+        $code = 'DTBJ-KMP.'.$tgl_dtbj.'.'.$this->input->post('no_dtbj');
+
+        $count = $this->db->query("select count(id) as count from dtbj where no_dtbj ='".$code."'")->row_array();
+        if($count['count']>0){
+            $data['type'] = 'duplicate';
+        }else{
+            $data['type'] = 'sukses';
+        }
+        header('Content-Type: application/json');
+        echo json_encode($data);
     }
 
     function save_header_dtbj(){
