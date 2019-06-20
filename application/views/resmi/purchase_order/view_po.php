@@ -3,8 +3,8 @@
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/R_SO'); ?>"> Sales Order </a> 
-            <i class="fa fa-angle-right"></i> View Sales Order
+            <a href="<?php echo base_url('index.php/R_PurchaseOrder'); ?>"> Purchase Order </a> 
+            <i class="fa fa-angle-right"></i> View Purchase Order
         </h5>          
     </div>
 </div>
@@ -23,16 +23,16 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/R_SO/update_so'); ?>">
+              id="formku" action="<?php echo base_url('index.php/R_PurchaseOrder/update_so'); ?>">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            No. Sales Order <font color="#f00">*</font>
+                            No. Purchase Order <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_so" name="no_so" maxlength="25"
-                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $header['no_so']; ?>" readonly>
+                            <input type="text" id="no_po" name="no_po" maxlength="25"
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $header['no_po']; ?>" readonly>
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
                     </div>
@@ -46,15 +46,6 @@
                                 value="<?php echo date('d-m-Y', strtotime($header['tanggal']))?>" readonly>
                         </div>
                     </div>  
-                    <div class="row">
-                        <div class="col-md-4">
-                            Marketing <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="contact_person" name="contact_person" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_marketing']; ?>">
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Keterangan
@@ -71,38 +62,17 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
-                            Nomor PO <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="no_po" name="no_po"
-                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $header['no_po']; ?>" readonly="readonly">
-
-                            <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['id']; ?>">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Tanggal PO<font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="tanggal_po" name="tanggal_po" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y', strtotime($header['tgl_po'])); ?>" readonly="readonly">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
                             Customer <font color="#f00">*</font>
                         </div>
-                        <?php if($jenis_so == 'SO KMP'){ ?>
+                        <?php if($jenis_po == 'PO CUSTOMER KE CV'){ ?>
                         <div class="col-md-8">
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_cv']; ?>">
                         </div>
-                        <?php } else if($jenis_so == 'SO CV'){ ?>
+                        <?php } else if($jenis_po == 'PO CV KE KMP'){ ?>
                         <div class="col-md-8">
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_customer']; ?>">
+                                class="form-control myline" style="margin-bottom:5px" value="PT. KAWATMAS PRAKASA">
                         </div>
                         <?php } ?>
                     </div>
@@ -149,7 +119,7 @@
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
-                    <a href="<?php echo base_url('index.php/R_SO'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/R_PurchaseOrder'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
