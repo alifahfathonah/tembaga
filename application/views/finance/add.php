@@ -31,7 +31,11 @@
                             No. Uang Masuk
                         </div>
                         <div class="col-md-8">
+                            <?php if($this->session->userdata('user_ppn')==1){ ?>
+                            <input type="text" name="no_uang_masuk" id="no_uang_masuk" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor Uang Masuk ..." onkeyup="this.value = this.value.toUpperCase()">
+                            <?php }else{ ?>
                             <input type="text" name="no_uang_masuk" id="no_uang_masuk" class="form-control myline" style="margin-bottom: 5px;" readonly value="Auto Generate">
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -64,6 +68,7 @@
                         <div class="col-md-8">
                             <select id="customer_id" name="customer_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="resetAllValues();$('#show_replace').hide();$('#show_replace_detail').hide();$('#jenis_id').select2('val','');">
                                 <option value=""></option>
+                                <option value="0">**Tidak Ada Customer**</option>
                                 <?php
                                     foreach ($customer_list as $row){
                                         echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
@@ -80,10 +85,14 @@
                             <select id="jenis_id" name="jenis_id" class="form-control myline select2me" 
                                 placeholder="Silahkan pilih Jenis Pembayaran ..." onchange="get_cek(this.value);" style="margin-bottom:5px">
                                 <option value="0"></option>
+                            <?php if($this->session->userdata('user_ppn')==1){?>
+                                <option value="Lain-Lain">Lain-Lain</option>
+                                <option value="Transfer">Transfer</option>
+                            <?php }else{?>
                                 <option value="Cek">Cek</option>
                                 <option value="Cek Mundur">Cek Mundur</option>
+                            <?php } ?>
                                 <option value="Giro">Giro</option>
-                                <option value="Transfer">Transfer</option>
                                 <option value="Cash">Cash</option>
                             </select>
                         </div>
@@ -176,8 +185,8 @@
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                                <i class="fa fa-floppy-o"></i> Input Details </a>
+                            <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
+                                <i class="fa fa-floppy-o"></i> Simpan </a>
                         </div>    
                     </div>
                 </div>
@@ -303,15 +312,44 @@ function simpanData(){
                 $('#message').html("Tanggal Cek Mundur harus diisi, tidak boleh kosong!");
                 $('.alert-danger').show();
             }else{
-                $('#formku').submit();
+                formSubmit();
+                // $('#formku').submit();
             }
         }else{
-            $('#formku').submit();
+            formSubmit();
+            // $('#formku').submit();
         }
     }else{
-        $('#formku').submit(); 
+        formSubmit();
+        // $('#formku').submit(); 
     };
 };
+
+function formSubmit(){
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url('index.php/Finance/get_no_um'); ?>",
+        data: {
+            id: $('#no_uang_masuk').val(),
+            jenis_id: $('#jenis_id').val(),
+            bank: $('#bank_id').val(),
+            tanggal: $('#tanggal').val()
+        },
+        cache: false,
+        success: function(result) {
+            var res = result['type'];
+            if(res=='duplicate'){
+                $('#message').html("Nomor Uang Masuk sudah ada, tolong coba lagi!");
+                $('.alert-danger').show();
+            }else{
+                $('#message').html("");
+                $('.alert-danger').hide();
+                $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+                $('#formku').submit();
+            }
+        }
+    });
+}
 
 function myCurrency(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;
@@ -323,7 +361,6 @@ function myCurrency(evt) {
 function getComa(value, id){
     angka = value.toString().replace(/\./g, "");
     $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-    hitungSubTotal();
 }
 
 function get_replace(id){

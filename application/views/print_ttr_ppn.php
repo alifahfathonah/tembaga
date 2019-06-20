@@ -44,8 +44,8 @@
                             <td>: <?php echo $header['no_dtr']; ?></td>
                         </tr>
                         <tr>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
+                            <td>No. Surat Jalan</td>
+                            <td>: <?php echo $header['no_sj']; ?></td>
                         </tr>
                     </table>
                 </td>

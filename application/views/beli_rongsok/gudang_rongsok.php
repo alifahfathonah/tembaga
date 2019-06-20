@@ -39,7 +39,7 @@
             <td><?= $data->jumlah_packing ;?></td>
             <td><?= number_format($data->stok_bruto,2,',','.'); ?></td>
             <td style="background-color: green; color: white;"><?= number_format($data->stok_netto,2,',','.'); ?></td>
-            <td><a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/BeliRongsok/view_gudang_rongsok/<?php echo $data->rongsok_id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+            <td><a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangRongsok/view_gudang_rongsok/<?php echo $data->rongsok_id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
             </td>
         </tr>    
     <?php $no++; } ?>

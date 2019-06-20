@@ -650,10 +650,12 @@ class Tolling extends CI_Controller{
 
         if($this->db->trans_complete()){  
             // $this->session->set_flashdata('flash_msg', ' DTR Berhasil di Approve');      
-            redirect('index.php/Tolling/proses_matching/'.$this->input->post('so_id'));
+            // redirect('index.php/Tolling/proses_matching/'.$this->input->post('so_id'));    
+            redirect('index.php/Tolling/matching_so/'.$this->input->post('so_id'));
         }else{
             // $this->session->set_flashdata('flash_msg', ' DTR Gagal di Approve');    
-            redirect('index.php/Tolling/proses_matching/'.$this->input->post('so_id'));
+            // redirect('index.php/Tolling/proses_matching/'.$this->input->post('so_id'));
+            redirect('index.php/Tolling/matching_so/'.$this->input->post('so_id'));
         }            
         
        // header('Content-Type: application/json');
@@ -2271,10 +2273,20 @@ class Tolling extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
         
-        $this->load->model('Model_m_numberings');
-        $code= $this->Model_m_numberings->getNumbering('PO-T', $tgl_input);
+        if($user_ppn == 0){
+            $this->load->model('Model_m_numberings');
+            $code= $this->Model_m_numberings->getNumbering('PO-T', $tgl_input);
+        }else{
+            $code = 'PO-KMP.'.$tgl_po.'.'.$this->input->post('no_po');
+            $count = $this->db->query("Select count(id) as count from po where no_po = '".$code."'")->row_array();
+            if($count['count']){
+                $this->session->set_flashdata('flash_msg', 'Nomor PO sudah Ada. Please try again!');
+                redirect('index.php/BeliRongsok/add');
+            }
+        }
         
         if($code){
             $data = array(

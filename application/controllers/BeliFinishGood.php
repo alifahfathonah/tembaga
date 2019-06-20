@@ -1275,6 +1275,7 @@ class BeliFinishGood extends CI_Controller{
                 'id_bank'=>$this->input->post('bank_id'),
                 'id_vc'=>$id_vc,
                 'currency'=>$this->input->post('currency'),
+                'kurs'=>$this->input->post('kurs'),
                 'nominal'=>str_replace('.', '', $amount),
                 'created_at'=>$tanggal,
                 'created_by'=>$user_id

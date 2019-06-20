@@ -55,8 +55,8 @@
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nama Barang</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Netto</strong></td>
-                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Harga Satuan</strong></td>
-                            <td rowspan="2" style="text-align:center; border:1px solid #000"><strong>Harga Jual</strong></td>
+                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong><?='('.$header['currency'].') ';?>Harga Satuan</strong></td>
+                            <td rowspan="2" style="text-align:center; border:1px solid #000"><strong><?='('.$header['currency'].') ';?>Harga Jual</strong></td>
                         </tr>
                        
                                 <tr>
@@ -75,7 +75,7 @@
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
                             <td style="border-left:1px solid #000;"><?=$row->jenis_barang.$ok;?></td>
-                            <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->netto,2,',','.');?></td>
+                            <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->netto,2,',','.').' '.$row->uom;?></td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->harga,2,',', '.');?></td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000;"><?=number_format($row->total_harga,2,',', '.');?></td>
                         </tr>

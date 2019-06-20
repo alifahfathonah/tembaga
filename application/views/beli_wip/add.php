@@ -150,7 +150,7 @@
                             Kurs
                         </div>
                         <div class="col-md-8">
-                            <input type="number" id="kurs" name="kurs" class="form-control myline" value="0" style="margin-bottom:5px">
+                            <input type="number" id="kurs" name="kurs" class="form-control myline" value="1" style="margin-bottom:5px">
                         </div>
                     </div>
                     <?php if($this->session->userdata('user_ppn')==1){?>
@@ -223,7 +223,7 @@ function get_cur(id){
         $('#show_kurs').show();
     }else if(id=='IDR'){
         $('#show_kurs').hide();
-        $('#kurs').val(0);
+        $('#kurs').val(1);
     }
 }
 </script>

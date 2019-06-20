@@ -157,7 +157,7 @@
                             <thead>
                                 <th>No</th>
                                 <th>Nama Item Rongsok</th>
-                                <th>UOM</th>
+                                <th width="10%">UOM</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Berat Palette</th>
                                 <th>Netto (Kg)</th>
@@ -168,36 +168,34 @@
                             <tbody>
                             <?php
                                 $no = 1;
+                                $bruto = 0;
+                                $berat = 0;
+                                $netto = 0;
                                 foreach ($details as $row){
                                     echo '<tr>';
                                     echo '<td style="text-align:center">'.$no.'</td>';
-                                    echo '<td><input type="text" name="myDetails['.$no.'][nama_item]" '
-                                            . 'class="form-control myline" value="'.$row->nama_item.'" '
-                                            . 'readonly="readonly">';
-                                    echo '<input type="hidden" name="myDetails['.$no.'][id]" value="'.$row->id.'">';
-                                    echo '<input type="hidden" id="rongsok_id_'.$no.'" name="myDetails['.$no.'][id]" value="'.$row->rongsok_id.'">';
-                                    echo '</td>';
-                                    echo '<td><input type="text" name="myDetails['.$no.'][uom]" '
-                                            . 'class="form-control myline" value="'.$row->uom.'" '
-                                            . 'readonly="readonly"></td>';                                   
-                                    echo '<td><input type="text" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->bruto,0,',','.').'" '
-                                            . ' readonly="readonly" size="5"></td>';
-                                    echo '<td><input type="text" id="berat_palette_'.$no.'" name="myDetails['.$no.'][berat_palette]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->berat_palette,0,',','.').'" '
-                                            . ' readonly="readonly" size="5"></td>';
-                                    echo '<td><input type="text" id="netto_'.$no.'" name="myDetails['.$no.'][netto]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->netto,0,',','.').'" '
-                                            . ' readonly="readonly" size="5"></td>';
-                                    
-                                    echo '<td><textarea id="no_pallete_'.$no.'" name="myDetails['.$no.'][no_pallete]" class="form-control myline" readonly="readonly" rows="1">'.$row->no_pallete
-                                            . '</textarea></td>';
-                                    echo '<td><textarea type="text" name="myDetails['.$no.'][line_remarks]" class="form-control myline" readonly="readonly" rows="1">'.$row->line_remarks.'</textarea></td>';
+                                    echo '<td>'.$row->nama_item.'</td>';
+                                    echo '<td>'.$row->uom.'</td>';                                   
+                                    echo '<td>'.number_format($row->bruto,2,',','.').'</td>';
+                                    echo '<td>'.number_format($row->berat_palette,2,',','.').'</td>';
+                                    echo '<td>'.number_format($row->netto,2,',','.').'</td>';
+                                    echo '<td>'.$row->no_pallete.'</td>';
+                                    echo '<td>'.$row->line_remarks.'</td>';
                                     echo '<td><a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Print Barcode </a></td>';
                                     echo '</tr>';
                                     $no++;
+                                    $bruto += $row->bruto;
+                                    $berat += $row->berat_palette;
+                                    $netto += $row->netto;
                                 }
                             ?>
+                            <tr>
+                                <td colspan="3"><strong>Total :</strong></td>
+                                <td style="background-color: green; color: white;"><?=number_format($bruto,2,',','.');?></td>
+                                <td style="background-color: green; color: white;"><?=number_format($berat,2,',','.');?></td>
+                                <td style="background-color: green; color: white;"><?=number_format($netto,2,',','.');?></td>
+                                <td colspan="3"></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -206,7 +204,7 @@
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
-                    <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                    <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                         <i class="fa fa-check"></i> Approve DTR </a>
 
                     <a href="javascript:;" class="btn red" onclick="showRejectBox();"> 
@@ -267,6 +265,7 @@ function getComa(value, id){
 }
 
 function simpanData(){
+    $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
     $('#formku').submit(); 
 };
 

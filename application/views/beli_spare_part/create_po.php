@@ -148,7 +148,7 @@
                             Kurs
                         </div>
                         <div class="col-md-4">
-                            <input type="number" id="kurs" name="kurs" class="form-control myline" value="0">
+                            <input type="number" id="kurs" name="kurs" class="form-control myline" value="1">
                         </div>
                         </div>
                     </div>
@@ -272,7 +272,7 @@ function get_cur(id){
         $('#show_kurs').show();
     }else if(id=='IDR'){
         $('#show_kurs').hide();
-        $('#kurs').val(0);
+        $('#kurs').val(1);
     }
 }
 

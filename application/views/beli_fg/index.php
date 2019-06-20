@@ -232,6 +232,14 @@
                                     <input type="text" id="currency" name="currency" class="form-control myline" style="margin-bottom:5px" readonly="readonly">           
                                 </div>
                             </div>
+                            <div class="row" id="show_kurs">
+                                <div class="col-md-5">
+                                    Kurs
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="number" id="kurs" name="kurs" class="form-control myline" value="1" style="margin-bottom:5px">
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-5">
                                     Jumlah Bayar (Rp) <font color="#f00">*</font>
@@ -551,10 +559,18 @@ function get_currency(id){
             data: "id="+id,
             dataType: "json",
             success: function(result) {
-                $('#currency').val(result['currency']);
+                    $('#currency').val(result['currency']);
+                if(result['currency']=='IDR'){
+                    $('#kurs').val(1);
+                    $('#show_kurs').hide();
+                }else{
+                    $('#show_kurs').show();
+                    $('#kurs')
+                }
             }
         });
     }else{
+        $('#show_kurs').hide();
         $('#currency').val('IDR');
     }
 }
@@ -691,7 +707,8 @@ function prosesVoucher(){
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-$(function(){   
+$(function(){
+    $('#show_kurs').hide();
     $("#tanggal").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",

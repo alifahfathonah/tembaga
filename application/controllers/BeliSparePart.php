@@ -606,8 +606,6 @@ class BeliSparePart extends CI_Controller{
             } else {
                 $this->load->view('print_po_ppn', $data);
             }
-
-            $this->load->view('beli_spare_part/print_po', $data);
         }else{
             redirect('index.php'); 
         }

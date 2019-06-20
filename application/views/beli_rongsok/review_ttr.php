@@ -146,39 +146,33 @@
                             <tbody>
                             <?php
                                 $no = 1;
+                                $bruto = 0;
+                                $berat = 0;
+                                $netto = 0;
                                 foreach ($details as $row){
                                     echo '<tr>';
                                     echo '<td style="text-align:center">'.$no.'</td>';
-                                    echo '<td><input type="text" name="myDetails['.$no.'][nama_item]" '
-                                            . 'class="form-control myline" value="'.$row->nama_item.'" '
-                                            . 'readonly="readonly">';
-                                    
-                                    echo '<input type="hidden" name="myDetails['.$no.'][id]" value="'.$row->id.'">';                                    
-                                    echo '</td>';
-                                    echo '<td><input type="text" name="myDetails['.$no.'][uom]" '
-                                            . 'class="form-control myline" value="'.$row->uom.'" '
-                                            . 'readonly="readonly"></td>';
-                                    
-                                    echo '<td><input type="text" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->bruto,2,'.',',').'" '
-                                            . 'readonly="readonly"></td>';
-
-                                    echo '<td><input type="text" id="berat_'.$no.'" name="myDetails['.$no.'][berat]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->berat_palette,2,'.',',').'" '
-                                            . 'readonly="readonly"></td>';
-                                    
-                                    echo '<td><input type="text" id="netto_'.$no.'" name="myDetails['.$no.'][netto]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->netto,2,'.',',').'" '
-                                            . 'readonly="readonly"></td>';
-                                    
-                                    echo '<td><input type="text" name="myDetails['.$no.'][no_pallete]" value="'.$row->no_pallete.'" '
-                                            . 'class="form-control myline" readonly="readonly"></td>';
-                                    echo '<td><input type="text" name="myDetails['.$no.'][line_remarks]" value="'.$row->line_remarks.'"'
-                                            . 'class="form-control myline" readonly="readonly"></td>';
+                                    echo '<td>'.$row->nama_item.'</td>';
+                                    echo '<td>'.$row->uom.'</td>';
+                                    echo '<td>'.number_format($row->bruto,2,'.',',').'</td>';
+                                    echo '<td>'.number_format($row->berat_palette,2,'.',',').'</td>';
+                                    echo '<td>'.number_format($row->netto,2,'.',',').'</td>';
+                                    echo '<td>'.$row->no_pallete.'</td>';
+                                    echo '<td>'.$row->line_remarks.'</td>';
                                     echo '</tr>';
                                     $no++;
+                                    $bruto += $row->bruto;
+                                    $berat += $row->berat_palette;
+                                    $netto += $row->netto;
                                 }
                             ?>
+                            <tr>
+                                <td colspan="3" style="text-align: right;"><b>Total :</b></td>
+                                <td style="background-color: green; color: white;"><?=number_format($bruto,2,',','.');?></td>
+                                <td style="background-color: green; color: white;"><?=number_format($berat,2,',','.');?></td>
+                                <td style="background-color: green; color: white;"><?=number_format($netto,2,',',',');?></td>
+                                <td colspan="2"></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>

@@ -31,9 +31,13 @@
                             No. Invoice <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
+                            <?php if($this->session->userdata('user_ppn')==1){ ?>
+                            <input type="text" id="no_pembayaran" name="no_pembayaran" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor Invoice ..." onkeyup="this.value = this.value.toUpperCase()">
+                            <?php }else{ ?>
                             <input type="text" id="no_pembayaran" name="no_pembayaran" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="Auto generate">
+                            <?php } ?>
 
                             <input type="hidden" id="flag_ppn" name="flag_ppn" value="<?= $ppn ;?>">
                         </div>
@@ -155,7 +159,11 @@
                             Nama Direktur
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_direktur" name="nama_direktur" class="form-control myline" style="margin-bottom:5px">
+                            <!-- <input type="text" id="nama_direktur" name="nama_direktur" class="form-control myline" style="margin-bottom:5px"> -->
+                            <select id="nama_direktur" name="nama_direktur" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value="Budinata Atmadja">Budinata Atmadja</option>
+                                <option value="Senkiawan Tjandra">Senkiawan Tjandra</option>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -203,7 +211,7 @@
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                            <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                                 <i class="fa fa-floppy-o"></i> Input Details </a>
                             <a href="<?php echo base_url('index.php/Finance/invoice'); ?>" class="btn blue-hoki"> 
                             <i class="fa fa-angle-left"></i> Kembali </a>
@@ -305,11 +313,37 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
+    }else if($.trim($("#no_pembayaran").val()) == ""){
+        $('#message').html("No Invoice harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else if($.trim($("#term_of_payment").val()) == ""){
+        $('#message').html("Term Of Payment harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
     }else if($.trim($("#surat_jalan_id").val()) == ""){
         $('#message').html("Silahkan pilih Surat Jalan");
         $('.alert-danger').show();
     }else{
-        $('#formku').submit(); 
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url('index.php/Finance/get_no_invoice'); ?>",
+            data: {
+                id: $('#no_pembayaran').val(),
+                tanggal: $('#tanggal').val()
+            },
+            cache: false,
+            success: function(result) {
+                var res = result['type'];
+                if(res=='duplicate'){
+                    $('#message').html("Nomor Invoice sudah ada, tolong coba lagi!");
+                    $('.alert-danger').show();
+                }else{
+                    $('#message').html("");
+                    $('.alert-danger').hide();
+                    $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+                    $('#formku').submit();
+                }
+            }
+        });
     };
 };
 </script>

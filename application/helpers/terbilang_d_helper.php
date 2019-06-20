@@ -7,7 +7,7 @@ if ( ! function_exists('number_to_words'))
 		$before_comma = trim(to_word($number));
 		$after_comma = trim(comma($number));
 		if($currency == 'IDR'){
-			$c = 'RUPIAH';
+			$c = 'Rupiah';
 		}else{
 			$c = $currency;
 		}
@@ -19,17 +19,17 @@ if ( ! function_exists('number_to_words'))
 		$words = "";
 		$arr_number = array(
 		"",
-		"SATU",
-		"DUA",
-		"TIGA",
-		"EMPAT",
-		"LIMA",
-		"ENAM",
-		"TUJUH",
-		"DELAPAN",
-		"SEMBILAN",
-		"SEPULUH",
-		"SEBELAS");
+		"Satu",
+		"Dua",
+		"Tiga",
+		"Empat",
+		"Lima",
+		"Enam",
+		"Tujuh",
+		"Delapan",
+		"Sembilan",
+		"Sepuluh",
+		"Sebelas");
 
 		if($number<12)
 		{
@@ -37,37 +37,37 @@ if ( ! function_exists('number_to_words'))
 		}
 		else if($number<20)
 		{
-			$words = to_word($number-10)." BELAS";
+			$words = to_word($number-10)." Belas";
 		}
 		else if($number<100)
 		{
-			$words = to_word($number/10)." PULUH".to_word($number%10);
+			$words = to_word($number/10)." Puluh".to_word($number%10);
 		}
 		else if($number<200)
 		{
-			$words = " SERATUS".to_word($number-100);
+			$words = " Seratus".to_word($number-100);
 		}
 		else if($number<1000)
 		{
-			$words = to_word($number/100)." RATUS".to_word($number%100);
+			$words = to_word($number/100)." Ratus".to_word($number%100);
 		}
 		else if($number<2000)
 		{
-			$words = " SERIBU".to_word($number-1000);
+			$words = " Seribu".to_word($number-1000);
 		}
 		else if($number<1000000)
 		{
-			$words = to_word($number/1000)." RIBU".to_word($number%1000);
+			$words = to_word($number/1000)." Ribu".to_word($number%1000);
 		}
 		else if($number<1000000000)
 		{
-			$words = to_word($number/1000000)." JUTA".to_word($number%1000000);
+			$words = to_word($number/1000000)." Juta".to_word($number%1000000);
 		} 
 		else if ($number<1000000000000) {
-			$words = to_word($number/1000000000). " MILYAR".to_word(fmod($number,1000000000));
+			$words = to_word($number/1000000000). " Milyar".to_word(fmod($number,1000000000));
 		} 
 		else if ($number<1000000000000000) {
-			$words = to_word($number/1000000000000). " TRILYUN".to_word(fmod($number,1000000000000));
+			$words = to_word($number/1000000000000). " Trilyun".to_word(fmod($number,1000000000000));
 		} 
 		else
 		{

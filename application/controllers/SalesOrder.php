@@ -1228,22 +1228,23 @@ class SalesOrder extends CI_Controller{
             if($user_ppn == 1){
                 $this->load->helper('target_url');
 
+                $data_post['flag_sj'] = $flag_sj;
                 $data_post['tsj'] = $this->Model_sales_order->tsj_header_only($sjid)->row_array();
                 $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang($sjid)->result();
 
                 $post = json_encode($data_post);
-                print_r($post);
-                die();
+                // print_r($post);
+                // die();
                 $ch = curl_init(target_url().'api/SalesOrderAPI/sj');
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
-                print_r($response);
-                die();
+                // print_r($response);
+                // die();
             }
 
         if($this->db->trans_complete()){    
@@ -1288,7 +1289,11 @@ class SalesOrder extends CI_Controller{
             $jenis = $data['header']['jenis_barang'];
             if($jenis=='FG'){
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_fg($id)->result();
-                $this->load->view('sales_order/print_sj', $data);
+                if($data['header']['status']==1){
+                    $this->load->view('sales_order/print_sj_bak', $data);
+                }else{
+                    $this->load->view('sales_order/print_sj', $data);
+                }
             }else if($jenis=='WIP'){
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
                 $this->load->view('sales_order/print_sj_wip', $data);

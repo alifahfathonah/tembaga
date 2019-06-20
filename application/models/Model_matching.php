@@ -17,7 +17,7 @@ class Model_matching extends CI_Model{
             left join sales_order so on so.id = fi.id_sales_order
             left join t_sales_order tso on tso.so_id = so.id
             where tso.jenis_barang ='FG' and so.flag_ppn = 0 and fi.flag_resmi = 0
-            order by fi.no_invoice");
+            order by fi.no_invoice asc");
         return $data;
     }
 

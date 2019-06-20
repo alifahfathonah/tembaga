@@ -148,7 +148,7 @@ class Model_tolling_titipan extends CI_Model{
                 (Select count(dtrd.id)As jumlah_item From dtr_detail dtrd Where dtrd.dtr_id = dtr.id)As jumlah_item
                 From dtr
                     Left Join sales_order so On (dtr.so_id = so.id) 
-                    Left Join m_customers cust On (so.m_customer_id = cust.id) 
+                    Left Join m_customers cust On (cust.id = dtr.customer_id) 
                     Left Join users usr On (dtr.created_by = usr.id) 
                 Where dtr.customer_id!=0 and dtr.retur_id=0 and COALESCE(so.flag_ppn,".$user_ppn.") =".$user_ppn."
                 Order By dtr.id Desc");

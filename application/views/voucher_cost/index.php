@@ -18,14 +18,6 @@
                         <h4 class="modal-title">&nbsp;</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="alert alert-danger display-hide">
-                                    <button class="close" data-close="alert"></button>
-                                    <span id="message">&nbsp;</span>
-                                </div>
-                            </div>
-                        </div>
                         <form class="eventInsForm" method="post" target="_self" name="formku" 
                               id="formku">                            
                             <div class="row">
@@ -45,7 +37,7 @@
                                 <div class="col-md-7">
                                     <input type="text" id="tanggal" name="tanggal" 
                                         class="form-control input-small myline" style="margin-bottom:5px; float:left;" 
-                                        value="<?php echo date('d-m-Y'); ?>">
+                                        value="<?php echo date('Y-m-d'); ?>">
                                 </div>
                             </div> 
                             <div class="row">
@@ -86,13 +78,40 @@
                                         onkeyup="this.value = this.value.toUpperCase()"></textarea>
                                 </div>
                             </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger display-hide">
+                                        <button class="close" data-close="alert"></button>
+                                        <span id="message">&nbsp;</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="width: 100%; margin-bottom: 5px;text-align: center">
+                              <span>
+                                Data Uang Keluar <!--Padding is optional-->
+                              </span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Nomor Uang Keluar
+                                </div>
+                                <div class="col-md-7">
+                                <?php if($this->session->userdata('user_ppn')==1){?>
+                                    <input type="text" id="no_uk" name="no_uk" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" placeholder="Nomor Uang Keluar ...">
+                                <?php }else{ ?>
+                                    <input type="text" id="no_uk" name="no_uk" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="Auto Generate">
+                                <?php } ?>
+                                </div>
+
+                            </div>
                             <div class="row">
                                 <div class="col-md-5">
                                     Nomor Giro
                                 </div>
                                 <div class="col-md-7">
                                     <input type="text" id="nomor_giro" name="nomor_giro" 
-                                        class="form-control myline" style="margin-bottom:5px">   
+                                        class="form-control myline" style="margin-bottom:5px" placeholder="Nomor Giro ...">   
                                 </div>
                             </div>
                             <div class="row">
@@ -123,13 +142,21 @@
                             </div> 
                             <div class="row">
                                 <div class="col-md-5">
-                                    Kurs
+                                    Currency
                                 </div>
                                 <div class="col-md-7">
-                                    <select id="currency" name="currency" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                    <select id="currency" name="currency" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cur(this.value);">
                                     <option value="IDR">IDR</option>
                                     <option value="USD">USD</option>
                                     </select>         
+                                </div>
+                            </div>
+                            <div class="row" id="show_kurs">
+                                <div class="col-md-5">
+                                    Kurs
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="number" id="kurs" name="kurs" class="form-control myline" value="1" style="margin-bottom:5px">
                                 </div>
                             </div>
                             <div class="row">
@@ -139,13 +166,13 @@
                                 <div class="col-md-7">
                                     <input type="text" id="amount" name="amount" 
                                         class="form-control myline" style="margin-bottom:5px" 
-                                        onkeydown="return myCurrency(event);" maxlength="10" onkeyup="getComa(this.value, this.id);">
+                                        onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);">
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">                        
-                        <button type="button" class="btn blue" onClick="simpandata();">Simpan</button>
+                        <button type="button" class="btn blue" id="simpandata" onClick="simpandata();">Simpan</button>
                         <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
                     </div>
                 </div>
@@ -206,7 +233,7 @@
                                 if( ($group_id==1)||($hak_akses['print']==1) ){
                             ?>
                             <a href="<?php echo base_url(); ?>index.php/VoucherCost/print_voucher/<?php echo $data->id; ?>" 
-                               class="btn btn-circle btn-xs blue-ebonyclay" style="margin-bottom:4px"><i class="fa fa-print"></i> Print &nbsp; </a> 
+                               class="btn btn-circle btn-xs blue-ebonyclay" style="margin-bottom:4px" target="_blank"><i class="fa fa-print"></i> Print &nbsp; </a> 
                             <?php }?>
                         </td>
                     </tr>
@@ -272,13 +299,41 @@ function simpandata(){
     }else if(($.trim($("#cost_id").val()) == "") && ($.trim($("#group_cost_id").val()) == "")){
         $('#message').html("Silahkan pilih nama cost!");
         $('.alert-danger').show();
-    }else{     
-        $('#message').html("");
-        $('.alert-danger').hide();
-        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/VoucherCost/save");
-        $('#formku').submit();                                  
+    }else{
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url('index.php/BeliRongsok/get_no_uang_keluar'); ?>",
+            data: {
+                no_uk: $('#no_uk').val(),
+                tanggal: $('#tanggal').val(),
+                bank_id: $('#bank_id').val()
+            },
+            cache: false,
+            success: function(result) {
+                var res = result['type'];
+                if(res=='duplicate'){
+                    $('#message').html("Nomor Uang Keluar sudah ada, tolong coba lagi!");
+                    $('.alert-danger').show();
+                }else{
+                    $('#simpandata').text('Please Wait ...').prop("onclick", null).off("click");
+                    $('#message').html("");
+                    $('.alert-danger').hide();
+                    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/VoucherCost/save");
+                    $('#formku').submit(); 
+                }
+            }
+        });                                 
     };
 };
+
+function get_cur(id){
+    if(id=='USD'){
+        $('#show_kurs').show();
+    }else if(id=='IDR'){
+        $('#show_kurs').hide();
+        $('#kurs').val(1);
+    }
+}
 
 function get_cost(id){   
     if (id == 3) {
@@ -305,6 +360,7 @@ function get_cost(id){
 }
 
 $(function(){ 
+    $('#show_kurs').hide(); 
     $("#tanggal").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
@@ -312,7 +368,7 @@ $(function(){
         buttonText: "Select date",
         changeMonth: true,
         changeYear: true,
-        dateFormat: 'dd-mm-yy'
+        dateFormat: 'yy-mm-dd'
     }); 
     
     $("#tanggal_jatuh").datepicker({

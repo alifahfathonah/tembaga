@@ -757,6 +757,8 @@ class BeliRongsok extends CI_Controller{
 
         $this->db->trans_start();
 
+            $code = $this->input->post('no_dtr');
+
             $details = $this->input->post('myDetails');
             foreach ($details as $row){
                 $this->db->where('id', $row['id']);
@@ -1859,6 +1861,7 @@ class BeliRongsok extends CI_Controller{
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
         $user_ppn = $this->session->userdata('user_ppn');
+        $this->load->helper('tanggal_indo');
 
         if($id){
             $group_id    = $this->session->userdata('group_id');        
@@ -1870,9 +1873,9 @@ class BeliRongsok extends CI_Controller{
 
             $this->load->helper('terbilang_d_helper');
             if($user_ppn==1){
-                $this->load->model('Model_beli_rongsok');
-                $data['header'] = $this->Model_beli_rongsok->show_header_voucher($id)->row_array();
-                $data['list_data'] = $this->Model_beli_rongsok->show_detail_voucher($id)->result();
+                $this->load->model('Model_finance');
+                $data['header'] = $this->Model_finance->show_header_voucher_ppn($id)->row_array();
+                $data['list_data'] = $this->Model_finance->show_detail_voucher_ppn($id)->result();
                 $total = 0;
                 foreach ($data['list_data'] as $row) {
                     $total += $row->amount;

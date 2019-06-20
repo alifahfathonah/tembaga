@@ -136,7 +136,7 @@
                                         echo '<td>'.$row->jenis_barang.'</td>';
                                         echo '<td>'.$row->uom.'</td>';
                                         echo '<td style="text-align:right;">'.number_format($row->amount,0,',', '.').'</td>';
-                                        echo '<td style="text-align:right;">'.$row->netto.'</td>';
+                                        echo '<td style="text-align:right;">'.number_format($row->netto,2,',','.').'</td>';
                                         echo '<td style="text-align:right;">'.number_format($row->total_amount,0,',', '.').'</td>';
                                         echo '</tr>';
                                         $qty += $row->netto;
@@ -263,25 +263,6 @@
                                 </tbody>
                             </table>                            
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <?php
-                                    if($row->status==0){
-                                        echo '<a href="javascript:;" class="btn btn-xs btn-circle green" onclick="approve('.$row->id.');"> '
-                                        . '<i class="fa fa-check"></i> Approve </a> &nbsp; ';
-                                        echo '<a href="javascript:;" class="btn btn-xs btn-circle red" onclick="reject('.$row->id.');"> '
-                                        . '<i class="fa fa-check"></i> Reject </a>';
-                                    }else if($row->status==1){
-                                        echo '<div style="color:green; display:inline">Approved </div> by '.$row->approved_name;
-                                    }else if($row->status==9){
-                                        echo '<div style="color:red; display:inline">Rejected </div> by '.$row->rejected_name.'<br>';
-                                        echo '<i>Rejected remarks :</i><br>';
-                                        echo $row->reject_remarks;
-                                    }
-                                ?>
-                            </div>
-                        </div>
-                        <hr>
                         <?php
                             }
                         ?>
@@ -394,7 +375,7 @@
                             <div class="col-md-12">
                                 <?php
                                     if($row->status==0){
-                                        echo '<a href="javascript:;" class="btn btn-xs btn-circle green" onclick="approve('.$row->id.');"> '
+                                        echo '<a href="javascript:;" class="btn btn-xs btn-circle green" id="approveData" onclick="approve('.$row->id.');"> '
                                         . '<i class="fa fa-check"></i> Approve </a> &nbsp; ';
                                         echo '<a href="javascript:;" class="btn btn-xs btn-circle red" onclick="reject('.$row->id.');"> '
                                         . '<i class="fa fa-check"></i> Reject </a>';
@@ -430,6 +411,7 @@
 </div> 
 <script>
 function approve(id){
+    $('#approveData').text('Please Wait ...').prop("onclick", null).off("click");
     $.ajax({
         url: "<?php echo base_url('index.php/Tolling/approve_matching'); ?>",
         type: "POST",

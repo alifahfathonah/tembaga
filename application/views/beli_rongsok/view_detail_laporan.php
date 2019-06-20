@@ -66,7 +66,7 @@
                     </div>
                 </div>
             </div>
-            <a href="<?php echo base_url('index.php/BeliRongsok/view_laporan/'.$tahun.$bulan); ?>" class="btn blue-hoki"> 
+            <a href="<?php echo base_url('index.php/GudangRongsok/view_laporan/'.$tahun.$bulan); ?>" class="btn blue-hoki"> 
             <i class="fa fa-angle-left"></i> Kembali </a>
         <?php
             }else{

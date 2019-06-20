@@ -116,18 +116,21 @@
                             <td style="text-align:center">Disetujui</td>
                             <td style="text-align:center">Pembukuan</td>
                             <td style="text-align:center">Kassa/Keuangan</td>
+                            <td style="text-align:center">Disetor / Diterima</td>
                         </tr>
-                        <tr style="height:55">
+                        <tr style="height:35">
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
+                            <td style="text-align:center"></td>
                         </tr>
                         <tr>
-                            <td style="text-align:center">(______________)</td>
-                            <td style="text-align:center">(______________)</td>
-                            <td style="text-align:center">(______________)</td>
-                            <td style="text-align:center">(______________)</td>
+                            <td style="text-align:center">(_______________)</td>
+                            <td style="text-align:center">(_______________)</td>
+                            <td style="text-align:center">(_______________)</td>
+                            <td style="text-align:center">(_______________)</td>
+                            <td style="text-align:center">(_______________)</td>
                         </tr>
                     </table>
                 </td>

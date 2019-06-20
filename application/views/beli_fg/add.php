@@ -73,7 +73,7 @@
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                            <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                                 <i class="fa fa-floppy-o"></i> Input Details FG </a>
                         </div>    
                     </div>
@@ -150,7 +150,7 @@
                             Kurs
                         </div>
                         <div class="col-md-8">
-                            <input type="number" id="kurs" name="kurs" class="form-control myline" value="0" style="margin-bottom:5px">
+                            <input type="number" id="kurs" name="kurs" class="form-control myline" value="1" style="margin-bottom:5px">
                         </div>
                     </div>
                     <?php if($this->session->userdata('user_ppn')==1){?>
@@ -202,7 +202,8 @@ function simpanData(){
     }else if($.trim($("#term_of_payment").val()) == ""){
         $('#message').html("Term of payment harus diisi!");
         $('.alert-danger').show(); 
-    }else{     
+    }else{
+        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').submit(); 
     };
 };
@@ -224,7 +225,7 @@ function get_cur(id){
         $('#show_kurs').show();
     }else if(id=='IDR'){
         $('#show_kurs').hide();
-        $('#kurs').val(0);
+        $('#kurs').val(1);
     }
 }
 </script>

@@ -3,9 +3,12 @@
         <title></title>
         <meta charset="utf-8" />
     </head>
-    <body class="margin-left:40px;">
+    <body class="margin-left:40px;" style="margin-top: 75px;">
         <p>&nbsp;</p>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
+            <tr>
+                <td><h3>Pengusaha Kena Pajak</h3></td>
+            </tr>
             <tr>
                 <td width="60%">
                     <table border="0" cellpadding="2" cellspacing="1" width="100%">
@@ -52,7 +55,7 @@
                         <tr>
                             <td>Nama</td>
                             <td>:</td>
-                            <td> <?php echo ($header['alias'] == NULL) ? $header['nama_customer'] : $header['alias']; ?></td>
+                            <td> <?php echo $header['nama_customer']?></td>
                         </tr>
                         <tr>
                             <td>Alamat</td>
@@ -74,7 +77,7 @@
                         </tr>
                         <tr>
                             <td>Syarat Pembayaran</td>
-                            <td>: Tunai</td>
+                            <td>: <?php echo $header['term_of_payment'];?></td>
                         </tr>
                         <tr>
                             <td>Tanggal Jatuh Tempo</td>
@@ -116,11 +119,11 @@
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
                             <td colspan="4" style="border-left:1px solid #000;"><?=$row->jenis_barang;?></td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=$row->qty;?></td>
-                            <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->netto,0,',','.').' '.$row->uom;?></td>
+                            <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->netto,2,',','.').' '.$row->uom;?></td>
                             <td style="border-left:1px solid #000;"><?=$c;?></td>
-                            <td style="text-align:right;"><?=number_format($row->harga,0,',', '.');?></td>
+                            <td style="text-align:right;"><?=number_format($row->harga,2,',', '.');?></td>
                             <td style="border-left:1px solid #000;"><?=$c;?></td>
-                            <td style="text-align:right; border-right:1px solid #000;"><?=number_format($row->total_harga,0,',', '.');?></td>
+                            <td style="text-align:right; border-right:1px solid #000;"><?=number_format($row->total_harga,2,',', '.');?></td>
                         </tr>
                         <?php
                                 $total_netto += $row->netto;
@@ -180,13 +183,16 @@
                         <tr>
                             <td colspan="2" style="border-left: 1px solid #000;">Terbilang</td>
                             <td>:</td>
-                            <td colspan="5" rowspan="2">** <?php echo ucwords(number_to_words_d($total_bersih, $c)); ?> **</td>
-                            <td colspan="3"  style="border-right: 1px solid #000;">Tanggerang, <? =tanggal_indo($header['tanggal']);?></td>
+                            <td colspan="5" rowspan="3" style="vertical-align: top">** <?php echo ucwords(number_to_words_d($total_bersih, $c)); ?> **</td>
+                            <td colspan="3"  style="border-right: 1px solid #000;">Tanggerang, <?=tanggal_indo($header['tanggal']);?></td>
                         </tr>
                         <tr>
                             <td colspan="2" style="border-left: 1px solid #000;"></td>
                             <td></td>
                             <td colspan="3"  style="border-right: 1px solid #000;"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="11" style="height: 75px; border-right:1px solid #000; border-left:1px solid #000;"></td>
                         </tr>
                         <tr>
                             <td colspan="4" style="border-left: 1px solid #000;"></td>
@@ -200,6 +206,7 @@
                             <td colspan="3" rowspan="2" style="border-bottom: 1px solid #000;">Nama:PT. KAWAT MAS PRAKASA <br>
                             ACC: <?=$header['nomor_rekening'];?><br>
                             BANK <?=$header['kode_bank'];?><br>
+                            <?=$header['kantor_cabang'];?>
                             </td>
                             <td colspan="4" style="border-right: 1px solid #000;"></td>
                         </tr>

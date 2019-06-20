@@ -41,19 +41,19 @@
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nama Item</strong></td>
-                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>UOM</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Satuan</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Jumlah</strong></td>
-                            <td style="text-align:center; border:1px solid #000"><strong>Keterangan</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;"><strong>Keterangan</strong></td>
                         </tr>
                         <?php
                             $no = 1;
                             foreach ($details as $row){
                                 echo '<tr>';
-                                echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
-                                echo '<td style="border-left:1px solid #000">'.$row->nama_item.'</td>';
-                                echo '<td style="border-left:1px solid #000">'.$row->uom.'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->qty,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->line_remarks.'</td>';
+                                echo '<td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000;">'.$no.'</td>';
+                                echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000;">'.$row->nama_item.'</td>';
+                                echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000;">'.$row->uom.'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->qty,0,',', '.').'</td>';
+                                echo '<td style="text-align:left; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000;">'.$row->line_remarks.'</td>';
                                 echo '</tr>';
                                 $no++;
                             }

@@ -205,7 +205,7 @@ class Model_finance extends CI_Model{
     }
 
     function show_header_invoice($id){
-        $data = $this->db->query("select fi.*, coalesce(NULLIF(tso.alias,''),mc.nama_customer)as nama_customer, mc.alamat, mc.npwp, so.no_sales_order, COALESCE(so.flag_ppn,r.flag_ppn) as flag_ppn, so.flag_tolling, tso.no_po, u.realname, tsj.no_surat_jalan, tso.id as id_t_sales_order, r.no_retur, b.kode_bank, b.nama_bank, b.nomor_rekening, mtch.no_matching from f_invoice fi
+        $data = $this->db->query("select fi.*, coalesce(NULLIF(tso.alias,''),mc.nama_customer)as nama_customer, mc.alamat, mc.npwp, so.no_sales_order, COALESCE(so.flag_ppn,r.flag_ppn) as flag_ppn, so.flag_tolling, tso.no_po, u.realname, tsj.no_surat_jalan, tso.id as id_t_sales_order, r.no_retur, b.kode_bank, b.nama_bank, b.nomor_rekening, b.kantor_cabang, mtch.no_matching from f_invoice fi
             left join m_customers mc on mc.id = fi.id_customer
             left join sales_order so on so.id = fi.id_sales_order
             left join t_sales_order tso on tso.so_id = fi.id_sales_order
@@ -294,10 +294,11 @@ class Model_finance extends CI_Model{
     }
 
     function show_header_voucher($id){
-        $data = $this->db->query("select v.*, s.nama_supplier, p.no_po, p.currency, pmb.no_pembayaran, u.realname as pic 
+        $data = $this->db->query("select v.*, s.nama_supplier, mc.nama_customer, p.no_po, p.currency, pmb.no_pembayaran, u.realname as pic 
             from voucher v 
             left join po p on (p.id = v.po_id)
             left join supplier s on (s.id = p.supplier_id)
+            left join m_customers mc on (mc.id = v.customer_id)
             left join f_pembayaran pmb on (pmb.id = v.pembayaran_id)
             left join users u on (u.id = v.created_by)
             where v.id = ".$id);
@@ -314,6 +315,28 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function show_header_voucher_ppn($id){
+        $data = $this->db->query("select v.*, COALESCE(s.nama_supplier, mc.nama_customer, '-') as nama_customer, COALESCE(p.currency, fk.currency) as currency, fk.tgl_jatuh_tempo, fk.no_giro, b.no_acc, b.nama_bank, s.nama_supplier, p.no_po, u.realname as pic, fk.nomor, COALESCE(p.kurs, fk.kurs)as kurs
+            from voucher v 
+            left join f_kas fk on (fk.id_vc = v.id)
+            left join bank b on (b.id = fk.id_bank)
+            left join po p on (p.id = v.po_id)
+            left join supplier s on (s.id = v.supplier_id)
+            left join m_customers mc on (mc.id = v.customer_id)
+            left join users u on (u.id = v.created_by)
+            where v.id = ".$id);
+        return $data;
+    }
+
+    function show_detail_voucher_ppn($id){
+        $data = $this->db->query("Select v.*, COALESCE(s.nama_supplier, mc.nama_customer, v.nm_cost) as nama, po.no_po, po.tanggal As tanggal_po
+                From voucher v
+                    Left Join po On (v.po_id = po.id)
+                    left join supplier s on (s.id = v.supplier_id)
+                    left join m_customers mc on (mc.id = v.customer_id)
+                where v.id = ".$id);
+        return $data;
+    }
     // function list_matching(){
     //     $data = $this->db->query("select mc.*, 
     //     (select count(id) from sales_order so where so.m_customer_id = mc.id) as jumlah_so,
@@ -353,7 +376,7 @@ class Model_finance extends CI_Model{
     // }
 
     function matching_header_um_print($id){
-        $data = $this->db->query("select fum.*, mc.nama_customer, mc.pic, fm.no_matching
+        $data = $this->db->query("select fum.*, COALESCE(mc.nama_customer,'-') as nama_customer, mc.pic, fm.no_matching
             from f_uang_masuk fum
             left join f_match fm on fm.id = fum.flag_matching
             left join m_customers mc on mc.id = fum.m_customer_id

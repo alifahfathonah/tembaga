@@ -78,6 +78,45 @@ class Finance extends CI_Controller{
         echo json_encode($result); 
     }
 
+    function get_no_um(){
+        $user_ppn = $this->session->userdata('user_ppn');
+        $tgl_inv = date('Y', strtotime($this->input->post('tanggal')));
+        $bank_id = $this->input->post('bank_id');
+
+        if(($this->input->post('jenis_id') == 'Cek')||($this->input->post('jenis_id') == 'Cek Mundur')){
+            if($user_ppn == 1){
+                $num = 'CM-KMP';
+            }else{
+                $num = 'CM';
+            }
+        }else{
+            if($user_ppn == 1){
+                if($this->input->post('bank_id')<=3){
+                    $num = 'KM-KMP';
+                }else{
+                    $num = 'BM-KMP';
+                }
+            }else{
+                if($this->input->post('bank_id')<=3){
+                    $num = 'KM';
+                }else{
+                    $num = 'BM';
+                }
+            }
+        }
+
+        $code = $num.'.'.$tgl_inv.'.'.$this->input->post('id');
+
+        $count = $this->db->query("select count(id) as count from f_uang_masuk where no_uang_masuk ='".$code."'")->row_array();
+        if($count['count']>0){
+            $data['type'] = 'duplicate';
+        }else{
+            $data['type'] = 'sukses';
+        }
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+
     function save(){
         $user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
@@ -1167,18 +1206,33 @@ class Finance extends CI_Controller{
         print form_dropdown('surat_jalan_id', $arr_so);
     }
 
+    function get_no_invoice(){
+        $tgl_inv = date('Ym', strtotime($this->input->post('tanggal')));
+        $code = 'INV-KMP.'.$tgl_inv.'.'.$this->input->post('id');
+
+        $count = $this->db->query("select count(id) as count from f_invoice where no_invoice ='".$code."'")->row_array();
+        if($count['count']>0){
+            $data['type'] = 'duplicate';
+        }else{
+            $data['type'] = 'sukses';
+        }
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+
     function save_invoice(){
         $user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_inv = date('Ym', strtotime($this->input->post('tanggal')));
         $ppn       = $this->session->userdata('user_ppn');
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         if($ppn == 1){
-            $code = $this->Model_m_numberings->getNumbering('INV-KMP', $tgl_input);
+            $code = 'INV-KMP.'.$tgl_inv.'.'.$this->input->post('no_pembayaran');
         }else{
-            $code = $this->Model_m_numberings->getNumbering('INVOICE', $tgl_input);
+            $code = $this->Model_m_numberings->getNumbering('INV', $tgl_input);
         }
 
         $id_so = $this->input->post('sales_order_id');
@@ -1220,9 +1274,14 @@ class Finance extends CI_Controller{
         // }
 
         $nilai_invoice = 0;
-        foreach($loop_detail as $row){
+
+        if($ppn == 1){
+            $detail_push = [];
+        }
+
+        foreach($loop_detail as $k => $row){
             $total = $row->amount * $row->netto;
-            $this->db->insert('f_invoice_detail', array(
+            $fid = array(
                     'id_invoice'=>$id_new,
                     'sj_detail_id'=>$row->t_sj_id,
                     'jenis_barang_id'=>$row->jbid,
@@ -1230,7 +1289,14 @@ class Finance extends CI_Controller{
                     'netto'=>$row->netto,
                     'harga'=>$row->amount,
                     'total_harga'=>$total,
-            ));
+            );
+
+            $this->db->insert('f_invoice_detail', $fid);
+                if($ppn == 1){
+                    $fid_id = $this->db->insert_id();
+                    $data_id = array('reff1' => $fid_id);
+                    $detail_push[$k] = array_merge($fid, $data_id);
+                }
             $nilai_invoice += $total;
         }
 
@@ -1247,16 +1313,43 @@ class Finance extends CI_Controller{
 
         $cek = $this->Model_finance->get_sj_list($id_so)->result();
         if(empty($cek)){
-            $this->db->where('id',$id_so);
-            $this->db->update('sales_order', array(
-                'flag_invoice'=>1
-            ));
+            $flag_invoice = 1;
         }else{
+            $flag_invoice = 2;
+        }
+
             $this->db->where('id',$id_so);
             $this->db->update('sales_order', array(
-                'flag_invoice'=>2
+                'flag_invoice'=>$flag_invoice
             ));
-        }
+
+            if($ppn==1){
+                $this->load->helper('target_url');
+
+
+                $this->load->model('Model_beli_rongsok');
+
+                unset($data['nilai_invoice']);
+                $data_id = array('reff1' => $id_new, 'nilai_invoice'=> $total_invoice);                
+                $data_post['master'] = array_merge($data, $data_id);
+                $data_post['detail'] = $detail_push;
+                $data_post['flag_invoice'] = $flag_invoice;
+
+                $detail_post = json_encode($data_post);
+                // print_r($detail_post);
+                // die();
+
+                $ch = curl_init(target_url().'api/FinanceAPI/inv');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
 
         if($this->db->trans_complete()){
             redirect(base_url('index.php/Finance/view_invoice/'.$id_new));
@@ -1601,7 +1694,9 @@ class Finance extends CI_Controller{
             $data['details'] = $this->Model_finance->load_invoice_print_um_match($idm)->result();
             $row = $this->Model_finance->load_invoice_print_um_match($idm)->num_rows();
 
-            if($row == 1){
+            if($row == 0){
+                $this->load->view('finance/print_um_only', $data);
+            }elseif($row == 1){
                 $this->load->view('finance/print_um_match_dp', $data);
             }else{
                 $this->load->view('finance/print_um_match', $data);
@@ -2068,7 +2163,7 @@ class Finance extends CI_Controller{
             'jenis_pembayaran'=> $jenis,
             'rekening_tujuan'=> $this->input->post('bank_id'),
             'currency'=> 'IDR',
-            'nominal'=> str_replace('.', '', $this->input->post('nominal')),
+            'nominal'=> str_replace(',', '', $this->input->post('nominal')),
             'keterangan'=> $this->input->post('remarks'),
             'created_at'=> $tanggal,
             'created_by'=> $user_id
@@ -2084,7 +2179,7 @@ class Finance extends CI_Controller{
             'id_bank'=> $this->input->post('bank_id'),
             'id_um'=> $um_id,
             'currency'=> $this->input->post('currency'),
-            'nominal'=> str_replace('.', '',$this->input->post('nominal')),
+            'nominal'=> str_replace(',', '',$this->input->post('nominal')),
             'keterangan'=> $this->input->post('remarks'),
             'created_at'=> $tanggal,
             'created_by'=> $user_id

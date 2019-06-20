@@ -5,7 +5,9 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWATMAS PRAKASA<br>'; }?>BANK KELUAR PEMBELIAN RONGSOK</h3>
+        <?php if($this->session->userdata('user_ppn')==1){
+            echo '<h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br>';
+        } ?>BUKTI TERIMA BANK</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="60%">
@@ -15,20 +17,16 @@
                             <td>&nbsp;</td>
                         </tr>
                         <tr>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
+                            <td>Diterima Dari</td>
+                            <td>: <?= $header['nama_customer'];?></td>
                         </tr>
                         <tr>
-                            <td>Bank</td>
-                            <td>: <?php echo $header['nama_bank'];?></td>
+                            <td>Nominal</td>
+                            <td>: <?= $header['currency'].' '.number_format($header['nominal'],0,',','.');?></td>
                         </tr>
                         <tr>
-                            <td>Dibayar Kepada</td>
-                            <td>: <?php echo $header['nama_customer'];?></td>
-                        </tr>
-                        <tr>
-                            <td valign="top">Sejumlah</td>
-                            <td>: **<?php echo ucwords(number_to_words_d($total, $header['currency'])); ?>**</td>
+                            <td align="top">Sejumlah</td>
+                            <td>: **<?php echo ucwords(number_to_words($header['nominal'])); ?>**</td>
                         </tr>
                     </table>
                 </td>
@@ -36,28 +34,20 @@
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
-                            <td>Kode Kas / Bank</td>
-                            <td>: <?php echo $header['no_acc'];?></td>
-                        </tr>
-                        <tr>
                             <td>Nomor Bukti</td>
-                            <td>: <?php echo $header['nomor'];?></td>
+                            <td>: <?php echo $header['no_uang_masuk'];?></td>
                         </tr>
                         <tr>
                             <td>Tgl Bukti</td>
-                            <td>: <?php echo $header['tanggal'];?></td>
-                        </tr>
+                            <td>: <?php echo tanggal_indo($header['tanggal']);?></td>
+                        </tr>          
                         <tr>
-                            <td>Tgl Jth Tmp</td>
-                            <td>: <?php echo $header['tgl_jatuh_tempo'];?></td>
+                            <td>Tgl Jatuh Tempo</td>
+                            <td>: <?php if($header['tgl_cair'] == '0000-00-00'){ echo '-';}else{echo tanggal_indo($header['tgl_cair']);}?></td>
                         </tr>
                         <tr>
                             <td>Cek / Giro</td>
-                            <td>: <?php echo $header['no_giro'];?></td>
-                        </tr>
-                        <tr>
-                            <td>Kurs</td>
-                            <td>: <?php echo number_format($header['kurs'],2,',','.');?></td>
+                            <td>: <?php echo $header['bank_pembayaran'];?></td>
                         </tr>
                     </table>
                 </td>
@@ -69,37 +59,29 @@
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Keterangan</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No Account</strong></td>
-                            <td rowspan="2" style="text-align:center; border:1px solid #000;"><strong>Amount (<?=$header['currency'];?>)</strong></td>
+                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right: 1px solid #000;"><strong>Total Harga</strong></td>
                         </tr>
-                       
-                                <tr>
-                                </tr>
-                        <?php
-                            $no = 0;
-                            $total_vc = 0;
-                            foreach ($list_data as $row){
-                                $no++;
-                        ?>
+                       <tr></tr>
                         <tr>
-                            <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>   
-                            <td style="border-left:1px solid #000;">PEMB. <?=$row->nama.' '.$row->no_po;?></td>
-                            <td style="text-align:right; border-left:1px solid #000;"><?=$row->keterangan;?></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=number_format($row->amount,0,',', '.');?></td>
+                            <td style="text-align:center; border-left:1px solid #000;">1</td>
+                            <td style="border-left:1px solid #000;"><?=$header['keterangan'];?></td>
+                            <td style="text-align:right; border-left:1px solid #000;"></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=number_format($header['nominal'],0,',', '.');?></td>
                         </tr>
                         <?php
-                                $total_vc += $row->amount;
-                            }
+                                $total = $header['nominal'];
                         ?>
                         <tr style="height:100px">
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                         </tr>
                         <tr>
-                            <td style="text-align:right;" colspan="3"><strong>Total</strong></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;">
-                                <strong><?=number_format($total_vc,0,',', '.');?></strong>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000" colspan="2"><strong>Jumlah </strong> :</td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000"></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-right: 1px solid #000;">
+                                <strong><?=number_format($total,0,',', '.');?></strong>
                             </td>
                         </tr>
                     </table>
@@ -136,8 +118,5 @@
         <p>&nbsp;</p>
     <body onLoad="window.print()">
     </body>
-    <script type="text/javascript">
-        window.onLoad=
-    </script>
 </html>
         

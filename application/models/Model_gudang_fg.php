@@ -141,9 +141,7 @@ class Model_gudang_fg extends CI_Model{
     }
 
     function packing_fg_list(){
-        $data = $this->db->query("select mjb.*
-                from m_jenis_packing mjb"
-                );
+        $data = $this->db->query("select mjb.* from m_jenis_packing mjb");
         return $data;
     }
 

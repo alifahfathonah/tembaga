@@ -92,6 +92,7 @@
                                     echo '<td style="text-align: center; border-top:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000;"><strong>'.$no.' BUAH</strong></td>';
                                     echo '<td style="text-align: center; border-top:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000;"><strong>'.number_format($berat,2,',','.').' KG</strong></td>';
                                     echo '<td>&nbsp;</td></tr>';
+                            $qty = $qty - 1;
                         ?>
                             <tr>
                                 <td style="border-left:1px solid #000; border-bottom:1px solid #000;"></td>

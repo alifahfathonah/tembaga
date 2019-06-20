@@ -533,7 +533,7 @@ class Model_sales_order extends CI_Model{
 
     function tsjd_get_gudang($id){
         $data = $this->db->query("Select 
-                tsjd.id as id_sj_d, tsjd.t_sj_id, tsjd.gudang_id, tsjd.jenis_barang_id as sj_jb, tsjd.jenis_barang_alias, tsjd.qty as jb_qty, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks,
+                tsjd.id as id_sj_d, tsjd.t_sj_id, tsjd.jenis_barang_id as sj_jb, tsjd.jenis_barang_alias, tsjd.qty as jb_qty, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks,
                 tgf.*, 
                 tbf.no_bpb_fg, tbf.tanggal as tgl_bpb, tbf.jenis_barang_id as jb_bpb, tbf.keterangan as ket_bpb,
                 tbfd.id as id_bpb_d, tbfd.jenis_barang_id as jbd, tbfd.no_produksi, tbfd.berat_bobbin,

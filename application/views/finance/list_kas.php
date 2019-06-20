@@ -59,10 +59,10 @@
                             <tr>
                                 <td style="text-align:center"><?php echo $no; ?></td>
                                 <td><?php echo $data->nama_bank; ?></td>
-                                <td style="text-align:right"><?php echo number_format($data->transaksi_masuk,0,',','.'); ?></td>
-                                <td style="text-align:right"><?php echo number_format($data->transaksi_keluar,0,',','.'); ?></td>
+                                <td style="text-align:right"><?php echo number_format($data->transaksi_masuk,2,',','.'); ?></td>
+                                <td style="text-align:right"><?php echo number_format($data->transaksi_keluar,2,',','.'); ?></td>
                                 <?php $total = $data->transaksi_masuk - $data->transaksi_keluar;?>
-                                <td style="text-align:right"><?php echo number_format($total,0,',','.'); ?></td>
+                                <td style="text-align:right"><?php echo number_format($total,2,',','.'); ?></td>
                             </tr>
                             <?php
                                 }
@@ -121,7 +121,7 @@
                         <td><?php ($data->id_bank==0) ? print('KAS') : print($data->kode_bank); ?></td>
                         <td><?php echo $data->nomor; ?></td>
                         <td><?php echo $data->nama_customer; ?></td>
-                        <td><?php echo $data->currency.' '.number_format($data->nominal,0,',','.') ?></td>
+                        <td><?php echo $data->currency.' '.number_format($data->nominal,2,',','.') ?></td>
                         <td><?php echo $data->keterangan; ?></td>
                         <td><?php
                                 if( ($group_id==1)||($hak_akses['view_kas']==1) ){

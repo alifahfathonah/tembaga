@@ -46,7 +46,7 @@
    </table>
 </div>
 </div>
-            <a href="<?php echo base_url('index.php/BeliRongsok/gudang_rongsok'); ?>" class="btn blue-hoki"> 
+            <a href="<?php echo base_url('index.php/GudangRongsok/gudang_rongsok'); ?>" class="btn blue-hoki"> 
             <i class="fa fa-angle-left"></i> Kembali </a>
 </div>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
