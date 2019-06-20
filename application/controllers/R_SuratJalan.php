@@ -300,7 +300,7 @@ class R_SuratJalan extends CI_Controller{
                 'supir'=>$this->input->post('supir'),
                 'remarks'=>$this->input->post('remarks'),
                 'reff'=>$sjr_id,
-                // 'bpb_id' => $this->input->post('r_bpb_id'),
+                'bpb_id' => $this->input->post('r_bpb_id'),
             );
 
             $ch = curl_init(target_url_cv($reff_cv).'api/SuratJalanAPI/sj');
@@ -447,7 +447,7 @@ class R_SuratJalan extends CI_Controller{
                 'supir'=>$this->input->post('supir'),
                 'remarks'=>$this->input->post('remarks'),
                 'reff'=>$sjr_id,
-                // 'bpb_id'=>$bpb_id,
+                'bpb_id'=>$bpb_id,
             );
 
             $ch = curl_init(target_url_cv($reff_cv).'api/SuratJalanAPI/sjcs');

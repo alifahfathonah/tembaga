@@ -3,7 +3,7 @@
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/R_SuratJalan/'); ?>"> BPB </a> 
+            <a href="<?php echo base_url('index.php/R_BPB/'); ?>"> BPB </a> 
             <i class="fa fa-angle-right"></i> 
             Edit BPB
         </h5>          

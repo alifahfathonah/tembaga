@@ -3,7 +3,7 @@
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/R_SuratJalan/'); ?>"> BPB </a> 
+            <a href="<?php echo base_url('index.php/R_BPB/'); ?>"> BPB </a> 
             <i class="fa fa-angle-right"></i> 
             Edit BPB
         </h5>          
@@ -237,12 +237,11 @@
                                 ?>
                                 <tr>
                                     <td><?php echo $no; ?></td>
-                                    <td><?php echo $row->no_packing; ?></td>
                                     <td><?php echo $row->nama_item; ?></td>
                                     <td><?php echo $row->uom; ?></td>
                                     <td><?php echo $row->bruto; ?></td>
                                     <td><?php echo $row->netto; ?></td>
-                                    <td><?php echo ($row->bruto - $row->netto); ?></td>
+                                    <td><?php echo $row->no_packing; ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
                                 </tr>
                                 <?php
@@ -260,8 +259,6 @@
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
-                    <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                        <i class="fa fa-floppy-o"></i> Simpan </a>
                     <a href="<?php echo base_url('index.php/R_BPB/'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    

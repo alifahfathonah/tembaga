@@ -315,23 +315,6 @@ class R_PurchaseOrder extends CI_Controller{
         redirect('index.php/R_PurchaseOrder');
     }
 
-    function print_po(){
-    	$id = $this->uri->segment(3);
-        if($id){        
-            $data['header']  = $this->Model_purchase_order->show_header_print_po($id)->row_array();
-            $data['details'] = $this->Model_purchase_order->load_detail_po($id)->result();
-
-            if($data['header']['jenis_po'] == "PO CUSTOMER KE CV"){
-                $this->load->view('resmi/purchase_order/print_po_cs_cv', $data);    
-            }else if($data['header']['jenis_po'] == "PO CV KE KMP"){
-                $this->load->view('resmi/purchase_order/print_po_cv_kmp', $data);
-            }
-            
-        }else{
-            redirect('index.php'); 
-        }
-    }
-
     function add_po_fcustomer(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
@@ -552,11 +535,16 @@ class R_PurchaseOrder extends CI_Controller{
             'remarks'=>$this->input->post('remarks')
         );
 
+        $update_so = [
+            'no_so' => $this->input->post('no_so'),
+            'remarks'=>$this->input->post('remarks')    
+        ];
+
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('r_t_po', $data);
 
         $this->db->where('po_id', $this->input->post('id'));
-        $this->db->update('r_t_so', $data_so);
+        $this->db->update('r_t_so', $update_so);
 
 
         $this->load->helper('target_url');
@@ -604,5 +592,47 @@ class R_PurchaseOrder extends CI_Controller{
         
         $this->session->set_flashdata('flash_msg', 'Data PO Jasa Finish Good berhasil disimpan');
         redirect('index.php/R_PurchaseOrder');
+    }
+
+    function view_po(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "resmi/purchase_order/view_po";
+            $data['header']  = $this->Model_purchase_order->show_header_print_po($id)->row_array();
+            $data['myDetails'] = $this->Model_purchase_order->load_detail_po($id)->result();
+            // $this->load->model('Model_sales_order');
+            // $data['header'] = $this->Model_so->show_header_so($id)->row_array();
+            $data['jenis_po'] = $data['header']['jenis_po'];
+            // $data['myDetails'] = $this->Model_so->load_detail_so($id)->result();
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/R_PurchaseOrder');
+        }
+    }
+
+    function print_po(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $data['header']  = $this->Model_purchase_order->show_header_print_po($id)->row_array();
+            $data['details'] = $this->Model_purchase_order->load_detail_po($id)->result();
+
+            if($data['header']['jenis_po'] == "PO CUSTOMER KE CV"){
+                $this->load->view('resmi/purchase_order/print_po_cs_cv', $data);    
+            }else if($data['header']['jenis_po'] == "PO CV KE KMP"){
+                $this->load->view('resmi/purchase_order/print_po_cv_kmp', $data);
+            }
+            
+        }else{
+            redirect('index.php/R_PurchaseOrder'); 
+        }
     }
 }
