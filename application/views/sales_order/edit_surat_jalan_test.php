@@ -396,7 +396,7 @@ function simpanData(){
     }else if($.trim($("#no_sales_order").val()) == ""){
         $('#message').html("Silahkan pilih no. sales order");
         $('.alert-danger').show(); 
-    }else{   
+    }else{
         $('#formku').submit(); 
     };
 };
