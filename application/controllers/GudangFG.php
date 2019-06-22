@@ -495,7 +495,7 @@ class GudangFG extends CI_Controller{
     function save_detail(){
         $return_data = array();
         $tgl_input = date("Y-m-d");
-        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 
        /*  $this->db->insert('t_spb_fg_detail', array(
             't_spb_fg_detail'=>$this->input->post('id'),
@@ -635,7 +635,7 @@ class GudangFG extends CI_Controller{
     function save_detail_rambut(){
         $return_data = array();
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
 
@@ -673,7 +673,7 @@ class GudangFG extends CI_Controller{
     function save_detail_b600g(){
         $return_data = array();
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
 
@@ -741,7 +741,7 @@ class GudangFG extends CI_Controller{
     function save_detail_roll(){
         $return_data = array();
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
         $this->db->trans_start();
 
         // $this->load->model('Model_gudang_fg');

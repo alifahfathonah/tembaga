@@ -732,7 +732,7 @@ class Ingot extends CI_Controller{
             $dtr_id = $this->db->insert_id();
 
             //CREATE DTR_DETAIL
-            $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+            $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 
             if($this->input->post('bs')!=0){
 

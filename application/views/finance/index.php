@@ -91,7 +91,7 @@
                         <td><?php echo $data->no_uang_masuk; ?></td>
                         <td><?php echo $data->tanggal; ?></td>
                         <td><?php echo $data->jenis_pembayaran; ?></td>
-                        <td><?php echo $data->currency.' '.number_format($data->nominal,0,',','.');?></td>
+                        <td><?php echo $data->currency.' '.number_format($data->nominal,2,',','.');?></td>
                         <td><?php echo $data->keterangan; ?></td>
                         <td style="text-align:center">
                             <?php

@@ -674,7 +674,7 @@ class BeliRongsok extends CI_Controller{
     
     function generate_palette(){
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);

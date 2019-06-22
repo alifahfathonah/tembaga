@@ -219,7 +219,7 @@ class GudangWIP extends CI_Controller{
                 #insert bs rolling ke rongsok
                 if($this->input->post('bs_rolling') != 0){
 
-                $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+                $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 
                 $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
 
@@ -243,7 +243,7 @@ class GudangWIP extends CI_Controller{
                 #insert bs ingot ke rongsok
                 if($this->input->post('bs_ingot') != 0){
 
-                $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+                $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 
                 $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
 
@@ -267,7 +267,7 @@ class GudangWIP extends CI_Controller{
                 #insert bs 8mm ke rongsok
                 if($this->input->post('bs_ingot') != 0){
 
-                $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+                $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 
                 $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
 
@@ -291,7 +291,7 @@ class GudangWIP extends CI_Controller{
             }else if($this->input->post('jenis_masak') == 'BAKAR ULANG'){
                 #insert bs ke rongsok
                 if($this->input->post('bs') != 0){
-                    $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+                    $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 
                     $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
 
@@ -314,7 +314,7 @@ class GudangWIP extends CI_Controller{
 
             }else if($this->input->post('jenis_masak') == 'CUCI'){
                 #insert bs ke gudang bs
-                $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+                $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 
                 $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
 

@@ -188,7 +188,7 @@
                             Nominal
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nominal" name="nominal" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id)">
+                            <input type="text" id="nominal" name="nominal" class="form-control myline" style="margin-bottom:5px" onkeyup="getComa(this.value, this.id)">
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
@@ -365,16 +365,9 @@ function formSubmit(){
     });
 }
 
-function myCurrency(evt) {
-    var charCode = (evt.which) ? evt.which : event.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
-        return false;
-    return true;
-}
-
 function getComa(value, id){
-    angka = value.toString().replace(/\./g, "");
-    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    angka = value.toString().replace(/\,/g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }
 
 function get_replace(id){
