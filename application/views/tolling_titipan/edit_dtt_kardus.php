@@ -197,7 +197,7 @@ function makepallete_id(){
     var str = $('#jenis_packing').val();
     var res = str.substring(0, 1);
     const u = $('#ukuran').val();
-    var strDateTime = '<?=date('dmy');?>' + res + u;
+    var strDateTime = '<?=date('ymd');?>' + res + u;
     return (strDateTime+text);
 }
 

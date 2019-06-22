@@ -140,6 +140,11 @@
                             <input type="text" id="kurs" name="kurs" class="form-control myline" readonly="readonly">
                         </div>
                         </div>
+                        <input type="hidden" name="nama_direktur" value="">
+                        <input type="hidden" name="bank_id" value="">
+                        <input type="hidden" name="diskon" value="">
+                        <input type="hidden" name="add_cost" value="">
+                        <input type="hidden" name="materai" value="">
                     </div>
                 </div>         
             </div>

@@ -171,7 +171,7 @@ class Finance extends CI_Controller{
             'nomor_cek'=> $this->input->post('no_cek_pengirim'),
             'currency'=> $this->input->post('currency'),
             'kurs'=> $this->input->post('kurs'),
-            'nominal'=> str_replace('.', '', $this->input->post('nominal')),
+            'nominal'=> str_replace(',', '', $this->input->post('nominal')),
             'tgl_cair'=> $tgl_cek,
             'keterangan'=> $this->input->post('remarks'),
             'created_at'=> $tanggal,
@@ -198,7 +198,7 @@ class Finance extends CI_Controller{
                 'id_um'=> $insert_id,
                 'currency'=> $this->input->post('currency'),
                 'kurs'=> $this->input->post('kurs'),
-                'nominal'=> str_replace('.', '', $this->input->post('nominal')),
+                'nominal'=> str_replace(',', '', $this->input->post('nominal')),
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id
             );

@@ -81,7 +81,7 @@
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
                             <td style="border-left:1px solid #000;"><?=$row->no_invoice;?></td>
                             <td style="text-align:right; border-left:1px solid #000;"></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=number_format($row->total,0,',', '.');?></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=number_format($row->total,2,',', '.');?></td>
                         </tr>
                         <?php
                                 $total += $row->total;
@@ -98,7 +98,7 @@
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000" colspan="2"><strong>Jumlah </strong> :</td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000"></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-right: 1px solid #000;">
-                                <strong><?=number_format($total,0,',', '.');?></strong>
+                                <strong><?=number_format($total,2,',', '.');?></strong>
                             </td>
                         </tr>
                     </table>

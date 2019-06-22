@@ -178,7 +178,7 @@ class BeliFinishGood extends CI_Controller{
 
     function get_packing_kardus(){
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('KARDUS',$tgl_input);
@@ -193,7 +193,7 @@ class BeliFinishGood extends CI_Controller{
 
     function get_packing_b600g(){
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 
         $first = $this->input->post('no_packing');
         $this->load->model('Model_m_numberings');
@@ -694,7 +694,7 @@ class BeliFinishGood extends CI_Controller{
     function save_detail_roll(){
         $return_data = array();
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
         $this->db->trans_start();
 
         $this->load->model('Model_m_numberings');

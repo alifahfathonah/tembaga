@@ -377,7 +377,7 @@ class Retur extends CI_Controller{
     function save_detail_rambut(){
         $return_data = array();
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
 
@@ -412,7 +412,7 @@ class Retur extends CI_Controller{
     function save_detail_b600g(){
         $return_data = array();
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
 
@@ -470,7 +470,7 @@ class Retur extends CI_Controller{
     function save_detail_rsk(){
         $return_data = array();
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tgl')));
-        $tgl_code = date('dmy', strtotime($this->input->post('tgl')));
+        $tgl_code = date('ymd', strtotime($this->input->post('tgl')));
 
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
