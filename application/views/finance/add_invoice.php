@@ -31,14 +31,7 @@
                             No. Invoice <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <?php if($this->session->userdata('user_ppn')==1){ ?>
                             <input type="text" id="no_pembayaran" name="no_pembayaran" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor Invoice ..." onkeyup="this.value = this.value.toUpperCase()">
-                            <?php }else{ ?>
-                            <input type="text" id="no_pembayaran" name="no_pembayaran" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="Auto generate">
-                            <?php } ?>
-
                             <input type="hidden" id="flag_ppn" name="flag_ppn" value="<?= $ppn ;?>">
                         </div>
                     </div>

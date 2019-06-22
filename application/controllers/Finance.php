@@ -1237,7 +1237,7 @@ class Finance extends CI_Controller{
         if($ppn == 1){
             $code = 'INV-KMP.'.$tgl_inv.'.'.$this->input->post('no_pembayaran');
         }else{
-            $code = $this->Model_m_numberings->getNumbering('INV', $tgl_input);
+            $code = 'INV.'.$tgl_inv.'.'.$this->input->post('no_pembayaran');
         }
 
         $id_so = $this->input->post('sales_order_id');
