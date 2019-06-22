@@ -99,7 +99,7 @@
                         <div class="col-md-8">
                             <input type="text" id="jenis_barang" name="jenis_barang" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="BOBBIN 600g">
+                                value="BOBBIN PLASTIK">
                         </div>
                     </div> 
                     <div class="row">
@@ -112,7 +112,7 @@
                                 <?php 
                                 foreach($packing as $p){
                                 ?>
-                                <option value="<?=$p->bobbin_size;?>"><?=$p->bobbin_size;?> </option>
+                                <option value="<?=$p->bobbin_size;?>"><?=$p->bobbin_size.' ('.$p->keterangan.')';?> </option>
                                 <?php } ?>    
                             </select> 
                             <input type="hidden" name="id_packing" id="id_packing">                       

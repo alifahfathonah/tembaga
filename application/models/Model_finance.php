@@ -189,7 +189,8 @@ class Model_finance extends CI_Model{
     }
 
     function get_so_list($id,$ppn){
-        $data = $this->db->query("Select so.* From sales_order so
+        $data = $this->db->query("Select so.*, tso.no_po From sales_order so
+            left join t_sales_order tso on tso.so_id = so.id
             Where so.m_customer_id=".$id." and (select id from t_surat_jalan tsj where tsj.sales_order_id = so.id group by tsj.sales_order_id) and flag_invoice != 1 and flag_ppn =".$ppn);
         return $data;
     }
@@ -376,8 +377,9 @@ class Model_finance extends CI_Model{
     // }
 
     function matching_header_um_print($id){
-        $data = $this->db->query("select fum.*, COALESCE(mc.nama_customer,'-') as nama_customer, mc.pic, fm.no_matching
+        $data = $this->db->query("select fum.*, COALESCE(mc.nama_customer,'-') as nama_customer, COALESCE(fum.bank_pembayaran,b.nama_bank) as bank_pembayaran, mc.pic, fm.no_matching, b.nama_bank, COALESCE(b.no_acc, '-') as no_acc, fum.kurs
             from f_uang_masuk fum
+            left join bank b on b.id = fum.rekening_tujuan
             left join f_match fm on fm.id = fum.flag_matching
             left join m_customers mc on mc.id = fum.m_customer_id
             where fum.id =".$id);
@@ -514,8 +516,13 @@ class Model_finance extends CI_Model{
     }
 
     function list_kas($ppn){
-        $data = $this->db->query("select fk.*, b.kode_bank, fum.no_uang_masuk, fp.no_pembayaran, mc.nama_customer 
+        $data = $this->db->query("select fk.*, b.kode_bank, fum.no_uang_masuk, fp.no_pembayaran, mc.nama_customer, COALESCE(NULLIF(v.nm_cost,''), NULLIF(CONCAT('PEMB. ',s.nama_supplier),''), NULLIF(CONCAT('PEMB. ',c.nama_customer),''), '') as keterangan
             from f_kas fk
+            left join voucher v on v.id = fk.id_vc
+            left join supplier s on s.id = v.supplier_id
+            left join m_customers c on c.id = v.customer_id
+            left join f_match fm on fm.id = fk.id_matching
+            left join m_customers cust on cust.id = fm.id_customer
             left join bank b on b.id=fk.id_bank
             left join f_uang_masuk fum on fum.id=fk.id_um
             left join m_customers mc on mc.id=fum.m_customer_id

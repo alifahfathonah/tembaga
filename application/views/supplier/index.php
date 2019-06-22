@@ -28,7 +28,17 @@
                             </div>
                         </div>
                         <form class="eventInsForm" method="post" target="_self" name="formku" 
-                              id="formku">                            
+                              id="formku">                        
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Kode Supplier <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="kode_supplier" name="kode_supplier" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeyup="this.value = this.value.toUpperCase()">
+                                </div>
+                            </div>                            
                             <div class="row">
                                 <div class="col-md-5">
                                     Nama Supplier <font color="#f00">*</font>
@@ -68,104 +78,25 @@
                                     <input type="text" id="hp" name="hp" 
                                         class="form-control myline" style="margin-bottom:5px">
                                 </div>
-                            </div>
+                            </div>                   
+                            <div class="row">
+                                <div class="col-md-5">
+                                    NPWP <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="npwp" name="npwp" 
+                                        class="form-control myline" style="margin-bottom:5px">
+                                </div>
+                            </div>  
                             <div class="row">
                                 <div class="col-md-5">
                                     Alamat <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-7">
                                     <textarea id="alamat" name="alamat" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>
+                                        class="form-control myline" style="margin-bottom:5px" rows="3"></textarea>
                                 </div>
-                            </div>  
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Provinsi <font color="#f00">*</font>
-                                </div>
-                                <div class="col-md-7">
-                                    <select id="m_province_id" name="m_province_id" class="form-control select2me myline" 
-                                        data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_city_list(this.value);">
-                                        <option value=""></option>
-                                        <?php
-                                            foreach ($list_provinsi as $value){
-                                                echo "<option value='".$value->id."'>".$value->province_name."</option>";
-                                            }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Kota <font color="#f00">*</font>
-                                </div>
-                                <div class="col-md-7">
-                                    <select id="m_city_id" name="m_city_id" class="form-control select2me myline" 
-                                        data-placeholder="Pilih..." style="margin-bottom:5px">
-                                        <option value=""></option>
-                                        <?php
-                                            foreach ($list_city as $value){
-                                                echo "<option value='".$value->id."'>".$value->city_name."</option>";
-                                            }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div> 
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Kode Pos
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="text" id="kode_pos" name="kode_pos" style="margin-bottom:5px"
-                                        onkeydown="return myCurrency(event);" maxlength="5" class="form-control myline">
-                                </div>
-                            </div> 
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Nama Bank 
-                                </div>
-                                <div class="col-md-7">
-                                    <select id="m_bank_id" name="m_bank_id" class="form-control select2me myline" 
-                                        data-placeholder="Pilih..." style="margin-bottom:5px">
-                                        <option value=""></option>
-                                        <?php
-                                            foreach ($list_bank as $value){
-                                                echo "<option value='".$value->id."'>".$value->kode_bank."</option>";
-                                            }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div> 
-                            <div class="row">
-                                <div class="col-md-5">
-                                    KCP
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="kcp" name="kcp" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeyup="this.value = this.value.toUpperCase()">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Bank Account
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="no_rekening" name="no_rekening" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeydown="return myCurrency(event);">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Catatan
-                                </div>
-                                <div class="col-md-7">
-                                    <textarea id="keterangan" name="keterangan" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>
-                                </div>       
-                            </div>                              
+                            </div>                             
                         </form>
                     </div>
                     <div class="modal-footer">                        
@@ -202,14 +133,14 @@
                 <thead>
                 <tr>
                     <th style="width:35px;">No</th>
+                    <th>ID DB</th>
+                    <th>Kode Supplier</th>
                     <th>Nama Supplier</th>                     
                     <th>PIC</th>
                     <th>Telepon</th>
-                    <th>Kota</th>
-                    <th>Provinsi</th>
-                    <th>Bank</th> 
-                    <th>KCP</th> 
-                    <th>Bank Account</th> 
+                    <th>No. HP</th>
+                    <th>NPWP</th>
+                    <th>Alamat</th> 
                     <th style="width:60px;">Actions</th>
                 </tr>
                 </thead>
@@ -221,14 +152,14 @@
                     ?>
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
+                        <td><?php echo $data->id; ?></td>
+                        <td><?php echo $data->kode_supplier; ?></td>
                         <td><?php echo $data->nama_supplier; ?></td>
                         <td><?php echo $data->pic; ?></td>
                         <td><?php echo $data->telepon; ?></td>
-                        <td><?php echo $data->city_name; ?></td>
-                        <td><?php echo $data->province_name; ?></td>
-                        <td><?php echo $data->kode_bank; ?></td> 
-                        <td><?php echo $data->kcp; ?></td>
-                        <td><?php echo $data->no_rekening; ?></td>
+                        <td><?php echo $data->hp; ?></td>
+                        <td><?php echo $data->npwp; ?></td>
+                        <td><?php echo substr($data->alamat, 0, 30).'...'; ?></td>
                         <td style="text-align:center"> 
                             <?php
                                 if( ($group_id==1)||($hak_akses['edit']==1) ){
@@ -276,13 +207,8 @@ function newData(){
     $('#telepon').val('');
     $('#hp').val('');
     $('#alamat').val('');
-    $('#m_province_id').select2('val', '');
-    $('#m_city_id').select2('val', '');
-    $('#kode_pos').val('');
-    $('#m_bank_id').select2('val', '');
-    $('#kcp').val('');
-    $('#no_rekening').val('');
-    $('#keterangan').val('');
+    $('#npwp').val('__.___.___._.___.___');
+    $('#kode_supplier').val('');
     $('#id').val('');
     dsState = "Input";
     
@@ -297,23 +223,15 @@ function simpandata(){
     if($.trim($("#nama_supplier").val()) == ""){
         $('#message').html("Nama supplier harus diisi!");
         $('.alert-danger').show();
-    }else if($.trim($("#pic").val()) == ""){
-        $('#message').html("Nama penanggung jawab harus diisi!");
         $('.alert-danger').show();
-    }else if($.trim($("#alamat").val()) == ""){
-        $('#message').html("Alamat harus diisi!");
-        $('.alert-danger').show();
-    }else if($.trim($("#m_province_id").val()) == ""){
+    }else if($.trim($("#kode_supplier").val()) == ""){
         $('#message').html("Silahkan pilih provinsi!");
-        $('.alert-danger').show();
-    }else if($.trim($("#m_city_id").val()) == ""){
-        $('#message').html("Silahkan pilih kota!");
         $('.alert-danger').show();
     }else{     
         $('#message').html("");
         $('.alert-danger').hide();
         if(dsState=="Input"){                                   
-            $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Supplier/save");                                               
+            $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Supplier/save");                    
         }else{
             $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Supplier/update");
         }
@@ -333,15 +251,8 @@ function editData(id){
             $('#telepon').val(result['telepon']);
             $('#hp').val(result['hp']);
             $('#alamat').val(result['alamat']);
-            $('#m_province_id').select2('val',result['m_province_id']);
-            get_city_list(result['m_province_id']);
-            
-            $('#m_city_id').select2('val',result['m_city_id']);
-            $('#kode_pos').val(result['kode_pos']);
-            $('#keterangan').val(result['keterangan']);
-            $('#m_bank_id').select2('val',result['m_bank_id']);
-            $('#kcp').val(result['kcp']);
-            $('#no_rekening').val(result['no_rekening']);
+            $('#kode_supplier').val(result['kode_supplier']);
+            $('#npwp').val(result['npwp']);
             $('#id').val(result['id']);
             
             $("#myModal").find('.modal-title').text('Edit Supplier');
@@ -355,19 +266,6 @@ function myCurrency(evt) {
     if (charCode > 31 && (charCode < 48 || charCode > 57))
         return false;
     return true;
-}
-
-function get_city_list(id){
-    $.ajax({
-        url: "<?php echo base_url('index.php/Supplier/get_city_list'); ?>",
-        async: false,
-        type: "POST",
-        data: "id="+id,
-        dataType: "html",
-        success: function(result) {
-            $('#m_city_id').html(result);
-        }
-    })
 }
 
 $(function(){    

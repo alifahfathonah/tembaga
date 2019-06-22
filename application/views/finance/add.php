@@ -22,8 +22,7 @@
                 </div>
             </div>
         </div>
-        <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/Finance/save'); ?>">  
+        <form class="eventInsForm" method="post" target="_self" name="formku" id="formku" action="<?php echo base_url('index.php/Finance/save'); ?>">  
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
@@ -97,7 +96,6 @@
                             </select>
                         </div>
                     </div>
-                    <?php if($this->session->userdata('user_ppn')==1){?>
                     <div class="row" id="show_bank_tuj">
                         <div class="col-md-4">
                             Rekening Tujuan <font color="#f00">*</font>
@@ -114,8 +112,7 @@
                             </select>
                         </div>
                     </div>
-                    <?php } ?>
-                    <div class="row" id="show_rek_tuj">
+                    <!-- <div class="row" id="show_rek_tuj">
                         <div class="col-md-4">
                             Rekening Tujuan <font color="#f00">*</font>
                         </div>
@@ -130,7 +127,7 @@
                                 ?>
                             </select>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row" id="show_cek_mu">
                         <div class="col-md-4">
                             Tanggal Cek Mundur<font color="#f00">*</font>
@@ -169,16 +166,29 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Currency
+                        </div>
+                        <div class="col-md-8">
+                            <select id="currency" name="currency" class="form-control myline select2me" data-placeholder="Silahkan pilih Currency..." style="margin-bottom:5px" onchange="get_cur(this.value);">
+                            <option value="IDR">IDR</option>
+                            <option value="USD">USD</option>
+                            </select>         
+                        </div>
+                    </div>
+                    <div class="row" id="show_kurs">
+                        <div class="col-md-4">
+                            Kurs
+                        </div>
+                        <div class="col-md-8">
+                            <input type="number" id="kurs" name="kurs" class="form-control myline" value="1" style="margin-bottom:5px">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Nominal
                         </div>
                         <div class="col-md-8">
-                            <select id="currency" name="currency" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih Currency" style="margin-bottom:5px">
-                                <option value="IDR">IDR</option>
-                                <option value="USD">USD</option>
-                            </select>
-                            <input type="text" id="nominal" name="nominal" 
-                                class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id)">
+                            <input type="text" id="nominal" name="nominal" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id)">
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
@@ -282,7 +292,11 @@ function numberWithCommas(x) {
 }
 
 function simpanData(){
-    if($.trim($("#tanggal").val()) == ""){
+    console.log($('#bank_id').val());
+    if($.trim($("#no_uang_masuk").val()) == ""){
+        $('#message').html("Nomor Uang Masuk harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#customer_id").val()) == ""){
@@ -332,7 +346,7 @@ function formSubmit(){
         data: {
             id: $('#no_uang_masuk').val(),
             jenis_id: $('#jenis_id').val(),
-            bank: $('#bank_id').val(),
+            bank_id: $('#bank_id').val(),
             tanggal: $('#tanggal').val()
         },
         cache: false,
@@ -411,11 +425,20 @@ function resetAllValues() {
   $('#replace_id').prop('selectedIndex',0);
 }
 
+function get_cur(id){
+    if(id=='USD'){
+        $('#show_kurs').show();
+    }else if(id=='IDR'){
+        $('#show_kurs').hide();
+        $('#kurs').val(1);
+    }
+}
+
 function get_cek(id){
     if(id === "Cek") {
         resetAllValues();
         $('#show_rek').hide();
-        $("#show_rek_tuj").hide();
+        // $("#show_rek_tuj").hide();
         $("#show_cek_mu").hide();
         $("#show_nomor_cek").hide();
         $("#show_replace").hide();
@@ -428,7 +451,7 @@ function get_cek(id){
     }else if(id === "Cek Mundur") {
         resetAllValues();
         $('#show_rek').hide();
-        $("#show_rek_tuj").hide();
+        // $("#show_rek_tuj").hide();
         $("#show_replace").hide();
 
         $('#show_bank_tuj').show();
@@ -453,21 +476,21 @@ function get_cek(id){
         get_replace();
         $("#show_cek_mu").hide();
         $("#show_nomor_cek").hide();
-        $('#show_bank_tuj').hide();
 
-        $("#show_rek_tuj").show();
+        // $("#show_rek_tuj").show();
+        $('#show_bank_tuj').show();
         $("#show_bank").show();
         $("#show_rek").show();
-    }else if(id == "Transfer"){
+    }else if(id == "Transfer" || id == "Lain-Lain"){
         resetAllValues();
         $('#show_replace').hide();
         $('#show_replace_detail').hide();
         get_replace();
         $("#show_cek_mu").hide();
         $("#show_nomor_cek").hide();
-        $('#show_bank_tuj').hide();
 
-        $("#show_rek_tuj").show();
+        // $("#show_rek_tuj").show();
+        $('#show_bank_tuj').show();
         $("#show_bank").show();
         $("#show_rek").show();
     }else if(id === "Cash") {
@@ -476,7 +499,7 @@ function get_cek(id){
         $('#show_replace_detail').hide();
         get_replace();
         $('#show_rek').hide();
-        $("#show_rek_tuj").hide();
+        // $("#show_rek_tuj").hide();
         $("#show_bank").hide();
         $("#show_cek_mu").hide();
         $("#show_nomor_cek").hide();
@@ -499,6 +522,7 @@ $(function(){
         $("#show_nomor_cek").hide();
         $("#show_replace").hide();
         $("#show_bank_tuj").hide();
+        $('#show_kurs').hide();
 
     $("#tanggal").datepicker({
         showOn: "button",

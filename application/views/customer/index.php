@@ -73,6 +73,18 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-5">
+                                    Jenis Customer
+                                </div>
+                                <div class="col-md-7">
+                                    <select id="jenis_customer" name="jenis_customer" class="form-control myline select2me" 
+                                        data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                        <option value="Lokal">Lokal</option>
+                                        <option value="Export">Export</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
                                     No. Telepon
                                 </div>
                                 <div class="col-md-7">
@@ -91,100 +103,22 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-5">
+                                    Fax
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="fax" name="fax" 
+                                        class="form-control myline" style="margin-bottom:5px">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
                                     Alamat <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-7">
                                     <textarea id="alamat" name="alamat" 
                                         class="form-control myline" style="margin-bottom:5px" rows="3"></textarea>
                                 </div>
-                            </div>  
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Provinsi <font color="#f00">*</font>
-                                </div>
-                                <div class="col-md-7">
-                                    <select id="m_province_id" name="m_province_id" class="form-control select2me myline" 
-                                        data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_city_list(this.value);">
-                                        <option value=""></option>
-                                        <?php
-                                            foreach ($list_provinsi as $value){
-                                                echo "<option value='".$value->id."'>".$value->province_name."</option>";
-                                            }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Kota <font color="#f00">*</font>
-                                </div>
-                                <div class="col-md-7">
-                                    <select id="m_city_id" name="m_city_id" class="form-control select2me myline" 
-                                        data-placeholder="Pilih..." style="margin-bottom:5px">
-                                        <option value=""></option>
-                                        <?php
-                                            foreach ($list_city as $value){
-                                                echo "<option value='".$value->id."'>".$value->city_name."</option>";
-                                            }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div> 
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Kode Pos
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="text" id="kode_pos" name="kode_pos" style="margin-bottom:5px"
-                                        onkeydown="return myCurrency(event);" maxlength="5" class="form-control myline">
-                                </div>
-                            </div> 
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Nama Bank 
-                                </div>
-                                <div class="col-md-7">
-                                    <select id="m_bank_id" name="m_bank_id" class="form-control select2me myline" 
-                                        data-placeholder="Pilih..." style="margin-bottom:5px">
-                                        <option value=""></option>
-                                        <?php
-                                            foreach ($list_bank as $value){
-                                                echo "<option value='".$value->id."'>".$value->kode_bank."</option>";
-                                            }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div> 
-                            <div class="row">
-                                <div class="col-md-5">
-                                    KCP
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="kcp" name="kcp" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeyup="this.value = this.value.toUpperCase()">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Bank Account
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="no_rekening" name="no_rekening" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeydown="return myCurrency(event);">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Catatan
-                                </div>
-                                <div class="col-md-7">
-                                    <textarea id="keterangan" name="keterangan" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>
-                                </div>       
-                            </div>                              
+                            </div>                      
                         </form>
                     </div>
                     <div class="modal-footer">                        
@@ -225,8 +159,10 @@
                     <th>Nama Customer</th>                     
                     <th>PIC</th>
                     <th>Telepon</th>
-                    <th>Kota</th>
-                    <th>Bank Account</th> 
+                    <th>HP</th>
+                    <th>Fax</th>
+                    <th>Jenis Customer</th>
+                    <th>Alamat</th>
                     <th style="width:60px;">Actions</th>
                 </tr>
                 </thead>
@@ -242,8 +178,10 @@
                         <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->pic; ?></td>
                         <td><?php echo $data->telepon; ?></td>
-                        <td><?php echo $data->city_name; ?></td>
-                        <td><?php echo $data->no_rekening; ?></td>
+                        <td><?php echo $data->hp; ?></td>
+                        <td><?php echo $data->fax; ?></td>
+                        <td><?php echo $data->jenis_customer; ?></td>
+                        <td><?php echo substr($data->alamat, 0, 30).' ...'; ?></td>
                         <td style="text-align:center"> 
                             <?php
                                 if( ($group_id==1 || $group_id==9 || $group_id==14)||($hak_akses['edit']==1) ){
@@ -292,13 +230,9 @@ function newData(){
     $('#telepon').val('');
     $('#hp').val('');
     $('#alamat').val('');
-    $('#m_province_id').select2('val', '');
-    $('#m_city_id').select2('val', '');
-    $('#kode_pos').val('');
-    $('#m_bank_id').select2('val', '');
-    $('#kcp').val('');
-    $('#no_rekening').val('');
-    $('#keterangan').val('');
+    $('#jenis_customer').select2('val', '');
+    $('#npwp').select2('val', '__.___.___._.___.___');
+    $('#fax').val('');
     $('#id').val('');
     dsState = "Input";
     
@@ -341,15 +275,9 @@ function editData(id){
             $('#telepon').val(result['telepon']);
             $('#hp').val(result['hp']);
             $('#alamat').val(result['alamat']);
-            $('#m_province_id').select2('val',result['m_province_id']);
-            get_city_list(result['m_province_id']);
-            
-            $('#m_city_id').select2('val',result['m_city_id']);
-            $('#kode_pos').val(result['kode_pos']);
-            $('#keterangan').val(result['keterangan']);
-            $('#m_bank_id').select2('val',result['m_bank_id']);
-            $('#kcp').val(result['kcp']);
-            $('#no_rekening').val(result['no_rekening']);
+            $('#fax').val(result['fax']);
+            $('#jenis_customer').select2('val', result['jenis_customer']);
+            $('#npwp').val(result['npwp']);
             $('#id').val(result['id']);
             
             $("#myModal").find('.modal-title').text('Edit Customer');

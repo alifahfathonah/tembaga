@@ -319,13 +319,14 @@ class Model_beli_rongsok extends CI_Model{
                     dtr.tanggal as tgl_dtr,
                     po.no_po,
                     po.tanggal as tanggal_po,
-                    spl.nama_supplier,
+                    COALESCE(spl.nama_supplier,mc.nama_customer) as nama_supplier,
                     app.realname As approved_name,
                     rjct.realname As rejected_name
                     From ttr 
                         Left Join dtr On (ttr.dtr_id = dtr.id) 
                         Left Join po On (dtr.po_id = po.id)
-                        Left Join supplier spl On (po.supplier_id = spl.id) 
+                        Left Join supplier spl On (dtr.supplier_id = spl.id) 
+                        Left Join m_customers mc On (dtr.customer_id = mc.id)
                         Left Join users app On (dtr.approved_by = app.id) 
                         Left Join users rjct On (dtr.rejected_by = rjct.id) 
                     Where ttr.id= ".$id);

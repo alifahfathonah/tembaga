@@ -417,12 +417,11 @@ class Retur extends CI_Controller{
         $this->db->trans_start();
 
         $this->load->model('Model_m_numberings');
-
-        $code = $this->Model_m_numberings->getNumbering('BOBBIN',$tgl_input);
-
         $first = $this->input->post('no_packing');
+        // $code = $this->Model_m_numberings->getNumbering('BOBBIN',$tgl_input);
+        $code = $this->Model_m_numberings->getNumbering($first,$tgl_input);
         $ukuran = $this->input->post('ukuran');
-        $no_packing = $tgl_code.$first.$ukuran.substr($code,12,4);
+        $no_packing = $tgl_code.$first.$ukuran.substr($code,8,4);
         
         $this->db->insert('retur_detail', array(
             'retur_id' => $this->input->post('id'),

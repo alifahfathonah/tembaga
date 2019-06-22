@@ -34,6 +34,10 @@
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
+                            <td>Kode Kas / Bank</td>
+                            <td>: <?php echo $header['no_acc'];?></td>
+                        </tr>
+                        <tr>
                             <td>Nomor Bukti</td>
                             <td>: <?php echo $header['no_uang_masuk'];?></td>
                         </tr>
@@ -48,6 +52,10 @@
                         <tr>
                             <td>Cek / Giro</td>
                             <td>: <?php echo $header['bank_pembayaran'];?></td>
+                        </tr>
+                        <tr>
+                            <td>Kurs</td>
+                            <td>: <?php echo number_format($header['kurs'],2,',','.');?></td>
                         </tr>
                     </table>
                 </td>

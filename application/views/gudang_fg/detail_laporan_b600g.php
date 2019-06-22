@@ -107,7 +107,7 @@
                                 <?php 
                                 foreach($packing as $p){
                                 ?>
-                                <option value="<?=$p->bobbin_size;?>"><?=$p->bobbin_size;?> </option>
+                                <option value="<?=$p->bobbin_size;?>"><?=$p->bobbin_size.' ('.$p->keterangan.')';?> </option>
                                 <?php } ?>    
                             </select> 
                             <input type="hidden" name="id_packing" id="id_packing">                       

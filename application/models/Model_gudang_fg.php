@@ -395,7 +395,7 @@ class Model_gudang_fg extends CI_Model{
     }
 
     function get_bobbin_g($id){
-        $data = $this->db->query("Select bobbin_size from m_bobbin_size where jenis_packing_id =".$id);
+        $data = $this->db->query("Select bobbin_size, keterangan from m_bobbin_size where jenis_packing_id =".$id);
         return $data;
     }
     /*

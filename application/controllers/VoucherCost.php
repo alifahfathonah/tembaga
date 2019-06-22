@@ -53,6 +53,7 @@ class VoucherCost extends CI_Controller{
         $user_ppn = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
         
         if ($this->input->post('cost_id') == 0) {
             $cost_id = 0;
@@ -80,7 +81,11 @@ class VoucherCost extends CI_Controller{
                 $num = 'BK';
             }
         }
-        $code_um = $this->Model_m_numberings->getNumbering($num);
+        if($user_ppn == 1){
+            $code_um = $num.'.'.$tgl_code.'.'.$this->input->post('no_uk');
+        }else{
+            $code_um = $this->Model_m_numberings->getNumbering($num);
+        }
 
         if($code){
             if($this->input->post('group_cost_id') == 1){

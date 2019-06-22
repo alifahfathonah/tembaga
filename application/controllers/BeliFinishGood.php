@@ -195,12 +195,14 @@ class BeliFinishGood extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_code = date('dmy', strtotime($this->input->post('tanggal')));
 
-        $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('BOBBIN',$tgl_input);
-
         $first = $this->input->post('no_packing');
+        $this->load->model('Model_m_numberings');
+        // $code = $this->Model_m_numberings->getNumbering('BOBBIN',$tgl_input);
+        $code = $this->Model_m_numberings->getNumbering($first,$tgl_input);
+
         $ukuran = $this->input->post('ukuran');
-        $data['no_packing'] = $tgl_code.$first.$ukuran.substr($code,12,4);
+        $ukuran = $this->input->post('ukuran');
+        $data['no_packing'] = $tgl_code.$first.$ukuran.substr($code,8,4);
 
         header('Content-Type: application/json');
         echo json_encode($data);
@@ -564,7 +566,7 @@ class BeliFinishGood extends CI_Controller{
             } else if ($packing['packing'] == "ROLL") {
                 $data['content'] = "beli_fg/create_dtbj_roll";
                 $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('ROLL')->result();
-            } else if ($packing['packing'] == "BOBBIN 600g") {
+            } else if ($packing['packing'] == "BOBBIN PLASTIK") {
                 $data['content'] = "beli_fg/create_dtbj_b600g";
                 $data['packing'] = $this->Model_gudang_fg->get_bobbin_g($packing['id'])->result();
             } else {

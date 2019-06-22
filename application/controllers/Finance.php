@@ -113,6 +113,7 @@ class Finance extends CI_Controller{
         }else{
             $data['type'] = 'sukses';
         }
+
         header('Content-Type: application/json');
         echo json_encode($data);
     }
@@ -121,6 +122,7 @@ class Finance extends CI_Controller{
         $user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_um = date('Y', strtotime($this->input->post('tanggal')));
         $tgl_cek   = date('Y-m-d', strtotime($this->input->post('tanggal_cek')));
         $user_ppn  = $this->session->userdata('user_ppn');
         $tglurut = date('ymd', strtotime($this->input->post('tanggal')));
@@ -148,11 +150,12 @@ class Finance extends CI_Controller{
                 }
             }
         }
-        $code = $this->Model_m_numberings->getNumbering($num);
 
         if($user_ppn == 1){
+            $code = $num.'.'.$tgl_um.'.'.$this->input->post('no_uang_masuk');
             $status = 1;
         }else{
+            $code = $this->Model_m_numberings->getNumbering($num);
             $status = 0;
         }
         $data = array(
@@ -167,6 +170,7 @@ class Finance extends CI_Controller{
             'rekening_pembayaran'=> $this->input->post('rek_pengirim'),
             'nomor_cek'=> $this->input->post('no_cek_pengirim'),
             'currency'=> $this->input->post('currency'),
+            'kurs'=> $this->input->post('kurs'),
             'nominal'=> str_replace('.', '', $this->input->post('nominal')),
             'tgl_cair'=> $tgl_cek,
             'keterangan'=> $this->input->post('remarks'),
@@ -193,6 +197,7 @@ class Finance extends CI_Controller{
                 'id_bank'=> $this->input->post('bank_id'),
                 'id_um'=> $insert_id,
                 'currency'=> $this->input->post('currency'),
+                'kurs'=> $this->input->post('kurs'),
                 'nominal'=> str_replace('.', '', $this->input->post('nominal')),
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id
@@ -1190,7 +1195,7 @@ class Finance extends CI_Controller{
         $data = $this->Model_finance->get_so_list($id,$ppn)->result();
         $arr_so[] = "Silahkan pilih....";
         foreach ($data as $row) {
-            $arr_so[$row->id] = $row->no_sales_order;
+            $arr_so[$row->id] = $row->no_po.' ('.$row->no_sales_order.')';
         } 
         print form_dropdown('sales_order_id', $arr_so);
     }

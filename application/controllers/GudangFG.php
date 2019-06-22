@@ -144,7 +144,7 @@ class GudangFG extends CI_Controller{
                 $data['content'] = "gudang_fg/detail_laporan_rambut";
                 $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('KARDUS')->result();
                 $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result();
-            } else if ($packing['packing'] == 'BOBBIN 600g') {
+            } else if ($packing['packing'] == 'BOBBIN PLASTIK') {
                 $data['content'] = "gudang_fg/detail_laporan_b600g";
                 $data['packing'] = $this->Model_gudang_fg->get_bobbin_g($packing['id'])->result();
                 $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result();
@@ -678,12 +678,12 @@ class GudangFG extends CI_Controller{
         $this->db->trans_start();
 
         $this->load->model('Model_m_numberings');
-
-        $code = $this->Model_m_numberings->getNumbering('BOBBIN',$tgl_input);
-
         $first = $this->input->post('no_packing');
+        // $code = $this->Model_m_numberings->getNumbering('BOBBIN',$tgl_input);
+        $code = $this->Model_m_numberings->getNumbering($first,$tgl_input);
+
         $ukuran = $this->input->post('ukuran');
-        $no_packing = $tgl_code.$first.$ukuran.substr($code,12,4);
+        $no_packing = $tgl_code.$first.$ukuran.substr($code,8,4);
         
         $this->db->insert('produksi_fg_detail', array(
             'tanggal' => $tgl_input,
