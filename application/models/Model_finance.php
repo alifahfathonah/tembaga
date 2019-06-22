@@ -272,6 +272,18 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function show_detail_sj($id){
+        $data = $this->db->query("SELECT tsod.*, COALESCE(CASE WHEN tsod.nama_barang_alias = '' THEN null ELSE tsod.nama_barang_alias END, jb.jenis_barang) as jenis_barang, COALESCE(jb.uom,r.uom,s.uom) AS uom
+            FROM t_sales_order_detail tsod
+            LEFT JOIN t_sales_order tso ON tso.id = tsod.t_so_id
+            LEFT JOIN t_surat_jalan tsj ON tsj.sales_order_id = tso.so_id
+            LEFT JOIN jenis_barang jb ON tso.jenis_barang != 'RONGSOK' AND tso.jenis_barang != 'LAIN' AND jb.id = tsod.jenis_barang_id
+            LEFT JOIN rongsok r ON tso.jenis_barang = 'RONGSOK' AND r.id = tsod.jenis_barang_id
+            LEFT JOIN sparepart s ON tso.jenis_barang = 'LAIN' AND s.id = tsod.jenis_barang_id
+            WHERE tsj.id = ".$id);
+        return $data;
+    }
+
     function show_detail_invoice($id){
         $data = $this->db->query("select fid.*, COALESCE(NULLIF((select nama_barang_alias from t_sales_order_detail tsod where tsod.jenis_barang_id = fid.jenis_barang_id and tsod.t_so_id = tso.id),''),jb.jenis_barang,r.nama_item,s.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom,s.uom) as uom
         from f_invoice_detail fid

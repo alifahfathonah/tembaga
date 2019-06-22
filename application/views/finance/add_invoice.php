@@ -109,7 +109,7 @@
                             No. Surat Jalan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="surat_jalan_id" name="surat_jalan_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_tgl_sj(this.value);">
+                            <select id="surat_jalan_id" name="surat_jalan_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_tgl_sj(this.value); get_detail_sj(this.value)">
                                 <option value=""></option>
                             </select>
                         </div>
@@ -212,6 +212,30 @@
                     </div>
                 </div>
             </div>
+            <div class="panel panel-default" id="detailSj" style="display: none;">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 align="center" style="font-weight: bold;">Detail Surat Jalan</h4>
+                            <div class="table-scrollable">
+                                <table class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                        <th style="width:40px">No</th>
+                                        <th>Nama Item</th>
+                                        <th>Qty</th>
+                                        <th>Netto (UOM)</th>
+                                        <th>Amount</th>
+                                        <th>Total</th>
+                                    </thead>
+                                    <tbody id="boxDetail">
+                                    </tbody>
+                                    
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
         
         <?php
@@ -298,6 +322,18 @@ function get_tgl_sj(id){
         dataType: "json",
         success: function(result) {
             $('#tanggal').val(result['tanggal']);
+        }
+    });
+}
+
+function get_detail_sj(id) {
+    $.ajax({
+        type:"POST",
+        url:'<?php echo base_url('index.php/Finance/load_detail_sj'); ?>',
+        data:"id="+ id,
+        success:function(result){
+            $("#detailSj").show();
+            $('#boxDetail').html(result);
         }
     });
 }

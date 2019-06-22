@@ -1161,6 +1161,38 @@ class Finance extends CI_Controller{
         $this->load->view('layout', $data); 
     }
 
+    function load_detail_sj(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $no    = 0;
+        $total_all = 0;
+        $netto = 0;
+        
+        $this->load->model('Model_finance');
+        $myDetail = $this->Model_finance->show_detail_sj($id)->result(); 
+        foreach ($myDetail as $row){
+            $no++;
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->jenis_barang.'</td>';
+            $tabel .= '<td>'.$row->qty.'</td>';
+            $tabel .= '<td>'.number_format($row->netto,2,',','.').' '.$row->uom.'</td>';
+            $tabel .= '<td>'.number_format($row->amount,2,',','.').'</td>';
+            $tabel .= '<td>'.number_format($row->total_amount,2,',','.').'</td>';
+            $tabel .= '</tr>';
+            $total_all += $row->total_amount;
+        }
+
+        $tabel .= '<tr>';
+        $tabel .= '<td colspan="5" style="text-align:right"><strong>Total </strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total_all,0,',','.').'</strong></td>';
+        $tabel .= '</tr>';
+        
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
     function get_flag(){
         $id = $this->input->post('id');
         $this->load->model('Model_finance');
