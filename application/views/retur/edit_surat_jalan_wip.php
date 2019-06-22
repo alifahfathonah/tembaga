@@ -164,6 +164,7 @@
                                     '<input type="hidden" id="jenis_barang_id_'.$no.'" name="details['.$no.'][jenis_barang_id]" class="form-control myline" value="'.$row->jenis_barang_id.'">'.
                                     '<td><input type="text" id="qty_'.$no.'" name="details['.$no.'][qty]" class="form-control myline" readonly="readonly" value="'.$row->qty.'"></td>'.
                                     '<td><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" class="form-control myline" readonly="readonly" value="'.$row->berat.'"></td>'.
+                                    '<input type="text" id="bobbin_'.$no.'" name="details['.$no.'][bobbin] value="">'.
                                     '<td><input type="text" id="line_remarks_'.$no.'" name="details['.$no.'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" value="'.$row->keterangan.'" readonly="readonly"></td>'.
                                     '</td>'.
                                 '</tr>';

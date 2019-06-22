@@ -5,4 +5,5 @@
     Deny from all
 </IfModule>
 
+php_value max_input_vars 3000
 php_value max_execution_time 300

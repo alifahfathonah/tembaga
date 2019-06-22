@@ -1008,6 +1008,7 @@ class SalesOrder extends CI_Controller{
 
         #Insert Surat Jalan
         $details = $this->input->post('details');
+
         foreach ($details as $v) {
             if($v['id_barang']!=''){
                 if($jenis=='FG'){// BARANG FINISH GOOD

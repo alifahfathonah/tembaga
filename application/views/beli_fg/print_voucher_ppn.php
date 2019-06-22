@@ -86,7 +86,7 @@
                             <td style="border-left:1px solid #000;"><?=$row->no_voucher;?></td>
                             <td style="border-left:1px solid #000;"><?=$row->no_po;?></td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=$row->keterangan;?></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=number_format($row->amount,0,',', '.');?></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=number_format($row->amount,2,',', '.');?></td>
                         </tr>
                         <?php
                                 $total_vc += $row->amount;
@@ -102,7 +102,7 @@
                         <tr>
                             <td style="text-align:right;" colspan="4"><strong>Total</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;">
-                                <strong><?=number_format($total_vc,0,',', '.');?></strong>
+                                <strong><?=number_format($total_vc,2,',', '.');?></strong>
                             </td>
                         </tr>
                     </table>

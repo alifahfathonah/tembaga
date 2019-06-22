@@ -98,7 +98,7 @@ class VoucherCost extends CI_Controller{
                         'group_cost_id'=> $this->input->post('group_cost_id'),
                         'customer_id'=> $cost_id,
                         'keterangan'=> $this->input->post('remarks'),
-                        'amount'=> str_replace('.', '', $this->input->post('amount')),
+                        'amount'=> str_replace(',', '', $this->input->post('amount')),
                         'created'=> $tanggal,
                         'created_by'=> $user_id,
                         'modified'=> $tanggal,
@@ -118,7 +118,7 @@ class VoucherCost extends CI_Controller{
                     'id_vc'=>$insert_id,
                     'currency'=>$this->input->post('currency'),
                     'kurs'=>$this->input->post('kurs'),
-                    'nominal'=>str_replace('.', '', $this->input->post('amount')),
+                    'nominal'=>str_replace(',', '', $this->input->post('amount')),
                     'created_at'=>$tanggal,
                     'created_by'=>$user_id
                 ));
@@ -132,7 +132,7 @@ class VoucherCost extends CI_Controller{
                         'group_cost_id'=> $this->input->post('group_cost_id'),
                         'supplier_id'=> $cost_id,
                         'keterangan'=> $this->input->post('remarks'),
-                        'amount'=> str_replace('.', '', $this->input->post('amount')),
+                        'amount'=> str_replace(',', '', $this->input->post('amount')),
                         'created'=> $tanggal,
                         'created_by'=> $user_id,
                         'modified'=> $tanggal,
@@ -152,7 +152,7 @@ class VoucherCost extends CI_Controller{
                     'id_vc'=>$insert_id,
                     'currency'=>$this->input->post('currency'),
                     'kurs'=>$this->input->post('kurs'),
-                    'nominal'=>str_replace('.', '', $this->input->post('amount')),
+                    'nominal'=>str_replace(',', '', $this->input->post('amount')),
                     'created_at'=>$tanggal,
                     'created_by'=>$user_id
                 ));
@@ -166,7 +166,7 @@ class VoucherCost extends CI_Controller{
                         'group_cost_id'=> $this->input->post('group_cost_id'),
                         'nm_cost'=> $this->input->post('nm_cost'),
                         'keterangan'=> $this->input->post('remarks'),
-                        'amount'=> str_replace('.', '', $this->input->post('amount')),
+                        'amount'=> str_replace(',', '', $this->input->post('amount')),
                         'created'=> $tanggal,
                         'created_by'=> $user_id,
                         'modified'=> $tanggal,
@@ -186,7 +186,7 @@ class VoucherCost extends CI_Controller{
                     'id_vc'=>$insert_id,
                     'currency'=>$this->input->post('currency'),
                     'kurs'=>$this->input->post('kurs'),
-                    'nominal'=>str_replace('.', '', $this->input->post('amount')),
+                    'nominal'=>str_replace(',', '', $this->input->post('amount')),
                     'created_at'=>$tanggal,
                     'created_by'=>$user_id
                 ));
