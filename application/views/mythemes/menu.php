@@ -827,12 +827,26 @@
                     </ul>
                 </li>
             <?php } if($group_id==1 || (isset($akses_menu['VoucherCost']) && $akses_menu['VoucherCost']==1)){ ?>
-                <li>
-                    <a href="<?php echo base_url(); ?>index.php/VoucherCost">
+                <li <?php if($module_name=="VoucherCost") echo 'class="start active open"' ?>>
+                    <a href="javascript:;">
                     <i class="fa fa-usd"></i>
                     <span class="title">VOUCHER COST</span>
                     <span class="arrow"></span>
                     </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/VoucherCost/kas_keluar">
+                                <i class="fa fa-left">-</i>
+                                Kas Keluar
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/VoucherCost/bank_keluar">
+                                <i class="fa fa-left">-</i>
+                                Bank Keluar
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             <?php } if($group_id==1 || ( isset($akses_menu['MApolo']) || isset($akses_menu['MCost']) || isset($akses_menu['MCities']) || isset($akses_menu['MKendaraan']) || isset($akses_menu['MGroupCost']) || isset($akses_menu['MNumberings']) || isset($akses_menu['MProvinces']) || isset($akses_menu['MTypeKendaraan']) || isset($akses_menu['MSupplier']) || isset($akses_menu['MCustomer']) || isset($akses_menu['MRongsok']) || isset($akses_menu['MBank']) || isset($akses_menu['MSparepart']) || isset($akses_menu['MAmpas']) || isset($akses_menu['MJenisBarang']) )){ ?>
                 <li <?php if($module_name=="MNumberings" || $module_name=="Apolo"

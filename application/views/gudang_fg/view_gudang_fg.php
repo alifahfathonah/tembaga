@@ -24,6 +24,7 @@
        <tr >
             <th>No</th>
             <th>Jenis Barang</th>
+            <th>No Produksi</th>
             <th>No Packing</th>
             <th>Bruto</th>
             <th>Berat</th>
@@ -36,7 +37,8 @@
         <tr>
             <td><?= $no; ?></td>
             <td><?= $data->jenis_barang; ?></td>
-            <td><?= $data->no_packing ;?></td>
+            <td><?= $data->no_produksi ?></td>
+            <td><?= $data->no_packing; ?></td>
             <td><?= number_format($data->bruto,2,',','.'); ?></td>
             <td><?= number_format($data->berat_bobbin,2,',','.'); ?></td>
             <td style="background-color: green; color: white;"><?= number_format($data->netto,2,',','.'); ?></td>

@@ -30,6 +30,48 @@ class VoucherCost extends CI_Controller{
 
         $this->load->view('layout', $data);
     }
+
+    function kas_keluar(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "voucher_cost/kas_keluar";
+        $this->load->model('Model_voucher_cost');
+        $data['list_data'] = $this->Model_voucher_cost->list_data_kk($ppn)->result();
+        $data['list_group_cost'] = $this->Model_voucher_cost->list_group_cost()->result();
+        $this->load->model('Model_finance');
+        $data['bank_list'] = $this->Model_finance->bank_list($ppn)->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function bank_keluar(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "voucher_cost/bank_keluar";
+        $this->load->model('Model_voucher_cost');
+        $data['list_data'] = $this->Model_voucher_cost->list_data_bk($ppn)->result();
+        $data['list_group_cost'] = $this->Model_voucher_cost->list_group_cost()->result();
+        $this->load->model('Model_finance');
+        $data['bank_list'] = $this->Model_finance->bank_list($ppn)->result();
+
+        $this->load->view('layout', $data);
+    }
     
     function get_cost_list(){ 
         $id = $this->input->post('id');
