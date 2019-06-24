@@ -36,7 +36,8 @@
                         <?php if($this->session->userdata('user_ppn')==1){
                             echo '<input type="text" id="no_surat_jalan" name="no_surat_jalan" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor Surat Jalan..." onkeyup="this.value = this.value.toUpperCase()">';
                         }else{
-                            echo '<input type="text" id="no_surat_jalan" name="no_surat_jalan" class="form-control myline" style="margin-bottom:5px" value="Auto Generated" readonly="readonly">';
+                            echo '<input type="text" id="no_surat_jalan" name="no_surat_jalan" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor Surat Jalan..." onkeyup="this.value = this.value.toUpperCase()">';
+                            // echo '<input type="text" id="no_surat_jalan" name="no_surat_jalan" class="form-control myline" style="margin-bottom:5px" value="Auto Generated" readonly="readonly">';
                         }?>
                         </div>
                     </div>

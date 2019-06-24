@@ -904,8 +904,8 @@ class SalesOrder extends CI_Controller{
             $code = 'SJ-KMP.'.$tgl_sj.'.'.$this->input->post('no_surat_jalan');
         }else{
             $this->load->model('Model_m_numberings');
-            $code = $this->Model_m_numberings->getNumbering('SJ', $tgl_input); 
-            // $code = 'SJ.'.$tgl_sj.'.'.$this->input->post('no_surat_jalan');
+            // $code = $this->Model_m_numberings->getNumbering('SJ', $tgl_input); 
+            $code = 'SJ.'.$tgl_sj.'.'.$this->input->post('no_surat_jalan');
         }
         
         if($code){        
