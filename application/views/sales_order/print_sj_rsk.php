@@ -147,8 +147,24 @@
                         <tr>
                             <td style="text-align:center"><?php echo $header['supir']; ?></td>
                             <td style="text-align:center">(_____________)</td>
-                            <td style="text-align:center">(_____________)</td>
-                            <td style="text-align:center"><?php echo $header['realname']; ?></td>
+                            <td style="text-align:center">
+                                <?php 
+                                    if($header['jenis_barang'] == "RONGSOK"){
+                                        echo "Tjan Lin Oy";
+                                    } else {
+                                        echo "&nbsp;";
+                                    } 
+                                ?>
+                            </td>
+                            <td style="text-align:center">
+                            <?php 
+                                    if($header['jenis_barang'] == "RONGSOK"){
+                                        echo "NAMIN";
+                                    } else {
+                                        echo $header['realname'];
+                                    } 
+                                ?>
+                            </td>
                             <td style="text-align:center">(_____________)</td>
                         </tr>
                     </table>
