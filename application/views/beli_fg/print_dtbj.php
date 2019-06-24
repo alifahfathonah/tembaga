@@ -68,8 +68,8 @@
                                 echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->jenis_barang.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->uom.'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.$row->bruto.'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.$row->netto.'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->bruto,2,',',',').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->netto,2,',','.').'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000">'.$row->no_bobbin.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->no_packing.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->line_remarks.'</td>';
@@ -91,8 +91,8 @@
                         </tr>    
                         <tr>
                             <td colspan="3" style="text-align:right"><strong>Total (Kg) </strong></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000"><strong><?php echo number_format($bruto,0,',', '.'); ?></strong></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000"><strong><?php echo number_format($netto,0,',', '.'); ?></strong></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000"><strong><?php echo number_format($bruto,2,',', '.'); ?></strong></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000"><strong><?php echo number_format($netto,2,',', '.'); ?></strong></td>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                         </tr>

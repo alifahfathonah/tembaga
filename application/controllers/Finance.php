@@ -1833,9 +1833,9 @@ class Finance extends CI_Controller{
             'id_match'=>$this->input->post('id_modal'),
             'id_um'=>$this->input->post('um_id'),
             'id_inv'=>0,
-            'biaya1'=>str_replace('.', '',$this->input->post('b_1')),
+            'biaya1'=>str_replace(',', '',$this->input->post('b_1')),
             'ket1'=>$this->input->post('k_1'),
-            'biaya2'=>str_replace('.', '',$this->input->post('b_2')),
+            'biaya2'=>str_replace(',', '',$this->input->post('b_2')),
             'ket2'=>$this->input->post('k_2')
         );
 
