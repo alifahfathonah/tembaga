@@ -219,12 +219,12 @@ class R_SO extends CI_Controller{
             $tabel .= '</td>';
             $tabel .= '<td><label id="lbl_uom_'.$no.'">'.$row->uom.'</label>';
             $tabel .= '<input type="text" id="uom_'.$no.'" name="uom_'.$no.'" class="form-control myline" value="'.$row->uom.'" readonly  style="display:none;"/></td>';
-            $tabel .= '<td style="text-align:right;"><label id="lbl_amount_'.$no.'">'.number_format($row->amount,0,',','.').'</label>';
-            $tabel .= '<input type="text" id="amount_'.$no.'" name="amount_'.$no.'" class="form-control myline" value="'.$row->amount.'" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id,'.$no.');"  style="display:none;"/></td>';
-            $tabel .= '<td style="text-align:right;"><label id="lbl_netto_'.$no.'">'.number_format($row->netto,2,'.',',').'</label>';
+            $tabel .= '<td style="text-align:right;"><label id="lbl_amount_'.$no.'">'.number_format($row->amount,2,'.',',').'</label>';
+            $tabel .= '<input type="text" id="amount_'.$no.'" name="amount_'.$no.'" class="form-control myline" value="'.number_format($row->amount,2,'.',',').'" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id,'.$no.');"  style="display:none;"/></td>';
+            $tabel .= '<td style="text-align:right;"><label id="lbl_netto_'.$no.'">'.$row->netto.'</label>';
             $tabel .= '<input type="number" id="netto_'.$no.'" name="netto_'.$no.'" class="form-control myline" value="'.$row->netto.'"  style="display:none;" maxlength="10" value="0" onkeyup="hitungSubTotal_a('.$no.');"/></td>';
-            $tabel .= '<td style="text-align:right;"><label id="lbl_total_amount_'.$no.'">'.number_format($row->total_amount,0,',','.').'</label>';
-            $tabel .= '<input type="text" id="total_amount_'.$no.'" name="total_amount_'.$no.'" class="form-control myline" value="'.number_format($row->total_amount,0,',','.').'" style="display:none;" readonly /></td>';
+            $tabel .= '<td style="text-align:right;"><label id="lbl_total_amount_'.$no.'">'.number_format($row->total_amount,2,'.',',').'</label>';
+            $tabel .= '<input type="text" id="total_amount_'.$no.'" name="total_amount_'.$no.'" class="form-control myline" value="'.number_format($row->total_amount,2,'.',',').'" style="display:none;" readonly /></td>';
             $tabel .= '<td style="text-align:center;"><a id="btnEdit_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle '
                     . 'green" onclick="editDetail('.$no.');" style="margin-top:5px"> '
                     . '<i class="fa fa-pencil"></i> Edit </a>';
@@ -255,9 +255,9 @@ class R_SO extends CI_Controller{
         if($this->db->insert('r_t_so_detail', array(
             'so_id'=>$this->input->post('id'),
             'jenis_barang_id'=>$this->input->post('barang_id'),
-            'amount'=>str_replace('.', '', $this->input->post('harga')),
-            'total_amount'=>str_replace('.', '', $this->input->post('total_harga')),
-            'netto'=>str_replace('.', '', $this->input->post('netto'))
+            'amount'=>str_replace(',', '', $this->input->post('harga')),
+            'total_amount'=>str_replace(',', '', $this->input->post('total_harga')),
+            'netto'=>str_replace(',', '', $this->input->post('netto'))
         ))){
             $return_data['message_type']= "sukses";
         }else{
@@ -276,9 +276,9 @@ class R_SO extends CI_Controller{
         $this->db->where('id', $this->input->post('detail_id'));
         if($this->db->update('r_t_so_detail', array(
             'jenis_barang_id'=>$this->input->post('jenis_barang_id'),
-            'amount'=>str_replace('.', '', $this->input->post('amount')),
-            'total_amount'=>str_replace('.', '', $this->input->post('total_amount')),
-            'netto'=> $this->input->post('netto')
+            'amount'=>str_replace(',', '', $this->input->post('amount')),
+            'total_amount'=>str_replace(',', '', $this->input->post('total_amount')),
+            'netto'=>str_replace(',', '', $this->input->post('netto')),
         ))){
             $return_data['message_type']= "sukses";
         }else{

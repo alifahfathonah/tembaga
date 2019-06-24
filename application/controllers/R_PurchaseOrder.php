@@ -203,9 +203,9 @@ class R_PurchaseOrder extends CI_Controller{
         if($this->db->insert('r_t_po_detail', array(
             'po_id'=>$this->input->post('id'),
             'fg_id'=>$this->input->post('fg_id'),
-            'amount'=>str_replace('.', '', $this->input->post('harga')),
-            'netto'=>str_replace('.', '', $this->input->post('qty')),
-            'total_amount'=>str_replace('.', '', $this->input->post('total_harga'))
+            'amount'=>str_replace(',', '', $this->input->post('harga')),
+            'netto'=>str_replace(',', '', $this->input->post('qty')),
+            'total_amount'=>str_replace(',', '', $this->input->post('total_harga'))
         ))){
             $return_data['message_type']= "sukses";
         }else{
@@ -242,8 +242,8 @@ class R_PurchaseOrder extends CI_Controller{
                 $data = array(
                         'jenis_barang_id'=> $v['barang_id'],
                         'netto'=> $v['netto'],
-                        'amount'=> str_replace('.', '', $v['amount']),
-                        'total_amount'=> str_replace('.', '', $v['total_amount']),
+                        'amount'=> str_replace(',', '', $v['amount']),
+                        'total_amount'=> str_replace(',', '', $v['total_amount']),
                         'line_remarks'=> $v['line_remarks']
                     );
                 $this->db->where('id', $v['id']);
@@ -498,8 +498,8 @@ class R_PurchaseOrder extends CI_Controller{
                 $data = array(
                         'jenis_barang_id'=> $v['barang_id'],
                         'netto'=> $v['netto'],
-                        'amount'=> str_replace('.', '', $v['amount']),
-                        'total_amount'=> str_replace('.', '', $v['total_amount']),
+                        'amount'=> str_replace(',', '', $v['amount']),
+                        'total_amount'=> str_replace(',', '', $v['total_amount']),
                         'line_remarks'=> $v['line_remarks']
                     );
                 $this->db->where('id', $v['id']);
@@ -508,8 +508,8 @@ class R_PurchaseOrder extends CI_Controller{
                 $data_so_d = array(
                         'jenis_barang_id'=> $v['barang_id'],
                         'netto'=> $v['netto'],
-                        'amount'=> str_replace('.', '', $v['amount']),
-                        'total_amount'=> str_replace('.', '', $v['total_amount']),
+                        'amount'=> str_replace(',', '', $v['amount']),
+                        'total_amount'=> str_replace(',', '', $v['total_amount']),
                         'line_remarks'=> $v['line_remarks']
                     );
                 $this->db->where('po_detail_id', $v['id']);
