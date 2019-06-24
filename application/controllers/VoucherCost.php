@@ -237,7 +237,13 @@ class VoucherCost extends CI_Controller{
         }else{
             $this->session->set_flashdata('flash_msg', 'Voucher cost gagal di-create, penomoran belum disetup!');            
         }
-        redirect('index.php/VoucherCost');
+
+        if ($this->input->post('bank_id') <= 3) {
+            redirect('index.php/VoucherCost/kas_keluar');
+        } else {
+            redirect('index.php/VoucherCost/bank_keluar');
+        }
+        
     }
     
     function delete(){
