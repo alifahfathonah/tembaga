@@ -201,7 +201,6 @@ class BeliFinishGood extends CI_Controller{
         $code = $this->Model_m_numberings->getNumbering($first,$tgl_input);
 
         $ukuran = $this->input->post('ukuran');
-        $ukuran = $this->input->post('ukuran');
         $data['no_packing'] = $tgl_code.$first.$ukuran.substr($code,8,4);
 
         header('Content-Type: application/json');
@@ -567,6 +566,9 @@ class BeliFinishGood extends CI_Controller{
                 $data['content'] = "beli_fg/create_dtbj_roll";
                 $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('ROLL')->result();
             } else if ($packing['packing'] == "BOBBIN PLASTIK") {
+                $data['content'] = "beli_fg/create_dtbj_b600g";
+                $data['packing'] = $this->Model_gudang_fg->get_bobbin_g($packing['id'])->result();
+            } else if ($packing['packing'] == "KERANJANG SDM"){
                 $data['content'] = "beli_fg/create_dtbj_b600g";
                 $data['packing'] = $this->Model_gudang_fg->get_bobbin_g($packing['id'])->result();
             } else {
