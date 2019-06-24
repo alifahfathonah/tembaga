@@ -127,11 +127,11 @@
                                 <th style="width:20%">Nama Item Finish Good</th>
                                 <th>UOM</th>
                                 <th>Bruto (Kg)</th>
-                                <th>Berat Bobbin</th>
+                                <th>Berat</th>
                                 <th>Netto (Kg)</th>
                                 <th></th>
                                 <th>No. Bobbin</th>
-                                <th>No. Packing</th>
+                                <th width="20%">No. Packing</th>
                                 <th>Keterangan</th>
                                 <th>Action</th>
                             </thead>
@@ -145,7 +145,7 @@
                                     <option value=""></option>
                                     <?php foreach ($list_fg_on_po as $value){ ?>
                                             <option value='<?=$value->id;?>'>
-                                                <?=$value->jenis_barang;?>
+                                                <?='('.$value->kode.') '.$value->jenis_barang;?>
                                             </option>
                                     <?php } ?>
                                 </select>

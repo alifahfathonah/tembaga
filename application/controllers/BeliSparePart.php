@@ -1159,6 +1159,7 @@ class BeliSparePart extends CI_Controller{
     function print_voucher(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
         if($id){
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -1168,8 +1169,12 @@ class BeliSparePart extends CI_Controller{
             }
             $this->load->helper('terbilang_helper');
             $this->load->model('Model_beli_sparepart');
-            $data['header'] = $this->Model_beli_sparepart->show_header_voucher($id)->row_array();
-            $data['list_data'] = $this->Model_beli_sparepart->show_detail_voucher_sp($data['header']['vk_id'])->result();
+            if($user_ppn==1){
+
+            }else{
+                $data['header'] = $this->Model_beli_sparepart->show_header_voucher($id)->row_array();
+                $data['list_data'] = $this->Model_beli_sparepart->show_detail_voucher_sp($data['header']['vk_id'])->result();
+            }
             $total = 0;
             foreach ($data['list_data'] as $row) {
                 $total += $row->amount;
@@ -1356,6 +1361,16 @@ class BeliSparePart extends CI_Controller{
         }           
         header('Content-Type: application/json');
         echo json_encode($return_data);
+    }
+
+    function delete_matching_voucher(){
+        $id = $this->uri->segment(3);
+        
+        $this->db->where('id', $id);
+        $this->db->delete('f_vk');
+        
+        $this->session->set_flashdata('flash_msg', 'Data Matching Sparepart berhasil di hapus');
+        redirect('index.php/BeliSparePart/voucher_list');
     }
 
     function update_spb(){
