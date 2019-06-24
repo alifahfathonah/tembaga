@@ -912,7 +912,7 @@ class GudangFG extends CI_Controller{
                                     'jenis_barang_id' => $jenis_barang_id,
                                     'no_packing_barcode' => $v->no_packing_barcode,
                                     'no_produksi' => $v->no_produksi,
-                                    'bruto' => (int)$v->bruto,
+                                    'bruto' => $v->bruto,
                                     'netto' => $v->netto,
                                     'berat_bobbin' => $v->berat_bobbin,
                                     'bobbin_id' => $v->bobbin_id,

@@ -142,7 +142,7 @@
                                     <option value=""></option>
                                     <?php foreach ($list_fg_on_po as $value){ ?>
                                             <option value='<?=$value->id;?>'>
-                                                <?=$value->jenis_barang;?>
+                                                <?='('.$value->kode.') '.$value->jenis_barang;?>
                                             </option>
                                     <?php } ?>
                                 </select>

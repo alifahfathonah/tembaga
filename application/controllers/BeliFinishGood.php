@@ -484,7 +484,7 @@ class BeliFinishGood extends CI_Controller{
         }else{
             $no_bobbin = $barang['nomor_bobbin'];
             $kode_bobbin = substr($no_bobbin, 0,1);
-            $nomor_bobbin = substr($no_bobbin, 2,4);
+            $nomor_bobbin = substr($no_bobbin, 1,4);
             $ukuran = $this->input->post('ukuran');
             $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$nomor_bobbin;
         }

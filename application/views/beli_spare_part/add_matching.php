@@ -67,29 +67,28 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-1">&nbsp;</div>
-                <div class="col-md-5">
+                <div class="col-md-6">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             Supplier <font color="#f00">*</font>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-9">
                             <select id="supplier_id" name="supplier_id" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
                                 <option value=""></option>
                                 <?php
                                     foreach ($supplier_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_supplier.'</option>';
+                                        echo '<option value="'.$row->id.'">'.$row->nama_supplier.' ('.$row->pic.')</option>';
                                     }
                                 ?>
                             </select>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             Catatan
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-9">
                             <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
                                 class="form-control myline" style="margin-bottom:5px"></textarea>                           
                         </div>
