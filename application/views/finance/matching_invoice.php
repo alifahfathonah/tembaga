@@ -321,7 +321,7 @@ function simpanData(){
 }
 
 function numberWithCommas(x) {
-     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function myCurrency(evt) {
@@ -332,17 +332,17 @@ function myCurrency(evt) {
 }
 
 function getComa(value, id){
-    angka = value.toString().replace(/\./g, "");
-    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    angka = value.toString().replace(/\,/g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     hitungSubTotal();
 }
 
 function hitungSubTotal(){
-    nominal = $('#nominal').val().toString().replace(/\./g, "");
-    b1 = $('#b_1').val().toString().replace(/\./g, "");
-    b2 = $('#b_2').val().toString().replace(/\./g, "");
+    nominal = $('#nominal').val().toString().replace(/\,/g, "");
+    b1 = $('#b_1').val().toString().replace(/\,/g, "");
+    b2 = $('#b_2').val().toString().replace(/\,/g, "");
     total_harga = Number(nominal) + (Number(b1) + Number(b2));
-    $('#total_nominal').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    $('#total_nominal').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }
 
 function list_inv(id){
