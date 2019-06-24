@@ -1170,7 +1170,8 @@ class Finance extends CI_Controller{
         $netto = 0;
         
         $this->load->model('Model_finance');
-        $myDetail = $this->Model_finance->show_detail_sj($id)->result(); 
+        $myDetail = $this->Model_finance->load_detail_invoice($id)->result();
+        // $myDetail = $this->Model_finance->show_detail_sj($id)->result(); 
         foreach ($myDetail as $row){
             $no++;
             $tabel .= '<tr>';
@@ -1179,9 +1180,10 @@ class Finance extends CI_Controller{
             $tabel .= '<td>'.$row->qty.'</td>';
             $tabel .= '<td>'.number_format($row->netto,2,',','.').' '.$row->uom.'</td>';
             $tabel .= '<td>'.number_format($row->amount,2,',','.').'</td>';
-            $tabel .= '<td>'.number_format($row->total_amount,2,',','.').'</td>';
+            $total_amount = $row->netto * $row->amount;
+            $tabel .= '<td>'.number_format($total_amount,2,',','.').'</td>';
             $tabel .= '</tr>';
-            $total_all += $row->total_amount;
+            $total_all += $total_amount;
         }
 
         $tabel .= '<tr>';
@@ -1342,7 +1344,7 @@ class Finance extends CI_Controller{
         }else{
             $total_invoice = ($nilai_invoice-str_replace('.', '', $this->input->post('diskon'))-str_replace('.', '', $this->input->post('add_cost'))) + str_replace('.', '', $this->input->post('materai'));
         }
-
+        
         $this->db->where('id',$id_new);
         $this->db->update('f_invoice', array(
             'nilai_invoice' => $total_invoice
