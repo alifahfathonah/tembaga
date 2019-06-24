@@ -880,8 +880,12 @@ class SalesOrder extends CI_Controller{
 
     function get_penomoran_sj(){
         $tgl_sj = date('Ym', strtotime($this->input->post('tanggal')));
-        
-        $code = 'SJ-KMP.'.$tgl_sj.'.'.$this->input->post('no_sj');
+        $user_ppn = $this->session->userdata('user_ppn');
+        if ($user_ppn == 0) {
+            $code = 'SJ.'.$tgl_sj.'.'.$this->input->post('no_sj');
+        } else {
+            $code = 'SJ-KMP.'.$tgl_sj.'.'.$this->input->post('no_sj');
+        }
         
         $count = $this->db->query("Select count(id) as count from t_surat_jalan where no_surat_jalan = '".$code."'")->row_array();
         if($count['count']>0){
