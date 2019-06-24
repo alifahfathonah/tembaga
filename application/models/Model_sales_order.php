@@ -411,7 +411,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function show_header_sj($id){
-        $data = $this->db->query("Select tsj.*, cust.id as id_customer, cust.nama_customer, cust.alamat, so.tanggal as tanggal_so, 
+        $data = $this->db->query("Select tsj.*, cust.id as id_customer, COALESCE(tso.alias, cust.nama_customer) as nama_customer, cust.alamat, so.tanggal as tanggal_so, 
                     COALESCE(tsf.no_spb, tsw.no_spb_wip, s.no_spb, tsa.no_spb_ampas) as nomor_spb,
                     COALESCE(tsf.status, tsw.status, s.status, tsa.status) as status_spb,
                     tso.no_spb, so.no_sales_order, tso.no_po,
