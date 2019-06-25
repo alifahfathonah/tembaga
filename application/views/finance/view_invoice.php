@@ -2,9 +2,9 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Gudang FG
+            <i class="fa fa-angle-right"></i> Finance
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/GudangFG/view_spb'); ?>"> View Surat Permintaan Barang (SPB) FG</a> 
+            <a href="<?php echo base_url('index.php/Finance/view_invoice'); ?>"> View Invoice</a> 
         </h5>          
     </div>
 </div>
@@ -64,9 +64,9 @@
                             No. Invoice<font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_spb" name="no_spb" readonly="readonly"
+                            <input type="text" id="no_invoice" name="no_invoice"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['no_invoice']; ?>">
+                                value="<?php echo $header['no_invoice']; ?>" readonly>
 
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
@@ -151,9 +151,9 @@
                             Term Of Payment <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="term_of_payment" name="term_of_payment" readonly="readonly"
+                            <input type="text" id="term_of_payment" name="term_of_payment"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['term_of_payment'];?>">
+                                value="<?php echo $header['term_of_payment'];?>" readonly>
                         </div>
                     </div>
                     <div class="row">
@@ -161,9 +161,9 @@
                             Tanggal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="tanggal" name="tanggal" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
+                            <input type="text" id="tanggal" name="tanggal" 
+                                class="form-control input-small myline" style="margin-bottom:5px; float:left;" 
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>" readonly>
                         </div>
                     </div>
                     <div class="row">
@@ -171,9 +171,9 @@
                             Tanggal Jatuh Tempo<font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="tanggal" name="tanggal" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo date('d-m-Y', strtotime($header['tgl_jatuh_tempo'])); ?>">
+                            <input type="text" id="tgl_jatuh_tempo" name="tgl_jatuh_tempo"
+                                class="form-control input-small myline" style="margin-bottom:5px;  float:left;" 
+                                value="<?php echo date('d-m-Y', strtotime($header['tgl_jatuh_tempo'])); ?>" readonly>
                         </div>
                     </div>
                     <div class="row">
@@ -181,7 +181,7 @@
                             Catatan
                         </div>
                         <div class="col-md-8">
-                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px" readonly="readonly"><?php echo $header['keterangan']; ?></textarea>                           
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px" readonly><?php echo $header['keterangan']; ?></textarea>                           
                         </div>
                     </div>
                     <?php if($this->session->userdata('user_ppn')==1){?>
@@ -283,15 +283,22 @@
                                         </tr>
                                         <tr>
                                             <td>Diskon</td>
-                                            <td>(<i class="fa fa-minus"></i>) <?=number_format($header['diskon'],0,',','.');?></td>
+                                            <td>(<i class="fa fa-minus"></i>)
+                                                <label id="lblDiskon"><?=number_format($header['diskon'],0,',','.');?></label>
+                                                <input type="text" name="diskon" id="diskon" value="<?=number_format($header['diskon'],0,',','.');?>" style="display: none;"  onkeyup="getComa(this.value, this.id)"> 
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Biaya Tambahan</td>
-                                            <td>(<i class="fa fa-minus"></i>) <?=number_format($header['add_cost'],0,',','.');?></td>
+                                            <td>(<i class="fa fa-minus"></i>)
+                                                <label id="lblCost"><?=number_format($header['add_cost'],0,',','.');?></label>
+                                                <input type="text" name="cost" id="cost" value="<?=number_format($header['add_cost'],0,',','.');?>" style="display: none;"  onkeyup="getComa(this.value, this.id)"></td>
                                         </tr>
                                         <tr>
                                             <td>Materai</td>
-                                            <td>(<i class="fa fa-plus"></i>) <?=number_format($header['materai'],0,',','.');?></td>
+                                            <td>(<i class="fa fa-plus"></i>)
+                                                <label id="lblMaterai"><?=number_format($header['materai'],0,',','.');?></label>
+                                                <input type="text" name="materai" id="materai" value="<?=number_format($header['materai'],0,',','.');?>" style="display: none;"  onkeyup="getComa(this.value, this.id)"> </td>
                                         </tr>
                                         <tr>
                                             <td>Pajak</td>
@@ -303,7 +310,9 @@
                                         ?>
                                         <tr>
                                             <td style="text-align: right;"><strong>Total Bersih</strong></td>
-                                            <td style="background-color: green; color: white;"><?=$header['currency'].' '.number_format($total_bersih,0,',','.');?></td>
+                                            <td style="background-color: green; color: white;"><?=$header['currency'].' '.number_format($total_bersih,0,',','.');?>
+                                                <input type="hidden" name="total_bersih" id="total_bersih" value="<?=number_format($total_bersih,0,',','.');?>">
+                                            </td>
                                         </tr>
                                     </table>
                                 </div>
@@ -360,7 +369,11 @@
                 </div>
                 <?php } ?>
             </div>
-        <a href="<?php echo base_url('index.php/Finance/invoice'); ?>" class="btn blue-hoki"> 
+                        <a href="javascript:;" class="btn green" onclick="simpanData();" id="btnSimpan" style="display: none;"> 
+                        <i class="fa fa-floppy-o"></i> Simpan </a>
+                        <a href="javascript:;" class="btn green" onclick="editData();" id="btnEdit"> 
+                        <i class="fa fa-pencil"></i> Edit </a>
+                        <a href="<?php echo base_url('index.php/Finance/invoice'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
         <?php
             }else{
@@ -377,3 +390,89 @@
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+<script type="text/javascript">
+    function getComa(value, id){
+        angka = value.toString().replace(/\./g, "");
+        $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    }
+
+    function editData(){
+        $('#no_invoice').removeAttr('readonly');
+        $('#term_of_payment').removeAttr('readonly');
+        $('#tanggal').removeAttr('readonly');
+        $('#tgl_jatuh_tempo').removeAttr('readonly');
+        $('#remarks').removeAttr('readonly');
+
+        // $('#lblMaterai').hide();
+        // $('#lblCost').hide();
+        // $('#lblDiskon').hide();
+        // $('#materai').show();
+        // $('#cost').show();
+        // $('#diskon').show();
+
+        $('#btnSimpan').show();
+        $('#btnEdit').hide();
+    }
+
+    function simpanData(){
+        if($.trim($("#tanggal").val()) == ""){
+            $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
+            $('.alert-danger').show(); 
+        }else if($.trim($("#no_invoice").val()) == ""){
+            $('#message').html("Nomor Invoice harus diisi, tidak boleh kosong!");
+            $('.alert-danger').show(); 
+        }else if($.trim($("#tgl_jatuh_tempo").val()) == ""){
+            $('#message').html("Tanggal jatuh tempo harus diisi, tidak boleh kosong!");
+            $('.alert-danger').show(); 
+        }else if($.trim($("#term_of_payment").val()) == ""){
+            $('#message').html("Term of payment harus diisi, tidak boleh kosong!");
+            $('.alert-danger').show(); 
+        }else{
+            result = confirm('Anda yakin untuk menyimpannya ?');
+            if(result){
+                $.ajax({
+                    type: "POST",
+                    url: "<?php echo base_url('index.php/Finance/cek_no_invoice_update'); ?>",
+                    data: {
+                        id: $('#id').val(),
+                        no_invoice: $('#no_invoice').val(),
+                        tanggal: $('#tanggal').val()
+                    },
+                    cache: false,
+                    success: function(result) {
+                        var res = result['type'];
+                        if(res=='duplicate'){
+                            $('#message').html("Nomor Invoice sudah ada, tolong coba lagi!");
+                            $('.alert-danger').show();
+                        }else{
+                            $('#formku').attr('action', '<?= base_url("index.php/Finance/update_invoice") ?>');
+                            $('#formku').submit();
+                        }
+                    }
+                });
+            } 
+        }
+    }
+
+    $(function(){
+        $("#tanggal").datepicker({
+            showOn: "button",
+            buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+            buttonImageOnly: true,
+            buttonText: "Select date",
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-mm-yy'
+        }); 
+
+        $("#tgl_jatuh_tempo").datepicker({
+            showOn: "button",
+            buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+            buttonImageOnly: true,
+            buttonText: "Select date",
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-mm-yy'
+        }); 
+    });
+</script>

@@ -1428,20 +1428,62 @@ class Finance extends CI_Controller{
         }
     }
 
-    function simpan_invoice(){
+    function update_invoice(){
         $user_id   = $this->session->userdata('user_id');
         $return_data = array();
-        $tgl_input = date("Y-m-d");
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_jatuh_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jatuh_tempo')));
         $tanggal   = date('Y-m-d h:m:s');
+        // $total_bersih = str_replace('.', '', $this->input->post('total_bersih'));
+        // $diskon = str_replace('.', '', $this->input->post('diskon'));
+        // $cost = str_replace('.', '', $this->input->post('cost'));
+        // $materai = str_replace('.', '', $this->input->post('materai');
+        // $update_total = $total_bersih - $diskon - $cost - $materai;
         
         $this->db->trans_start();
         
+        $data = [
+            'no_invoice' => $this->input->post('no_invoice'),
+            'term_of_payment' => $this->input->post('term_of_payment'),
+            'tanggal' => $tgl_input,
+            'tgl_jatuh_tempo' => $tgl_jatuh_tempo,
+            'keterangan' => $this->input->post('remarks'),
+            // 'diskon' => $diskon,
+            // 'add_cost' => $cost,
+            // 'materai' => $materai,
+        ];
+
+        $this->db->update('f_invoice', $data, ['id' => $this->input->post('id')]);
+
         if($this->db->trans_complete()){
             redirect(base_url('index.php/Finance/invoice'));
         }else{
             $this->session->set_flashdata('flash_msg', 'Invoice gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/Finance');  
         }
+    }
+
+    function cek_no_invoice_update(){
+        $tgl_inv = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $user_ppn = $this->session->userdata('user_ppn');
+        
+        $code = $this->input->post('no_invoice');
+
+        $cek = $this->db->query("Select *from f_invoice where id = ".$this->input->post('id'))->row_array();
+        if ($cek['no_invoice'] == $code) {
+            $data['type'] = 'sukses';
+        } else {
+            $count = $this->db->query("Select count(id) as count from f_invoice where no_invoice = '".$code."'")->row_array();
+            if($count['count']>0){
+                $data['type'] = 'duplicate';
+            }else{
+                $data['type'] = 'sukses';
+            }
+        }
+
+        
+        header('Content-Type: application/json');
+        echo json_encode($data);
     }
 
     function print_invoice(){

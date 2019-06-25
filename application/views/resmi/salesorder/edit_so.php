@@ -191,17 +191,17 @@ function myCurrency_a(evt) {
 }
 
 function getComa_a(value, id, no){
-    angka = value.toString().replace(/\./g, "");
-    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    angka = value.toString().replace(/\,/g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     hitungSubTotal_a(no);
 }
 
 function hitungSubTotal_a(id){
-    harga = $('#amount_'+id).val().toString().replace(/\./g, "");
+    harga = $('#amount_'+id).val().toString().replace(/\,/g, "");
     netto = $('#netto_'+id).val();
     total_harga = Number(harga)* Number(netto);
-    total_harga = total_harga.toFixed(0);
-    $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    total_harga = total_harga.toFixed(2);
+    $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }
 
 function simpanData(){

@@ -142,7 +142,7 @@
                         </tr>
                         <tr>
                             <td style="text-align:center"><?php echo $header['supir']; ?></td>
-                            <td style="text-align:center">(_____)</td>
+                            <td style="text-align:center">(_____________)</td>
                             <td style="text-align:center">
                                 <?php 
                                     if($header['jenis_barang'] == "RONGSOK"){
@@ -161,7 +161,7 @@
                                     } 
                                 ?>
                             </td>
-                            <td style="text-align:center">(_____)</td>
+                            <td style="text-align:center">(_____________)</td>
                         </tr>
                     </table>
                 </td>
