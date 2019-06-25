@@ -1461,7 +1461,7 @@ class Finance extends CI_Controller{
         $this->db->update('f_invoice', $data, ['id' => $this->input->post('id')]);
 
         if($this->db->trans_complete()){
-            redirect(base_url('index.php/Finance/invoice'));
+            redirect($_SERVER['HTTP_REFERER']);
         }else{
             $this->session->set_flashdata('flash_msg', 'Invoice gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/Finance');  

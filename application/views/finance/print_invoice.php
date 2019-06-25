@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
     </head>
     <?php if($header['currency']=='IDR'){
-        $c='Rp. ';
+        $c='Rp ';
     }else{
         $c='$ ';
     }?>
@@ -39,15 +39,15 @@
                 <td width="50%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
-                            <td>Syarat Pembayaran</td>
+                            <td width="40%">Syarat Pembayaran</td>
                             <td>: <?php echo $header['term_of_payment'];?></td>
                         </tr>
                         <tr>
-                            <td>Tgl Jatuh Tempo</td>
+                            <td width="40%">Tgl Jatuh Tempo</td>
                             <td>: <?php echo tanggal_indo($header['tgl_jatuh_tempo']);?></td>
                         </tr>             
                         <tr>
-                            <td>No. PO</td>
+                            <td width="40%">No. PO</td>
                             <td>: <?php echo $header['no_po'];?></td>
                         </tr>
                     </table>
@@ -59,8 +59,8 @@
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nama Barang</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Netto</strong></td>
-                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong><?='('.$header['currency'].') ';?>Harga Satuan</strong></td>
-                            <td rowspan="2" style="text-align:center; border:1px solid #000"><strong><?='('.$header['currency'].') ';?>Harga Jual</strong></td>
+                            <td width="20%" rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong><?='('.$header['currency'].') ';?>Harga Satuan</strong></td>
+                            <td width="30%" rowspan="2" style="text-align:center; border:1px solid #000"><strong><?='('.$header['currency'].') ';?>Harga Jual</strong></td>
                         </tr>
                        
                                 <tr>
@@ -79,9 +79,23 @@
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
                             <td style="border-left:1px solid #000;"><?=$row->jenis_barang.$ok;?></td>
-                            <td style="text-align:right; border-left:1px solid #000;"><?=$c.number_format($row->netto,2,',','.').' '.$row->uom;?></td>
-                            <td style="text-align:right; border-left:1px solid #000;"><?=$c.number_format($row->harga,2,',', '.');?></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000;"><?=$c.number_format($row->total_harga,2,',', '.');?></td>
+                            <td style="text-align:right; border-left:1px solid #000;"><?= number_format($row->netto,2,',','.').' '.$row->uom;?></td>
+                            <td style="text-align:right; border-left:1px solid #000;">
+                                <table width="100%">
+                                    <tr>
+                                        <td><?= $c ?></td>
+                                        <td align="right"><?= number_format($row->harga,2,',', '.');?></td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000;">
+                                <table width="100%">
+                                    <tr>
+                                        <td><?= $c ?></td>
+                                        <td align="right"><?= number_format($row->total_harga,2,',', '.');?></td>
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
                         <?php
                                 $total_netto += $row->netto;
@@ -99,7 +113,12 @@
                         <tr>
                             <td style="text-align:left; border-left: 1PX solid #000; border-bottom: 1px solid #000;" colspan="4"><strong>Jumlah Harga Jual</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
-                                <strong><?=$c.number_format($total,2,',', '.');?></strong>
+                                <table width="100%">
+                                    <tr>
+                                        <td><strong><?= $c ?></strong></td>
+                                        <td align="right"><strong><?= number_format($total,2,',', '.');?></td>
+                                    </tr>
+                                </table>
                             </td>
                             <td style="border-left:1px solid #000;"></td>
                             <td style="text-align:right;"></td>
@@ -107,7 +126,12 @@
                         <tr>
                             <td style="text-align:left; border-left: 1PX solid #000; border-bottom: 1px solid #000;" colspan="4"><strong>Dikurangi Potongan Harga</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
-                                <strong><?=$c.number_format($header['diskon'],2,',', '.');?></strong>
+                                <table width="100%">
+                                    <tr>
+                                        <td><strong><?=$c?></strong></td>
+                                        <td align="right"><strong><?= number_format($header['diskon'],2,',', '.');?></strong></td>
+                                    </tr>
+                                </table>
                             </td>
                             <td style="border-left:1px solid #000;"></td>
                             <td style="text-align:right;"></td>
@@ -115,7 +139,12 @@
                         <tr>
                             <td style="text-align:left; border-left: 1PX solid #000; border-bottom: 1px solid #000;" colspan="4"><strong>Uang muka yang diterima</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
-                                ---
+                                <table width="100%">
+                                    <tr>
+                                        <td><strong><?=$c?></strong></td>
+                                        <td align="right"><strong>0,00</strong></td>
+                                    </tr>
+                                </table>
                             </td>
                             <td style="border-left:1px solid #000;"></td>
                             <td style="text-align:right;"></td>
@@ -123,7 +152,12 @@
                         <tr>
                             <td style="text-align:left; border-left: 1PX solid #000; border-bottom: 1px solid #000;" colspan="4"><strong>T o t a l</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
-                                <strong><?=$c.number_format($total,2,',', '.');?></strong>
+                                <table width="100%">
+                                    <tr>
+                                        <td><strong><?=$c;?></strong></td>
+                                        <td align="right"><strong><?=number_format($total,2,',', '.');?></strong></td>
+                                    </tr>
+                                </table>
                             </td>
                             <td style="border-left:1px solid #000;"></td>
                             <td style="text-align:right;"></td>
