@@ -30,10 +30,6 @@
                             <td>Customer</td>
                             <td>: <?php echo $header['nama_customer']; ?></td>
                         </tr>
-                        <tr>
-                            <td>Jenis Barang</td>
-                            <td>: <?php echo $header['jenis_barang']; ?></td>
-                        </tr>
                     </table>
                 </td>
                 <td>&nbsp;</td>

@@ -31,11 +31,6 @@
                 <td>&nbsp;</td>
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
-                        
-                        <tr>
-                            <td>Pembuat</td>
-                            <td>: <?php echo $header['realname']; ?></td>
-                        </tr>
                         <tr>
                             <td>Tanggal</td>
                             <td>: <?php echo date('d-m-Y', strtotime($header['created_at'])); ?></td>
@@ -99,10 +94,10 @@
                             <p>(____________)</p>
                         </td>
                         <td style="text-align:center">
-                            Yang Membuat,<br>
+                            Hormat Kami,<br>
                             <p>&nbsp;</p>
                             <p>&nbsp;</p>
-                            <?php echo $header['realname']; ?>
+                            <p>(____________)</p>
                         </td>
                     </tr>
                 </table>

@@ -344,8 +344,9 @@ class Model_gudang_fg extends CI_Model{
     }
 
     function get_pfd_id($id){
-        $data = $this->db->query("select pfd.*, jb.kode, jb.jenis_barang from produksi_fg_detail pfd 
+        $data = $this->db->query("select pfd.*,mb.nomor_bobbin, jb.kode, jb.jenis_barang from produksi_fg_detail pfd 
                 left join produksi_fg pf on pf.id = pfd.produksi_fg_id
+                left join m_bobbin mb on mb.id = pfd.bobbin_id
                 left join jenis_barang jb on jb.id = pf.jenis_barang_id where pfd.id =".$id);
         return $data;
     }

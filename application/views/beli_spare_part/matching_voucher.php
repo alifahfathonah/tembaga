@@ -14,14 +14,6 @@
         <?php
             if( ($group_id==1)||($hak_akses['add_spb']==1) ){
         ?>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="alert alert-danger display-hide">
-                    <button class="close" data-close="alert"></button>
-                    <span id="message">&nbsp;</span>
-                </div>
-            </div>
-        </div>
         <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -188,6 +180,14 @@
                 </div>
             </div>
             <hr class="divider"/>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger display-hide">
+                    <button class="close" data-close="alert"></button>
+                    <span id="message">&nbsp;</span>
+                </div>
+            </div>
+        </div>
     <!-- BANK -->
             <div class="row">
                 <div class="col-md-12">
@@ -304,9 +304,27 @@ function simpanData(){
         $('#message').html("Nominal tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else{
-        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
-        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/BeliSparePart/save_vk");  
-        $('#formku').submit(); 
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url('index.php/BeliRongsok/get_no_uang_keluar'); ?>",
+            data: {
+                no_uk: $('#no_uk').val(),
+                tanggal: $('#tanggal').val(),
+                bank_id: $('#bank_id').val()
+            },
+            cache: false,
+            success: function(result) {
+                var res = result['type'];
+                if(res=='duplicate'){
+                    $('#message').html("Nomor Uang Keluar sudah ada, tolong coba lagi!");
+                    $('.alert-danger').show();
+                }else{
+                    $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+                    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/BeliSparePart/save_vk");  
+                    $('#formku').submit(); 
+                }
+            }
+        });
     };
 };
 

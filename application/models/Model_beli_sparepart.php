@@ -260,7 +260,7 @@ class Model_beli_sparepart extends CI_Model{
     // }
 
     function voucher_list_ppn($user_ppn){
-        $data = $this->db->query("Select voucher.no_voucher, voucher.tanggal, voucher.jenis_voucher, voucher.keterangan, v.no_vk, s.nama_supplier, fk.nomor, v.id
+        $data = $this->db->query("Select voucher.no_voucher, voucher.tanggal, voucher.jenis_voucher, voucher.keterangan, v.no_vk, s.nama_supplier, fk.nomor, voucher.id
                 From f_vk v 
                     Left Join voucher On (voucher.vk_id = v.id)
                     Left Join po On (voucher.po_id = po.id) 

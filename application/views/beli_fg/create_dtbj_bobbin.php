@@ -156,8 +156,8 @@
                                 <td><input type="text" id="netto_1" name="myDetails[1][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly">
                                 </td>
                                 <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(1);" id="timbang_1"> <i class="fa fa-dashboard"></i> Timbang </a></td>                          
-                                <td><input type="text" name="myDetails[1][no_bobbin]" id="no_bobbin_1"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" onchange="get_bobbin(this.value,1)"></td>
-                                <td><input type="text" name="myDetails[1][no_packing]" id="no_packing_1" class="form-control myline" readonly placeholder="Auto"></td>
+                                <td><input type="text" name="myDetails[1][no_bobbin]" id="no_bobbin_1"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" onchange="get_bobbin(this.value,1)" value="0"></td>
+                                <td><input type="text" name="myDetails[1][no_packing]" id="no_packing_1" class="form-control myline"  placeholder="No Barcode ..." onkeyup="this.value = this.value.toUpperCase()"></td>
                                 <td><input type="text" name="myDetails[1][line_remarks]" id="line_remarks_1" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
                                 <td style="text-align:center">
                                     <a id="save_1" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(1);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
@@ -323,7 +323,7 @@ function saveDetail(id){
                 '<input type="hidden" id="ukuran_'+new_id+'" name="myDetails['+new_id+'][ukuran]" value="">'+
                 '<td><select id="name_rongsok_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom_po(this.value,'+new_id+');">'+
                     '<option value=""></option>'+
-                    '<?php foreach($list_fg_on_po as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}?>'+
+                    '<?php foreach($list_fg_on_po as $v){ print('<option value="'.$v->id.'">('.$v->kode.') '.$v->jenis_barang.'</option>');}?>'+
                 '</select>'+
                 '</td>'+
                 '<td><input type="text" id="uom_'+new_id+'" name="myDetails['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
@@ -331,8 +331,8 @@ function saveDetail(id){
                 '<td><input type="text" id="berat_bobbin_'+new_id+'" name="myDetails['+new_id+'][berat_bobbin]" class="form-control myline" value="0" maxlength="10" readonly="readonly"></td>'+
                 '<td><input type="text" id="netto_'+new_id+'" name="myDetails['+new_id+'][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly"></td>'+
                 '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('+new_id+');" id="timbang_'+new_id+'"> <i class="fa fa-dashboard"></i> Timbang </a></td>'+
-                '<td><input type="text" name="myDetails['+new_id+'][no_bobbin]" id="no_bobbin_'+new_id+'"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" onchange="get_bobbin(this.value,'+new_id+');"></td>'+
-                '<td><input type="text" name="myDetails['+new_id+'][no_packing]" id="no_packing_'+new_id+'" class="form-control myline" readonly placeholder="Auto"></td>'+
+                '<td><input type="text" name="myDetails['+new_id+'][no_bobbin]" id="no_bobbin_'+new_id+'"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" onchange="get_bobbin(this.value,'+new_id+');" value="0"></td>'+
+                '<td><input type="text" name="myDetails['+new_id+'][no_packing]" id="no_packing_'+new_id+'" class="form-control myline" placeholder="No Barcode ..." onkeyup="this.value = this.value.toUpperCase()"></td>'+
                 '<td><input type="text" name="myDetails['+new_id+'][line_remarks]" id="line_remarks_'+new_id+'" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
                 '<td style="text-align:center"><a id="save_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail('+new_id+');" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>'+
                     '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>'+

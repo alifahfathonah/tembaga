@@ -103,7 +103,6 @@
                                     <input type="text" id="no_uk" name="no_uk" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="Auto Generate">
                                 <?php } ?>
                                 </div>
-
                             </div>
                             <div class="row">
                                 <div class="col-md-5">
@@ -198,6 +197,7 @@
                 <div class="tools">    
                     <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" onclick="newData()">
                         <i class="fa fa-plus"></i> Tambah</a>
+                    <!-- <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/VoucherCost/add_uk"><i class="fa fa-plus"></i> Tambah</a> -->
                 </div>
             </div>
             <div class="portlet-body">
@@ -227,7 +227,7 @@
                         <td><?php echo $data->nama_trx; ?></td>
                         <td><?php echo $data->nama_group_cost; ?></td>
                         <td><?php echo $data->keterangan; ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->amount,0,',','.'); ?></td>
+                        <td style="text-align:right"><?php echo number_format($data->amount,2,',','.'); ?></td>
                         <td style="text-align:center">                             
                             <?php 
                                 if( ($group_id==1)||($hak_akses['print']==1) ){
@@ -268,8 +268,8 @@ function myCurrency(evt) {
 }
 
 function getComa(value, id){
-    angka = value.toString().replace(/\./g, "");
-    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    angka = value.toString().replace(/\,/g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }
 
 function newData(){

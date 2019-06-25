@@ -3,9 +3,13 @@
         <title></title>
         <meta charset="utf-8" />
     </head>
+    <?php if($header['currency']=='IDR'){
+        $c='Rp. ';
+    }else{
+        $c='$ ';
+    }?>
     <body class="margin-left:40px;">
-        <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;">I N V O I C E</h3>
+        <h2 style="text-align: center; text-decoration: underline;">I N V O I C E</h2>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="50%">
@@ -75,9 +79,9 @@
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
                             <td style="border-left:1px solid #000;"><?=$row->jenis_barang.$ok;?></td>
-                            <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->netto,2,',','.').' '.$row->uom;?></td>
-                            <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->harga,2,',', '.');?></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000;"><?=number_format($row->total_harga,2,',', '.');?></td>
+                            <td style="text-align:right; border-left:1px solid #000;"><?=$c.number_format($row->netto,2,',','.').' '.$row->uom;?></td>
+                            <td style="text-align:right; border-left:1px solid #000;"><?=$c.number_format($row->harga,2,',', '.');?></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000;"><?=$c.number_format($row->total_harga,2,',', '.');?></td>
                         </tr>
                         <?php
                                 $total_netto += $row->netto;
@@ -95,7 +99,7 @@
                         <tr>
                             <td style="text-align:left; border-left: 1PX solid #000; border-bottom: 1px solid #000;" colspan="4"><strong>Jumlah Harga Jual</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
-                                <strong><?=number_format($total,2,',', '.');?></strong>
+                                <strong><?=$c.number_format($total,2,',', '.');?></strong>
                             </td>
                             <td style="border-left:1px solid #000;"></td>
                             <td style="text-align:right;"></td>
@@ -103,7 +107,7 @@
                         <tr>
                             <td style="text-align:left; border-left: 1PX solid #000; border-bottom: 1px solid #000;" colspan="4"><strong>Dikurangi Potongan Harga</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
-                                <strong><?=number_format($header['diskon'],2,',', '.');?></strong>
+                                <strong><?=$c.number_format($header['diskon'],2,',', '.');?></strong>
                             </td>
                             <td style="border-left:1px solid #000;"></td>
                             <td style="text-align:right;"></td>
@@ -119,7 +123,7 @@
                         <tr>
                             <td style="text-align:left; border-left: 1PX solid #000; border-bottom: 1px solid #000;" colspan="4"><strong>T o t a l</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
-                                <strong><?=number_format($total,2,',', '.');?></strong>
+                                <strong><?=$c.number_format($total,2,',', '.');?></strong>
                             </td>
                             <td style="border-left:1px solid #000;"></td>
                             <td style="text-align:right;"></td>
@@ -132,7 +136,7 @@
                     <table border="0" width="100%">
                         <tr>
                             <td style="text-align:center" width="10%">Terbilang :</td>
-                            <td style="text-align:left" colspan="2">: **<?php echo ucwords(number_to_words_d($total, $header['currency'])); ?>**</td>
+                            <td style="text-align:left" colspan="2">**<?php echo ucwords(number_to_words_d($total, $header['currency'])); ?>**</td>
                             <td style="text-align:center" width="35%">Tangerang,<?php echo tanggal_indo($header['tanggal']);?></td>
                         </tr>
                         <tr style="height:35">
@@ -142,7 +146,7 @@
                             <td style="text-align:right;">&nbsp;</td>
                         </tr>
                         <tr>
-                            <td style="text-align:left; padding-left: 15px;" colspan="2">Pembayarang dengan Cheque/Giro dianggap lunas Setelah Cheque/Giro tersebut diuangkan / diterima dananya</td>
+                            <td style="text-align:left; padding-left: 15px;" colspan="2">Pembayaran dengan Cheque/Giro dianggap lunas Setelah Cheque/Giro tersebut diuangkan / diterima dananya</td>
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center"></td>
                         </tr>
