@@ -72,6 +72,7 @@ class R_PurchaseOrder extends CI_Controller{
     	$user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_kirim = date('Y-m-d', strtotime($this->input->post('tanggal_kirim')));
         $reff_cv = $this->session->userdata('cv_id');
         
         $this->db->trans_start();
@@ -79,6 +80,7 @@ class R_PurchaseOrder extends CI_Controller{
         $data = array(
             'no_po'=> $this->input->post('no_po'),
             'tanggal'=> $tgl_input,
+            'tanggal_kirim'=> $tgl_kirim,
             'f_invoice_id'=> $this->input->post('f_invoice_id'),
             'cv_id'=> $this->session->userdata('cv_id'),
             'term_of_payment'=> $this->input->post('term_of_payment'),
@@ -98,6 +100,7 @@ class R_PurchaseOrder extends CI_Controller{
             'no_po'=> $this->input->post('no_po'),
             'supplier_id'=> 1,
             'tanggal'=> $tgl_input,
+            'tanggal_kirim' => $tgl_kirim,
             'term_of_payment'=> $this->input->post('term_of_payment'),
         );
 
@@ -235,6 +238,7 @@ class R_PurchaseOrder extends CI_Controller{
         $reff_cv   = $this->session->userdata('cv_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_kirim = date('Y-m-d', strtotime($this->input->post('tanggal_kirim')));
         
         $details = $this->input->post('details');
         foreach ($details as $v) {
@@ -254,6 +258,7 @@ class R_PurchaseOrder extends CI_Controller{
         $data = array(
             'no_po'=> $this->input->post('no_po'),
             'tanggal'=> $tgl_input,
+            'tanggal_kirim' => $tgl_kirim,
             'cv_id'=>$this->session->userdata('cv_id'),
             'term_of_payment'=>$this->input->post('term_of_payment'),
             // 'jenis_po'=>'PO CV KE KMP',
@@ -270,6 +275,7 @@ class R_PurchaseOrder extends CI_Controller{
             'no_po'=> $this->input->post('no_po'),
             'supplier_id'=> 1,
             'tanggal'=> $tgl_input,
+            'tanggal_kirim' => $tgl_kirim,
             'term_of_payment'=>$this->input->post('term_of_payment'),
             'remarks'=>$this->input->post('remarks'),
         );

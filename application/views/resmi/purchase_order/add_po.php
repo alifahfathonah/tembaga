@@ -103,6 +103,16 @@
                                 class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?= $header['nama_cv']?>" readonly="readonly">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal Kirim <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tanggal_kirim" name="tanggal_kirim" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('d-m-Y'); ?>">
+                        </div>
+                    </div>
                 </div>              
             </div>
             
@@ -162,7 +172,17 @@ $(function(){
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd-mm-yy'
-    });       
+    });    
+
+    $("#tanggal_kirim").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });      
 });
 </script>
       
