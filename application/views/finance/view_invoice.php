@@ -269,6 +269,8 @@
                                             <td style="background-color: green; color: white;"><?php echo number_format($total_all,2,',','.');?></td>
                                             <td></td>
                                         </tr>
+                                        <input type="hidden" name="total" id="total" value="<?= $total_all ?>">
+                                        <input type="hidden" name="flag_ppn" id="flag_ppn" value="<?= $header['flag_ppn'] ?>">
                                         </tbody>
                                     </table>
                                 </div>
@@ -311,7 +313,6 @@
                                         <tr>
                                             <td style="text-align: right;"><strong>Total Bersih</strong></td>
                                             <td style="background-color: green; color: white;"><?=$header['currency'].' '.number_format($total_bersih,0,',','.');?>
-                                                <input type="hidden" name="total_bersih" id="total_bersih" value="<?=number_format($total_bersih,0,',','.');?>">
                                             </td>
                                         </tr>
                                     </table>
@@ -403,12 +404,12 @@
         $('#tgl_jatuh_tempo').removeAttr('readonly');
         $('#remarks').removeAttr('readonly');
 
-        // $('#lblMaterai').hide();
-        // $('#lblCost').hide();
-        // $('#lblDiskon').hide();
-        // $('#materai').show();
-        // $('#cost').show();
-        // $('#diskon').show();
+        $('#lblMaterai').hide();
+        $('#lblCost').hide();
+        $('#lblDiskon').hide();
+        $('#materai').show();
+        $('#cost').show();
+        $('#diskon').show();
 
         $('#btnSimpan').show();
         $('#btnEdit').hide();
