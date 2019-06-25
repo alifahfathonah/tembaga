@@ -170,7 +170,7 @@
                 <td height="20" colspan="3">&nbsp;</td>
             </tr>
             <tr>
-                <td><u>Tanggal</u><br>Date</td>
+                <td><u>Tanggal Kirim</u><br>Shipment Date</td>
                 <td>: <?= date("d/m/Y", strtotime($header['tanggal_kirim'])) ?></td>
                 <td></td>
             </tr>
