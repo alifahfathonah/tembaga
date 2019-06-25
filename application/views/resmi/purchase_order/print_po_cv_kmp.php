@@ -171,7 +171,7 @@
             </tr>
             <tr>
                 <td><u>Tanggal</u><br>Date</td>
-                <td>:</td>
+                <td>: <?= date("d/m/Y", strtotime($header['tanggal_kirim'])) ?></td>
                 <td></td>
             </tr>
         </table>
