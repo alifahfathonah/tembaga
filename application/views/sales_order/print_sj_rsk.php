@@ -30,10 +30,6 @@
                             <td>Customer</td>
                             <td>: <?php echo $header['nama_customer']; ?></td>
                         </tr>
-                        <tr>
-                            <td>Jenis Barang</td>
-                            <td>: <?php echo $header['jenis_barang']; ?></td>
-                        </tr>
                     </table>
                 </td>
                 <td>&nbsp;</td>
@@ -146,10 +142,26 @@
                         </tr>
                         <tr>
                             <td style="text-align:center"><?php echo $header['supir']; ?></td>
-                            <td style="text-align:center">(_____________)</td>
-                            <td style="text-align:center">(_____________)</td>
-                            <td style="text-align:center"><?php echo $header['realname']; ?></td>
-                            <td style="text-align:center">(_____________)</td>
+                            <td style="text-align:center">(_____)</td>
+                            <td style="text-align:center">
+                                <?php 
+                                    if($header['jenis_barang'] == "RONGSOK"){
+                                        echo "Tjan Lin Oy";
+                                    } else {
+                                        echo "&nbsp;";
+                                    } 
+                                ?>
+                            </td>
+                            <td style="text-align:center">
+                            <?php 
+                                    if($header['jenis_barang'] == "RONGSOK"){
+                                        echo "NAMIN";
+                                    } else {
+                                        echo $header['realname'];
+                                    } 
+                                ?>
+                            </td>
+                            <td style="text-align:center">(_____)</td>
                         </tr>
                     </table>
                 </td>

@@ -1170,7 +1170,8 @@ class BeliSparePart extends CI_Controller{
             $this->load->helper('terbilang_helper');
             $this->load->model('Model_beli_sparepart');
             if($user_ppn==1){
-
+                $data['header'] = $this->Model_beli_sparepart->show_header_voucher($id)->row_array();
+                $data['list_data'] = $this->Model_beli_sparepart->show_detail_voucher_sp($data['header']['vk_id'])->result();
             }else{
                 $data['header'] = $this->Model_beli_sparepart->show_header_voucher($id)->row_array();
                 $data['list_data'] = $this->Model_beli_sparepart->show_detail_voucher_sp($data['header']['vk_id'])->result();
@@ -1937,7 +1938,7 @@ class BeliSparePart extends CI_Controller{
         }else{
             $code_um = $this->Model_m_numberings->getNumbering($num);
         }
-        $code_um = $this->Model_m_numberings->getNumbering($num);
+        
                 $data_v = array(
                         'no_voucher'=> $code,
                         'tanggal'=> $tgl_input,

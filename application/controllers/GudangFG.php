@@ -142,7 +142,7 @@ class GudangFG extends CI_Controller{
             //     $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result(); 
             } else if ($packing['packing'] == 'KARDUS') {
                 $data['content'] = "gudang_fg/detail_laporan_rambut";
-                $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('KARDUS')->result();
+                $data['packing'] =  $this->Model_gudang_fg->get_bobbin_g($packing['id'])->result();
                 $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result();
             } else if ($packing['packing'] == 'BOBBIN PLASTIK') {
                 $data['content'] = "gudang_fg/detail_laporan_b600g";
@@ -599,6 +599,39 @@ class GudangFG extends CI_Controller{
         }
     }
 
+    // function print_barcode_kardus(){
+    //     $id = $_GET['id'];
+    //     if($id){
+
+    //     $this->load->model('Model_gudang_fg');
+    //     $data = $this->Model_gudang_fg->get_pfd_id($id)->row_array();
+    //     $berat = $data['bruto'] - $data['netto'];
+
+    //     $current = '';
+    //     $data_printer = $this->db->query("select * from m_print_barcode_line where m_print_barcode_id = 1")->result_array();
+    //     $data_printer[17]['string1'] = 'BARCODE 488,335,"39",41,0,180,2,6,"'.$data['kode'].'"';
+    //     $data_printer[18]['string1'] = 'TEXT 386,289,"ROMAN.TTF",180,1,8,"'.$data['kode'].'"';
+    //     $data_printer[22]['string1'] = 'BARCODE 612,101,"39",41,0,180,2,6,"'.$data['no_packing_barcode'].'"';
+    //     $data_printer[23]['string1'] = 'TEXT 426,55,"ROMAN.TTF",180,1,8,"'.$data['no_packing_barcode'].'"';
+    //     $data_printer[24]['string1'] = 'TEXT 499,260,"4",180,1,1,"'.$data['no_packing_barcode'].'"';
+    //     $data_printer[25]['string1'] = 'TEXT 495,226,"ROMAN.TTF",180,1,14,"'.$data['bruto'].'"';
+    //     $data_printer[26]['string1'] = 'TEXT 495,188,"ROMAN.TTF",180,1,14,"'.$berat.'"';
+    //     $data_printer[27]['string1'] = 'TEXT 495,147,"0",180,14,14,"'.$data['netto'].'"';
+    //     $data_printer[31]['string1'] = 'TEXT 496,373,"2",180,1,1,"'.$data['jenis_barang'].'"';
+    //     $data_printer[32]['string1'] = 'TEXT 497,407,"4",180,1,1,"'.$data['kode'].'"';
+    //     $jumlah = count($data_printer);
+    //     for($i=0;$i<$jumlah;$i++){
+    //     $current .= $data_printer[$i]['string1']."\n";
+    //     }
+    //     echo "<form method='post' id=\"coba\" action=\"http://localhost:8080/print/print.php\">";
+    //     echo "<input type='hidden' id='nospb' name='nospb' value='".$current."'>";
+    //     echo "</form>";
+    //     echo '<script type="text/javascript">document.getElementById(\'coba\').submit();</script>';
+    //     }else{
+    //         'GAGAL';
+    //     }
+    // }
+
     function print_barcode_kardus(){
         $id = $_GET['id'];
         if($id){
@@ -608,21 +641,24 @@ class GudangFG extends CI_Controller{
         $berat = $data['bruto'] - $data['netto'];
 
         $current = '';
-        $data_printer = $this->db->query("select * from m_print_barcode_line where m_print_barcode_id = 1")->result_array();
-        $data_printer[17]['string1'] = 'BARCODE 488,335,"39",41,0,180,2,6,"'.$data['kode'].'"';
-        $data_printer[18]['string1'] = 'TEXT 386,289,"ROMAN.TTF",180,1,8,"'.$data['kode'].'"';
-        $data_printer[22]['string1'] = 'BARCODE 612,101,"39",41,0,180,2,6,"'.$data['no_packing_barcode'].'"';
-        $data_printer[23]['string1'] = 'TEXT 426,55,"ROMAN.TTF",180,1,8,"'.$data['no_packing_barcode'].'"';
-        $data_printer[24]['string1'] = 'TEXT 499,260,"4",180,1,1,"'.$data['no_packing_barcode'].'"';
-        $data_printer[25]['string1'] = 'TEXT 495,226,"ROMAN.TTF",180,1,14,"'.$data['bruto'].'"';
-        $data_printer[26]['string1'] = 'TEXT 495,188,"ROMAN.TTF",180,1,14,"'.$berat.'"';
-        $data_printer[27]['string1'] = 'TEXT 495,147,"0",180,14,14,"'.$data['netto'].'"';
-        $data_printer[31]['string1'] = 'TEXT 496,373,"2",180,1,1,"'.$data['jenis_barang'].'"';
-        $data_printer[32]['string1'] = 'TEXT 497,407,"4",180,1,1,"'.$data['kode'].'"';
+        $data_printer = $this->db->query("select * from m_print_barcode_line where m_print_barcode_id = 3")->result_array();
+        // print("<pre>".print_r($data_printer,true)."</pre>");
+        // die();
+        $data_printer[19]['string1'] = 'BARCODE 621,218,"39",144,0,180,2,6,"'.$data['no_packing_barcode'].'"';
+        $data_printer[20]['string1'] = 'TEXT 560,64,"2",180,2,2,"'.$data['no_packing_barcode'].'"';
+        $data_printer[21]['string1'] = 'TEXT 384,348,"1",180,2,2,"'.$data['nomor_bobbin'].'"';
+        $data_printer[22]['string1'] = 'TEXT 426,316,"1",180,2,2,"'.$data['bruto'].'"';
+        $data_printer[23]['string1'] = 'TEXT 405,282,"1",180,2,2,"'.$berat.'"';
+        $data_printer[24]['string1'] = 'TEXT 423,249,"1",180,2,2,"'.$data['netto'].'"';
+        $data_printer[28]['string1'] = 'TEXT 513,440,"1",180,2,2,"'.$data['kode'].'"';
+        $data_printer[29]['string1'] = 'TEXT 665,403,"3",180,1,1,"'.$data['jenis_barang'].'"';
+        // $data_printer[31]['string1'] = 'TEXT 496,373,"2",180,1,1,"'.$data['jenis_barang'].'"';
+        // $data_printer[32]['string1'] = 'TEXT 497,407,"4",180,1,1,"'.$data['kode'].'"';
         $jumlah = count($data_printer);
         for($i=0;$i<$jumlah;$i++){
         $current .= $data_printer[$i]['string1']."\n";
         }
+
         echo "<form method='post' id=\"coba\" action=\"http://localhost:8080/print/print.php\">";
         echo "<input type='hidden' id='nospb' name='nospb' value='".$current."'>";
         echo "</form>";
@@ -641,13 +677,13 @@ class GudangFG extends CI_Controller{
 
         $this->load->model('Model_m_numberings');
 
-        // $code = $this->Model_m_numberings->getNumbering('KARDUS',$tgl_input);
+        $code = $this->Model_m_numberings->getNumbering('KARDUS',$tgl_input);
 
-        // $first = substr($this->input->post('no_packing'),0,1);
-        // $ukuran = $this->input->post('ukuran');
-        // $no_packing = $tgl_code.$first.$ukuran.substr($code,12,4);
+        $first = $this->input->post('no_packing');
+        $ukuran = $this->input->post('ukuran');
+        $no_packing = $tgl_code.$first.$ukuran.substr($code,12,4);
 
-        $no_packing = $this->input->post('no_barcode');
+        // $no_packing = $this->input->post('no_barcode');
         
         $this->db->insert('produksi_fg_detail', array(
             'tanggal' => $tgl_input,
@@ -1172,6 +1208,7 @@ class GudangFG extends CI_Controller{
                         );
                     $this->db->insert('t_gudang_fg', $data_else);
                     if($user_ppn == 1){
+                        $detail_push = [];
                         $tgf_id = $this->db->insert_id();
                         $data_id = array('reff1' => $tgf_id);
                         $detail_push[] = array_merge($details[$k], $data_id);

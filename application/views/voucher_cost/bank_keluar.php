@@ -227,7 +227,7 @@
                         <td><?php echo $data->nama_trx; ?></td>
                         <td><?php echo $data->nama_group_cost; ?></td>
                         <td><?php echo $data->keterangan; ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->amount,0,',','.'); ?></td>
+                        <td style="text-align:right"><?php echo number_format($data->amount,2,',','.'); ?></td>
                         <td style="text-align:center">                             
                             <?php 
                                 if( ($group_id==1)||($hak_akses['print']==1) ){
@@ -268,8 +268,8 @@ function myCurrency(evt) {
 }
 
 function getComa(value, id){
-    angka = value.toString().replace(/\./g, "");
-    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    angka = value.toString().replace(/\,/g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }
 
 function newData(){

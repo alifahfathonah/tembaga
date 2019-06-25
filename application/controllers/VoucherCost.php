@@ -301,4 +301,149 @@ class VoucherCost extends CI_Controller{
             redirect('index.php/BeliRongsok');
         }
     }
+
+    function add_uk(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn    = $this->session->userdata('user_ppn');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "voucher_cost/add_uk";
+        $this->load->model('Model_voucher_cost');
+        $data['list_data'] = $this->Model_voucher_cost->list_data_kk($ppn)->result();
+        $data['list_group_cost'] = $this->Model_voucher_cost->list_group_cost()->result();
+        $this->load->model('Model_finance');
+        $data['bank_list'] = $this->Model_finance->bank_list($ppn)->result();
+        $this->load->view('layout', $data);
+    }
+
+    function save_uk(){
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
+
+        $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+
+        if($this->input->post('bank_id')<=3){
+            if($user_ppn==1){
+                $num = 'KK-KMP';
+            }else{
+                $num = 'KK';
+            }
+        }else{
+            if($user_ppn==1){
+                $num = 'BK-KMP';
+            }else{
+                $num = 'BK';
+            }
+        }
+        if($user_ppn == 1){
+            $code_um = $num.'.'.$tgl_code.'.'.$this->input->post('no_uk');
+        }else{
+            $code_um = $this->Model_m_numberings->getNumbering($num);
+        }
+
+        if($code_um){
+                $this->db->insert('f_kas', array(
+                    'jenis_trx'=>1,
+                    'nomor'=>$code_um,
+                    'flag_ppn'=>$user_ppn,
+                    'tanggal'=>$tgl_input,
+                    'tgl_jatuh_tempo'=>$this->input->post('tgl_jatuh'),
+                    'no_giro'=>$this->input->post('nomor_giro'),
+                    'id_bank'=>$this->input->post('bank_id'),
+                    'currency'=>$this->input->post('currency'),
+                    'kurs'=>$this->input->post('kurs'),
+                    'nominal'=>str_replace(',', '', $this->input->post('total_nominal')),
+                    'created_at'=>$tanggal,
+                    'created_by'=>$user_id
+                ));
+                $insert_id = $this->db->insert_id();
+
+            $details = $this->input->post('myDetails');
+            foreach ($details as $i => $row){
+                if($row['nominal']!=''){
+
+                    if($user_ppn==1){
+                        $code = $this->Model_m_numberings->getNumbering('VC-KMP', $tgl_input);
+                    }else{
+                        $code = $this->Model_m_numberings->getNumbering('VCOST', $tgl_input);
+                    }
+
+                    if($this->input->post('cost_id')==0){
+                        $cost_id = 0;
+                    }else{
+                        $cost_id = $row['cost_id'];
+                    }
+
+                    if($this->input->post('group_cost_id') == 1){
+                        $this->db->insert('voucher', array(
+                            'no_voucher'=> $code,
+                            'tanggal'=> $tgl_input,
+                            'flag_ppn'=> $user_ppn,
+                            'jenis_voucher'=>'Manual',
+                            'status'=>1,
+                            'group_cost_id'=> $row['group_cost_id'],
+                            'customer_id'=> $cost_id,
+                            'keterangan'=> $row['line_remarks'],
+                            'amount'=> str_replace(',', '', $row['nominal']),
+                            'id_fk'=> $insert_id,
+                            'created'=> $tanggal,
+                            'created_by'=> $user_id
+                        ));
+                    }elseif($this->input->post('group_cost_id') == 2){
+                        $this->db->insert('voucher', array(
+                            'no_voucher'=> $code,
+                            'tanggal'=> $tgl_input,
+                            'flag_ppn'=> $user_ppn,
+                            'jenis_voucher'=>'Manual',
+                            'status'=>1,
+                            'group_cost_id'=> $row['group_cost_id'],
+                            'supplier_id'=> $cost_id,
+                            'keterangan'=> $row['line_remarks'],
+                            'amount'=> str_replace(',', '', $row['nominal']),
+                            'id_fk'=> $insert_id,
+                            'created'=> $tanggal,
+                            'created_by'=> $user_id
+                        ));
+                    }else{
+                        $this->db->insert('voucher', array(
+                            'no_voucher'=> $code,
+                            'tanggal'=> $tgl_input,
+                            'flag_ppn'=> $user_ppn,
+                            'jenis_voucher'=>'Manual',
+                            'status'=>1,
+                            'group_cost_id'=> $row['group_cost_id'],
+                            'nm_cost'=> $row['nm_cost'],
+                            'keterangan'=> $row['line_remarks'],
+                            'amount'=> str_replace(',', '', $row['nominal']),
+                            'id_fk'=> $insert_id,
+                            'created'=> $tanggal,
+                            'created_by'=> $user_id
+                        ));
+                    }
+                }
+            }
+            $this->session->set_flashdata('flash_msg', 'Uang Keluar berhasil di-create dengan nomor : '.$code_um);
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Uang Keluar gagal di-create, penomoran belum disetup!');            
+        }
+        if($this->db->trans_complete()){
+            if ($this->input->post('bank_id') <= 3) {
+                redirect('index.php/VoucherCost/kas_keluar');
+            } else {
+                redirect('index.php/VoucherCost/bank_keluar');
+            }
+        }else{
+            redirect('index.php/VoucherCost');
+        }
+    }
 }
