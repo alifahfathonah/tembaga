@@ -48,6 +48,16 @@
                     </div>  
                     <div class="row">
                         <div class="col-md-4">
+                            Tanggal Kirim <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tanggal_kirim" name="tanggal_kirim" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('d-m-Y'); ?>" readonly>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-4">
                             Keterangan
                         </div>
                         <div class="col-md-8">

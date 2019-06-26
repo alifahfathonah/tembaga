@@ -8,7 +8,7 @@ class Model_invoice_jasa extends CI_Model{
 	    left join r_t_po tp on tp.id = tij.r_t_po_id
 	    left join m_customers_cv mc on mc.id = tij.customer_id
 	    left join m_cv cv on cv.id = tij.cv_id
-	    order by tij.tanggal");
+	    order by tij.no_invoice_jasa desc");
 		return $data;
 	}
 
@@ -19,7 +19,7 @@ class Model_invoice_jasa extends CI_Model{
 	    left join r_t_po tp on tp.id = tij.r_t_po_id
 	    left join m_customers_cv mc on mc.id = tij.customer_id
 	    where tij.cv_id = ".$reff_cv." 
-	    order by tij.tanggal");
+	    order by tij.no_invoice_jasa desc");
 		return $data;
 	}
 
@@ -30,7 +30,7 @@ class Model_invoice_jasa extends CI_Model{
 	    left join r_t_po tp on tp.id = tij.r_t_po_id
 	    left join m_cv mc on mc.id = tij.cv_id
 	    where tij.jenis_invoice = 'INVOICE KMP KE CV'
-	    order by tij.tanggal");
+	    order by tij.no_invoice_jasa desc");
 		return $data;
 	}
 
