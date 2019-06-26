@@ -4,10 +4,12 @@ class Model_matching extends CI_Model{
     function list_invoice($reff_cv = null){
         if ($reff_cv === null) {
             $data = $this->db->query("Select ir.*, (select count(tid.id) from r_t_invoice_detail tid where tid.invoice_resmi_id = ir.id) as jumlah_item
-                from r_t_invoice ir");
+                from r_t_invoice ir
+                order by no_invoice_resmi desc");
         } else {
             $data = $this->db->query("Select ir.*, (select count(tid.id) from r_t_invoice_detail tid where tid.invoice_resmi_id = ir.id) as jumlah_item
-                from r_t_invoice ir where reff_cv = ".$reff_cv);
+                from r_t_invoice ir where reff_cv = ".$reff_cv." 
+                order by no_invoice_resmi desc");
         }
         return $data;
     }
