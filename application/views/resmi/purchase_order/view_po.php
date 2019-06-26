@@ -53,7 +53,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal_kirim" name="tanggal_kirim" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>" readonly>
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal_kirim'])); ?>" readonly>
                         </div>
                     </div> 
                     <div class="row">

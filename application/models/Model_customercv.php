@@ -1,7 +1,8 @@
 <?php
 class Model_customercv extends CI_Model{
-    function list_data(){
-        $data = $this->db->query("Select cust.*, 
+    function list_data($reff_cv){
+        if ($reff_cv == 0) {
+            $data = $this->db->query("Select cust.*, 
                     prov.province_name, cty.city_name,
                     bank.kode_bank
                 From m_customers_cv cust 
@@ -9,6 +10,18 @@ class Model_customercv extends CI_Model{
                     Left Join m_cities cty On (cust.m_city_id = cty.id)
                     Left Join bank On (cust.m_bank_id = bank.id) 
                 Order By cust.nama_customer");
+        } else {
+            $data = $this->db->query("Select cust.*, 
+                    prov.province_name, cty.city_name,
+                    bank.kode_bank
+                From m_customers_cv cust 
+                    Left Join m_provinces prov On (cust.m_province_id = prov.id) 
+                    Left Join m_cities cty On (cust.m_city_id = cty.id)
+                    Left Join bank On (cust.m_bank_id = bank.id) 
+                    Where reff_cv = ".$reff_cv." 
+                Order By cust.nama_customer");
+        }
+        
         return $data;
     }
     

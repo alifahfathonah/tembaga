@@ -10,7 +10,7 @@ class Model_surat_jalan extends CI_Model{
         left join r_t_po tp on tp.id = tsj.r_po_id
     	left join m_customers_cv mc on mc.id = tsj.m_customer_id
     	where tsj.jenis_surat_jalan != 'SURAT JALAN CUSTOMER KE CV'
-    	order by no_sj_resmi desc");
+    	order by tsj.no_sj_resmi desc");
 		return $data;
 	}
 
@@ -21,7 +21,7 @@ class Model_surat_jalan extends CI_Model{
 			left join r_t_invoice ti on ti.id = tsj.r_invoice_id
 			left join m_customers_cv cs on cs.id = tsj.m_customer_id
 			where tsj.reff_cv = ".$reff_cv." 
-			order by no_sj_resmi desc");
+			order by tsj.no_sj_resmi desc");
     	return $data;
 	}
 
@@ -32,7 +32,7 @@ class Model_surat_jalan extends CI_Model{
         	left join r_t_so ts on ts.id = tsj.r_so_id
     		left join m_cv mc on mc.id = tsj.m_cv_id
 			where tsj.jenis_surat_jalan NOT LIKE '%CUSTOMER%' 
-			order by no_sj_resmi desc");
+			order by tsj.no_sj_resmi desc");
 		return $data;
 	}
 

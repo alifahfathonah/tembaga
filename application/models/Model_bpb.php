@@ -10,7 +10,7 @@ class Model_bpb extends CI_Model{
             left join r_t_so ts on ts.id = bpb.r_so_id
             left join r_t_po tp on tp.id = bpb.r_po_id
             left join m_customers_cv mc on mc.id = bpb.m_customer_id
-            order by no_bpb desc");
+            order by bpb.no_bpb desc");
         } else {
             $data = $this->db->query("select bpb.*, mc.nama_customer, coalesce(ts.no_so, tp.no_po) as no_reff, 
             (select count(bpbd.id) from r_t_bpb_detail bpbd where bpbd.bpb_resmi_id = bpb.id) as jumlah_item
@@ -20,7 +20,7 @@ class Model_bpb extends CI_Model{
             left join r_t_po tp on tp.id = bpb.r_po_id
             left join m_customers_cv mc on mc.id = bpb.m_customer_id
             where bpb.reff_cv = ".$reff_cv." 
-            order by no_bpb desc");
+            order by bpb.no_bpb desc");
         }
 
         return $data;

@@ -98,6 +98,7 @@
                     <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
+                        <?php if($group_id==9){ ?>
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/Supplier">
                             <i class="fa fa-truck"></i>
@@ -108,6 +109,7 @@
                             <i class="fa fa-user"></i>
                             Data Customer </a>
                         </li>
+                        <?php } ?>
                         <?php if($group_id==9 || $group_id == 14){ ?>
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/CustomerCV">
@@ -115,6 +117,7 @@
                             Data Customer CV </a>
                         </li>
                         <?php } ?>
+                        <?php if($group_id==9){ ?>
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/Rongsok">
                             <i class="fa fa-beer"></i>
@@ -232,10 +235,12 @@
                             <i class="fa fa-file-word-o"></i>
                             Bpb FG </a>
                         </li>
-
+                        <?php } ?>
                         
                     </ul>
                 </li>
+                <?php } ?>
+                <?php if($group_id==9){ ?>
                 <li <?php if($module_name=="Groups" || $module_name=="Users" || $module_name=="Modules") echo 'class="start active open"'; ?>>
                     <a href="javascript:;">
                     <i class="icon-settings"></i>

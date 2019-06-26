@@ -12,7 +12,8 @@ class CustomerCV extends CI_Controller{
     
     function index(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $reff_cv = $this->session->userdata('cv_id');
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -22,7 +23,7 @@ class CustomerCV extends CI_Controller{
 
         $data['content']= "customercv/index";
         $this->load->model('Model_customercv');
-        $data['list_data'] = $this->Model_customercv->list_data()->result();
+        $data['list_data'] = $this->Model_customercv->list_data($reff_cv)->result();
         
         $data['list_provinsi'] = $this->Model_customercv->list_provinsi()->result();
         $data['list_city'] = $this->Model_customercv->list_kota(1)->result();
@@ -34,7 +35,7 @@ class CustomerCV extends CI_Controller{
     function save(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
-        
+        $reff_cv = $this->session->userdata('cv_id');
         $data = array(
                     'kode_customer'=> $this->input->post('kode_customer'),
                     'nama_customer'=> $this->input->post('nama_customer'),
@@ -49,6 +50,7 @@ class CustomerCV extends CI_Controller{
                     'kcp'=> $this->input->post('kcp'),
                     'no_rekening'=> $this->input->post('no_rekening'),
                     'keterangan'=> $this->input->post('keterangan'),
+                    'reff_cv'=>$reff_cv,
                     'created'=> $tanggal,
                     'created_by'=> $user_id,
                     'modified'=> $tanggal,
