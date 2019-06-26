@@ -566,7 +566,8 @@ function get_packing(id){
                         $("#netto_"+id).val(result['netto']);
                         $("#keterangan_"+id).val(result['keterangan']);
                         $("#btn_"+id).removeClass('disabled');
-                        const total = (parseFloat($('#total_netto').val()) + parseFloat(result['netto']));
+                        const total_old = (parseFloat($('#total_netto').val()) + parseFloat(result['netto']));
+                        const total = total_old.toFixed(2);
                         $('#total_netto').val(total);
                         create_new_input(id);
                         $('#no_packing_'+id).prop('readonly',true);
@@ -604,10 +605,12 @@ function create_new_input(id){
 function hapusDetail(id){
     var r=confirm("Anda yakin menghapus packing ini?");
     if (r==true){
-        const total = $('#total_netto').val();
-        $('#total_netto').val(parseFloat(total) - parseFloat($('#netto_'+id).val()));
+        const total_netto = $('#total_netto').val();
+        const total_old = parseFloat(total_netto) - parseFloat($('#netto_'+id).val());
+        const total = total_old.toFixed(2);
+        $('#total_netto').val(total);
         $('#no_packing_'+id).closest('tr').remove();
-        }
+    }
 }
 
 </script>

@@ -171,13 +171,13 @@
                                             . 'class="form-control myline" value="'.$row->uom.'" '
                                             . 'readonly="readonly"></td>';                                   
                                     echo '<td><input type="text" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->bruto,0,',','.').'" '
+                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->bruto,2,',','.').'" '
                                             . ' readonly="readonly" size="5"></td>';
                                     echo '<td><input type="text" id="berat_bobbin_'.$no.'" name="myDetails['.$no.'][berat_bobbin]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->berat_bobbin,0,',','.').'" '
+                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->berat_bobbin,2,',','.').'" '
                                             . ' readonly="readonly" size="5"></td>';
                                     echo '<td><input type="text" id="netto_'.$no.'" name="myDetails['.$no.'][netto]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->netto,0,',','.').'" '
+                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->netto,2,',','.').'" '
                                             . ' readonly="readonly" size="5"></td>';
                                     
                                     echo '<td><textarea id="no_packing_'.$no.'" name="myDetails['.$no.'][no_packing]" class="form-control myline" readonly="readonly" rows="1">'.$row->no_packing

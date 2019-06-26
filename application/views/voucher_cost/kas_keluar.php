@@ -164,8 +164,7 @@
                                 </div>
                                 <div class="col-md-7">
                                     <input type="text" id="amount" name="amount" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);">
+                                        class="form-control myline" style="margin-bottom:5px" onkeyup="getComa(this.value, this.id);">
                                 </div>
                             </div>
                         </form>
@@ -260,13 +259,6 @@
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-function myCurrency(evt) {
-    var charCode = (evt.which) ? evt.which : event.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
-        return false;
-    return true;
-}
-
 function getComa(value, id){
     angka = value.toString().replace(/\,/g, "");
     $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));

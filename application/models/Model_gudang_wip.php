@@ -165,6 +165,11 @@ class Model_gudang_wip extends CI_Model{
         return $data;
     }
 
+    function check_spb_reject($id){
+        $data = $this->db->query("select count(id) as count from t_spb_wip_fulfilment where t_spb_wip_id =".$id);
+        return $data;
+    }
+
     function check_spb($id){
         $data = $this->db->query("select tsw.id, 
                 (select sum(tswd.berat) from t_spb_wip_detail tswd where tswd.t_spb_wip_id=tsw.id) as tot_spb,

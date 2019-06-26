@@ -99,7 +99,6 @@
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000"><strong><?php echo number_format($netto, 2, '.', ','); ?></strong></td>
                             <td></td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000"><strong><?php echo number_format($total, 2, '.', ','); ?></strong></td>
-                            <td>&nbsp;</td>
                         </tr>
                     </table>
                 </td>
@@ -109,7 +108,7 @@
                     <p>&nbsp;</p>
                     <table border="0" cellpadding="4" cellspacing="0" width="100%">
                         <tr>
-                            <td width="400px" style="text-align:center">Diterima Oleh </td>
+                            <td width="400px" style="text-align:center"></td>
                             <td>Jumlah Pengepakan</td>
                             <td>:</td>
                             <td style="text-align:right"><?php echo number_format($header['jmlh_pengepakan'],2,'.',','); ?></td>
@@ -121,7 +120,7 @@
                             <td style="text-align:right"><?php echo number_format($header['jmlh_afkiran'],2,'.',','); ?></td>
                         </tr>
                         <tr>
-                            <td style="text-align:center"><?php echo $header['approved_name']; ?></td>
+                            <td style="text-align:center"></td>
                             <td>Jumlah Lain-lain</td>
                             <td>:</td>
                             <td style="text-align:right"><?php echo number_format($header['jmlh_lain'],2,'.',','); ?></td>

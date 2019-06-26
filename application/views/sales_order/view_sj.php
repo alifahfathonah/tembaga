@@ -238,7 +238,7 @@
                                 <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
                                 <th>Bobbin</th>
-                                <th>Keterangan</th>
+                                <th>Action</th>
                             </thead>
                             <tbody id="boxDetail">
                                 <?php 
@@ -273,7 +273,7 @@
                                     <td><?php echo number_format($row->bruto,2,',','.'); ?></td>
                                     <td><?php echo number_format($row->netto,2,',','.'); ?></td>
                                     <td><?php echo $row->nomor_bobbin; ?></td>
-                                    <td><?php echo $row->line_remarks; ?></td>
+                                    <td><a id="print" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcodeSJ(<?=$row->id;?>);" style="margin-top:5px;"><i class="fa fa-print"></i> Print Barcode</a></td>
                                 <?php
                                         if($row->jenis_barang==$last_series){
                                             echo '<tr>';
@@ -358,7 +358,7 @@
                                 <th style="width: 8%;">Bruto</th>
                                 <th style="width: 8%;">Netto (Kg)</th>
                                 <th style="width: 6%;">Berat<br>Palette</th>
-                                <th>Keterangan</th>
+                                <th>Action</th>
                             </thead>
                             <tbody id="boxDetail">
                                 <?php 
@@ -375,7 +375,7 @@
                                     <td><?php echo $row->bruto; ?></td>
                                     <td><?php echo $row->netto; ?></td>
                                     <td><?php echo ($row->bruto - $row->netto); ?></td>
-                                    <td><?php echo $row->line_remarks; ?></td>
+                                    <td><a id="print" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcodeSJ(<?=$row->id;?>);" style="margin-top:5px;"><i class="fa fa-print"></i> Print Barcode</a></td>
                                 </tr>
                                 <?php
                                     $bruto += $row->bruto;
@@ -483,6 +483,11 @@ function approveData(){
     }
 };
 
+function printBarcodeSJ(id){
+    const jb = $('#jenis_barang').val();
+    window.open('<?php echo base_url();?>index.php/SalesOrder/print_barcode_sj?id='+id+'&jb='+jb,'_blank');
+}
+
 function showRejectBox(){
     var r=confirm("Anda yakin me-reject surat jalan ini?");
     if(r == true){
@@ -506,7 +511,6 @@ function rejectData(){
     }
 }
 </script>
-
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>

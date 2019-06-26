@@ -183,10 +183,10 @@ class BeliWIP extends CI_Controller{
         if($this->db->insert('po_detail', array(
             'po_id'=>$this->input->post('id'),
             'jenis_barang_id'=>$this->input->post('wip_id'),
-            'amount'=>str_replace('.', '', $this->input->post('harga')),
-            'qty'=>str_replace('.', '', $this->input->post('qty')),
+            'amount'=>str_replace(',', '', $this->input->post('harga')),
+            'qty'=>str_replace(',', '', $this->input->post('qty')),
             'flag_dtwip' => 0,
-            'total_amount'=>str_replace('.', '', $this->input->post('total_harga'))
+            'total_amount'=>str_replace(',', '', $this->input->post('total_harga'))
         ))){
             $return_data['message_type']= "sukses";
         }else{
@@ -212,9 +212,9 @@ class BeliWIP extends CI_Controller{
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
             $tabel .= '<td>'.$row->jenis_barang.'</td>';
             $tabel .= '<td>'.$row->uom.'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->amount,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->total_amount,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->amount,2,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->qty,2,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->total_amount,2,',','.').'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
@@ -227,7 +227,7 @@ class BeliWIP extends CI_Controller{
         $tabel .= '<tr>';
         $tabel .= '<td colspan="5" style="text-align:right"><strong>Total (Rp) </strong></td>';
         $tabel .= '<input type="hidden" id="count2" value="'.$cek.'">';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,0,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,2,',','.').'</strong></td>';
         $tabel .= '</tr>';
         
         header('Content-Type: application/json');

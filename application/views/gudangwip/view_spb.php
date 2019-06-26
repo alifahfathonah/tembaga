@@ -208,16 +208,25 @@
                                             <th>Keterangan</th>
                                         </thead>
                                         <tbody>
-                                            <?php $no=1; foreach($detailSPB as $v) { ?>
+                                            <?php $no=1; $qty=0; $berat=0; foreach($detailSPB as $v) { ?>
                                             <tr>
                                                 <td><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
                                                 <td><?=$v->jenis_barang;?></td>
                                                 <td><?=$v->uom;?></td>
                                                 <td><?=$v->qty;?></td>
-                                                <td><?=$v->berat;?></td>
+                                                <td><?=number_format($v->berat,2,',','.');?></td>
                                                 <td><?=$v->keterangan;?></td>
                                             </tr>
-                                            <?php $no++; } ?>
+                                            <?php 
+                                            $no++; 
+                                            $qty += $v->qty; 
+                                            $berat += $v->berat;
+                                            } ?>
+                                            <tr>
+                                                <td colspan="3" style="text-align: right;"><strong>Total</strong></td>
+                                                <td style="background-color: green; color: white;"><?=number_format($qty,0,',','.');?></td>
+                                                <td style="background-color: green; color: white;"><?=number_format($berat,2,',','.');?></td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -371,6 +380,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <?php
+                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && ($myData['status']=='3' || $myData['status']=='1')){
+                            echo '<a href="javascript:;" class="btn blue" onclick="tambahData();"> '
+                                .'<i class="fa fa-plus"></i> Tambah </a> ';
+                        }
                         if( ($group_id==1 || $hak_akses['save_spb']==1) && ($myData['status']=="0" || $myData['status']=="4")){
                             echo '<a href="javascript:;" class="btn green" onclick="saveData();"> '
                                 .'<i class="fa fa-check"></i> Save </a> ';
@@ -380,8 +393,16 @@
                                 .'<i class="fa fa-check"></i> Approve </a> ';
                         }
                         if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="3"){
+                            echo '<a href="javascript:;" class="btn red" onclick="rejectFulfilment();"> '
+                                .'<i class="fa fa-ban"></i> Reject Pemenuhan </a>';
+                        }
+                        if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="0"){
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
+                        }
+                        if($myData['status']==9){
+                            echo '<a href="javascript:;" class="btn blue-ebonyclay" onclick="inputUlang();">'
+                                .'<i class="fa fa-refresh"></i> Input Ulang </a>';
                         }
                     ?>
                     <a href="<?php echo base_url('index.php/GudangWIP/spb_list'); ?>" class="btn blue-hoki"> 
@@ -405,6 +426,24 @@
     </div>
 </div> 
 <script>
+function inputUlang(){
+    $('#formku').attr("action", "<?php echo base_url();?>index.php/GudangWIP/input_ulang_spb");
+    $('#formku').submit();
+}
+
+function tambahData(){
+    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/GudangWIP/tambah_spb");    
+    $('#formku').submit(); 
+}
+
+function rejectFulfilment(){
+    var r=confirm("Anda yakin me-reject pemenuhan barang ini?");
+    if (r==true){
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/GudangWIP/reject_fulfilment");    
+        $('#formku').submit(); 
+    }
+}
+
 function approveData(){
     var r=confirm("Anda yakin meng-approve permintaan barang ini?");
     if (r==true){

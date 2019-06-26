@@ -546,4 +546,31 @@ class Model_sales_order extends CI_Model{
                 where tsjd.t_sj_id =".$id);
         return $data;
     }
+
+    function get_sj_detail($id,$jb){
+        $data = $this->db->query("Select tsj.*, COALESCE(tsod.nama_barang_alias, jb.jenis_barang,r.nama_item) as jenis_barang , COALESCE(jb.kode,r.kode_rongsok) as kode from t_surat_jalan_detail tsjd
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
+            left join t_sales_order_detail tsod on tsod.t_so_id = tsj.sales_order_id and (case when tsjd.jenis_barang_alias = 0 then tsod.jenis_barang_id = tsjd.jenis_barang_id else tsod.jenis_barang_id = tsjd.jenis_barang_alias end)
+            left join jenis_barang jb on tsj.jenis_barang='FG' and (case when tsjd.jenis_barang_alias = 0 then jb.id = tsjd.jenis_barang_id else jb.id = tsjd.jenis_barang_alias end)
+            left join rongsok r on tsj.jenis_barang='RONGSOK' and (case when tsjd.jenis_barang_alias = 0 then r.id = tsjd.jenis_barang_id else r.id = tsjd.jenis_barang_alias end)
+            where tsj.jenis_barang='".$jb."' and tsjd.id=".$id);
+        return $data;
+    }
+
+    function load_detail_surat_jalan_rs2k($id,$soid){
+        $data =  $this->db->query("select tsjd.*, rsk.nama_item as jenis_barang, rsk.uom,
+            (select tsod.nama_barang_alias from t_sales_order_detail tsod left join t_sales_order tso on tso.so_id =".$soid." where tsod.t_so_id = tso.id and tsod.jenis_barang_id = tsjd.jenis_barang_id) as nama_barang_alias
+                from t_surat_jalan_detail tsjd
+                left join rongsok rsk on rsk.id = tsjd.jenis_barang_id
+                where tsjd.t_sj_id =".$id);
+        return $data;
+    }
+
+    // Select tsjd.*, tsod.nama_barang_alias, COALESCE(tsod.nama_barang_alias, jb.jenis_barang,r.nama_item) as jenis_barang , COALESCE(jb.kode,r.kode_rongsok) as kode from t_surat_jalan_detail tsjd
+    //         left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
+    //         left join t_sales_order_detail tsod on tsod.t_so_id = tsj.sales_order_id and (case when tsjd.jenis_barang_alias = 0 then tsod.jenis_barang_id = tsjd.jenis_barang_id else tsod.jenis_barang_id = tsjd.jenis_barang_alias end)
+    //         left join jenis_barang jb on tsj.jenis_barang='FG' and (case when tsjd.jenis_barang_alias = 0 then jb.id = tsjd.jenis_barang_id else jb.id = tsjd.jenis_barang_alias end)
+    //         left join rongsok r on tsj.jenis_barang='RONGSOK' and (case when tsjd.jenis_barang_alias = 0 then r.id = tsjd.jenis_barang_id else r.id = tsjd.jenis_barang_alias end)
+    //         where tsj.jenis_barang='RONGSOK' and tsjd.id=149
+
 }

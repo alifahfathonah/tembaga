@@ -45,7 +45,7 @@
                                     <?php 
                                 foreach($jenis_barang as $jb){
                                 ?>
-                                    <option value="<?=$jb->id;?>"><?=$jb->jenis_barang;?></option>
+                                    <option value="<?=$jb->id;?>"><?='('.$jb->kode.') '.$jb->jenis_barang;?></option>
                                     <?php } ?>
                                 </select>
                             </div>

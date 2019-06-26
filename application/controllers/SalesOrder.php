@@ -1438,4 +1438,41 @@ class SalesOrder extends CI_Controller{
             'GAGAL';
         }
     }
+
+    function print_barcode_sj(){
+        $id = $_GET['id'];
+        $jb = $_GET['jb'];
+        if($id){
+
+        $this->load->model('Model_sales_order');
+        $data = $this->Model_sales_order->get_sj_detail($id,$jb)->row_array();
+        $berat = $data['bruto'] - $data['netto'];
+
+        $current = '';
+        $data_printer = $this->db->query("select * from m_print_barcode_line where m_print_barcode_id = 3")->result_array();
+        // print("<pre>".print_r($data_printer,true)."</pre>");
+        // die();
+        $data_printer[19]['string1'] = 'BARCODE 621,218,"39",144,0,180,2,6,"'.$data['no_packing'].'"';
+        $data_printer[20]['string1'] = 'TEXT 560,64,"2",180,2,2,"'.$data['no_packing'].'"';
+        $data_printer[21]['string1'] = 'TEXT 384,348,"1",180,2,2,"'.$data['nomor_bobbin'].'"';
+        $data_printer[22]['string1'] = 'TEXT 426,316,"1",180,2,2,"'.$data['bruto'].'"';
+        $data_printer[23]['string1'] = 'TEXT 405,282,"1",180,2,2,"'.$berat.'"';
+        $data_printer[24]['string1'] = 'TEXT 423,249,"1",180,2,2,"'.$data['netto'].'"';
+        $data_printer[28]['string1'] = 'TEXT 513,440,"1",180,2,2,"'.$data['kode'].'"';
+        $data_printer[29]['string1'] = 'TEXT 665,403,"3",180,1,1,"'.$data['jenis_barang'].'"';
+        // $data_printer[31]['string1'] = 'TEXT 496,373,"2",180,1,1,"'.$data['jenis_barang'].'"';
+        // $data_printer[32]['string1'] = 'TEXT 497,407,"4",180,1,1,"'.$data['kode'].'"';
+        $jumlah = count($data_printer);
+        for($i=0;$i<$jumlah;$i++){
+        $current .= $data_printer[$i]['string1']."\n";
+        }
+
+        echo "<form method='post' id=\"coba\" action=\"http://localhost:8080/print/print.php\">";
+        echo "<input type='hidden' id='nospb' name='nospb' value='".$current."'>";
+        echo "</form>";
+        echo '<script type="text/javascript">document.getElementById(\'coba\').submit();</script>';
+        }else{
+            'GAGAL';
+        }
+    }
 }

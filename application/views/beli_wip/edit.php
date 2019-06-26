@@ -215,13 +215,13 @@
                                 <select id="wip_id" name="wip_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
                                     <option value=""></option><?php
                                     foreach ($list_wip as $value){
-                                        echo "<option value='".$value->id."'>".$value->jenis_barang."</option>";
+                                        echo "<option value='".$value->id."'>(".$value->kode.') '.$value->jenis_barang."</option>";
                                     }?>
                                 </select>
                                 </td>
                                 <td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>
-                                <td><input type="text" id="harga" name="harga" class="form-control myline" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);"></td>
-                                <td><input type="text" id="qty" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="15" value="0" onkeyup="getComa(this.value, this.id);"></td>
+                                <td><input type="text" id="harga" name="harga" class="form-control myline" value="0" onkeyup="getComa(this.value, this.id);"></td>
+                                <td><input type="text" id="qty" name="qty" class="form-control myline" maxlength="15" value="0" onkeyup="getComa(this.value, this.id);"></td>
                                 <td><input type="text" id="total_harga" name="total_harga" class="form-control myline" readonly="readonly" value="0"></td>
                                 <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
                             </tr>
@@ -314,8 +314,8 @@
                             echo '<td style="text-align:center">'.$no.'</td>';
                             echo '<td>'.$row->jenis_barang.'</td>';
                             echo '<td>'.$row->uom.'</td>';
-                            echo '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
-                            echo '<td style="text-align:right">'.number_format($row->berat,0,',','.').'</td>';
+                            echo '<td style="text-align:right">'.number_format($row->qty,2,',','.').'</td>';
+                            echo '<td style="text-align:right">'.number_format($row->berat,2,',','.').'</td>';
                             echo '</tr>';
                             $qty += $row->qty;
                             $netto += $row->berat;                        
@@ -370,16 +370,16 @@ function myCurrency(evt) {
 }
 
 function getComa(value, id){
-    angka = value.toString().replace(/\./g, "");
-    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    angka = value.toString().replace(/\,/g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     hitungSubTotal();
 }
 
 function hitungSubTotal(){
-    harga = $('#harga').val().toString().replace(/\./g, "");
-    qty   = $('#qty').val().toString().replace(/\./g, "");
+    harga = $('#harga').val().toString().replace(/\,/g, "");
+    qty   = $('#qty').val().toString().replace(/\,/g, "");
     total_harga = Number(harga)* Number(qty);
-    $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }
 
 function simpanData(){

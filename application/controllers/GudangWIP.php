@@ -1162,6 +1162,90 @@ class GudangWIP extends CI_Controller{
        redirect('index.php/GudangWIP/spb_list');
     }
 
+    function input_ulang_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $spb_id = $this->input->post('id');
+        
+        $this->db->trans_start();
+
+        #Update status SPB
+        $this->db->where('id', $spb_id);
+        $this->db->update('t_spb_wip', array(
+                        'status'=> 0,
+                        'modified_date'=> $tanggal,
+                        'modified_by'=>$user_id
+        ));
+            
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'SPB sudah disimpan');            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }             
+        
+       redirect('index.php/GudangWIP/view_spb/'.$spb_id);
+    }
+
+    function tambah_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $spb_id = $this->input->post('id');
+        
+        $this->db->trans_start();
+
+        #Update status SPB
+        $this->db->where('id', $spb_id);
+        $this->db->update('t_spb_wip', array(
+                        'status'=> 4,
+                        'modified_date'=> $tanggal,
+                        'modified_by'=>$user_id
+        ));
+
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'Silahkan tambah barang');                 
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+        }                 
+
+       redirect('index.php/GudangWIP/view_spb/'.$spb_id);
+    }
+
+    function reject_fulfilment(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $spb_id = $this->input->post('id');
+
+        $this->db->trans_start();
+
+            $this->load->model('Model_gudang_wip');
+            $details = $this->Model_gudang_wip->show_detail_spb_fulfilment($spb_id)->result();
+            $this->db->where('t_spb_wip_id',$spb_id);
+            $this->db->where('approved_by', 0);
+            $this->db->delete('t_spb_wip_fulfilment');
+            // echo '<pre>';print_r($details);echo'</pre>';
+            // die();
+
+            $check = $this->Model_gudang_wip->check_spb_reject($spb_id)->row_array();
+            if($check['count'] > 0){
+                $status = 4;
+            }else{
+                $status = 0;
+            }
+            $this->db->update('t_spb_wip',['status'=>$status],['id'=>$spb_id]);
+            // echo $status;
+            // die();
+
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'SPB sudah di-approve. Detail Pemenuhan SPB sudah disimpan');                 
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }
+       redirect('index.php/GudangWIP/view_spb/'.$spb_id);
+    }
+
     function approve_spb(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');

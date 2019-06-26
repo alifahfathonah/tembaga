@@ -125,7 +125,7 @@ class Model_gudang_fg extends CI_Model{
     }
 
     function barang_fg_list(){
-        $data = $this->db->query("select jb.jenis_barang, jb.id
+        $data = $this->db->query("select jb.jenis_barang, jb.id, jb.kode
                 from jenis_barang jb
                 where category='FG'"
                 );
@@ -307,7 +307,7 @@ class Model_gudang_fg extends CI_Model{
         $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.uom, jb.kode from t_gudang_fg tgf 
                 left join jenis_barang jb on jb.id = tgf.jenis_barang_id
                 where tgf.t_spb_fg_id =".$id." and tgf.jenis_trx = 0
-                order by tgf.jenis_barang_id");
+                order by tgf.id");
         return $data;
     }
 

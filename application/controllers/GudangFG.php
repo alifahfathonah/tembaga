@@ -696,7 +696,7 @@ class GudangFG extends CI_Controller{
             'bobbin_id' =>$this->input->post('id_packing'),
             'keterangan' =>$this->input->post('keterangan')
         ));
-        if ($this->db->trans_complete()){
+        if($this->db->trans_complete()){
             $return_data['message_type']= "sukses";
         }else{
             $return_data['message_type']= "error";
@@ -999,7 +999,6 @@ class GudangFG extends CI_Controller{
         
         $this->db->trans_start();
 
-        
         #Update status SPB
         $this->db->where('id', $spb_id);
         $this->db->update('t_spb_fg', array(
@@ -1072,7 +1071,7 @@ class GudangFG extends CI_Controller{
             // echo '<pre>';print_r($details);echo'</pre>';
             // die();
             foreach ($details as $v) {
-               $this->db->update('t_gudang_fg',['t_spb_fg_id'=>NULL],['id'=>$v->id]);
+               $this->db->update('t_gudang_fg',['jenis_trx'=>0],['t_spb_fg_id'=>NULL],['id'=>$v->id]);
             }
 
             $check = $this->Model_gudang_fg->check_spb_reject($spb_id)->row_array();
@@ -1207,38 +1206,38 @@ class GudangFG extends CI_Controller{
                             'created_at' => $tanggal
                         );
                     $this->db->insert('t_gudang_fg', $data_else);
-                    if($user_ppn == 1){
-                        $detail_push = [];
-                        $tgf_id = $this->db->insert_id();
-                        $data_id = array('reff1' => $tgf_id);
-                        $detail_push[] = array_merge($details[$k], $data_id);
-                    }
+                    // if($user_ppn == 1){
+                    //     $detail_push = [];
+                    //     $tgf_id = $this->db->insert_id();
+                    //     $data_id = array('reff1' => $tgf_id);
+                    //     $detail_push[] = array_merge($details[$k], $data_id);
+                    // }
                 }
                 
                 /** API TRANSACTION **/
-                if($user_ppn = 1 && strpos($this->input->post('remarks'), 'BARANG PO') !== false ){
-                    $this->load->helper('target_url');
+                // if($user_ppn = 1 && strpos($this->input->post('remarks'), 'BARANG PO') !== false ){
+                //     $this->load->helper('target_url');
 
-                    $data_post['bpb_id'] = $bpb_id;
-                    $data_post['tgl_input'] = $tgl_input;
-                    $data_post['bpb'] = $bpb_update;
-                    $data_post['details'] = $detail_push;
-                    $detail_post = json_encode($data_post);
+                //     $data_post['bpb_id'] = $bpb_id;
+                //     $data_post['tgl_input'] = $tgl_input;
+                //     $data_post['bpb'] = $bpb_update;
+                //     $data_post['details'] = $detail_push;
+                //     $detail_post = json_encode($data_post);
 
-                    // print_r($detail_post);
-                    // die();
+                //     // print_r($detail_post);
+                //     // die();
 
-                    $ch = curl_init(target_url().'api/BeliFinishGoodAPI/bpb');
-                    curl_setopt($ch, CURLOPT_POST, true);
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    $response = curl_exec($ch);
-                    $result = json_decode($response, true);
-                    curl_close($ch);
-                    // print_r($response);
-                    // die();
-                }
+                //     $ch = curl_init(target_url().'api/BeliFinishGoodAPI/bpb');
+                //     curl_setopt($ch, CURLOPT_POST, true);
+                //     curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                //     curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                //     $response = curl_exec($ch);
+                //     $result = json_decode($response, true);
+                //     curl_close($ch);
+                //     // print_r($response);
+                //     // die();
+                // }
             
         if($this->db->trans_complete()){  
                 

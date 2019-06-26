@@ -788,7 +788,8 @@ class Model_tolling_titipan extends CI_Model{
     }
 
     function list_item_sjk_wip($id){
-        $data = $this->db->query("select tsj.id, tgw.id as id_gudang, jb.jenis_barang, jb.uom from t_surat_jalan tsj
+        $data = $this->db->query("select tsj.id, tgw.id as id_gudang, tgw.qty, tgw.berat, tgw.jenis_barang_id, jb.jenis_barang, jb.uom 
+                from t_surat_jalan tsj
                 left join t_gudang_wip tgw on tgw.t_spb_wip_id = tsj.spb_id
                 left join jenis_barang jb on jb.id = tgw.jenis_barang_id
                 where tsj.spb_id =".$id." and flag_taken = 0");

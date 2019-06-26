@@ -87,10 +87,10 @@
                             <td>No. PO</td>
                             <td>: <?php echo $header['no_po'];?></td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <td>Pajak</td>
                             <td>: <?php echo $header['flag_ppn']==1 ? "PPN" : "NON-PPN" ?></td>
-                        </tr>
+                        </tr> -->
                     </table>
                 </td>
             </tr>
