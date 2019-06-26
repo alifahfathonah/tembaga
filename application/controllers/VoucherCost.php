@@ -256,6 +256,27 @@ class VoucherCost extends CI_Controller{
         redirect('index.php/VoucherCost');
     }
 
+    function delete_voucher(){
+        $id = $this->uri->segment(3);
+        $jenis = $this->uri->segment(4);
+        
+        $this->db->trans_start();
+        if(!empty($id)){
+            $this->db->delete('voucher', ['id' => $id]);
+            $this->db->delete('f_kas', ['id_vc' => $id]);
+        }
+
+        if ($this->db->trans_complete()) {
+            if ($jenis == 'KK') {
+                $this->session->set_flashdata('flash_msg', 'Data voucher cost berhasil dihapus');
+                redirect('index.php/VoucherCost/kas_keluar');
+            } else {
+                $this->session->set_flashdata('flash_msg', 'Data voucher cost berhasil dihapus');
+                redirect('index.php/VoucherCost/bank_keluar');
+            }
+        }
+    }
+
     function print_voucher(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);

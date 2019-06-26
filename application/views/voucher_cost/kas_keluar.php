@@ -228,8 +228,17 @@
                         <td><?php echo $data->nama_group_cost; ?></td>
                         <td><?php echo $data->keterangan; ?></td>
                         <td style="text-align:right"><?php echo number_format($data->amount,2,',','.'); ?></td>
-                        <td style="text-align:center">                             
+                        <td style="text-align:center"> 
                             <?php 
+                                if( ($group_id==1)||($hak_akses['delete']==1) ){
+                            ?>
+                            <a href="<?php echo base_url(); ?>index.php/VoucherCost/delete_voucher/<?php echo $data->id; ?>/KK" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus transaksi ini?');">
+                                <i class="fa fa-trash-o"></i> Delete 
+                            </a>
+                            <br>                            
+                            <?php 
+                                }
+
                                 if( ($group_id==1)||($hak_akses['print']==1) ){
                             ?>
                             <a href="<?php echo base_url(); ?>index.php/VoucherCost/print_voucher/<?php echo $data->id; ?>" 

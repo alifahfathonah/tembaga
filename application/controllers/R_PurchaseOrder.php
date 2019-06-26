@@ -47,6 +47,10 @@ class R_PurchaseOrder extends CI_Controller{
 
         $data['content']= "resmi/purchase_order/add_po";
         $data['header'] = $this->Model_purchase_order->get_po_customer($id)->row_array();
+        if ($data['header']['flag_bpb'] == 0) {
+            echo "<script type='text/javascript'>alert('Silahkan buat bpb terlebih dahulu!');</script>";
+            header( "refresh:0.0001;url=".(base_url('index.php/R_Matching') ));
+        }
         $data['cv_list'] = $this->Model_purchase_order->cv_list()->result();
 
         $this->load->view('layout', $data);
