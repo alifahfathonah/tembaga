@@ -201,11 +201,10 @@
                                         <thead>
                                             <th style="width:40px">No</th>
                                             <th>Nama Item</th>
-                                            <th>UOM</th>
                                             <th>No Packing</th>
-                                            <th>Nomor Bobbin</th>
+                                            <th>No. Bobbin</th>
                                             <th>Bruto</th>
-                                            <th>Netto (UOM)</th>
+                                            <th>Netto</th>
                                             <th>Keterangan</th>
                                             <th>Status</th>
                                         </thead>
@@ -223,13 +222,18 @@
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
                                                 echo '<td>'.$row->jenis_barang.'</td>';
-                                                echo '<td>'.$row->uom.'</td>';
                                                 echo '<td>'.$row->no_packing.'</td>';
                                                 echo '<td>'.$row->nomor_bobbin.'</td>';
                                                 echo '<td>'.$row->bruto.'</td>';
                                                 echo '<td>'.number_format($row->netto,2,',','.').' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
-                                                echo $stat;
+                                                if($row->flag_taken==1){
+                                                echo '<td style="background-color: green; color: white">Sudah di Kirim</td>';
+                                                echo '<td></td>';
+                                                }else{
+                                                    echo '<td>Belum Dikirim</td>';
+                                                    echo '<td><a href="'.base_url().'index.php/GudangFG/delSPBSudahDipenuhi/'.$row->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm("Anda yakin menghapus transaksi ini?");"><i class="fa fa-trash-o"></i> Delete</a></td>';
+                                                }
                                                 $tb += $row->bruto;
                                                 $tn += $row->netto;
                                                 $no++;
@@ -324,12 +328,13 @@
                                         <thead>
                                             <th style="width:40px">No</th>
                                             <th>Nama Item</th>
-                                            <th>UOM</th>
                                             <th>No Packing</th>
-                                            <th>Nomor Bobbin</th>
+                                            <th>No. Bobbin</th>
                                             <th>Bruto</th>
-                                            <th>Netto (UOM)</th>
+                                            <th>Netto</th>
                                             <th>Keterangan</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
                                         </thead>
                                         <tbody>
                                         <?php
@@ -337,21 +342,21 @@
                                             $tb = 0;
                                             $tn = 0;
                                             foreach ($detailSPB as $row){
-                                                if($row->flag_taken==1){
-                                                    $stat = '<td style="background-color: green; color: white">Sudah di Kirim</td>';
-                                                }else{
-                                                    $stat = '<td>Belum Dikirim</td>';
-                                                }
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
                                                 echo '<td>'.$row->jenis_barang.'</td>';
-                                                echo '<td>'.$row->uom.'</td>';
                                                 echo '<td>'.$row->no_packing.'</td>';
                                                 echo '<td>'.$row->nomor_bobbin.'</td>';
                                                 echo '<td>'.$row->bruto.'</td>';
                                                 echo '<td>'.number_format($row->netto,2,',','.').' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
-                                                echo $stat;
+                                                if($row->flag_taken==1){
+                                                echo '<td style="background-color: green; color: white">Sudah di Kirim</td>';
+                                                echo '<td></td>';
+                                                }else{
+                                                    echo '<td>Belum Dikirim</td>';
+                                                    echo '<td><a href="'.base_url().'index.php/GudangFG/delSPBSudahDipenuhi/'.$row->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm("Anda yakin menghapus transaksi ini?");"><i class="fa fa-trash-o"></i> Delete</a></td>';
+                                                }
                                                 $tb += $row->bruto;
                                                 $tn += $row->netto;
                                                 $no++;
@@ -389,6 +394,7 @@
                                             <th>Netto (UOM)</th>
                                             <th>No Packing</th>
                                             <th>Keterangan</th>
+                                            <th>Action</th>
                                         </thead>
                                         <tbody>
                                             <?php $no=1; $total_netto=0; foreach($myDetailSaved as $v) { ?>
@@ -399,6 +405,9 @@
                                                 <td><?=number_format($v->netto,2,',',',');?></td>
                                                 <td><?=$v->no_packing?></td>
                                                 <td><?=$v->keterangan;?></td>
+                                                <?php
+                                                    echo '<td><a href="'.base_url().'index.php/GudangFG/delPemenuhan/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm("Anda yakin menghapus transaksi ini?");"><i class="fa fa-trash-o"></i> Delete</a></td>';
+                                                ?>
                                             </tr>
                                             <?php 
                                             $no++; 

@@ -329,15 +329,15 @@ class Model_finance extends CI_Model{
     }
 
     function show_header_voucher_ppn($id){
-        $data = $this->db->query("select v.*, COALESCE(s.nama_supplier, mc.nama_customer, '-') as nama_customer, COALESCE(p.currency, fk.currency) as currency, fk.tgl_jatuh_tempo, fk.no_giro, b.no_acc, b.nama_bank, s.nama_supplier, p.no_po, u.realname as pic, fk.nomor, COALESCE(p.kurs, fk.kurs)as kurs
-            from voucher v 
-            left join f_kas fk on (fk.id_vc = v.id)
+        $data = $this->db->query("select fk.id, fk.tanggal, COALESCE(s.nama_supplier, mc.nama_customer, '-') as nama_customer, COALESCE(p.currency, fk.currency) as currency, fk.tgl_jatuh_tempo, fk.no_giro, b.no_acc, b.nama_bank, s.nama_supplier, p.no_po, u.realname as pic, fk.nomor, COALESCE(p.kurs, fk.kurs)as kurs
+            from f_kas fk 
+            left join voucher v on (v.id_fk = fk.id)
             left join bank b on (b.id = fk.id_bank)
             left join po p on (p.id = v.po_id)
             left join supplier s on (s.id = v.supplier_id)
             left join m_customers mc on (mc.id = v.customer_id)
             left join users u on (u.id = v.created_by)
-            where v.id = ".$id);
+            where fk.id = ".$id);
         return $data;
     }
 
@@ -347,7 +347,7 @@ class Model_finance extends CI_Model{
                     Left Join po On (v.po_id = po.id)
                     left join supplier s on (s.id = v.supplier_id)
                     left join m_customers mc on (mc.id = v.customer_id)
-                where v.id = ".$id);
+                where v.id_fk = ".$id);
         return $data;
     }
     // function list_matching(){

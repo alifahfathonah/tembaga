@@ -835,6 +835,12 @@
                     </a>
                     <ul class="sub-menu">
                         <li>
+                            <a href="<?php echo base_url(); ?>index.php/VoucherCost/voucher_kh">
+                                <i class="fa fa-left">-</i>
+                                Voucher KH Manual
+                            </a>
+                        </li>
+                        <li>
                             <a href="<?php echo base_url(); ?>index.php/VoucherCost/kas_keluar">
                                 <i class="fa fa-left">-</i>
                                 Kas Keluar

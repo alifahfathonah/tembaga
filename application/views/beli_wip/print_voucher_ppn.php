@@ -15,8 +15,8 @@
                             <td>&nbsp;</td>
                         </tr>
                         <tr>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
+                            <td>Kode Kas / Bank</td>
+                            <td>: <?php echo $header['no_acc'];?></td>
                         </tr>
                         <tr>
                             <td>Nama Supplier</td>
@@ -25,10 +25,6 @@
                         <tr>
                             <td valign="top">Sejumlah</td>
                             <td>: **<?php echo ucwords(number_to_words_d($total,$header['currency'])); ?>**</td>
-                        </tr>
-                        <tr>
-                            <td>Catatan</td>
-                            <td>: <?php echo $header['keterangan'];?></td>
                         </tr>
                     </table>
                 </td>

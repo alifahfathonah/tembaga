@@ -10,7 +10,7 @@
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12"> 
-        <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
+        <div class="modal fade" id="myModalKH" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -78,63 +78,6 @@
                                         onkeyup="this.value = this.value.toUpperCase()"></textarea>
                                 </div>
                             </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="alert alert-danger display-hide">
-                                        <button class="close" data-close="alert"></button>
-                                        <span id="message">&nbsp;</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="width: 100%; margin-bottom: 5px;text-align: center">
-                              <span>
-                                Data Uang Keluar <!--Padding is optional-->
-                              </span>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Nomor Uang Keluar
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="no_uk" name="no_uk" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" placeholder="Nomor Uang Keluar ...">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Nomor Giro
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="nomor_giro" name="nomor_giro" 
-                                        class="form-control myline" style="margin-bottom:5px" placeholder="Nomor Giro ...">   
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Bank
-                                </div>
-                                <div class="col-md-7">
-                                    <select id="bank_id" name="bank_id" class="form-control myline select2me"
-                                    data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                    <option value=""></option>
-                                    <?php
-                                        foreach ($bank_list as $row){
-                                            echo '<option value="'.$row->id.'">'.$row->kode_bank.' ('.$row->nomor_rekening.')</option>';
-                                        }
-                                    ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Tanggal Jatuh Tempo
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="tanggal_jatuh" name="tanggal_jatuh" 
-                                        class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                        value="<?php echo date('Y-m-d'); ?>">
-                                </div>
-                            </div> 
                             <div class="row">
                                 <div class="col-md-5">
                                     Currency
@@ -163,16 +106,24 @@
                                         class="form-control myline" style="margin-bottom:5px" onkeyup="getComa(this.value, this.id);">
                                 </div>
                             </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger display-hide">
+                                        <button class="close" data-close="alert"></button>
+                                        <span id="message">&nbsp;</span>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">                        
-                        <button type="button" class="btn blue" id="simpandata" onClick="simpandata();">Simpan</button>
+                        <button type="button" class="btn blue" id="simpandata" onClick="simpandatakh();">Simpan</button>
                         <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
                     </div>
                 </div>
             </div>
         </div>
-
         <?php
             if( ($group_id==1)||($hak_akses['index']==1) ){
         ?>
@@ -187,11 +138,12 @@
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-beer"></i>Bank Keluar
+                    <i class="fa fa-beer"></i>Voucher KH
                 </div>
                 <div class="tools">    
-                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" onclick="newData()">
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" onclick="newDataKH()">
                         <i class="fa fa-plus"></i> Tambah</a>
+                    <!-- <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/VoucherCost/add_uk"><i class="fa fa-plus"></i> Tambah</a> -->
                 </div>
             </div>
             <div class="portlet-body">
@@ -221,17 +173,18 @@
                         <td><?php echo $data->nama_trx; ?></td>
                         <td><?php echo $data->nama_group_cost; ?></td>
                         <td><?php echo $data->keterangan; ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->nominal,2,',','.'); ?></td>
-                        <td style="text-align:center">                             
+                        <td style="text-align:right"><?php echo number_format($data->amount,2,',','.'); ?></td>
+                        <td style="text-align:center"> 
                             <?php 
                                 if( ($group_id==1)||($hak_akses['delete']==1) ){
                             ?>
-                            <a href="<?php echo base_url(); ?>index.php/VoucherCost/delete_voucher/<?php echo $data->id; ?>/BK" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus transaksi ini?');">
+                            <a href="<?php echo base_url(); ?>index.php/VoucherCost/delete_voucher_kh/<?php echo $data->id; ?>/KK" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus transaksi ini?');">
                                 <i class="fa fa-trash-o"></i> Delete 
                             </a>
                             <br>                            
                             <?php 
-                                } 
+                                }
+
                                 if( ($group_id==1)||($hak_akses['print']==1) ){
                             ?>
                             <a href="<?php echo base_url(); ?>index.php/VoucherCost/print_voucher/<?php echo $data->id; ?>" 
@@ -267,20 +220,6 @@ function getComa(value, id){
     $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }
 
-function newData(){
-    $('#group_cost_id').select2('val', '');
-    $('#cost_id').select2('val', '');
-    $('#amount').val('');
-    $('#remarks').val('');
-    dsState = "Input";
-    
-    $('#message').html("");
-    $('.alert-danger').hide(); 
-
-    $("#myModal").find('.modal-title').text('Input Voucher Cost');
-    $("#myModal").modal('show',{backdrop: 'true'});
-}
-
 function newDataKH(){
     $('#group_cost_id').select2('val', '');
     $('#cost_id').select2('val', '');
@@ -294,46 +233,6 @@ function newDataKH(){
     $("#myModalKH").find('.modal-title').text('Input Voucher Cost');
     $("#myModalKH").modal('show',{backdrop: 'true'});
 }
-
-function simpandata(){
-    if($.trim($("#amount").val()) == ""){
-        $('#message').html("Amount harus diisi!");
-        $('.alert-danger').show();
-    }else if($.trim($("#tanggal").val()) == ""){
-        $('#message').html("Tanggal harus diisi!");
-        $('.alert-danger').show();
-    }else if($.trim($("#group_cost_id").val()) == ""){
-        $('#message').html("Silahkan pilih group cost!");
-        $('.alert-danger').show(); 
-    }else if(($.trim($("#cost_id").val()) == "") && ($.trim($("#group_cost_id").val()) == "")){
-        $('#message').html("Silahkan pilih nama cost!");
-        $('.alert-danger').show();
-    }else{
-        $.ajax({
-            type: "POST",
-            url: "<?php echo base_url('index.php/BeliRongsok/get_no_uang_keluar'); ?>",
-            data: {
-                no_uk: $('#no_uk').val(),
-                tanggal: $('#tanggal').val(),
-                bank_id: $('#bank_id').val()
-            },
-            cache: false,
-            success: function(result) {
-                var res = result['type'];
-                if(res=='duplicate'){
-                    $('#message').html("Nomor Uang Keluar sudah ada, tolong coba lagi!");
-                    $('.alert-danger').show();
-                }else{
-                    $('#simpandata').text('Please Wait ...').prop("onclick", null).off("click");
-                    $('#message').html("");
-                    $('.alert-danger').hide();
-                    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/VoucherCost/save");
-                    $('#formku').submit(); 
-                }
-            }
-        });                                 
-    };
-};
 
 function simpandatakh(){
     if($.trim($("#amount").val()) == ""){

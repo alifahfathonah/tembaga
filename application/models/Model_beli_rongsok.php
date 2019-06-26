@@ -390,14 +390,25 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
 
+    // function voucher_list_ppn($user_ppn){
+    //     $data = $this->db->query("Select voucher.*, fk.nomor, 
+    //             po.no_po, po.tanggal As tanggal_po
+    //             From voucher 
+    //                 Left Join po On (voucher.po_id = po.id)
+    //                 Left Join f_kas fk on (fk.id_vc =  voucher.id) 
+    //             Where voucher.jenis_barang='RONGSOK' And po.flag_ppn = ".$user_ppn."
+    //             Order By voucher.no_voucher");
+    //     return $data;
+    // }
+
     function voucher_list_ppn($user_ppn){
-        $data = $this->db->query("Select voucher.*, fk.nomor, 
+        $data = $this->db->query("Select fk.*,voucher.status, voucher.jenis_voucher, fk.nomor, 
                 po.no_po, po.tanggal As tanggal_po
-                From voucher 
+                From f_kas fk
+                    Left Join voucher voucher on (voucher.id_fk = fk.id) 
                     Left Join po On (voucher.po_id = po.id)
-                    Left Join f_kas fk on (fk.id_vc =  voucher.id) 
                 Where voucher.jenis_barang='RONGSOK' And po.flag_ppn = ".$user_ppn."
-                Order By voucher.no_voucher");
+                Order By fk.nomor");
         return $data;
     }
 

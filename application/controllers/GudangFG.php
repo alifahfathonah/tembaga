@@ -1070,8 +1070,8 @@ class GudangFG extends CI_Controller{
             $details = $this->Model_gudang_fg->show_detail_spb_fulfilment($spb_id)->result();
             // echo '<pre>';print_r($details);echo'</pre>';
             // die();
-            foreach ($details as $v) {
-               $this->db->update('t_gudang_fg',['jenis_trx'=>0],['t_spb_fg_id'=>NULL],['id'=>$v->id]);
+            foreach ($details as $v){
+                $this->db->update('t_gudang_fg',['jenis_trx'=>0, 't_spb_fg_id'=>NULL, 'nomor_SPB'=>NULL],['id'=>$v->id]);
             }
 
             $check = $this->Model_gudang_fg->check_spb_reject($spb_id)->row_array();
@@ -1088,6 +1088,42 @@ class GudangFG extends CI_Controller{
                 $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
             }
        redirect('index.php/GudangFG/view_spb/'.$spb_id);
+    }
+
+    function delSPBSudahDipenuhi(){
+        $id = $this->uri->segment(3);
+        $id_spb = $this->uri->segment(4);
+        
+        $data = array(
+            'jenis_trx'=>0,
+            't_spb_fg_id'=>NULL,
+            'nomor_SPB'=>NULL,
+            'tanggal_keluar'=>'0000-00-00'
+        );
+        $this->db->where('id', $id);
+        if($this->db->update('t_gudang_fg',$data)){
+            redirect('index.php/GudangFG/view_spb/'.$id_spb);
+        }else{
+            redirect('index.php/GudangFG/spb_list');
+        }
+    }
+
+    function delPemenuhan(){
+        $id = $this->uri->segment(3);
+        $id_spb = $this->uri->segment(4);
+        
+        $data = array(
+            'jenis_trx'=>0,
+            't_spb_fg_id'=>NULL,
+            'nomor_SPB'=>NULL,
+            'tanggal_keluar'=>'0000-00-00'
+        );
+        $this->db->where('id', $id);
+        if($this->db->update('t_gudang_fg',$data)){
+            redirect('index.php/GudangFG/view_spb/'.$id_spb);
+        }else{
+            redirect('index.php/GudangFG/spb_list');
+        }
     }
 
     function approve_spb(){

@@ -97,11 +97,7 @@
                                     Nomor Uang Keluar
                                 </div>
                                 <div class="col-md-7">
-                                <?php if($this->session->userdata('user_ppn')==1){?>
                                     <input type="text" id="no_uk" name="no_uk" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" placeholder="Nomor Uang Keluar ...">
-                                <?php }else{ ?>
-                                    <input type="text" id="no_uk" name="no_uk" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="Auto Generate">
-                                <?php } ?>
                                 </div>
                             </div>
                             <div class="row">
@@ -226,7 +222,7 @@
                         <td><?php echo $data->nama_trx; ?></td>
                         <td><?php echo $data->nama_group_cost; ?></td>
                         <td><?php echo $data->keterangan; ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->amount,2,',','.'); ?></td>
+                        <td style="text-align:right"><?php echo number_format($data->nominal,2,',','.'); ?></td>
                         <td style="text-align:center"> 
                             <?php 
                                 if( ($group_id==1)||($hak_akses['delete']==1) ){
@@ -287,7 +283,61 @@ function newData(){
     $("#myModal").modal('show',{backdrop: 'true'}); 
 }
 
+function newDataKH(){
+    $('#group_cost_id').select2('val', '');
+    $('#cost_id').select2('val', '');
+    $('#amount').val('');
+    $('#remarks').val('');
+    dsState = "Input";
+    
+    $('#message').html("");
+    $('.alert-danger').hide(); 
+    
+    $("#myModalKH").find('.modal-title').text('Input Voucher Cost');
+    $("#myModalKH").modal('show',{backdrop: 'true'});
+}
+
 function simpandata(){
+    if($.trim($("#amount").val()) == ""){
+        $('#message').html("Amount harus diisi!");
+        $('.alert-danger').show();
+    }else if($.trim($("#tanggal").val()) == ""){
+        $('#message').html("Tanggal harus diisi!");
+        $('.alert-danger').show();
+    }else if($.trim($("#group_cost_id").val()) == ""){
+        $('#message').html("Silahkan pilih group cost!");
+        $('.alert-danger').show(); 
+    }else if(($.trim($("#cost_id").val()) == "") && ($.trim($("#group_cost_id").val()) == "")){
+        $('#message').html("Silahkan pilih nama cost!");
+        $('.alert-danger').show();
+    }else{
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url('index.php/BeliRongsok/get_no_uang_keluar'); ?>",
+            data: {
+                no_uk: $('#no_uk').val(),
+                tanggal: $('#tanggal').val(),
+                bank_id: $('#bank_id').val()
+            },
+            cache: false,
+            success: function(result) {
+                var res = result['type'];
+                if(res=='duplicate'){
+                    $('#message').html("Nomor Uang Keluar sudah ada, tolong coba lagi!");
+                    $('.alert-danger').show();
+                }else{
+                    $('#simpandata').text('Please Wait ...').prop("onclick", null).off("click");
+                    $('#message').html("");
+                    $('.alert-danger').hide();
+                    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/VoucherCost/save");
+                    $('#formku').submit(); 
+                }
+            }
+        });                                 
+    };
+};
+
+function simpandatakh(){
     if($.trim($("#amount").val()) == ""){
         $('#message').html("Amount harus diisi!");
         $('.alert-danger').show();

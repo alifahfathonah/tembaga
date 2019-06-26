@@ -201,12 +201,23 @@ class Model_beli_wip extends CI_Model
         return $data;
     }
 
-    function voucher_list($ppn){
+    function voucher_list_ppn($user_ppn){
+        $data = $this->db->query("Select fk.*,voucher.status, voucher.jenis_voucher, fk.nomor, 
+                po.no_po, po.tanggal As tanggal_po
+                From f_kas fk
+                    Left Join voucher voucher on (voucher.id_fk = fk.id) 
+                    Left Join po On (voucher.po_id = po.id)
+                Where voucher.jenis_barang='WIP' and po.flag_ppn = ".$user_ppn."
+                Order By fk.nomor");
+        return $data;
+    }
+
+    function voucher_list($user_ppn){
         $data = $this->db->query("Select voucher.*, 
                 po.no_po, po.tanggal As tanggal_po
                 From voucher 
                     Left Join po On (voucher.po_id = po.id) 
-                Where voucher.jenis_barang='WIP' And po.flag_ppn = ".$ppn."
+                Where voucher.jenis_barang='WIP' and voucher.flag_ppn = ".$user_ppn."
                 Order By voucher.no_voucher");
         return $data;
     }

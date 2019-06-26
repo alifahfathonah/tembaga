@@ -123,7 +123,7 @@
                             <tr>&nbsp;</tr>
                         </tr>
                         <tr>
-                            <td style="text-align:center"><strong>(ISTIADI)</strong></td>
+                            <td style="text-align:center"><strong>(LINDA)</strong></td>
                             <td style="text-align:center">
                                 <u><strong><?php echo $header['realname']; ?></strong></u><br>
                                 BAG.GUDANG

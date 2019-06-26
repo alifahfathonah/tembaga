@@ -1204,49 +1204,8 @@ class BeliFinishGood extends CI_Controller{
         }
         
         $this->db->trans_start();
-        $this->load->model('Model_m_numberings');
-        if($ppn==1){
 
-            // $this->load->helper('target_url');
-            // $url = target_url().'api/BeliSparepartAPI/numbering?id=VFG-KMP&tgl='.$tgl_input;
-            // $ch2 = curl_init();
-            // curl_setopt($ch2, CURLOPT_URL, $url);
-            // // curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "DELETE");
-            // // curl_setopt($ch2, CURLOPT_POSTFIELDS, "group=3&group_2=1");
-            // curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-            // curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-            // curl_setopt($ch2, CURLOPT_HEADER, 0);
-
-            // $result2 = curl_exec($ch2);
-            // $result2 = json_decode($result2);
-            // curl_close($ch2);
-            // $code = $result2->code;
-            $code = $this->Model_m_numberings->getNumbering('VFG-KMP', $tgl_input);
-        }else{
-            $code = $this->Model_m_numberings->getNumbering('VFG', $tgl_input); 
-        }
-
-        if($code){ 
-            $data_v = array(
-                'no_voucher'=>$code,
-                'tanggal'=>$tgl_input,
-                'jenis_voucher'=>$jenis_voucher,
-                'flag_ppn'=>$ppn,
-                'status'=>1,
-                'po_id'=>$this->input->post('id'),
-                'supplier_id'=>$this->input->post('supplier_id'),
-                'jenis_barang'=>$this->input->post('jenis_barang'),
-                'amount'=>$amount,
-                'keterangan'=>$this->input->post('keterangan'),
-                'created'=> $tanggal,
-                'created_by'=> $user_id,
-                'modified'=> $tanggal,
-                'modified_by'=> $user_id
-            );
-            $this->db->insert('voucher', $data_v);
-            $id_vc = $this->db->insert_id();
-            
-            $this->db->where('id', $this->input->post('id'));
+        $this->db->where('id', $this->input->post('id'));
             if($jenis_voucher=='Pelunasan' && $this->input->post('status_vc')==3){
                 $update_po = array('flag_pelunasan'=>1, 'status'=>4);
             }else{
@@ -1291,7 +1250,7 @@ class BeliFinishGood extends CI_Controller{
                 'tgl_jatuh_tempo'=>$this->input->post('tanggal_jatuh'),
                 'no_giro'=>$this->input->post('nomor_giro'),
                 'id_bank'=>$this->input->post('bank_id'),
-                'id_vc'=>$id_vc,
+                'id_vc'=>0,
                 'currency'=>$this->input->post('currency'),
                 'kurs'=>$this->input->post('kurs'),
                 'nominal'=>str_replace('.', '', $amount),
@@ -1301,23 +1260,66 @@ class BeliFinishGood extends CI_Controller{
             $this->db->insert('f_kas', $data_f);
             $fk_id = $this->db->insert_id();
 
-            if($ppn==1){
-                $this->load->helper('target_url');
-                
-                $data_post['voucher'] = array_merge($data_v, array('reff1' => $id_vc));
-                $data_post['f_kas'] = array_merge($data_f, array('reff1' => $fk_id));
-                $data_post['update_po'] = $update_po;
-                $detail_post = json_encode($data_post);
+        $this->load->model('Model_m_numberings');
+        if($ppn==1){
 
-                $ch = curl_init(target_url().'api/BeliRongsokAPI/voucher');
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                $response = curl_exec($ch);
-                $result = json_decode($response, true);
-                curl_close($ch);
-            }
+            // $this->load->helper('target_url');
+            // $url = target_url().'api/BeliSparepartAPI/numbering?id=VFG-KMP&tgl='.$tgl_input;
+            // $ch2 = curl_init();
+            // curl_setopt($ch2, CURLOPT_URL, $url);
+            // // curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "DELETE");
+            // // curl_setopt($ch2, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+            // curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            // curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+            // curl_setopt($ch2, CURLOPT_HEADER, 0);
+
+            // $result2 = curl_exec($ch2);
+            // $result2 = json_decode($result2);
+            // curl_close($ch2);
+            // $code = $result2->code;
+            $code = $this->Model_m_numberings->getNumbering('VFG-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('VFG', $tgl_input); 
+        }
+
+        if($code){ 
+            $data_v = array(
+                'no_voucher'=>$code,
+                'tanggal'=>$tgl_input,
+                'jenis_voucher'=>$jenis_voucher,
+                'flag_ppn'=>$ppn,
+                'status'=>1,
+                'po_id'=>$this->input->post('id'),
+                'id_fk'=>$fk_id,
+                'supplier_id'=>$this->input->post('supplier_id'),
+                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'amount'=>$amount,
+                'keterangan'=>$this->input->post('keterangan'),
+                'created'=> $tanggal,
+                'created_by'=> $user_id,
+                'modified'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+            $this->db->insert('voucher', $data_v);
+            $id_vc = $this->db->insert_id();
+
+            // if($ppn==1){
+            //     $this->load->helper('target_url');
+                
+            //     $data_post['voucher'] = array_merge($data_v, array('reff1' => $id_vc));
+            //     $data_post['f_kas'] = array_merge($data_f, array('reff1' => $fk_id));
+            //     $data_post['update_po'] = $update_po;
+            //     $detail_post = json_encode($data_post);
+
+            //     $ch = curl_init(target_url().'api/BeliRongsokAPI/voucher');
+            //     curl_setopt($ch, CURLOPT_POST, true);
+            //     curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            //     curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+            //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            //     $response = curl_exec($ch);
+            //     $result = json_decode($response, true);
+            //     curl_close($ch);
+            // }
             
             if($this->db->trans_complete()){  
                 $this->session->set_flashdata('flash_msg', 'Voucher pembayaran Finish Good berhasil di-create dengan nomor : '.$code);
@@ -1380,9 +1382,9 @@ class BeliFinishGood extends CI_Controller{
 
             $this->load->helper('terbilang_helper');
             if($user_ppn==1){
-                $this->load->model('Model_beli_rongsok');
-                $data['header'] = $this->Model_beli_rongsok->show_header_voucher($id)->row_array();
-                $data['list_data'] = $this->Model_beli_rongsok->show_detail_voucher($id)->result();
+                $this->load->model('Model_beli_finance');
+                $data['header'] = $this->Model_finance->show_header_voucher_ppn($id)->row_array();
+                $data['list_data'] = $this->Model_finance->show_detail_voucher_ppn($id)->result();
                 $total = 0;
                 foreach ($data['list_data'] as $row) {
                     $total += $row->amount;

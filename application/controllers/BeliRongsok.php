@@ -501,9 +501,17 @@ class BeliRongsok extends CI_Controller{
         $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
 
         if($this->input->post('bank_id')<=3){
-            $code_um = 'KK-KMP.'.$tgl_code.'.'.$this->input->post('no_uk');
+            if($this->session->userdata('user_ppn')==1){
+                $code_um = 'KK-KMP.'.$tgl_code.'.'.$this->input->post('no_uk');
+            }else{
+                $code_um = 'KK.'.$tgl_code.'.'.$this->input->post('no_uk');
+            }
         }else{
-            $code_um = 'BK-KMP.'.$tgl_code.'.'.$this->input->post('no_uk');
+            if($this->session->userdata('user_ppn')==1){
+                $code_um = 'BK-KMP.'.$tgl_code.'.'.$this->input->post('no_uk');
+            }else{
+                $code_um = 'BK.'.$tgl_code.'.'.$this->input->post('no_uk');
+            }
         }
 
         $count = $this->db->query("select count(id) as count from f_kas where nomor ='".$code_um."'")->row_array();
@@ -516,7 +524,7 @@ class BeliRongsok extends CI_Controller{
         echo json_encode($data);
     }
     
-    function save_voucher_pembayaran(){
+    function save_voucher_pembayaran_old(){
         $ppn = $this->session->userdata('user_ppn');
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
@@ -629,6 +637,134 @@ class BeliRongsok extends CI_Controller{
                 $result = json_decode($response, true);
                 curl_close($ch);
             }
+
+            if($this->db->trans_complete()){  
+                $this->session->set_flashdata('flash_msg', 'Voucher pembayaran Rongsok berhasil di-create dengan nomor : '.$code);
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create voucher pembayaran Rongsok, silahkan coba kembali!');
+            }
+            redirect('index.php/BeliRongsok');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Pembuatan voucher pembayaran Rongsok gagal, penomoran belum disetup!');
+            redirect('index.php/BeliRongsok');
+        }
+    }
+
+    function save_voucher_pembayaran(){
+        $ppn = $this->session->userdata('user_ppn');
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
+        $nilai_po  = str_replace('.', '', $this->input->post('nilai_po'));
+        $jumlah_dibayar  = str_replace('.', '', $this->input->post('jumlah_dibayar'));
+        $amount  = str_replace('.', '', $this->input->post('amount'));
+        if($nilai_po-($jumlah_dibayar+$amount)>0){
+            $jenis_voucher = 'Parsial';
+        }else{
+            $jenis_voucher = 'Pelunasan';
+        }
+        
+        $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+
+            if($ppn==0){
+                if($this->input->post('bank_id')<=3){
+                    $num = 'KK';
+                }else{
+                    $num = 'BK';
+                }
+                $code_um = $this->Model_m_numberings->getNumbering($num);
+            }else{
+                if($this->input->post('bank_id')<=3){
+                    $code_um = 'KK-KMP.'.$tgl_code.'.'.$this->input->post('no_uk');
+                }else{
+                    $code_um = 'BK-KMP.'.$tgl_code.'.'.$this->input->post('no_uk');
+                }
+            }
+
+            $data_f = array(
+                'jenis_trx'=>1,
+                'nomor'=>$code_um,
+                'flag_ppn'=>$ppn,
+                'tanggal'=>$tgl_input,
+                'tgl_jatuh_tempo'=>$this->input->post('tanggal_jatuh'),
+                'no_giro'=>$this->input->post('nomor_giro'),
+                'id_bank'=>$this->input->post('bank_id'),
+                'id_vc'=>0,
+                'currency'=>$this->input->post('currency'),
+                'nominal'=>str_replace('.', '', $amount),
+                'created_at'=>$tanggal,
+                'created_by'=>$user_id
+            );
+            $this->db->insert('f_kas', $data_f);
+            $fk_id = $this->db->insert_id();
+
+        if($ppn==1){
+            $this->load->helper('target_url');
+            // $url = target_url().'api/BeliSparepartAPI/numbering?id=VRSK-KMP&tgl='.$tgl_input;
+            // $ch2 = curl_init();
+            // curl_setopt($ch2, CURLOPT_URL, $url);
+            // // curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "DELETE");
+            // // curl_setopt($ch2, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+            // curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            // curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+            // curl_setopt($ch2, CURLOPT_HEADER, 0);
+
+            // $result2 = curl_exec($ch2);
+            // $result2 = json_decode($result2);
+            // curl_close($ch2);
+            // $code = $result2->code;
+            $code = $this->Model_m_numberings->getNumbering('VRSK-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('VRSK', $tgl_input); 
+        }
+
+        if($code){ 
+            $data_v = array(
+                'no_voucher'=>$code,
+                'tanggal'=>$tgl_input,
+                'jenis_voucher'=>$jenis_voucher,
+                'flag_ppn'=>$ppn,
+                'status'=>1,
+                'po_id'=>$this->input->post('id'),
+                'id_fk'=>$fk_id,
+                'supplier_id'=>$this->input->post('supplier_id'),
+                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'amount'=>$amount,
+                'keterangan'=>$this->input->post('keterangan'),
+                'created'=> $tanggal,
+                'created_by'=> $user_id,
+                'modified'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+            $this->db->insert('voucher', $data_v);
+            $id_vc = $this->db->insert_id();
+            
+            $this->db->where('id', $this->input->post('id'));
+            if($jenis_voucher=='Pelunasan' && $this->input->post('status_vc')==3){
+                $update_po = array('flag_pelunasan'=>1, 'status'=>4);
+            }else{
+                $update_po = array('flag_dp'=>1);
+            }
+            $this->db->update('po', $update_po);
+            
+            // if($ppn==1){
+                
+            //     $data_post['voucher'] = array_merge($data_v, array('reff1' => $id_vc));
+            //     $data_post['f_kas'] = array_merge($data_f, array('reff1' => $fk_id));
+            //     $data_post['update_po'] = $update_po;
+            //     $detail_post = json_encode($data_post);
+
+            //     $ch = curl_init(target_url().'api/BeliRongsokAPI/voucher');
+            //     curl_setopt($ch, CURLOPT_POST, true);
+            //     curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            //     curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+            //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            //     $response = curl_exec($ch);
+            //     $result = json_decode($response, true);
+            //     curl_close($ch);
+            // }
 
             if($this->db->trans_complete()){  
                 $this->session->set_flashdata('flash_msg', 'Voucher pembayaran Rongsok berhasil di-create dengan nomor : '.$code);

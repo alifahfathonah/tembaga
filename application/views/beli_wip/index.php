@@ -44,7 +44,7 @@
                                 <div class="col-md-7">
                                     <input type="text" id="tanggal" name="tanggal" 
                                         class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                        value="<?php echo date('d-m-Y'); ?>">
+                                        value="<?php echo date('Y-m-d'); ?>">
                                 </div>
                             </div> 
                             <div class="row">
@@ -220,7 +220,7 @@
                                 <div class="col-md-7">
                                     <input type="text" id="tanggal_jatuh" name="tanggal_jatuh" 
                                         class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                        value="<?php echo date('d-m-Y'); ?>">
+                                        value="<?php echo date('Y-m-d'); ?>">
                                 </div>
                             </div> 
                             <div class="row">
@@ -299,7 +299,7 @@
                                 <div class="col-md-7">
                                     <input type="text" id="tanggal" name="tanggal" 
                                         class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                        value="<?php echo date('d-m-Y'); ?>">
+                                        value="<?php echo date('Y-m-d'); ?>">
                                 </div>
                             </div> 
                             <div class="row">
@@ -705,7 +705,7 @@ $(function(){
         buttonText: "Select date",
         changeMonth: true,
         changeYear: true,
-        dateFormat: 'dd-mm-yy'
+        dateFormat: 'yy-mm-dd'
     }); 
     
     $("#tanggal_pelunasan").datepicker({
@@ -715,7 +715,7 @@ $(function(){
         buttonText: "Select date",
         changeMonth: true,
         changeYear: true,
-        dateFormat: 'dd-mm-yy'
+        dateFormat: 'yy-mm-dd'
     }); 
 
     $("#tanggal_jatuh").datepicker({
@@ -725,7 +725,7 @@ $(function(){
         buttonText: "Select date",
         changeMonth: true,
         changeYear: true,
-        dateFormat: 'dd-mm-yy'
+        dateFormat: 'yy-mm-dd'
     }); 
     
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);

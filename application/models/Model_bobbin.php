@@ -261,7 +261,7 @@ class Model_bobbin extends CI_Model{
         $data = $this->db->query("select mbtd.*, mb.nomor_bobbin, mb.berat, mb.status, mb.m_bobbin_size_id, mbs.keterangan as ukuran_bobbin from m_bobbin_penerimaan_detail mbtd 
             left join m_bobbin mb on (mb.nomor_bobbin = mbtd.nomor_bobbin) 
             left join m_bobbin_size mbs on (mbs.id = mb.m_bobbin_size_id)
-            where mbtd.id_bobbin_penerimaan = ".$id." order by mb.m_bobbin_size_id");
+            where mbtd.id_bobbin_penerimaan = ".$id." order by mb.m_bobbin_size_id, mb.nomor_bobbin");
         // $data = $this->db->query("select mbtd.*, mbt.id, mbt.id_peminjaman, mbp.id_surat_jalan, tsjd.nomor_bobbin 
         //     from m_bobbin_penerimaan_detail mbtd 
         //     left join m_bobbin_penerimaan mbt on (mbtd.id_bobbin_penerimaan = mbt.id) 

@@ -452,7 +452,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function load_detail_surat_jalan_fg($id){
-        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jb.uom, tgf.no_produksi, mb.berat, jb1.kode as kode_lama, coalesce(jb2.kode, 0) as kode_baru
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, COALESCE((select tsod.nama_barang_alias from t_sales_order_detail tsod where tsod.jenis_barang_id =(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end) and tsod.t_so_id = tsj.sales_order_id ),jb.jenis_barang)as jenis_barang, jb.uom, tgf.no_produksi, mb.berat, jb1.kode as kode_lama, coalesce(jb2.kode, 0) as kode_baru
                 from t_surat_jalan_detail tsjd
                 left join jenis_barang jb on jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
                 left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
