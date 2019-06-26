@@ -348,6 +348,7 @@ class R_PurchaseOrder extends CI_Controller{
         $reff_cv   = $this->session->userdata('cv_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_kirim = date('Y-m-d', strtotime($this->input->post('tanggal_kirim')));
         $tanggal_so = date('Y-m-d', strtotime($this->input->post('tanggal_so')));
         $this->load->helper('target_url');
         
@@ -356,6 +357,7 @@ class R_PurchaseOrder extends CI_Controller{
         $data = array(
             'no_po'=> $this->input->post('no_po'),
             'tanggal'=> $tgl_input,
+            'tanggal_kirim' => $tgl_kirim,
             'f_invoice_id'=> $this->input->post('id_invoice'),
             'customer_id'=> $this->input->post('customer_id'),
             'term_of_payment'=> $this->input->post('term_of_payment'),
@@ -501,6 +503,7 @@ class R_PurchaseOrder extends CI_Controller{
         $reff_cv   = $this->session->userdata('cv_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_kirim = date('Y-m-d', strtotime($this->input->post('tanggal_kirim')));
         
         $details = $this->input->post('details');
         foreach ($details as $v) {
@@ -531,6 +534,7 @@ class R_PurchaseOrder extends CI_Controller{
         $data = array(
             'no_po'=> $this->input->post('no_po'),
             'tanggal'=> $tgl_input,
+            'tanggal_kirim'=> $tgl_kirim,
             'customer_id'=>$this->input->post('customer_id'),
             'term_of_payment'=>$this->input->post('term_of_payment'),
             // 'jenis_po'=>'PO CUSTOMER KE CV',

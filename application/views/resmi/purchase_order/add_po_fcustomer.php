@@ -46,6 +46,16 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Tanggal Kirim <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tanggal_kirim" name="tanggal_kirim" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('d-m-Y'); ?>">
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-4">
                             No. Invoice FG <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -135,6 +145,9 @@ function simpanData(){
     }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show();
+    }else if($.trim($("#tanggal_kirim").val()) == ""){
+        $('#message').html("Tanggal kirim harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
     }else if($.trim($("#term_of_payment").val()) == ""){
         $('#message').html("Term of payment harus diisi!");
         $('.alert-danger').show(); 
@@ -191,6 +204,16 @@ $(function(){
         changeYear: true,
         dateFormat: 'dd-mm-yy'
     });       
+
+    $("#tanggal_kirim").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    }); 
 });
 </script>
       
