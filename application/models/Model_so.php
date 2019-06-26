@@ -17,7 +17,7 @@ class Model_so extends CI_Model{
 			c.nama_customer, c.pic,
 			(select count(rsod.id) from r_t_so_detail rsod where rsod.so_id = rso.id) as jumlah_item
 			from r_t_so rso
-			left join m_customers_cv c on(rso.customer_id = c.id) where rso.jenis_so = 'SO CV' and reff_cv = ".$reff_cv." 
+			left join m_customers_cv c on(rso.customer_id = c.id) where rso.jenis_so = 'SO CV' and rso.reff_cv = ".$reff_cv." 
 			order by rso.no_so desc");
 		return $data;
 	}
