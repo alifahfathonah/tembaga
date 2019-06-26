@@ -77,7 +77,7 @@
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_Matching/print_invoice/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
-                                }if(($group_id==9 || $hak_akses['create_sj']==1) && $row->bpb_id ==0){
+                                }if(($group_id==9 || $hak_akses['create_sj']==1) && $row->bpb_id ==0 && $row->r_po_id > 0){
                             ?>
                             <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_BPB/add_bpb/matching/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px"><i class="fa fa-car"></i> Create BPB &nbsp; </a>

@@ -80,7 +80,7 @@
                 </tr> -->
             </tbody>
         </table>
-        Tanggal Kirim : <?= date("d/m/Y", strtotime($header['tgl_kirim'])) ?>
+        Tanggal Kirim : <?= date("d/m/Y", strtotime($header['tanggal_kirim'])) ?>
         <br>
         <p>Demikian PO ini saya sampaikan, atas perhatian dan kerja samanya saya ucapkan terima kasih.</p>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">

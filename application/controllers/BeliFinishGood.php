@@ -369,6 +369,20 @@ class BeliFinishGood extends CI_Controller{
         }
     }
 
+    function delete_po(){
+        ## BELOM ADA API
+        $id = $this->uri->segment(3);
+        $this->db->trans_start();
+        if(!empty($id)){
+            $this->db->delete('po', ['id' => $id]);
+        }
+
+        if ($this->db->trans_complete()) {
+            $this->session->set_flashdata('flash_msg', 'Data PO Finish Good berhasil dihapus');
+            redirect('index.php/BeliFinishGood');
+        }
+    }
+
     function print_po(){
         $id = $this->uri->segment(3);
         if($id){        

@@ -47,6 +47,10 @@ class R_PurchaseOrder extends CI_Controller{
 
         $data['content']= "resmi/purchase_order/add_po";
         $data['header'] = $this->Model_purchase_order->get_po_customer($id)->row_array();
+        if ($data['header']['flag_bpb'] == 0) {
+            echo "<script type='text/javascript'>alert('Silahkan buat bpb terlebih dahulu!');</script>";
+            header( "refresh:0.0001;url=".(base_url('index.php/R_Matching') ));
+        }
         $data['cv_list'] = $this->Model_purchase_order->cv_list()->result();
 
         $this->load->view('layout', $data);
@@ -344,6 +348,7 @@ class R_PurchaseOrder extends CI_Controller{
         $reff_cv   = $this->session->userdata('cv_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_kirim = date('Y-m-d', strtotime($this->input->post('tanggal_kirim')));
         $tanggal_so = date('Y-m-d', strtotime($this->input->post('tanggal_so')));
         $this->load->helper('target_url');
         
@@ -352,6 +357,7 @@ class R_PurchaseOrder extends CI_Controller{
         $data = array(
             'no_po'=> $this->input->post('no_po'),
             'tanggal'=> $tgl_input,
+            'tanggal_kirim' => $tgl_kirim,
             'f_invoice_id'=> $this->input->post('id_invoice'),
             'customer_id'=> $this->input->post('customer_id'),
             'term_of_payment'=> $this->input->post('term_of_payment'),
@@ -497,6 +503,7 @@ class R_PurchaseOrder extends CI_Controller{
         $reff_cv   = $this->session->userdata('cv_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_kirim = date('Y-m-d', strtotime($this->input->post('tanggal_kirim')));
         
         $details = $this->input->post('details');
         foreach ($details as $v) {
@@ -527,6 +534,7 @@ class R_PurchaseOrder extends CI_Controller{
         $data = array(
             'no_po'=> $this->input->post('no_po'),
             'tanggal'=> $tgl_input,
+            'tanggal_kirim'=> $tgl_kirim,
             'customer_id'=>$this->input->post('customer_id'),
             'term_of_payment'=>$this->input->post('term_of_payment'),
             // 'jenis_po'=>'PO CUSTOMER KE CV',

@@ -122,7 +122,7 @@ class Model_purchase_order extends CI_Model{
 	}
 
 	function show_header_print_po($id){
-		$data = $this->db->query("select rpo.*, cv.nama_cv, cs.nama_customer as nama, cs.pic, cv.pic as pic_cv, cs.alamat, cv.alamat as alamat_cv, rtsj.tanggal as tgl_kirim
+		$data = $this->db->query("select rpo.*, cv.nama_cv, cs.nama_customer as nama, cs.pic, cv.pic as pic_cv, cs.alamat, cv.alamat as alamat_cv
 			from r_t_po rpo
             left join r_t_surat_jalan rtsj on rtsj.id = rpo.flag_sj
 			left join m_customers_cv cs on (rpo.customer_id = cs.id)

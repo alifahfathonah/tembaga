@@ -213,6 +213,20 @@ class Finance extends CI_Controller{
         }            
     }
 
+    function delete_um(){
+        $id = $this->uri->segment(3);
+        $this->db->trans_start();
+        if(!empty($id)){
+            $this->db->delete('f_uang_masuk', ['id' => $id]);
+            $this->db->delete('f_kas', ['id_um' => $id]);
+        }
+
+        if ($this->db->trans_complete()) {
+            $this->session->set_flashdata('flash_msg', 'Data uang masuk berhasil dihapus');
+            redirect('index.php/Finance');
+        }
+    }
+
     function view_um(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
