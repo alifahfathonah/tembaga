@@ -10,8 +10,6 @@
         </h5>          
     </div>
 </div>
-
-
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12">
@@ -138,7 +136,7 @@
                                     <option value=""></option>
                                     <?php foreach ($list_wip_on_po as $value){ ?>
                                             <option value='<?=$value->id;?>'>
-                                                <?=$value->jenis_barang;?>
+                                                <?='('.$value->kode.') '.$value->jenis_barang;?>
                                             </option>
                                     <?php } ?>
                                 </select>
@@ -245,6 +243,7 @@ function get_uom_po(id, nmr){
                 }
             });
         }else{
+            $('#name_wip_'+nmr).select2('val','');
             $('#message').html("Item tidak boleh sama!");
             $('.alert-danger').show();
         }
@@ -274,7 +273,7 @@ function saveDetail(id){
                 '<input type="hidden" id="wip_id_'+new_id+'" name="myDetails['+new_id+'][wip_id]" value="">'+
                 '<td><select id="name_wip_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom_po(this.value,'+new_id+');">'+
                     '<option value=""></option>'+
-                    '<?php foreach($list_wip_on_po as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}?>'+
+                    '<?php foreach($list_wip_on_po as $v){ print('<option value="'.$v->id.'">('.$v->kode.') '.$v->jenis_barang.'</option>');}?>'+
                 '</select>'+
                 '</td>'+
                 '<td><input type="text" id="uom_'+new_id+'" name="myDetails['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
@@ -314,4 +313,3 @@ $(function(){
     });
 });
 </script>
-      

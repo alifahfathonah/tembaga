@@ -185,11 +185,21 @@
                             ?>
                             <tr>
                                 <td style="text-align:center;"><?php echo $no; ?></td>
-                                <td><?php echo $row->bruto; ?></td>
-                                <td><?php echo $row->netto; ?></td>       
-                                <td><?php echo $row->no_packing_barcode; ?></td>
+                            <?php 
+                            echo '<td style="text-align:right;"><label id="lbl_bruto_'.$no.'">'.number_format($row->bruto,2,',','.').'</label>'.
+                            '<input type="text" id="bruto_'.$no.'" name="bruto_'.$no.'" class="form-control myline" value="'.$row->bruto.'"  style="display:none;" maxlength="10" value="0"/></td>';
+
+                            echo '<td style="text-align:right;"><label id="lbl_netto_'.$no.'">'.number_format($row->netto,2,',','.').'</label>'.
+                            '<input type="text" id="netto_'.$no.'" name="netto_'.$no.'" class="form-control myline" value="'.$row->netto.'"  style="display:none;" maxlength="10" value="0"/></td>';
+                            echo '<td style="text-align:right;"><label id="lbl_no_packing_'.$no.'">'.$row->no_packing_barcode.'</label>'.
+                            '<input type="text" id="no_packing_'.$no.'" name="no_packing_'.$no.'" class="form-control myline" value="'.$row->no_packing_barcode.'" readonly style="display:none;" maxlength="10" value="0"/></td>';
+                            ?>
                                 <td><?php echo $row->keterangan; ?></td>
-                                <td style="text-align: center;"><a href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(<?=$row->id;?>);"><i class="fa fa-print"></i> Print Barcode </a></td>
+                                <td style="text-align: center;">
+                                <?php
+                                echo '<a id="btnEdit_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle green" onclick="editDetail('.$no.');" style="margin-top:5px"><i class="fa fa-pencil"></i> Edit </a>'.
+                                    '<a id="btnUpdate_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="updateDetail('.$no.');" style="margin-top:5px; display:none;"><i class="fa fa-save"></i> Update </a>';?>
+                                    <a href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(<?=$row->id;?>);"><i class="fa fa-print"></i> Print Barcode </a></td>
                             </tr>
                             <?php
                                 }
@@ -227,6 +237,49 @@
 //     const total = total_netto.toFixed(2);
 //     $("#netto").val(total);
 // }
+
+function editDetail(id){
+    $('#btnEdit_'+id).hide();
+    $('#lbl_bruto_'+id).hide();
+    $('#lbl_netto_'+id).hide();
+    $('#lbl_no_packing_'+id).hide();
+    
+    $('#btnUpdate_'+id).show();
+    $('#bruto_'+id).show();
+    $('#netto_'+id).show();
+    $('#no_packing_'+id).show();
+}
+
+function updateDetail(id){
+    const jenis = $("#jenis_barang").val();
+    if($.trim($("#bruto_"+id).val()) == ""){
+        $('#message').html("Bruto tidak boleh kosong");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#netto_"+id).val()) == ""){
+        $('#message').html("Netto tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{
+        $.ajax({
+            type:"POST",
+            url:'<?php echo base_url('index.php/GudangFG/update_detail_produksi'); ?>',
+            data:{
+                bruto:$('#bruto_'+id).val(),
+                netto:$('#netto_'+id).val(),
+                no_packing:$('#no_packing_'+id).val()
+            },
+            success:function(result){
+                if(result['message_type']=="sukses"){
+                    loadDetailEdit($('#id').val());
+                    $('#message').html("");
+                    $('.alert-danger').hide(); 
+                }else{
+                    $('#message').html(result['message']);
+                    $('.alert-danger').show(); 
+                }            
+            }
+        });
+    }
+}
 
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){

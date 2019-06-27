@@ -85,12 +85,12 @@
                                 placeholder="Silahkan pilih Jenis Pembayaran ..." onchange="get_cek(this.value);" style="margin-bottom:5px">
                                 <option value="0"></option>
                             <?php if($this->session->userdata('user_ppn')==1){?>
-                                <option value="Lain-Lain">Lain-Lain</option>
                                 <option value="Transfer">Transfer</option>
                             <?php }else{?>
                                 <option value="Cek">Cek</option>
                                 <option value="Cek Mundur">Cek Mundur</option>
                             <?php } ?>
+                                <option value="Lain-Lain">Lain-Lain</option>
                                 <option value="Giro">Giro</option>
                                 <option value="Cash">Cash</option>
                             </select>
@@ -435,8 +435,8 @@ function get_cek(id){
         $("#show_cek_mu").hide();
         $("#show_nomor_cek").hide();
         $("#show_replace").hide();
+        $('#show_bank_tuj').hide();
 
-        $('#show_bank_tuj').show();
         $("#show_bank").show();
         $("#show_replace").show();
         $("#show_nomor_cek").show();
@@ -446,8 +446,8 @@ function get_cek(id){
         $('#show_rek').hide();
         // $("#show_rek_tuj").hide();
         $("#show_replace").hide();
+        $('#show_bank_tuj').hide();
 
-        $('#show_bank_tuj').show();
         $("#show_bank").show();
         $("#show_replace").show();
         $("#show_cek_mu").show();

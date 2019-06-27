@@ -1,7 +1,7 @@
 <?php
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class VoucherCost extends CI_Controller{
+class StokOpname extends CI_Controller{
     function __construct(){
         parent::__construct();
 
@@ -21,7 +21,7 @@ class VoucherCost extends CI_Controller{
         }
         $data['group_id']  = $group_id;
 
-        $data['content']= "voucher_cost/index";
+        $data['content']= "stok_opname/index";
         $this->load->model('Model_voucher_cost');
         $data['list_data'] = $this->Model_voucher_cost->list_data($ppn)->result();
         $data['list_group_cost'] = $this->Model_voucher_cost->list_group_cost()->result();

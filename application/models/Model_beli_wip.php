@@ -53,7 +53,7 @@ class Model_beli_wip extends CI_Model
     }
 
     function list_wip(){
-        $data = $this->db->query("select *from jenis_barang where category = 'WIP' order by jenis_barang");
+        $data = $this->db->query("select * from jenis_barang where category = 'WIP' order by jenis_barang");
         return $data;
     }
 

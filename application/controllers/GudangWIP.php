@@ -1341,7 +1341,7 @@ class GudangWIP extends CI_Controller{
             $this->load->helper('tanggal_indo_helper');
             $this->load->model('Model_gudang_wip');
             $data['header']  = $this->Model_gudang_wip->show_header_spb($id)->row_array();
-            $data['details'] = $this->Model_gudang_wip->show_detail_wip_fulfilment($id)->result();
+            $data['details'] = $this->Model_gudang_wip->show_detail_spb_fulfilment($id)->result();
 
             $this->load->view('gudangwip/print_spb_fulfilment', $data);
         }else{

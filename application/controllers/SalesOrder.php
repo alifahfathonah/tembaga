@@ -253,6 +253,8 @@ class SalesOrder extends CI_Controller{
             $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px; display:none">';
             $tabel .= '<input type="hidden" id="detail_id_'.$no.'" name="detail_id_'.$no.'" value="'.$row->id.'">';
             $tabel .= '</td>';
+            $tabel .= '<td><label id="lbl_nama_barang_alias_'.$no.'">'.$row->nama_barang_alias.'</label>';
+            $tabel .= '<input type="text" id="nama_barang_alias_'.$no.'" name="nama_barang_alias_'.$no.'" class="form-control myline" value="'.$row->nama_barang_alias.'" style="display:none;"/></td>';
             $tabel .= '<td><label id="lbl_uom_'.$no.'">'.$row->uom.'</label>';
             $tabel .= '<input type="text" id="uom_'.$no.'" name="uom_'.$no.'" class="form-control myline" value="'.$row->uom.'" readonly  style="display:none;"/></td>';
             $tabel .= '<td style="text-align:right;"><label id="lbl_amount_'.$no.'">'.number_format($row->amount,0,',','.').'</label>';
@@ -287,7 +289,7 @@ class SalesOrder extends CI_Controller{
             $no++;
         }
         $tabel .= '<tr>';
-        $tabel .= '<td colspan="3" style="text-align:right"><strong>Total </strong></td>';
+        $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($amount,0,',','.').'</strong></td>';
         if($jenis == 'WIP'){
         $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($qty,0,',','.').'</strong></td>';
@@ -309,12 +311,14 @@ class SalesOrder extends CI_Controller{
         
         if($jenis == 'RONGSOK'){
             $data = array(
+                'nama_barang_alias'=>$this->input->post('nama_barang_alias'),
                 'amount'=>str_replace('.', '', $this->input->post('amount')),
                 'total_amount'=>str_replace('.', '', $this->input->post('total_amount')),
                 'qty'=>str_replace('.', '', $this->input->post('netto'))
             );
         }else{
             $data = array(
+                'nama_barang_alias'=>$this->input->post('nama_barang_alias'),
                 'amount'=>str_replace('.', '', $this->input->post('amount')),
                 'total_amount'=>str_replace('.', '', $this->input->post('total_amount')),
                 'netto'=>str_replace('.', '', $this->input->post('netto'))
@@ -823,7 +827,8 @@ class SalesOrder extends CI_Controller{
     
     function add_surat_jalan(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');    
+        $user_ppn    = $this->session->userdata('user_ppn');    
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -833,6 +838,7 @@ class SalesOrder extends CI_Controller{
         $data['content']= "sales_order/add_surat_jalan";
         
         $this->load->model('Model_sales_order');
+        $data['sj'] = $this->Model_sales_order->get_last_sj($user_ppn)->row_array();
         $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
         //$data['jenis_barang_list'] = $this->Model_sales_order->jenis_barang_list()->result();
         $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
@@ -967,8 +973,8 @@ class SalesOrder extends CI_Controller{
                 $data['content']= "sales_order/edit_surat_jalan_test";
             }else if($jenis == 'WIP'){
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_wip($soid)->result();
-                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_wip()->result();
-                $data['content']= "sales_order/edit_surat_jalan";
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_in_so($soid)->result();
+                $data['content']= "sales_order/edit_surat_jalan_test";
             }else if($jenis == 'LAIN'){
                 $data['list_produksi'] = $this->Model_sales_order->list_item_sj_lain($soid)->result();
                 $data['jenis_barang'] = $this->Model_sales_order->list_barang_sp()->result();

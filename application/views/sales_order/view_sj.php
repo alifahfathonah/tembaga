@@ -305,6 +305,8 @@
                             <tbody id="boxDetail">
                                 <?php 
                                     $no=1; 
+                                    $qty = 0;
+                                    $berat = 0;
                                     foreach ($list_sj as $row) { 
                                 ?>
                                 <tr>
@@ -312,10 +314,16 @@
                                     <td><?php echo $row->jenis_barang; ?></td>
                                     <td><?php echo $row->uom; ?></td>
                                     <td><?php echo $row->qty; ?></td>
-                                    <td><?php echo number_format($row->netto,0,',','.'); ?></td>
+                                    <td><?php echo number_format($row->netto,2,',','.'); ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
                                 </tr>
-                                <?php $no++; } ?>
+                                <?php $no++; $qty += $row->qty; $berat += $row->netto;} ?>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;">Total :</td>
+                                    <td style="background-color: green; color: white;"><?=$qty;?></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($berat,2,',','.');?></td>
+                                    <td></td>
+                                </tr>
                             </tbody>
                         </table>
                     <?php

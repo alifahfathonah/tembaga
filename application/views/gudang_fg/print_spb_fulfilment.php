@@ -69,11 +69,31 @@
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Netto</strong></td>
                         </tr>
                         <?php
+                            $last_series = null;
                             $no = 1;
                             $bruto = 0;
                             $bobin = 0;
                             $netto = 0;
                             foreach ($details as $row){
+                                if($row->jenis_barang!=$last_series && $last_series!=null){
+                                    echo '<tr><td colspan="5" style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>Total :</strong></td>';
+                                    echo '<td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000">
+                                            <strong>'.number_format($bruto, 2, '.', ',').'</strong>
+                                        </td>
+                                        <td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000">
+                                            <strong>'.number_format($bobin, 2, '.', ',').'</strong>
+                                        </td>
+                                        <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;">
+                                            <strong>'.number_format($netto, 2, '.', ',').'</strong>
+                                        </td>
+                                        <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"></td></tr>';
+                                    $bruto = 0;
+                                    $bobin = 0;
+                                    $netto = 0;
+                                    $no = 1;
+                                }else{
+                                    echo '<tr>';
+                                }
                                 echo '<tr>';
                                 echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->kode.'</td>';
@@ -85,13 +105,17 @@
                                 echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->netto, 2, '.', ',').' '.$row->uom.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.(($row->jenis_trx == 0)? 'NO':'YES').'</td>';
                                 echo '</tr>';
+                                if($row->jenis_barang==$last_series){
+                                    echo '<tr>';
+                                }
+                                $last_series = $row->jenis_barang;
                                 $bruto += $row->bruto;
                                 $bobin += $row->berat_bobbin;
                                 $netto += $row->netto;
                                 $no++;
                             }
                         ?>
-                        <tr style="height:100px">
+                        <tr style="height:1px">
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>

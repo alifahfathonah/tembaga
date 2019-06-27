@@ -267,6 +267,7 @@
                             <thead>
                                 <th>No</th>
                                 <th style="width: 20%;">Nama Item</th>
+                                <th>Nama Barang Alias</th>
                                 <th>Unit of Measure</th>
                                 <th>Harga (<?=$header['currency'];?>)</th>
                         <?php
@@ -326,6 +327,7 @@ function editDetail(id){
     $('#lbl_amount_'+id).hide();
     $('#lbl_netto_'+id).hide();
     $('#lbl_total_amount_'+id).hide();
+    $('#lbl_nama_barang_alias_'+id).hide();
     
     $('#btnUpdate_'+id).show();
     $('#jenis_barang_id_'+id).show();
@@ -333,6 +335,7 @@ function editDetail(id){
     $('#amount_'+id).show();
     $('#netto_'+id).show();
     $('#total_amount_'+id).show();
+    $('#nama_barang_alias_'+id).show();
 }
 
 function updateDetail(id){
@@ -350,6 +353,7 @@ function updateDetail(id){
             data:{
                 detail_id:$('#detail_id_'+id).val(),
                 jenis: jenis,
+                nama_barang_alias:$('#nama_barang_alias_'+id).val(),
                 netto:$('#netto_'+id).val(),
                 amount:$('#amount_'+id).val(),
                 total_amount:$('#total_amount_'+id).val(),

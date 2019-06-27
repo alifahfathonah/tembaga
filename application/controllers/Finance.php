@@ -58,7 +58,6 @@ class Finance extends CI_Controller{
         $this->load->model('Model_finance');
         $replace_list = $this->Model_finance->replace_list($id, $jenis)->result();
 
-            $tabel .= '<option></option>';
             $tabel .= '<option value="0">Cek Baru</option>';
             foreach ($replace_list as $value){
                 $tabel .= "<option value='".$value->id."'>".$value->nomor_cek."</option>";
@@ -130,12 +129,14 @@ class Finance extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         if(($this->input->post('jenis_id') == 'Cek')||($this->input->post('jenis_id') == 'Cek Mundur')){
+            $status = 0;
             if($user_ppn == 1){
                 $num = 'CM-KMP';
             }else{
                 $num = 'CM';
             }
         }else{
+            $status = 1;
             if($user_ppn == 1){
                 if($this->input->post('bank_id')<=3){
                     $num = 'KM-KMP';
@@ -153,11 +154,10 @@ class Finance extends CI_Controller{
 
         if($user_ppn == 1){
             $code = $num.'.'.$tgl_um.'.'.$this->input->post('no_uang_masuk');
-            $status = 1;
         }else{
             $code = $this->Model_m_numberings->getNumbering($num);
-            $status = 0;
         }
+
         $data = array(
             'no_uang_masuk'=> $code,
             'm_customer_id'=> $this->input->post('customer_id'),
@@ -188,17 +188,18 @@ class Finance extends CI_Controller{
             ));
         }
 
-        if($user_ppn == 1){
+        if($user_ppn == 1 || ($this->input->post('jenis_id') != 'Cek')||($this->input->post('jenis_id') != 'Cek Mundur')){
             $data = array(
                 'jenis_trx'=>0,
-                'nomor'=>$code,
-                'flag_ppn'=>$user_ppn,
+                'nomor'=> $code,
+                'flag_ppn'=> $user_ppn,
                 'tanggal'=> $tgl_input,
                 'id_bank'=> $this->input->post('bank_id'),
                 'id_um'=> $insert_id,
                 'currency'=> $this->input->post('currency'),
                 'kurs'=> $this->input->post('kurs'),
                 'nominal'=> str_replace(',', '', $this->input->post('nominal')),
+                'keterangan'=> $this->input->post('remarks'),
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id
             );
@@ -1741,6 +1742,19 @@ class Finance extends CI_Controller{
             $this->session->set_flashdata('flash_msg', 'Matching Group gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/Finance');  
         }  
+    }
+
+    function delete_matching_invoice(){
+        $id = $this->uri->segment(3);
+        $this->db->trans_start();
+        if(!empty($id)){
+            $this->db->delete('f_match', ['id' => $id]);
+        }
+
+        if($this->db->trans_complete()) {
+            $this->session->set_flashdata('flash_msg', 'Data Matching berhasil dihapus');
+            redirect('index.php/Finance/matching');
+        }
     }
 
     function matching_invoice(){

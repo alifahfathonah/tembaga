@@ -509,7 +509,30 @@
                             </li>
                         <?php } ?>
                         </ul>
-                        </li>                        
+                        </li>
+
+                        <li <?php if($module_name=="StokOpname") echo 'class="start active open"'; ?>>
+                        <a href="#">
+                        <i class="fa fa-circle"></i>
+                        <span class="title">STOK OPNAME</span>
+                        <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu">
+                        <?php if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/StokOpname/index">
+                                <i class="fa fa-file-excel-o"></i>
+                                Scan FG </a>
+                            </li>
+                        <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/StokOpname/report">
+                                <i class="fa fa-briefcase"></i>
+                                StockFG </a>
+                            </li>
+                        <?php } ?>
+                        </ul>
+                        </li>
                                                 
                          <li>
                             <a href="<?php echo base_url(); ?>index.php/Finishgood">
