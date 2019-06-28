@@ -113,7 +113,7 @@
                         <div class="col-md-8">
                             <input type="text" id="nama_customer" name="nama_customer" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['nama_customer']; ?>">
+                                value="<?= (($this->session->userdata('user_ppn') == 1)? $header['nama_customer'] : $header['nama_customer_kh']) ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -123,7 +123,7 @@
                         <div class="col-md-8">
                             <input type="text" id="cp_customer" name="cp_customer" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['pic']; ?>">
+                                value="<?= (($this->session->userdata('user_ppn') == 1)? $header['pic'] : $header['pic_kh']) ?>">
                         </div>
                     </div>
                 </div>              

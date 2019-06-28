@@ -151,7 +151,7 @@
                 <?php }else{ ?>
                         <input type="text" id="nama_customer" name="nama_customer"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['nama_customer']; ?>" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly">
+                                value="<?= (($this->session->userdata('user_ppn') == 1)? $header['nama_customer'] : $header['nama_customer_kh']) ?>" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly">
                         <input type="hidden" id="m_customer_id" name="m_customer_id" value="<?php echo $header['m_customer_id'];?>">
                 <?php } ?>
                         </div>

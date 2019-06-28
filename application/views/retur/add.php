@@ -92,7 +92,7 @@
                                 <option value=""></option>
                                 <?php
                                     foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
+                                        echo '<option value="'.$row->id.'">'.(($this->session->userdata('user_ppn') == 1)? $row->nama_customer : $row->nama_customer_kh).'</option>';
                                     }
                                 ?>
                             </select>
@@ -103,8 +103,12 @@
                             Contact Person
                         </div>
                         <div class="col-md-8">
+                            <?php if($this->session->userdata('user_ppn') == 1){ ?>
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px">
+                            <?php } else { ?>
+                            <input type="text" id="contact_person_kh" name="contact_person" readonly="readonly" class="form-control myline" style="margin-bottom: 5px">
+                            <?php } ?>
                         </div>
                     </div>
                     <div class="row">
@@ -207,6 +211,7 @@ function get_contact(id){
         cache: false,
         success: function(result) {
             $("#contact_person").val(result['pic']);
+            $("#contact_person_kh").val(result['pic_kh']);
         } 
     });
 }

@@ -53,7 +53,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function show_header_so($id){
-        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, so.flag_invoice, so.keterangan, u.realname, cust.nama_customer, cust.pic, cust.alamat, cust.telepon as telepon, COALESCE(tsf.no_spb, tsw.no_spb_wip, spb.no_spb,tsa.no_spb_ampas) as no_spb_barang, COALESCE(tsf.status,tsw.status,spb.status,0) as status_spb
+        $data = $this->db->query("Select tso.*, so.no_sales_order, so.tanggal, so.m_customer_id, so.marketing_id, so.flag_invoice, so.keterangan, u.realname, cust.nama_customer, cust.pic, cust.alamat, cust.telepon, cust.nama_customer_kh, cust.pic_kh, cust.alamat_kh, cust.telepon_kh, COALESCE(tsf.no_spb, tsw.no_spb_wip, spb.no_spb,tsa.no_spb_ampas) as no_spb_barang, COALESCE(tsf.status,tsw.status,spb.status,0) as status_spb
                     From t_sales_order tso
                         Left join sales_order so on (so.id = tso.so_id)
                         Left join m_customers cust On (so.m_customer_id = cust.id)
@@ -411,7 +411,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function show_header_sj($id){
-        $data = $this->db->query("Select tsj.*, cust.id as id_customer, COALESCE(NULLIF(tso.alias,''), cust.nama_customer) as nama_customer, cust.alamat, so.tanggal as tanggal_so, 
+        $data = $this->db->query("Select tsj.*, cust.id as id_customer, COALESCE(NULLIF(tso.alias,''), cust.nama_customer) as nama_customer, cust.alamat, COALESCE(NULLIF(tso.alias,''), cust.nama_customer_kh) as nama_customer_kh, cust.alamat_kh, so.tanggal as tanggal_so, 
                     COALESCE(tsf.no_spb, tsw.no_spb_wip, s.no_spb, tsa.no_spb_ampas) as nomor_spb,
                     COALESCE(tsf.status, tsw.status, s.status, tsa.status) as status_spb,
                     tso.no_spb, so.no_sales_order, tso.no_po,

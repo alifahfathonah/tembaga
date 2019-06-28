@@ -89,7 +89,7 @@
                         <div class="col-md-8">
                             <input type="text" id="nama_customer" name="nama_customer" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['nama_customer']; ?>">
+                                value="<?= (($this->session->userdata('user_ppn') == 1)? $header['nama_customer'] : $header['nama_customer_kh']) ?>">
                             <input type="hidden" id="id_customer" name="id_customer" value="<?php echo $header['id_customer'];?>" readonly="readonly">
                         </div>
                     </div>                    
@@ -99,7 +99,7 @@
                         </div>
                         <div class="col-md-8">
                             <textarea id="alamat" name="alamat" rows="2" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px"><?php echo $header['alamat']; ?></textarea>                           
+                                class="form-control myline" style="margin-bottom:5px"><?= (($this->session->userdata('user_ppn') == 1)? $header['alamat'] : $header['alamat_kh']) ?></textarea>                           
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>

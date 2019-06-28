@@ -31,7 +31,7 @@
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_retur" name="no_retur" readonly="readonly" class="form-control myline" style="margin-bottom:5px"  value="<?php echo $header['nama_customer']; ?>">
+                            <input type="text" id="no_retur" name="no_retur" readonly="readonly" class="form-control myline" style="margin-bottom:5px"  value="<?= (($this->session->userdata('user_ppn') == 1)? $header['nama_customer'] : $header['nama_customer_kh']) ?>">
                             <!-- <input type="hidden" name="retur_id" id="retur_id"> -->
                             <!-- <input type="text" id="no_retur" name="no_retur" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 

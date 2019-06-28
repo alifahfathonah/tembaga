@@ -20,11 +20,11 @@
                         </tr>
                         <tr>
                             <td>Customer</td>
-                            <td>: <?php echo $header['nama_customer']; ?></td>
+                            <td>: <?= (($this->session->userdata('user_ppn') == 1)? $header['nama_customer'] : $header['nama_customer_kh']) ?></td>
                         </tr>
                         <tr>
                             <td>Alamat</td>
-                            <td>: <?php echo $header['alamat']; ?></td>
+                            <td>: <?= (($this->session->userdata('user_ppn') == 1)? $header['alamat'] : $header['alamat_kh']) ?></td>
                         </tr>
                         
                     </table>

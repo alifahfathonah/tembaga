@@ -37,11 +37,11 @@
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>Customer</td>
-                            <td>: <?php echo $header['nama_customer']; ?></td>
+                            <td>: <?= (($this->session->userdata('user_ppn') == 1)? $header['nama_customer'] : $header['nama_customer_kh']) ?></td>
                         </tr>
                         <tr>
                             <td>PIC</td>
-                            <td>: <?php echo $header['pic']; ?></td>
+                            <td>: <?= (($this->session->userdata('user_ppn') == 1)? $header['pic'] : $header['pic_kh']) ?></td>
                         </tr>
                         <tr>
                             <td>Type Retur</td>

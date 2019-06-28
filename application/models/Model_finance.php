@@ -206,7 +206,7 @@ class Model_finance extends CI_Model{
     }
 
     function show_header_invoice($id){
-        $data = $this->db->query("select fi.*, coalesce(NULLIF(tso.alias,''),mc.nama_customer)as nama_customer, mc.alamat, mc.npwp, so.no_sales_order, COALESCE(so.flag_ppn,r.flag_ppn) as flag_ppn, so.flag_tolling, tso.no_po, u.realname, tsj.no_surat_jalan, tso.id as id_t_sales_order, r.no_retur, b.kode_bank, b.nama_bank, b.nomor_rekening, b.kantor_cabang, mtch.no_matching from f_invoice fi
+        $data = $this->db->query("select fi.*, coalesce(NULLIF(tso.alias,''),mc.nama_customer)as nama_customer, mc.alamat, mc.npwp, coalesce(NULLIF(tso.alias,''), mc.nama_customer_kh) as nama_customer_kh, mc.alamat_kh, so.no_sales_order, COALESCE(so.flag_ppn,r.flag_ppn) as flag_ppn, so.flag_tolling, tso.no_po, u.realname, tsj.no_surat_jalan, tso.id as id_t_sales_order, r.no_retur, b.kode_bank, b.nama_bank, b.nomor_rekening, b.kantor_cabang, mtch.no_matching from f_invoice fi
             left join m_customers mc on mc.id = fi.id_customer
             left join sales_order so on so.id = fi.id_sales_order
             left join t_sales_order tso on tso.so_id = fi.id_sales_order

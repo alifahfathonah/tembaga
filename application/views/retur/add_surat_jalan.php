@@ -91,7 +91,7 @@
                                 <option value=""></option>
                                 <?php
                                     foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
+                                        echo '<option value="'.$row->id.'">'.(($this->session->userdata('user_ppn') == 1)? $header['nama_customer'] : $header['nama_customer_kh']).'</option>';
                                     }
                                 ?>
                             </select>
@@ -102,7 +102,11 @@
                             Alamat
                         </div>
                         <div class="col-md-8">
+                        <?php if($this->session->userdata('user_ppn')){ ?>
                             <textarea id="alamat" name="alamat" rows="2" readonly="readonly" class="form-control myline" style="margin-bottom:5px"></textarea>
+                        <?php } else { ?>
+                            <textarea id="alamat_kh" name="alamat" rows="2" readonly="readonly" class="form-control myline" style="margin-bottom: 5px"></textarea>
+                        <?php } ?>
                         </div>
                     </div>
                     <div class="row">
@@ -230,7 +234,8 @@ function get_alamat(id){
         data: {id: id},
         cache: false,
         success: function(result) {
-            $("#alamat").val(result['alamat']);           
+            $("#alamat").val(result['alamat']);
+            $("#alamat_kh").val(result['alamat_kh']);
         } 
     });
     

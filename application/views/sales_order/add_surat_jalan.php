@@ -78,7 +78,7 @@
                                 <option value=""></option>
                                 <?php
                                     foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
+                                        echo '<option value="'.$row->id.'">'.(($this->session->userdata('user_ppn') == 1)? $row->nama_customer : $row->nama_customer_kh).'</option>';
                                     }
                                 ?>
                             </select>

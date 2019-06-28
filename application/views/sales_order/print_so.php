@@ -31,19 +31,19 @@
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>Kepada</td>
-                            <td>: <?php echo ($header['alias'] == NULL) ? $header['nama_customer'] : $header['alias']; ?></td>
+                            <td>: <?php echo ($header['alias'] == NULL) ? (($this->session->userdata('user_ppn') == 1)? $header['nama_customer'] : $header['nama_customer_kh']) : $header['alias']; ?></td>
                         </tr>
                         <tr>
                             <td>UP.</td>
-                            <td>: <?php echo $header['pic']; ?></td>
+                            <td>: <?= (($this->session->userdata('user_ppn') == 1)? $header['pic'] : $header['pic_kh']) ?></td>
                         </tr>
                         <tr>
                             <td>Alamat</td>
-                            <td>: <?php echo $header['alamat']; ?></td>
+                            <td>: <?= (($this->session->userdata('user_ppn') == 1)? $header['alamat'] : $header['alamat_kh']) ?></td>
                         </tr>
                         <tr>
                             <td>Telepon</td>
-                            <td>: <?php echo $header['telepon']; ?></td>
+                            <td>: <?= (($this->session->userdata('user_ppn') == 1)? $header['telepon'] : $header['telepon_kh']) ?></td>
                         </tr>
                     </table>
                 </td>

@@ -98,7 +98,7 @@ class Model_retur extends CI_Model{
     }
 
     function show_header_retur($id){
-        $data = $this->db->query("select r.*, u.realname as penimbang, jp.jenis_packing, c.nama_customer, c.pic
+        $data = $this->db->query("select r.*, u.realname as penimbang, jp.jenis_packing, c.nama_customer, c.pic, c.nama_customer_kh, c.pic_kh
             from retur r
             left join users u on (u.id = r.created_by)
             left join m_jenis_packing jp on (jp.id = r.jenis_packing_id)
@@ -340,6 +340,7 @@ class Model_retur extends CI_Model{
     function show_header_sj($id){
         $data = $this->db->query("Select tsj.*, 
                     cust.nama_customer, cust.alamat,
+                    cust.nama_customer_kh, cust.alamat_kh,
                     r.no_retur, r.spb_id,
                     tkdr.type_kendaraan,
                     usr.realname
