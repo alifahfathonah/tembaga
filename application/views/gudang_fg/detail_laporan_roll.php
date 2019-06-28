@@ -268,14 +268,15 @@ function updateDetail(id){
                 no_packing:$('#no_packing_'+id).val()
             },
             success:function(result){
-                if(result['message_type']=="sukses"){
-                    loadDetailEdit($('#id').val());
-                    $('#message').html("");
-                    $('.alert-danger').hide(); 
-                }else{
-                    $('#message').html(result['message']);
-                    $('.alert-danger').show(); 
-                }            
+                // if(result['message_type']=="sukses"){
+                //     loadDetailEdit($('#id').val());
+                //     $('#message').html("");
+                //     $('.alert-danger').hide(); 
+                // }else{
+                //     $('#message').html(result['message']);
+                //     $('.alert-danger').show(); 
+                // }   
+                location.reload();         
             }
         });
     }

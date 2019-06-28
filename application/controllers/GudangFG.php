@@ -1905,4 +1905,31 @@ class GudangFG extends CI_Controller{
             redirect('index.php/GudangFG/laporan_list');
         }
     }
+
+    function update_detail_produksi(){
+        $return_data = array();
+        $tanggal  = date('Y-m-d h:m:s');
+        $user_id  = $this->session->userdata('user_id');
+
+        $this->db->trans_start();
+        $data = array(
+            'bruto'=>$this->input->post('bruto'),
+            'netto'=>$this->input->post('netto')
+        );
+
+        $this->db->where('no_packing_barcode', $this->input->post('no_packing'));
+        $this->db->update('produksi_fg_detail', $data);
+
+        $this->db->where('no_packing_barcode', $this->input->post('no_packing'));
+        $this->db->update('t_bpb_fg_detail', $data);
+
+        if($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal meng-update item finish good! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data);     
+    }
 }

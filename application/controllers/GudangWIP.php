@@ -197,7 +197,7 @@ class GudangWIP extends CI_Controller{
             $this->db->insert('t_gudang_keras', $data);
         }
 
-        if($this->input->post('bs') != 0 || $this->input->post('bs_rolling') != 0 || $this->input->post('bs_ingot') != 0 || $this->input->post('serbuk') != 0 || $this->input->post('bs_8m')){
+        if($this->input->post('bs') != 0 || $this->input->post('bs_rolling') != 0 || $this->input->post('bs_ingot') != 0 || $this->input->post('serbuk') != 0 || $this->input->post('bs_8m') != 0){
 
             $code = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
         
@@ -265,7 +265,7 @@ class GudangWIP extends CI_Controller{
                 }
 
                 #insert bs 8mm ke rongsok
-                if($this->input->post('bs_ingot') != 0){
+                if($this->input->post('bs_8m') != 0){
 
                 $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 

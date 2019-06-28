@@ -67,7 +67,7 @@
                             Request By
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="request" name="request" 
+                            <input type="text" id="request" name="request" value="<?=$header['request_by'];?>" 
                                 class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
                         </div>
                     </div>

@@ -1250,6 +1250,19 @@ class BeliSparePart extends CI_Controller{
         }
     }
 
+    function delete_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $id = $this->uri->segment(3);
+
+        $this->db->where('id',$id);
+        if($this->db->delete('t_spb_sparepart')){
+            redirect('index.php/BeliSparePart/edit_spb/'.$this->db->insert_id());  
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data SPB Sparepart gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/BeliSparePart/add_spb');  
+        }
+    }
+
     function edit_spb(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
@@ -1380,6 +1393,7 @@ class BeliSparePart extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $data = array(
+                'request_by'=>$this->input->post('request'),
                 'keterangan'=>$this->input->post('remarks'),
                 'request_by'=>$this->input->post('request'),
                 'modified_at'=> $tanggal,
