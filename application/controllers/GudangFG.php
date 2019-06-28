@@ -144,7 +144,7 @@ class GudangFG extends CI_Controller{
                 $data['content'] = "gudang_fg/detail_laporan_rambut";
                 $data['packing'] =  $this->Model_gudang_fg->get_bobbin_g($packing['id'])->result();
                 $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result();
-            } else if ($packing['packing'] == 'BOBBIN PLASTIK') {
+            } else if ($packing['packing'] == ('BOBBIN PLASTIK' || 'KERANJANG SDM')) {
                 $data['content'] = "gudang_fg/detail_laporan_b600g";
                 $data['packing'] = $this->Model_gudang_fg->get_bobbin_g($packing['id'])->result();
                 $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result();
@@ -754,11 +754,13 @@ class GudangFG extends CI_Controller{
 
         $this->load->model('Model_m_numberings');
         $first = $this->input->post('no_packing');
-        // $code = $this->Model_m_numberings->getNumbering('BOBBIN',$tgl_input);
+        $count = strlen($first);
+
         $code = $this->Model_m_numberings->getNumbering($first,$tgl_input);
 
+        $a = $count + 6;
         $ukuran = $this->input->post('ukuran');
-        $no_packing = $tgl_code.$first.$ukuran.substr($code,8,4);
+        $no_packing = $tgl_code.$first.$ukuran.substr($code,$a,4);
         
         $this->db->insert('produksi_fg_detail', array(
             'tanggal' => $tgl_input,
@@ -1903,6 +1905,36 @@ class GudangFG extends CI_Controller{
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/GudangFG/laporan_list');
+        }
+    }
+
+    function delete_detail_produksi_bpb(){
+        $return_data = array();
+        $user_id  = $this->session->userdata('user_id');
+        $no_packing = $this->uri->segment(3);
+        $id_produksi = $this->uri->segment(4);
+
+        $this->load->model('Model_gudang_fg');
+        $cek = $this->Model_gudang_fg->cek_produksi_approve($no_packing)->row_array();
+        if($cek['status'] == 1){
+            $this->session->set_flashdata('flash_msg', 'Data Sudah di Approve, Tidak bisa di Hapus');
+            redirect('index.php/GudangFG/edit_laporan/'.$id_produksi);
+        }else{
+            $this->db->trans_start();
+
+            $this->db->where('no_packing_barcode', $no_packing);
+            $this->db->delete('produksi_fg_detail');
+
+            $this->db->where('no_packing_barcode', $no_packing);
+            $this->db->delete('t_bpb_fg_detail');
+
+            if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Data berhasil dihapus');
+            redirect('index.php/GudangFG/edit_laporan/'.$id_produksi);
+            }else{
+            $this->session->set_flashdata('flash_msg', 'Data gagal dihapus');
+            redirect('index.php/GudangFG/edit_laporan/'.$id_produksi);
+            }
         }
     }
 

@@ -329,7 +329,7 @@ class Model_finance extends CI_Model{
     }
 
     function show_header_voucher_ppn($id){
-        $data = $this->db->query("select fk.id, fk.tanggal, COALESCE(s.nama_supplier, mc.nama_customer, '-') as nama_customer, COALESCE(p.currency, fk.currency) as currency, fk.tgl_jatuh_tempo, fk.no_giro, b.no_acc, b.nama_bank, s.nama_supplier, p.no_po, u.realname as pic, fk.nomor, COALESCE(p.kurs, fk.kurs)as kurs
+        $data = $this->db->query("select fk.id, fk.tanggal, fk.id_bank, COALESCE(s.nama_supplier, mc.nama_customer, '-') as nama_customer, COALESCE(p.currency, fk.currency) as currency, fk.tgl_jatuh_tempo, fk.no_giro, b.no_acc, b.nama_bank, s.nama_supplier, p.no_po, u.realname as pic, fk.nomor, COALESCE(p.kurs, fk.kurs)as kurs
             from f_kas fk 
             left join voucher v on (v.id_fk = fk.id)
             left join bank b on (b.id = fk.id_bank)

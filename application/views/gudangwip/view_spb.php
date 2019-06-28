@@ -169,9 +169,9 @@
                                         <tbody>
                                         <?php
                                             $no = 1;
-                                            foreach ($myDetail as $row){
                                             $qty_spb = 0;
                                             $berat_spb = 0;
+                                            foreach ($myDetail as $row){
                                             $qty = ($row->total_qty_in - $row->total_qty_out);
                                             $berat = ($row->total_berat_in - $row->total_berat_out);
                                             $status = (($qty>=$row->qty) && ($berat>=$row->berat)) ? 1 : 0;

@@ -132,8 +132,6 @@
                     
                 </div>              
             </div>
-            
-           
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
@@ -341,7 +339,6 @@ function printBarcode(id){
     window.open('<?php echo base_url();?>index.php/BeliFinishGood/print_barcode?fg='+fg+'&b='+b+'&bb='+bb+'&n='+n+'&np='+np,'_blank');
 }
 </script>
-
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>

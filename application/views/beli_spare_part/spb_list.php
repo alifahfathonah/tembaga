@@ -100,7 +100,7 @@
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliSparePart/print_spb/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }if(($group_id==1 || $hak_akses['delete']==1) && ($data->jumlah_item == 0) ){
-                                    echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/BeliSparePart/delete_spb/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-trash"></i> Delete &nbsp; </a> ';
+                                    echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/BeliSparePart/delete_spb/'.$data->id.'" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"> &nbsp; <i class="fa fa-trash"></i> Delete &nbsp; </a> ';
                                 }
                             ?>
                         </td>

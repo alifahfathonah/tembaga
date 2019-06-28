@@ -399,6 +399,13 @@ class Model_gudang_fg extends CI_Model{
         $data = $this->db->query("Select bobbin_size, keterangan from m_bobbin_size where jenis_packing_id =".$id);
         return $data;
     }
+
+    function cek_produksi_approve($no){
+        $data = $this->db->query("Select tf.status from t_bpb_fg_detail td 
+            left join t_bpb_fg tf on tf.id = td.t_bpb_fg_id
+            where td.no_packing_barcode ='".$no."'");
+        return $data;
+    }
     /*
     cara membuat view stok fg
     CREATE OR REPLACE VIEW stok_fg(jenis_barang_id, jenis_barang, total_qty, total_bruto, total_netto)

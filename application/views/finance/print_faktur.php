@@ -20,7 +20,7 @@
                         <tr>
                             <td>Alamat</td>
                             <td>:</td>
-                            <td> Jl. Halim Perdana Kusuma No. 51 Kec. Batu Ceper, Tanggerang</td>
+                            <td> Jl. Halim Perdana Kusuma No. 51 Kec. Batu Ceper, Tangerang</td>
                         </tr>
                         <tr>
                             <td>NPWP</td>
@@ -184,7 +184,7 @@
                             <td colspan="2" style="border-left: 1px solid #000;">Terbilang</td>
                             <td>:</td>
                             <td colspan="5" rowspan="3" style="vertical-align: top">** <?php echo ucwords(number_to_words_d($total_bersih, $c)); ?> **</td>
-                            <td colspan="3"  style="border-right: 1px solid #000;">Tanggerang, <?=tanggal_indo($header['tanggal']);?></td>
+                            <td colspan="3"  style="border-right: 1px solid #000;">Tangerang, <?=tanggal_indo($header['tanggal']);?></td>
                         </tr>
                         <tr>
                             <td colspan="2" style="border-left: 1px solid #000;"></td>
