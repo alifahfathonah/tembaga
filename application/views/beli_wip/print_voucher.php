@@ -4,7 +4,6 @@
         <meta charset="utf-8" />
     </head>
     <body class="margin-left:40px;">
-        <p>&nbsp;</p>
         <h3 style="text-align: center; text-decoration: underline;">VOUCHER PEMBELIAN WIP</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>

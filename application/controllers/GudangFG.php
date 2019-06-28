@@ -599,6 +599,7 @@ class GudangFG extends CI_Controller{
         }
     }
 
+    // BARCODE LAMA YANG DULU
     // function print_barcode_kardus(){
     //     $id = $_GET['id'];
     //     if($id){
@@ -632,6 +633,44 @@ class GudangFG extends CI_Controller{
     //     }
     // }
 
+    //BARCODE 90*60
+    // function print_barcode_kardus(){
+    //     $id = $_GET['id'];
+    //     if($id){
+
+    //     $this->load->model('Model_gudang_fg');
+    //     $data = $this->Model_gudang_fg->get_pfd_id($id)->row_array();
+    //     $berat = $data['bruto'] - $data['netto'];
+
+    //     $current = '';
+    //     $data_printer = $this->db->query("select * from m_print_barcode_line where m_print_barcode_id = 3")->result_array();
+    //     // print("<pre>".print_r($data_printer,true)."</pre>");
+    //     // die();
+    //     $data_printer[19]['string1'] = 'BARCODE 621,218,"39",144,0,180,2,6,"'.$data['no_packing_barcode'].'"';
+    //     $data_printer[20]['string1'] = 'TEXT 560,64,"2",180,2,2,"'.$data['no_packing_barcode'].'"';
+    //     $data_printer[21]['string1'] = 'TEXT 384,348,"1",180,2,2,"'.$data['nomor_bobbin'].'"';
+    //     $data_printer[22]['string1'] = 'TEXT 426,316,"1",180,2,2,"'.$data['bruto'].'"';
+    //     $data_printer[23]['string1'] = 'TEXT 405,282,"1",180,2,2,"'.$berat.'"';
+    //     $data_printer[24]['string1'] = 'TEXT 423,249,"1",180,2,2,"'.$data['netto'].'"';
+    //     $data_printer[28]['string1'] = 'TEXT 513,440,"1",180,2,2,"'.$data['kode'].'"';
+    //     $data_printer[29]['string1'] = 'TEXT 665,403,"3",180,1,1,"'.$data['jenis_barang'].'"';
+    //     // $data_printer[31]['string1'] = 'TEXT 496,373,"2",180,1,1,"'.$data['jenis_barang'].'"';
+    //     // $data_printer[32]['string1'] = 'TEXT 497,407,"4",180,1,1,"'.$data['kode'].'"';
+    //     $jumlah = count($data_printer);
+    //     for($i=0;$i<$jumlah;$i++){
+    //     $current .= $data_printer[$i]['string1']."\n";
+    //     }
+
+    //     echo "<form method='post' id=\"coba\" action=\"http://localhost:8080/print/print.php\">";
+    //     echo "<input type='hidden' id='nospb' name='nospb' value='".$current."'>";
+    //     echo "</form>";
+    //     echo '<script type="text/javascript">document.getElementById(\'coba\').submit();</script>';
+    //     }else{
+    //         'GAGAL';
+    //     }
+    // }
+
+    //BARCODE 90*50
     function print_barcode_kardus(){
         $id = $_GET['id'];
         if($id){
@@ -641,17 +680,17 @@ class GudangFG extends CI_Controller{
         $berat = $data['bruto'] - $data['netto'];
 
         $current = '';
-        $data_printer = $this->db->query("select * from m_print_barcode_line where m_print_barcode_id = 3")->result_array();
+        $data_printer = $this->db->query("select * from m_print_barcode_line where m_print_barcode_id = 4")->result_array();
         // print("<pre>".print_r($data_printer,true)."</pre>");
         // die();
-        $data_printer[19]['string1'] = 'BARCODE 621,218,"39",144,0,180,2,6,"'.$data['no_packing_barcode'].'"';
-        $data_printer[20]['string1'] = 'TEXT 560,64,"2",180,2,2,"'.$data['no_packing_barcode'].'"';
-        $data_printer[21]['string1'] = 'TEXT 384,348,"1",180,2,2,"'.$data['nomor_bobbin'].'"';
-        $data_printer[22]['string1'] = 'TEXT 426,316,"1",180,2,2,"'.$data['bruto'].'"';
-        $data_printer[23]['string1'] = 'TEXT 405,282,"1",180,2,2,"'.$berat.'"';
-        $data_printer[24]['string1'] = 'TEXT 423,249,"1",180,2,2,"'.$data['netto'].'"';
-        $data_printer[28]['string1'] = 'TEXT 513,440,"1",180,2,2,"'.$data['kode'].'"';
-        $data_printer[29]['string1'] = 'TEXT 665,403,"3",180,1,1,"'.$data['jenis_barang'].'"';
+        $data_printer[19]['string1'] = 'BARCODE 618,163,"39",96,0,180,2,6,"'.$data['no_packing_barcode'].'"';
+        $data_printer[20]['string1'] = 'TEXT 557,56,"2",180,2,2,"'.$data['no_packing_barcode'].'"';
+        $data_printer[21]['string1'] = 'TEXT 381,295,"4",180,1,1,"'.$data['nomor_bobbin'].'"';
+        $data_printer[22]['string1'] = 'TEXT 424,263,"4",180,1,1,"'.$data['bruto'].'"';
+        $data_printer[23]['string1'] = 'TEXT 399,229,"4",180,1,1,"'.$berat.'"';
+        $data_printer[24]['string1'] = 'TEXT 422,196,"4",180,1,1,"'.$data['netto'].'"';
+        $data_printer[28]['string1'] = 'TEXT 510,367,"2",180,1,1,"'.$data['kode'].'"';
+        $data_printer[29]['string1'] = 'TEXT 661,340,"3",180,1,1,"'.$data['jenis_barang'].'"';
         // $data_printer[31]['string1'] = 'TEXT 496,373,"2",180,1,1,"'.$data['jenis_barang'].'"';
         // $data_printer[32]['string1'] = 'TEXT 497,407,"4",180,1,1,"'.$data['kode'].'"';
         $jumlah = count($data_printer);
@@ -919,10 +958,9 @@ class GudangFG extends CI_Controller{
                         'modified_date'=> $tanggal,
                         'modified_by'=> $user_id
                     );
-                
                 $this->db->where('id', $id_produksi);
                 $this->db->update('produksi_fg', $data);
-
+                
                 $jenis_barang_id = $this->input->post('jenis_barang_id'); 
                 #create bpb ke gundang fg
                 $this->load->model('Model_m_numberings');
@@ -1866,5 +1904,32 @@ class GudangFG extends CI_Controller{
         }else{
             redirect('index.php/GudangFG/laporan_list');
         }
+    }
+
+    function update_detail_produksi(){
+        $return_data = array();
+        $tanggal  = date('Y-m-d h:m:s');
+        $user_id  = $this->session->userdata('user_id');
+
+        $this->db->trans_start();
+        $data = array(
+            'bruto'=>$this->input->post('bruto'),
+            'netto'=>$this->input->post('netto')
+        );
+
+        $this->db->where('no_packing_barcode', $this->input->post('no_packing'));
+        $this->db->update('produksi_fg_detail', $data);
+
+        $this->db->where('no_packing_barcode', $this->input->post('no_packing'));
+        $this->db->update('t_bpb_fg_detail', $data);
+
+        if($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal meng-update item finish good! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data);     
     }
 }

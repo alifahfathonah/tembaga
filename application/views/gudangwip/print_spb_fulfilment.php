@@ -110,20 +110,6 @@
                     </table>
                 </td>
             </tr>
-            <tr><td colspan="3">
-                    <p>&nbsp;</p>
-                    <table width="30%" align="right" border="0">
-                        <tr>
-                            <td style="text-align:center">
-                                Yang Mengajukan,<br>
-                                <p>&nbsp;</p>
-                                <p>&nbsp;</p>
-                                <?php echo $header['pic']; ?>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
         </table>
 	<body onLoad="window.print()">
     </body>

@@ -458,8 +458,8 @@ class VoucherCost extends CI_Controller{
                 $this->load->view('voucher_cost/print_voucher_ppn', $data);   
             }else{
                 $this->load->model('Model_finance');
-                $data['header'] = $this->Model_finance->show_header_voucher($id)->row_array();
-                $data['list_data'] = $this->Model_finance->show_detail_voucher($id)->result();
+                $data['header'] = $this->Model_finance->show_header_voucher_ppn($id)->row_array();
+                $data['list_data'] = $this->Model_finance->show_detail_voucher_ppn($id)->result();
 
                 $total = 0;
                 foreach ($data['list_data'] as $row) {

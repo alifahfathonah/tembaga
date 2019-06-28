@@ -23,9 +23,6 @@
                 </div>
             </div>
         </div>
-
-        
-
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
@@ -52,8 +49,6 @@
                     <th>Alamat</th> 
                     <th>No. Sales Order</th>
                     <th>Jumlah<br>Item</th>
-                    <th>Kendaraan</th>
-                    <th>Supir</th>
                     <th>Status<br>Invoice</th>
                     <th>Status<br>Surat Jalan</th>
                     <th>Actions</th>
@@ -74,8 +69,6 @@
                         <td><?php echo $data->alamat; ?></td>  
                         <td><?php echo $data->no_sales_order; ?></td>  
                         <td><?php echo $data->jumlah_item; ?></td>
-                        <td><?php echo $data->no_kendaraan; ?></td>                         
-                        <td><?php echo $data->supir; ?></td>
                         <td><?php if($data->inv != NULL){
                                 echo '<div style="background-color:green; padding:3px; color:white">Sudah ada Invoice</div>';
                                 }else{

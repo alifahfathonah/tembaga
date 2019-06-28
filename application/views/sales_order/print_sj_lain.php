@@ -30,10 +30,6 @@
                             <td>Customer</td>
                             <td>: <?php echo $header['nama_customer']; ?></td>
                         </tr>
-                        <tr>
-                            <td>Jenis Barang</td>
-                            <td>: <?php echo $header['jenis_barang']; ?></td>
-                        </tr>
                     </table>
                 </td>
                 <td>&nbsp;</td>
@@ -65,16 +61,16 @@
                             <td colspan="2">Catatan: <?php echo $header['remarks']; ?></td>
                         </tr>
                         <tr>
-                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
-                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nama Item</strong></td>
+                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>NO</strong></td>
+                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>NAMA ITEM</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>UOM</strong></td>
                             <!-- <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Produksi</strong></td> -->
-                            <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Qty</strong></td>
-                            <td rowspan="2" style="text-align:center; border:1px solid #000"><strong>Keterangan</strong></td>
+                            <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>QTY</strong></td>
+                            <td rowspan="2" style="text-align:center; border:1px solid #000"><strong>KETERANGAN</strong></td>
                         </tr>
                         <tr>
-                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Bruto</strong></td>
-                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Netto</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>BRUTO</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>NETTO</strong></td>
                         </tr>
                         <?php
                             $no = 1;
@@ -123,25 +119,32 @@
                     <p>&nbsp;</p>
                     <table border="0" width="100%">
                         <tr>
-                            <td style="text-align:center">Pembawa/Supir</td>
+                            <td style="text-align:center">Tanda Terima</td>
+                            <td style="text-align:center">Pembawa / Supir</td>
                             <td style="text-align:center">Diperiksa</td>
                             <td style="text-align:center">Mengetahui</td>
                             <td style="text-align:center">Hormat Kami</td>
-                            <td style="text-align:center">Tanda Terima</td>
                         </tr>
                         <tr style="height:35">
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
-                            <td style="text-align:center">&nbsp;</td>
+                            <!-- <td style="text-align:center">&nbsp;</td> -->
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                         </tr>
-                        <tr>
-                            <td style="text-align:center"><?php echo $header['supir']; ?></td>
+                        <tr><?php if($this->session->userdata('user_ppn')==1){?>
                             <td style="text-align:center">(_____________)</td>
                             <td style="text-align:center">(_____________)</td>
-                            <td style="text-align:center"><?php echo $header['realname']; ?></td>
                             <td style="text-align:center">(_____________)</td>
+                            <td style="text-align:center"><strong>(Tjan Lin Oy)</strong></td>
+                            <td style="text-align:center"><strong>(Istadi)</strong></td>
+                            <?php }else{ ?>
+                            <td style="text-align:center">(_____________)</td>
+                            <td style="text-align:center">(_____________)</td>
+                            <td style="text-align:center">(_____________)</td>
+                            <td style="text-align:center"><strong>(Andi)</strong></td>
+                            <td style="text-align:center"><strong>(Bambang)</strong></td>
+                            <?php } ?>
                         </tr>
                     </table>
                 </td>

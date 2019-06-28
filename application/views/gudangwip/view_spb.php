@@ -170,6 +170,8 @@
                                         <?php
                                             $no = 1;
                                             foreach ($myDetail as $row){
+                                            $qty_spb = 0;
+                                            $berat_spb = 0;
                                             $qty = ($row->total_qty_in - $row->total_qty_out);
                                             $berat = ($row->total_berat_in - $row->total_berat_out);
                                             $status = (($qty>=$row->qty) && ($berat>=$row->berat)) ? 1 : 0;
@@ -178,15 +180,23 @@
                                                 echo '<td style="text-align:center">'.$no.'</td>';
                                                 echo '<td>'.$row->jenis_barang.'</td>';
                                                 echo '<td>'.$row->qty.' '.$row->uom.'</td>';
-                                                echo '<td>'.$row->berat.'</td>';
+                                                echo '<td>'.number_format($row->berat,2,',','.').'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
                                                 echo '<td>'.$stat.'</td>';   
                                                 echo '<td class="bg-primary">'.$qty.'</td>'; 
                                                 echo '<td class="bg-primary">'.$berat.'</td>';
                                                 echo '</tr>';
                                                 $no++;
+                                                $qty_spb += $row->qty;
+                                                $berat_spb += $row->berat;
                                             }
                                         ?>
+                                        <tr>
+                                            <td colspan="2" style="text-align: right;"><strong>Total :</strong></td>
+                                            <td><?=$qty_spb;?></td>
+                                            <td><?=number_format($berat_spb,2,',','.');?></td>
+                                            <td colspan="4"></td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -250,7 +260,7 @@
                                         <tbody>
                                             <tr>
                                                 <td><div id="no_tabel_1">1</div><input type="hidden" id="spb_id_1" name="details[1][spb_detail_id]"/></td>
-                                                <td><select id="barang_1" class="form-control" placeholder="pilih jenis barang" name="details[1][jenis_barang]" onchange="getBarang(1)">
+                                                <td><select id="barang_1" class="form-control select2me myline" placeholder="pilih jenis barang" name="details[1][jenis_barang]" onchange="getBarang(1)">
                                                     <option value=""></option>
                                                     <?php foreach($list_barang as $v){
                                                         echo '<option value="'.$v->id.'">'.$v->jenis_barang.'</option>';
@@ -267,9 +277,16 @@
                                                     <a id="btn_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
                                             </tr>
                                         </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="3" style="text-align: right;"><strong>Total :</strong></td>
+                                                <td><input type="text" id="qty" name="qty" class="form-control myline" readonly="readonly" value="0"></td>
+                                                <td><input type="text" id="berat" name="berat" class="form-control myline" readonly="readonly" value="0"></td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
-
                         </div>
                     </div>
                 <?php }else if($myData['status']==3){ ?>
@@ -317,16 +334,23 @@
                                             <th>Keterangan</th>
                                         </thead>
                                         <tbody>
-                                            <?php $no=1; foreach($detailFulfilment as $v) { ?>
+                                            <?php $no=1; $qty = 0; $berat = 0;
+                                            foreach($detailFulfilment as $v) { ?>
                                             <tr>
                                                 <td><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
                                                 <td><?=$v->jenis_barang;?></td>
                                                 <td><?=$v->uom;?></td>
                                                 <td><?=$v->qty;?></td>
-                                                <td><?=$v->berat;?></td>
+                                                <td><?=number_format($v->berat,2,',','.');?></td>
                                                 <td><?=$v->keterangan;?></td>
                                             </tr>
-                                            <?php $no++; } ?>
+                                            <?php $no++; $qty += $v->qty; $berat += $v->berat; } ?>
+                                            <tr>
+                                                <td colspan="3" style="text-align: right;"><strong>Total :</strong></td>
+                                                <td><?=$qty;?></td>
+                                                <td><?=number_format($berat,2,',','.');?></td>
+                                                <td></td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -493,17 +517,16 @@ function check_duplicate(){
                 }
             });
         });
-        return valid;
+    return valid;
 }
-
 
 function getBarang(id){
     $("#barang_id_"+id).val($("#barang_"+id).val());
     var id_barang = $("#barang_"+id).val();
     var spb = $("#id").val();
     if(id_barang!=''){    
-        var check = check_duplicate();
-        if(check){
+        // var check = check_duplicate();
+        // if(check){
             $.ajax({
                 url: "<?php echo base_url('index.php/GudangWIP/get_uom_view_spb'); ?>",
                 type: "POST",
@@ -514,7 +537,7 @@ function getBarang(id){
                 success: function (result){
                     if (result!=null){
                         $("#spb_id_"+id).val(result['id']);
-                        console.log(result['id']);
+                        // console.log(result['id']);
                         $("#uom_"+id).val(result['uom']);
                         // $("#btn_"+id).removeClass('disabled');
                         $("#barang_"+id).attr('disabled','disabled');
@@ -526,10 +549,10 @@ function getBarang(id){
                     }
                 }
             });
-        } else {
-            alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
-            $("#barang_"+id).val('');
-        }
+        // } else {
+        //     alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
+        //     $("#barang_"+id).val('');
+        // }
     }
 }
 
@@ -539,15 +562,20 @@ function create_new_input(id){
         alert('Berat Belum Di Input !');
     }else{
        var new_id = id+1;
+       $("#qty").val(Number($('#qty').val())+Number($('#qty_'+id).val()));
+       $("#berat").val(Number($('#berat').val())+Number($('#berat_'+id).val()));
        $('#btn_'+id).removeClass('disabled');
        $('#btn_add_'+id).attr('disabled','disabled').hide();
         $("#tabel_barang>tbody").append('<tr><td><div id="no_tabel_'+new_id+'">'+new_id+'</div><input id="spb_id_'+new_id+'" name="details['+new_id+'][spb_detail_id]" type="hidden"></td><td><select id="barang_'+new_id+'" class="form-control" placeholder="pilih jenis barang" name="details['+new_id+'][jenis_barang]" onchange="getBarang('+new_id+')"><option value=""></option><?php foreach($list_barang as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}?></select><input name="details['+new_id+'][id_barang]" id="barang_id_'+new_id+'" type="hidden"></td><td><input id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly" type="text"></td><td><input id="qty_'+new_id+'" name="details['+new_id+'][qty]" class="form-control myline" type="text"></td><td><input id="berat_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline" type="text"></td><td><input id="keterangan_'+new_id+'" name="details['+new_id+'][keterangan]" class="form-control myline" type="text" onkeyup="this.value = this.value.toUpperCase()"></td><td style="text-align:center"><a id="btn_add_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle green" onclick="create_new_input('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Add </a><a id="btn_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td></tr>');
+        $('#barang_'+new_id).select2();
     }
 }
 
 function hapusDetail(id){
     var r=confirm("Anda yakin menghapus item barang ini?");
     if (r==true){
+       $("#qty").val(Number($('#qty').val())-Number($('#qty_'+id).val()));
+       $("#berat").val(Number($('#berat').val())-Number($('#berat_'+id).val()));
         $('#no_tabel_'+id).closest('tr').remove();
     }
 }
