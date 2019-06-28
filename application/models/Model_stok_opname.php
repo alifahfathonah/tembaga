@@ -1,111 +1,27 @@
 <?php
 class Model_stok_opname extends CI_Model{
-    function list_data($ppn){
-        $data = $this->db->query("Select voucher.*, 
-                gc.nama_group_cost,
-                cost.nama_cost,
-                mc.nama_customer,
-                supp.nama_supplier,
-                COALESCE(nm_cost, mc.nama_customer, supp.nama_supplier) as nama_trx,
-                fk.nomor
-                From voucher 
-                    Left Join group_cost gc On (voucher.group_cost_id = gc.id) 
-                    Left Join cost On (voucher.cost_id = cost.id)
-                    Left Join m_customers mc ON (voucher.customer_id = mc.id)
-                    Left join supplier supp on (voucher.supplier_id = supp.id)
-                    Left Join f_kas fk On (voucher.id = fk.id_vc)
-                Where voucher.jenis_voucher='Manual' and voucher.flag_ppn =".$ppn."
-                Order By voucher.no_voucher");
-        return $data;
-    }
-
-    function list_data_kh($ppn){
-        $data = $this->db->query("Select voucher.*, voucher.no_voucher as nomor, 
-                gc.nama_group_cost,
-                cost.nama_cost,
-                mc.nama_customer,
-                supp.nama_supplier,
-                COALESCE(nm_cost, mc.nama_customer, supp.nama_supplier) as nama_trx
-                From voucher 
-                    Left Join group_cost gc On (voucher.group_cost_id = gc.id) 
-                    Left Join cost On (voucher.cost_id = cost.id)
-                    Left Join m_customers mc ON (voucher.customer_id = mc.id)
-                    Left join supplier supp on (voucher.supplier_id = supp.id)
-                Where voucher.jenis_voucher='Manual' and voucher.flag_ppn =".$ppn."
-                Order By voucher.no_voucher");
-        return $data;
-    }
-
-    function list_data_kk($ppn){
-        $data = $this->db->query("Select fk.*, 
-                gc.nama_group_cost,
-                cost.nama_cost,
-                mc.nama_customer,
-                supp.nama_supplier,
-                COALESCE(nm_cost, mc.nama_customer, supp.nama_supplier) as nama_trx
-                From f_kas fk
-                    Left Join voucher On (voucher.id_fk = fk.id)
-                    Left Join group_cost gc On (voucher.group_cost_id = gc.id) 
-                    Left Join cost On (voucher.cost_id = cost.id)
-                    Left Join m_customers mc ON (voucher.customer_id = mc.id)
-                    Left join supplier supp on (voucher.supplier_id = supp.id)
-                Where fk.id_bank <= 3 and voucher.jenis_voucher='Manual' and voucher.flag_ppn =".$ppn."
-                Order By voucher.no_voucher desc");
-        return $data;
-    }
-
-    function list_data_bk($ppn){
-        $data = $this->db->query("Select fk.*, 
-                gc.nama_group_cost,
-                cost.nama_cost,
-                mc.nama_customer,
-                supp.nama_supplier,
-                COALESCE(nm_cost, mc.nama_customer, supp.nama_supplier) as nama_trx
-                From f_kas fk
-                    Left Join voucher On (voucher.id_fk = fk.id)
-                    Left Join group_cost gc On (voucher.group_cost_id = gc.id) 
-                    Left Join cost On (voucher.cost_id = cost.id)
-                    Left Join m_customers mc ON (voucher.customer_id = mc.id)
-                    Left join supplier supp on (voucher.supplier_id = supp.id)
-                Where fk.id_bank > 3 and voucher.jenis_voucher='Manual' and voucher.flag_ppn =".$ppn."
-                Order By voucher.no_voucher desc");
-        return $data;
-    }
     
-    function get_cost_list($id){
-        $data = $this->db->query("Select * From cost Where group_cost_id=".$id);
-        return $data;
-    }
-            
-    function show_data($id){
-        $data = $this->db->query("Select * From cost Where id=".$id);        
-        return $data;
-    }
-    
-    function list_group_cost(){
-        $data = $this->db->query("Select * From group_cost Order By Id asc");
+    function list_report(){
+        $data = $this->db->query("SELECT sop.*, (SELECT COUNT(id) FROM stok_opname_detail sopd WHERE sopd.stok_opname_id = sop.id) AS jumlah_item
+            FROM stok_opname sop ORDER BY tanggal");
         return $data;
     }
 
-    function get_customer(){
-        $data = $this->db->query("select id, nama_customer as nama_cost from m_customers order by nama_customer");
+    function get_packing($no){
+        $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.uom from t_gudang_fg tgf 
+                left JOIN jenis_barang jb on jb.id = tgf.jenis_barang_id
+                WHERE tgf.no_packing='".$no."'");
         return $data;
     }
 
-    function get_supplier(){
-        $data = $this->db->query("select id, nama_supplier as nama_cost from supplier order by nama_supplier");
-        return $data;
+    function header_stok_opname_fg($id){
+        return $this->db->get_where('stok_opname', ['id' => $id]);
     }
 
-    function customer_list(){
-        $data = $this->db->query("Select voucher.*, 
-                gc.nama_group_cost,
-                mc.nama_customer as nama_cost
-                From voucher 
-                    Left Join group_cost gc On (voucher.group_cost_id = gc.id)
-                    Left Join m_customers mc on (voucher.cost_id = mc.id) 
-                Where voucher.jenis_voucher='Manual'
-                Order By voucher.no_voucher");
+    function list_stok_opname_fg($id){
+        $data = $this->db->query("select sod.*, jb.jenis_barang, jb.uom from stok_opname_detail sod 
+                left JOIN jenis_barang jb on jb.id = sod.jenis_barang_id
+                WHERE sod.stok_opname_id = ".$id);
         return $data;
     }
 }

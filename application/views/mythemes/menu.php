@@ -389,7 +389,7 @@
                     </ul>
                 </li>
             <?php } if($group_id==1 || ( (isset($akses_menu['GudangWIP'])&&$akses_menu['GudangWIP']==1) || (isset($akses_menu['GudangFG'])&&$akses_menu['GudangFG']==1) ) ){ ?>
-                <li <?php if(($module_name=="GudangRongsok") || ($module_name=="GudangWIP") || ($module_name=="GudangFG")) echo 'class="start active open"'; ?>>
+                <li <?php if(($module_name=="GudangRongsok") || ($module_name=="GudangWIP") || ($module_name=="GudangFG") || ($module_name=="StokOpname")) echo 'class="start active open"'; ?>>
                     <a href="#">
                     <i class="fa fa-cubes"></i>
                     <span class="title">GUDANG</span>
@@ -528,7 +528,7 @@
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/StokOpname/report">
                                 <i class="fa fa-briefcase"></i>
-                                StockFG </a>
+                                Stock FG </a>
                             </li>
                         <?php } ?>
                         </ul>

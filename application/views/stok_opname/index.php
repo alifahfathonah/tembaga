@@ -3,6 +3,7 @@
         <h4 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Stok Opname 
+            <i class="fa fa-angle-right"></i>
             <a href="<?php echo base_url('index.php/VoucherCost/kas_keluar'); ?>"> Scan FG</a>
         </h4>          
     </div>
@@ -37,49 +38,11 @@
                     </div>
                 </div>             
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="table-scrollable">
-                        <table class="table table-bordered table-striped table-hover" id="tabel_dtr">
-                            <thead>
-                                <th style="width:40px">No</th>
-                                <th>Nama Group Cost</th>
-                                <th>Nama Cost</th>
-                                <th>Keterangan</th>
-                                <th>Nominal</th>
-                                <th>Action</th>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><div id="no_tabel_1">1</div></td>
-                                    <td><input type="text" id="no_packing_1" name="details[1][no_packing]" class="form-control myline" onchange="get_packing(1);"></td>
-                                    <input type="hidden" name="details[1][id_barang]" id="barang_id_1"><!-- ID GUDANG -->
-                                    <td><input type="text" id="nama_barang_1" name="details[1][nama_barang]" class="form-control myline" readonly="readonly"></td>
-                                    <td><input type="text" id="uom_1" name="details[1][uom]" class="form-control myline" readonly="readonly"></td>
-                                    </td>
-                                    <td><input type="text" id="netto_1" name="details[1][berat]" class="form-control myline" readonly="readonly" /></td>
-                                    <td><input type="text" id="keterangan_1" name="details[1][keterangan]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
-                                    <td style="text-align:center">
-                                         <a id="btn_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
-                                    </td>
-                                 </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="4" style="text-align: right;"><strong>Total :</strong></td>
-                                    <td><input type="text" id="total_nominal" name="total_nominal" class="form-control" readonly="readonly"></td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
-                        <i class="fa fa-floppy-o"></i> Simpan </a>
+                        <i class="fa fa-floppy-o"></i> Proses </a>
                     <a href="<?php echo base_url('index.php/BeliRongsok'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
@@ -98,43 +61,41 @@
     </div>
 </div>
 <script>
+function get_packing(no){
+    console.log(no);
+    $.ajax({
+        url: "<?php echo base_url('index.php/StokOpname/get_packing'); ?>",
+        type: "POST",
+        data : {no: no},
+        success: function (result){
+            if (result!=null){
+                $("#nama_barang").val(result['jenis_barang']);
+                $("#id_barang").val(result['id']);
+                $("#uom").val(result['uom']);
+                $("#netto").val(result['netto']);
+                $("#keterangan").val(result['keterangan']);
+                // const total_old = (parseFloat($('#total_netto').val()) + parseFloat(result['netto']));
+                // const total = total_old.toFixed(2);
+                // $('#total_netto').val(total);
+                create_new_input(id);
+                // $('#no_packing_'+id).prop('readonly',true);
+                $('#no_packing').focus();
+            } else {
+                alert('No pallete tidak ditemukan, silahkan ulangi kembali');
+                $("#no_packing").val('');
+                $('#no_packing').focus();
+            }
+        }
+    });
+}
+
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else if($("#no_uk").val() == ""){
-        $('#message').html("Supplier harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show();
-    }else if($.trim($("#bank_id").val()) == ""){
-        $('#message').html("Bank Belum Dipilih!");
-        $('.alert-danger').show();
-    }else if($.trim($("#total_nominal").val()) == ""){
-        $('#message').html("Nominal harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show();
     }else{   
-        $.ajax({
-            type: "POST",
-            url: "<?php echo base_url('index.php/BeliRongsok/get_no_uang_keluar'); ?>",
-            data: {
-                no_uk: $('#no_uk').val(),
-                tanggal: $('#tanggal').val(),
-                bank_id: $('#bank_id').val()
-            },
-            cache: false,
-            success: function(result) {
-                var res = result['type'];
-                if(res=='duplicate'){
-                    $('#message').html("Nomor Uang Keluar sudah ada, tolong coba lagi!");
-                    $('.alert-danger').show();
-                }else{
-                    $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
-                    $('#message').html("");
-                    $('.alert-danger').hide(); 
-                    $('#formku').submit();
-                }
-            }
-        });
-    };
+        $('#formku').submit();   
+    }
 };
 </script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
