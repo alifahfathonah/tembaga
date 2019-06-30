@@ -673,7 +673,7 @@ class Ingot extends CI_Controller{
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('PRD-WIP', $tgl_input);
+        $code = $this->Model_m_numberings->getNumbering('PRD-APL', $tgl_input);
 
         $data = array(
                 'tanggal'=> $tgl_input,

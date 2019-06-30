@@ -714,15 +714,15 @@ class GudangFG extends CI_Controller{
 
         $this->db->trans_start();
 
-        $this->load->model('Model_m_numberings');
+        // $this->load->model('Model_m_numberings');
 
-        $code = $this->Model_m_numberings->getNumbering('KARDUS',$tgl_input);
+        // $code = $this->Model_m_numberings->getNumbering('KARDUS',$tgl_input);
 
-        $first = $this->input->post('no_packing');
-        $ukuran = $this->input->post('ukuran');
-        $no_packing = $tgl_code.$first.$ukuran.substr($code,12,4);
+        // $first = $this->input->post('no_packing');
+        // $ukuran = $this->input->post('ukuran');
+        // $no_packing = $tgl_code.$first.$ukuran.substr($code,12,4);
 
-        // $no_packing = $this->input->post('no_barcode');
+        $no_packing = $this->input->post('no_barcode');
         
         $this->db->insert('produksi_fg_detail', array(
             'tanggal' => $tgl_input,
@@ -1963,5 +1963,45 @@ class GudangFG extends CI_Controller{
         }
         header('Content-Type: application/json');
         echo json_encode($return_data);     
+    }
+
+    function print_laporan_bulanan(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $this->load->helper('tanggal_indo');            
+            $items = strval($id);
+            $tgl=str_split($id,4);
+            $tahun=$tgl[0];
+            $bulan=$tgl[1];
+
+            $tgl = $tahun.'/'.$bulan.'/01';
+
+            $data['tgl'] = array(
+                'tahun' => $tahun,
+                'bulan' => $bulan
+            );
+
+            $this->load->model('Model_gudang_fg');
+            $data['detailLaporan'] = $this->Model_gudang_fg->show_laporan_barang($tgl,$bulan,$tahun)->result();
+            $this->load->view("gudang_fg/print_laporan_bulanan", $data);
+        }else{
+            redirect('index.php/GudangFG/laporan_list');
+        }
+    }
+
+    function print_stok_fg(){
+        $this->load->helper('tanggal_indo');  
+        $this->load->model('Model_gudang_fg');
+        $data['detailLaporan'] = $this->Model_gudang_fg->stok_fg_detail()->result();
+
+        $this->load->view('gudang_fg/print_stok_fg', $data);
     }
 }

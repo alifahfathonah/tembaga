@@ -390,6 +390,20 @@ class Model_gudang_fg extends CI_Model{
         return $data;
     }
 
+    function show_laporan_barang($tgl,$bulan,$tahun){
+        $data = $this->db->query("select dd.rongsok_id, rsk.nama_item, rsk.kode_rongsok, rsk.uom, count(dd.id) as jumlah, sum(bruto) as bruto_masuk, sum(netto) as netto_masuk,
+                COALESCE((select sum(netto) from dtr_detail dtd where dtd.rongsok_id = dd.rongsok_id and dtd.tanggal_masuk < '".$tgl."'),0)as netto_masuk_before,
+                COALESCE((select sum(netto) from dtr_detail dtd where dtd.rongsok_id = dd.rongsok_id and dtd.tanggal_keluar < '".$tgl."'),0)as netto_keluar_before,
+                (select sum(bruto) from dtr_detail dd where month(dd.tanggal_keluar) =".$bulan." and year(dd.tanggal_keluar) =".$tahun." and dd.rongsok_id=rsk.id) as bruto_keluar,
+                (select sum(netto) from dtr_detail dd where month(dd.tanggal_keluar) =".$bulan." and year(dd.tanggal_keluar) =".$tahun." and dd.rongsok_id=rsk.id) as netto_keluar
+                from dtr_detail dd
+                    left join dtr d on d.id = dd.dtr_id
+                    left join rongsok rsk on rsk.id = dd.rongsok_id
+                where rsk.type_barang = 'Rongsok' and month(d.tanggal) =".$bulan." and year(d.tanggal) =".$tahun." and d.status = 1
+            group by dd.rongsok_id order by rsk.kode_rongsok asc");
+        return $data;
+    }
+
     function produksi_fg_count($id){
         $data = $this->db->query("Select count(id) as count from produksi_fg_detail where produksi_fg_id =".$id);
         return $data;
@@ -404,6 +418,34 @@ class Model_gudang_fg extends CI_Model{
         $data = $this->db->query("Select tf.status from t_bpb_fg_detail td 
             left join t_bpb_fg tf on tf.id = td.t_bpb_fg_id
             where td.no_packing_barcode ='".$no."'");
+        return $data;
+    }
+
+    function stok_fg_detail(){
+        $data = $this->db->query("select sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            where tgf.jenis_trx = 0 group by tgf.jenis_barang_id order by jb.jenis_barang asc");
+        return $data;
+    }
+
+    function stok_fg_kawat_rambut(){
+        $data = $this->db->query("select sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            where tgf.jenis_trx = 0 and jb.ukuran <= '0500' group by tgf.jenis_barang_id order by jb.jenis_barang asc");
+        return $data;
+    }
+
+    function stok_fg_kawat_halus(){
+        $data = $this->db->query("select sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            where tgf.jenis_trx = 0 and jb.ukuran BETWEEN '0600' and '1000' group by tgf.jenis_barang_id order by jb.jenis_barang asc");
+        return $data;
+    }
+
+    function stok_fg_kawat_besar(){
+        $data = $this->db->query("select sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            where tgf.jenis_trx = 0 and jb.ukuran > '1000' group by tgf.jenis_barang_id order by jb.ukuran, jb.jenis_barang asc");
         return $data;
     }
     /*

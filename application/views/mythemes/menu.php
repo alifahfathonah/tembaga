@@ -507,6 +507,11 @@
                                 <i class="fa fa-cubes"></i>
                                 Gudang FG </a>
                             </li>
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/GudangFG/print_stok_fg" target="_blank">
+                                <i class="fa fa-print"></i>
+                                Print Stok FG </a>
+                            </li>
                         <?php } ?>
                         </ul>
                         </li>
