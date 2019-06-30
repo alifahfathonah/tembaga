@@ -316,7 +316,7 @@ function simpanData(){
             $('#message').html("Cek Lama harus diisi, tidak boleh kosong!");
             $('.alert-danger').show(); 
         }else if($.trim($("#no_cek_pengirim").val()) == ""){
-            $('#message').html("Nomor Cek Baru harus diisi, tidak boleh kosong!");
+            $('#message').html("Nomor Cek Pengirim harus diisi, tidak boleh kosong!");
             $('.alert-danger').show();
         }else if($.trim($("#bank_pengirim").val()) == ""){
             $('#message').html("Bank Pengirim harus diisi, tidak boleh kosong!");

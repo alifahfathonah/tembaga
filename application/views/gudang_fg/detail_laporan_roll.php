@@ -22,6 +22,14 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
+                    <button class="close" data-close="alert"></button>
+                    <span id="msg_sukses"><?php echo $this->session->flashdata('flash_msg'); ?></span>
+                </div>
+            </div>
+        </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku" action="<?php echo base_url('index.php/GudangFG/update_laporan'); ?>">                            
             <div class="row">
@@ -197,8 +205,9 @@
                                 <td><?php echo $row->keterangan; ?></td>
                                 <td style="text-align: center;">
                                 <?php
-                                echo '<a id="btnEdit_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle green" onclick="editDetail('.$no.');" style="margin-top:5px"><i class="fa fa-pencil"></i> Edit </a>'.
-                                    '<a id="btnUpdate_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="updateDetail('.$no.');" style="margin-top:5px; display:none;"><i class="fa fa-save"></i> Update </a>';?>
+                                echo '<a id="btnEdit_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle green" onclick="editDetail('.$no.');"><i class="fa fa-pencil"></i> Edit </a>'.
+                                    '<a id="btnUpdate_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="updateDetail('.$no.');" style="margin-top:5px; display:none;"><i class="fa fa-save"></i> Update </a>';
+                                echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/GudangFG/delete_detail_produksi_bpb/'.$row->no_packing_barcode.'/'.$header['id'].'" onclick="return confirm(\'Anda yakin ingin menghapus barcode ini?\');"><i class="fa fa-trash"></i> Delete</a>';?>
                                     <a href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(<?=$row->id;?>);"><i class="fa fa-print"></i> Print Barcode </a></td>
                             </tr>
                             <?php

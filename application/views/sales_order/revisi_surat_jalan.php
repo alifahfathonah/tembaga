@@ -195,19 +195,37 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th>No</th>
-                                <th>No Palette</th>
                                 <th>Nama Item</th>
                                 <th style="width: 6%;">UOM</th>
-                                <th style="width: 8%;">Qty</th>
+                                <th>No Palette</th>
                                 <th style="width: 8%;">Bruto</th>
-                                <th style="width: 8%;">Netto (Kg)</th>
                                 <th style="width: 6%;">Berat<br>Palette</th>
+                                <th style="width: 8%;">Netto</th>
+                                <th style="width: 8%;">Netto Revisi</th>
                                 <th>Keterangan</th>
-                                <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
+                                <?php
+                                $no=1;
+                                foreach ($details as $row){
+                                    echo '<input type="hidden" name="details['.$no.'][id]" value="'.$row->id.'">';
+                                    $berat = $row->bruto - $row->netto;
+                                ?>
                                 <tr>
+                                    <td><?=$no;?></td>
+                                    <td><?=$row->jenis_barang;?></td>
+                                    <td><?=$row->uom;?></td>
+                                    <td><?=$row->no_packing;?></td>
+                                    <td><?=number_format($row->bruto,2,',','.');?></td>
+                                    <td><?=number_format($berat,2,',','.');?></td>
+                                    <td><?=number_format($row->netto,2,',','.');?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][netto_r]" value="'.$row->netto_r.'">';?></td>
+                                    <td><?=$row->line_remarks;?></td>
                                 </tr>
+                                <?php
+                                $no++;
+                                }
+                                ?>
                             </tbody>
                         </table>
                     <?php

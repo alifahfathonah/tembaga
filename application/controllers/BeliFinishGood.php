@@ -196,12 +196,14 @@ class BeliFinishGood extends CI_Controller{
         $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 
         $first = $this->input->post('no_packing');
+        $count = strlen($first);
         $this->load->model('Model_m_numberings');
-        // $code = $this->Model_m_numberings->getNumbering('BOBBIN',$tgl_input);
+
         $code = $this->Model_m_numberings->getNumbering($first,$tgl_input);
 
+        $a = $count + 6;
         $ukuran = $this->input->post('ukuran');
-        $data['no_packing'] = $tgl_code.$first.$ukuran.substr($code,8,4);
+        $data['no_packing'] = $tgl_code.$first.$ukuran.substr($code,$a,4);
 
         header('Content-Type: application/json');
         echo json_encode($data);
@@ -536,14 +538,14 @@ class BeliFinishGood extends CI_Controller{
         }
 
         $data = array(
-                        'no_dtbj'=> $code,
-                        'flag_ppn'=> $user_ppn,
-                        'tanggal'=> $tgl_input,
-                        'supplier_id'=> $this->input->post('supplier_id'),
-                        'jenis_packing'=> $this->input->post('packing'),
-                        'created'=> $tanggal,
-                        'created_by'=> $user_id
-                    );
+                    'no_dtbj'=> $code,
+                    'flag_ppn'=> $user_ppn,
+                    'tanggal'=> $tgl_input,
+                    'supplier_id'=> $this->input->post('supplier_id'),
+                    'jenis_packing'=> $this->input->post('packing'),
+                    'created'=> $tanggal,
+                    'created_by'=> $user_id
+                );
 
         if($this->db->insert('dtbj', $data)){
             redirect(base_url('index.php/BeliFinishGood/create_dtbj/'.$this->db->insert_id()));

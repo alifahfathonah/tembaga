@@ -247,6 +247,11 @@
                                     $bruto=0;
                                     $netto=0;
                                     foreach ($list_sj as $row) { 
+                                        if($row->netto_r==0){
+                                            $netto_sj = $row->netto;
+                                        }else{
+                                            $netto_sj = $row->netto_r;
+                                        }
                                         if($row->jenis_barang!=$last_series && $last_series!=null){
                                     echo '<tr>
                                                 <td style="text-align: right;" colspan="5"><strong>Total</strong></td>
@@ -271,7 +276,7 @@
                                     <td><?php echo $row->uom; ?></td>
                                     <td><?php echo $row->no_packing; ?></td>
                                     <td><?php echo number_format($row->bruto,2,',','.'); ?></td>
-                                    <td><?php echo number_format($row->netto,2,',','.'); ?></td>
+                                    <td><?php echo number_format($netto_sj,2,',','.'); ?></td>
                                     <td><?php echo $row->nomor_bobbin; ?></td>
                                     <td><a id="print" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcodeSJ(<?=$row->id;?>);" style="margin-top:5px;"><i class="fa fa-print"></i> Print Barcode</a></td>
                                 <?php
@@ -279,7 +284,7 @@
                                             echo '<tr>';
                                         }
                                     $bruto += $row->bruto;
-                                    $netto += $row->netto; 
+                                    $netto += $netto_sj; 
                                     $no++; 
                                 $last_series = $row->jenis_barang;
                                     } 
@@ -372,8 +377,13 @@
                                 <?php 
                                     $no=1; 
                                     $bruto=0;
-                                    $netto=0;
+                                    $total_netto=0;
                                     foreach ($list_sj as $row) { 
+                                        if($row->netto_r==0){
+                                            $netto = $row->netto;
+                                        }else{
+                                            $netto = $row->netto_r;
+                                        }
                                 ?>
                                 <tr>
                                     <td><?php echo $no; ?></td>
@@ -381,20 +391,20 @@
                                     <td><?php echo ($row->nama_barang_alias==NULL)? $row->jenis_barang: $row->nama_barang_alias; ?></td>
                                     <td><?php echo $row->uom; ?></td>
                                     <td><?php echo $row->bruto; ?></td>
-                                    <td><?php echo $row->netto; ?></td>
-                                    <td><?php echo ($row->bruto - $row->netto); ?></td>
+                                    <td><?php echo number_format($netto,2,',','.'); ?></td>
+                                    <td><?php echo number_format($row->bruto - $netto,2,',','.'); ?></td>
                                     <td><a id="print" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcodeSJ(<?=$row->id;?>);" style="margin-top:5px;"><i class="fa fa-print"></i> Print Barcode</a></td>
                                 </tr>
                                 <?php
                                     $bruto += $row->bruto;
-                                    $netto += $row->netto; 
+                                    $total_netto += $netto; 
                                     $no++; 
                                     } 
                                 ?>
                                 <tr>
                                     <td style="text-align: right;" colspan="4"><strong>Total</strong></td>
                                     <td><?=number_format($bruto,2,',','.');?></td>
-                                    <td><?=number_format($netto,2,',','.');?></td>
+                                    <td><?=number_format($total_netto,2,',','.');?></td>
                                     <td colspan="2"></td>
                                 </tr>
                             </tbody>

@@ -89,8 +89,15 @@ class GudangWIP extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
+
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('PRD-WIP', $tgl_input);
+        if($this->input->post('jenis_masak')=='ROLLING'){
+            $code = $this->Model_m_numberings->getNumbering('PRD-ROL', $tgl_input);
+        }elseif($this->input->post('jenis_masak')=='BAKAR ULANG'){
+            $code = $this->Model_m_numberings->getNumbering('PRD-BU', $tgl_input);
+        }elseif($this->input->post('jenis_masak')=='CUCI'){
+            $code = $this->Model_m_numberings->getNumbering('PRD-CC', $tgl_input);
+        }
 
         if($code){
             if($this->input->post('id_spb')){

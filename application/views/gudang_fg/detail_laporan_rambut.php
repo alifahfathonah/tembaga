@@ -22,6 +22,14 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
+                    <button class="close" data-close="alert"></button>
+                    <span id="msg_sukses"><?php echo $this->session->flashdata('flash_msg'); ?></span>
+                </div>
+            </div>
+        </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku" action="<?php echo base_url('index.php/GudangFG/update_laporan'); ?>">                            
             <div class="row">
@@ -143,7 +151,7 @@
                                 <td><input type="number" id="berat_bobbin" = name="berat_bobbin" class="form-control myline"/></td>
                                 <td><a href="javascript:;" onclick="timbang_netto()" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>
                                 <td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"/></td>
-                                <td><input type="text" id="no_barcode" name="no_barcode" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="no_barcode" name="no_barcode" class="form-control myline"></td>
                                 <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="myRequest=null; saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
                             </tr>
                         </table>
@@ -190,11 +198,22 @@
                             <tr>
                                 <td style="text-align:center;"><?php echo $no; ?></td>
                                 <td><?php echo $row->no_produksi; ?></td>
-                                <td><?php echo $row->bruto; ?></td>
-                                <td><?php echo $row->netto; ?></td>       
-                                <td><?php echo $row->no_packing_barcode; ?></td>
+                            <?php 
+                            echo '<td style="text-align:right;"><label id="lbl_bruto_'.$no.'">'.number_format($row->bruto,2,',','.').'</label>'.
+                            '<input type="text" id="bruto_'.$no.'" name="bruto_'.$no.'" class="form-control myline" value="'.$row->bruto.'"  style="display:none;" maxlength="10" value="0"/></td>';
+
+                            echo '<td style="text-align:right;"><label id="lbl_netto_'.$no.'">'.number_format($row->netto,2,',','.').'</label>'.
+                            '<input type="text" id="netto_'.$no.'" name="netto_'.$no.'" class="form-control myline" value="'.$row->netto.'"  style="display:none;" maxlength="10" value="0"/></td>';
+                            echo '<td style="text-align:right;"><label id="lbl_no_packing_'.$no.'">'.$row->no_packing_barcode.'</label>'.
+                            '<input type="text" id="no_packing_'.$no.'" name="no_packing_'.$no.'" class="form-control myline" value="'.$row->no_packing_barcode.'" readonly style="display:none;" maxlength="10" value="0"/></td>';
+                            ?>
                                 <td><?php echo $row->keterangan; ?></td>
-                                <td style="text-align: center;"><a href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(<?=$row->id;?>);"><i class="fa fa-print"></i> Print Barcode </a></td>
+                                <td style="text-align: center;">
+                                <?php
+                                echo '<a id="btnEdit_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle green" onclick="editDetail('.$no.');" style="margin-top:5px"><i class="fa fa-pencil"></i> Edit </a>'.
+                                    '<a id="btnUpdate_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="updateDetail('.$no.');" style="margin-top:5px; display:none;"><i class="fa fa-save"></i> Update </a>';
+                                echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/GudangFG/delete_detail_produksi_bpb/'.$row->no_packing_barcode.'/'.$header['id'].'" onclick="return confirm(\'Anda yakin ingin menghapus barcode ini?\');"><i class="fa fa-trash"></i> Delete</a>';?>
+                                    <a href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(<?=$row->id;?>);"><i class="fa fa-print"></i> Print Barcode </a></td>
                             </tr>
                             <?php
                                 }
@@ -274,6 +293,49 @@ function loadDetail(id){
 //     });
 //     }
 // }
+function editDetail(id){
+    $('#btnEdit_'+id).hide();
+    $('#lbl_bruto_'+id).hide();
+    $('#lbl_netto_'+id).hide();
+    $('#lbl_no_packing_'+id).hide();
+    
+    $('#btnUpdate_'+id).show();
+    $('#bruto_'+id).show();
+    $('#netto_'+id).show();
+    $('#no_packing_'+id).show();
+}
+
+function updateDetail(id){
+    const jenis = $("#jenis_barang").val();
+    if($.trim($("#bruto_"+id).val()) == ""){
+        $('#message').html("Bruto tidak boleh kosong");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#netto_"+id).val()) == ""){
+        $('#message').html("Netto tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{
+        $.ajax({
+            type:"POST",
+            url:'<?php echo base_url('index.php/GudangFG/update_detail_produksi'); ?>',
+            data:{
+                bruto:$('#bruto_'+id).val(),
+                netto:$('#netto_'+id).val(),
+                no_packing:$('#no_packing_'+id).val()
+            },
+            success:function(result){
+                // if(result['message_type']=="sukses"){
+                //     loadDetailEdit($('#id').val());
+                //     $('#message').html("");
+                //     $('.alert-danger').hide(); 
+                // }else{
+                //     $('#message').html(result['message']);
+                //     $('.alert-danger').show(); 
+                // }   
+                location.reload();         
+            }
+        });
+    }
+}
 
 function saveDetail(){
     console.log('test');
@@ -312,7 +374,7 @@ function saveDetail(){
                 ukuran: $('#ukuran').val(),
                 berat_bobbin: $('#berat_bobbin').val(),
                 no_packing: $('#no_packing').val(),
-                // no_barcode: $('#no_barcode').val(),
+                no_barcode: $('#no_barcode').val(),
                 id_packing: $('#id_packing').val()
             },
             success:function(result){

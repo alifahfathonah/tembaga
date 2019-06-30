@@ -1336,6 +1336,7 @@ class SalesOrder extends CI_Controller{
             $data['content']= "sales_order/revisi_surat_jalan";
             $this->load->model('Model_sales_order');
             $data['header'] = $this->Model_sales_order->show_header_sj($id)->row_array();
+            $soid = $data['header']['sales_order_id'];
 
             $jenis = $data['header']['jenis_barang'];
             if($jenis == 'FG'){
@@ -1343,7 +1344,7 @@ class SalesOrder extends CI_Controller{
             }else if($jenis == 'WIP'){
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
             }else{
-                $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id)->result();
+                $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id,$soid)->result();
             }
             $this->load->view('layout', $data);   
         }else{

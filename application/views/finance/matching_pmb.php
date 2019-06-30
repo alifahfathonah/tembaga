@@ -236,7 +236,6 @@
                                     <select id="bank_id" name="bank_id" class="form-control myline select2me" 
                                     data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_currency(this.value);">
                                     <option></option>
-                                    <option value="0">Kas</option>
                                     <?php
                                         foreach ($bank_list as $row){
                                             echo '<option value="'.$row->id.'">'.$row->kode_bank.' ('.$row->nomor_rekening.')'.'</option>';

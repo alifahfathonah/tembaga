@@ -74,6 +74,9 @@
                             $bruto = 0;
                             $bobin = 0;
                             $netto = 0;
+                            $total_bruto = 0;
+                            $total_bobin = 0;
+                            $total_netto = 0;
                             foreach ($details as $row){
                                 if($row->jenis_barang!=$last_series && $last_series!=null){
                                     echo '<tr><td colspan="5" style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>Total :</strong></td>';
@@ -112,6 +115,9 @@
                                 $bruto += $row->bruto;
                                 $bobin += $row->berat_bobbin;
                                 $netto += $row->netto;
+                                $total_bruto += $row->bruto;
+                                $total_bobin += $row->berat_bobbin;
+                                $total_netto += $row->netto;
                                 $no++;
                             }
                         ?>
@@ -127,7 +133,7 @@
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                         </tr>
                         <tr>
-                            <td style="text-align:right;" colspan="5"><strong>Total</strong></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;" colspan="5"><strong>Total</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
                                 <strong><?php echo number_format($bruto, 2, '.', ','); ?></strong>
                             </td>
@@ -137,7 +143,20 @@
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
                                 <strong><?php echo number_format($netto, 2, '.', ','); ?></strong>
                             </td>
-                            <td style="border-left:1px solid #000; "></td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;" colspan="5"><strong>Grand Total</strong></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
+                                <strong><?php echo number_format($total_bruto, 2, '.', ','); ?></strong>
+                            </td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
+                                <strong><?php echo number_format($total_bobin, 2, '.', ','); ?></strong>
+                            </td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
+                                <strong><?php echo number_format($total_netto, 2, '.', ','); ?></strong>
+                            </td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;"></td>
                         </tr>
                     </table>
                 </td>
