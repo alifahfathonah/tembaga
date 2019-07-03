@@ -195,10 +195,10 @@
                                     </td>
                                     <td><?php echo '<input type="text" class="form-control myline " style="margin-bottom:5px;" id="uom_'.$no.'" value="'.$row->uom.'" readonly="readonly">';?>
                                     </td>
-                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="amount_'.$no.'" name="details['.$no.'][amount]" value="'.number_format($row->amount,0,',','.').'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
-                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="bruto_'.$no.'" name="details['.$no.'][bruto]" value="'.$row->bruto.'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
-                                    <td><?php echo '<input type="number" class="form-control myline" style="margin-bottom:5px;" id="netto_'.$no.'" name="details['.$no.'][netto]" value="'.$row->netto.'" onkeyup="hitungSubTotal('.$no.');">';?></td>
-                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="total_amount_'.$no.'" name="details['.$no.'][total_amount]" value="'.number_format($row->total_amount,0,',','.').'" readonly="readonly">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="amount_'.$no.'" name="details['.$no.'][amount]" value="'.number_format($row->amount,2,'.',',').'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="bruto_'.$no.'" name="details['.$no.'][bruto]" value="'.number_format($row->bruto,2,'.',',').'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="netto_'.$no.'" name="details['.$no.'][netto]" value="'.number_format($row->netto,2,'.',',').'" onkeyup="getComa(this.value, this.id,'.$no.');hitungSubTotal('.$no.');">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="total_amount_'.$no.'" name="details['.$no.'][total_amount]" value="'.number_format($row->total_amount,2,'.',',').'" readonly="readonly">';?></td>
                                      <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" name="details['.$no.'][line_remarks]" value="'.$row->line_remarks.'"  onkeyup="this.value = this.value.toUpperCase()">';?></td>
                                 </tr>
                                 <?php
@@ -254,16 +254,17 @@ function myCurrency(evt) {
 }
 
 function getComa(value, id, no){
-    angka = value.toString().replace(/\./g, "");
-    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    angka = value.toString().replace(/\,/g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     hitungSubTotal(no);
 }
 
 function hitungSubTotal(id){
-    harga = $('#amount_'+id).val().toString().replace(/\./g, "");
-    netto = $('#netto_'+id).val();
+    harga = $('#amount_'+id).val().toString().replace(/\,/g, "");
+    netto = $('#netto_'+id).val().toString().replace(/\,/g, "");
     total_harga = Number(harga)* Number(netto);
-    $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    total_harga = total_harga.toFixed(2);
+    $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }
 
 function simpanData(){

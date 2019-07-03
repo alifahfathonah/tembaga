@@ -40,7 +40,7 @@
                 if( ($group_id==1)||($hak_akses['add']==1) ){
             ?>
                 <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="
-                    <?=base_url('index.php/GudangWIP/proses_wip');?>">
+                    <?=base_url('index.php/GudangWIP/proses_wip/'.$this->uri->segment(3));?>">
                     <i class="fa fa-plus"></i> Proses Barang WIP 
                 </a>
             <?php } ?>

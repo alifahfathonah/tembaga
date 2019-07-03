@@ -571,6 +571,51 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
+    function summery_report_so(){
+        $data = $this->db->query("SELECT so.tanggal, tso.*, SUM(tsod.bruto) AS jumlah_bruto, SUM(tsod.netto) AS jumlah_netto, COUNT(tsod.id) AS jumlah_item
+            FROM t_sales_order tso
+            INNER JOIN t_sales_order_detail tsod ON tsod.t_so_id = tso.id
+            INNER JOIN sales_order so ON so.id = tso.so_id
+            GROUP BY MONTH(so.tanggal)");
+        return $data;
+    }
+
+    function show_view_laporan($tanggal){
+        $data = $this->db->query("select tsjd.t_sj_id, tsj.no_surat_jalan, tsj.tanggal, sum(tsjd.qty) as qty, sum(tsjd.bruto) as bruto, 
+            (case when tsjd.jenis_barang_alias = 0 then tsjd.jenis_barang_id else tsjd.jenis_barang_alias end) as jbid,
+            round((case when tsjd.netto_r > 0 then sum(tsjd.netto_r) else sum(tsjd.netto) end),3) as netto,
+            COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom) as uom,
+            (select tsod.amount from t_sales_order_detail tsod left join t_sales_order tso on tso.id = tsod.t_so_id where tso.so_id = tsj.sales_order_id and tsod.jenis_barang_id = case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)as amount 
+            from t_surat_jalan_detail tsjd 
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id 
+            left join t_sales_order tso on tso.so_id = tsj.sales_order_id
+            left join jenis_barang jb on tso.jenis_barang != 'RONGSOK' and jb.id = (case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
+            left join rongsok r on tso.jenis_barang = 'RONGSOK' and r.id=tsjd.jenis_barang_id
+                        where tsj.tanggal 
+                         between '".$tanggal."-01' and '".$tanggal."-30'
+                        group by jb.id
+                        order by jb.jenis_barang;");
+        return $data;
+    }
+
+    function show_view_laporan_by_sj($tanggal){
+        $data = $this->db->query("select tsjd.t_sj_id, tsj.no_surat_jalan, tsj.tanggal, sum(tsjd.qty) as qty, sum(tsjd.bruto) as bruto, 
+            (case when tsjd.jenis_barang_alias = 0 then tsjd.jenis_barang_id else tsjd.jenis_barang_alias end) as jbid,
+            round((case when tsjd.netto_r > 0 then sum(tsjd.netto_r) else sum(tsjd.netto) end),3) as netto,
+            COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom) as uom,
+            (select tsod.amount from t_sales_order_detail tsod left join t_sales_order tso on tso.id = tsod.t_so_id where tso.so_id = tsj.sales_order_id and tsod.jenis_barang_id = case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)as amount 
+            from t_surat_jalan_detail tsjd 
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id 
+            left join t_sales_order tso on tso.so_id = tsj.sales_order_id
+            left join jenis_barang jb on tso.jenis_barang != 'RONGSOK' and jb.id = (case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
+            left join rongsok r on tso.jenis_barang = 'RONGSOK' and r.id=tsjd.jenis_barang_id
+                        where tsj.tanggal 
+                         between '".$tanggal."-01' and '".$tanggal."-30'
+                        group by jb.id, tsj.no_surat_jalan
+                        order by 3,2;");
+        return $data;
+    }
+
     // Select tsjd.*, tsod.nama_barang_alias, COALESCE(tsod.nama_barang_alias, jb.jenis_barang,r.nama_item) as jenis_barang , COALESCE(jb.kode,r.kode_rongsok) as kode from t_surat_jalan_detail tsjd
     //         left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
     //         left join t_sales_order_detail tsod on tsod.t_so_id = tsj.sales_order_id and (case when tsjd.jenis_barang_alias = 0 then tsod.jenis_barang_id = tsjd.jenis_barang_id else tsod.jenis_barang_id = tsjd.jenis_barang_alias end)

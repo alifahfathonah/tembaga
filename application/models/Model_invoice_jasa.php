@@ -97,17 +97,23 @@ class Model_invoice_jasa extends CI_Model{
 	}
 
 	function show_header_print_inv_jasa($id){
-		$data = $this->db->query("select tij.*, tsj.no_sj_resmi, ts.no_so,ts.tanggal as tgl_so, tp.no_po, tp.tanggal as tgl_po, mc.nama_customer, cv.nama_cv, mc.pic, cv.pic as pic_cv from r_t_inv_jasa tij
+		$data = $this->db->query("select tij.*, tsj.no_sj_resmi, ts.no_so,ts.tanggal as tgl_so, tp.no_po, tp.tanggal as tgl_po, mc.nama_customer, cv.nama_cv, mc.pic, cv.pic as pic_cv, cv.alamat as alamat_cv, cv.npwp, tp2.no_po as no_po2, b.kode_bank, b.nama_bank, b.nomor_rekening, b.kantor_cabang from r_t_inv_jasa tij
 		left join r_t_surat_jalan tsj on tsj.id = tij.sjr_id
 	    left join r_t_so ts on ts.id = tij.r_t_so_id
 	    left join r_t_po tp on tp.id = tij.r_t_po_id
+		left join r_t_po tp2 on tp2.id = ts.po_id
 	    left join m_customers_cv mc on mc.id = tij.customer_id
 	    left join m_cv cv on cv.id = tij.cv_id
+	    left join bank b on b.id = tij.bank_id
 	    where tij.id =".$id);
 		return $data;
 	}
 
 	function get_inv_jasa_detail_only($id){
 		return $this->db->query("select id, inv_jasa_id as inv_id, jenis_barang_id, qty, bruto, netto, amount, total_amount, line_remarks from r_t_inv_jasa_detail where inv_jasa_id =".$id);
+	}
+
+	function bank_list(){
+		return $this->db->get_where('bank', ['ppn' => 1, 'currency' => 'IDR']);
 	}
 }

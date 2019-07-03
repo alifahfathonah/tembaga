@@ -169,6 +169,7 @@
                                     <td><input type="text" id="total_bruto" class="form-control" readonly="readonly"></td>
                                     <td><input type="text" id="total_berat" class="form-control" readonly="readonly"></td>
                                     <td><input type="text" id="total_netto" class="form-control" readonly="readonly"></td>
+                                    <td colspan="4"></td>
                                 </tr>
                             </tfoot>
                         </table>

@@ -886,14 +886,20 @@ class SalesOrder extends CI_Controller{
 
     function get_penomoran_sj(){
         $tgl_sj = date('Ym', strtotime($this->input->post('tanggal')));
+        $tahun_sj = date('Y', strtotime($this->input->post('tanggal')));
+        $no_sj = $this->input->post('no_sj');
         $user_ppn = $this->session->userdata('user_ppn');
         if ($user_ppn == 0) {
-            $code = 'SJ.'.$tgl_sj.'.'.$this->input->post('no_sj');
+            // $code = 'SJ.'.$tgl_sj.'.'.$this->input->post('no_sj');
+            #cek tahun dan 4 digit terakhir
+            $prefix = 'SJ.'.$tahun_sj;
+            #end
         } else {
-            $code = 'SJ-KMP.'.$tgl_sj.'.'.$this->input->post('no_sj');
+            // $code = 'SJ-KMP.'.$tgl_sj.'.'.$this->input->post('no_sj');
+            $prefix = 'SJ-KMP.'.$tahun_sj;
         }
-        
-        $count = $this->db->query("Select count(id) as count from t_surat_jalan where no_surat_jalan = '".$code."'")->row_array();
+
+        $count = $this->db->query("Select count(id) as count from t_surat_jalan where no_surat_jalan LIKE '".$prefix."%' AND no_surat_jalan LIKE '%.".$no_sj."'")->row_array();
         if($count['count']>0){
             $data['type'] = 'duplicate';
         }else{
@@ -1303,6 +1309,26 @@ class SalesOrder extends CI_Controller{
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_fg($id)->result();
                 if($data['header']['status']==1){
                     $this->load->view('sales_order/print_sj_bak', $data);
+                    // $header = $this->load->view("sales_order/print_sj/headerpdf", $data, true);
+                    // $body = $this->load->view("sales_order/print_sj/bodypdf", $data, true);
+                    // $footer = $this->load->view("sales_order/print_sj/footerpdf", $data, true);
+
+                    // $this->load->library('vendor/autoload');
+                    // $pdf = new \Mpdf\Mpdf(['utf-8','A4']); 
+
+                    // $pdf->SetHTMLHeader($header);
+                    // $pdf->SetHTMLFooter($footer);
+                    // $pdf->AddPage('P', // L - landscape, P - portrait 
+                    //     '', '', '', '',
+                    //     10, // margin_left
+                    //     10, // margin right
+                    //    55, // margin top
+                    //    40, // margin bottom
+                    //     5, // margin header
+                    //     5); // margin footer
+                    // // $pdf->AddPage('P');
+                    // $pdf->writeHTML($body);
+                    // $pdf->Output('sj.pdf', 'I');  
                 }else{
                     $this->load->view('sales_order/print_sj', $data);
                 }
@@ -1480,6 +1506,151 @@ class SalesOrder extends CI_Controller{
         echo '<script type="text/javascript">document.getElementById(\'coba\').submit();</script>';
         }else{
             'GAGAL';
+        }
+    }
+
+    function laporan_so(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "sales_order/laporan_so";
+        $this->load->model('Model_sales_order');
+        $data['summary'] = $this->Model_sales_order->summery_report_so()->result();
+
+        $this->load->view('layout', $data);   
+    }
+
+    function view_laporan_so(){
+        $module_name = $this->uri->segment(1);
+        $tanggal = $this->uri->segment(3);
+        if($tanggal){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            // $items = strval($id);
+            // $tgl=str_split($id,2);
+            // $tahun=$tgl[1];
+            // $bulan=$tgl[0];
+
+            // $data['tgl'] = array(
+            //     'tahun' => $tahun,
+            //     'bulan' => $bulan
+            // );
+
+            $data['content']= "sales_order/view_laporan_so";
+            $this->load->model('Model_sales_order');
+            $data['detailLaporan'] = $this->Model_sales_order->show_view_laporan($tanggal)->result();
+            // print_r($data['detailLaporan']);die();
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/SalesOrder/laporan_list_so');
+        }
+    }
+
+    function print_laporan_so(){
+        $module_name = $this->uri->segment(1);
+        $tanggal = $this->uri->segment(3);
+        if($tanggal){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            // $items = strval($id);
+            // $tgl=str_split($id,2);
+            // $tahun=$tgl[1];
+            // $bulan=$tgl[0];
+
+            // $data['tgl'] = array(
+            //     'tahun' => $tahun,
+            //     'bulan' => $bulan
+            // );
+
+            // $data['content']= "sales_order/view_laporan_so";
+            $this->load->model('Model_sales_order');
+            $data['detailLaporan'] = $this->Model_sales_order->show_view_laporan($tanggal)->result();
+            // print_r($data['detailLaporan']);die();
+            $this->load->view('sales_order/print_laporan_so', $data);   
+        }else{
+            redirect('index.php/SalesOrder/laporan_list_so');
+        }
+    }
+
+    function view_laporan_so_by_sj(){
+        $module_name = $this->uri->segment(1);
+        $tanggal = $this->uri->segment(3);
+        if($tanggal){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            // $items = strval($id);
+            // $tgl=str_split($id,2);
+            // $tahun=$tgl[1];
+            // $bulan=$tgl[0];
+
+            // $data['tgl'] = array(
+            //     'tahun' => $tahun,
+            //     'bulan' => $bulan
+            // );
+
+            $data['content']= "sales_order/laporan_so_by_sj";
+            $this->load->model('Model_sales_order');
+            $data['detailLaporan'] = $this->Model_sales_order->show_view_laporan_by_sj($tanggal)->result();
+            // print_r($data['detailLaporan']);die();
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/SalesOrder/laporan_list_so');
+        }
+    }
+
+    function print_laporan_so_by_sj(){
+        $module_name = $this->uri->segment(1);
+        $tanggal = $this->uri->segment(3);
+        if($tanggal){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            // $items = strval($id);
+            // $tgl=str_split($id,2);
+            // $tahun=$tgl[1];
+            // $bulan=$tgl[0];
+
+            // $data['tgl'] = array(
+            //     'tahun' => $tahun,
+            //     'bulan' => $bulan
+            // );
+
+            // $data['content']= "sales_order/view_laporan_so";
+            $this->load->model('Model_sales_order');
+            $data['detailLaporan'] = $this->Model_sales_order->show_view_laporan_by_sj($tanggal)->result();
+            // print_r($data['detailLaporan']);die();
+            $this->load->view('sales_order/print_laporan_so_by_sj', $data);   
+        }else{
+            redirect('index.php/SalesOrder/laporan_list_so');
         }
     }
 }

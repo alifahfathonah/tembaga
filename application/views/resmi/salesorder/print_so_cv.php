@@ -66,7 +66,7 @@
                         <td align="center"><?= number_format($v->netto,2,".",",")." ".$v->uom ?></td>
                         <td align="right"><?= "Rp ".number_format($v->amount,2,".",",") ?></td>
                         <td align="right"><?= "Rp ".number_format($v->total_amount,2,".",",") ?></td>
-                        <td><?= $v->line_remarks ?></td>
+                        <td></td>
                     </tr>
                 <?php
                         $total += $v->total_amount;

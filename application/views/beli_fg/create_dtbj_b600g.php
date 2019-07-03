@@ -176,6 +176,16 @@
                                 </td>
                             </tr>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><strong>Total :</strong></td>
+                                    <td><input type="text" id="total_bruto" class="form-control" readonly="readonly"></td>
+                                    <td><input type="text" id="total_berat" class="form-control" readonly="readonly"></td>
+                                    <td></td>
+                                    <td><input type="text" id="total_netto" class="form-control" readonly="readonly"></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -287,6 +297,9 @@ function saveDetail(id){
                 $('#no_packing_'+id).val(result['no_packing']);
             }
         });
+        $('#total_bruto').val(Number($('#total_bruto').val())+Number($('#bruto_'+id).val()));
+        $('#total_berat').val(Number($('#total_berat').val())+Number($('#berat_bobbin_'+id).val()));
+        $('#total_netto').val(Number($('#total_netto').val())+Number($('#netto_'+id).val()));
         $("#name_rongsok_"+id).attr('readonly','readonly');
         $("#timbang_"+id).attr('disabled','disabled');
         $("#netto_"+id).attr('readonly','readonly');

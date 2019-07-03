@@ -59,7 +59,7 @@
                         <td align="center"><?= $no ?></td>
                         <td><?= $v->jenis_barang ?></td>
                         <td align="center"><?= number_format($v->netto,2,".",",")." ".$v->uom ?></td>
-                        <td><?= $v->line_remarks ?></td>
+                        <td></td>
                     </tr>
                 <?php
                         $total += $v->netto;

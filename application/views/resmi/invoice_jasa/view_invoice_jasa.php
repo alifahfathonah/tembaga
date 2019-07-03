@@ -162,10 +162,10 @@
                                 <tr>
                                     <td style="text-align: center;"><?php echo $no ?></td>
                                     <td><?php echo $row->jenis_barang ?></td>
-                                    <td><?php echo number_format($row->amount,0,',','.') ?></td>
-                                    <td><?php echo $row->sum_bruto ?></td>
-                                    <td><?php echo $row->sum_netto ?></td>
-                                    <td><?php echo number_format($row->sum_total_amount,0,',','.') ?></td>
+                                    <td><?php echo number_format($row->amount,2,'.',',') ?></td>
+                                    <td><?php echo number_format($row->sum_bruto,2,'.',',') ?></td>
+                                    <td><?php echo number_format($row->sum_netto,2,'.',',') ?></td>
+                                    <td><?php echo number_format($row->sum_total_amount,2,'.',',') ?></td>
                                     <td><?php echo $row->line_remarks ?></td>
                                 </tr>
                                 <?php

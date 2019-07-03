@@ -32,7 +32,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_so" name="no_so" maxlength="25"
-                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $header['no_so']; ?>" readonly>
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $header['no_so']; ?>">
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
                     </div>

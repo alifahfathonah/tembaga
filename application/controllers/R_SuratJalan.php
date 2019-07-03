@@ -180,6 +180,7 @@ class R_SuratJalan extends CI_Controller{
             $this->load->model('Model_so');
             $get_po = $this->input->post('get_po');
             $list_so = $this->Model_so->list_detail_so($get_po)->result();
+            // print_r($list_so); die();
             foreach ($list_so as $row) {
                 $detail = array(
                     'sj_resmi_id' => $sjr_id,

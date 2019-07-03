@@ -56,6 +56,7 @@
                                 <option value="<?php echo $k; ?>"><?php echo $pm; ?> </option>
                                 <?php } ?>    
                             </select>   
+                            <!-- <input id="jenis_masak" name="jenis_masak" readonly="readonly" class="form-control myline" style="margin-bottom:5px" value="<?= $pil_masak ?>" type="text"> -->
                         </div>
                     </div>
                     <div class="row">

@@ -5,7 +5,7 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br>PACKING LIST</h3>
+        <h3 style="text-align: center; text-decoration: underline;">PT. KAWAT MAS PRAKASA<br>PACKING LIST</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="60%">
@@ -20,7 +20,7 @@
                         </tr>
                         <tr>
                             <td>No. PO</td>
-                            <td>: <?php echo $header['no_po']; ?></td>
+                            <td>: <?php echo $header['no_po2']; ?></td>
                         </tr>
                         <tr>
                             <td>Tanggal</td>
@@ -87,7 +87,7 @@
                             $netto = 0;
                             foreach ($list_sj_detail as $row){
                                 if($row->jenis_barang!=$last_series && $last_series!=null){
-                                    echo '<tr><td colspan="5" style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>Total :</strong></td>';
+                                    echo '<tr><td colspan="4" style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>Total :</strong></td>';
                                     echo '<td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000">
                                             <strong>'.number_format($bruto, 2, '.', ',').'</strong>
                                         </td>
@@ -164,7 +164,7 @@
                     <table border="0" width="100%">
                         <tr>
                             <td style="text-align:center">Tanda Terima</td>
-                            <!-- <td style="text-align:center">Pembawa / Supir</td> -->
+                            <td style="text-align:center">Pembawa / Supir</td>
                             <td style="text-align:center">Diperiksa</td>
                             <td style="text-align:center">Mengetahui</td>
                             <td style="text-align:center">Hormat Kami</td>
@@ -172,19 +172,19 @@
                         <tr style="height:35">
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
-                            <!-- <td style="text-align:center">&nbsp;</td> -->
+                            <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                         </tr>
                         <tr><?php if($this->session->userdata('user_ppn')==1){?>
                             <td style="text-align:center">(_____________)</td>
-                            <!-- <td style="text-align:center">No. Kend. </td> -->
+                            <td style="text-align:center">(_____________)</td>
                             <td style="text-align:center">(_____________)</td>
                             <td style="text-align:center"><strong>(Tjan Lin Oy)</strong></td>
                             <td style="text-align:center"><strong>(Istadi)</strong></td>
                             <?php }else{ ?>
                             <td style="text-align:center">(_____________)</td>
-                            <!-- <td style="text-align:center">No. Kend. </td> -->
+                            <td style="text-align:center">(_____________)</td>
                             <td style="text-align:center">(_____________)</td>
                             <td style="text-align:center"><strong>(Andi)</strong></td>
                             <td style="text-align:center"><strong>(Bambang)</strong></td>

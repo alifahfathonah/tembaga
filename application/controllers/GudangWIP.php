@@ -30,7 +30,10 @@ class GudangWIP extends CI_Controller{
 
     function produksi_wip(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $jenis = $this->uri->segment(3);
+        $jenis = str_replace('%20', ' ', $jenis);
+
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -41,14 +44,17 @@ class GudangWIP extends CI_Controller{
         $data['content']   = "gudangwip/hasil_produksi";
         
        $this->load->model('Model_gudang_wip');
-       $data['gudang_wip'] = $this->Model_gudang_wip->gudang_wip_produksi_list()->result();
+       $data['gudang_wip'] = $this->Model_gudang_wip->gudang_wip_produksi_list($jenis)->result();
         
         $this->load->view('layout', $data);  
     }
 
     function proses_wip(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id'); 
+        $jenis = $this->uri->segment(3);
+        $jenis = str_replace('%20', ' ', $jenis);
+
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -59,12 +65,15 @@ class GudangWIP extends CI_Controller{
         $data['content']   = "gudangwip/proses_wip";
         
        $this->load->model('Model_gudang_wip');
-       $pilihan_jenis_masak = array(
-                        'ROLLING' => 'ROLLING',
-                        'BAKAR ULANG' => 'BAKAR ULANG',
-                        'CUCI' => 'CUCI'
-                        );
-       $data['pil_masak'] = $pilihan_jenis_masak;
+       // $pilihan_jenis_masak = array(
+       //                  'ROLLING' => 'ROLLING',
+       //                  'BAKAR ULANG' => 'BAKAR ULANG',
+       //                  'CUCI' => 'CUCI'
+       //                  );
+       // $data['pil_masak'] = $pilihan_jenis_masak;
+       $data['pil_masak'] = [
+            $jenis => $jenis
+       ];
        // $data['spb_ingot'] = $this->Model_gudang_wip->spb_ingot()->result();
        $data['stok_keras'] = $this->Model_gudang_wip->stok_keras()->row_array();
        $data['spb_kawat_hitam'] = $this->Model_gudang_wip->spb_kawat_hitam()->result();
@@ -529,17 +538,18 @@ class GudangWIP extends CI_Controller{
             //             );
             //     $this->db->insert('dtr_detail',$data_dtr_detail_bs);
             // }
-
+            $jenis = $this->input->post('jenis_masak');
+            $jenis = str_replace('%20', ' ', $jenis);
             if($this->db->trans_complete()){
                 $this->session->set_flashdata('flash_msg','Simpan Data Produksi WIP Berhasil.');
             } else{
                 $this->session->set_flashdata('flash_msg','Simpan Data Produksi WIP Gagal, Silahkan Coba Lagi.');
-                redirect('index.php/GudangWIP/proses_wip');    
+                redirect('index.php/GudangWIP/proses_wip'.$jenis);    
             } 
         } else {
             $this->session->set_flashdata('flash_msg','Penyimpanan Data Produksi WIP Gagal, Penomoran Produksi WIP Belum di Set');
         }  
-        redirect('index.php/GudangWIP/produksi_wip');  
+        redirect('index.php/GudangWIP/produksi_wip/'.$jenis);  
     }
 
     function send(){

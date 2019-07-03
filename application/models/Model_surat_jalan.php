@@ -158,7 +158,7 @@ class Model_surat_jalan extends CI_Model{
     // }
 
     function show_header_print_sj($id){
-    	$data = $this->db->query("select rtsj.*, rtpo.no_po, cv.nama_cv, cs.nama_customer, cv.alamat, bpb.no_bpb, coalesce(rtso.no_so, rtso2.no_so) as no_so,  COALESCE(rtso.tanggal, rtso2.tanggal) as tanggal_so, tkdr.type_kendaraan
+    	$data = $this->db->query("select rtsj.*, rtpo.no_po, cv.nama_cv, cs.nama_customer, cv.alamat, bpb.no_bpb, coalesce(rtso.no_so, rtso2.no_so) as no_so,  COALESCE(rtso.tanggal, rtso2.tanggal) as tanggal_so, tkdr.type_kendaraan, rtpo2.no_po as no_po2
     		from r_t_surat_jalan rtsj
 			left join r_t_po rtpo on rtsj.r_po_id = rtpo.id
             left join r_t_so rtso on rtsj.r_so_id = rtso.id
@@ -167,8 +167,9 @@ class Model_surat_jalan extends CI_Model{
 			left join r_t_surat_jalan rtsj2 on rtsj.r_sj_id = rtsj2.id
 			left join m_customers_cv cs on rtsj2.m_customer_id = cs.id
             left join r_t_so rtso2 on rtso2.id = rtsj2.r_so_id
+            left join r_t_po rtpo2 on rtpo2.id = rtso.po_id
             left join m_type_kendaraan tkdr On (rtsj.m_type_kendaraan_id = tkdr.id) 
-			where rtsj.id = ".$id);
+			where rtsj.id =".$id);
     	return $data;
     }
 

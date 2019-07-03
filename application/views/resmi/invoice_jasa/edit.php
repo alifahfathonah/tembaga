@@ -86,6 +86,61 @@
                             <input type="text" name="tgl_so" id="tgl_so" class="form-control myline input-small" style="margin-bottom:5px; float: left;" onkeyup="this.value = this.value.toUpperCase();" value="<?php echo date('d-m-Y', strtotime($header['tgl_so'])) ?>" readonly="readonly">
                         </div>
                     </div> 
+                    <div class="row">
+                        <div class="col-md-4">
+                            Bank <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="bank_id" name="bank_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($bank_list as $row){
+                                ?>
+                                <option value="<?= $row->id ?>" <?= ($header['bank_id'] == $row->id)? 'selected=selected' : '' ?>><?= $row->nama_bank ?></option>
+                                <?php
+                                        
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nama Direktur
+                        </div>
+                        <div class="col-md-8">
+                            <!-- <input type="text" id="nama_direktur" name="nama_direktur" class="form-control myline" style="margin-bottom:5px"> -->
+                            <select id="nama_direktur" name="nama_direktur" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value="Budinata Atmadja" <?= ($header['nama_direktur'] == "Budinata Atmadja")? 'selected=selected' : '' ?>>Budinata Atmadja</option>
+                                <option value="Senkiawan Tjandra" <?= ($header['nama_direktur'] == "Senkiawan Tjandra")? 'selected=selected' : '' ?>>Senkiawan Tjandra</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Diskon
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="diskon" name="diskon" class="form-control myline" style="margin-bottom:5px" value="<?= number_format($header['diskon'],2,'.',',') ?>" onkeyup="getComa(this.value, this.id)">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Biaya Tambahan
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="add_cost" name="add_cost" class="form-control myline" style="margin-bottom:5px" value="<?= number_format($header['cost'],2,'.',',') ?>" onkeyup="getComa(this.value, this.id)">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Materai
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="materai" name="materai" class="form-control myline" style="margin-bottom:5px" value="<?= number_format($header['materai'],2,'.',',') ?>" onkeyup="getComa(this.value, this.id)">
+                        </div>
+                    </div>
                 <?php
                 } else if($header['r_t_po_id'] > 0){
                 ?>  
@@ -180,6 +235,7 @@
                             <tbody>
                                  <?php 
                                     $no = 1;
+                                    $total = 0;
                                     foreach ($myDetail as $row) {
                                 echo '<input type="hidden" name="details['.$no.'][id]" value="'.$row->id.'">';
                                 ?>
@@ -195,16 +251,18 @@
                                     </td>
                                     <td><?php echo '<input type="text" class="form-control myline " style="margin-bottom:5px;" id="uom_'.$no.'" value="'.$row->uom.'" readonly="readonly">';?>
                                     </td>
-                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="amount_'.$no.'" name="details['.$no.'][amount]" value="'.number_format($row->amount,0,',','.').'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
-                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="bruto_'.$no.'" name="details['.$no.'][bruto]" value="'.$row->sum_bruto.'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
-                                    <td><?php echo '<input type="number" class="form-control myline" style="margin-bottom:5px;" id="netto_'.$no.'" name="details['.$no.'][netto]" value="'.$row->sum_netto.'" onkeyup="hitungSubTotal('.$no.');">';?></td>
-                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="total_amount_'.$no.'" name="details['.$no.'][total_amount]" value="'.number_format($row->sum_total_amount,0,',','.').'" readonly="readonly">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="amount_'.$no.'" name="details['.$no.'][amount]" value="'.number_format($row->amount,2,'.',',').'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="bruto_'.$no.'" name="details['.$no.'][bruto]" value="'.number_format($row->sum_bruto,2,'.',',').'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="netto_'.$no.'" name="details['.$no.'][netto]" value="'.number_format($row->sum_netto,2,'.',',').'" onkeyup="getComa(this.value, this.id,'.$no.');hitungSubTotal('.$no.');">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="total_amount_'.$no.'" name="details['.$no.'][total_amount]" value="'.number_format($row->sum_total_amount,2,'.',',').'" readonly="readonly">';?></td>
                                      <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" name="details['.$no.'][line_remarks]" value="'.$row->line_remarks.'"  onkeyup="this.value = this.value.toUpperCase()">';?></td>
                                 </tr>
                                 <?php
                                     $no++;
+                                    $total += $row->sum_total_amount;
                                     }
                                 ?>
+                                <input type="hidden" name="total" id="total" value="<?= number_format($total,2,'.',',') ?>">
                             </tbody>
                         </table>
                     </div>
@@ -254,16 +312,17 @@ function myCurrency(evt) {
 }
 
 function getComa(value, id, no){
-    angka = value.toString().replace(/\./g, "");
-    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    angka = value.toString().replace(/\,/g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     hitungSubTotal(no);
 }
 
 function hitungSubTotal(id){
-    harga = $('#amount_'+id).val().toString().replace(/\./g, "");
-    netto = $('#netto_'+id).val();
+    harga = $('#amount_'+id).val().toString().replace(/\,/g, "");
+    netto = $('#netto_'+id).val().toString().replace(/\,/g, "");;
     total_harga = Number(harga)* Number(netto);
-    $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    total_harga = total_harga.toFixed(2);
+    $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }
 
 function simpanData(){

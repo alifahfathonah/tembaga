@@ -13,7 +13,7 @@ class Model_gudang_wip extends CI_Model{
         return $data;
     }          
 
-    function gudang_wip_produksi_list(){
+    function gudang_wip_produksi_list($jenis){
         $data = $this->db->query("Select COALESCE(NULLIF(thw.no_produksi_wip,''), pi.no_produksi) as no_produksi_wip,thw.jenis_masak, thw.tanggal, thw.qty, thw.uom, thw.berat, thw.susut, thw.keras, thw.bs, jb.jenis_barang, usr.realname As pembuat, dtr.id as id_dtr, tbw.id as id_bpb
                 From t_hasil_wip thw
                     left join t_hasil_masak thm On (thm.id = thw.hasil_masak_id)
@@ -22,6 +22,7 @@ class Model_gudang_wip extends CI_Model{
                     left join jenis_barang jb on (jb.id = thw.jenis_barang_id)   
                     left join dtr On (dtr.prd_id = thw.id)
                     left join t_bpb_wip tbw on (tbw.hasil_wip_id = thw.id)
+                    where thw.jenis_masak = '".$jenis."' 
                 Order By thw.id Desc");
         return $data;
     } 

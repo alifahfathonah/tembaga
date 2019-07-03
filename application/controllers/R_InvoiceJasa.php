@@ -53,6 +53,8 @@ class R_InvoiceJasa extends CI_Controller{
             $data['header'] = $this->Model_surat_jalan->show_header_sj($id)->row_array();
         $data['customer_list'] = $this->Model_surat_jalan->customer_list()->result();
         $data['tipe_kendaraan_list'] = $this->Model_surat_jalan->tipe_kendaraan_list()->result();
+        $this->load->model('Model_invoice_jasa');
+        $data['bank_list'] = $this->Model_invoice_jasa->bank_list()->result();
 
         $this->load->view('layout', $data);
     }
@@ -62,9 +64,11 @@ class R_InvoiceJasa extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));       
         $tgl_jth_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jth_tempo')));    
+        $tgl_inv = date('Ym', strtotime($this->input->post('tanggal')));
 
-        $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('INV-KMP', $tgl_input);
+        // $this->load->model('Model_m_numberings');
+        // $code = $this->Model_m_numberings->getNumbering('INV-KMP', $tgl_input);
+        $code = 'INV-KMP.'.$tgl_inv.'.'.$this->input->post('no_inv_jasa');
         
         $this->db->trans_start();
 
@@ -79,6 +83,11 @@ class R_InvoiceJasa extends CI_Controller{
                 'tanggal'=> $tgl_input,
                 'cv_id'=>$this->input->post('customer_id'),
                 'jenis_invoice'=>'INVOICE KMP KE CV',
+                'bank_id'=> $this->input->post('bank_id'),
+                'nama_direktur'=> $this->input->post('nama_direktur'),
+                'diskon'=> str_replace(',', '', $this->input->post('diskon')),
+                'cost'=> str_replace(',', '', $this->input->post('add_cost')),
+                'materai'=> str_replace(',', '', $this->input->post('materai')),
                 'remarks'=>$this->input->post('remarks'),
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id,
@@ -140,6 +149,7 @@ class R_InvoiceJasa extends CI_Controller{
             $data['myDetail'] = $this->Model_invoice_jasa->show_detail_inv_jasa($id)->result();
             $this->load->model('Model_sales_order');
             $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_fg()->result();
+            $data['bank_list'] = $this->Model_invoice_jasa->bank_list()->result();
 
             $this->load->view('layout', $data);   
         }else{
@@ -153,6 +163,11 @@ class R_InvoiceJasa extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_jth_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jth_tempo')));   
         $nilai_invoice = 0;
+        $total = str_replace(',', '', $this->input->post('total'));
+        $diskon = str_replace(',', '', $this->input->post('diskon'));
+        $cost = str_replace(',', '', $this->input->post('add_cost'));
+        $materai = str_replace(',', '', $this->input->post('materai'));
+        $nilai_invoice = ($total - $diskon - $cost - $materai) * 10 / 100;
 
         $this->db->trans_start();
         $jenis = $this->input->jenis_barang;
@@ -184,17 +199,17 @@ class R_InvoiceJasa extends CI_Controller{
                 $data = array(
                         'inv_jasa_id'=> $this->input->post('id'),
                         'jenis_barang_id'=> $v['barang_id'],
-                        'bruto'=> str_replace('.', '', $v['bruto']),
-                        'netto'=> str_replace('.', '', $v['netto']),
-                        'amount'=> str_replace('.', '', $v['amount']),
-                        'total_amount'=> str_replace('.', '', $v['total_amount']),
+                        'bruto'=> str_replace(',', '', $v['bruto']),
+                        'netto'=> str_replace(',', '', $v['netto']),
+                        'amount'=> str_replace(',', '', $v['amount']),
+                        'total_amount'=> str_replace(',', '', $v['total_amount']),
                         'line_remarks'=> $v['line_remarks'],
                         'modified_at'=> $tanggal,
                         'modified_by'=> $user_id
                     );
                 $this->db->insert('r_t_inv_jasa_detail', $data);
-                $total_amount = str_replace('.', '', $v['total_amount']);
-                $nilai_invoice += (int)$total_amount;
+                $total_amount = str_replace(',', '', $v['total_amount']);
+                // $nilai_invoice += (int)$total_amount;
             }
 
         $data = array(
@@ -203,6 +218,11 @@ class R_InvoiceJasa extends CI_Controller{
                 'tanggal'=> $tgl_input,
                 'term_of_payment' => $this->input->post('term_of_payment'),
                 'jatuh_tempo' => $tgl_jth_tempo,
+                'bank_id' => $this->input->post('bank_id'),
+                'nama_direktur' => $this->input->post('nama_direktur'),
+                'diskon' => $diskon,
+                'cost' => $cost,
+                'materai' => $materai,
                 'remarks'=>$this->input->post('remarks'),
                 'modified_at'=> $tanggal,
                 'modified_by'=> $user_id
@@ -415,10 +435,10 @@ class R_InvoiceJasa extends CI_Controller{
                 if($v['id']!=''){
                     $data = array(
                             'jenis_barang_id'=> $v['barang_id'],
-                            'bruto'=> str_replace('.', '', $v['bruto']),
-                            'netto'=> str_replace('.', '', $v['netto']),
-                            'amount'=> str_replace('.', '', $v['amount']),
-                            'total_amount'=> str_replace('.', '', $v['total_amount']),
+                            'bruto'=> str_replace(',', '', $v['bruto']),
+                            'netto'=> str_replace(',', '', $v['netto']),
+                            'amount'=> str_replace(',', '', $v['amount']),
+                            'total_amount'=> str_replace(',', '', $v['total_amount']),
                             'line_remarks'=> $v['line_remarks'],
                             'modified_at'=> $tanggal,
                             'modified_by'=> $user_id
@@ -426,7 +446,7 @@ class R_InvoiceJasa extends CI_Controller{
                     $this->db->where('id', $v['id']);
                     $this->db->update('r_t_inv_jasa_detail', $data);
 
-                    $total_amount = str_replace('.', '', $v['total_amount']);
+                    $total_amount = str_replace(',', '', $v['total_amount']);
                     $nilai_invoice += (int)$total_amount;
                 }
             }
@@ -501,9 +521,12 @@ class R_InvoiceJasa extends CI_Controller{
 
     function print_invoice(){
         $id = $this->uri->segment(3);
+        $this->load->helper('terbilang_d_helper');
+        $this->load->helper('tanggal_indo');
         if($id){        
             $data['header'] = $this->Model_invoice_jasa->show_header_print_inv_jasa($id)->row_array();
             $data['myDetail'] = $this->Model_invoice_jasa->show_detail_inv_jasa($id)->result();
+            // print_r($data['myDetail']); die();
 
             if($data['header']['jenis_invoice'] == "INVOICE KMP KE CV"){
                 $this->load->view('resmi/invoice_jasa/print_inv_kmp_cv', $data);    

@@ -35,7 +35,7 @@
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>No. PO</td>
-                            <td>: <?= $header['no_po'] ?></td>
+                            <td>: <?= $header['no_po2'] ?></td>
                         </tr>           
                         <tr>
                             <td>Pembayaran</td>
@@ -44,14 +44,6 @@
                         <tr>
                             <td>Tanggal Jatuh Tempo</td>
                             <td>: <?= $header['jatuh_tempo'] ?></td>
-                        </tr>   
-                        <tr>
-                            <td>PPN</td>
-                            <td>: 10%</td>
-                        </tr>     
-                        <tr>
-                            <td>Catatan</td>
-                            <td>: <?= $header['remarks'] ?></td>
                         </tr>
                         <tr rowspan="2">
                             <td colspan="2">&nbsp;</td>
@@ -78,11 +70,11 @@
                 ?>
                     <tr>
                         <td align="center"><?= $no ?></td>
-                        <td><?= $v->jenis_barang ?></td>
+                        <td><?= $v->jenis_barang ?><br>(Ongkos Kerja)</td>
                         <td align="center"><?= number_format($v->sum_netto,2,".",",")." ".$v->uom ?></td>
                         <td align="right"><?= "Rp ".number_format($v->amount,2,".",",") ?></td>
                         <td align="right"><?= "Rp ".number_format($v->sum_total_amount,2,".",",") ?></td>
-                        <td><?= $v->line_remarks ?></td>
+                        <td></td>
                     </tr>
                 <?php
                         $total_jual += $v->sum_total_amount;
@@ -99,6 +91,16 @@
         </table>
         <br>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
+            <tr>
+                <td colspan="3">Catatan:</td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    Pembayaran dengan Cheque/Giro dianggap lunas<br>
+                    Setelah Cheque/Giro tersebut diuangkan / diterima<br>
+                    dananya.
+                </td>
+            </tr>
             <tr>
                 <td></td>
                 <td width="80%" align="center"></td>

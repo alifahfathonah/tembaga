@@ -1813,6 +1813,8 @@ class BeliSparePart extends CI_Controller{
             $code = $this->Model_m_numberings->getNumbering('VK', $tgl_input);
         }
 
+        // die();
+
         $data = array(
             'no_vk'=> $code,
             'flag_ppn'=> $user_ppn,

@@ -1565,8 +1565,9 @@ class Tolling extends CI_Controller{
         if($user_ppn == 1){
             $code = 'SJ-KMP.'.$tgl_sj.'.'.$this->input->post('no_surat_jalan');
         }else{
-            $this->load->model('Model_m_numberings');
-            $code = $this->Model_m_numberings->getNumbering('SJ', $tgl_input); 
+            // $this->load->model('Model_m_numberings');
+            // $code = $this->Model_m_numberings->getNumbering('SJ', $tgl_input); 
+            $code = 'SJ.'.$tgl_sj.'.'.$this->input->post('no_surat_jalan');
         }
         
         if($code){        
@@ -1604,8 +1605,9 @@ class Tolling extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
-        $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('SJ-T', $tgl_input); 
+        // $this->load->model('Model_m_numberings');
+        // $code = $this->Model_m_numberings->getNumbering('SJ-T', $tgl_input); 
+        $code = 'SJ.'.$tgl_sj.'.'.$this->input->post('no_surat_jalan');
         
         if($code){        
             $data = array(

@@ -166,6 +166,15 @@
                                 </td>
                             </tr>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><strong>Total :</strong></td>
+                                    <td><input type="text" id="total_bruto" class="form-control" readonly="readonly"></td>
+                                    <td><input type="text" id="total_berat" class="form-control" readonly="readonly"></td>
+                                    <td><input type="text" id="total_netto" class="form-control" readonly="readonly"></td>
+                                    <td colspan="5"></td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -305,6 +314,9 @@ function saveDetail(id){
         $('#message').html("nomor bobbin tidak boleh kosong!");
         $('.alert-danger').show();
     }else{
+        $('#total_bruto').val(Number($('#total_bruto').val())+Number($('#bruto_'+id).val()));
+        $('#total_berat').val(Number($('#total_berat').val())+Number($('#berat_bobbin_'+id).val()));
+        $('#total_netto').val(Number($('#total_netto').val())+Number($('#netto_'+id).val()));
         $("#name_rongsok_"+id).attr('readonly','readonly');
         $("#bruto_"+id).attr('readonly','readonly');
         $("#berat_bobbin_"+id).attr('readonly','readonly');

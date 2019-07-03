@@ -67,7 +67,7 @@
                         <td align="center"><?= $no ?></td>
                         <td><?= $v->nama_item ?><br>(Ongkos Kerja)</td>
                         <td align="center"><?= number_format($v->total_netto,2,".",",")." ".$v->uom ?></td>
-                        <td><?= $v->line_remarks ?></td>
+                        <td></td>
                     </tr>
                 <?php
                         $total += $v->total_netto;

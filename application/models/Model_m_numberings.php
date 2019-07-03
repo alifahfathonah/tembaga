@@ -19,7 +19,7 @@ class Model_m_numberings extends CI_Model{
         $MNumbers = $this->db->query("Select * From m_numberings Where "
                 . "prefix='".$bill_type."' order by id limit 1 ")->row_array();  
        
-        if(count($MNumbers) > 0){
+        if($MNumbers !== null){
             //Generate Prefix
             $prefix      = $MNumbers['prefix'];
             
@@ -44,14 +44,15 @@ class Model_m_numberings extends CI_Model{
             //Cek Prefix            
             $MNumberDetails = $this->db->query("Select * From m_numbering_details Where "
                     . "prefix='".$prefix."' order by id limit 1 ")->row_array();  
-
-            if(count($MNumberDetails) > 0){
+            // var_dump($MNumberDetails); die();
+            if($MNumberDetails !== null){
                 //Jika ada ambil last_number
                 $last_number    = $MNumberDetails['last_number'];
                 $current_number = $last_number + 1;
 
                 $this->db->query("UPDATE m_numbering_details SET last_number='".$current_number."' WHERE prefix='".$prefix."'");
             }else{
+                // echo "kesini null"; die();
                 //Jika belum ada insert prefix dan mulai penomoran dari 1
                 $current_number = 1;
                 $this->db->query("INSERT INTO m_numbering_details(prefix, last_number)VALUES('".$prefix."', '".$current_number."')");

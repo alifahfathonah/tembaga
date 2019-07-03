@@ -296,6 +296,7 @@ class R_SO extends CI_Controller{
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
         
         $data = array(
+                'no_so' => $this->input->post('no_so'),
                 'tanggal'=> $tgl_input,
                 'marketing_id'=>$this->input->post('marketing_id'),
                 'cv_id'=>$this->input->post('m_customer_id'),

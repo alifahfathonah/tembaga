@@ -222,8 +222,8 @@ function simpanData(){
                     $('#message').html("Nomor Surat Jalan sudah ada, tolong coba lagi!");
                     $('.alert-danger').show();
                 }else{
-                    $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
-                    $('#formku').submit(); 
+                    // $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+                    // $('#formku').submit(); 
                 }
             }
         });

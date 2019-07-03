@@ -33,9 +33,10 @@
                             No. Surat Jalan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" readonly="readonly"
+                            <!-- <input type="text" id="no_surat_jalan" name="no_surat_jalan" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="Auto generate">
+                                value="Auto generate"> -->
+                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" class="form-control myline" style="margin-bottom:5px" >
                         </div>
                     </div>
                     <div class="row">

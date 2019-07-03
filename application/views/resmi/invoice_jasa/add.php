@@ -32,7 +32,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_inv_jasa" name="no_inv_jasa" 
-                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" value="Auto Generate" readonly="readonly">
+                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
                         </div>
                     </div>
                     <div class="row">
@@ -79,6 +79,58 @@
                             <input type="text" name="tgl_so" id="tgl_so" class="form-control myline input-small" style="margin-bottom:5px; float: left;" onkeyup="this.value = this.value.toUpperCase();" value="<?php echo date('d-m-Y', strtotime($header['tgl_so'])) ?>" readonly="readonly">
                         </div>
                     </div> 
+                    <div class="row">
+                        <div class="col-md-4">
+                            Bank <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="bank_id" name="bank_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($bank_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->nama_bank.'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nama Direktur
+                        </div>
+                        <div class="col-md-8">
+                            <!-- <input type="text" id="nama_direktur" name="nama_direktur" class="form-control myline" style="margin-bottom:5px"> -->
+                            <select id="nama_direktur" name="nama_direktur" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value="Budinata Atmadja">Budinata Atmadja</option>
+                                <option value="Senkiawan Tjandra">Senkiawan Tjandra</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Diskon
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="diskon" name="diskon" class="form-control myline" style="margin-bottom:5px" value="0" onkeyup="getComa(this.value, this.id)">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Biaya Tambahan
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="add_cost" name="add_cost" class="form-control myline" style="margin-bottom:5px" value="0" onkeyup="getComa(this.value, this.id)">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Materai
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="materai" name="materai" class="form-control myline" style="margin-bottom:5px" value="0" onkeyup="getComa(this.value, this.id)">
+                        </div>
+                    </div>
                 <?php
                 } else if($header['r_po_id'] > 0){
                 ?>  
@@ -171,6 +223,19 @@
     </div>
 </div> 
 <script>
+function myCurrency(evt) {
+    var charCode = (evt.which) ? evt.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
+        return false;
+    return true;
+}
+
+function getComa(value, id){
+    angka = value.toString().replace(/\,/g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+    // hitungSubTotal();
+}
+
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");

@@ -350,46 +350,118 @@
                     </ul>
                 </li>
             <?php } if($group_id==1 || (isset($akses_menu['Ingot']) && $akses_menu['Ingot']==1)){ ?>
-                <li <?php if($module_name=="Ingot") echo 'class="start active open"'; ?>>
+                <li <?php if($module_name=="Ingot" || $action_name=="produksi_wip" || $action_name=="produksi_fg") echo 'class="start active open"'; ?>>
                     <a href="javascript:;">
-                    <i class="fa fa-user"></i>
-                    <span class="title">PRODUKSI INGOT</span>
+                    <i class="fa fa-industry"></i>
+                    <span class="title">PRODUKSI</span>
                     <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/Ingot">
-                            <i class="fa fa-flask"></i>
-                            Create Produksi</a>
+                        <li <?php if($module_name=="Ingot") echo 'class="start active open"'; ?>>
+                            <a href="javascript:;">
+                            <i class="fa fa-eraser"></i>
+                            <span class="title">PRODUKSI INGOT</span>
+                            <span class="arrow "></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Ingot">
+                                    <i class="fa fa-flask"></i>
+                                    Create Produksi</a>
+                                </li>
+                                <?php if($group_id==1 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/Ingot/spb_list">
+                                        <i class="fa fa-file-excel-o"></i>
+                                        SPB List </a>
+                                    </li>
+                                <?php } ?>
+                                <!-- <li>
+                                        <a href="<?php echo base_url(); ?>index.php/Ingot/skb_list">
+                                        <i class="fa fa-file-powerpoint-o"></i>
+                                        SKB List </a>
+                                    </li> -->
+                                <?php if($group_id==1 || (isset($akses_menu['hasil_produksi']) && $akses_menu['hasil_produksi']==1)){ ?>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/Ingot/hasil_produksi">
+                                        <i class="fa fa-fire"></i>
+                                        Hasil Produksi </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/Ingot/hasil_produksi2">
+                                        <i class="fa fa-fire"></i>
+                                        Hasil Produksi 2 </a>
+                                    </li>
+                                <?php } ?>
+                            </ul>
                         </li>
-                    <?php if($group_id==1 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/Ingot/spb_list">
-                            <i class="fa fa-file-excel-o"></i>
-                            SPB List </a>
+                        <?php if($group_id==1 || (isset($akses_menu['hasil_produksi']) && $akses_menu['hasil_produksi']==1)){ ?>
+                        <li><a href="javascript:;">
+                                <i class="fa fa-life-ring"></i>
+                                <span class="title">Rolling</span>
+                                <span class="arrow "></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/GudangWIP/produksi_wip/ROLLING">
+                                    <i class="fa fa-life-ring"></i>
+                                    Produksi Rolling </a>
+                                </li>
+                                <!-- <li>
+                                    <a href="<?php echo base_url(); ?>index.php/GudangWIP/spb_list/ROLLING">
+                                    <i class="fa fa-file-word-o"></i>
+                                    SPB ROLLING </a>
+                                </li> -->
+                            </ul>
                         </li>
-                    <?php } ?>
-                        <!-- <li>
-                            <a href="<?php echo base_url(); ?>index.php/Ingot/skb_list">
-                            <i class="fa fa-file-powerpoint-o"></i>
-                            SKB List </a>
-                        </li> -->
-                    <?php if($group_id==1 || (isset($akses_menu['hasil_produksi']) && $akses_menu['hasil_produksi']==1)){ ?>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/Ingot/hasil_produksi">
-                            <i class="fa fa-fire"></i>
-                            Hasil Produksi </a>
+                        <li><a href="javascript:;">
+                                <i class="fa fa-fire"></i>
+                                <span class="title">Bakar Ulang</span>
+                                <span class="arrow "></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/GudangWIP/produksi_wip/BAKAR ULANG">
+                                    <i class="fa fa-fire"></i>
+                                    Produksi Bakar Ulang </a>
+                                </li>
+                                <!-- <li>
+                                    <a href="<?php echo base_url(); ?>index.php/GudangWIP/spb_list/BAKAR ULANG">
+                                    <i class="fa fa-file-word-o"></i>
+                                    SPB Bakar Ulang </a>
+                                </li> -->
+                            </ul>
                         </li>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/Ingot/hasil_produksi2">
-                            <i class="fa fa-fire"></i>
-                            Hasil Produksi 2 </a>
+                        <li><a href="javascript:;">
+                                <i class="fa fa-tty"></i>
+                                <span class="title">Cuci</span>
+                                <span class="arrow "></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/GudangWIP/produksi_wip/CUCI">
+                                    <i class="fa fa-tty"></i>
+                                    Produksi Cuci </a>
+                                </li>
+                                <!-- <li>
+                                    <a href="<?php echo base_url(); ?>index.php/GudangWIP/spb_list/CUCI">
+                                    <i class="fa fa-file-word-o"></i>
+                                    SPB Cuci </a>
+                                </li> -->
+                            </ul>
                         </li>
-                    <?php } ?>
+                        <?php } if($group_id==1 || (isset($akses_menu['produksi']) && $akses_menu['produksi']==1)){  ?>
+                        <li <?php if($action_name=="produksi_fg") echo 'class="start active open"'; ?>>
+                            <a href="<?php echo base_url(); ?>index.php/GudangFG/produksi_fg">
+                            <i class="fa fa-cube"></i>
+                            Produksi FG </a>
+                        </li>
+                        <?php } ?>
+                        
                     </ul>
                 </li>
             <?php } if($group_id==1 || ( (isset($akses_menu['GudangWIP'])&&$akses_menu['GudangWIP']==1) || (isset($akses_menu['GudangFG'])&&$akses_menu['GudangFG']==1) ) ){ ?>
-                <li <?php if(($module_name=="GudangRongsok") || ($module_name=="GudangWIP") || ($module_name=="GudangFG") || ($module_name=="StokOpname")) echo 'class="start active open"'; ?>>
+                <li <?php if(($module_name=="GudangRongsok") || ($module_name=="GudangWIP" && $action_name!="produksi_wip" && $action_name!="proses_wip") || ($module_name=="GudangFG" && $action_name!="produksi_fg") || ($module_name=="StokOpname")) echo 'class="start active open"'; ?>>
                     <a href="#">
                     <i class="fa fa-cubes"></i>
                     <span class="title">GUDANG</span>
@@ -448,13 +520,9 @@
                                 <i class="fa fa-cubes"></i>
                                 Gudang WIP </a>
                             </li>
-                        <?php } if($group_id==1 || (isset($akses_menu['hasil_produksi']) && $akses_menu['hasil_produksi']==1)){ ?>
-                            <li>
-                                <a href="<?php echo base_url(); ?>index.php/GudangWIP/produksi_wip">
-                                <i class="fa fa-hourglass"></i>
-                                Produksi WIP </a>
-                            </li>
-                        <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                        <?php }  ?>
+                            <!-- ambil produksi disini -->
+                        <?php if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangWIP/laporan_list">
                                 <i class="fa fa-briefcase"></i>
@@ -477,13 +545,7 @@
                         <span class="arrow "></span>
                         </a>
                         <ul class="sub-menu">
-                        <?php if($group_id==1 || (isset($akses_menu['produksi']) && $akses_menu['produksi']==1)){ ?>
-                            <li>
-                                <a href="<?php echo base_url(); ?>index.php/GudangFG/produksi_fg">
-                                <i class="fa fa-hourglass"></i>
-                                Produksi FG </a>
-                            </li>
-                        <?php } ?>
+                            <!-- ambil produksi disini -->
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangFG/spb_list">
                                 <i class="fa fa-file-word-o"></i>
@@ -798,6 +860,24 @@
                             <a href="<?php echo base_url(); ?>index.php/SalesOrder/surat_jalan">
                             <i class="fa fa-file"></i>
                             Surat Jalan </a>
+                        </li>
+                        <?php } if($group_id==1 || (isset($akses_menu['laporan_so']) && $akses_menu['laporan_so']==1)){ ?>
+                        <li>
+                            <a href="javascript:;">
+                            <i class="fa fa-book"></i>
+                            <span class="title">Laporan Penjualan </span>
+                            <span class="arrow "></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/laporan_so">
+                                    - Berdasarkan Jenis Barang </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/view_laporan_so_by_sj/<?= date("Y-m") ?>">
+                                    - Berdasarkan Surat Jalan </a>
+                                </li>
+                            </ul>
                         </li>
                         <?php } ?>
                     </ul>
