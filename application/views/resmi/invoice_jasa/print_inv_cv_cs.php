@@ -92,19 +92,13 @@
         <br>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
-                <td colspan="3">Catatan:</td>
-            </tr>
-            <tr>
-                <td colspan="3">
-                    Pembayaran dengan Cheque/Giro dianggap lunas<br>
+                <td>
+                    Catatan:<br>Pembayaran dengan Cheque/Giro dianggap lunas<br>
                     Setelah Cheque/Giro tersebut diuangkan / diterima<br>
                     dananya.
                 </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td width="80%" align="center"></td>
-                <td>Hormat Kami,</td>
+                <td width="35%" align="center"></td>
+                <td valign="top">Hormat Kami,</td>
             </tr>
         </table>
         <p>&nbsp;</p>
