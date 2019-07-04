@@ -73,7 +73,7 @@
                 <tr>
                     <td colspan="2" align="right"><b>TOTAL</b></td>
                     <td align="center"><b><?= number_format($total,2,".",",")." ".$v->uom ?></b></td>
-                    <td></td>
+                    <td><?= $header_cv_cs['no_po'] ?></td>
                 </tr>
             </tbody>
         </table>
