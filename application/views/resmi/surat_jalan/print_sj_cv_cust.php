@@ -63,7 +63,7 @@
                         <td align="center"><?= $no ?></td>
                         <td><?= $v->jenis_barang ?></td>
                         <td align="center"><?= number_format($v->total_netto,2,".",",")." ".$v->uom ?></td>
-                        <td></td>
+                        <td><?= $header_cv_cs['no_po'] ?></td>
                     </tr>
                 <?php
                         $total += $v->total_netto;
@@ -73,7 +73,7 @@
                 <tr>
                     <td colspan="2" align="right"><b>TOTAL</b></td>
                     <td align="center"><b><?= number_format($total,2,".",",")." ".$v->uom ?></b></td>
-                    <td><?= $header_cv_cs['no_po'] ?></td>
+                    <td></td>
                 </tr>
             </tbody>
         </table>
