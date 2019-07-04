@@ -721,7 +721,14 @@ class GudangWIP extends CI_Controller{
 
     function spb_list(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
+        $jenis = $this->uri->segment(3);
+        if ($jenis == "CUCI") {
+            $flag_produksi = 3;
+        } else {
+            $flag_produksi = null;
+        }
+
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -731,7 +738,7 @@ class GudangWIP extends CI_Controller{
 
         $data['content']= "gudangwip/spb_list";
         $this->load->model('Model_gudang_wip');
-        $data['list_data'] = $this->Model_gudang_wip->spb_list()->result();
+        $data['list_data'] = $this->Model_gudang_wip->spb_list($flag_produksi)->result();
 
         $this->load->view('layout', $data);
     }
@@ -918,6 +925,7 @@ class GudangWIP extends CI_Controller{
     function delete_spb(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
+        $flag_produksi = $this->uri->segment(4);
         if($id){
             $this->db->trans_start();
 
@@ -929,10 +937,19 @@ class GudangWIP extends CI_Controller{
 
             if($this->db->trans_complete()){
                 $this->session->set_flashdata('flash_msg', 'Data SPB WIP berhasil dihapus');
-                redirect('index.php/GudangWIP/spb_list');
+                if ($flag_produksi == 1 || $flag_produksi == 3) {
+                    redirect('index.php/GudangWIP/spb_list/CUCI');
+                } else {
+                    redirect('index.php/GudangWIP/spb_list/');
+                }
+                
             }else{
                 $this->session->set_flashdata('flash_msg', 'Data SPB WIP gagal dihapus');
-                redirect('index.php/GudangWIP/spb_list');
+                if ($flag_produksi == 1 || $flag_produksi == 3) {
+                    redirect('index.php/GudangWIP/spb_list/CUCI');
+                } else {
+                    redirect('index.php/GudangWIP/spb_list/');
+                }
             }
         }
     }

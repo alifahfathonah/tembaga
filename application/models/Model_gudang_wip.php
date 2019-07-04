@@ -64,8 +64,9 @@ class Model_gudang_wip extends CI_Model{
         return $data;
     }
 
-    function spb_list(){
-        $data = $this->db->query("Select tsw.*,
+    function spb_list($flag_produksi=null){
+        if ($flag_produksi == 3 || $flag_produksi == 1) {
+            $data = $this->db->query("Select tsw.*,
                     usr.realname As pic,
                     aprv.realname As approved_name,
                     rjt.realname As rejected_name,
@@ -77,7 +78,25 @@ class Model_gudang_wip extends CI_Model{
                     Left Join users aprv On (tsw.approved_by = aprv.id)
                     Left Join users rjt On (tsw.rejected_by = rjt.id)
                     Left join users rcv on (tsw.received_by = rcv.id) 
+                    where tsw.flag_produksi IN (1,3) 
                 Order By tsw.id Desc");
+        } else {
+            $data = $this->db->query("Select tsw.*,
+                    usr.realname As pic,
+                    aprv.realname As approved_name,
+                    rjt.realname As rejected_name,
+                    rcv.realname As receiver_name,
+                (Select count(tswd.id)As jumlah_item From t_spb_wip_detail tswd Where tswd.t_spb_wip_id = tsw.id)As jumlah_item,
+                (Select count(tswf.id) from t_spb_wip_fulfilment tswf where tswf.t_spb_wip_id = tsw.id)As jumlah_fulfilment
+                From t_spb_wip tsw
+                    Left Join users usr On (tsw.created_by = usr.id)
+                    Left Join users aprv On (tsw.approved_by = aprv.id)
+                    Left Join users rjt On (tsw.rejected_by = rjt.id)
+                    Left join users rcv on (tsw.received_by = rcv.id) 
+                    where tsw.flag_produksi NOT IN (1,3) 
+                Order By tsw.id Desc");
+        }
+        
         return $data;
     }
 

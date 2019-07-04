@@ -429,8 +429,13 @@
                                 .'<i class="fa fa-refresh"></i> Input Ulang </a>';
                         }
                     ?>
-                    <a href="<?php echo base_url('index.php/GudangWIP/spb_list'); ?>" class="btn blue-hoki"> 
+                    <?php if($myData['flag_produksi']==3 || $myData['flag_produksi']==1) { ?>
+                    <a href="<?php echo base_url('index.php/GudangWIP/spb_list/CUCI'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
+                    <?php } else { ?>
+                        <a href="<?php echo base_url('index.php/GudangWIP/spb_list'); ?>" class="btn blue-hoki"> 
+                        <i class="fa fa-angle-left"></i> Kembali </a>
+                    <?php } ?>
                     <?php if($group_id==1 || $hak_akses['print_spb']==1){ ?>
                     <a class="btn btn-circle blue-ebonyclay" href="<?php echo base_url('index.php/GudangWIP/print_spb_fulfilment/').$myData['id'];?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                     <?php } ?>

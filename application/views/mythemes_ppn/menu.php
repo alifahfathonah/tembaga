@@ -431,11 +431,11 @@
                                     <i class="fa fa-tty"></i>
                                     Produksi Cuci </a>
                                 </li>
-                                <!-- <li>
+                                <li>
                                     <a href="<?php echo base_url(); ?>index.php/GudangWIP/spb_list/CUCI">
                                     <i class="fa fa-file-word-o"></i>
                                     SPB Cuci </a>
-                                </li> -->
+                                </li>
                             </ul>
                         </li>
                         <?php } if($group_id==1 || (isset($akses_menu['produksi']) && $akses_menu['produksi']==1)){  ?>
@@ -825,9 +825,21 @@
                         </li>
                         <?php } if($group_id==1 || (isset($akses_menu['laporan_so']) && $akses_menu['laporan_so']==1)){ ?>
                         <li>
-                            <a href="<?php echo base_url(); ?>index.php/SalesOrder/laporan_so">
+                            <a href="javascript:;">
                             <i class="fa fa-book"></i>
-                            Laporan Penjualan </a>
+                            <span class="title">Laporan Penjualan </span>
+                            <span class="arrow "></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/laporan_so">
+                                    - Berdasarkan Jenis Barang </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/view_laporan_so_by_sj/<?= date("Y-m") ?>">
+                                    - Berdasarkan Surat Jalan </a>
+                                </li>
+                            </ul>
                         </li>
                         <?php } ?>
                     </ul>

@@ -28,9 +28,15 @@
                     <i class="fa fa-file-word-o"></i>SPB WIP List
                 </div> 
                 <div class="tools"> 
-                <?php if( ($group_id==1)||($hak_akses['add_spb']==1) ){?>
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/GudangWIP/add_spb"> <i class="fa fa-plus"></i> Ajukan SPB WIP</a>  
-                <?php } ?>            
+                <?php if( ($group_id==1)||($hak_akses['add_spb']==1) ){
+                    if($this->uri->segment(3) == "CUCI"){
+                ?>
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/GudangWIP/add_spb/CUCI"> <i class="fa fa-plus"></i> Ajukan SPB WIP</a>  
+                <?php }  else { ?>
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/GudangWIP/add_spb"> <i class="fa fa-plus"></i> Ajukan SPB WIP</a> 
+                <?php    }
+                }
+                ?>            
                 </div>               
             </div>
             <div class="portlet-body">
@@ -110,7 +116,7 @@
                                 if(($group_id==1 || $hak_akses['edit_spb']==1) && $data->jumlah_fulfilment==0){
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/GudangWIP/edit_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
-                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/GudangWIP/delete_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-trash"></i> Hapus &nbsp; </a>
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/GudangWIP/delete_spb/<?php echo $data->id; ?>/<?= $data->flag_produksi ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-trash"></i> Hapus &nbsp; </a>
                             <?php   
                                 }
                                 if($group_id==1 || $hak_akses['print_spb']==1){

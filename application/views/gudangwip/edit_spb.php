@@ -140,8 +140,13 @@
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
                         
-                    <a href="<?php echo base_url('index.php/GudangWIP/spb_list'); ?>" class="btn blue-hoki"> 
+                    <?php if($header['flag_produksi']==3 || $header['flag_produksi']==1) { ?>
+                    <a href="<?php echo base_url('index.php/GudangWIP/spb_list/CUCI'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
+                    <?php } else { ?>
+                        <a href="<?php echo base_url('index.php/GudangWIP/spb_list'); ?>" class="btn blue-hoki"> 
+                        <i class="fa fa-angle-left"></i> Kembali </a>
+                    <?php } ?>
                 </div>    
             </div>
             

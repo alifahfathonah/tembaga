@@ -443,11 +443,11 @@
                                     <i class="fa fa-tty"></i>
                                     Produksi Cuci </a>
                                 </li>
-                                <!-- <li>
+                                <li>
                                     <a href="<?php echo base_url(); ?>index.php/GudangWIP/spb_list/CUCI">
                                     <i class="fa fa-file-word-o"></i>
                                     SPB Cuci </a>
-                                </li> -->
+                                </li>
                             </ul>
                         </li>
                         <?php } if($group_id==1 || (isset($akses_menu['produksi']) && $akses_menu['produksi']==1)){  ?>
