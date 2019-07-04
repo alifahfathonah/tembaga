@@ -97,7 +97,7 @@
                     Setelah Cheque/Giro tersebut diuangkan / diterima<br>
                     dananya.
                 </td>
-                <td width="35%" align="center"></td>
+                <td width="15%" align="center"></td>
                 <td valign="top">Hormat Kami,</td>
             </tr>
         </table>
