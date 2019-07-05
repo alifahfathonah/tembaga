@@ -38,7 +38,7 @@
     }
     ?>
     <tr>
-        <td colspan="4"></td>
+        <td colspan="5"></td>
         <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($netto,2,',','.');?></td>
     </tr>
     </tbody>
