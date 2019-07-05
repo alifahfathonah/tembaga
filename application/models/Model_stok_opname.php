@@ -24,4 +24,21 @@ class Model_stok_opname extends CI_Model{
                 WHERE sod.stok_opname_id = ".$id);
         return $data;
     }
+
+    function print_stok_v1(){
+        $data = $this->db->query("select x.*, g.no_packing no_packing_gudang, g.bruto, g.netto, g.nomor_bobbin, jb.kode, jb.jenis_barang
+            from
+            (select o.tanggal, o.id, od.gudang_id, od.no_packing hasil_scan, od.jenis_barang_id
+            from 
+            stok_opname_detail od,
+            stok_opname o
+            where
+            od.stok_opname_id = o.id
+            ) x
+            left join t_gudang_fg g on g.id = x.gudang_id
+            left join jenis_barang jb on jb.id = x.jenis_barang_id
+            order by jb.kode
+            ;");
+        return $data;
+    }
 }

@@ -597,6 +597,11 @@
                                 <i class="fa fa-briefcase"></i>
                                 Stock FG </a>
                             </li>
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/StokOpname/print_stok">
+                                <i class="fa fa-print"></i>
+                                Print Stok FG </a>
+                            </li>
                         <?php } ?>
                         </ul>
                         </li>

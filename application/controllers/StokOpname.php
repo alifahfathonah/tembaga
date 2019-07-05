@@ -34,9 +34,7 @@ class StokOpname extends CI_Controller{
 
         header('Content-Type: application/json');
         echo json_encode($result);
-    }
-
-    
+    }   
 
     function save(){
         $user_id  = $this->session->userdata('user_id');
@@ -224,5 +222,12 @@ class StokOpname extends CI_Controller{
 
         $this->load->view('layout', $data);
     }
-    
+
+    function print_stok(){
+        $this->load->helper('tanggal_indo');  
+        $this->load->model('Model_stok_opname');
+        $data['detailLaporan'] = $this->Model_stok_opname->print_stok_v1()->result();
+
+        $this->load->view('stok_opname/print_stok', $data);
+    }
 }
