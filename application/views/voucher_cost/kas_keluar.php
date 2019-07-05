@@ -190,9 +190,9 @@
                     <i class="fa fa-beer"></i>Kas Keluar
                 </div>
                 <div class="tools">    
-                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" onclick="newData()">
-                        <i class="fa fa-plus"></i> Tambah</a>
-                    <!-- <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/VoucherCost/add_uk"><i class="fa fa-plus"></i> Tambah</a> -->
+                    <!-- <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" onclick="newData()">
+                        <i class="fa fa-plus"></i> Tambah</a> -->
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/VoucherCost/add_uk"><i class="fa fa-plus"></i> Tambah</a>
                 </div>
             </div>
             <div class="portlet-body">
@@ -205,6 +205,7 @@
                     <th>Nama Cost</th>  
                     <th>Nama Group Cost</th>   
                     <th>Keterangan</th>
+                    <th>Currency</th>
                     <th>Amount (Rp)</th> 
                     <th>Actions</th>
                 </tr>
@@ -222,6 +223,7 @@
                         <td><?php echo $data->nama_trx; ?></td>
                         <td><?php echo $data->nama_group_cost; ?></td>
                         <td><?php echo $data->keterangan; ?></td>
+                        <td><?php echo $data->currency; ?></td>
                         <td style="text-align:right"><?php echo number_format($data->nominal,2,',','.'); ?></td>
                         <td style="text-align:center"> 
                             <?php 

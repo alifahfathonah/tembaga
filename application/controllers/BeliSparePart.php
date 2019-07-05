@@ -1380,6 +1380,11 @@ class BeliSparePart extends CI_Controller{
     function delete_matching_voucher(){
         $id = $this->uri->segment(3);
         
+        $this->db->where('vk_id', $id);
+        $this->db->update('lpb', array(
+            'vk_id' => 0
+        ));
+
         $this->db->where('id', $id);
         $this->db->delete('f_vk');
         
@@ -1955,6 +1960,23 @@ class BeliSparePart extends CI_Controller{
             $code_um = $this->Model_m_numberings->getNumbering($num);
         }
         
+                $data_vk = array(
+                    'jenis_trx'=>1,
+                    'nomor'=>$code_um,
+                    'flag_ppn'=> $user_ppn,
+                    'tanggal'=>$tgl_input,
+                    'tgl_jatuh_tempo'=>$tgl_jatuh,
+                    'no_giro'=>$this->input->post('nomor_giro'),
+                    'id_bank'=>$this->input->post('bank_id'),
+                    'id_vc'=>0,
+                    'currency'=>$this->input->post('currency'),
+                    'nominal'=>str_replace('.', '', $this->input->post('nominal')),
+                    'created_at'=>$tanggal,
+                    'created_by'=>$user_id
+                );
+                $this->db->insert('f_kas', $data_vk);
+                $f_kas = $this->db->insert_id();
+
                 $data_v = array(
                         'no_voucher'=> $code,
                         'tanggal'=> $tgl_input,
@@ -1964,6 +1986,7 @@ class BeliSparePart extends CI_Controller{
                         'status'=>1,
                         'jenis_barang'=> 'SPARE PART',
                         'vk_id'=> $this->input->post('id'),
+                        'id_fk'=> $f_kas,
                         'keterangan'=> $this->input->post('remarks'),
                         'amount'=> str_replace('.', '', $this->input->post('nominal')),
                         'created'=> $tanggal,
@@ -1973,23 +1996,6 @@ class BeliSparePart extends CI_Controller{
                     );
                 $this->db->insert('voucher', $data_v);
                 $insert_id=$this->db->insert_id();
-
-                $data_vk = array(
-                    'jenis_trx'=>1,
-                    'nomor'=>$code_um,
-                    'flag_ppn'=> $user_ppn,
-                    'tanggal'=>$tgl_input,
-                    'tgl_jatuh_tempo'=>$tgl_jatuh,
-                    'no_giro'=>$this->input->post('nomor_giro'),
-                    'id_bank'=>$this->input->post('bank_id'),
-                    'id_vc'=>$insert_id,
-                    'currency'=>$this->input->post('currency'),
-                    'nominal'=>str_replace('.', '', $this->input->post('nominal')),
-                    'created_at'=>$tanggal,
-                    'created_by'=>$user_id
-                );
-                $this->db->insert('f_kas', $data_vk);
-                $f_kas = $this->db->insert_id();
 
             if($user_ppn==1){
                 $detail['vk_id'] = $this->input->post('id');

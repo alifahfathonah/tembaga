@@ -1803,6 +1803,20 @@ class BeliRongsok extends CI_Controller{
         // header('Content-Type: application/json');
         // echo json_encode($return_data);
     }
+
+    function delete_voucher(){
+        $id = $this->uri->segment(3);
+        
+        $this->db->trans_start();
+        if(!empty($id)){
+            $this->db->delete('voucher', ['id' => $id]);
+        }
+
+        if ($this->db->trans_complete()) {
+            $this->session->set_flashdata('flash_msg', 'Data voucher berhasil dihapus');
+            redirect('index.php/BeliRongsok/voucher_list');
+        }
+    }
     
     function voucher_list(){
         $module_name = $this->uri->segment(1);

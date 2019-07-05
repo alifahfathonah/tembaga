@@ -352,6 +352,7 @@ function updateDetail(id){
             url:'<?php echo base_url('index.php/SalesOrder/update_detail_so'); ?>',
             data:{
                 detail_id:$('#detail_id_'+id).val(),
+                spb_detail_id:$('#spb_detail_id_'+id).val(),
                 jenis: jenis,
                 nama_barang_alias:$('#nama_barang_alias_'+id).val(),
                 netto:$('#netto_'+id).val(),
@@ -388,13 +389,13 @@ function getComa_a(value, id, no){
 function hitungSubTotal_a(id){
     if($('#jenis_barang').val() == 'FG' || $('#jenis_barang').val() == 'AMPAS' || $('#jenis_barang').val() == 'WIP'){
         harga = $('#amount_'+id).val().toString().replace(/\,/g, "");
-        netto = $('#netto_'+id).val();
+        netto = $('#netto_'+id).val().toString().replace(/\,/g, "");
         total_harga = Number(harga)* Number(netto);
         total_harga = total_harga.toFixed(2);
         $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     }else{
         harga = $('#amount_'+id).val().toString().replace(/\,/g, "");;
-        netto = $('#netto_'+id).val();
+        netto = $('#netto_'+id).val().toString().replace(/\,/g, "");
         total_harga = Number(harga)* Number(netto);
         total_harga = total_harga.toFixed(2);
         $('#total_amount_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));

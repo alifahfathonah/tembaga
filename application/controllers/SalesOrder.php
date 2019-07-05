@@ -252,31 +252,32 @@ class SalesOrder extends CI_Controller{
             $tabel .= '<input typed="text" id="jenis_barang_id_'.$no.'" name="jenis_barang_id_'.$no.'" class="form-control select2me myline" readonly="readonly" value="'.$row->nama_barang.'"';
             $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px; display:none">';
             $tabel .= '<input type="hidden" id="detail_id_'.$no.'" name="detail_id_'.$no.'" value="'.$row->id.'">';
+            $tabel .= '<input type="hidden" id="spb_detail_id_'.$no.'" name="spb_detail_id_'.$no.'" value="'.$row->no_spb_detail.'">';
             $tabel .= '</td>';
             $tabel .= '<td><label id="lbl_nama_barang_alias_'.$no.'">'.$row->nama_barang_alias.'</label>';
             $tabel .= '<input type="text" id="nama_barang_alias_'.$no.'" name="nama_barang_alias_'.$no.'" class="form-control myline" value="'.$row->nama_barang_alias.'" style="display:none;"/></td>';
             $tabel .= '<td><label id="lbl_uom_'.$no.'">'.$row->uom.'</label>';
             $tabel .= '<input type="text" id="uom_'.$no.'" name="uom_'.$no.'" class="form-control myline" value="'.$row->uom.'" readonly  style="display:none;"/></td>';
-            $tabel .= '<td style="text-align:right;"><label id="lbl_amount_'.$no.'">'.number_format($row->amount,0,',','.').'</label>';
-            $tabel .= '<input type="text" id="amount_'.$no.'" name="amount_'.$no.'" class="form-control myline" value="'.$row->amount.'" onkeydown="return myCurrency_a(event);" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id,'.$no.');"  style="display:none;"/></td>';
+            $tabel .= '<td style="text-align:right;"><label id="lbl_amount_'.$no.'">'.number_format($row->amount,2,',','.').'</label>';
+            $tabel .= '<input type="text" id="amount_'.$no.'" name="amount_'.$no.'" class="form-control myline" value="'.number_format($row->amount,2,'.',',').'" maxlength="10" value="0" onkeyup="getComa_a(this.value, this.id,'.$no.');"  style="display:none;"/></td>';
             if($jenis=='RONGSOK'){
-            $tabel .= '<td style="text-align:right;"><label id="lbl_netto_'.$no.'">'.number_format($row->qty,0,',','.').'</label>';
-            $tabel .= '<input type="text" id="netto_'.$no.'" name="netto_'.$no.'" class="form-control myline" value="'.number_format($row->qty,0,',','.').'"  style="display:none;" maxlength="10" value="0" readonly="readonly"/></td>';
+            $tabel .= '<td style="text-align:right;"><label id="lbl_netto_'.$no.'">'.number_format($row->qty,2,',','.').'</label>';
+            $tabel .= '<input type="text" id="netto_'.$no.'" name="netto_'.$no.'" class="form-control myline" value="'.number_format($row->qty,0,'.',',').'" onkeyup="getComa_a(this.value, this.id,'.$no.');" style="display:none;" maxlength="10" value="0"/></td>';
             $netto += $row->qty;
             }else if($jenis=='WIP'){
-            $tabel .= '<td style="text-align:right;"><label id="lbl_qty_'.$no.'">'.number_format($row->qty,0,',','.').'</label>';
-            $tabel .= '<input type="text" id="qty_'.$no.'" name="qty_'.$no.'" class="form-control myline" value="'.number_format($row->qty,0,',','.').'"  style="display:none;" maxlength="10" value="0" readonly="readonly"/></td>';
-            $tabel .= '<td style="text-align:right;"><label id="lbl_netto_'.$no.'">'.number_format($row->netto,0,',','.').'</label>';
-            $tabel .= '<input type="text" id="netto_'.$no.'" name="netto_'.$no.'" class="form-control myline" value="'.number_format($row->netto,0,',','.').'"  style="display:none;" maxlength="10" value="0" readonly="readonly"/></td>';
+            $tabel .= '<td style="text-align:right;"><label id="lbl_qty_'.$no.'">'.number_format($row->qty,2,',','.').'</label>';
+            $tabel .= '<input type="text" id="qty_'.$no.'" name="qty_'.$no.'" class="form-control myline" value="'.number_format($row->qty,2,'.',',').'"  style="display:none;" maxlength="10" value="0" readonly="readonly"/></td>';
+            $tabel .= '<td style="text-align:right;"><label id="lbl_netto_'.$no.'">'.number_format($row->netto,2,',','.').'</label>';
+            $tabel .= '<input type="text" id="netto_'.$no.'" name="netto_'.$no.'" class="form-control myline" value="'.number_format($row->netto,2,'.',',').'" onkeyup="getComa_a(this.value, this.id,'.$no.');" style="display:none;" maxlength="10" value="0"/></td>';
             $qty += $row->qty;
             $netto += $row->netto;
             }else{
-            $tabel .= '<td style="text-align:right;"><label id="lbl_netto_'.$no.'">'.number_format($row->netto,0,',','.').'</label>';
-            $tabel .= '<input type="text" id="netto_'.$no.'" name="netto_'.$no.'" class="form-control myline" value="'.number_format($row->netto,0,',','.').'"  style="display:none;" maxlength="10" value="0" readonly="readonly"/></td>';
+            $tabel .= '<td style="text-align:right;"><label id="lbl_netto_'.$no.'">'.number_format($row->netto,2,',','.').'</label>';
+            $tabel .= '<input type="text" id="netto_'.$no.'" name="netto_'.$no.'" class="form-control myline" value="'.number_format($row->netto,2,'.',',').'" onkeyup="getComa_a(this.value, this.id,'.$no.');" style="display:none;" maxlength="10" value="0"/></td>';
             $netto += $row->netto;
             }
-            $tabel .= '<td style="text-align:right;"><label id="lbl_total_amount_'.$no.'">'.number_format($row->total_amount,0,',','.').'</label>';
-            $tabel .= '<input type="text" id="total_amount_'.$no.'" name="total_amount_'.$no.'" class="form-control myline" value="'.number_format($row->total_amount,0,',','.').'" style="display:none;" readonly /></td>';
+            $tabel .= '<td style="text-align:right;"><label id="lbl_total_amount_'.$no.'">'.number_format($row->total_amount,2,',','.').'</label>';
+            $tabel .= '<input type="text" id="total_amount_'.$no.'" name="total_amount_'.$no.'" class="form-control myline" value="'.number_format($row->total_amount,2,',','.').'" style="display:none;" readonly /></td>';
             $tabel .= '<td style="text-align:center;"><a id="btnEdit_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle '
                     . 'green" onclick="editDetail('.$no.');" style="margin-top:5px"> '
                     . '<i class="fa fa-pencil"></i> Edit </a>';
@@ -309,23 +310,58 @@ class SalesOrder extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $jenis = $this->input->post('jenis');
         
+        $this->db->trans_start();
+
+        //update so
         if($jenis == 'RONGSOK'){
             $data = array(
                 'nama_barang_alias'=>$this->input->post('nama_barang_alias'),
-                'amount'=>str_replace('.', '', $this->input->post('amount')),
-                'total_amount'=>str_replace('.', '', $this->input->post('total_amount')),
-                'qty'=>str_replace('.', '', $this->input->post('netto'))
+                'amount'=>str_replace(',', '', $this->input->post('amount')),
+                'total_amount'=>str_replace(',', '', $this->input->post('total_amount')),
+                'qty'=>str_replace(',', '', $this->input->post('netto'))
             );
         }else{
             $data = array(
                 'nama_barang_alias'=>$this->input->post('nama_barang_alias'),
-                'amount'=>str_replace('.', '', $this->input->post('amount')),
-                'total_amount'=>str_replace('.', '', $this->input->post('total_amount')),
-                'netto'=>str_replace('.', '', $this->input->post('netto'))
+                'amount'=>str_replace(',', '', $this->input->post('amount')),
+                'total_amount'=>str_replace(',', '', $this->input->post('total_amount')),
+                'netto'=>str_replace(',', '', $this->input->post('netto'))
             );
         }
         $this->db->where('id', $this->input->post('detail_id'));
-        if($this->db->update('t_sales_order_detail', $data)){
+        $this->db->update('t_sales_order_detail', $data);
+
+        // update spb
+        if($jenis == 'FG'){
+            $this->db->where('id',$this->input->post('spb_detail_id'));
+            $dataC = array(
+                'netto'=>str_replace(',', '', $this->input->post('netto'))
+            );
+            $this->db->update('t_spb_fg_detail', $dataC);
+
+        }else if($jenis == 'AMPAS'){
+            $this->db->where('id',$this->input->post('spb_detail_id'));
+            $dataC = array(
+                'netto' =>str_replace(',', '', $this->input->post('netto'))
+            );
+            $this->db->update('t_spb_ampas_detail', $dataC);
+
+        }else if($jenis == 'WIP'){
+            $this->db->where('id',$this->input->post('spb_detail_id'));
+            $dataC = array(
+                'berat'=>str_replace(',', '', $this->input->post('netto'))
+            );
+            $this->db->update('t_spb_wip_detail', $dataC);
+
+        }else if($jenis == 'RONGSOK'){
+            $this->db->where('id',$this->input->post('spb_detail_id'));
+            $dataC = array(
+                'qty'=>str_replace(',', '', $this->input->post('netto'))
+            );
+            $this->db->update('spb_detail', $dataC);
+        }
+
+        if($this->db->trans_complete()){
             $return_data['message_type']= "sukses";
         }else{
             $return_data['message_type']= "error";
@@ -839,6 +875,7 @@ class SalesOrder extends CI_Controller{
         
         $this->load->model('Model_sales_order');
         $data['sj'] = $this->Model_sales_order->get_last_sj($user_ppn)->row_array();
+        $data['sjr'] = $this->Model_sales_order->get_last_sj_cv($user_ppn)->row_array();
         $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
         //$data['jenis_barang_list'] = $this->Model_sales_order->jenis_barang_list()->result();
         $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
@@ -1000,6 +1037,23 @@ class SalesOrder extends CI_Controller{
         }
     }
 
+    function delete_surat_jalan(){
+        $id = $this->uri->segment(3);
+
+        $this->db->trans_start();
+
+        $this->db->where('id', $id);
+        $this->db->delete('t_surat_jalan');
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Surat Jalan berhasil di hapus');
+            redirect('index.php/SalesOrder/surat_jalan');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Surat Jalan gagal dihapus');
+            redirect('index.php/SalesOrder/surat_jalan');
+        }
+    }
+
     function get_data_sj(){
         $id = $this->input->post('id');
         $jb = $this->input->post('jenis_barang');
@@ -1037,9 +1091,9 @@ class SalesOrder extends CI_Controller{
                         'no_packing'=>$v['no_packing'],
                         'qty'=>'1',
                         'bruto'=>$v['bruto'],
+                        'berat'=>$v['berat'],
                         'netto'=>$v['netto'],
                         'nomor_bobbin'=>$v['bobbin'],
-                        'line_remarks'=>$v['line_remarks'],
                         'created_by'=>$user_id,
                         'created_at'=>$tanggal
                     ));
@@ -1051,9 +1105,9 @@ class SalesOrder extends CI_Controller{
                         'no_packing'=>0,
                         'qty'=>$v['qty'],
                         'bruto'=>0,
+                        'berat'=>0,
                         'netto'=>$v['netto'],
                         'nomor_bobbin'=>0,
-                        'line_remarks'=>$v['line_remarks'],
                         'created_by'=>$user_id,
                         'created_at'=>$tanggal
                     ));
@@ -1066,9 +1120,9 @@ class SalesOrder extends CI_Controller{
                         'no_packing'=>$v['no_palette'],
                         'qty'=>$v['qty'],
                         'bruto'=>$v['bruto'],
+                        'berat'=>$v['berat_palette'],
                         'netto'=>$v['netto'],
                         'nomor_bobbin'=>0,
-                        'line_remarks'=>$v['line_remarks'],
                         'created_by'=>$user_id,
                         'created_at'=>$tanggal
                     ));
@@ -1081,9 +1135,9 @@ class SalesOrder extends CI_Controller{
                         'no_packing'=>'',
                         'qty'=>1,
                         'bruto'=>str_replace('.', '', $v['bruto']),
+                        'berat'=>0,
                         'netto'=>str_replace('.', '', $v['netto']),
                         'nomor_bobbin'=>0,
-                        'line_remarks'=>$v['line_remarks'],
                         'created_by'=>$user_id,
                         'created_at'=>$tanggal
                     ));
@@ -1386,7 +1440,9 @@ class SalesOrder extends CI_Controller{
         $details = $this->input->post('details');
         foreach ($details as $v) {
             if($v['netto_r']>0){
+                $bruto = $v['netto_r'] + $v['berat'];
                 $data = array(
+                        'bruto'=> $bruto,
                         'netto_r'=> $v['netto_r'],
                         'modified_at'=> $tanggal,
                         'modified_by'=> $user_id

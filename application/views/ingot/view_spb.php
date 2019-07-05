@@ -56,6 +56,14 @@
         <?php
             if( ($group_id==1)||($hak_akses['view_spb']==1) ){
         ?>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger display-hide">
+                    <button class="close" data-close="alert"></button>
+                    <span id="message">&nbsp;</span>
+                </div>
+            </div>
+        </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku">  
             <div class="row">
@@ -255,6 +263,7 @@
                                             <th>Netto</th>
                                             <th>UOM</th>
                                             <th>Keterangan</th>
+                                            <th>Status</th>
                                         </thead>
                                         <tbody>
                                             <?php $no=1; $total_netto = 0; foreach($detailSPBFulfilment as $v) { ?>
@@ -265,6 +274,14 @@
                                                 <td><?=number_format($v->netto,2,',','.');?></td>
                                                 <td><?=$v->uom;?></td>
                                                 <td><?=$v->line_remarks;?></td>
+                                                <?php
+                                                if($v->so_id!=0){
+                                                echo '<td style="background-color: green; color: white">Sudah di Kirim</td>';
+                                                echo '<td></td>';
+                                                }else{
+                                                    echo '<td>Belum Dikirim</td>';
+                                                    echo '<td><a href="'.base_url().'index.php/Ingot/delSPBSudahDipenuhi/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm("Anda yakin menghapus transaksi ini?");"><i class="fa fa-trash-o"></i> Delete</a></td>';
+                                                }?>
                                             </tr>
                                             <?php 
                                             $total_netto += $v->netto;
@@ -272,7 +289,7 @@
                                             <tr>
                                                 <td colspan="3"> Total</td>
                                                 <td><?=number_format($total_netto,2,',','.');?></td>
-                                                <td colspan="2"></td>
+                                                <td colspan="4"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -327,6 +344,7 @@
                                             <th>No Pallete</th>
                                             <th>Netto</th>
                                             <th>Keterangan</th>
+                                            <th>Status</th>
                                         </thead>
                                         <tbody>
                                         <?php
@@ -340,6 +358,13 @@
                                                 echo '<td>'.$row->no_pallete.'</td>';
                                                 echo '<td>'.number_format($row->netto,2,',','.').' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->line_remarks.'</td>';
+                                                if($row->so_id!=0){
+                                                echo '<td style="background-color: green; color: white">Sudah di Kirim</td>';
+                                                echo '<td></td>';
+                                                }else{
+                                                    echo '<td>Belum Dikirim</td>';
+                                                    echo '<td><a href="'.base_url().'index.php/Ingot/delSPBSudahDipenuhi/'.$row->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm("Anda yakin menghapus transaksi ini?");"><i class="fa fa-trash-o"></i> Delete</a></td>';
+                                                }
                                                 $tn += $row->netto;
                                                 $no++;
                                             }
@@ -374,24 +399,28 @@
                                             <th>Netto</th>
                                             <th>UOM</th>
                                             <th>Keterangan</th>
+                                            <th>Action</th>
                                         </thead>
                                         <tbody>
                                             <?php $no=1; $total_netto = 0; foreach($detailSPB as $v) { ?>
                                             <tr>
                                                 <td><div id="no_tabel_1"><?=$no;?></div></td>
-                                                <td><input type="text" name="details[1][nama_item]" class="form-control" readonly="readonly" value="<?=$v->nama_item;?>" /></td>
-                                                <td><input type="text" name="details[1][no_pallete]" class="form-control" readonly="readonly" value="<?=$v->no_pallete;?>"></td>
-                                                <td><input type="text" name="details[1][netto]" class="form-control" readonly="readonly" value="<?=$v->netto;?>"/></td>
-                                                <td><input type="text" name="details[1][uom]" class="form-control" readonly="readonly" value="<?=$v->uom;?>"></td>
-                                                <td><input type="text" name="details[1][keterangan]" class="form-control" readonly="readonly" value="<?=$v->line_remarks;?>"></td>
+                                                <td><?=$v->nama_item;?></td>
+                                                <td><?=$v->no_pallete;?></td>
+                                                <td><?=$v->netto;?></td>
+                                                <td><?=$v->uom;?></td>
+                                                <td><?=$v->line_remarks;?></td>
+                                                <?php
+                                                    echo '<td><a href="'.base_url().'index.php/Ingot/delPemenuhan/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm("Anda yakin menghapus transaksi ini?");"><i class="fa fa-trash-o"></i> Delete</a></td>';
+                                                ?>
                                             </tr>
                                             <?php 
                                             $total_netto += $v->netto;
                                             $no++; } ?>
                                             <tr>
                                                 <td colspan="3"> Total</td>
-                                                <td><input type="text" class="form-control" readonly="readonly" value="<?=$total_netto;?>"></td>
-                                                <td colspan="2"></td>
+                                                <td style="background-color: green; color: white;"><?=number_format($total_netto,2,',','.');?></td>
+                                                <td colspan="3"></td>
                                             </tr>
                                         </tbody>
                                     </table>

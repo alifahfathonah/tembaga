@@ -49,8 +49,9 @@ class Model_voucher_cost extends CI_Model{
                     Left Join cost On (voucher.cost_id = cost.id)
                     Left Join m_customers mc ON (voucher.customer_id = mc.id)
                     Left join supplier supp on (voucher.supplier_id = supp.id)
-                Where fk.id_bank <= 3 and voucher.jenis_voucher='Manual' and voucher.flag_ppn =".$ppn."
-                Order By voucher.no_voucher desc");
+                Where fk.id_bank <= 3 and fk.flag_ppn =".$ppn." and fk.jenis_trx = 1
+                group by fk.id
+                Order By fk.nomor desc");
         return $data;
     }
 
@@ -67,8 +68,9 @@ class Model_voucher_cost extends CI_Model{
                     Left Join cost On (voucher.cost_id = cost.id)
                     Left Join m_customers mc ON (voucher.customer_id = mc.id)
                     Left join supplier supp on (voucher.supplier_id = supp.id)
-                Where fk.id_bank > 3 and voucher.jenis_voucher='Manual' and voucher.flag_ppn =".$ppn."
-                Order By voucher.no_voucher desc");
+                Where fk.id_bank > 3 and fk.flag_ppn =".$ppn." and fk.jenis_trx = 1
+                group by fk.id
+                Order By fk.nomor desc");
         return $data;
     }
     

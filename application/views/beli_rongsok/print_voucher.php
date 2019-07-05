@@ -72,7 +72,7 @@
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
                             <td style="border-left:1px solid #000;"><?=$row->jenis_voucher;?></td>
                             <td style="border-left:1px solid #000;"><?=$row->jenis_barang;?></td>
-                            <td style="text-align:right; border-left:1px solid #000;"><?=$row->keterangan;?></td>
+                            <td style="text-align:left; border-left:1px solid #000;"><?=$row->keterangan;?></td>
                             <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=number_format($row->amount,2,',', '.');?></td>
                         </tr>
                         <?php

@@ -30,12 +30,20 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            No. Surat Jalan Terakhir
+                            No. Surat Jalan Terakhir KMP
                         </div>
                         <div class="col-md-8">
                             <input type="text" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?=$sj['no_surat_jalan'];?>">
                         </div>
-                    </div>                    
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Surat Jalan Terakhir CV
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?=$sjr['no_sj_resmi'];?>">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             No. Surat Jalan <font color="#f00">*</font>

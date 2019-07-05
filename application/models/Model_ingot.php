@@ -152,7 +152,7 @@ class Model_ingot extends CI_Model{
     }
     
     function show_detail_spb_fulfilment_approved($id){
-        $data = $this->db->query("Select rsk.nama_item, rsk.uom, dtrd.no_pallete,dtrd.netto, sr.stok_netto as stok, dtrd.line_remarks
+        $data = $this->db->query("Select rsk.nama_item, rsk.uom, spdf.id, dtrd.no_pallete,dtrd.netto, dtrd.so_id, sr.stok_netto as stok, dtrd.line_remarks
                     From spb_detail_fulfilment spdf 
                         left join dtr_detail dtrd on (dtrd.id = spdf.dtr_detail_id)
                         Left Join rongsok rsk On (dtrd.rongsok_id = rsk.id)
@@ -160,8 +160,9 @@ class Model_ingot extends CI_Model{
                     Where spdf.spb_id=".$id." and dtrd.flag_taken = 1");
         return $data;
     }
+
     function show_detail_spb_fulfilment($id){
-        $data = $this->db->query("Select rsk.nama_item, rsk.uom, dtrd.no_pallete,dtrd.netto, sr.stok_netto as stok, dtrd.line_remarks
+        $data = $this->db->query("Select rsk.nama_item, rsk.uom, spdf.id, dtrd.no_pallete,dtrd.netto, sr.stok_netto as stok, dtrd.line_remarks
                     From spb_detail_fulfilment spdf 
                         left join dtr_detail dtrd on (dtrd.id = spdf.dtr_detail_id)
                         Left Join rongsok rsk On (dtrd.rongsok_id = rsk.id)
@@ -170,7 +171,11 @@ class Model_ingot extends CI_Model{
         return $data;
     }
 
-   
+    function get_spdf($id){
+        $data = $this->db->query("Select * from spb_detail_fulfilment where id =".$id);
+        return $data;
+    }
+
     function skb_list(){
         $data = $this->db->query("Select skb.*, 
                     spb.no_spb,

@@ -1443,6 +1443,32 @@ class Finance extends CI_Controller{
         }
     }
 
+    function delete_invoice(){
+        $id = $this->uri->segment(3);
+        $this->db->trans_start();
+        if(!empty($id)){
+
+            $this->load->model('Model_finance');
+            $get = $this->Model_finance->get_inv($id)->row_array();
+            $this->db->update('t_surat_jalan', ['inv_id'=>NULL], ['id'=>$get['id_surat_jalan']]);
+            $cek = $this->Model_finance->get_sj_list($get['id_sales_order'])->result();
+            if(empty($cek)){
+                $flag_invoice = 0;
+            }else{
+                $flag_invoice = 2;
+            }
+            $this->db->update('sales_order',['flag_invoice'=>$flag_invoice] ,['id'=>$get['id_sales_order']]);
+
+            $this->db->delete('f_invoice', ['id' => $id]);
+            $this->db->delete('f_invoice_detail', ['id_invoice' => $id]);
+        }
+
+        if($this->db->trans_complete()) {
+            $this->session->set_flashdata('flash_msg', 'Data Invoice berhasil dihapus');
+            redirect('index.php/Finance/invoice');
+        }
+    }
+
     function update_invoice(){
         $user_id   = $this->session->userdata('user_id');
         $return_data = array();

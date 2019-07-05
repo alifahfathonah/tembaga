@@ -260,12 +260,12 @@ class Model_beli_sparepart extends CI_Model{
     // }
 
     function voucher_list_ppn($user_ppn){
-        $data = $this->db->query("Select voucher.no_voucher, voucher.tanggal, voucher.jenis_voucher, voucher.keterangan, v.no_vk, s.nama_supplier, fk.nomor, voucher.id
+        $data = $this->db->query("Select voucher.no_voucher, voucher.tanggal, voucher.jenis_voucher, voucher.keterangan, v.no_vk, s.nama_supplier, fk.nomor, v.id
                 From f_vk v 
+                    Left Join supplier s On (s.id = v.supplier_id)
                     Left Join voucher On (voucher.vk_id = v.id)
                     Left Join po On (voucher.po_id = po.id) 
-                    Left Join f_kas fk On (fk.id_vc = voucher.id)
-                    Left Join supplier s On (s.id = voucher.supplier_id)
+                    Left Join f_kas fk On (fk.id = voucher.id_fk)
                 Where voucher.jenis_barang='SPARE PART' and po.flag_ppn = ".$user_ppn." or v.flag_ppn =".$user_ppn."
                 Order By fk.nomor desc");
         return $data;
@@ -513,16 +513,30 @@ class Model_beli_sparepart extends CI_Model{
         return $data;
     }
 
+    // function show_header_voucher($id){
+    //     $data = $this->db->query("select v.*, fk.tgl_jatuh_tempo, fk.no_giro, b.no_acc, b.nama_bank, s.nama_supplier, p.no_po, pmb.no_pembayaran, u.realname as pic, fk.nomor
+    //         from voucher v 
+    //         left join f_kas fk on (fk.id_vc = v.id)
+    //         left join bank b on (b.id = fk.id_bank)
+    //         left join po p on (p.id = v.po_id)
+    //         left join supplier s on (s.id = v.supplier_id)
+    //         left join f_pembayaran pmb on (pmb.id = v.pembayaran_id)
+    //         left join users u on (u.id = v.created_by)
+    //         where v.id = ".$id);
+    //     return $data;
+    // }
+
     function show_header_voucher($id){
         $data = $this->db->query("select v.*, fk.tgl_jatuh_tempo, fk.no_giro, b.no_acc, b.nama_bank, s.nama_supplier, p.no_po, pmb.no_pembayaran, u.realname as pic, fk.nomor
-            from voucher v 
-            left join f_kas fk on (fk.id_vc = v.id)
-            left join bank b on (b.id = fk.id_bank)
-            left join po p on (p.id = v.po_id)
-            left join supplier s on (s.id = v.supplier_id)
-            left join f_pembayaran pmb on (pmb.id = v.pembayaran_id)
-            left join users u on (u.id = v.created_by)
-            where v.id = ".$id);
+                from f_vk fvk
+                left join voucher v on (v.vk_id = fvk.id)
+                left join f_kas fk on (fk.id = v.id_fk)
+                left join bank b on (b.id = fk.id_bank)
+                left join po p on (p.id = v.po_id)
+                left join supplier s on (s.id = v.supplier_id)
+                left join f_pembayaran pmb on (pmb.id = v.pembayaran_id)
+                left join users u on (u.id = v.created_by)
+                where fvk.id =".$id);
         return $data;
     }
 

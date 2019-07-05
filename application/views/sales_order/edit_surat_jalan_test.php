@@ -193,13 +193,13 @@
                                 <th style="width: 15%">Nama Item Alias</th>
                                 <th style="width: 18%">No. Packing</th>
                                 <th>Bruto</th>
+                                <th>Berat Bobbin</th>
                                 <th>Netto(Kg)</th>
                                 <th>Bobbin</th>
-                                <th>Keterangan</th>
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
-                                <?php $no=0; $bruto = 0; $netto = 0;
+                                <?php $no=0; $bruto = 0; $netto = 0; $berat = 0;
                                 foreach ($list_produksi as $row) { $no++;
                                 echo '<tr id="row_'.$no.'">'.
                                     '<td style="text-align: center;">'.$no.'</td>'.
@@ -218,15 +218,16 @@
                                     '<td><input type="text" class="form-control myline" style="margin-bottom:5px" id="no_packing_'.$no.'" name="details['.$no.'][no_packing]" value="'.$row->no_packing.'" data-id="'.$value->ukuran.'" readonly="readonly">'.
                                     '</td>'.
                                     '<td><input type="text" id="bruto_'.$no.'" name="details['.$no.'][bruto]" class="form-control myline" readonly="readonly" value="'.$row->bruto.'"></td>'.
+                                    '<td><input type="text" id="berat_'.$no.'" name="details['.$no.'][berat]" class="form-control myline" readonly="readonly" value="'.$row->berat_bobbin.'"></td>'.
                                     '<td><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" class="form-control myline" readonly="readonly" value="'.$row->netto.'"></td>'.
                                     '<td><input type="text" id="bobbin_'.$no.'" name="details['.$no.'][bobbin]" class="form-control myline" readonly="readonly" value="'.$row->nomor_bobbin.'"></td>'.
-                                    '<td><input type="text" id="line_remarks_'.$no.'" name="details['.$no.'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" value="'.$row->keterangan.'"></td>'.
                                     '<td style="text-align:center">'.
                                     '<a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('.$no.');" style="margin-top:5px;"><i class="fa fa-print"></i> Print </a>'.
                                     '<a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs red" onclick="delete_row('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Delete </a>'.
                                     '</td>'.
                                 '</tr>'; 
                                 $bruto += $row->bruto;
+                                $berat += $row->berat_bobbin;
                                 $netto += $row->netto;
                                     }
                                 ?>
@@ -235,6 +236,7 @@
                                 <tr>
                                     <td colspan="4" style="text-align: right;"><strong>Total</strong></td>
                                     <td><input type="text" class="form-control" style="margin-bottom: 5px" id="bruto" value="<?=$bruto;?>" readonly="readonly"></td>
+                                    <td><input type="text" class="form-control" style="margin-bottom: 5px" id="berat" value="<?=$berat;?>" readonly="readonly"></td>
                                     <td><input type="text" class="form-control" style="margin-bottom: 5px" id="netto" value="<?=$netto;?>" readonly="readonly"></td>
                                     <td colspan="3"></td>
                                 </tr>
@@ -306,14 +308,14 @@
                                 <th style="width: 15%;">No Palette</th>
                                 <th>Nama Item Alias</th>
                                 <th>Bruto</th>
-                                <th>Netto (Kg)</th>
                                 <th>Berat<br>Palette</th>
+                                <th>Netto (Kg)</th>
                                 <th>Keterangan</th>
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
                                 <?php $no=0; 
-                                $bruto = 0; $netto = 0;
+                                $bruto = 0; $netto = 0; $berat = 0;
                                 foreach ($list_produksi as $row) { $no++;
                                 echo '<tr id="row_'.$no.'">'.
                                     '<td style="text-align: center;">'.$no.'</td>'.
@@ -331,14 +333,15 @@
                                     '</td>'.
                                     '<input type="hidden" id="qty_'.$no.'" name="details['.$no.'][qty]" class="form-control myline" readonly="readonly" value="0">'.
                                     '<td><input type="text" id="bruto_'.$no.'" name="details['.$no.'][bruto]" class="form-control myline" readonly="readonly" value="'.$row->bruto.'"></td>'.
+                                    '<td><input type="text" id="berat_'.$no.'" name="details['.$no.'][berat_palette]" class="form-control myline" readonly="readonly" value="'.$row->berat_palette.'"></td>'.
                                     '<td><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" class="form-control myline" readonly="readonly" value="'.$row->netto.'"></td>'.
-                                    '<td><input type="text" id="berat_palette_'.$no.'" name="details['.$no.'][berat_palette]" class="form-control myline" readonly="readonly" value="'.$row->berat_palette.'"></td>'.
                                     '<td><input type="text" id="line_remarks_'.$no.'" name="details['.$no.'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" value="'.$row->keterangan.'"></td>'.
                                     '<td><a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcodeRsk('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Print </a>'.
                                     '<a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs red" onclick="delete_row('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Delete </a></td>'.
                                     '</td>'.
                                 '</tr>';
                                 $bruto += $row->bruto;
+                                $berat += $row->berat_palette;
                                 $netto += $row->netto;
                                     }
                                 ?>
@@ -347,6 +350,7 @@
                                 <tr>
                                     <td colspan="4" style="text-align: right;"><strong>Total</strong></td>
                                     <td><input type="text" class="form-control" style="margin-bottom: 5px" id="bruto" value="<?=$bruto;?>" readonly="readonly"></td>
+                                    <td><input type="text" class="form-control" style="margin-bottom: 5px" id="berat" value="<?=$berat;?>" readonly="readonly"></td>
                                     <td><input type="text" class="form-control" style="margin-bottom: 5px" id="netto" value="<?=$netto;?>" readonly="readonly"></td>
                                     <td colspan="3"></td>
                                 </tr>
@@ -385,8 +389,10 @@
 <script>
 function delete_row(id){
     const bruto = $('#bruto_'+id).val();
+    const berat = $('#berat_'+id).val();
     const netto = $('#netto_'+id).val();
     $('#bruto').val(Math.round((Number($('#bruto').val())-Number(bruto))*100)/100);
+    $('#berat').val(Math.round((Number($('#berat').val())-Number(berat))*100)/100);
     $('#netto').val(Math.round((Number($('#netto').val())-Number(netto))*100)/100);
     $('#row_'+id).remove();
 }

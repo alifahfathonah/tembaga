@@ -503,6 +503,9 @@ class VoucherCost extends CI_Controller{
         $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
+            // $details = $this->input->post('myDetails');
+            // print_r($details);
+            // die();
         $this->load->model('Model_m_numberings');
 
         if($this->input->post('bank_id')<=3){
@@ -551,13 +554,13 @@ class VoucherCost extends CI_Controller{
                         $code = $this->Model_m_numberings->getNumbering('VCOST', $tgl_input);
                     }
 
-                    if($this->input->post('cost_id')==0){
-                        $cost_id = 0;
-                    }else{
-                        $cost_id = $row['cost_id'];
-                    }
+                    // if($row['cost_id']==0){
+                    //     $cost_id = 0;
+                    // }else{
+                    //     $cost_id = $row['cost_id'];
+                    // }
 
-                    if($this->input->post('group_cost_id') == 1){
+                    if($row['group_cost_id'] == 1){
                         $this->db->insert('voucher', array(
                             'no_voucher'=> $code,
                             'tanggal'=> $tgl_input,
@@ -565,14 +568,14 @@ class VoucherCost extends CI_Controller{
                             'jenis_voucher'=>'Manual',
                             'status'=>1,
                             'group_cost_id'=> $row['group_cost_id'],
-                            'customer_id'=> $cost_id,
+                            'customer_id'=> $row['cost_id'],
                             'keterangan'=> $row['line_remarks'],
                             'amount'=> str_replace(',', '', $row['nominal']),
                             'id_fk'=> $insert_id,
                             'created'=> $tanggal,
                             'created_by'=> $user_id
                         ));
-                    }elseif($this->input->post('group_cost_id') == 2){
+                    }elseif($row['group_cost_id'] == 2){
                         $this->db->insert('voucher', array(
                             'no_voucher'=> $code,
                             'tanggal'=> $tgl_input,
@@ -580,7 +583,7 @@ class VoucherCost extends CI_Controller{
                             'jenis_voucher'=>'Manual',
                             'status'=>1,
                             'group_cost_id'=> $row['group_cost_id'],
-                            'supplier_id'=> $cost_id,
+                            'supplier_id'=> $row['cost_id'],
                             'keterangan'=> $row['line_remarks'],
                             'amount'=> str_replace(',', '', $row['nominal']),
                             'id_fk'=> $insert_id,

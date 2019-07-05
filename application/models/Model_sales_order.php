@@ -452,7 +452,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function load_detail_surat_jalan_fg($id){
-        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, COALESCE(NULLIF((select tsod.nama_barang_alias from t_sales_order_detail tsod where tsod.jenis_barang_id =(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end) and tsod.t_so_id = tsj.sales_order_id ),''),jb.jenis_barang)as jenis_barang, jb.uom, tgf.no_produksi, mb.berat, jb1.kode as kode_lama, coalesce(jb2.kode, 0) as kode_baru
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.berat, tsjd.nomor_bobbin, tsjd.line_remarks, COALESCE(NULLIF((select tsod.nama_barang_alias from t_sales_order_detail tsod where tsod.jenis_barang_id =(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end) and tsod.t_so_id = tsj.sales_order_id ),''),jb.jenis_barang)as jenis_barang, jb.uom, tgf.no_produksi, jb1.kode as kode_lama, coalesce(jb2.kode, 0) as kode_baru
                 from t_surat_jalan_detail tsjd
                 left join jenis_barang jb on jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
                 left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
@@ -481,7 +481,7 @@ class Model_sales_order extends CI_Model{
     // }
 
     function load_detail_surat_jalan_rsk($id,$soid){
-        $data =  $this->db->query("select tsjd.*, rsk.nama_item as jenis_barang, rsk.uom,
+        $data =  $this->db->query("select tsjd.*,(case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, rsk.nama_item as jenis_barang, rsk.uom,
             (select tsod.nama_barang_alias from t_sales_order_detail tsod left join t_sales_order tso on tso.so_id =".$soid." where tsod.t_so_id = tso.id and tsod.jenis_barang_id = tsjd.jenis_barang_id) as nama_barang_alias
                 from t_surat_jalan_detail tsjd
                 left join rongsok rsk on rsk.id = tsjd.jenis_barang_id
@@ -503,7 +503,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function load_view_sjd($id){
-        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jba.jenis_barang as jenis_barang_a, jb.uom 
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.berat, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jba.jenis_barang as jenis_barang_a, jb.uom 
                 from t_surat_jalan_detail tsjd
                 left join jenis_barang jb on jb.id= tsjd.jenis_barang_id
                 left join jenis_barang jba on tsjd.jenis_barang_alias != 0 and jba.id = tsjd.jenis_barang_alias
@@ -568,6 +568,11 @@ class Model_sales_order extends CI_Model{
 
     function get_last_sj($ppn){
         $data = $this->db->query("select no_surat_jalan from t_surat_jalan where id = ( select max(tsj.id) from t_surat_jalan tsj left join sales_order so on so.id = tsj.sales_order_id where so.flag_ppn =".$ppn.")");
+        return $data;
+    }
+
+    function get_last_sj_cv($ppn){
+        $data = $this->db->query("select no_sj_resmi from r_t_surat_jalan where id = ( select max(tsj.id) from r_t_surat_jalan tsj where tsj.jenis_surat_jalan = 'SURAT JALAN KMP KE CV')");
         return $data;
     }
 

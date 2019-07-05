@@ -115,7 +115,6 @@
                                 }else{
                                     echo '<tr>';
                                 }
-                                $berat = $row->bruto - $row->netto;
                                 echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->kode_lama.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->kode_baru.'</td>';
@@ -124,7 +123,7 @@
                                 echo '<td style="border-left:1px solid #000">'.$row->no_packing.'</td>';
                                 echo '<td style="border-left:1px solid #000">'.$row->nomor_bobbin.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->bruto, 2, '.', ',').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($berat, 2, '.', ',').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->berat, 2, '.', ',').'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.number_format($row->netto, 2, '.', ',').'</td>';
                                 // echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->line_remarks.'</td>';
                                 if($row->jenis_barang==$last_series){
@@ -132,10 +131,10 @@
                                 }
                                 $last_series = $row->jenis_barang;
                                 $bruto += $row->bruto;
-                                $bobin += $berat;
+                                $bobin += $row->berat;
                                 $netto += $row->netto;
                                 $total_bruto += $row->bruto;
-                                $total_bobin += $berat;
+                                $total_bobin += $row->berat;
                                 $total_netto += $row->netto;
                                 $no++;
                             }

@@ -145,6 +145,7 @@
                                 <th>UOM</th>
                                 <th style="width: 15%">No. Packing</th>
                                 <th>Bruto (Kg)</th>
+                                <th>Berat</th>
                                 <th>Netto (Kg)</th>
                                 <th>Revisi Netto</th>
                                 <th>Bobbin</th>
@@ -162,6 +163,8 @@
                                     <td><?=$row->uom;?></td>
                                     <td><?=$row->no_packing;?></td>
                                     <td><?=number_format($row->bruto,2,',','.');?></td>
+                                    <td><?=number_format($row->berat,2,',','.');?></td>
+                                    <?php echo '<input type="hidden" name="details['.$no.'][berat]" value="'.$row->berat.'">';?>
                                     <td><?=number_format($row->netto,2,',','.');?></td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][netto_r]" value="'.$row->netto_r.'">';?></td>
                                     <td><?=$row->nomor_bobbin;?></td>
@@ -209,7 +212,6 @@
                                 $no=1;
                                 foreach ($details as $row){
                                     echo '<input type="hidden" name="details['.$no.'][id]" value="'.$row->id.'">';
-                                    $berat = $row->bruto - $row->netto;
                                 ?>
                                 <tr>
                                     <td><?=$no;?></td>
@@ -217,7 +219,8 @@
                                     <td><?=$row->uom;?></td>
                                     <td><?=$row->no_packing;?></td>
                                     <td><?=number_format($row->bruto,2,',','.');?></td>
-                                    <td><?=number_format($berat,2,',','.');?></td>
+                                    <td><?=number_format($row->berat,2,',','.');?></td>
+                                    <?php echo '<input type="hidden" name="details['.$no.'][berat]" value="'.$row->berat.'">';?>
                                     <td><?=number_format($row->netto,2,',','.');?></td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][netto_r]" value="'.$row->netto_r.'">';?></td>
                                     <td><?=$row->line_remarks;?></td>

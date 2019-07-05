@@ -177,7 +177,7 @@
                     <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
 
-                    <a href="<?php echo base_url('index.php/BeliRongsok'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/VoucherCost/kas_keluar'); ?>" class="btn blue-hoki">
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -301,10 +301,10 @@ function saveDetail(id){
                     '<?php foreach($list_group_cost as $v){ print('<option value="'.$v->id.'">'.$v->nama_group_cost.'</option>');}?>'+
                 '</select>'+
                 '</td>'+
-                '<td><select id="cost_id_'+new_id+'" name="cost_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">'+
+                '<td><select id="cost_id_'+new_id+'" name="myDetails['+new_id+'][cost_id]" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">'+
                     '<option value=""></option>'+
                     '</select>'+
-                    '<input type="text" id="nm_cost_'+new_id+'" name="nm_cost" style="margin-bottom:5px" class="form-control myline hidden" disabled="disabled" placeholder="Nama Cost" onkeyup="this.value = this.value.toUpperCase()">'+
+                    '<input type="text" id="nm_cost_'+new_id+'" name="myDetails['+new_id+'][nm_cost]" style="margin-bottom:5px" class="form-control myline hidden" disabled="disabled" placeholder="Nama Cost" onkeyup="this.value = this.value.toUpperCase()">'+
                 '</td>'+
                 '<td><input type="text" id="line_remarks_'+new_id+'" name="myDetails['+new_id+'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
                 '<td><input type="text" id="nominal_'+new_id+'" name="myDetails['+new_id+'][nominal]" class="form-control myline" onkeyup="getComa(this.value, this.id);"></td>'+

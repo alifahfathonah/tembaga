@@ -68,7 +68,7 @@
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Keterangan</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Account</strong></td>
-                            <td rowspan="2" style="text-align:center; border:1px solid #000;"><strong>Amount (Rp)</strong></td>
+                            <td rowspan="2" style="text-align:center; border:1px solid #000;"><strong>Amount</strong></td>
                         </tr>
                        
                                 <tr>
@@ -81,15 +81,24 @@
                         ?>
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
-                            <td style="border-left:1px solid #000;"><?=$row->nama.', '.$row->keterangan;?></td>
+                            <td style="border-left:1px solid #000;"><?=$row->nama.' '.$row->keterangan;?></td>
                             <td style="text-align:right; border-left:1px solid #000;"></td>
                             <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=number_format($row->amount,2,',', '.');?></td>
                         </tr>
                         <?php
                                 $total_vc += $row->amount;
                             }
+                        if($header['currency']=='USD'){
+                            $convert = $header['kurs']*$total_vc;
                         ?>
-                        <tr style="height:100px">
+                        <tr>
+                            <td style="text-align:center; border-left:1px solid #000; border-top:1px solid #000">&nbsp;</td>
+                            <td style="border-left:1px solid #000; border-top:1px solid #000">&nbsp;</td>
+                            <td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000">&nbsp;</td>
+                            <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-top:1px solid #000">Rp. <?=number_format($convert,2,',','.');?></td>
+                        </tr>
+                        <?php } ?>
+                        <tr style="height:75px">
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>

@@ -1353,6 +1353,26 @@ class Ingot extends CI_Controller{
        redirect('index.php/Ingot/spb_list');
     }
 
+    function delPemenuhan(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $id = $this->uri->segment(3);
+        $spb_id = $this->uri->segment(4);
+
+        $this->db->trans_start();
+
+            $this->db->where('id', $id);
+            $this->db->delete('spb_detail_fulfilment');
+
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'Detail Pemenuhan SPB sudah dihapus');                 
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }
+       redirect('index.php/Ingot/view_spb/'.$spb_id);
+    }
+
     function reject_fulfilment(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
@@ -1463,6 +1483,35 @@ class Ingot extends CI_Controller{
        redirect('index.php/Ingot/spb_list');
     }
     
+    function delSPBSudahDipenuhi(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $id = $this->uri->segment(3);
+        $spb_id = $this->uri->segment(4);
+
+        $this->db->trans_start();
+
+        $this->load->model('Model_ingot');
+        $get = $this->Model_ingot->get_spdf($id)->row_array();
+
+            $this->db->where('id',$get['dtr_detail_id']);
+            $this->db->update('dtr_detail',array(
+                            'flag_taken' => 0,
+                            'tanggal_keluar' => '0000-00-00'
+                            ));
+
+            $this->db->where('id', $id);
+            $this->db->delete('spb_detail_fulfilment');
+
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'Detail Pemenuhan SPB sudah dihapus');                 
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }
+       redirect('index.php/Ingot/view_spb/'.$spb_id);
+    }
+
     function reject_spb(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
