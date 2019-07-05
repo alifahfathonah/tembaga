@@ -20,7 +20,13 @@
             <tr>
                 <td>T: (021) 5523547-46, F:(021) 5523548</span></td>
             </tr>
-            <?php } ?>
+            <?php } 
+            if($header['currency']=='IDR'){
+                $c = 'Rp. ';
+            }elseif($header['currency']=='USD'){
+                $c = '$';
+            }
+            ?>
             <tr>
                 <td colspan="3"><p align="center" style="font-size:20px;"><strong><u>SALES ORDER</u></strong></p></td>
             </tr>
@@ -88,9 +94,9 @@
                                     }else{
                                         echo number_format($row->qty,2,',', '.');
                                     }
-                                echo '</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->amount,3,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.number_format($row->total_amount,2,',', '.').'</td>';
+                                echo ' KG</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000">'.$c.' '.number_format($row->amount,3,',', '.').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$c.' '.number_format($row->total_amount,2,',', '.').'</td>';
                                 echo '</tr>';
                                 $total += $row->total_amount;
                                 $no++;
@@ -117,7 +123,7 @@
                             <td style="border-left: 1px solid #000;" colspan="4"><strong><u>Note :</u></strong></td>
                             <td style="text-align:left; border-left: 1px solid #000; border-bottom: 1px solid #000;"><strong>Jumlah Harga Jual </strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">
-                                <strong><?php echo number_format($total,2,',','.'); ?></strong>
+                                <strong><?php echo $c.' '.number_format($total,2,',','.'); ?></strong>
                             </td>
                         </tr>
                         <tr>
@@ -125,7 +131,7 @@
                             <td colspan="3">: <?= $header['term_of_payment'];?></td>
                             <td style="text-align:left; border-left: 1px solid #000; border-bottom: 1px solid #000;"><strong>Discount</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">
-                                <strong><?php echo number_format(0,2,',','.'); ?></strong>
+                                <strong><?php echo $c.' '.number_format(0,2,',','.'); ?></strong>
                             </td>
                         </tr>
                         <tr>
@@ -133,7 +139,7 @@
                             <td colspan="3">: SECEPATNYA</td>
                             <td style="text-align:left; border-left: 1px solid #000; border-bottom: 1px solid #000;"><strong>PPN 10%</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">
-                                <strong><?php echo number_format($ppn,2,',','.'); ?></strong>
+                                <strong><?php echo $c.' '.number_format($ppn,2,',','.'); ?></strong>
                             </td>
                         </tr>
                         <tr>
@@ -141,7 +147,7 @@
                             <td style="border-bottom: 1px solid #000;" colspan="3">: <?= $header['keterangan'];?></td>
                             <td style="text-align:left; border-left: 1px solid #000; border-bottom: 1px solid #000;"><strong>Total Seluruhnya</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">
-                                <strong><?php echo number_format($total+$ppn,2,',','.'); ?></strong>
+                                <strong><?php echo $c.' '.number_format($total+$ppn,2,',','.'); ?></strong>
                             </td>
                         </tr>
                     </table>
@@ -159,10 +165,10 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td style="text-align: center"><strong><?php echo ($this->session->userdata('user_ppn')==0) ? 'Frans. Tj' : 'Tjan Lin Oy';?></strong></td>
+                            <td style="text-align: center"><strong><?php echo ($this->session->userdata('user_ppn')==0) ? 'A. Tjan' : 'Tjan Lin Oy';?></strong></td>
                             <td></td>
                             <td></td>
-                            <td style="text-align: center"><strong><?php echo ($this->session->userdata('user_ppn')==0) ? 'Lia' : 'War';?></strong></td>
+                            <td style="text-align: center"><strong><?php echo ($this->session->userdata('user_ppn')==0) ? 'Yeni' : 'War';?></strong></td>
                         </tr>
                     </table>
                 </td>

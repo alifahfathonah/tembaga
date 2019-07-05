@@ -476,6 +476,8 @@ function get_cek(id){
         $("#show_rek").show();
     }else if(id == "Transfer" || id == "Lain-Lain"){
         resetAllValues();
+        $('#tanggal_cek').val($('#tanggal').val());
+        console.log($('#tanggal_cek').val());
         $('#show_replace').hide();
         $('#show_replace_detail').hide();
         get_replace();
