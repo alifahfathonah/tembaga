@@ -119,11 +119,11 @@
                             <td style="border-left:1px solid #000;"><?=$c;?></td>
                             <td style="text-align:right;"><?=number_format($row->amount,2,',', '.');?></td>
                             <td style="border-left:1px solid #000;"><?=$c;?></td>
-                            <td style="text-align:right; border-right:1px solid #000;"><?=number_format($row->total_amount,2,',', '.');?></td>
+                            <td style="text-align:right; border-right:1px solid #000;"><?=number_format($row->sum_total_amount,2,',', '.');?></td>
                         </tr>
                         <?php
                                 $total_netto += $row->sum_netto;
-                                $total += $row->total_amount;
+                                $total += $row->sum_total_amount;
                                 $no++;
                             }
                             $harga_ppn = ($total-$header['diskon']-$header['cost']) * 10/100;
