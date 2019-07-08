@@ -90,7 +90,7 @@ class Model_invoice_jasa extends CI_Model{
 	}
 
 	function show_detail_inv_jasa($id){
-		$data = $this->db->query("select tijd.*, sum(tijd.total_amount) as sum_total_amount, sum(tijd.bruto) as sum_bruto, sum(tijd.netto) as sum_netto, jb.jenis_barang, jb.uom FROM r_t_inv_jasa_detail tijd
+		$data = $this->db->query("select tijd.*, count(tijd.id) as qty, sum(tijd.total_amount) as sum_total_amount, sum(tijd.bruto) as sum_bruto, sum(tijd.netto) as sum_netto, jb.jenis_barang, jb.uom FROM r_t_inv_jasa_detail tijd
 		left join jenis_barang jb on jb.id = tijd.jenis_barang_id
 		where tijd.inv_jasa_id=".$id." group by jb.jenis_barang");
 		return $data;

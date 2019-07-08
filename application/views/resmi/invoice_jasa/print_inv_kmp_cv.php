@@ -113,13 +113,13 @@
                         ?>
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
-                            <td colspan="4" style="border-left:1px solid #000;"><?=$row->jenis_barang;?></td>
+                            <td colspan="4" style="border-left:1px solid #000;"><?=$row->jenis_barang;?>(Ongkos Kerja)</td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=$row->qty;?></td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->sum_netto,2,',','.').' '.$row->uom;?></td>
                             <td style="border-left:1px solid #000;"><?=$c;?></td>
                             <td style="text-align:right;"><?=number_format($row->amount,2,',', '.');?></td>
                             <td style="border-left:1px solid #000;"><?=$c;?></td>
-                            <td style="text-align:right; border-right:1px solid #000;"><?=number_format($row->sum_total_amount,2,',', '.');?></td>
+                            <td style="text-align:right; border-right:1px solid #000;"><?=number_format($row->sum_total_amount,0,',', '.');?></td>
                         </tr>
                         <?php
                                 $total_netto += $row->sum_netto;

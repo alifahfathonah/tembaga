@@ -316,5 +316,15 @@ function printBarcode(id){
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>    
     loadDetail(<?php echo $header['id']; ?>);
+$(function(){        
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });       
+});
 </script>
-      

@@ -1,0 +1,12 @@
+nomor giro gaboleh sama
+
+matching invoice bisa minus invoice, minus uang masuk udah.
+matching invoice dikurang dengan POTONGAN
+
+Laporan DTR yang dipakai di Matching Invoice CV
+
+total harga kanan di invoice gausah pake belakang koma
+
+jumlah afkiran di ttr
+
+edit terima retur

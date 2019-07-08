@@ -40,6 +40,10 @@
                             <td>No. PO</td>
                             <td>: <?= $header['no_po'] ?></td>
                         </tr> 
+                        <tr>
+                            <td>Catatan</td>
+                            <td>: Ongkos Kerja</td>
+                        </tr>
                     </table>
                 </td>
             </tr>
@@ -62,7 +66,7 @@
                 ?>
                     <tr>
                         <td align="center"><?= $no ?></td>
-                        <td><?= $v->jenis_barang ?></td>
+                        <td><?=$v->jenis_barang?></td>
                         <td align="center"><?= number_format($v->netto,2,".",",")." ".$v->uom ?></td>
                         <td align="right"><?= "Rp ".number_format($v->amount,2,".",",") ?></td>
                         <td align="right"><?= "Rp ".number_format($v->total_amount,2,".",",") ?></td>

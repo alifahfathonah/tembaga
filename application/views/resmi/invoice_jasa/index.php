@@ -83,7 +83,11 @@
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                             <?php
                                 } 
-                            }if(($group_id==9 || $hak_akses['print_po']==1) && $data->jenis_invoice == "INVOICE CV KE CUSTOMER"){
+                            }if((($group_id==9 || $group_id==14) && $hak_akses['print_po']==1) && $data->jenis_invoice == "INVOICE CV KE CUSTOMER"){
+                            ?>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/print_invoice/<?php echo $data->id; ?>" 
+                                style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
+                            <?php } if((($group_id==9 || $group_id==16) && $hak_akses['print_po']==1) && $data->jenis_invoice == "INVOICE KMP KE CV"){
                             ?>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/print_invoice/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>

@@ -80,6 +80,7 @@ class Retur extends CI_Controller{
             #insert retur
             $data = array(
                 'no_retur'=> $code,
+                'tanggal'=> $tgl_input,
                 'customer_id'=>$this->input->post('m_customer_id'),
                 'flag_ppn'=>$user_ppn,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
@@ -161,6 +162,7 @@ class Retur extends CI_Controller{
         
         #update retur
         $data = array(
+                'tanggal'=> $tgl_input,
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id
             );

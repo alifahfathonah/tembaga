@@ -178,7 +178,7 @@
     <!-- UANG MASUK -->
             <div class="row">
                 <div class="col-md-12">
-                    <h4 align="center" style="font-weight: bold;">Detail Voucher Uang Masuk</h4>
+                    <h4 align="center" style="font-weight: bold;">Detail Voucher Cek Masuk</h4>
                     <div class="table-scrollable">
                         <table class="table table-bordered table-striped table-hover">
                             <thead>

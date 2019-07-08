@@ -602,7 +602,7 @@ class Finance extends CI_Controller{
         $data = $this->Model_finance->list_data_um($user_ppn)->result();
         $arr_so[] = "Silahkan pilih....";
         foreach ($data as $row) {
-            $arr_so[$row->id] = $row->no_uang_masuk;
+            $arr_so[$row->id] = $row->nomor_cek.' ('.$row->no_uang_masuk.')';
         } 
         print form_dropdown('vc_id', $arr_so);
     }
@@ -1774,6 +1774,20 @@ class Finance extends CI_Controller{
         $id = $this->uri->segment(3);
         $this->db->trans_start();
         if(!empty($id)){
+
+            $this->db->where('id_match',$id);
+            $this->db->delete('f_match_detail');
+
+            $this->db->where('flag_matching',$id);
+            $this->db->update('f_invoice', array(
+                'flag_matching'=>0
+            ));
+
+            $this->db->where('flag_matching',$id);
+            $this->db->update('f_uang_masuk', array(
+                'flag_matching'=>0
+            ));
+
             $this->db->delete('f_match', ['id' => $id]);
         }
 

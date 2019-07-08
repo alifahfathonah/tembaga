@@ -156,7 +156,11 @@
                         <tr>
                             <td>No. PO</td>
                             <td>: <?php echo $header['no_po'];?></td>
-                        </tr>                        
+                        </tr>     
+                        <tr>
+                            <td>Catatan</td>
+                            <td>: Ongkos Kerja</td>
+                        </tr>                    
                     </table>
                 </td>
             </tr>

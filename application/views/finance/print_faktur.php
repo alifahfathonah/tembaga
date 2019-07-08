@@ -108,6 +108,11 @@
                                 <tr>
                                 </tr>
                         <?php
+                            if($header['flag_tolling']!=0){
+                                $ket = ' (Ongkos Kerja)';
+                            }else{
+                                $ket = '';
+                            }
                             $c = $header['currency'];
                             $no = 1;
                             $total = 0;
@@ -117,17 +122,17 @@
                         ?>
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
-                            <td colspan="4" style="border-left:1px solid #000;"><?=$row->jenis_barang;?></td>
+                            <td colspan="4" style="border-left:1px solid #000;"><?=$row->jenis_barang.$ket;?></td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=$row->qty;?></td>
                             <td style="text-align:right; border-left:1px solid #000;"><?=number_format($row->netto,2,',','.').' '.$row->uom;?></td>
                             <td style="border-left:1px solid #000;"><?=$c;?></td>
                             <td style="text-align:right;"><?=number_format($row->harga,2,',', '.');?></td>
                             <td style="border-left:1px solid #000;"><?=$c;?></td>
-                            <td style="text-align:right; border-right:1px solid #000;"><?=number_format($row->total_harga,2,',', '.');?></td>
+                            <td style="text-align:right; border-right:1px solid #000;"><?=number_format($row->total_harga,0,',', '.');?></td>
                         </tr>
                         <?php
                                 $total_netto += $row->netto;
-                                $total += $row->total_harga;
+                                $total += round($row->total_harga,0);
                                 $no++;
                             }
                         if($header['flag_ppn']==1){
@@ -162,19 +167,19 @@
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>Dasar Pengenaan Pajak</strong></td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
-                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($total-$header['diskon']-$header['add_cost'],0,',', '.');?></td>
+                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format(round($total-$header['diskon']-$header['add_cost'],0),0,',', '.');?></td>
                         </tr>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>PPN = 10% x Dasar Pengenaan Pajak</strong></td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
-                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($harga_ppn,0,',', '.');?></td>
+                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format(round($harga_ppn,0),0,',', '.');?></td>
                         </tr>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>Materai</strong></td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
                             <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($header['materai'],0,',', '.');?></td>
                         </tr>
-                        <?php $total_bersih = $total-$header['diskon']-$header['add_cost']+$header['materai']+$harga_ppn;?>
+                        <?php $total_bersih = round($total-$header['diskon']-$header['add_cost']+$header['materai'],0)+round($harga_ppn,0);?>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>T O T A L</strong></td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>

@@ -41,10 +41,6 @@
                         <tr>
                             <td>No. Pembayaran</td>
                             <td>: <?php echo $header['no_pembayaran'];?></td>
-                        </tr>             
-                        <tr>
-                            <td>Catatan</td>
-                            <td>: <?php echo $header['keterangan'];?></td>
                         </tr>
                     </table>
                 </td>

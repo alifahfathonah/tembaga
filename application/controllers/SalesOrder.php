@@ -1118,7 +1118,7 @@ class SalesOrder extends CI_Controller{
                         'jenis_barang_id'=>$v['jenis_barang_id'],
                         'jenis_barang_alias'=>$v['barang_alias_id'],
                         'no_packing'=>$v['no_palette'],
-                        'qty'=>$v['qty'],
+                        'qty'=>'1',
                         'bruto'=>$v['bruto'],
                         'berat'=>$v['berat_palette'],
                         'netto'=>$v['netto'],
