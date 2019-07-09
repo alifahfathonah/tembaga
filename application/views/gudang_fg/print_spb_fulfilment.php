@@ -8,7 +8,7 @@
         <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWATMAS PRAKASA<br>'; }?>PACKING LIST SEMENTARA<br>FINISH GOOD</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
-                <td width="40%">
+                <td width="55%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>No. SPB</td>
@@ -17,17 +17,27 @@
                         <tr>
                             <td>Tanggal</td>
                             <td>: <?php echo tanggal_indo($header['tanggal']); ?></td>
-                        </tr>                 
+                        </tr>
+                        <tr>
+                            <td>Nama Customer</td>
+                            <td>: <?=$header['nama_customer'];?></td>
+                        </tr>             
                     </table>
                 </td>
-                <td>&nbsp;</td>
-                <td width="40%">
+                <td width="45%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>Jenis Barang</td>
                             <td>: Finish Good</td>
                         </tr>
-                    <?php
+                        <tr>
+                            <td>Keterangan</td>
+                            <td>: <?=$header['keterangan'];?></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">&nbsp;</td>
+                        </tr>
+                    <!-- <?php
                         if($header['status'] == '9'){
                     ?>
                         <tr>
@@ -47,11 +57,10 @@
                         </tr>
                     <?php
                     }
-                    ?>
+                    ?> -->
                     </table>
                 </td>
             </tr>
-            <tr><td colspan="3">&nbsp;</td></tr>
             <tr><td colspan="3">
                     <table border="0" cellpadding="4" cellspacing="0" width="100%">
                         <tr>

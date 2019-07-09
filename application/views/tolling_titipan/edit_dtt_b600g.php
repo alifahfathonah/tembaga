@@ -2,11 +2,11 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Pembelian 
+            <i class="fa fa-angle-right"></i> Tolling
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>"> Pembelian Finish Good</a> 
+            <a href="<?php echo base_url('index.php/Tolling'); ?>"> Tolling Ke Customer</a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood/create_dtbj'); ?>"> Create Data Timbang Barang Jadi (DTBJ) </a> 
+            <a href="<?php echo base_url('index.php/Tolling/create_dtt'); ?>"> Create Data Timbang Tolling(DTT) </a> 
         </h5>          
     </div>
 </div>
@@ -15,7 +15,7 @@
 <div class="row">                            
     <div class="col-md-12">
         <?php
-            if( ($group_id==1)||($hak_akses['create_dtbj']==1) ){
+            if( ($group_id==1)||($hak_akses['create_dtr']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -26,19 +26,19 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/BeliFinishGood/save_dtbj'); ?>">  
+              id="formku" action="<?php echo base_url('index.php/Tolling/save_dtt_detail'); ?>">  
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
-                            No. DTBJ <font color="#f00">*</font>
+                            No. DTT <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_dtbj" name="no_dtbj"
+                            <input type="text" id="no_dtt" name="no_dtt" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?= $header['no_dtbj'];?>">
+                                value="<?php echo $header['no_dtt'];?>">
 
-                            <input type="hidden" id="id" name="id" value="<?= $header['id'];?>">
+                            <input type="hidden" name="id" value="<?php echo $header['id'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -48,7 +48,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?= $header['tanggal'];?>">
+                                value="<?php echo date('Y-m-d'); ?>" readonly="readonly">
                         </div>
                     </div>
                     <!-- <div class="row">
@@ -62,14 +62,23 @@
                             
                             <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['id']; ?>">
                         </div>
-                    </div>  -->                   
+                    </div>  -->    
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Barang
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jenis_barang" name="jenis_barang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $header['jenis_barang'];?>">
+                        </div>
+                    </div>               
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">
-                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px"></textarea>                           
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px"><?php echo $header['remarks'];?></textarea>                           
                         </div>
                     </div>
                 </div>
@@ -77,31 +86,33 @@
                 <div class="col-md-5"> 
                     <div class="row">
                         <div class="col-md-4">
-                            Supplier <font color="#f00">*</font>
+                            Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="supplier_id" name="supplier_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php
-                                    echo '<option value="0"'.(('0'==$header['supplier_id'])? 'selected="selected"': '').'>**TIDAK ADA SUPPLIER**</option>';
-                                    foreach ($supplier_list as $row){
-                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['supplier_id'])? 'selected="selected"': '').'>'.$row->nama_supplier.'</option>';
-                                    }
-                                ?>
-                            </select>
+                            <input type="text" value="<?php echo $header['nama_customer'];?>" class="form-control myline" style="margin-bottom:5px" readonly>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nama Penimbang
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $this->session->userdata('realname'); ?>">
+                        </div>
+                    </div>
+                    <?php if($header['jenis_barang']=='FG'){?>
                     <div class="row">
                         <div class="col-md-4">
                             Jenis Packing
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" 
+                            <input type="text" id="jenis_packing" name="jenis_packing" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="BOBBIN PLASTIK">
+                                value="<?php echo $header['nama_jenis_packing'];?>">
                         </div>
-                    </div> 
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Pilih Packing <font color="#f00">*</font>
@@ -118,21 +129,9 @@
                             <input type="hidden" name="id_packing" id="id_packing">                       
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Nama Penimbang
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $this->session->userdata('realname'); ?>">
-                        </div>
-                    </div>
-                    
+                    <?php } ?>
                 </div>              
             </div>
-            
-           
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
@@ -152,11 +151,11 @@
                             <tr>
                                 <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
                                 <input type="hidden" id="fg_id_1" name="myDetails[1][fg_id]" value="">
-                                <td><select id="name_rongsok_1" name="myDetails[1][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom_po(this.value,1);">
+                                <td><select id="name_rongsok_1" name="myDetails[1][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom(this.value,1);">
                                     <option value=""></option>
-                                    <?php foreach ($list_fg_on_po as $value){ ?>
+                                    <?php foreach ($jenis_barang as $value){ ?>
                                             <option value='<?=$value->id;?>'>
-                                                <?=$value->jenis_barang;?>
+                                                <?='('.$value->kode.') '.$value->jenis_barang;?>
                                             </option>
                                     <?php } ?>
                                 </select>
@@ -176,6 +175,16 @@
                                 </td>
                             </tr>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><strong>Total :</strong></td>
+                                    <td><input type="text" id="total_bruto" class="form-control" readonly="readonly"></td>
+                                    <td><input type="text" id="total_berat" class="form-control" readonly="readonly"></td>
+                                    <td></td>
+                                    <td><input type="text" id="total_netto" class="form-control" readonly="readonly"></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -211,14 +220,11 @@ function timbang_netto(id){
 }
 
 function simpanData(){
-    if($.trim($("#no_dtbj").val()) == ""){
-        $('#message').html("Nomor DTBJ harus diisi, tidak boleh kososng!");
+    if($.trim($("#no_dtt").val()) == ""){
+        $('#message').html("Nomor DTT harus diisi, tidak boleh kososng!");
         $('.alert-danger').show(); 
     }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kososng!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#supplier_id").val()) == ""){
-        $('#message').html("Supplier harus diisi, tidak boleh kososng!");
         $('.alert-danger').show(); 
     }else{   
         $('#message').html("");
@@ -227,19 +233,19 @@ function simpanData(){
     };
 };
 
-function get_uom_po(id, nmr){
+function get_uom(id, nmr){
     if($.trim($('#name_rongsok_'+nmr).val())!=''){    
-            $.ajax({
-                url: "<?php echo base_url('index.php/BeliFinishGood/get_uom'); ?>",
-                type: "POST",
-                data: {id: id},
-                dataType: "json",
-                success: function(result) {
-                    $('#uom_'+nmr).val(result['uom']);
-                    $('#fg_id_'+nmr).val(id);
-                    $('#ukuran_'+nmr).val(result['ukuran']);
-                }
-            });
+        $.ajax({
+            url: "<?php echo base_url('index.php/BeliFinishGood/get_uom'); ?>",
+            type: "POST",
+            data: {id: id},
+            dataType: "json",
+            success: function(result) {
+                $('#uom_'+nmr).val(result['uom']);
+                $('#fg_id_'+nmr).val(id);
+                $('#ukuran_'+nmr).val(result['ukuran']);
+            }
+        });
     }
 }
 
@@ -287,6 +293,9 @@ function saveDetail(id){
                 $('#no_packing_'+id).val(result['no_packing']);
             }
         });
+        $('#total_bruto').val(Number($('#total_bruto').val())+Number($('#bruto_'+id).val()));
+        $('#total_berat').val(Number($('#total_berat').val())+Number($('#berat_bobbin_'+id).val()));
+        $('#total_netto').val(Number($('#total_netto').val())+Number($('#netto_'+id).val()));
         $("#name_rongsok_"+id).attr('readonly','readonly');
         $("#timbang_"+id).attr('disabled','disabled');
         $("#netto_"+id).attr('readonly','readonly');
@@ -301,9 +310,9 @@ function saveDetail(id){
                 '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
                 '<input type="hidden" id="po_id_'+new_id+'" name="myDetails['+new_id+'][po_detail_id]" value="">'+
                 '<input type="hidden" id="fg_id_'+new_id+'" name="myDetails['+new_id+'][fg_id]" value="">'+
-                '<td><select id="name_rongsok_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom_po(this.value,'+new_id+');">'+
+                '<td><select id="name_rongsok_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom(this.value,'+new_id+');">'+
                     '<option value=""></option>'+
-                    '<?php foreach($list_fg_on_po as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}?>'+
+                    '<?php foreach($jenis_barang as $v){ print('<option value="'.$v->id.'">('.$v->kode.') '.$v->jenis_barang.'</option>');}?>'+
                 '</select>'+
                 '</td>'+
                 '<td><input type="text" id="uom_'+new_id+'" name="myDetails['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
@@ -324,7 +333,7 @@ function saveDetail(id){
 }
 
 function deleteDetail(id){
-    var r=confirm("Anda yakin menghapus item rongsok ini?");
+    var r=confirm("Anda yakin menghapus item finish good ini?");
     if (r==true){
         $('#total_bruto').val(Number($('#total_bruto').val())-Number($('#bruto_'+id).val()));
         $('#total_berat').val(Number($('#total_berat').val())-Number($('#berat_bobbin_'+id).val()));

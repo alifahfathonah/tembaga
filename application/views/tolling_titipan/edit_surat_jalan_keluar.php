@@ -183,19 +183,19 @@
                                 <th>No</th>
                                 <th style="width: 20%">Nama Item</th>
                                 <th style="width: 15%">Nama Item Alias</th>
-                                <th style="width: 15%">No. Packing</th>
+                                <th style="width: 18%">No. Packing</th>
                                 <th>Bruto</th>
+                                <th>Berat Bobbin</th>
                                 <th>Netto(Kg)</th>
                                 <th>Bobbin</th>
-                                <th>Keterangan</th>
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
-                                <?php $no=0; $bruto = 0; $netto = 0;
+                                <?php $no=0; $bruto = 0; $netto = 0; $berat = 0;
                                 foreach ($list_produksi as $row) { $no++;
                                 echo '<tr id="row_'.$no.'">'.
                                     '<td style="text-align: center;">'.$no.'</td>'.
-                                    '<td><input type="text" id="nama_barang_'.$no.'" name="details['.$no.'][nama_barang]" class="form-control myline" readonly="readonly" value="'.$row->jenis_barang.'"></td>'.
+                                    '<td>('.$row->kode.')'.$row->jenis_barang.'</td>'.
                                     '<input type="hidden" name="details['.$no.'][id_barang]" id="id_barang_'.$no.'" value="'.$row->id.'">'.
                                     '<input type="hidden" id="jenis_barang_id_'.$no.'" name="details['.$no.'][jenis_barang_id]" value="'.$row->jenis_barang_id.'" data-id="'.$row->ukuran.'">'.
                                     '<td>'.
@@ -210,15 +210,16 @@
                                     '<td><input type="text" class="form-control myline" style="margin-bottom:5px" id="no_packing_'.$no.'" name="details['.$no.'][no_packing]" value="'.$row->no_packing.'" data-id="'.$value->ukuran.'" readonly="readonly">'.
                                     '</td>'.
                                     '<td><input type="text" id="bruto_'.$no.'" name="details['.$no.'][bruto]" class="form-control myline" readonly="readonly" value="'.$row->bruto.'"></td>'.
+                                    '<td><input type="text" id="berat_'.$no.'" name="details['.$no.'][berat]" class="form-control myline" readonly="readonly" value="'.$row->berat_bobbin.'"></td>'.
                                     '<td><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" class="form-control myline" readonly="readonly" value="'.$row->netto.'"></td>'.
                                     '<td><input type="text" id="bobbin_'.$no.'" name="details['.$no.'][bobbin]" class="form-control myline" readonly="readonly" value="'.$row->nomor_bobbin.'"></td>'.
-                                    '<td><input type="text" id="line_remarks_'.$no.'" name="details['.$no.'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" value="'.$row->keterangan.'"></td>'.
                                     '<td style="text-align:center">'.
                                     '<a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('.$no.');" style="margin-top:5px;"><i class="fa fa-print"></i> Print </a>'.
                                     '<a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs red" onclick="delete_row('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Delete </a>'.
                                     '</td>'.
                                 '</tr>'; 
                                 $bruto += $row->bruto;
+                                $berat += $row->berat_bobbin;
                                 $netto += $row->netto;
                                     }
                                 ?>
@@ -227,6 +228,7 @@
                                 <tr>
                                     <td colspan="4" style="text-align: right;"><strong>Total</strong></td>
                                     <td><input type="text" class="form-control" style="margin-bottom: 5px" id="bruto" value="<?=$bruto;?>" readonly="readonly"></td>
+                                    <td><input type="text" class="form-control" style="margin-bottom: 5px" id="berat" value="<?=$berat;?>" readonly="readonly"></td>
                                     <td><input type="text" class="form-control" style="margin-bottom: 5px" id="netto" value="<?=$netto;?>" readonly="readonly"></td>
                                     <td colspan="3"></td>
                                 </tr>
@@ -241,39 +243,40 @@
                                 <th>UOM</th>
                                 <th>Qty</th>
                                 <th>Netto (Kg)</th>
-                                <th>Keterangan</th>
                                 <th>Actions</th>
                             </thead>
-                            <tbody>
-                                <?php 
-                                $no=0;
-                                $qty=0;
-                                $berat=0;
-                                foreach ($list_produksi as $row) { $no++;
+                            <tbody id="boxDetail">
+                            <?php
+                            $no = 0;
+                            $qty = 0;
+                            $netto = 0;
+                            foreach ($list_produksi as $row) {
+                                $no++;
                                 echo '<tr id="row_'.$no.'">'.
-                                    '<td style="text-align: center;"><div id="no_tabel_1">'.$no.'</div></td>'.
+                                    '<td style="text-align: center;">'.$no.'</td>'.
+                                    '<td>('.$row->kode.')'.$row->jenis_barang.'</td>'.
                                     '<input type="hidden" name="details['.$no.'][id_barang]" id="id_barang_'.$no.'" value="'.$row->id.'">'.
                                     '<input type="hidden" id="jenis_barang_id_'.$no.'" name="details['.$no.'][jenis_barang_id]" value="'.$row->jenis_barang_id.'">'.
-                                    '<td><input type="text" id="nama_barang_'.$no.'" name="details['.$no.'][nama_barang]" class="form-control myline" readonly="readonly" value="'.$row->jenis_barang.'"></td>'.
                                     '<td><input type="text" id="uom_'.$no.'" name="details['.$no.'][uom]" class="form-control myline" readonly="readonly" value="'.$row->uom.'"></td>'.
-                                    '<td><input type="text" id="qty_'.$no.'" name="details['.$no.'][qty]" class="form-control myline" readonly="readonly" value="'.$row->qty.'"></td>'.
-                                    '<td><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" class="form-control myline" readonly="readonly" value="'.number_format($row->berat,2,',','.').'"></td>'.
-                                    '<td><input type="text" id="line_remarks_'.$no.'" name="details['.$no.'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'.
+                                    '<td><input type="text" id="bruto_'.$no.'" name="details['.$no.'][qty]" class="form-control myline" readonly="readonly" value="'.$row->qty.'"></td>'.
+                                    '<td><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" class="form-control myline" readonly="readonly" value="'.$row->berat.'"></td>'.
                                     '<td style="text-align:center">'.
-                                    '<a id="delete_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle red" onclick="delete_row('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Delete </a>'.
+                                    '<a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs red" onclick="delete_row('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Delete </a>'.
                                     '</td>'.
-                                '</tr>';
+                                '</tr>'; 
                                 $qty += $row->qty;
-                                $berat += $row->berat;
-                                } 
-                                ?>
+                                $netto += $row->berat;
+                            }
+                            ?>
+                            </tbody>
+                            <tfoot>
                                 <tr>
                                     <td colspan="3" style="text-align: right;"><strong>Total</strong></td>
-                                    <td><input type="text" class="form-control" style="margin-bottom: 5px" id="t_qty" value="<?=$qty;?>" readonly="readonly"></td>
-                                    <td><input type="text" class="form-control" style="margin-bottom: 5px" id="t_berat" value="<?=number_format($berat,2,',','.');?>" readonly="readonly"></td>
-                                    <td colspan="2"></td>
+                                    <td><input type="text" class="form-control" style="margin-bottom: 5px" id="bruto" value="<?=$qty;?>" readonly="readonly"></td>
+                                    <td><input type="text" class="form-control" style="margin-bottom: 5px" id="netto" value="<?=$netto;?>" readonly="readonly"></td>
+                                    <td></td>
                                 </tr>
-                            </tbody>
+                            </tfoot>
                         </table>
                     <?php
                     }else{
@@ -283,51 +286,42 @@
                                 <th>No</th>
                                 <th style="width: 15%;">Nama Item</th>
                                 <th style="width: 15%;">No Palette</th>
-                                <th>Nama Item Alias</th>
                                 <th>Bruto</th>
-                                <th>Netto (Kg)</th>
                                 <th>Berat<br>Palette</th>
-                                <th>Keterangan</th>
+                                <th>Netto (Kg)</th>
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
                                 <?php $no=0; 
-                                $bruto = 0; $netto = 0;
+                                $bruto = 0; $netto = 0; $berat = 0;
                                 foreach ($list_produksi as $row) { $no++;
-                                echo '<tr  id="row_'.$no.'">'.
+                                echo '<tr id="row_'.$no.'">'.
                                     '<td style="text-align: center;">'.$no.'</td>'.
                                     '<input type="hidden" name="details['.$no.'][id_barang]" id="id_barang_'.$no.'" value="'.$row->id.'">'.
                                     '<input type="hidden" id="jenis_barang_id_'.$no.'" name="details['.$no.'][jenis_barang_id]" value="'.$row->rongsok_id.'">'.
-                                    '<td><input type="text" id="nama_barang_'.$no.'" name="details['.$no.'][nama_barang]" class="form-control myline" readonly="readonly" value="'.$row->jenis_barang.'"></td>'.
+                                    '<td>'.$row->jenis_barang.'</td>'.
                                     '<td><input type="text" id="no_palette_'.$no.'" name="details['.$no.'][no_palette]" class="form-control myline" readonly="readonly" value="'.$row->no_pallete.'"></td>'.
-                                    '<td>'.
-                                        '<select id="barang_alias_id_'.$no.'" name="details['.$no.'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
-                                            <option value="0"></option>';
-                                            foreach ($jenis_barang as $value){
-                                            echo '<option value='.$value->id.'>'.$value->jenis_barang.'</option>';
-                                        }
-                                        echo '</select>'.
-                                    '</td>'.
                                     '<input type="hidden" id="qty_'.$no.'" name="details['.$no.'][qty]" class="form-control myline" readonly="readonly" value="0">'.
                                     '<td><input type="text" id="bruto_'.$no.'" name="details['.$no.'][bruto]" class="form-control myline" readonly="readonly" value="'.$row->bruto.'"></td>'.
+                                    '<td><input type="text" id="berat_'.$no.'" name="details['.$no.'][berat_palette]" class="form-control myline" readonly="readonly" value="'.$row->berat_palette.'"></td>'.
                                     '<td><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" class="form-control myline" readonly="readonly" value="'.$row->netto.'"></td>'.
-                                    '<td><input type="text" id="berat_palette_'.$no.'" name="details['.$no.'][berat_palette]" class="form-control myline" readonly="readonly" value="'.$row->berat_palette.'"></td>'.
-                                    '<td><input type="text" id="line_remarks_'.$no.'" name="details['.$no.'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" value="'.$row->keterangan.'"></td>'.
                                     '<td><a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcodeRsk('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Print </a>'.
                                     '<a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs red" onclick="delete_row('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Delete </a></td>'.
                                     '</td>'.
                                 '</tr>';
                                 $bruto += $row->bruto;
+                                $berat += $row->berat_palette;
                                 $netto += $row->netto;
                                     }
                                 ?>
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="4" style="text-align: right;"><strong>Total</strong></td>
+                                    <td colspan="3" style="text-align: right;"><strong>Total</strong></td>
                                     <td><input type="text" class="form-control" style="margin-bottom: 5px" id="bruto" value="<?=$bruto;?>" readonly="readonly"></td>
+                                    <td><input type="text" class="form-control" style="margin-bottom: 5px" id="berat" value="<?=$berat;?>" readonly="readonly"></td>
                                     <td><input type="text" class="form-control" style="margin-bottom: 5px" id="netto" value="<?=$netto;?>" readonly="readonly"></td>
-                                    <td colspan="3"></td>
+                                    <td></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -340,7 +334,7 @@
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
-                    <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                    <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
                     <a href="<?php echo base_url('index.php/Tolling/surat_jalan_keluar'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
@@ -363,17 +357,10 @@
 </div> 
 <script>
 function delete_row(id){
-    if($('#jenis_barang').val()=='WIP'){
-        const t_qty = parseFloat($('#t_qty').val())-parseFloat($('#qty_'+id).val().toString().replace(/\,/g, ""));
-        const t_berat = parseFloat($('#t_berat').val())-parseFloat($('#berat_'+id).val().toString().replace(/\,/g, ""));
-        $('#t_qty').val(t_qty.toFixed(2));
-        $('#t_berat').val(t_berat.toFixed(2));
-    }else{
         const bruto = $('#bruto_'+id).val();
         const netto = $('#netto_'+id).val();
         $('#bruto').val(Math.round((Number($('#bruto').val())-Number(bruto))*100)/100);
         $('#netto').val(Math.round((Number($('#netto').val())-Number(netto))*100)/100);
-    }
     $('#row_'+id).remove();
 }
 
@@ -402,6 +389,7 @@ function simpanData(){
         $('#message').html("Silahkan pilih no. sales order");
         $('.alert-danger').show(); 
     }else{
+        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').submit(); 
     };
 };

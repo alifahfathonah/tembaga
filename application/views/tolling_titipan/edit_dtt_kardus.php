@@ -6,7 +6,7 @@
             <i class="fa fa-angle-right"></i> 
             <a href="<?php echo base_url('index.php/Tolling'); ?>"> Tolling Ke Customer</a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Tolling/create_dtbj'); ?>"> Create Data Timbang Tolling(DTT) </a> 
+            <a href="<?php echo base_url('index.php/Tolling/create_dtt'); ?>"> Create Data Timbang Tolling(DTT) </a> 
         </h5>          
     </div>
 </div>
@@ -38,7 +38,7 @@
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_dtt'];?>">
 
-                            <input type="hidden" id="id" name="id" value="<?php echo $header['id'];?>">
+                            <input type="hidden" name="id" value="<?php echo $header['id'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -62,7 +62,17 @@
                             
                             <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['id']; ?>">
                         </div>
-                    </div>  -->                   
+                    </div>  -->    
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Barang
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jenis_barang" name="jenis_barang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $header['jenis_barang'];?>">
+                        </div>
+                    </div>               
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
@@ -92,13 +102,15 @@
                                 value="<?php echo $this->session->userdata('realname'); ?>">
                         </div>
                     </div>
+                    <?php if($header['jenis_barang']=='FG'){?>
                     <div class="row">
                         <div class="col-md-4">
-                            Jenis Barang
+                            Jenis Packing
                         </div>
                         <div class="col-md-8">
-                            <input type="text" class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['jenis_barang'];?>">
+                            <input type="text" id="jenis_packing" name="jenis_packing" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $header['nama_jenis_packing'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -106,60 +118,73 @@
                             Pilih Packing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select  id="jenis_packing" name="jenis_packing" placeholder="Silahkan pilih..."
-                                class="form-control myline select2me" style="margin-bottom:5px">
+                            <select  id="no_packing" name="no_packing" placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom:5px">
                                 <option value=""></option>
                                 <?php 
                                 foreach($packing as $p){
                                 ?>
-                                <option value="<?=$p->nomor_bobbin;?>"><?=$p->nomor_bobbin.' ('.$p->jenis_packing.')';?> </option>
+                                <option value="<?=$p->bobbin_size;?>"><?=$p->bobbin_size.' ('.$p->keterangan.')';?> </option>
                                 <?php } ?>    
                             </select> 
                             <input type="hidden" name="id_packing" id="id_packing">                       
                         </div>
                     </div>
+                    <?php } ?>
                 </div>              
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
-                        <table class="table table-bordered table-striped table-hover">
+                        <table class="table table-bordered table-striped table-hover" id="tabel_dtr">
                             <thead>
-                                <th>No</th>
-                                <th width="20%">Jenis Barang</th>
+                                <th style="width:40px">No</th>
+                                <th style="width:20%">Nama Item Finish Good</th>
                                 <th>UOM</th>
-                                <th></th>
                                 <th>Bruto</th>
-                                <th>Berat Packing</th>
+                                <th>Berat Palette</th>
+                                <th></th>
                                 <th>Netto (Kg)</th>
-                                <th width="15%">Nomor Packing</th>
-                                <th width="10%">Keterangan</th>
-                                <th>Actions</th>
+                                <th style="width:20%">No. Packing</th>
+                                <th>Keterangan</th>
                             </thead>
                             <tbody id="boxDetail">
-
-                            </tbody>
                             <tr>
-                                <td style="text-align:center"><i class="fa fa-plus"></td>
-                                <td><select id="jenis_barang" name="jenis_barang" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom(this.value);">
+                                <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
+                                <input type="hidden" id="fg_id_1" name="myDetails[1][fg_id]" value="">
+                                <td><select id="name_rongsok_1" name="myDetails[1][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom_po(this.value,1);">
                                     <option value=""></option>
-                                    <?php foreach ($list_barang as $value){ ?>
+                                    <?php foreach ($jenis_barang as $value){ ?>
                                             <option value='<?=$value->id;?>'>
-                                                <?=$value->jenis_barang;?>
+                                                <?='('.$value->kode.') '.$value->jenis_barang;?>
                                             </option>
                                     <?php } ?>
                                 </select>
-                                <input type="hidden" id="ukuran" name="ukuran">
+                                <input type="hidden" id="ukuran_1" name="myDetails[1][ukuran]">
                                 </td>
-                                <td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>
-                                <td><a href="javascript:;" onclick="timbang_netto()" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>
-                                <td><input type="number" id="bruto" name="bruto" class="form-control myline"/></td>
-                                <td><input type="number" id="berat_bobbin" = name="berat_bobbin" class="form-control myline"/></td>
-                                <td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"/></td>
-                                <td><input type="text" id="no_packing" name="no_packing" class="form-control myline" readonly="readonly"></td>
-                                <td><input type="text" id="keterangan" name="keterangan" class="form-control myline"/></td>
-                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
+                                <td><input type="text" id="uom_1" name="myDetails[1][uom]" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="bruto_1" name="myDetails[1][bruto]" class="form-control myline" value="0" maxlength="10"></td>
+                                <td><input type="number" id="berat_bobbin_1" name="myDetails[1][berat_bobbin]" class="form-control myline" value="0" maxlength="4"></td>
+                                <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(1);" id="timbang_1"> <i class="fa fa-dashboard"></i> Timbang </a></td>
+                                <td><input type="text" id="netto_1" name="myDetails[1][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly"></td>
+                                <td><input type="text" name="myDetails[1][no_packing]" id="no_packing_1" class="form-control myline" readonly placeholder="Auto"></td>
+                                <input type="hidden" name="myDetails[1][no_bobbin]" class="form-control myline" value="">
+                                <input type="hidden" name="myDetails[1][line_remarks]" class="form-control myline" value="">
+                                <td style="text-align:center"><a id="save_1" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(1);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
+                                    <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
+                                    <a id="print_1" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(1);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>
+                                </td>
                             </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><strong>Total :</strong></td>
+                                    <td><input type="text" id="total_bruto" class="form-control" readonly="readonly"></td>
+                                    <td><input type="text" id="total_berat" class="form-control" readonly="readonly"></td>
+                                    <td></td>
+                                    <td><input type="text" id="total_netto" class="form-control" readonly="readonly"></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -168,9 +193,9 @@
             <div class="row">
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                        <i class="fa fa-floppy-o"></i> Simpan </a>
-                        
-                    <a href="<?php echo base_url('index.php/GudangFG/produksi_fg'); ?>" class="btn blue-hoki"> 
+                        <i class="fa fa-floppy-o"></i> Create DTBJ </a>
+
+                    <a href="<?php echo base_url('index.php/BeliFinishGood/dtbj_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -182,138 +207,164 @@
             <button class="close" data-close="alert"></button>
             <span id="message">Anda tidak memiliki hak akses ke halaman ini!</span>
         </div>
-    <?php } ?>
+        <?php
+            }
+        ?>
     </div>
 </div> 
 <script>
-function makepallete_id(){
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    for (var i = 0; i < 4; i++)
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-    
-    var d = new Date();
-    var str = $('#jenis_packing').val();
-    var res = str.substring(0, 1);
-    const u = $('#ukuran').val();
-    var strDateTime = '<?=date('ymd');?>' + res + u;
-    return (strDateTime+text);
-}
-
-function timbang_netto(){
-    if($.trim($("#jenis_packing").val()) == ""){
-        $('#message').html("Silahkan pilih packing barang!");
-        $('.alert-danger').show(); 
-    }else{
-        var bruto = $("#bruto").val();
-        var berat_palette = $("#berat_bobbin").val();
-        var total_netto = bruto - berat_palette;
-        $("#netto").val(total_netto);
-        $("#no_packing").val(makepallete_id());
-    }
+function timbang_netto(id){
+    const bruto = $('#bruto_'+id).val();
+    const berat = $('#berat_bobbin_'+id).val();
+    $('#netto_'+id).val(bruto - berat);
 }
 
 function simpanData(){
-    if($.trim($("#tanggal").val()) == ""){
-        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
+    if($.trim($("#no_dtt").val()) == ""){
+        $('#message').html("Nomor DTT harus diisi, tidak boleh kososng!");
         $('.alert-danger').show(); 
-    }else{     
-        $('#formku').submit(); 
+    }else if($.trim($("#tanggal").val()) == ""){
+        $('#message').html("Tanggal harus diisi, tidak boleh kososng!");
+        $('.alert-danger').show(); 
+    }else{   
+        $('#message').html("");
+        $('.alert-danger').hide(); 
+        $('#formku').submit();
     };
 };
 
-function loadDetail(id){
-    $.ajax({
-        type:"POST",
-        url:'<?php echo base_url('index.php/Tolling/load_detail_rambut'); ?>',
-        data:"id="+ id,
-        success:function(result){
-            $('#boxDetail').html(result);     
-        }
-    });
+function get_uom_po(id, nmr){
+    if($.trim($('#name_rongsok_'+nmr).val())!=''){    
+            $.ajax({
+                url: "<?php echo base_url('index.php/BeliFinishGood/get_uom'); ?>",
+                type: "POST",
+                data: {id: id},
+                dataType: "json",
+                success: function(result) {
+                    $('#uom_'+nmr).val(result['uom']);
+                    $('#fg_id_'+nmr).val(id);
+                    $('#ukuran_'+nmr).val(result['ukuran']);
+                }
+            });
+    }
 }
 
-function get_uom(id){
-    $.ajax({
-        url: "<?php echo base_url('index.php/BeliFinishGood/get_uom'); ?>",
-        type: "POST",
-        data: {id: id},
-        dataType: "json",
-        success: function(result) {
-            $('#uom').val(result['uom']);
-            $('#ukuran').val(result['ukuran']);
-        }
-    });
-}
+// function get_packing(id){
+//     if(''!=id){
+//         $.ajax({
+//             url: "<?php echo base_url('index.php/GudangFG/get_bobbin'); ?>",
+//             type: "POST",
+//             data: "id="+id,
+//             dataType: "json",
+//             success: function(result) {
+//                 if(result){
+//                     $('#id_packing').val(result['id']);
+//                 } else {
+//                     alert('Bobbin/Keranjang tidak ditemukan, coba lagi');
+//                     $('#no_packing').val('');
+//                 }
+//             }
+//         });
+//     }
+// }
 
-function saveDetail(){
-    if($.trim($("#jenis_barang").val()) == ""){
-        $('#message').html("Silahkan pilih jenis barang!");
-        $('.alert-danger').show(); 
-    } else if($.trim($("#netto").val()) == ""){
-        $('#message').html("Silahkan isi netto barang!");
+function saveDetail(id){
+    if($.trim($("#name_rongsok_"+id).val()) == ""){
+        $('#message').html("Silahkan pilih nama item finish good!");
         $('.alert-danger').show();
-    } else{
+    }else if($.trim($("#netto_"+id).val()) ==  ("" || 0)){
+        $('#message').html("Jumlah netto tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else if($.trim($("#no_packing").val()) == ""){
+        $('#message').html("Silahkan pilih packing!");
+        $('.alert-danger').show();
+    }else{
         $.ajax({
-            type:"POST",
-            url:'<?php echo base_url('index.php/Tolling/save_detail_rambut'); ?>',
-            data:{
-                id:$('#id').val(),
-                jb:$('#jenis_barang').val(),
-                bruto:$('#bruto').val(),
-                berat:$('#berat_bobbin').val(),
-                netto: $('#netto').val(),
-                no_packing:$('#no_packing').val(),
-                no_bobbin: $('#jenis_packing').val(),
-                tanggal: $('#tanggal').val()
+            url: "<?php echo base_url('index.php/BeliFinishGood/get_packing_kardus'); ?>",
+            type: "POST",
+            data: {
+                id:id,
+                tanggal: $('#tanggal').val(),
+                no_packing: $('#no_packing').val(),
+                ukuran: $('#ukuran_'+id).val()
             },
-            success:function(result){
-                if(result['message_type']=="sukses"){
-                    loadDetail($('#id').val());
-                    $('#jenis_barang').select2('val','');
-                    $('#bruto').val('');
-                    $('#berat_bobbin').val('');
-                    $('#netto').val('');
-                    $('#no_packing').val('');
-                    $('#uom').val('');
-                    $('#message').html("");
-                    $('.alert-danger').hide(); 
-                }else{
-                    $('#message').html(result['message']);
-                    $('.alert-danger').show(); 
-                }            
+            dataType: "json",
+            success: function(result){
+                $('#no_packing_'+id).val(result['no_packing']);
             }
         });
-    }
+        $('#total_bruto').val(Number($('#total_bruto').val())+Number($('#bruto_'+id).val()));
+        $('#total_berat').val(Number($('#total_berat').val())+Number($('#berat_bobbin_'+id).val()));
+        $('#total_netto').val(Number($('#total_netto').val())+Number($('#netto_'+id).val()));
+        $("#name_rongsok_"+id).attr('readonly','readonly');
+        $("#timbang_"+id).attr('disabled','disabled');
+        $("#netto_"+id).attr('readonly','readonly');
+        $("#bruto_"+id).attr('readonly','readonly');
+        $("#berat_bobbin_"+id).attr('readonly','readonly');
+        $("#save_"+id).hide();
+        $("#print_"+id).show();
+        $("#delete_"+id).removeClass('disabled');
+        var new_id = id+1; 
+        $("#tabel_dtr>tbody").append(
+            '<tr>'+
+                '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
+                '<input type="hidden" id="po_id_'+new_id+'" name="myDetails['+new_id+'][po_detail_id]" value="">'+
+                '<input type="hidden" id="fg_id_'+new_id+'" name="myDetails['+new_id+'][fg_id]" value="">'+
+                '<td><select id="name_rongsok_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom_po(this.value,'+new_id+');">'+
+                    '<option value=""></option>'+
+                    '<?php foreach($jenis_barang as $v){ print('<option value="'.$v->id.'">('.$v->kode.') '.$v->jenis_barang.'</option>');}?>'+
+                '</select>'+
+                '</td>'+
+                '<td><input type="text" id="uom_'+new_id+'" name="myDetails['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
+                '<input type="hidden" id="ukuran_'+new_id+'" name="myDetails['+new_id+'][ukuran]">'+
+                '<td><input type="text" id="bruto_'+new_id+'" name="myDetails['+new_id+'][bruto]" class="form-control myline" value="0" maxlength="10"></td>'+
+                '<td><input type="number" id="berat_bobbin_'+new_id+'" name="myDetails['+new_id+'][berat_bobbin]" class="form-control myline" value="0" maxlength="4"></td>'+
+                '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('+new_id+');" id="timbang_'+new_id+'"> <i class="fa fa-dashboard"></i> Timbang </a></td>'+
+                '<td><input type="text" id="netto_'+new_id+'" name="myDetails['+new_id+'][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly"></td>'+
+                '<td><input type="text" name="myDetails['+new_id+'][no_packing]" id="no_packing_'+new_id+'" class="form-control myline" readonly placeholder="Auto"></td>'+
+                '<input type="hidden" name="myDetails['+new_id+'][no_bobbin]" class="form-control myline" value="">'+
+                '<input type="hidden" name="myDetails['+new_id+'][line_remarks]" class="form-control myline" value="">'+
+                '<td style="text-align:center"><a id="save_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail('+new_id+');" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>'+
+                    '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>'+
+                    '<a id="print_'+new_id+'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('+new_id+');" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a></td>'+
+            '</tr>'
+        );
+    }$('#name_rongsok_'+new_id).select2();
 }
 
-function hapusDetail(id){
-    var r=confirm("Anda yakin menghapus item barang ini?");
+function deleteDetail(id){
+    var r=confirm("Anda yakin menghapus item rongsok ini?");
     if (r==true){
-        $.ajax({
-            type:"POST",
-            url:'<?php echo base_url('index.php/Tolling/delete_detail_rambut'); ?>',
-            data:"id="+ id,
-            success:function(result){
-                if(result['message_type']=="sukses"){
-                    loadDetail($('#id').val());
-                }else{
-                    alert(result['message']);
-                }     
-            }
-        });
-    }
+        $('#total_bruto').val(Number($('#total_bruto').val())-Number($('#bruto_'+id).val()));
+        $('#total_berat').val(Number($('#total_berat').val())-Number($('#berat_bobbin_'+id).val()));
+        $('#total_netto').val(Number($('#total_netto').val())-Number($('#netto_'+id).val()));
+        $('#no_tabel_'+id).closest('tr').remove();
+        }
 }
 
 function printBarcode(id){
-    window.open('<?php echo base_url('index.php/Tolling/print_barcode_kardus?id=');?>'+id,'_blank');
+    const fg = $('#fg_id_'+id).val();
+    const b = $('#bruto_'+id).val();
+    const bb = $('#berat_bobbin_'+id).val();
+    const n = $('#netto_'+id).val();
+    const np = $('#no_packing_'+id).val();
+    console.log(id+' | '+fg+' | '+b+' | '+bb+' | '+n+' | '+np);
+    window.open('<?php echo base_url();?>index.php/BeliFinishGood/print_barcode?fg='+fg+'&b='+b+'&bb='+bb+'&n='+n+'&np='+np,'_blank');
 }
 </script>
-
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
-<script>    
-    loadDetail(<?php echo $header['id']; ?>);
+<script>
+$(function(){        
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yy-mm-dd'
+    });
+});
 </script>

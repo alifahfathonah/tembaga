@@ -460,7 +460,7 @@ class Model_sales_order extends CI_Model{
                 left join m_bobbin mb on tgf.bobbin_id>0 and mb.id = tgf.bobbin_id
                 left join jenis_barang jb1 on jb1.id = tsjd.jenis_barang_id
                 left join jenis_barang jb2 on jb2.id = tsjd.jenis_barang_alias
-                where tsjd.t_sj_id =".$id." order by tsjd.jenis_barang_id");
+                where tsjd.t_sj_id =".$id." order by jenis_barang");
         return $data;
     }
 

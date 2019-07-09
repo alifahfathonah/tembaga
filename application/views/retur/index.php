@@ -62,7 +62,7 @@
                     <tr>
                         <td style="text-align:center;"><?php echo $no; ?></td>
                         <td style="background-color: "><?php echo $data->no_retur; ?></td>
-                        <td><?php echo date('d-m-Y', strtotime($data->created_at)); ?></td>
+                        <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->pic; ?></td>
                         <td><?php echo $data->penimbang; ?></td>                        

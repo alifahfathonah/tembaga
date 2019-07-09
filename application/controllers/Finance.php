@@ -1881,7 +1881,7 @@ class Finance extends CI_Controller{
                 }
             $tabel .= '<td>'.$row->no_invoice.'</td>';
             $tabel .= '<td style="text-align:right;">'.number_format($row->total,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="addInv('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addInv"><i class="fa fa-plus"></i> Tambah </a></td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="input_inv('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addInv"><i class="fa fa-plus"></i> Tambah </a></td>';
 
             $no++;
         }

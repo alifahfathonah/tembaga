@@ -395,7 +395,7 @@ class SalesOrder extends CI_Controller{
                 $dataC = array(
                     'no_spb'=> $num,
                     'tanggal'=> $tgl_input,
-                    'keterangan'=>'SO : '.$code.' | '.$this->input->post('keterangan'),
+                    'keterangan'=> $code.' | '.$this->input->post('keterangan'),
                     'created_at'=> $tanggal,
                     'created_by'=> $user_id
                 );
@@ -407,7 +407,7 @@ class SalesOrder extends CI_Controller{
                 $dataC = array(
                     'no_spb_wip'=> $num,
                     'tanggal'=> $tgl_input,
-                    'keterangan'=>'SO : '.$code.' | '.$this->input->post('keterangan'),
+                    'keterangan'=> $code.' | '.$this->input->post('keterangan'),
                     'created'=> $tanggal,
                     'created_by'=> $user_id
                 );
@@ -420,7 +420,7 @@ class SalesOrder extends CI_Controller{
                     'no_spb'=> $num,
                     'jenis_barang'=> 1,
                     'tanggal'=> $tanggal,
-                    'remarks'=>'SO : '.$code.' | '.$this->input->post('keterangan'),
+                    'remarks'=> $code.' | '.$this->input->post('keterangan'),
                     'created'=> $tanggal,
                     'created_by'=> $user_id
                 );
@@ -431,7 +431,7 @@ class SalesOrder extends CI_Controller{
                 $dataC = array(
                     'no_spb_ampas' => $num,
                     'tanggal' => $tgl_input,
-                    'keterangan'=>'SO : '.$code.' | '.$this->input->post('keterangan'),
+                    'keterangan'=> $code.' | '.$this->input->post('keterangan'),
                     'created_by' => $user_id,
                     'created_at' => $tanggal
                 );
@@ -1186,17 +1186,62 @@ class SalesOrder extends CI_Controller{
             $soid = $data['header']['sales_order_id'];
             if($jenis == 'FG'){
                 $data['list_sj'] = $this->Model_sales_order->load_view_sjd($id)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_in_so($soid)->result();
             }else if($jenis == 'WIP'){
                 $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_in_so($soid)->result();
             }else if($jenis == 'LAIN'){
                 $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_lain($id)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->rongsok_in_so($soid)->result();
             }else{
                 $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id,$soid)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->rongsok_in_so($soid)->result();
             }
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/SalesOrder/surat_jalan');
         }
+    }
+
+    function update_surat_jalan_existing(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');        
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $jenis = $this->input->post('jenis_barang');
+        $soid = $this->input->post('so_id');
+
+        #Insert Surat Jalan
+        $details = $this->input->post('details');
+
+        // print_r($details);
+        // die();
+        foreach ($details as $v) {
+            if($v['id_tsj_detail']!=''){
+                $this->db->where('id',$v['id_tsj_detail']);
+                $this->db->update('t_surat_jalan_detail', array(
+                    'jenis_barang_alias'=>$v['barang_alias_id'],
+                    'modified_by'=>$user_id,
+                    'modified_at'=>$tanggal
+                ));
+            }
+        }
+
+        $data = array(
+                'no_surat_jalan'=> $this->input->post('no_surat_jalan'),
+                'tanggal'=> $tgl_input,
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
+                'supir'=>$this->input->post('supir'),
+                'remarks'=>$this->input->post('remarks'),
+                'modified_at'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+        
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('t_surat_jalan', $data);
+
+        
+        $this->session->set_flashdata('flash_msg', 'Data surat jalan berhasil disimpan');
+        redirect('index.php/SalesOrder/view_surat_jalan/'.$this->input->post('id'));
     }
 
     function approve_surat_jalan(){

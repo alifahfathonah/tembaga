@@ -5,8 +5,14 @@ matching invoice dikurang dengan POTONGAN
 
 Laporan DTR yang dipakai di Matching Invoice CV
 
-total harga kanan di invoice gausah pake belakang koma
-
 jumlah afkiran di ttr
 
 edit terima retur
+
+laporan finish good
+
+Kode Barang setiap dropdown list.
+
+po bisa diedit harga nya,
+
+so bisa di edit header nya customernya juga

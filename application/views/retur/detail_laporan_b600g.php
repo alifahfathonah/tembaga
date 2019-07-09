@@ -43,8 +43,8 @@
                             Tanggal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="tanggal" name="tanggal" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
+                            <input type="text" id="tanggal" name="tanggal"
+                                class="form-control myline input-small" style="margin-bottom:5px; float:left;" 
                                 value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>

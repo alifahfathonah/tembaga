@@ -11,7 +11,7 @@
         }else{
             echo 'PACKING LIST SEMENTARA</h3>';
         }?>
-        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
+        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Times New Roman">
             <tr>
                 <td width="60%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">

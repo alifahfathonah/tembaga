@@ -44,7 +44,7 @@
                             Tanggal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="tanggal" name="tanggal" readonly="readonly" 
+                            <input type="text" id="tanggal" name="tanggal"
                                 class="form-control input-small myline" style="margin-bottom:5px; float:left;" 
                                 value="<?=$header['tanggal'];?>">
                         </div>

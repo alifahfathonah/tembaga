@@ -43,9 +43,9 @@
                             Tanggal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="tanggal" name="tanggal" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo date('d-m-Y', strtotime($header['created_at'])); ?>">
+                            <input type="text" id="tanggal" name="tanggal"
+                                class="form-control myline input-small" style="margin-bottom:5px; float:left;" 
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
                     <!-- <div class="row">
@@ -322,6 +322,15 @@ $(function(){
         changeYear: true,
         dateFormat: 'dd-mm-yy'
     }); 
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });
     
     loadDetail(<?php echo $header['id']; ?>);
 });

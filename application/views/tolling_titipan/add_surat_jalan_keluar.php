@@ -109,7 +109,7 @@
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                            <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                                 <i class="fa fa-floppy-o"></i> Input Details </a>
                         </div>    
                     </div>
@@ -181,6 +181,9 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
+    }else if($.trim($("#no_surat_jalan").val()) == ""){
+        $('#message').html("Silahkan pilih customer");
+        $('.alert-danger').show();
     }else if($.trim($("#m_customer_id").val()) == ""){
         $('#message').html("Silahkan pilih customer");
         $('.alert-danger').show(); 
@@ -188,6 +191,7 @@ function simpanData(){
         $('#message').html("Silahkan pilih no. sales order");
         $('.alert-danger').show();
     }else{     
+        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').submit(); 
     };
 };
@@ -238,7 +242,6 @@ function get_no_spb(id){
     });
 }
 </script>
-
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>

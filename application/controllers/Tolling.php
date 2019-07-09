@@ -868,14 +868,14 @@ class Tolling extends CI_Controller{
         $this->load->view('layout', $data);
     }
     
-    function print_dtr(){
+    function print_dtt(){
         $id = $this->uri->segment(3);
         if($id){        
             $this->load->model('Model_tolling_titipan');
-            $data['header']  = $this->Model_tolling_titipan->show_header_dtr($id)->row_array();
-            $data['details'] = $this->Model_tolling_titipan->show_detail_dtr($id)->result();
+            $data['header']  = $this->Model_tolling_titipan->show_header_dtt($id)->row_array();
+            $data['details'] = $this->Model_tolling_titipan->show_detail_dtt($id)->result();
 
-            $this->load->view('print_dtr_from_so', $data);
+            $this->load->view('tolling_titipan/print_dtt', $data);
         }else{
             redirect('index.php'); 
         }
@@ -1604,10 +1604,11 @@ class Tolling extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_sj = date('Ym', strtotime($this->input->post('tanggal')));
         
         // $this->load->model('Model_m_numberings');
         // $code = $this->Model_m_numberings->getNumbering('SJ-T', $tgl_input); 
-        $code = 'SJ.'.$tgl_sj.'.'.$this->input->post('no_surat_jalan');
+        $code = 'SJ-T.'.$tgl_sj.'.'.$this->input->post('no_surat_jalan');
         
         if($code){        
             $data = array(
@@ -1802,6 +1803,8 @@ class Tolling extends CI_Controller{
 
         #Insert Surat Jalan
         $details = $this->input->post('details');
+        // print_r($details);
+        // die();
         foreach ($details as $v) {
             if($v['id_barang']!=''){
                 if($jenis=='FG'){// BARANG FINISH GOOD
@@ -1812,6 +1815,7 @@ class Tolling extends CI_Controller{
                         'no_packing'=>$v['no_packing'],
                         'qty'=>'1',
                         'bruto'=>$v['bruto'],
+                        'berat'=>$v['berat'],
                         'netto'=>$v['netto'],
                         'nomor_bobbin'=>$v['bobbin'],
                         'line_remarks'=>$v['line_remarks'],
@@ -1826,9 +1830,9 @@ class Tolling extends CI_Controller{
                         'no_packing'=>0,
                         'qty'=>$v['qty'],
                         'bruto'=>0,
+                        'berat'=>0,
                         'netto'=>$v['netto'],
                         'nomor_bobbin'=>0,
-                        'line_remarks'=>$v['line_remarks'],
                         'created_by'=>$user_id,
                         'created_at'=>$tanggal
                     ));
@@ -1840,9 +1844,10 @@ class Tolling extends CI_Controller{
                         'no_packing'=>$v['no_palette'],
                         'qty'=>$v['qty'],
                         'bruto'=>$v['bruto'],
+                        'berat'=>$v['berat_palette'],
                         'netto'=>$v['netto'],
                         'nomor_bobbin'=>0,
-                        'line_remarks'=>$v['line_remarks'],
+                        'line_remarks'=>'',
                         'created_by'=>$user_id,
                         'created_at'=>$tanggal
                     ));
@@ -1852,6 +1857,7 @@ class Tolling extends CI_Controller{
 
         $data = array(
                 'tanggal'=> $tgl_input,
+                'status'=> 0,
                 'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
                 'no_kendaraan'=>$this->input->post('no_kendaraan'),
                 'supir'=>$this->input->post('supir'),
@@ -1919,7 +1925,7 @@ class Tolling extends CI_Controller{
             }else if($jenis == 'WIP'){
                 $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
             }else{
-                $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id)->result();
+                $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id,0)->result();
             }
 
             $this->load->view('layout', $data);   
@@ -2163,9 +2169,26 @@ class Tolling extends CI_Controller{
         
         $this->db->where('id', $sjid);
         $this->db->update('t_surat_jalan', $data);
+
+        $this->db->where('t_sj_id', $sjid);
+        $this->db->delete('t_surat_jalan_detail');
         
         $this->session->set_flashdata('flash_msg', 'Surat jalan berhasil direject');
         redirect('index.php/Tolling/surat_jalan_keluar');
+    }
+
+    function delete_surat_jalan_keluar(){
+        $id = $this->uri->segment(3);
+        $this->db->trans_start();
+        if(!empty($id)){
+
+            $this->db->delete('t_surat_jalan', ['id' => $id]);
+        }
+
+        if($this->db->trans_complete()) {
+            $this->session->set_flashdata('flash_msg', 'Data Surat Jalan berhasil dihapus');
+            redirect('index.php/Tolling/surat_jalan_keluar');
+        }
     }
 
     function simpan_surat_jalan_keluar(){
@@ -2599,11 +2622,23 @@ class Tolling extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $this->load->model('Model_tolling_titipan');
+            $this->load->model('Model_gudang_fg');
             $data['header'] = $this->Model_tolling_titipan->show_header_dtt($id)->row_array();
-            if($data['header']['jenis_packing']=='KARDUS'){
+            $data['jenis_barang'] = $this->Model_gudang_fg->barang_fg_list()->result();
+            if($data['header']['nama_jenis_packing']=='KARDUS'){
                 $data['content']= "tolling_titipan/edit_dtt_kardus";
+                $data['packing'] =  $this->Model_gudang_fg->get_bobbin_g($data['header']['jenis_packing'])->result();
+            }else if($data['header']['nama_jenis_packing']=='BOBBIN'){
+                $data['content']= "tolling_titipan/edit_dtt_bobbin";
+            }else if($data['header']['nama_jenis_packing']=='KERANJANG'){
                 $this->load->model('Model_gudang_fg');
-                $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('KARDUS')->result();
+                $data['packing'] =  $this->Model_gudang_fg->get_bobbin_g($data['header']['jenis_packing'])->result();
+                // $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('KERANJANG')->result();
+                $data['content']= "tolling_titipan/edit_dtt_bobbin";
+            }else if($data['header']['nama_jenis_packing']==('BOBBIN PLASTIK' || 'KERANJANG SDM')){
+                $data['content']= "tolling_titipan/edit_dtt_b600g";
+                $this->load->model('Model_gudang_fg');
+                $data['packing'] =  $this->Model_gudang_fg->get_bobbin_g($data['header']['jenis_packing'])->result();
             }else{
                 $data['content']= "tolling_titipan/edit_dtt";
             }
@@ -2674,10 +2709,10 @@ class Tolling extends CI_Controller{
         $details = $this->input->post('myDetails');
         foreach ($details as $row){
             if($jenis=='FG'){
-                if($row['jb_id']!=0 && $row['no_bobbin']!=''){
+                if($row['fg_id']!=0 && $row['no_packing']!=''){
                         $this->db->insert('dtt_detail', array(
                             'dtt_id'=>$dtt_id,
-                            'jenis_barang_id'=>$row['jb_id'],
+                            'jenis_barang_id'=>$row['fg_id'],
                             'bruto'=>$row['bruto'],
                             'berat_bobbin'=>$row['berat_bobbin'],
                             'netto'=>$row['netto'],
@@ -2688,9 +2723,11 @@ class Tolling extends CI_Controller{
                             'created_by'=>$user_id,
                             'tanggal_masuk'=>$tgl_input
                         ));
-                $updatebobbin = array('status'=>1);
-                $this->db->where('nomor_bobbin', $row['no_bobbin']);
-                $this->db->update('m_bobbin', $updatebobbin);
+                    if($row['no_bobbin']!=''){
+                        $updatebobbin = array('status'=>1);
+                        $this->db->where('nomor_bobbin', $row['no_bobbin']);
+                        $this->db->update('m_bobbin', $updatebobbin);
+                    }
                 }
             }else if($jenis=='WIP'){
                 if($row['jb_id']!=0 && $row['netto']!= (0 || '')){
@@ -2707,6 +2744,11 @@ class Tolling extends CI_Controller{
                 }
             }
         }
+
+        $this->db->where('id',$this->input->post('id'));
+        $this->db->update('dtt', array(
+            'remarks'=>$this->input->post('remarks')
+        ));
 
         if($this->db->trans_complete()){    
             $this->session->set_flashdata('flash_msg', 'DTT berhasil dibuat');                 
@@ -2760,7 +2802,7 @@ class Tolling extends CI_Controller{
 
         $data['content']= "tolling_titipan/spb_list";
         $this->load->model('Model_tolling_titipan');
-        $data['list_data'] = $this->Model_tolling_titipan->spb_list()->result();
+        $data['list_data'] = $this->Model_tolling_titipan->list_data_filter_rsk()->result();
 
         $this->load->view('layout', $data);
     }
@@ -2839,7 +2881,7 @@ class Tolling extends CI_Controller{
                 $data = array(
                     'no_spb'=> $code,
                     'tanggal'=> $tgl_input,
-                    'jenis_barang'=>2,
+                    'jenis_barang'=>1,
                     'flag_tolling'=> 1,
                     'jumlah'=> $this->input->post('jumlah_rsk'),
                     'remarks'=>$this->input->post('remarks'),

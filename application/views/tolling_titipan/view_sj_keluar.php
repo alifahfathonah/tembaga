@@ -152,6 +152,25 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
+                            Status SPB <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <?php
+                                if($header['status_spb']==0){
+                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Approval</div>';
+                                }else if($header['status_spb']==1){
+                                    echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
+                                }else if($header['status_spb']==2 || $header['status_spb']==4){
+                                    echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
+                                }else if($header['status_spb']==9){
+                                    echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
+                                }
+                            ?>
+                            <input type="hidden" name="status_spb" value="<?php echo $header['status_spb'];?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Type Kendaraan
                         </div>
                         <div class="col-md-8">
@@ -277,13 +296,16 @@
                                 <th>Nama Item</th>
                                 <th style="width: 6%;">UOM</th>
                                 <th style="width: 8%;">Bruto</th>
-                                <th style="width: 8%;">Netto (Kg)</th>
                                 <th style="width: 6%;">Berat<br>Palette</th>
+                                <th style="width: 8%;">Netto (Kg)</th>
                                 <th>Keterangan</th>
                             </thead>
                             <tbody id="boxDetail">
                                 <?php 
                                     $no=1; 
+                                    $bruto = 0;
+                                    $berat = 0;
+                                    $netto = 0;
                                     foreach ($list_sj as $row) { 
                                 ?>
                                 <tr>
@@ -292,11 +314,22 @@
                                     <td><?php echo $row->jenis_barang; ?></td>
                                     <td><?php echo $row->uom; ?></td>
                                     <td><?php echo $row->bruto; ?></td>
+                                    <td><?php echo $row->berat; ?></td>
                                     <td><?php echo $row->netto; ?></td>
-                                    <td><?php echo ($row->bruto - $row->netto); ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
                                 </tr>
-                                <?php $no++; } ?>
+                                <?php $no++; 
+                                $bruto += $row->bruto;
+                                $berat += $row->berat;
+                                $netto += $row->netto;
+                                } ?>
+                                <tr>
+                                    <td colspan="4" style="text-align: right;"><strong>Total :</strong></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($bruto,2,',','.');?></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($berat,2,',','.');?></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($netto,2,',',',');?></td>
+                                    <td></td>
+                                </tr>
                             </tbody>
                         </table>
                     <?php

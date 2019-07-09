@@ -119,8 +119,10 @@ class Model_retur extends CI_Model{
     }
     
     function load_detail($id){
-        $data = $this->db->query("Select rd.*, jb.jenis_barang, jb.uom, mb.nomor_bobbin From retur_detail rd 
-                Left Join jenis_barang jb On(rd.jenis_barang_id = jb.id) 
+        $data = $this->db->query("Select rd.*, COALESCE(jb.jenis_barang,rsk.nama_item) as jenis_barang, jb.uom, mb.nomor_bobbin From retur_detail rd 
+                Left join retur r on r.id = rd.retur_id
+                Left Join jenis_barang jb On(r.jenis_barang != 'RONGSOK' and rd.jenis_barang_id = jb.id) 
+                Left Join rongsok rsk on(r.jenis_barang = 'RONGSOK' and rd.jenis_barang_id = rsk.id)
                 left join m_bobbin mb on (rd.bobbin_id = mb.id)
                 Where rd.retur_id=".$id);
         return $data;

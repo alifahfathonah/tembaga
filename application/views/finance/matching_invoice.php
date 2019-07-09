@@ -24,6 +24,77 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="InvModal" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">&nbsp;</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-danger display-hide">
+                                    <button class="close" data-close="alert"></button>
+                                    <span id="message">&nbsp;</span>
+                                </div>
+                            </div>
+                        </div>
+                        <form class="eventInsForm" method="post" target="_self" name="frmInv" 
+                              id="frmInv">
+                            <input type="hidden" id="id_modal_inv" name="id_modal_inv">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    No. Invoice<font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="no_inv" name="no_inv" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                                    <input type="hidden" id="inv_id" name="inv_id">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Nominal
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="nominal_inv" name="nominal_inv" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Nominal Sudah di Bayar
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="nominal_bayar" name="nominal" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Nominal Potongan
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="nominal_potongan" name="nominal_potongan" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);" placeholder="Nominal Potongan ...">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Total Nominal
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="total_nominal_inv" name="total_nominal_inv" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">                        
+                        <button type="button" class="btn blue" id="tambah_inv" onclick="addINV();">Tambah</button>
+                        <button type="button" class="btn blue" id="simpan_inv" onclick="saveINV();">Simpan</button>
+                        <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -65,7 +136,7 @@
                                     Biaya 1
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" id="b_1" name="b_1" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);">
+                                    <input type="text" id="b_1" name="b_1" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id); hitungSubTotal();">
                                 </div>
                             </div>
                             <div class="row">
@@ -81,7 +152,7 @@
                                     Biaya 2
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" id="b_2" name="b_2" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);" max="10">
+                                    <input type="text" id="b_2" name="b_2" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id); hitungSubTotal();" max="10">
                                 </div>
                             </div>
                             <div class="row">
@@ -334,7 +405,6 @@ function myCurrency(evt) {
 function getComa(value, id){
     angka = value.toString().replace(/\,/g, "");
     $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-    hitungSubTotal();
 }
 
 function hitungSubTotal(){
@@ -353,6 +423,26 @@ function list_inv(id){
         dataType: "json",
         success: function(result) {
             $('#list_inv').html(result);
+        }
+    });
+}
+
+function input_inv(id){
+    $.ajax({
+        url: "<?php echo base_url('index.php/Finance/get_data_inv'); ?>",
+        type: "POST",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result){
+            $("#InvModal").find('.modal-title').text('Input Invoice');
+            $("#InvModal").modal('show',{backdrop: 'true'});
+            $("#tambah").show();
+            $("#simpan").hide();
+            $("#id_modal").val(<?php echo $header['id'];?>);
+            $("#no_um").val(result['no_uang_masuk']);
+            $("#um_id").val(result['id']);
+            $("#nominal").val(numberWithCommas(result['nominal']));
+            $("#total_nominal").val(numberWithCommas(result['nominal']));
         }
     });
 }

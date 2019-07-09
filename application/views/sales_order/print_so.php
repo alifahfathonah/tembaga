@@ -40,10 +40,6 @@
                             <td>: <?php echo ($header['alias'] == NULL) ? (($this->session->userdata('user_ppn') == 1)? $header['nama_customer'] : $header['nama_customer_kh']) : $header['alias']; ?></td>
                         </tr>
                         <tr>
-                            <td>UP.</td>
-                            <td>: <?= (($this->session->userdata('user_ppn') == 1)? $header['pic'] : $header['pic_kh']) ?></td>
-                        </tr>
-                        <tr>
                             <td>Alamat</td>
                             <td>: <?= (($this->session->userdata('user_ppn') == 1)? $header['alamat'] : $header['alamat_kh']) ?></td>
                         </tr>

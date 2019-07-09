@@ -592,7 +592,6 @@ class BeliFinishGood extends CI_Controller{
                 $data['packing'] = $this->Model_gudang_fg->get_bobbin_g($packing['id'])->result();
             }
             $this->load->model('Model_beli_rongsok');
-            $data['list_rongsok_on_po'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
             $data['supplier_list'] = $this->Model_beli_rongsok->supplier_list()->result();
 
             $this->load->view('layout', $data);   

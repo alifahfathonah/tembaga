@@ -814,6 +814,24 @@ class BeliWIP extends CI_Controller{
         }
     }
 
+    function reject_dtwip(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        
+        $data = array(
+                'status'=> 9,
+                'rejected'=> $tanggal,
+                'rejected_by'=>$user_id,
+                'remarks'=>$this->input->post('reject_remarks')
+            );
+        
+        $this->db->where('id', $this->input->post('header_id'));
+        $this->db->update('dtwip', $data);
+        
+        $this->session->set_flashdata('flash_msg', 'Reject DTWIP berhasil direject');
+        redirect('index.php/BeliWIP/dtwip_list');
+    }
+
     function create_voucher(){
         $id = $this->input->post('id');
         $this->load->helper('terbilang_helper');

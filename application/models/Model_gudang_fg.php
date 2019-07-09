@@ -165,11 +165,14 @@ class Model_gudang_fg extends CI_Model{
     }
 
     function show_header_spb($id){
-        $data = $this->db->query("Select tsf.*, 
+        $data = $this->db->query("Select tsf.*, mc.nama_customer, mc.nama_customer_kh,
                     usr.realname As pic,
                     appr.realname As approved_name,
                     rjct.realname As reject_name
                     From t_spb_fg tsf
+                        Left Join t_sales_order tso on (tso.jenis_barang = 'FG' and tso.no_spb = tsf.id)
+                        Left Join sales_order so on (so.id = tso.so_id)
+                        Left Join m_customers mc on (mc.id = so.m_customer_id)
                         Left Join users usr On (tsf.created_by = usr.id) 
                         Left Join users appr On (tsf.approved_by = appr.id)
                         Left Join users rjct On (tsf.rejected_by = rjct.id)

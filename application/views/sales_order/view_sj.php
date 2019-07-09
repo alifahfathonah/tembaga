@@ -56,7 +56,7 @@
             if( ($group_id==1)||($hak_akses['edit_surat_jalan']==1) ){
         ?>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/SalesOrder/approve_surat_jalan'); ?>">
+              id="formku">
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -272,11 +272,21 @@
                                 <tr>
                                     <td><?php echo $no; ?></td>
                                     <td><?php echo $row->jenis_barang; ?></td>
-                                    <?php if(is_null($row->jenis_barang_a)){ ?>
-                                    <td>TIDAK ADA ALIAS</td>
-                                    <?php } else { ?>
-                                    <td><?php echo $row->jenis_barang_a; ?></td>
-                                    <?php } ?>
+                                    <td>
+                                    <?php if(is_null($row->jenis_barang_a)){
+                                    echo '<label class="lbl_alias">TIDAK ADA ALIAS</label>';
+                                    } else {
+                                    echo '<label class="lbl_alias">'.$row->jenis_barang_a.'</label>';
+                                    } 
+                                    echo '<input type="hidden" style="display: none;" class="id_tsj_detail" name="details['.$no.'][id_tsj_detail]" value="'.$row->id.'">';
+                                    echo '<select class="jb_alias" name="details['.$no.'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px; display: none;">
+                                            <option value="0" data-id="0">TIDAK ADA ALIAS</option>';
+                                            foreach ($jenis_barang as $value){
+                                            echo '<option value="'.$value->id.'" '.(($value->id==$row->jenis_barang_alias)? 'selected="selected"': '').'>'.$value->jenis_barang.'</option>';
+                                            }
+                                        echo '</select>';
+                                    ?>
+                                    </td>
                                     <td><?php echo $row->uom; ?></td>
                                     <td><?php echo $row->no_packing; ?></td>
                                     <td><?php echo number_format($row->bruto,2,',','.'); ?></td>
@@ -478,16 +488,21 @@
                                 .'<i class="fa fa-check"></i> Approve </a> ';
                         }
                         if( ($group_id==1 || $hak_akses['reject_sj']==1) && $header['status']=="0"){
-                            echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
-                                .'<i class="fa fa-ban"></i> Reject </a>';
+                            echo '<a href="javascript:;" class="btn red" id="rejectData" onclick="showRejectBox();"> '
+                                .'<i class="fa fa-ban"></i> Reject </a> ';
+                        }
+                        if( ($group_id==1 || $hak_akses['edit_sj']==1) && $header['inv_id']==null){
+                            echo '<a href="javascript:;" class="btn blue" onclick="editData();" id="btnEdit">' 
+                                .'<i class="fa fa-pencil"></i> Edit </a>';
+
+                            echo '<a href="javascript:;" class="btn blue" style="display: none;" onclick="simpanData();" id="btnSimpan">'
+                                .'<i class="fa fa-floppy-o"></i> Simpan </a>';
                         }
                     ?>
-
                     <a href="<?php echo base_url('index.php/SalesOrder/surat_jalan'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
-            
         </form>
         
         <?php
@@ -503,10 +518,37 @@
     </div>
 </div> 
 <script>
+function editData(){
+    $('#no_surat_jalan').removeAttr('readonly');
+    $('#tanggal').removeAttr('readonly');
+    $('#no_kendaraan').removeAttr('readonly');
+    $('#supir').removeAttr('readonly');
+    $('#remarks').removeAttr('readonly');
+
+    $('.lbl_alias').hide();
+    $('.jb_alias').show();
+    $('.id_tsj_detail').show();
+    $('#approveData').hide();
+    $('#rejectData').hide();
+
+    $('#btnSimpan').show();
+    $('#btnEdit').hide();
+}
+
+function simpanData(){
+    var r=confirm("Anda yakin menyimpan surat jalan ini?");
+    if(r == true){
+        $('#btnSimpan').text('Please Wait ...').prop("onclick", null).off("click");
+        $('#formku').attr("action", "<?php echo base_url('index.php/SalesOrder/update_surat_jalan_existing'); ?>");
+        $('#formku').submit(); 
+    }
+};
+
 function approveData(){
     var r=confirm("Anda yakin me-approve surat jalan ini?");
     if(r == true){
         $('#approveData').text('Please Wait ...').prop("onclick", null).off("click");
+        $('#formku').attr("action", "<?php echo base_url('index.php/SalesOrder/approve_surat_jalan'); ?>");
         $('#formku').submit(); 
     }
 };

@@ -210,16 +210,30 @@
                                         </thead>
                                         <tbody>
                                         <?php
+                                            $last_series = null;
                                             $no = 1;
                                             $tb = 0;
                                             $tn = 0;
+                                            $bruto=0;
+                                            $netto=0;
                                             foreach ($detailSPB as $row){
+                                            if($row->jenis_barang!=$last_series && $last_series!=null){
+                                                echo '<tr>'.
+                                                    '<td colspan="4" style="text-align: right;"><strong>Total</strong></td>'.
+                                                    '<td style="background-color: green; color: white;">'.number_format($bruto,2,',','.').'</td>'.
+                                                    '<td style="background-color: green; color: white;">'.number_format($netto,2,',','.').'</td>'.
+                                                    '<td colspan="3"></td>'.
+                                                '</tr>';
+                                                $bruto = 0;
+                                                $netto = 0;
+                                            }else{
+                                                echo '<tr>';
+                                            }
                                                 if($row->flag_taken==1){
                                                     $stat = '<td style="background-color: green; color: white">Sudah di Kirim</td>';
                                                 }else{
                                                     $stat = '<td>Belum Dikirim</td>';
                                                 }
-                                                echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
                                                 echo '<td>'.$row->jenis_barang.'</td>';
                                                 echo '<td>'.$row->no_packing.'</td>';
@@ -234,16 +248,28 @@
                                                     echo '<td>Belum Dikirim</td>';
                                                     echo '<td><a href="'.base_url().'index.php/GudangFG/delSPBSudahDipenuhi/'.$row->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm("Anda yakin menghapus transaksi ini?");"><i class="fa fa-trash-o"></i> Delete</a></td>';
                                                 }
+                                            if($row->jenis_barang==$last_series){
+                                                echo '<tr>';
+                                            }
+                                                $bruto += $row->bruto;
+                                                $netto += $row->netto;
                                                 $tb += $row->bruto;
                                                 $tn += $row->netto;
                                                 $no++;
+                                                $last_series = $row->jenis_barang;
                                             }
                                         ?>
                                         <tr>
-                                            <td colspan="5">Total</td>
-                                            <td style="background-color: green; color: white;"><?=$tb;?></td>
-                                            <td style="background-color: green; color: white;"><?=$tn;?></td>
-                                            <td></td>
+                                            <td colspan="4" style="text-align: right;"><strong>Total</strong></td>
+                                            <td style="background-color: green; color: white;"><?=number_format($bruto,2,',','.');?></td>
+                                            <td style="background-color: green; color: white;"><?=number_format($netto,2,',','.');?></td>
+                                            <td colspan="3"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" style="text-align: right;"><strong>Grand Total</strong></td>
+                                            <td style="background-color: green; color: white;"><?=number_format($tb,2,',','.');?></td>
+                                            <td style="background-color: green; color: white;"><?=number_format($tn,2,',','.');?></td>
+                                            <td colspan="3"></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -338,11 +364,30 @@
                                         </thead>
                                         <tbody>
                                         <?php
+                                            $last_series = null;
                                             $no = 1;
                                             $tb = 0;
                                             $tn = 0;
+                                            $bruto=0;
+                                            $netto=0;
                                             foreach ($detailSPB as $row){
+                                            if($row->jenis_barang!=$last_series && $last_series!=null){
+                                                echo '<tr>'.
+                                                    '<td colspan="4" style="text-align: right;"><strong>Total</strong></td>'.
+                                                    '<td style="background-color: green; color: white;">'.number_format($bruto,2,',','.').'</td>'.
+                                                    '<td style="background-color: green; color: white;">'.number_format($netto,2,',','.').'</td>'.
+                                                    '<td colspan="3"></td>'.
+                                                '</tr>';
+                                                $bruto = 0;
+                                                $netto = 0;
+                                            }else{
                                                 echo '<tr>';
+                                            }
+                                                if($row->flag_taken==1){
+                                                    $stat = '<td style="background-color: green; color: white">Sudah di Kirim</td>';
+                                                }else{
+                                                    $stat = '<td>Belum Dikirim</td>';
+                                                }
                                                 echo '<td style="text-align:center">'.$no.'</td>';
                                                 echo '<td>'.$row->jenis_barang.'</td>';
                                                 echo '<td>'.$row->no_packing.'</td>';
@@ -357,16 +402,28 @@
                                                     echo '<td>Belum Dikirim</td>';
                                                     echo '<td><a href="'.base_url().'index.php/GudangFG/delSPBSudahDipenuhi/'.$row->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm("Anda yakin menghapus transaksi ini?");"><i class="fa fa-trash-o"></i> Delete</a></td>';
                                                 }
+                                            if($row->jenis_barang==$last_series){
+                                                echo '<tr>';
+                                            }
+                                                $bruto += $row->bruto;
+                                                $netto += $row->netto;
                                                 $tb += $row->bruto;
                                                 $tn += $row->netto;
                                                 $no++;
+                                                $last_series = $row->jenis_barang;
                                             }
                                         ?>
                                         <tr>
-                                            <td colspan="5">Total</td>
-                                            <td style="background-color: green; color: white;"><?=$tb;?></td>
-                                            <td style="background-color: green; color: white;"><?=$tn;?></td>
-                                            <td></td>
+                                            <td colspan="4" style="text-align: right;"><strong>Total</strong></td>
+                                            <td style="background-color: green; color: white;"><?=number_format($bruto,2,',','.');?></td>
+                                            <td style="background-color: green; color: white;"><?=number_format($netto,2,',','.');?></td>
+                                            <td colspan="3"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" style="text-align: right;"><strong>Grand Total</strong></td>
+                                            <td style="background-color: green; color: white;"><?=number_format($tb,2,',','.');?></td>
+                                            <td style="background-color: green; color: white;"><?=number_format($tn,2,',','.');?></td>
+                                            <td colspan="3"></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -382,7 +439,7 @@
                                     Tanggal Keluar <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" id="tanggal_keluar" name="tanggal_keluar" class="form-control myline input-small" style="margin-bottom:5px; float: left;" value="<?php echo date('d-m-Y', strtotime($myData['tanggal'])); ?>">
+                                    <input type="text" id="tanggal_keluar" name="tanggal_keluar" class="form-control myline input-small" style="margin-bottom:5px; float: left;" value="<?php echo date('d-m-Y'); ?>">
                                 </div>
                             </div>
                                 <div class="table-scrollable">
@@ -397,8 +454,20 @@
                                             <th>Action</th>
                                         </thead>
                                         <tbody>
-                                            <?php $no=1; $total_netto=0; foreach($myDetailSaved as $v) { ?>
-                                            <tr>
+                                        <?php $no=1; $netto=0; $total_netto=0; $last_series=null;
+                                        foreach($myDetailSaved as $v) { 
+
+                                            if($v->jenis_barang!=$last_series && $last_series!=null){
+                                                echo '<tr>'.
+                                                    '<td colspan="3" style="text-align: right;"><strong>Total</strong></td>'.
+                                                    '<td style="background-color: green; color: white;">'.number_format($netto,2,',','.').'</td>'.
+                                                    '<td colspan="3"></td>'.
+                                                '</tr>';
+                                                $netto = 0;
+                                            }else{
+                                                echo '<tr>';
+                                            }
+                                            ?>
                                                 <td><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
                                                 <td><?=$v->jenis_barang;?></td>
                                                 <td><?=$v->uom;?></td>
@@ -408,16 +477,28 @@
                                                 <?php
                                                     echo '<td><a href="'.base_url().'index.php/GudangFG/delPemenuhan/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm("Anda yakin menghapus transaksi ini?");"><i class="fa fa-trash-o"></i> Delete</a></td>';
                                                 ?>
-                                            </tr>
                                             <?php 
+                                            if($v->jenis_barang==$last_series){
+                                                echo '<tr>';
+                                            }
                                             $no++; 
+                                            $last_series = $v->jenis_barang;
+                                            $netto += $v->netto;
                                             $total_netto += $v->netto; } ?>
-                                        </tbody>
-                                        <tbody>
+                                        <tr>
                                             <td colspan="3">
-                                                Total Netto (KG)
+                                                Netto (KG)
+                                            </td>
+                                            <td style="background-color:green; color:white"><?php echo $netto;?></td>
+                                            <td colspan="3"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3">
+                                                Grand Total Netto (KG)
                                             </td>
                                             <td style="text-align:right; background-color:green; color:white"><strong><?php echo $total_netto;?></strong></td>
+                                            <td colspan="3"></td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>

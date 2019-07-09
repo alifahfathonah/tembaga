@@ -350,6 +350,9 @@ function saveDetail(id){
 function deleteDetail(id){
     var r=confirm("Anda yakin menghapus item rongsok ini?");
     if (r==true){
+        $('#total_bruto').val(Number($('#total_bruto').val())-Number($('#bruto_'+id).val()));
+        $('#total_berat').val(Number($('#total_berat').val())-Number($('#berat_bobbin_'+id).val()));
+        $('#total_netto').val(Number($('#total_netto').val())-Number($('#netto_'+id).val()));
         $('#no_tabel_'+id).closest('tr').remove();
         }
 }

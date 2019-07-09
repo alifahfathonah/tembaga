@@ -18,6 +18,37 @@
         <?php
             if( ($group_id==1)||($hak_akses['create_dtwip']==1) ){
         ?>
+        <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">&nbsp;</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="eventInsForm" method="post" target="_self" name="frmReject" 
+                              id="frmReject">                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Reject Remarks <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <textarea id="reject_remarks" name="reject_remarks" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>
+                                    
+                                    <input type="hidden" id="header_id" name="header_id">
+                                </div>
+                            </div>                           
+                        </form>
+                    </div>
+                    <div class="modal-footer">                        
+                        <button type="button" class="btn blue" onClick="rejectData();">Simpan</button>
+                        <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="alert alert-danger display-hide">
@@ -166,6 +197,9 @@
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Approve DTWIP </a>
 
+                    <a href="javascript:;" class="btn red" onclick="showRejectBox();"> 
+                        <i class="fa fa-times"></i> Reject DTWIP </a>
+
                     <a href="<?php echo base_url('index.php/BeliWIP/dtwip_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
@@ -184,6 +218,30 @@
     </div>
 </div> 
 <script>
+function showRejectBox(){
+    var r=confirm("Anda yakin me-reject DTWIP ini?");
+    if (r==true){
+        $('#header_id').val($('#id').val());
+        $('#message').html("");
+        $('.alert-danger').hide();
+        
+        $("#myModal").find('.modal-title').text('Reject DTWIP');
+        $("#myModal").modal('show',{backdrop: 'true'}); 
+    }
+}
+
+function rejectData(){
+    if($.trim($("#reject_remarks").val()) == ""){
+        $('#message').html("Close remarks harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{
+        $('#message').html("");
+        $('.alert-danger').hide();
+        $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/BeliWIP/reject_dtwip");
+        $('#frmReject').submit(); 
+    }
+}
+
 function simpanData(){
     $('#formku').submit();
 };

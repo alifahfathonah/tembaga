@@ -217,6 +217,7 @@
                     </div>
                 </div>
             </div>
+        </form>
             <div class="panel panel-default" id="detailSj" style="display: none;">
                 <div class="panel-body">
                     <div class="row">
@@ -241,7 +242,6 @@
                     </div>
                 </div>
             </div>
-        </form>
         
         <?php
             }else{

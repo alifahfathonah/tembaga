@@ -395,10 +395,11 @@ class Model_tolling_titipan extends CI_Model{
     }
     
     function load_detail_surat_jalan($id){
-        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jb.uom, tgf.no_produksi, mb.berat
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, jb.uom, tgf.no_produksi, mb.berat
                 from t_surat_jalan_detail tsjd
-                left join jenis_barang jb on jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
                 left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
+                left join jenis_barang jb on tsj.jenis_barang != 'RONGSOK' and jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
+                left join rongsok r on tsj.jenis_barang = 'RONGSOK' and r.id = tsjd.jenis_barang_id
                 left join t_gudang_fg tgf on tgf.id = tsjd.gudang_id
                 left join m_bobbin mb on tgf.bobbin_id>0 and mb.id = tgf.bobbin_id
                 where tsjd.t_sj_id =".$id);
@@ -658,7 +659,7 @@ class Model_tolling_titipan extends CI_Model{
                     mc.nama_customer,
                     usr.realname As penimbang,
                     rjct.realname As rejected_name,
-                    mjp.jenis_packing
+                    mjp.jenis_packing As nama_jenis_packing
                     From dtt
                         Left Join m_customers mc On (dtt.customer_id = mc.id) 
                         Left Join users usr On (dtt.created_by = usr.id) 
@@ -735,17 +736,17 @@ class Model_tolling_titipan extends CI_Model{
     }
 
     function get_spb_list_rsk(){
-        $data = $this->db->query("select id, no_spb from spb where flag_tolling = 1 and status != 0");
+        $data = $this->db->query("select id, no_spb from spb where flag_tolling = 1 and status not in (0,9)");
         return $data;
     }
 
     function get_spb_list_wip(){
-        $data = $this->db->query("select id, no_spb_wip as no_spb from t_spb_wip where flag_tolling = 1 and status != 0");
+        $data = $this->db->query("select id, no_spb_wip as no_spb from t_spb_wip where flag_tolling = 1 and status not in (0,9)");
         return $data;
     }
 
     function get_spb_list_fg(){
-        $data = $this->db->query("select id, no_spb from t_spb_fg where flag_tolling = 1 and status != 0");
+        $data = $this->db->query("select id, no_spb from t_spb_fg where flag_tolling = 1 and status not in (0,9)");
         return $data;
     }
 
@@ -788,7 +789,7 @@ class Model_tolling_titipan extends CI_Model{
     }
 
     function list_item_sjk_wip($id){
-        $data = $this->db->query("select tsj.id, tgw.id as id_gudang, tgw.qty, tgw.berat, tgw.jenis_barang_id, jb.jenis_barang, jb.uom 
+        $data = $this->db->query("select tsj.id, tgw.id as id_gudang, tgw.qty, tgw.berat, tgw.jenis_barang_id, jb.jenis_barang, jb.kode, jb.uom 
                 from t_surat_jalan tsj
                 left join t_gudang_wip tgw on tgw.t_spb_wip_id = tsj.spb_id
                 left join jenis_barang jb on jb.id = tgw.jenis_barang_id
@@ -804,7 +805,7 @@ class Model_tolling_titipan extends CI_Model{
     }
 
     function list_item_sjk_rsk($id){
-        $data = $this->db->query("select dd.id, dd.no_pallete from spb_detail_fulfilment sdf
+        $data = $this->db->query("select dd.*, r.nama_item as jenis_barang from spb_detail_fulfilment sdf
                 left join dtr_detail dd on dd.id = sdf.dtr_detail_id 
                 left join rongsok r on r.id = dd.rongsok_id 
                 where sdf.spb_id =".$id." and dd.flag_sj = 0");
