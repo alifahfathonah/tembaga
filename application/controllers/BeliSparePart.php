@@ -637,6 +637,71 @@ class BeliSparePart extends CI_Controller{
         }
     }
     
+    function edit_po(){
+        $module_name = $this->uri->segment(1);
+        $data['user_ppn'] = $this->session->userdata('user_ppn');
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "beli_spare_part/edit_po";
+            $this->load->model('Model_beli_sparepart');
+            $data['header']  = $this->Model_beli_sparepart->show_header_po($id)->row_array();
+            $data['details'] = $this->Model_beli_sparepart->show_detail_po($id)->result();
+
+            $this->load->model('Model_beli_sparepart');
+            $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/BeliSparePart/po_list');
+        }
+    }
+
+    function update_po(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');        
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $this->db->trans_start();
+        $data = array(
+                'no_po'=>$this->input->post('no_po'),
+                'tanggal'=>$tgl_input,
+                'supplier_id'=>$this->input->post('supplier_id'),
+                'term_of_payment'=>$this->input->post('term_of_payment'),
+                'diskon'=>$this->input->post('diskon'),
+                'ppn'=>$this->input->post('ppn'),
+                'materai'=>$this->input->post('materai'),
+                'modified'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+        
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('po', $data);
+        
+            $details = $this->input->post('details');
+            foreach ($details as $i => $row){
+                    $this->db->where('id',$row['po_detail_id']);
+                    $this->db->update('po_detail', array(
+                        'amount'=>str_replace(',', '', $row['amount']),
+                        'qty'=>str_replace(',', '', $row['qty']),
+                        'total_amount'=>str_replace(',', '', $row['total_amount'])
+                    ));
+            }
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Data PO Sparepart berhasil disimpan');
+            redirect('index.php/BeliSparePart/view_po/'.$this->input->post('id'));
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data PO Sparepart GAGAL disimpan');
+            redirect('index.php/BeliSparePart/view_po/'.$this->input->post('id'));
+        }
+    }
+
     function view_po(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
@@ -659,6 +724,17 @@ class BeliSparePart extends CI_Controller{
         }else{
             redirect('index.php/BeliSparePart/po_list');
         }
+    }
+
+    function get_no_po_manual(){
+        $count = $this->db->query("select count(id) as count from po where id!=".$this->input->post('id_po')." and no_po ='".$this->input->post('no_po')."'")->row_array();
+        if($count['count']>0){
+            $data['type'] = 'duplicate';
+        }else{
+            $data['type'] = 'sukses';
+        }
+        header('Content-Type: application/json');
+        echo json_encode($data);
     }
     
     function close_po(){

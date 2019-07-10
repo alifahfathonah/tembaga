@@ -510,16 +510,12 @@ class Tolling extends CI_Controller{
                 }
             }
 
-        if($this->db->trans_complete()){ 
-            $return_data['type_message']= "sukses";
-            $return_data['message'] = "DTT sudah diberikan ke bagian gudang";           
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'DTT berhasil di-create dengan nomor : '.$no_ttr);                 
         }else{
-            $return_data['type_message']= "error";
-            $return_data['message']= "Pembuatan DTT gagal, penomoran belum disetup!";
-        }                  
-        
-       header('Content-Type: application/json');
-       echo json_encode($return_data);
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTT, silahkan coba kembali!');
+        }
+        redirect('index.php/Tolling/dtt_list');
     }
 
     function reject_matching_dtt(){

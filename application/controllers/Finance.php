@@ -1862,13 +1862,14 @@ class Finance extends CI_Controller{
 
     function load_list_invoice(){
         $id = $this->input->post('id');
+        $id_match = $this->input->post('id_match');
         $ppn = $this->session->userdata('user_ppn');
 
         $tabel = "";
         $total_invoice = 0;
         $no    = 1;
         $this->load->model('Model_finance');
-        $myDetail = $this->Model_finance->load_invoice_full($id,$ppn)->result();
+        $myDetail = $this->Model_finance->load_invoice_full($id,$ppn,$id_match)->result();
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
@@ -1881,7 +1882,13 @@ class Finance extends CI_Controller{
                 }
             $tabel .= '<td>'.$row->no_invoice.'</td>';
             $tabel .= '<td style="text-align:right;">'.number_format($row->total,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="input_inv('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addInv"><i class="fa fa-plus"></i> Tambah </a></td>';
+            $tabel .= '<td style="text-align:center">';
+            if($row->count==0){
+                $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="input_inv('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addInv"><i class="fa fa-plus"></i> Tambah </a>';
+            }else{
+                $tabel .= 'Added!';
+            }
+            $tabel .= '</td>';
 
             $no++;
         }
@@ -1910,15 +1917,15 @@ class Finance extends CI_Controller{
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
                 if($row->jenis_trx == 0){
                     $tabel .= '<td style="background-color: green; color: white;"><i class="fa fa-arrow-circle-up"></i></td>';
-                    $total_invoice += $row->total; 
+                    $total_invoice += $row->inv_bayar; 
                 }else{
                     $tabel .= '<td style="background-color: red; color: white;"><i class="fa fa-arrow-circle-down"></i></td>';
-                    $total_invoice += -$row->total;
+                    $total_invoice += -$row->inv_bayar;
                 }
             $tabel .= '<td>'.$row->no_invoice.'</td>';
-            $tabel .= '<td style="text-align:right;">'.number_format($row->total,0,',','.').'</td>';
-            $tabel .= '<td><a href="javascript:;" class="btn btn-xs btn-circle red" onclick="delInv('.$row->id.','.$row->id_inv.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-trash"></i> Delete </a></td>';
-
+            $tabel .= '<td style="text-align:right;">'.number_format($row->inv_bayar,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle blue" onclick="view_inv('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-floppy-o"></i> View </a>';
+            $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle red" onclick="delInv('.$row->id.','.$row->id_inv.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-trash"></i> Delete </a></td>';
             $no++;
         }
         $tabel .= '<tr>';
@@ -1985,6 +1992,16 @@ class Finance extends CI_Controller{
         redirect('index.php/Finance/matching_invoice/'.$this->input->post('id_modal'));
     }
 
+    function view_data_inv(){
+        $id = $this->input->post('id');
+
+        $this->load->model('Model_finance');
+        $result= $this->Model_finance->view_inv_match($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
+
     function view_data_um(){
         $id = $this->input->post('id');
 
@@ -1995,18 +2012,102 @@ class Finance extends CI_Controller{
         echo json_encode($result);
     }
 
-    function del_inv_match(){
+    function add_inv_match(){
         $user_id   = $this->session->userdata('user_id');
         $return_data = array();
         $tanggal   = date('Y-m-d h:m:s');
         
+        $this->db->trans_start();
+        if($this->input->post('sisa_invoice')==0){
+            $flag_matching = 1;
+        }else{
+            $flag_matching = 0;
+        }
+
+        $nilai_bayar = str_replace(',', '', $this->input->post('nominal_sdh_bayar')) + str_replace(',', '', $this->input->post('nominal_bayar'));
         $this->db->where('id',$this->input->post('id_inv'));
         $this->db->update('f_invoice', array(
+            'nilai_bayar'=>$nilai_bayar,
+            'nilai_pembulatan'=>str_replace(',', '', $this->input->post('nominal_potongan')),
+            'flag_matching'=>$flag_matching
+        ));
+
+        $data = array(
+            'id_match'=>$this->input->post('id_modal'),
+            'id_inv'=>$this->input->post('id_inv'),
+            'inv_bayar'=>str_replace(',', '', $this->input->post('nominal_bayar')),
+            'id_um'=>0
+        );
+        $this->db->insert('f_match_detail', $data);
+
+        if($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function save_inv_match(){
+        $user_id   = $this->session->userdata('user_id');
+        $return_data = array();
+        $tanggal   = date('Y-m-d h:m:s');
+        
+        $this->db->trans_start();
+
+        if($this->input->post('sisa_invoice')==0){
+            $flag_matching = 1;
+        }else{
+            $flag_matching = 0;
+        }
+
+        $nilai_bayar = str_replace(',', '', $this->input->post('nominal_sdh_bayar')) + str_replace(',', '', $this->input->post('nominal_bayar'));
+        $this->db->where('id',$this->input->post('id_inv'));
+        $this->db->update('f_invoice', array(
+            'nilai_bayar'=>$nilai_bayar,
+            'nilai_pembulatan'=>str_replace(',', '', $this->input->post('nominal_potongan')),
+            'flag_matching'=>$flag_matching
+        ));
+
+        $data = array(
+            'inv_bayar'=>str_replace(',', '', $this->input->post('nominal_bayar')),
+        );
+        $this->db->where('id',$this->input->post('id_modal'));
+        $this->db->update('f_match_detail', $data);
+
+        if($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function del_inv_match(){
+        $user_id   = $this->session->userdata('user_id');
+        $return_data = array();
+        
+        $this->db->trans_start();
+
+        $this->load->model('Model_finance');
+        $get = $this->Model_finance->view_inv_match($this->input->post('id'))->row_array();
+
+        $nilai_bayar = $get['nilai_bayar'] - $get['inv_bayar'];
+        $this->db->where('id',$this->input->post('id_inv'));
+        $this->db->update('f_invoice', array(
+            'nilai_bayar'=>$nilai_bayar,
+            'nilai_pembulatan'=>0,
             'flag_matching'=>0
         ));
 
         $this->db->where('id', $this->input->post('id'));
-        if($this->db->delete('f_match_detail')){
+        $this->db->delete('f_match_detail');
+
+        if($this->db->trans_complete()){
             $return_data['message_type']= "sukses";
         }else{
             $return_data['message_type']= "error";
@@ -2052,7 +2153,7 @@ class Finance extends CI_Controller{
             $total_nominal += $row->nominal;
         }
         $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:right;" colspan="6"><strong>Total Harga </strong></td>';
+        $tabel .= '<td style="text-align:right;" colspan="6"><strong>Total Nominal </strong></td>';
         $tabel .= '<td style="text-align:right;">';
         $tabel .= '<strong>'.number_format($total_nominal,0,',','.').'</strong>';
         $tabel .= '</td>';
@@ -2099,7 +2200,7 @@ class Finance extends CI_Controller{
             $total_nominal += $row->total;
         }
         $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:right;" colspan="6"><strong>Total Harga </strong></td>';
+        $tabel .= '<td style="text-align:right;" colspan="6"><strong>Total Nominal Invoice </strong></td>';
         $tabel .= '<td style="text-align:right;">';
         $tabel .= '<strong>'.number_format($total_nominal,0,',','.').'</strong>';
         $tabel .= '<input type="hidden" name="total_nominal" value="'.$total_nominal.'">';
@@ -2109,32 +2210,6 @@ class Finance extends CI_Controller{
 
         header('Content-Type: application/json');
         echo json_encode($tabel); 
-    }
-
-    function add_inv_match(){
-        $user_id   = $this->session->userdata('user_id');
-        $return_data = array();
-        $tanggal   = date('Y-m-d h:m:s');
-        
-        $this->db->where('id',$this->input->post('id_inv'));
-        $this->db->update('f_invoice', array(
-            'flag_matching'=>$this->input->post('id')
-        ));
-
-        $data = array(
-            'id_match'=>$this->input->post('id'),
-            'id_inv'=>$this->input->post('id_inv'),
-            'id_um'=>0
-        );
-
-        if($this->db->insert('f_match_detail', $data)){
-            $return_data['message_type']= "sukses";
-        }else{
-            $return_data['message_type']= "error";
-            $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
-        }
-        header('Content-Type: application/json');
-        echo json_encode($return_data); 
     }
 
     function del_um_match(){
@@ -2204,6 +2279,16 @@ class Finance extends CI_Controller{
 
         $this->load->model('Model_finance');
         $result= $this->Model_finance->get_data_hutang($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
+
+    function get_data_inv(){
+        $id = $this->input->post('id');
+
+        $this->load->model('Model_finance');
+        $result= $this->Model_finance->get_data_inv($id)->row_array();
 
         header('Content-Type: application/json');
         echo json_encode($result);

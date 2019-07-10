@@ -574,7 +574,7 @@ class SalesOrder extends CI_Controller{
             $this->load->model('Model_sales_order');
             $data['header'] = $this->Model_sales_order->show_header_so($id)->row_array();  
             $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
-            $data['marketing_list'] = $this->Model_sales_order->marketing_list()->result();
+            // $data['marketing_list'] = $this->Model_sales_order->marketing_list()->result();
             $jenis = $data['header']['jenis_barang'];
             if($jenis == 'RONGSOK'){
             $data['list_barang'] = $this->Model_sales_order->list_barang_so_rongsok()->result();

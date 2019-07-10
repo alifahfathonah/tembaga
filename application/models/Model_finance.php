@@ -423,12 +423,10 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function load_invoice_full($id,$ppn){
-        $data = $this->db->query("select fi.*, fi.nilai_invoice as total
+    function load_invoice_full($id,$ppn,$idm){
+        $data = $this->db->query("select fi.*,(select count(id) from f_match_detail where id_inv = fi.id and id_match =".$idm.")as count, (fi.nilai_invoice-fi.nilai_bayar+fi.nilai_pembulatan) as total
             from f_invoice fi 
-            left join sales_order so on so.id = fi.id_sales_order
-            left join retur r on r.id = fi.id_retur
-            where fi.id_customer =".$id." and coalesce(so.flag_ppn,r.flag_ppn)=".$ppn." and flag_matching = 0");
+            where fi.id_customer =".$id." and fi.flag_ppn =".$ppn." and flag_matching = 0");
         return $data;
     }
 
@@ -440,7 +438,7 @@ class Model_finance extends CI_Model{
     }
 
     function load_invoice_match($id){
-        $data = $this->db->query("select fmd.*, fi.jenis_trx, fi.no_invoice, fi.nilai_invoice as total 
+        $data = $this->db->query("select fmd.*, fi.jenis_trx, fi.no_invoice, (fi.nilai_invoice-fi.nilai_bayar+fi.nilai_pembulatan) as total
             from f_match_detail fmd
             left join f_invoice fi on fi.id = fmd.id_inv
             where fmd.id_match =".$id." and fmd.id_um = 0");
@@ -499,6 +497,13 @@ class Model_finance extends CI_Model{
         $data = $this->db->query("select (select sum(fid.total_harga) from f_invoice_detail fid where fid.id_invoice = fi.id) as total, sum(fmd.used_hutang) as used_hutang
             from f_invoice fi
             left join f_matching_detail fmd on fmd.id_hutang = fi.id
+            where fi.id =".$id);
+        return $data;
+    }
+
+    function get_data_inv($id){
+        $data = $this->db->query("select fi.*, (fi.nilai_invoice - fi.nilai_bayar + fi.nilai_pembulatan) as nominal
+            from f_invoice fi
             where fi.id =".$id);
         return $data;
     }
@@ -611,6 +616,13 @@ class Model_finance extends CI_Model{
 
     function get_inv($id){
         $data = $this->db->query("Select * from f_invoice where id =".$id);
+        return $data;
+    }
+
+    function view_inv_match($id){
+        $data = $this->db->query("Select fmd.*,COALESCE((select sum(fmd2.inv_bayar) from f_match_detail fmd2 where fmd2.id_inv = fi.id and fmd2.id != fmd.id),0) as nilai_sdh_bayar, fi.nilai_bayar, fi.nilai_invoice, fi.nilai_pembulatan, fi.no_invoice from f_match_detail fmd
+            left join f_invoice fi on fi.id = fmd.id_inv
+            where fmd.id =".$id);
         return $data;
     }
 }

@@ -103,8 +103,6 @@
                                 onkeyup="this.value = this.value.toUpperCase()"><?= $header['keterangan'];?></textarea>
                         </div>
                     </div>
-                    <div class="row">&nbsp;</div>
-                    
                 </div>
                 <div class="col-md-2">&nbsp;</div>
                 <div class="col-md-5">
@@ -138,7 +136,7 @@
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                <?php if($header['flag_invoice']>0){ ?>
+                <?php if($header['flag_invoice']==0){ ?>
                             <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
                                 <option value=""></option>
@@ -183,7 +181,6 @@
                     </div>
                 </div>              
             </div>
-            <div class="row">&nbsp;</div>
             <?php if($header['status_spb'] == 0){ ?>
             <div class="row">
                 <div class="col-md-12">

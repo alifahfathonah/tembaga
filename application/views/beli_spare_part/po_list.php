@@ -328,9 +328,14 @@
                             <?php
                                 if($group_id==1 || $hak_akses['view_po']==1){
                             ?>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/BeliSparePart/view_po/<?php echo $data->id; ?>" 
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/BeliSparePart/view_po/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-file-o"></i> View &nbsp; </a>
                             <?php
+                                }
+                                if( ($group_id==1 || $hak_akses['create_po']==1) && $data->status==0){
+                            ?>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/BeliSparePart/edit_po/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit&nbsp; </a>
+                            <?php 
                                 }
                                 if($group_id==1 || $hak_akses['print_po']==1){
                             ?>
@@ -340,8 +345,7 @@
                                 }
                                 if( ($group_id==1 || $hak_akses['create_lpb']==1)  && $data->ready_to_lpb>0){
                             ?>
-                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/BeliSparePart/create_lpb/<?php echo $data->id; ?>" 
-                               style="margin-bottom:4px"> &nbsp; <i class="fa fa-truck"></i> Create LPB &nbsp; </a>                                                      
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/BeliSparePart/create_lpb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa fa-truck"></i> Create LPB &nbsp; </a>
                             <?php } ?>
                         </td>
                     </tr>

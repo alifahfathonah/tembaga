@@ -192,27 +192,19 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-5">
                                         Customer
                                     </div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-7">
                                         : <?php echo $row->nama_customer; ?>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-5">
                                         Jenis Barang
                                     </div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-7">
                                         : <?php echo $row->jenis_barang; ?>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        Penimbang
-                                    </div>
-                                    <div class="col-md-8">
-                                        : <?php echo $row->penimbang; ?>
                                     </div>
                                 </div>
                             </div>
@@ -319,27 +311,19 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-5">
                                         Customer
                                     </div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-7">
                                         : <?php echo $row->nama_customer; ?>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-5">
                                         Jenis Barang
                                     </div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-7">
                                         : <?php echo $row->jenis_barang; ?>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        Penimbang
-                                    </div>
-                                    <div class="col-md-8">
-                                        : <?php echo $row->penimbang; ?>
                                     </div>
                                 </div>
                             </div>
@@ -427,7 +411,7 @@
                             <div class="col-md-12">
                                 <?php
                                     if($row->status==0){
-                                        echo '<a href="javascript:;" class="btn btn-xs btn-circle green" onclick="approve('.$row->id.');"> '
+                                        echo '<a href="javascript:;" class="btn btn-xs btn-circle green" id="approve_'.$row->id.'" onclick="approve('.$row->id.');"> '
                                         . '<i class="fa fa-check"></i> Approve </a> &nbsp; ';
                                         echo '<a href="javascript:;" class="btn btn-xs btn-circle red" onclick="reject('.$row->id.');"> '
                                         . '<i class="fa fa-check"></i> Reject </a>';
@@ -464,7 +448,7 @@
 </div> 
 <script>
 function approve(id){
-    console.log($('#po_id').val());
+    $('#approve_'+id).text('Please Wait ...').prop("onclick", null).off("click");
     $.ajax({
         url: "<?php echo base_url('index.php/Tolling/approve_matching_dtt'); ?>",
         type: "POST",
@@ -475,10 +459,11 @@ function approve(id){
         },
         success: function (result){
             if(result['type_message']=="sukses"){
-                alert(result['message']);
+                // alert(result['message']);
                 location.reload();
             }else{
-                alert(result['message']);
+                // alert(result['message']);
+                location.reload();
             }
         }
     });

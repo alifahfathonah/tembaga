@@ -14,5 +14,3 @@ laporan finish good
 Kode Barang setiap dropdown list.
 
 po bisa diedit harga nya,
-
-so bisa di edit header nya customernya juga

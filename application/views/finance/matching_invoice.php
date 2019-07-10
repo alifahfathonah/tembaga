@@ -45,51 +45,59 @@
                               id="frmInv">
                             <input type="hidden" id="id_modal_inv" name="id_modal_inv">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     No. Invoice<font color="#f00">*</font>
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-7">
                                     <input type="text" id="no_inv" name="no_inv" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
                                     <input type="hidden" id="inv_id" name="inv_id">
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-4">
-                                    Nominal
+                                <div class="col-md-5">
+                                    Nilai Invoice
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-7">
                                     <input type="text" id="nominal_inv" name="nominal_inv" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-4">
-                                    Nominal Sudah di Bayar
+                                <div class="col-md-5">
+                                    Nominal Sudah Di Bayar
                                 </div>
-                                <div class="col-md-8">
-                                    <input type="text" id="nominal_bayar" name="nominal" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id);">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    Nominal Potongan
-                                </div>
-                                <div class="col-md-8">
-                                    <input type="text" id="nominal_potongan" name="nominal_potongan" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);" placeholder="Nominal Potongan ...">
+                                <div class="col-md-7">
+                                    <input type="text" id="nominal_sdh_bayar" name="nominal_sdh_bayar" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-4">
-                                    Total Nominal
+                                <div class="col-md-5">
+                                    Nominal Di Bayar
                                 </div>
-                                <div class="col-md-8">
-                                    <input type="text" id="total_nominal_inv" name="total_nominal_inv" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                                <div class="col-md-7">
+                                    <input type="text" id="nominal_bayar" name="nominal_bayar" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id); hitungSubTotalInv();">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Nominal Potongan/Pembulatan
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="nominal_potongan" name="nominal_potongan" class="form-control myline" style="margin-bottom:5px" onkeyup="getComa(this.value, this.id); hitungSubTotalInv();" placeholder="Nominal Potongan ...">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Sisa Invoice
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="sisa_invoice" name="sisa_invoice" class="form-control myline" style="margin-bottom:5px" value="0" readonly="readonly">
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">                        
-                        <button type="button" class="btn blue" id="tambah_inv" onclick="addINV();">Tambah</button>
-                        <button type="button" class="btn blue" id="simpan_inv" onclick="saveINV();">Simpan</button>
+                        <button type="button" class="btn blue" id="tambah_inv">Tambah</button>
+                        <button type="button" class="btn blue" id="simpan_inv">Simpan</button>
                         <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
                     </div>
                 </div>
@@ -221,8 +229,8 @@
                     </div>
                     <div class="row">&nbsp;</div>
                 </div>
-                <div class="col-md-2">&nbsp;</div>
-                <div class="col-md-5">
+                <div class="col-md-1">&nbsp;</div>
+                <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
                             Nama Customer<font color="#f00">*</font>
@@ -383,6 +391,9 @@
         ?>
     </div>
 </div>
+<link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
 function simpanData(){
     var result = confirm("Anda yakin untuk menyimpannya ?");
@@ -407,6 +418,16 @@ function getComa(value, id){
     $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }
 
+function hitungSubTotalInv(){
+    nominal_inv = $('#nominal_inv').val().toString().replace(/\,/g, "");
+    n1 = $('#nominal_sdh_bayar').val().toString().replace(/\,/g, "");
+    n2 = $('#nominal_bayar').val().toString().replace(/\,/g, "");
+    n3 = $('#nominal_potongan').val().toString().replace(/\,/g, "");
+    total_harga = Number(nominal_inv) - (Number(n1) + Number(n2) + Number(n3));
+    console.log(nominal_inv+' | '+n3+' | '+total_harga);
+    $('#sisa_invoice').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+}
+
 function hitungSubTotal(){
     nominal = $('#nominal').val().toString().replace(/\,/g, "");
     b1 = $('#b_1').val().toString().replace(/\,/g, "");
@@ -415,11 +436,14 @@ function hitungSubTotal(){
     $('#total_nominal').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }
 
-function list_inv(id){
+function list_inv(id_cust,id){
     $.ajax({
         url: "<?php echo base_url('index.php/Finance/load_list_invoice'); ?>",
         type: "POST",
-        data: "id="+id,
+        data: {
+            id:id_cust,
+            id_match:id
+        },
         dataType: "json",
         success: function(result) {
             $('#list_inv').html(result);
@@ -436,36 +460,69 @@ function input_inv(id){
         success: function(result){
             $("#InvModal").find('.modal-title').text('Input Invoice');
             $("#InvModal").modal('show',{backdrop: 'true'});
-            $("#tambah").show();
-            $("#simpan").hide();
-            $("#id_modal").val(<?php echo $header['id'];?>);
-            $("#no_um").val(result['no_uang_masuk']);
-            $("#um_id").val(result['id']);
-            $("#nominal").val(numberWithCommas(result['nominal']));
-            $("#total_nominal").val(numberWithCommas(result['nominal']));
+            $("#tambah_inv").show();
+            $("#simpan_inv").hide();
+            $("#id_modal_inv").val(<?php echo $header['id'];?>);
+            $("#no_inv").val(result['no_invoice']);
+            $("#inv_id").val(result['id']);
+            $("#nominal_inv").val(numberWithCommas(result['nilai_invoice']));
+            $("#nominal_sdh_bayar").val(numberWithCommas(result['nilai_bayar']));
+            $("#nominal_potongan").val(numberWithCommas(result['nilai_pembulatan']));
+            $("#nominal_bayar").val(numberWithCommas(result['nominal']));
         }
     });
 }
 
-function addInv(id){
-    $.ajax({
-        type:"POST",
-        url:'<?php echo base_url('index.php/Finance/add_inv_match'); ?>',
-        data:{
-           id:$('#id').val(),
-           id_inv:id
-        },
-        success:function(result){
-            if(result['message_type']=="sukses"){
-                list_inv(<?php echo $header['id_customer'];?>);
-                data_inv(<?php echo $header['id'];?>);
-            }else{
-                $('#message').html(result['message']);
-                $('.alert-danger').show(); 
-            }            
-        }
-    });
-}
+$('#tambah_inv').click(function(event) {
+    event.preventDefault(); /*  Stops default form submit on click */
+
+    if($.trim($("#nominal_bayar").val()) == ("" || 0)){
+        $('#message').html("Nominal di Bayar harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else{
+        $.ajax({// Run getUnlockedCall() and return values to form
+            url: "<?php echo base_url('index.php/Finance/add_inv_match'); ?>",
+            data:{
+               id_modal:$('#id_modal_inv').val(),
+               id_inv:$('#inv_id').val(),
+               nominal_sdh_bayar:$('#nominal_sdh_bayar').val(),
+               nominal_bayar:$('#nominal_bayar').val(),
+               nominal_potongan:$('#nominal_potongan').val(),
+               sisa_invoice:$('#sisa_invoice').val()
+            },
+            type: "POST",
+            success: function(result){
+                if (result['message_type'] == 'sukses') {
+                    $("#InvModal").modal('hide'); 
+                    list_inv(<?php echo $header['id_customer'];?>);
+                    data_inv(<?php echo $header['id'];?>);
+                } else {
+                    $("#InvModal").modal('hide'); 
+                }
+            }
+        });
+    }
+});
+
+// function addInv(id){
+//     $.ajax({
+//         type:"POST",
+//         url:'<?php echo base_url('index.php/Finance/add_inv_match'); ?>',
+//         data:{
+//            id:$('#id').val(),
+//            id_inv:id
+//         },
+//         success:function(result){
+//             if(result['message_type']=="sukses"){
+//                 list_inv(<?php echo $header['id_customer'];?>);
+//                 data_inv(<?php echo $header['id'];?>);
+//             }else{
+//                 $('#message').html(result['message']);
+//                 $('.alert-danger').show(); 
+//             }            
+//         }
+//     });
+// }
 
 function delInv(id,id_inv){
     $.ajax({
@@ -499,8 +556,60 @@ function data_inv(id){
     });
 }
 
-/** UM DIBAWAH **/
+function view_inv(id){
+    $.ajax({
+        url: "<?php echo base_url('index.php/Finance/view_data_inv'); ?>",
+        type: "POST",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result){
+            $("#InvModal").find('.modal-title').text('Input Invoice');
+            $("#InvModal").modal('show',{backdrop: 'true'});
+            $("#tambah_inv").hide();
+            $("#simpan_inv").show();
+            $("#id_modal_inv").val(result['id']);
+            $("#no_inv").val(result['no_invoice']);
+            $("#inv_id").val(result['id_inv']);
+            $("#nominal_inv").val(numberWithCommas(result['nilai_invoice']));
+            $("#nominal_sdh_bayar").val(numberWithCommas(result['nilai_sdh_bayar']));
+            $("#nominal_potongan").val(numberWithCommas(result['nilai_pembulatan']));
+            $("#nominal_bayar").val(numberWithCommas(result['inv_bayar']));
+        }
+    });
+}
 
+$('#simpan_inv').click(function(event) {
+    event.preventDefault(); /*  Stops default form submit on click */
+
+    if($.trim($("#nominal_bayar").val()) == ("" || 0)){
+        $('#message').html("Nominal di Bayar harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else{
+        $.ajax({// Run getUnlockedCall() and return values to form
+            url: "<?php echo base_url('index.php/Finance/save_inv_match'); ?>",
+            data:{
+               id_modal:$('#id_modal_inv').val(),
+               id_inv:$('#inv_id').val(),
+               nominal_sdh_bayar:$('#nominal_sdh_bayar').val(),
+               nominal_bayar:$('#nominal_bayar').val(),
+               nominal_potongan:$('#nominal_potongan').val(),
+               sisa_invoice:$('#sisa_invoice').val()
+            },
+            type: "POST",
+            success: function(result){
+                if (result['message_type'] == 'sukses') {
+                    $("#InvModal").modal('hide'); 
+                    list_inv(<?php echo $header['id_customer'];?>);
+                    data_inv(<?php echo $header['id'];?>);
+                } else {
+                    $("#InvModal").modal('hide'); 
+                }
+            }
+        });
+    }
+});
+
+/** UM DIBAWAH **/
 function list_um(id){
     $.ajax({
         url: "<?php echo base_url('index.php/Finance/load_list_um'); ?>",
@@ -604,11 +713,7 @@ function data_um(id){
         }
     });
 }
-</script>
-<link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
-<script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
-<script>
+
 $(function(){        
     $("#tanggal").datepicker({
         showOn: "button",
@@ -619,7 +724,7 @@ $(function(){
         changeYear: true,
         dateFormat: 'dd-mm-yy'
     });
-    list_inv(<?php echo $header['id_customer']; ?>);
+    list_inv(<?php echo $header['id_customer'].','.$header['id']; ?>);
     list_um(<?php echo $header['id_customer']; ?>);
     data_inv(<?php echo $header['id']; ?>);
     data_um(<?php echo $header['id']; ?>);
