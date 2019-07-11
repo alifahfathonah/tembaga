@@ -494,7 +494,7 @@ $('#tambah_inv').click(function(event) {
             success: function(result){
                 if (result['message_type'] == 'sukses') {
                     $("#InvModal").modal('hide'); 
-                    list_inv(<?php echo $header['id_customer'];?>);
+                    list_inv(<?php echo $header['id_customer'].','.$header['id'];?>);
                     data_inv(<?php echo $header['id'];?>);
                 } else {
                     $("#InvModal").modal('hide'); 
@@ -534,7 +534,7 @@ function delInv(id,id_inv){
         },
         success:function(result){
             if(result['message_type']=="sukses"){
-                list_inv(<?php echo $header['id_customer'];?>);
+                list_inv(<?php echo $header['id_customer'].','.$header['id'];?>);
                 data_inv(<?php echo $header['id'];?>);
             }else{
                 $('#message').html(result['message']);
@@ -599,7 +599,7 @@ $('#simpan_inv').click(function(event) {
             success: function(result){
                 if (result['message_type'] == 'sukses') {
                     $("#InvModal").modal('hide'); 
-                    list_inv(<?php echo $header['id_customer'];?>);
+                    list_inv(<?php echo $header['id_customer'].','.$header['id'];?>);
                     data_inv(<?php echo $header['id'];?>);
                 } else {
                     $("#InvModal").modal('hide'); 

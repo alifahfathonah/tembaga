@@ -260,6 +260,31 @@ class Ingot extends CI_Controller{
         }
     }
     
+    function tambah_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $spb_id = $this->input->post('id');
+        
+        $this->db->trans_start();
+
+        #Update status SPB
+        $this->db->where('id', $spb_id);
+        $this->db->update('spb', array(
+                        'status'=> 4,
+                        'modified'=> $tanggal,
+                        'modified_by'=>$user_id
+        ));
+
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'Silahkan tambah barang');                 
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+        }                 
+
+       redirect('index.php/Ingot/view_spb/'.$spb_id);
+    }
+
     function save_spb(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');

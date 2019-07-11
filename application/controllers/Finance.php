@@ -2097,6 +2097,10 @@ class Finance extends CI_Controller{
         $get = $this->Model_finance->view_inv_match($this->input->post('id'))->row_array();
 
         $nilai_bayar = $get['nilai_bayar'] - $get['inv_bayar'];
+
+        // print_r($get);
+        // die();
+
         $this->db->where('id',$this->input->post('id_inv'));
         $this->db->update('f_invoice', array(
             'nilai_bayar'=>$nilai_bayar,

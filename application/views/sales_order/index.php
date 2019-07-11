@@ -165,7 +165,7 @@
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/SalesOrder/view_so/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
                             <?php
-                                }if(($group_id==1 || $hak_akses['edit_so']==1) && $data->invoice == 0){
+                                }if($group_id==1 || $hak_akses['edit_so']==1){
                             ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/SalesOrder/edit/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
                             <?php

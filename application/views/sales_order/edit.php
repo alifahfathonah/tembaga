@@ -67,21 +67,10 @@
                             Marketing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                    <?php if($header['flag_invoice']>0){ ?>
-                            <select id="marketing_id" name="marketing_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($marketing_list as $row){
-                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['marketing_id'])? 'selected="selected"': '').'>'.$row->realname.'</option>';
-                                    }
-                                ?>
-                            </select>
-                    <?php }else{ ?>
                         <input type="text" id="nama_marketing" name="nama_marketing"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['realname']; ?>" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly">
                         <input type="hidden" id="marketing_id" name="marketing_id" value="<?php echo $header['marketing_id'];?>">
-                    <?php } ?> 
                         </div>
                     </div>
                     <div class="row">

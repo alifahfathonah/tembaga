@@ -52,7 +52,6 @@
                 </div>
             </div>
         </div>
-        
         <?php
             if( ($group_id==1)||($hak_akses['view_spb']==1) ){
         ?>
@@ -434,6 +433,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <?php
+                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && ($myData['status']=='3' || $myData['status']=='1')){
+                            echo '<a href="javascript:;" class="btn blue" onclick="tambahData();"> '
+                                .'<i class="fa fa-plus"></i> Tambah </a> ';
+                        }
                         if( ($group_id==1 || $hak_akses['save_spb']==1) && ($myData['status']=="0" || $myData['status']=="4")){
                             echo '<a href="javascript:;" class="btn green" onclick="saveFulfilment();"> '
                                 .'<i class="fa fa-check"></i> Save </a> ';
@@ -492,6 +495,11 @@ function rejectFulfilment(){
         $('#formku').submit(); 
     }
 };
+
+function tambahData(){
+    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Ingot/tambah_spb");    
+    $('#formku').submit(); 
+}
 
 function approveData(){
     var r=confirm("Anda yakin meng-approve permintaan barang ini?");

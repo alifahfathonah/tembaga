@@ -4,8 +4,32 @@
         <meta charset="utf-8" />
     </head>
     <body class="margin-left:40px;">
-        <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWATMAS PRAKASA<br>'; }?>PACKING LIST</h3>
+        <table border="0" cellpadding="0" width="900px" cellspacing="0" style="font-family:Microsoft Sans Serif">
+            <?php if($this->session->userdata('user_ppn')==1){?>
+            <tr>
+                <td align="left" colspan="3">
+                    <strong><span style="font-size:20px;">PT. KAWATMAS PRAKASA</span></strong>
+                </td>
+            </tr>
+            <tr>
+                <td height="5px"></td>
+            </tr>
+            <tr>
+                <td colspan="3"><span style="font-size:15px;">JL. HALIM PERDANA KUSUMA NO. 51,Tangerang</td>
+            </tr>
+            <tr>
+                <td>T: (021) 5523547-46, F:(021) 5523548</span></td>
+            </tr>
+            <?php } ?>
+            <tr>
+                <td colspan="3"><p align="center" style="font-size:20px;"><strong><u><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWATMAS PRAKASA<br>'; }
+                    if($header['status']==1){
+                        echo 'PACKING LIST';
+                    }else{
+                        echo 'PACKING LIST SEMENTARA';
+                    }?></u></strong></p></td>
+            </tr>
+        </table>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Times New Roman">
             <tr>
                 <td width="60%">

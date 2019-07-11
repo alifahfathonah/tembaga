@@ -400,8 +400,7 @@ class Model_finance extends CI_Model{
 
     function matching_header_print($id){
         $data = $this->db->query("select fm.*, mc.nama_customer, mc.pic, mc.alamat, 
-            (select sum((select fi.nilai_invoice from f_invoice fi where fi.id = md.id_inv)) 
-                        from f_match_detail md where md.id_um = 0 and md.id_match = fm.id) as total
+            (select sum(inv_bayar) from f_match_detail where id_match = fm.id) as total
             from f_match fm 
             left join m_customers mc on mc.id = fm.id_customer
             where fm.id =".$id);
@@ -438,7 +437,7 @@ class Model_finance extends CI_Model{
     }
 
     function load_invoice_match($id){
-        $data = $this->db->query("select fmd.*, fi.jenis_trx, fi.no_invoice, (fi.nilai_invoice-fi.nilai_bayar+fi.nilai_pembulatan) as total
+        $data = $this->db->query("select fmd.*, fi.jenis_trx, fi.no_invoice, fmd.inv_bayar as total
             from f_match_detail fmd
             left join f_invoice fi on fi.id = fmd.id_inv
             where fmd.id_match =".$id." and fmd.id_um = 0");
