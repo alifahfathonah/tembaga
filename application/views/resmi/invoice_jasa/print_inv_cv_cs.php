@@ -80,7 +80,7 @@
                         $total_jual += $v->sum_total_amount;
                         $no++; 
                     } 
-                    $total_amount = $total_jual*110/100;
+                    $total_amount = $total_jual;
                 ?>
                 <tr>
                     <td colspan="4" align="right"><b>TOTAL</b></td>

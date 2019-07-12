@@ -185,7 +185,7 @@ class R_SuratJalan extends CI_Controller{
                 $detail = array(
                     'sj_resmi_id' => $sjr_id,
                     'so_detail_id' => $row->so_detail,
-                    'jenis_barang_id' => $row->jenis_barang_id,
+                    'jenis_barang_id' => $row->jenis_barang_ida,
                     'bruto' => $row->bruto,
                     'netto' => $row->netto,
                     'no_packing' => $row->no_packing,
