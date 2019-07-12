@@ -754,7 +754,7 @@ class BeliWIP extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->load->model('Model_beli_wip');
 
@@ -781,6 +781,7 @@ class BeliWIP extends CI_Controller{
 
                 $data_bpb = array(
                         'no_bpb' => $code,
+                        'tanggal' => $tgl_input,
                         'flag_ppn' => $user_ppn,
                         'created' => $tanggal,
                         'created_by' => $user_id,

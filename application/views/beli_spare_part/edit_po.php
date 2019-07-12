@@ -140,11 +140,14 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             Discount
                         </div>
                         <div class="col-md-3">
                             <input type="text" id="diskon" name="diskon" class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['diskon']; ?>">
+                        </div>
+                        <div class="col-md-1">
+                            <label>%</label>
                         </div>
                         <div class="col-md-2">
                             PPN
@@ -184,13 +187,29 @@
                                 $no = 1;
                                 foreach ($details as $row){
                                     echo '<tr>';
+                                    if($row->flag_lpb==0){
                                     echo '<input type="hidden" name="details['.$no.'][po_detail_id]" value="'.$row->id.'">';
+                                    }
                                     echo '<td style="text-align:center">'.$no.'</td>';
                                     echo '<td>'.$row->nama_item.'</td>';
                                     echo '<td>'.$row->uom.'</td>';
-                                    echo '<td><input type="text" id="amount_'.$no.'" name="details['.$no.'][amount]"  onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id, '.$no.');" value="'.number_format($row->amount,0,'.', ',').'"></td>';
+                                    echo '<td>';
+                                    if($row->flag_lpb==0){
+                                    echo '<input type="text" id="amount_'.$no.'" name="details['.$no.'][amount]"  onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id, '.$no.');" value="'.number_format($row->amount,0,'.', ',').'">';
+                                    }else{
+                                    echo number_format($row->amount,2,',','.');
+                                    }
+                                    echo '</td>';
+                                    if($row->flag_lpb==0){
                                     echo '<td><input type="text" id="qty_'.$no.'" name="details['.$no.'][qty]" onkeyup="getComa(this.value, this.id, '.$no.');" value="'.number_format($row->qty,2,'.', ',').'"></td>';
+                                    }else{
+                                    echo '<td>'.$row->qty.'</td>';
+                                    }
+                                    if($row->flag_lpb==0){
                                     echo '<td><input type="text" id="total_amount_'.$no.'" class="form-control" name="details['.$no.'][total_amount]" value="'.number_format($row->total_amount,0,'.', ',').'" readonly></td>';
+                                    }else{
+                                    echo '<td>'.$row->total_amount.'</td>';
+                                    }
                                     echo '</tr>';
                                     $no++;
                                 }
@@ -204,13 +223,7 @@
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
-                    <?php
-                        if( ($group_id==1)||($hak_akses['close_po']==1) ){
-                            echo '<a href="javascript:;" class="btn red-sunglo" onclick="showRejectBox();"> 
-                                <i class="fa fa-lock"></i> Close PO </a>';
-                        }
-                    ?>
-                    <a href="<?php echo base_url('index.php/BeliRongsok'); ?>" id="btn_kembali" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/BeliSparePart/po_list'); ?>" id="btn_kembali" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>

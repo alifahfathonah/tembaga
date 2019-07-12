@@ -545,7 +545,8 @@ class Tolling extends CI_Controller{
 
     function matching_so(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');    
+        $ppn         = $this->session->userdata('user_ppn');    
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -566,7 +567,7 @@ class Tolling extends CI_Controller{
         }
         $data['dtr_app'] = $dtr_app;
         $c_id = $data['header_so']['m_customer_id'];
-        $dtr = $this->Model_tolling_titipan->get_dtr($c_id)->result();
+        $dtr = $this->Model_tolling_titipan->get_dtr($c_id,$ppn)->result();
         foreach ($dtr as $index=>$row){
             $dtr[$index]->details = $this->Model_tolling_titipan->show_detail_dtr($row->id)->result();
         }

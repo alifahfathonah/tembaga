@@ -5,7 +5,7 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWATMAS PRAKASA<br>'; }?>BUKTI PENERIMAAN BARANG FINISHGOOD</h3>
+        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWAT MAS PRAKASA<br>'; }?>BUKTI PENERIMAAN BARANG FINISHGOOD</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="40%">

@@ -89,6 +89,7 @@
                             if($data->id_ampas){
                             echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/PengirimanAmpas/print_bpb/'.$data->id_ampas.'" style="margin-bottom:4px" target="_blank">&nbsp;<i class="fa fa-print"></i> Print Ampas &nbsp;</a>';
                             }
+                            echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Ingot/print_hasil_produksi/'.$data->id.'" style="margin-bottom:4px" target="_blank">&nbsp;<i class="fa fa-print"></i> Print Hasil Produksi</a>';
                         }
                         ?>
                         </td>                    

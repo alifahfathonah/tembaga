@@ -424,6 +424,26 @@ class BeliFinishGood extends CI_Controller{
         $this->load->view('layout', $data);
     }
 
+    function view_dtbj(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');   
+        $user_ppn = $this->session->userdata('user_ppn');   
+        $id       = $this->uri->segment(3);  
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+            $data['content']= "beli_fg/view_dtbj";
+            $this->load->model('Model_beli_fg');
+            $data['header']  = $this->Model_beli_fg->show_header_dtbj($id)->row_array();
+            $data['details'] = $this->Model_beli_fg->load_detail($id)->result();
+
+        $this->load->view('layout', $data);
+    }
+
     function get_bobbin(){
         $id = $this->input->post('id');
         $jp = $this->input->post('jp');

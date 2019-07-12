@@ -104,7 +104,7 @@
             
             <tr>
                 <td align="left" colspan="3">
-                    <strong><span style="font-size:20px;">PT. KAWATMAS PRAKASA</span></strong>
+                    <strong><span style="font-size:20px;">PT. KAWAT MAS PRAKASA</span></strong>
                 </td>
             </tr>
             <tr>

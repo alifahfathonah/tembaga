@@ -1406,8 +1406,7 @@ class SalesOrder extends CI_Controller{
             $jenis = $data['header']['jenis_barang'];
             if($jenis=='FG'){
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_fg($id)->result();
-                if($data['header']['status']==1){
-                    $this->load->view('sales_order/print_sj_bak', $data);
+                    $this->load->view('sales_order/print_sj', $data);
                     // $header = $this->load->view("sales_order/print_sj/headerpdf", $data, true);
                     // $body = $this->load->view("sales_order/print_sj/bodypdf", $data, true);
                     // $footer = $this->load->view("sales_order/print_sj/footerpdf", $data, true);
@@ -1428,9 +1427,6 @@ class SalesOrder extends CI_Controller{
                     // // $pdf->AddPage('P');
                     // $pdf->writeHTML($body);
                     // $pdf->Output('sj.pdf', 'I');  
-                }else{
-                    $this->load->view('sales_order/print_sj', $data);
-                }
             }else if($jenis=='WIP'){
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
                 $this->load->view('sales_order/print_sj_wip', $data);

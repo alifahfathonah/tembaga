@@ -805,7 +805,8 @@ class BeliSparePart extends CI_Controller{
 
             $data['content']= "beli_spare_part/create_lpb";
             $this->load->model('Model_beli_sparepart');
-            $data['header'] = $this->Model_beli_sparepart->show_header_po($id)->row_array();           
+            $data['bpb'] = $this->Model_beli_sparepart->get_no_bpb()->row_array();
+            $data['header'] = $this->Model_beli_sparepart->show_header_po($id)->row_array();
             $data['details'] = $this->Model_beli_sparepart->show_detail_po_create_lpb($id)->result(); 
             
             $this->load->view('layout', $data);   

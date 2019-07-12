@@ -169,7 +169,7 @@
                                 <option value=""></option>
                                 <?php
                                     foreach ($jenis_barang_list as $value){
-                                        echo "<option value='".$value->id."'>".$value->jenis_barang."</option>";
+                                        echo "<option value='".$value->id."'>(".$value->kode.") ".$value->jenis_barang."</option>";
                                     }
                                 ?>
                                 </select>

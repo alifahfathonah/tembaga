@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Retur 
             <i class="fa fa-angle-right"></i>  
-            <a href="<?php echo base_url('index.php/Retur/edit'); ?>"> Edit Data Retur WIP</a> 
+            <a href="<?php echo base_url('index.php/Retur/edit'); ?>"> Edit Data Retur Rongsok</a> 
         </h5>          
     </div>
 </div>

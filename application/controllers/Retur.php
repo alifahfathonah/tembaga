@@ -332,7 +332,7 @@ class Retur extends CI_Controller{
                     
         $tabel .= '<tr>';
         $tabel .= '<td colspan="6" style="text-align:right"><strong>Total</strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,2,',','.').'</strong></td>';
         $tabel .= '<td colspan="2"></td>';
         $tabel .= '</tr>';
        

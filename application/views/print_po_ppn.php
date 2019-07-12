@@ -14,7 +14,7 @@ $total_harga = 0;
             ?>
     <body class="margin-left:40px;">
         <?php if ($this->session->userdata('user_ppn') == 1) {?>
-        <h2 style="margin-top: -10px">PT. KAWATMAS PRAKASA<br></h2>
+        <h2 style="margin-top: -10px">PT. KAWAT MAS PRAKASA<br></h2>
         <p style="margin-top: -20px">
             JL. HALIM PERDANA KUSUMA NO. 51 Kebon Besar Batu Ceper Tangerang<br>
             TLP. : (021) 5523547, 5453625 - 26  FAX. (021) 5523548<br>
@@ -25,11 +25,11 @@ $total_harga = 0;
         <h3 align="center" style="margin-top: -20px;">PURCHASE ORDER</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
-                <td width="30%">
+                <td width="60%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
-                            <td style="border-bottom: 1px solid;">Kepada Yth.</td>
-                            <td rowspan="2" valign="middle">: <?=$header['nama_supplier']?></td>
+                            <td style="border-bottom: 1px solid;" width="25%">Kepada Yth.</td>
+                            <td rowspan="2" valign="middle" width="75%">: <?=$header['nama_supplier']?></td>
                         </tr>
                         <tr>
                             <td>To.</td>
@@ -51,7 +51,6 @@ $total_harga = 0;
 
                     </table>
                 </td>
-                <td>&nbsp;</td>
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
@@ -104,21 +103,23 @@ $total_harga = 0;
                         <td align="right"><?="Rp " . number_format($v->total_amount, 2, ".", ",")?></td>
                     </tr>
                 <?php
-$total += $v->qty;
+    $total += $v->qty;
         $total_harga += $v->total_amount;
+        $harga_diskon = $total_harga * $header['diskon'] / 100;
         $no++;
         $idx++;
     if ($header['ppn'] == 1) {
-        $total_amount = ($total_harga - $header['diskon']) * 110 / 100;
+        $total_amount = (($total_harga - $harga_diskon) * 110 / 100)+$header['materai'];
     } else {
-        $total_amount = ($total_harga - $header['diskon']);
+        $total_amount = ($total_harga - $harga_diskon)+$header['materai'];
     }
     // if (($idx / ($rows+1)) == 1 || $idx == ($rows+1)) {
     if (($idx % 10) == 0 || $idx == $rows) {?>
                     <tr>
-                        <td colspan="2"></td>
-                        <td>DISC : &nbsp; &nbsp;<?=$header['diskon'];?></td>
+                        <td></td>
+                        <td style="text-align: right;">DISC : &nbsp; &nbsp;<?=$header['diskon'];?> %</td>
                         <td>PPN  : &nbsp; &nbsp;<?=($header['ppn'] == 1) ? '10%' : '0%';?></td>
+                        <td><?php echo ($header['materai']==0)? '' : 'Materai : '.number_format($header['materai'],0,',','.');?></td>
                     </tr>
                 <tr>
                     <td style="border-top: 1px solid;" colspan="2" align="right"><b>TOTAL</b></td>

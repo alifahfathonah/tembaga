@@ -114,7 +114,7 @@ class Model_tolling_titipan extends CI_Model{
         return $data;
     }
 
-    function get_dtr($c_id){
+    function get_dtr($c_id,$ppn){
         $data = $this->db->query("Select dtr.*,  
                     mc.nama_customer,
                     usr.realname As penimbang,
@@ -126,7 +126,7 @@ class Model_tolling_titipan extends CI_Model{
                     Left Join users usr On (dtr.created_by = usr.id) 
                     Left Join users app On (dtr.approved_by = app.id) 
                     Left Join users rjct On (dtr.rejected_by = rjct.id) 
-                Where dtr.customer_id=".$c_id." and status = 0");
+                Where dtr.customer_id=".$c_id." and dtr.flag_ppn =".$ppn." and status = 0");
         return $data;
     }
 
@@ -150,7 +150,7 @@ class Model_tolling_titipan extends CI_Model{
                     Left Join sales_order so On (dtr.so_id = so.id) 
                     Left Join m_customers cust On (cust.id = dtr.customer_id) 
                     Left Join users usr On (dtr.created_by = usr.id) 
-                Where dtr.customer_id!=0 and dtr.retur_id=0 and COALESCE(so.flag_ppn,".$user_ppn.") =".$user_ppn."
+                Where dtr.customer_id!=0 and dtr.retur_id=0 and dtr.flag_ppn =".$user_ppn."
                 Order By dtr.id Desc");
         return $data;
     }
@@ -395,13 +395,15 @@ class Model_tolling_titipan extends CI_Model{
     }
     
     function load_detail_surat_jalan($id){
-        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, jb.uom, tgf.no_produksi, mb.berat
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, jb.uom, tgf.no_produksi, mb.berat, jb1.kode as kode_lama, coalesce(jb2.kode, 0) as kode_baru
                 from t_surat_jalan_detail tsjd
                 left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
                 left join jenis_barang jb on tsj.jenis_barang != 'RONGSOK' and jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
                 left join rongsok r on tsj.jenis_barang = 'RONGSOK' and r.id = tsjd.jenis_barang_id
                 left join t_gudang_fg tgf on tgf.id = tsjd.gudang_id
                 left join m_bobbin mb on tgf.bobbin_id>0 and mb.id = tgf.bobbin_id
+                left join jenis_barang jb1 on jb1.id = tsjd.jenis_barang_id
+                left join jenis_barang jb2 on jb2.id = tsjd.jenis_barang_alias
                 where tsjd.t_sj_id =".$id);
         return $data;
     }

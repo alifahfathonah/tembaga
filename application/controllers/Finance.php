@@ -188,7 +188,7 @@ class Finance extends CI_Controller{
             ));
         }
 
-        if($user_ppn == 1 || ($this->input->post('jenis_id') != 'Cek')||($this->input->post('jenis_id') != 'Cek Mundur')){
+        if(($this->input->post('jenis_id') != 'Cek')||($this->input->post('jenis_id') != 'Cek Mundur')){
             $data = array(
                 'jenis_trx'=>0,
                 'nomor'=> $code,
@@ -1828,8 +1828,8 @@ class Finance extends CI_Controller{
             $this->load->helper('tanggal_indo');
             $this->load->model('Model_finance');
             $data['header'] = $this->Model_finance->matching_header_print($id)->row_array();
-            $data['details'] = $this->Model_finance->load_invoice_match($id)->result();
-            $data['details_um'] = $this->Model_finance->load_um_match($id)->result();
+            $data['details'] = $this->Model_finance->load_invoice_match_print($id)->result();
+            $data['details_um'] = $this->Model_finance->load_um_match_print($id)->result();
 
             $this->load->view('finance/print_matching_inv', $data);
         }else{
@@ -1968,6 +1968,37 @@ class Finance extends CI_Controller{
         }
 
         redirect('index.php/Finance/matching_invoice/'.$this->input->post('id_modal'));
+    }
+
+    function add_instant_um_match(){
+        $user_id   = $this->session->userdata('user_id');
+        $return_data = array();
+        $tanggal   = date('Y-m-d h:m:s');
+        
+        $this->db->trans_start();
+
+        $this->db->where('id',$this->input->post('um_id'));
+        $this->db->update('f_uang_masuk', array(
+            'flag_matching'=>$this->input->post('id_modal')
+        ));
+
+        $data = array(
+            'id_match'=>$this->input->post('id_modal'),
+            'id_um'=>$this->input->post('um_id'),
+            'id_inv'=>0
+        );
+        $this->db->insert('f_match_detail', $data);
+
+        if($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+            $return_data['message']= "Berhasil menambahkan item barang! Silahkan coba kembali";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
     }
 
     function save_um_match(){
@@ -2134,8 +2165,7 @@ class Finance extends CI_Controller{
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
             $tabel .= '<td>'.$row->no_uang_masuk.'</td>';
-            $tabel .= '<td>'.$row->jenis_pembayaran.'</td>';
-            $tabel .= '<td>'.$row->bank_pembayaran.'</td>';
+            $tabel .= '<td>'.$row->nomor_cek.'</td>';
             $tabel .= '<td>';
                 if($row->status==0){
                     $tabel .= '<div style="background-color:darkkhaki; padding:3px">Belum Cair</div>';
@@ -2149,15 +2179,14 @@ class Finance extends CI_Controller{
                     $tabel .= '<div style="background-color:orange; color:#fff; padding:3px">Sudah Diganti</div>';
                 }
             $tabel .= '</td>';
-            $tabel .= '<td>'.$row->currency.'</td>';
-            $tabel .= '<td style="text-align:right;">'.number_format($row->nominal,0,',', '.').'</td>';
-            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="input_um('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addUM"><i class="fa fa-plus"></i> Tambah </a></td>';
+            $tabel .= '<td style="text-align:right;">'.$row->currency.' '.number_format($row->nominal,0,',', '.').'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="instantADDUM('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addUM"><i class="fa fa-plus"></i> Tambah </a></td>';
             $tabel .= '</tr>';            
             $no++;
             $total_nominal += $row->nominal;
         }
         $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:right;" colspan="6"><strong>Total Nominal </strong></td>';
+        $tabel .= '<td style="text-align:right;" colspan="4"><strong>Total Nominal </strong></td>';
         $tabel .= '<td style="text-align:right;">';
         $tabel .= '<strong>'.number_format($total_nominal,0,',','.').'</strong>';
         $tabel .= '</td>';
@@ -2180,8 +2209,7 @@ class Finance extends CI_Controller{
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
             $tabel .= '<td>'.$row->no_uang_masuk.'</td>';
-            $tabel .= '<td>'.$row->jenis_pembayaran.'</td>';
-            $tabel .= '<td>'.$row->bank_pembayaran.'</td>';
+            $tabel .= '<td>'.$row->nomor_cek.'</td>';
             $tabel .= '<td>';
                 if($row->status==0){
                     $tabel .= '<div style="background-color:darkkhaki; padding:3px">Belum Cair</div>';
@@ -2195,8 +2223,7 @@ class Finance extends CI_Controller{
                     $tabel .= '<div style="background-color:orange; color:#fff; padding:3px">Sudah Diganti</div>';
                 }
             $tabel .= '</td>';
-            $tabel .= '<td>'.$row->currency.'</td>';
-            $tabel .= '<td style="text-align:right;">'.number_format($row->total,0,',', '.').'</td>';
+            $tabel .= '<td style="text-align:right;">'.$row->currency.' '.number_format($row->total,0,',', '.').'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle blue" onclick="view_um('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-floppy-o"></i> View </a>';
             $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle red" onclick="delUM('.$row->id.','.$row->id_um.');" style="margin-top:2px; margin-bottom:2px;" id="addUM"><i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';            
@@ -2204,7 +2231,7 @@ class Finance extends CI_Controller{
             $total_nominal += $row->total;
         }
         $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:right;" colspan="6"><strong>Total Nominal Invoice </strong></td>';
+        $tabel .= '<td style="text-align:right;" colspan="4"><strong>Total Nominal Invoice </strong></td>';
         $tabel .= '<td style="text-align:right;">';
         $tabel .= '<strong>'.number_format($total_nominal,0,',','.').'</strong>';
         $tabel .= '<input type="hidden" name="total_nominal" value="'.$total_nominal.'">';
@@ -2221,13 +2248,15 @@ class Finance extends CI_Controller{
         $return_data = array();
         $tanggal   = date('Y-m-d h:m:s');
         
+        $this->db->trans_start();
         $this->db->where('id',$this->input->post('id_um'));
         $this->db->update('f_uang_masuk', array(
             'flag_matching'=>0
         ));
 
         $this->db->where('id', $this->input->post('id'));
-        if($this->db->delete('f_match_detail')){
+        $this->db->delete('f_match_detail');
+        if($this->db->trans_complete()){
             $return_data['message_type']= "sukses";
         }else{
             $return_data['message_type']= "error";

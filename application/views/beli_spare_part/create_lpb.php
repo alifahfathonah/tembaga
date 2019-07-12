@@ -30,6 +30,16 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
+                            No. BPB Terakhir 
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_bpb_terakhir" name="no_bpb_terakhir" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $bpb['no_bpb']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             No. BPB <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">

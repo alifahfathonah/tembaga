@@ -176,6 +176,7 @@
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit &nbsp;</a> ';
                                 }
                                 if($group_id==1 || $hak_akses['print_dtbj']==1){
+                                    echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/BeliFinishGood/view_dtbj/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-book"></i> View &nbsp;</a> ';
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliFinishGood/print_dtbj/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }

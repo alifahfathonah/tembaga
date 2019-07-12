@@ -398,12 +398,43 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    // function matching_header_print($id){
+    //     $data = $this->db->query("select fm.*, mc.nama_customer, mc.pic, mc.alamat, 
+    //         (select sum(inv_bayar) from f_match_detail where id_match = fm.id) as total
+    //         from f_match fm 
+    //         left join m_customers mc on mc.id = fm.id_customer
+    //         where fm.id =".$id);
+    //     return $data;
+    // }
+
     function matching_header_print($id){
         $data = $this->db->query("select fm.*, mc.nama_customer, mc.pic, mc.alamat, 
-            (select sum(inv_bayar) from f_match_detail where id_match = fm.id) as total
+            (select sum(fmd.inv_bayar+fi.nilai_pembulatan) from f_match_detail fmd 
+            left join f_invoice fi on fi.id = fmd.id_inv
+            where fmd.id_match = fm.id) as total
             from f_match fm 
             left join m_customers mc on mc.id = fm.id_customer
             where fm.id =".$id);
+        return $data;
+    }
+
+    function load_invoice_match_print($id){
+        $data = $this->db->query("select fmd.*, fi.jenis_trx, fi.no_invoice, fmd.inv_bayar+fi.nilai_pembulatan as total
+            from f_match_detail fmd
+            left join f_invoice fi on fi.id = fmd.id_inv
+            where fmd.id_match =".$id." and fmd.id_um = 0");
+        return $data;
+    }
+
+    function load_um_match_print($id){
+        $data = $this->db->query("
+            (select fum.no_uang_masuk as nomor, fum.nominal from f_match_detail fmd
+            left join f_uang_masuk fum on fum.id = fmd.id_um
+            where fmd.id_match =".$id." and fmd.id_inv = 00)
+                UNION ALL
+            (select 'SELISIH' as nomor, fi.nilai_pembulatan as nominal from f_match_detail fmd
+            left join f_invoice fi on fi.id = fmd.id_inv
+            where fmd.id_match =".$id." and fi.nilai_pembulatan != 0 and fmd.id_um = 0)");
         return $data;
     }
 
@@ -430,7 +461,7 @@ class Model_finance extends CI_Model{
     }
 
     function load_um_full($id,$ppn){
-        $data = $this->db->query("select fum.id, fum.no_uang_masuk, fum.jenis_pembayaran, fum.bank_pembayaran, fum.status, COALESCE(NULLIF(fum.rekening_pembayaran,''), NULLIF(fum.nomor_cek, '')) as nomor, fum.currency, fum.nominal
+        $data = $this->db->query("select fum.id, fum.no_uang_masuk, fum.nomor_cek, fum.status, COALESCE(NULLIF(fum.rekening_pembayaran,''), NULLIF(fum.nomor_cek, '')) as nomor, fum.currency, fum.nominal
             from f_uang_masuk fum
             where fum.m_customer_id =".$id." and fum.flag_ppn=".$ppn." and fum.flag_matching = 0 and (fum.status = 0 or fum.status = 1)");
         return $data;
@@ -453,7 +484,7 @@ class Model_finance extends CI_Model{
     }
 
     function load_um_match($id){
-        $data = $this->db->query("select fmd.*, fum.no_uang_masuk, fum.jenis_pembayaran, fum.bank_pembayaran, fum.currency, fum.nominal, (fum.nominal + fmd.biaya1 + fmd.biaya2) as total, fum.status  from f_match_detail fmd
+        $data = $this->db->query("select fmd.*, fum.no_uang_masuk, fum.nomor_cek, fum.currency, fum.nominal, (fum.nominal + fmd.biaya1 + fmd.biaya2) as total, fum.status  from f_match_detail fmd
             left join f_uang_masuk fum on fum.id = fmd.id_um
             where fmd.id_match =".$id." and fmd.id_inv = 0");
         return $data;

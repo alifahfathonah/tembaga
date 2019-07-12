@@ -1,6 +1,5 @@
 nomor giro gaboleh sama
 
-matching invoice bisa minus invoice, minus uang masuk udah.
 matching invoice dikurang dengan POTONGAN
 
 Laporan DTR yang dipakai di Matching Invoice CV
@@ -13,4 +12,10 @@ laporan finish good
 
 Kode Barang setiap dropdown list.
 
-po bisa diedit harga nya,
+stock opname delete ama benerin yang bagus
+
+edit tanggal hasil produksi
+
+edit hasil produksi cuci jenis barang dan tanggal
+
+approve matching po dengan dtbj/dtwip tanggal nya belum sama di bpb. masih ngikutin tanggal saat approve

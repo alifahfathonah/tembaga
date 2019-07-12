@@ -82,7 +82,7 @@
                         <?php } else if($jenis_po == 'PO CV KE KMP'){ ?>
                         <div class="col-md-8">
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" value="PT. KAWATMAS PRAKASA">
+                                class="form-control myline" style="margin-bottom:5px" value="PT. KAWAT MAS PRAKASA">
                         </div>
                         <?php } ?>
                     </div>

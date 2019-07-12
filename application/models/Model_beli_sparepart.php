@@ -88,7 +88,7 @@ class Model_beli_sparepart extends CI_Model{
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
                 Where po.jenis_po='Sparepart' and po.flag_ppn = ".$user_ppn."
-                Order By po.id Desc");
+                Order By po.no_po Desc");
         return $data;
     }
 
@@ -184,7 +184,7 @@ class Model_beli_sparepart extends CI_Model{
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (lpb.created_by = usr.id)
                 Where po.flag_ppn =".$ppn."
-                Order By lpb.id Desc");
+                Order By lpb.no_bpb Desc");
         return $data;
     }
 
@@ -473,8 +473,8 @@ class Model_beli_sparepart extends CI_Model{
     }
 
     function get_data_lpb($id){
-        $data = $this->db->query("select lpb.id, lpb.remarks, po.no_po, po.ppn, po.currency,
-                (select if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount)) from lpb_detail ld
+        $data = $this->db->query("select lpb.id, if(po.materai=0,'',CONCAT('Materai ',po.materai))as remarks, po.no_po, po.ppn, po.currency,
+                (select if(po.diskon=0,if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount)),if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount))*(100-po.diskon)/100)+po.materai from lpb_detail ld
                  left join po_detail pd on pd.id = ld.po_detail_id
                  left join po p on p.id = pd.po_id
                  where ld.lpb_id=lpb.id) as amount          
@@ -485,8 +485,8 @@ class Model_beli_sparepart extends CI_Model{
     }
 
     function load_detail_lpb($id){
-        $data = $this->db->query("select lpb.id, lpb.no_bpb, lpb.remarks, po.no_po, po.ppn, po.currency,
-                (select if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount)) from lpb_detail ld
+        $data = $this->db->query("select lpb.id, lpb.no_bpb, if(po.materai=0,'',CONCAT('Materai ',po.materai))as remarks, po.no_po, po.ppn, po.currency,
+                (select if(po.diskon=0,if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount)),if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount))*(100-po.diskon)/100)+po.materai from lpb_detail ld
                  left join po_detail pd on pd.id = ld.po_detail_id
                  left join po p on p.id = pd.po_id
                  where ld.lpb_id=lpb.id) as amount          
@@ -541,8 +541,8 @@ class Model_beli_sparepart extends CI_Model{
     }
 
     function show_detail_voucher_sp($id){
-        $data = $this->db->query("select lpb.no_bpb, lpb.remarks, po.no_po,
-            (select if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount)) from lpb_detail ld
+        $data = $this->db->query("select lpb.no_bpb, if(po.materai=0,'',CONCAT('Materai ',po.materai)) as remarks, po.no_po,
+            (select if(po.diskon=0,if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount)),if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount))*(100-po.diskon)/100)+po.materai from lpb_detail ld
                  left join po_detail pd on pd.id = ld.po_detail_id
                  left join po p on p.id = pd.po_id
                  where ld.lpb_id=lpb.id) as amount     
@@ -550,6 +550,11 @@ class Model_beli_sparepart extends CI_Model{
             left join po on po.id = lpb.po_id
             left join voucher v on v.vk_id = lpb.vk_id
             where lpb.vk_id =".$id);
+        return $data;
+    }
+
+    function get_no_bpb(){
+        $data = $this->db->query("select no_bpb from lpb where id = (select max(id) from lpb)");
         return $data;
     }
 }

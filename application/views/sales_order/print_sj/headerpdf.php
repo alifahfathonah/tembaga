@@ -5,7 +5,7 @@
 </head>
 <body>
     <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWATMAS PRAKASA<br>'; }
+        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWAT MAS PRAKASA<br>'; }
         if($header['status']==1){
             echo 'PACKING LIST</h3>';
         }else{

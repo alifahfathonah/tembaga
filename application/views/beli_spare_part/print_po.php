@@ -5,7 +5,7 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWATMAS PRAKASA<br>'; }?></h3>
+        <h3><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWAT MAS PRAKASA<br>'; }?></h3>
         <h2 align="center"><u>SURAT PESANAN</u></h2>
         <h3 align="center" style="margin-top: -20px;">PURCHASE ORDER</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">

@@ -502,6 +502,21 @@ class Ingot extends CI_Controller{
             redirect('index.php/Ingot/hasil_produksi'); 
         }
     }
+
+    function print_hasil_produksi(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->helper('tanggal_indo');
+            $this->load->model('Model_beli_rongsok');
+            $this->load->model('Model_ingot');
+            $data['header']  = $this->Model_ingot->show_hasil_produksi($id)->row_array();
+
+            $this->load->view('ingot/print_hasil_produksi', $data);
+        }else{
+            $this->session->set_flashdata('flash_msg', 'No DTR Afkir tidak di temukan'); 
+            redirect('index.php/Ingot/hasil_produksi'); 
+        }
+    }
     
     function create_skb(){
         $module_name = $this->uri->segment(1);
@@ -715,6 +730,7 @@ class Ingot extends CI_Controller{
                 'susut'=> $this->input->post('susut'),
                 'ampas'=> $this->input->post('ampas'),
                 'serbuk'=> $this->input->post('serbuk'),
+                'bs_service'=> $this->input->post('bs_service'),
                 'created_by'=> $user_id
             );
 

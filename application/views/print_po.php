@@ -14,7 +14,7 @@ $total_harga = 0;
             ?>
     <body class="margin-left:40px;">
         <?php if ($this->session->userdata('user_ppn') == 1) {?>
-        <h2 style="margin-top: -10px">PT. KAWATMAS PRAKASA<br></h2>
+        <h2 style="margin-top: -10px">PT. KAWAT MAS PRAKASA<br></h2>
         <p style="margin-top: -20px">
             JL. HALIM PERDANA KUSUMA NO. 51 Kebon Besar Batu Ceper Tangerang<br>
             TLP. : (021) 5523547, 5453625 - 26  FAX. (021) 5523548<br>
@@ -123,7 +123,7 @@ $total += $v->qty;
                     </tr>
                     <tr>
                         <td colspan="2"></td>
-                        <td>DISC : &nbsp; &nbsp;<?=$header['diskon'];?></td>
+                        <td>DISC : &nbsp; &nbsp;<?=$header['diskon'];?> %</td>
                         <td>PPN  : &nbsp; &nbsp;<?=($header['ppn'] == 1) ? '10%' : '0%';?></td>
                     </tr>
                 <tr>

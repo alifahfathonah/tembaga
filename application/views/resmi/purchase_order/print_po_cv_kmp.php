@@ -13,7 +13,7 @@
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td style="border-bottom: 1px solid;">Kepada Yth.</td>
-                            <td rowspan="2" valign="middle">: PT. KAWATMAS PRAKASA</td>
+                            <td rowspan="2" valign="middle">: PT. KAWAT MAS PRAKASA</td>
                         </tr>
                         <tr>
                             <td>To.</td>

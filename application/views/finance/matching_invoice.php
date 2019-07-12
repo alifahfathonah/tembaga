@@ -302,10 +302,8 @@
                                 <thead>
                                     <th>No</th>
                                     <th>No. Uang Masuk</th>
-                                    <th>Jenis</th>
-                                    <th>Bank</th>
+                                    <th>No. Giro</th>
                                     <th>Status</th>
-                                    <th>Currency</th> 
                                     <th>Nominal</th>
                                     <th>Action</th>
                                 </thead>
@@ -357,10 +355,8 @@
                                 <thead>
                                     <th>No</th>
                                     <th>No. Uang Masuk</th>
-                                    <th>Jenis</th>
-                                    <th>Bank</th>
+                                    <th>No. Giro</th>
                                     <th>Status</th>
-                                    <th>Currency</th> 
                                     <th>Nominal</th>
                                     <th>Action</th>
                                 </thead>
@@ -469,6 +465,7 @@ function input_inv(id){
             $("#nominal_sdh_bayar").val(numberWithCommas(result['nilai_bayar']));
             $("#nominal_potongan").val(numberWithCommas(result['nilai_pembulatan']));
             $("#nominal_bayar").val(numberWithCommas(result['nominal']));
+            $("#sisa_invoice").val(0);
         }
     });
 }
@@ -648,6 +645,27 @@ function addUM(){
         $('#frmDetail').attr("action", "<?php echo base_url(); ?>index.php/Finance/add_um_match");
         $('#frmDetail').submit(); 
     }
+}
+
+function instantADDUM(id){
+    // console.log($('#id').val());
+    $.ajax({
+        type:"POST",
+        url:'<?php echo base_url('index.php/Finance/add_instant_um_match'); ?>',
+        data:{
+           um_id:id,
+           id_modal:$('#id').val()
+        },
+        success:function(result){
+            if(result['message_type']=="sukses"){
+                list_um(<?php echo $header['id_customer'];?>);
+                data_um(<?php echo $header['id'];?>);
+            }else{
+                $('#message').html(result['message']);
+                $('.alert-danger').show(); 
+            }            
+        }
+    });
 }
 
 function saveUM(){

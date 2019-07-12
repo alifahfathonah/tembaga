@@ -383,8 +383,6 @@
     </div>
 </div> 
 <script>
-
-
 function approve(id){
     $('#approve_'+id).text('Please Wait ...').prop("onclick", null).off("click");
     $.ajax({

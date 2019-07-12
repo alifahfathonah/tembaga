@@ -141,7 +141,7 @@
                         Discount
                     </div>
                     <div class="col-md-3">
-                        <input type="text" id="diskon" name="diskon" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['diskon'].'%'; ?>">
+                        <input type="text" id="diskon" name="diskon" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['diskon'].' %'; ?>">
                     </div>
                     <div class="col-md-2">
                         PPN
@@ -234,8 +234,8 @@
                         ?>
                         <tr>
                             <td colspan="4"> Total</td>
-                            <td><?= $jumlah;?></td>
-                            <td><?= number_format($total,0,',','.');?></td>
+                            <td style="text-align: right;"><?= $jumlah;?></td>
+                            <td style="text-align: right; background-color:green; color: white;"><?= number_format($total,0,',','.');?></td>
                         </tr>
                         <tr>
                             <td colspan="5">Diskon</td>
@@ -268,11 +268,19 @@
                                     $total_all = number_format($data_total,0,',','.');
                                 }   
                             ?>
-                            <td><?= number_format($diskon,0,',','.');?></td>
+                            <td style="text-align: right; background-color:red; color: white;"><?= number_format($diskon,0,',','.');?></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">PPN</td>
+                            <td style="text-align: right; background-color:green; color: white;"><?= number_format($after_ppn,0,',','.');?></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">Materai</td>
+                            <td style="text-align: right; background-color:green; color: white;"><?= number_format($header['materai'],0,',','.');?></td>
                         </tr>
                         <tr>
                             <td colspan="5">Total Dibayar</td>
-                            <td style="background: green; color: white;"><?= $total_all;?></td>
+                            <td style="text-align: right; background: green; color: white;"><?= $total_all;?></td>
                         </tr>
                         </tbody>
                     </table>

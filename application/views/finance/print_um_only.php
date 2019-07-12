@@ -6,7 +6,7 @@
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
         <?php if($this->session->userdata('user_ppn')==1){
-            echo '<h3 style="text-align: center; text-decoration: underline;">PT. KAWATMAS PRAKASA<br>';
+            echo '<h3 style="text-align: center; text-decoration: underline;">PT. KAWAT MAS PRAKASA<br>';
         } ?>BUKTI TERIMA <?php echo ($header['rekening_tujuan'] > 3) ? 'BANK' : 'KAS';?></h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>

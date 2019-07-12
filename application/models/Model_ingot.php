@@ -337,4 +337,11 @@ class Model_ingot extends CI_Model{
                     Where dtr.id=".$id);
         return $data;
     }
+
+    function show_hasil_produksi($id){
+        $data = $this->db->query("Select thm.*, thw.no_produksi_wip from t_hasil_masak thm
+                    left join t_hasil_wip thw on thw.hasil_masak_id = thm.id
+                    where thm.id =".$id);
+        return $data;
+    }
 }
