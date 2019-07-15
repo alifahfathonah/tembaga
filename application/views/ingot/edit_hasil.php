@@ -37,6 +37,7 @@
                   <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                   <input type="hidden" id="id_bpb_wip" name="id_bpb_wip" value="<?php echo $header['id_bpb_wip']; ?>">
                   <input type="hidden" id="id_bpb_ampas" name="id_bpb_ampas" value="<?php echo $header['id_bpb_ampas']; ?>">
+                  <input type="hidden" id="id_dtr" name="id_dtr" value="<?php echo $header['id_dtr']; ?>">
                </div>
             </div>
             <div class="row">
@@ -56,7 +57,7 @@
                <div class="col-md-8">
                   <input type="text" id="tanggal" name="tanggal" 
                      class="form-control input-small myline" style="margin-bottom:5px; float:left;" 
-                     value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>" readonly="readonly">
+                     value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                </div>
             </div>
             <div class="row">
@@ -143,7 +144,7 @@
                            </div>
                            <div class="col-md-3">
                               <input type="text" id="bs" name="bs"
-                                 class="form-control myline" placeholder="bs/kg" style="margin-bottom:5px; width:100px;"  required="required" onchange="hitung_susut()" value="<?php echo $header['bs'];?>">
+                                 class="form-control myline" placeholder="bs/kg" style="margin-bottom:5px; width:100px;"  required="required" onchange="hitung_susut()" value="<?php echo $header['bs'];?>" <?=($header['status_dtr']==1)? "readonly" : '';?>>
                            </div>
                            <div class="col-md-3">
                               <input type="text" id="bs_old" name="bs_old" class="form-control myline" style="margin-bottom: 5px; width: 100px;" value="<?php echo $header['bs']?>" readonly="readonly">
@@ -195,6 +196,18 @@
                            </div>
                            <div class="col-md-3">
                               <input type="text" id="serbuk_old" name="serbuk_old" class="form-control myline" style="margin-bottom: 5px; width: 100px;" value="<?php echo $header['serbuk']?>" readonly="readonly">
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-4">
+                              BS SERVICE<font color="#f00">*</font>
+                           </div>
+                           <div class="col-md-3">
+                              <input type="text" id="bs_service" name="bs_service"
+                                 class="form-control myline" placeholder="bs/kg" style="margin-bottom:5px; width:100px;"  required="required" onchange="hitung_susut()" value="<?php echo $header['bs_service'];?>" <?=($header['status_dtr']==1)? "readonly" : '';?>>
+                           </div>
+                           <div class="col-md-3">
+                              <input type="text" id="bs_service_old" name="bs_service_old" class="form-control myline" style="margin-bottom: 5px; width: 100px;" value="<?php echo $header['bs_service']?>" readonly="readonly">
                            </div>
                         </div>
                      </div>
@@ -285,3 +298,16 @@ function simpanData(){
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+<script type="text/javascript">
+$(function(){       
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });       
+});
+</script>

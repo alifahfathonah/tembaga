@@ -1750,4 +1750,20 @@ class SalesOrder extends CI_Controller{
             redirect('index.php/SalesOrder/laporan_list_so');
         }
     }
+
+    function print_sisa_so(){
+            $module_name = $this->uri->segment(1);
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_sales_order');
+            $data['detailLaporan'] = $this->Model_sales_order->sisa_so()->result();
+            $this->load->view('sales_order/print_sisa_so', $data);
+    }
 }

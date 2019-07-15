@@ -946,6 +946,7 @@ class Ingot extends CI_Controller{
         $this->db->trans_start();
 
         $data = array(
+                'tanggal'=>$tgl_input,
                 'mulai'=>$this->input->post('mulai'),
                 'selesai'=>$this->input->post('selesai'),
                 'kayu'=>$this->input->post('kayu'),
@@ -956,6 +957,7 @@ class Ingot extends CI_Controller{
                 'susut'=> $this->input->post('susut'),
                 'ampas'=> $this->input->post('ampas'),
                 'serbuk'=> $this->input->post('serbuk'),
+                'bs_service'=> $this->input->post('bs_service'),
                 'modified_at'=>$tanggal,
                 'modified_by'=>$user_id,
                 'modified_remarks'=>$this->input->post('modified_remarks')
@@ -969,48 +971,49 @@ class Ingot extends CI_Controller{
         if($this->input->post('bs_old') != 0){
             #update bs ke gudang bs
             $data_bs = array(
-                'berat' => $this->input->post('bs'),
-                'status' => 0
+                'bruto' => $this->input->post('bs'),
+                'netto' => $this->input->post('bs')
             );
-            $this->db->where('id_produksi', $id);
-            $this->db->where('jenis_barang_id',22);
-            $this->db->update('t_gudang_bs', $data_bs);
-        }else if($this->input->post('bs') != 0){
-            #insert bs ke gudang bs
-            $data_bs = array(
-                'id_produksi' => $id,
-                'jenis_barang_id' => 22,
-                'berat' => $this->input->post('bs'),
-                'tanggal' => $tgl_input,
-                'status' => 0,
-                'created_by' => $user_id,
-                'created_at' => $tanggal
+            $this->db->where('dtr_id',$this->input->post('id_dtr'));
+            $this->db->where('rongsok_id',21);
+            $this->db->where('line_remarks', 'SISA PRODUKSI');
+            $this->db->update('dtr_detail', $data_bs);
+
+        }
+
+        if($this->input->post('bs_service_old') != 0){
+            $data_bs_service = array(
+                'bruto' => $this->input->post('bs_service'),
+                'netto' => $this->input->post('bs_service')
             );
-            $this->db->insert('t_gudang_bs', $data_bs);
+            $this->db->where('dtr_id',$this->input->post('id_dtr'));
+            $this->db->where('rongsok_id',21);
+            $this->db->where('line_remarks', 'BS SERVICE');
+            $this->db->update('dtr_detail', $data_bs_service);
         }
 
         //SERBUK
-        if($this->input->post('serbuk_old') != 0){
-            #update serbuk ke gudang bs
-            $data_bs = array(
-                'berat' => $this->input->post('serbuk')
-            );
-            $this->db->where('id_produksi', $id);
-            $this->db->where('jenis_barang_id', 31);
-            $this->db->update('t_gudang_bs', $data_bs);
-        }else if($this->input->post('serbuk') != 0){
-            #update serbuk ke gudang bs
-            $data_bs = array(
-                'id_produksi' => $id,
-                'berat' => $this->input->post('serbuk'),
-                'jenis_barang_id' => 31,
-                'tanggal' => $tgl_input,
-                'status' => 0,
-                'created_by' => $user_id,
-                'created_at' => $tanggal
-            );
-            $this->db->insert('t_gudang_bs', $data_bs);
-        }
+        // if($this->input->post('serbuk_old') != 0){
+        //     #update serbuk ke gudang bs
+        //     $data_bs = array(
+        //         'berat' => $this->input->post('serbuk')
+        //     );
+        //     $this->db->where('id_produksi', $id);
+        //     $this->db->where('jenis_barang_id', 31);
+        //     $this->db->update('t_gudang_bs', $data_bs);
+        // }else if($this->input->post('serbuk') != 0){
+        //     #update serbuk ke gudang bs
+        //     $data_bs = array(
+        //         'id_produksi' => $id,
+        //         'berat' => $this->input->post('serbuk'),
+        //         'jenis_barang_id' => 31,
+        //         'tanggal' => $tgl_input,
+        //         'status' => 0,
+        //         'created_by' => $user_id,
+        //         'created_at' => $tanggal
+        //     );
+        //     $this->db->insert('t_gudang_bs', $data_bs);
+        // }
         
         #Update hasil WIP
         $data_wip = array(

@@ -882,6 +882,10 @@
                                     <a href="<?php echo base_url(); ?>index.php/SalesOrder/view_laporan_so_by_sj/<?= date("Y-m") ?>">
                                     - Berdasarkan Surat Jalan </a>
                                 </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/print_sisa_so/" target="_blank">
+                                    <i class="fa fa-print"></i> Print Sisa SO </a>
+                                </li>
                             </ul>
                         </li>
                         <?php } ?>
@@ -937,6 +941,21 @@
                             <i class="fa fa-chain-broken"></i>
                             Slip Setoran </a>
                         </li>
+                    <?php if($group_id==1 || (isset($akses_menu['laporan_finance']) && $akses_menu['laporan_finance']==1)){ ?>
+                        <li>
+                            <a href="javascript:;">
+                            <i class="fa fa-book"></i>
+                            <span class="title">Laporan</span>
+                            <span class="arrow "></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_query_penjualan/" target="_blank">
+                                    - Print Query Penjualan </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <?php } ?>
                     </ul>
                 </li>
             <?php } if($group_id==1 || (isset($akses_menu['VoucherCost']) && $akses_menu['VoucherCost']==1)){ ?>

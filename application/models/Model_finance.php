@@ -419,10 +419,15 @@ class Model_finance extends CI_Model{
     }
 
     function load_invoice_match_print($id){
-        $data = $this->db->query("select fmd.*, fi.jenis_trx, fi.no_invoice, fmd.inv_bayar+fi.nilai_pembulatan as total
+        $data = $this->db->query("
+            (select fi.no_invoice as nomor, fmd.inv_bayar+fi.nilai_pembulatan as nominal
             from f_match_detail fmd
             left join f_invoice fi on fi.id = fmd.id_inv
-            where fmd.id_match =".$id." and fmd.id_um = 0");
+            where fmd.id_match =".$id." and fmd.id_um = 0)
+                UNION ALL
+            (select 'SELISIH' as nomor, fi.nilai_pembulatan*-1 as nominal from f_match_detail fmd
+                        left join f_invoice fi on fi.id = fmd.id_inv
+                        where fmd.id_match =".$id." and fi.nilai_pembulatan < 0 and fmd.id_um = 0)");
         return $data;
     }
 
@@ -434,7 +439,7 @@ class Model_finance extends CI_Model{
                 UNION ALL
             (select 'SELISIH' as nomor, fi.nilai_pembulatan as nominal from f_match_detail fmd
             left join f_invoice fi on fi.id = fmd.id_inv
-            where fmd.id_match =".$id." and fi.nilai_pembulatan != 0 and fmd.id_um = 0)");
+            where fmd.id_match =".$id." and fi.nilai_pembulatan > 0 and fmd.id_um = 0)");
         return $data;
     }
 
@@ -653,6 +658,60 @@ class Model_finance extends CI_Model{
         $data = $this->db->query("Select fmd.*,COALESCE((select sum(fmd2.inv_bayar) from f_match_detail fmd2 where fmd2.id_inv = fi.id and fmd2.id != fmd.id),0) as nilai_sdh_bayar, fi.nilai_bayar, fi.nilai_invoice, fi.nilai_pembulatan, fi.no_invoice from f_match_detail fmd
             left join f_invoice fi on fi.id = fmd.id_inv
             where fmd.id =".$id);
+        return $data;
+    }
+
+    function query_penjualan(){
+        $data = $this->db->query("select 
+        x.tanggal, x.no_invoice, s1.no_sales_order, 
+        case when s1.flag_ppn=1 then m.nama_customer else m.nama_customer_kh end customer, 
+        case when tso.jenis_barang = 'FG' then jb.kode else r.kode_rongsok end kode_barang,
+        case when tso.jenis_barang = 'FG' then jb.jenis_barang else r.nama_item end nama_barang
+        ,  x.netto, x.total_harga,tso.jenis_barang tipe,s1.flag_tolling,
+        s1.flag_ppn,x.keterangan,
+        case flag_ppn when  0 then 'KKH' when 1 then 'KMP' end penjualan
+        from
+        (
+        select 
+        i.keterangan, i.tanggal, i.no_invoice,  i.currency, id.jenis_barang_id, i.id_sales_order, i.id_surat_jalan, sum(id.netto) netto
+        ,sum(id.total_harga) total_harga
+        from
+        f_invoice_detail id,
+        f_invoice i 
+        left join t_surat_jalan tsj on tsj.id = i.id_surat_jalan
+        where 
+        id.id_invoice = i.id
+        group by i.keterangan,i.tanggal, i.no_invoice, i.currency, id.jenis_barang_id,i.id_sales_order, i.id_surat_jalan
+        )x
+        left join sales_order s1 on s1.id = x.id_sales_order
+        left join t_sales_order tso on tso.so_id =  x.id_sales_order
+        left join jenis_barang jb on tso.jenis_barang = 'FG' and jb.id = x.jenis_barang_id
+        left join rongsok r on tso.jenis_barang = 'RONGSOK' and  r.id = x.jenis_barang_id
+        left join m_customers m on m.id = s1.m_customer_id
+        union all
+        select 
+        x.tanggal, x.no_invoice_jasa as no_invoice, s1.no_so, 
+         m.nama_cv customer, 
+        jb.kode  kode_barang,
+        jb.jenis_barang nama_barang,
+        x.netto, x.total_harga, s1.jenis_barang tipe, 2 as flag_tolling, 1 as flag_ppn, s1.jenis_so as keterangan,'CV' as penjualan
+        from
+        (
+        select  i.tanggal, i.no_invoice_jasa ,   id.jenis_barang_id, i.r_t_so_id, i.sjr_id, 
+         sum(id.netto) netto
+        ,sum(id.total_amount) total_harga
+        from
+        r_t_inv_jasa_detail id,
+        r_t_inv_jasa i 
+        where 
+        i.jenis_invoice='INVOICE KMP KE CV'
+        and id.inv_jasa_id = i.id
+        group by  i.tanggal, i.no_invoice_jasa ,   id.jenis_barang_id, i.r_t_so_id, i.sjr_id
+        )x
+        left join r_t_so s1 on s1.id = x.r_t_so_id
+        left join jenis_barang jb on  jb.id = x.jenis_barang_id
+        left join m_cv m on m.id = s1.cv_id
+        ;");
         return $data;
     }
 }

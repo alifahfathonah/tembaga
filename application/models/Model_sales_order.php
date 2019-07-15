@@ -621,6 +621,47 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
+    function sisa_so(){
+        return $this->db->query('
+        select
+        so2.no_sales_order,  so2.tanggal as tgl_so, so2.kode_barang, so2.nama_barang, so2.customer, so2.netto netto_order, soc.netto nettto_kirim, 
+        so2.netto - soc.netto as sisa_order, 
+        round((so2.netto - soc.netto)/so2.netto*100,1) pct
+        from
+        (
+        select x.* ,
+        case when x.jenis_barang = "FG" then jb.kode else r.kode_rongsok end kode_barang,
+        case when x.jenis_barang = "FG" then jb.jenis_barang else r.nama_item end nama_barang,
+        case when x.flag_ppn = 0 then mc.nama_customer else mc.nama_customer end customer
+        from
+        (select so.id idso, so.no_sales_order, so.tanggal, so.m_customer_id, so.flag_ppn, tso.jenis_barang, tsod.jenis_barang_id, tsod.netto, tsod.amount from 
+        sales_order so,
+        t_sales_order tso,
+        t_sales_order_detail tsod
+        where
+        tsod.t_so_id = tso.id
+        and tso.so_id = so.id
+        ) x
+        left join jenis_barang jb on x.jenis_barang = "FG" and jb.id = x.jenis_barang_id
+        left join rongsok r on x.jenis_barang = "RONGSOK" and  r.id = x.jenis_barang_id
+        left join m_customers mc on mc.id = x.m_customer_id
+        ) so2,
+        (select 
+        s1.id idso, tsjd.jenis_barang_id, sum(tsjd.netto) netto
+        from
+        t_surat_jalan_detail tsjd,
+        t_surat_jalan tsj 
+        left join sales_order s1 on s1.id = tsj.sales_order_id
+        where 
+        tsjd.t_sj_id = tsj.id
+        group by s1.id,  tsjd.jenis_barang_id) soc
+        where
+        so2.idso = soc.idso
+        and so2.jenis_barang_id = soc.jenis_barang_id
+        order by 1,2
+        ');
+    }
+
     // Select tsjd.*, tsod.nama_barang_alias, COALESCE(tsod.nama_barang_alias, jb.jenis_barang,r.nama_item) as jenis_barang , COALESCE(jb.kode,r.kode_rongsok) as kode from t_surat_jalan_detail tsjd
     //         left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
     //         left join t_sales_order_detail tsod on tsod.t_so_id = tsj.sales_order_id and (case when tsjd.jenis_barang_alias = 0 then tsod.jenis_barang_id = tsjd.jenis_barang_id else tsod.jenis_barang_id = tsjd.jenis_barang_alias end)

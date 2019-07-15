@@ -36,7 +36,7 @@
                                 <option value=""></option>
                                 <?php
                                     foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'">'. (($this->session->userdata('user_ppn') == 1)? $header['nama_customer'] : $header['nama_customer_kh']).'</option>';
+                                        echo '<option value="'.$row->id.'">'. (($this->session->userdata('user_ppn') == 1)? $row->nama_customer : $row->nama_customer_kh).'</option>';
                                     }
                                 ?>
                             </select>

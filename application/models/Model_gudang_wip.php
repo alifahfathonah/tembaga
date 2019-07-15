@@ -14,7 +14,7 @@ class Model_gudang_wip extends CI_Model{
     }          
 
     function gudang_wip_produksi_list($jenis){
-        $data = $this->db->query("Select COALESCE(NULLIF(thw.no_produksi_wip,''), pi.no_produksi) as no_produksi_wip,thw.jenis_masak, thw.tanggal, thw.qty, thw.uom, thw.berat, thw.susut, thw.keras, thw.bs, jb.jenis_barang, usr.realname As pembuat, dtr.id as id_dtr, tbw.id as id_bpb
+        $data = $this->db->query("Select COALESCE(NULLIF(thw.no_produksi_wip,''), pi.no_produksi) as no_produksi_wip,thw.jenis_masak, thw.tanggal, thw.qty, thw.uom, thw.berat, thw.susut, thw.keras, thw.bs, jb.jenis_barang, usr.realname As pembuat, dtr.id as id_dtr, tbw.id as id_bpb, tbw.status
                 From t_hasil_wip thw
                     left join t_hasil_masak thm On (thm.id = thw.hasil_masak_id)
                     left join produksi_ingot pi On (pi.id = thm.id_produksi)

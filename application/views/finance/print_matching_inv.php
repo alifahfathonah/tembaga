@@ -41,9 +41,9 @@
             <tr><td colspan="3">
                     <table border="0" cellpadding="4" cellspacing="0" width="100%">
                         <tr>
-                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
-                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Invoice</strong></td>
-                            <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;"><strong>Jumlah Invoice</strong></td>                        
+                            <td width="10%" rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
+                            <td width="45%" rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Invoice</strong></td>
+                            <td width="45%" rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;"><strong>Nominal Invoice</strong></td>                        
                         </tr>
                        
                                 <tr>
@@ -51,18 +51,15 @@
                         <?php
                             $no = 1;
                             $total = 0;
-                            $total_invoice = 0;
                             foreach ($details as $row){
-                                $harga_total = $row->total+$row->biaya1+$row->biaya2;
                         ?>
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
-                            <td style="border-left:1px solid #000;"><?=$row->no_invoice;?></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=number_format($row->total,0,',', '.');?></td>
+                            <td style="border-left:1px solid #000;"><?=$row->nomor;?></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=number_format($row->nominal,0,',', '.');?></td>
                         </tr>
                         <?php
-                                $total_invoice += $harga_total;
-                                $total += $row->total;
+                                $total += $row->nominal;
                                 $no++;
                             }
                         ?>
@@ -87,9 +84,9 @@
                 <td colspan="3">
                     <table border="0" cellpadding="4" cellspacing="0" width="100%">
                         <tr>
-                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
-                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Uang Masuk</strong></td>
-                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;"><strong>Nominal</strong></td>
+                            <td width="10%" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
+                            <td width="45%" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Uang Masuk</strong></td>
+                            <td width="45%" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;"><strong>Nominal</strong></td>
                         </tr>
                         <?php
                             $no = 1;
@@ -98,8 +95,8 @@
                         ?>
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
-                            <td style="text-align:center; border-left:1px solid #000;"><?=$row->nomor;?></td>
-                            <td style="text-align:center; border-left:1px solid #000; border-right:1px solid #000;"><?=number_format($row->nominal,0,',','.');?></td>
+                            <td style="text-align:left; border-left:1px solid #000;"><?=$row->nomor;?></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000;"><?=number_format($row->nominal,0,',','.');?></td>
                         </tr>
                         <?php $nominal += $row->nominal; $no++; } ?>
                         <tr style="height:50px">

@@ -50,8 +50,9 @@
                     <th>Marketing</th>
                     <th>Jumlah <br>Items</th>
                     <th>DTR</th>
-                    <th>Status SPB</th>
-                    <th>Invoice</th>
+                    <th>Status<br>Invoice</th>
+                    <th>Status<br>Surat Jalan</th>
+                    <th>Status<br>SPB</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -83,32 +84,36 @@
                                 }
                             ?>
                         </td>
-                        <td><?php
-                                if($data->status_spb==0){
-                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Review</div>';
-                                }else if($data->status_spb==1){
-                                    echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
-                                }else if($data->status_spb==2){
-                                    echo '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
-                                }else if($data->status_spb==3){
-                                    echo '<div style="background-color:blue; color:#fff; padding:3px">Waiting Approval</div>';
-                                }else if($data->status_spb==4){
-                                    echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
-                                }else if($data->status_spb==9){
-                                    echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
-                                }
-                            ?>
-                        </td>
                         <td>
                         <?php 
-                           if($data->invoice==1){ echo '<div style="background-color:green; padding:3px; color:white; text-align: center;">Invoice Lengkap</div>';
-                            }else if($data->invoice==2){
+                           if($data->flag_invoice==1){ echo '<div style="background-color:green; padding:3px; color:white; text-align: center;">Invoice Lengkap</div>';
+                            }else if($data->flag_invoice==2){
                                 echo '<div style="background-color:orange; padding:3px; color:white; text-align: center;">Invoice Sudah Ada</div>';
                             }else{
                                 echo '<div style="background-color:darkkhaki; padding:3px; text-align: center;">Invoice Belum Semua</div>';
                             }
                         ?>
                         </td>
+                        <td>
+                        <?php 
+                           echo (($data->flag_sj==1)? '<div style="background-color:green; padding:3px; color:white; text-align: center;">Sudah Dikirim Semua</div>':'<div style="background-color:darkkhaki; padding:3px; text-align: center;">Belum Dikirim Semua</div>');
+                        ?>
+                        </td>
+                        <td style="text-align:center">
+                            <?php
+                                if($data->status_spb==0){
+                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Approval</div>';
+                                }else if($data->status_spb==1){
+                                    echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
+                                }else if($data->status_spb==2 || $data->status_spb ==4){
+                                    echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
+                                }else if($data->status_spb==3){
+                                    echo '<div style="background-color:blue; color:#fff; padding:3px">Waiting Approval</div>';
+                                }else if($data->status_spb==9){
+                                    echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
+                                }
+                            ?>
+                        </td>  
                         <td style="text-align:center">
                             <?php
                             if(($group_id==1 || $hak_akses['view']==1) && $data->flag_tolling == 2){
@@ -125,7 +130,7 @@
                             <?php
                                 }
                             ?>
-                        </td>
+                        </td> 
                     </tr>
                     <?php
                         }
@@ -154,4 +159,4 @@
 $(function(){       
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });
-</script>         
+</script>

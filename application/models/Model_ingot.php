@@ -41,7 +41,7 @@ class Model_ingot extends CI_Model{
     }
 
     function show_hasil($id){
-        $data = $this->db->query("Select thm.*, pi.no_produksi, pi.remarks, a.tipe_apolo, jb.jenis_barang, jb.uom, usr.realname as pic, tbw.id as id_bpb_wip, tba.id as id_bpb_ampas, tba.status as status_ampas
+        $data = $this->db->query("Select thm.*, pi.no_produksi, pi.remarks, a.tipe_apolo, jb.jenis_barang, jb.uom, usr.realname as pic, tbw.id as id_bpb_wip, tba.id as id_bpb_ampas, tba.status as status_ampas, dtr.status as status_dtr, dtr.id as id_dtr
                 From t_hasil_masak thm
                     Left Join users usr On (thm.created_by = usr.id) 
                     left join produksi_ingot pi On (pi.id = thm.id_produksi)
@@ -49,7 +49,8 @@ class Model_ingot extends CI_Model{
                     left join t_bpb_wip tbw On (tbw.hasil_wip_id = thw.id)
                     left join apolo a On (a.id = pi.id_apolo)
                     left join jenis_barang jb On (jb.id = pi.jenis_barang_id)
-                    left join t_bpb_ampas tba On (tba.hasil_masak_id = thm.id)
+                    left join t_bpb_ampas tba On (tba.hasil_masak_id = thw.id)
+                    left join dtr on (dtr.prd_id = thw.id)
                 Where thm.id =".$id);
         return $data;
     }

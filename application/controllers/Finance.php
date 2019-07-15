@@ -2577,4 +2577,20 @@ class Finance extends CI_Controller{
             redirect('index.php/Finance');  
         }            
     }
+
+    function print_query_penjualan(){
+            $module_name = $this->uri->segment(1);
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_finance');
+            $data['detailLaporan'] = $this->Model_finance->query_penjualan()->result();
+            $this->load->view('finance/print_query_penjualan', $data);
+    }
 }

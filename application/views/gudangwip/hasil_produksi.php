@@ -55,9 +55,10 @@
                         <th>Tanggal</th>
                         <th>Jenis Barang WIP</th>
                         <th>Jenis Proses</th>
-                        <th>Quantity</th>
+                        <th>Qty</th>
                         <th>Berat</th>
                         <th>PIC</th>
+                        <th>Status BPB</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -90,13 +91,27 @@
                         <td>
                             <?= $data->pembuat;?>
                         </td>
+                        <td style="text-align:center">
+                            <?php 
+                                if($data->status==0){ 
+                                    echo '<div style="background-color:bisque; padding:4px">Waiting review</div>';
+                                }else if($data->status==1){ 
+                                    echo '<div style="background-color:green; color:white; padding:4px">Approved</div>';
+                                }else if($data->status==9){ 
+                                    echo '<div style="background-color:red; padding:4px; color:white">Rejected</div>';
+                                }
+                            ?>
+                        </td>
                         <td>
                         <?php
                             if($data->id_bpb > 0){
                             echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangWIP/print_bpb/'.$data->id_bpb.'" style="margin-bottom:4px" target="_blank">&nbsp;<i class="fa fa-print"></i> Print BPB &nbsp;</a>';
                             }
                             if($data->id_dtr){
-                            echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Ingot/print_afkir/'.$data->id_dtr.'" target="_blank">&nbsp;<i class="fa fa-print"></i> Print AFKIR &nbsp;</a>';
+                            echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Ingot/print_afkir/'.$data->id_dtr.'" target="_blank"><i class="fa fa-print">&nbsp;</i> Print AFKIR &nbsp;</a>';
+                            }
+                            if($data->status==0){
+                            echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/GudangWIP/edit_produksi_wip/'.$data->id_dtr.'" ><i class="fa fa-edit">&nbsp;</i> Edit &nbsp;</a>';
                             }
                         ?>
                         </td>
