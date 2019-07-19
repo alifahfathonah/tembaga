@@ -88,12 +88,12 @@
                     <tr>
                         <td align="center"><?= $no ?>.</td>
                         <td><?= $v->jenis_barang ?></td>
-                        <td align="center"><?= number_format($v->qty,2,".",",")." ".$v->uom ?></td>
+                        <td align="center"><?= number_format($v->netto,2,".",",")." ".$v->uom ?></td>
                         <td align="right"><?= "Rp ".number_format($v->amount,2,".",",") ?></td>
                         <td align="right"><?= "Rp ".number_format($v->total_amount,2,".",",") ?></td>
                     </tr>
                 <?php
-                        $total += $v->qty;
+                        $total += $v->netto;
                         $total_harga += $v->total_amount;
                         $no++; 
                     } 
