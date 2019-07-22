@@ -15,7 +15,7 @@
     </div>
 </div>
 <?php
-        if( ($group_id==1)||($hak_akses['index']==1) ){
+        if( ($group_id==1 || $group_id==21)||($hak_akses['index']==1) ){
     ?>
 <div class="row">
     <div class="col-md-12">
@@ -35,7 +35,7 @@
                 <i class="fa fa-cubes"></i> Gudang WIP
             </div><!-- 
             <div class="tools"> 
-                <?php if( ($group_id==1)||($hak_akses['add_spb']==1) ){?>
+                <?php if( ($group_id==1 || $group_id==21)||($hak_akses['add_spb']==1) ){?>
                 <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/GudangWIP/spb_kirim_rongsok"> <i class="fa fa-plus"></i> Kirim Ke Rongsok</a>  
                 <?php } ?>            
             </div> -->

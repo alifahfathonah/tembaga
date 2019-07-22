@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['hasil_produksi']==1) ){
+            if( ($group_id==1 || $group_id == 21)||($hak_akses['hasil_produksi']==1) ){
         ?>
         
         <div class="row">
@@ -30,7 +30,7 @@
                 </div>  
                 <div class="tools">    
                 <?php
-                    if( ($group_id==1)||($hak_akses['add_produksi']==1) ){
+                    if( ($group_id==1 || $group_id == 21)||($hak_akses['add_produksi']==1) ){
                         echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/Ingot/hasil_produksi2').'"> '
                         .'<i class="fa fa-plus"></i> Input Hasil Produksi </a>';
                     }
@@ -88,10 +88,10 @@
                             ?>
                         </td> 
                         <td><?php
-                        if( (($group_id==1)||($hak_akses['edit']==1)) && $data->status_bpb_wip == 0){
+                        if( (($group_id==1 || $group_id == 21)||($hak_akses['edit']==1)) && $data->status_bpb_wip == 0){
                             echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/Ingot/edit_hasil/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit </a>';
                         }
-                        if( (($group_id==1)||($hak_akses['print']==1))){
+                        if( (($group_id==1 || $group_id == 21)||($hak_akses['print']==1))){
                             if($data->id_bpb > 0){
                             echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangWIP/print_bpb/'.$data->id_bpb.'" style="margin-bottom:4px" target="_blank">&nbsp;<i class="fa fa-print"></i> Print BPB &nbsp;</a>';
                             }

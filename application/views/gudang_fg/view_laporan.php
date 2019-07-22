@@ -25,7 +25,7 @@
                 </div>
             </div>
         <?php
-            if( ($group_id==1)||($hak_akses['view_spb']==1) ){
+            if( ($group_id==1 || $group_id==21)||($hak_akses['view_spb']==1) ){
         ?>            
             <div class="col-md-12" style="margin-top: 10px;"> 
                 <div class="portlet box blue">
@@ -63,7 +63,7 @@
                             $no++;
                         ?>
                         <td><?php
-                        if($group_id==1 || $hak_akses['view_spb']==1){
+                        if($group_id==1 || $group_id==21 || $hak_akses['view_spb']==1){
                         ?>
                             <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/GudangFG/view_detail_laporan/<?php echo $tahun.$bulan.'/'.$row->jenis_barang_id;?>" style="margin-bottom:4px"> &nbsp; <i class="fa fa-file-text-o"></i> Detail &nbsp; </a>
                         <?php

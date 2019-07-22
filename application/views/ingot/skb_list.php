@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['skb_list']==1) ){
+            if( ($group_id==1 || $group_id==21)||($hak_akses['skb_list']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -62,7 +62,7 @@
                         <td><?php echo $data->remarks; ?></td>                         
                         <td style="text-align:center"> 
                             <?php                                
-                                if($group_id==1 || $hak_akses['print_skb']==1){
+                                if($group_id==1 || $group_id==21 || $hak_akses['print_skb']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Ingot/print_skb/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }

@@ -54,7 +54,7 @@
         </div>
         
         <?php
-            if( ($group_id==1)||($hak_akses['view_spb']==1) ){
+            if( ($group_id==1 || $group_id==21)||($hak_akses['view_spb']==1) ){
         ?>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku">  
@@ -404,23 +404,23 @@
             <div class="row">
                 <div class="col-md-12">
                     <?php
-                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && ($myData['status']=='3' || $myData['status']=='1')){
+                        if( ($group_id==1 || $group_id==21 || $hak_akses['approve_spb']==1) && ($myData['status']=='3' || $myData['status']=='1')){
                             echo '<a href="javascript:;" class="btn blue" onclick="tambahData();"> '
                                 .'<i class="fa fa-plus"></i> Tambah </a> ';
                         }
-                        if( ($group_id==1 || $hak_akses['save_spb']==1) && ($myData['status']=="0" || $myData['status']=="4")){
+                        if( ($group_id==1 || $group_id==21 || $hak_akses['save_spb']==1) && ($myData['status']=="0" || $myData['status']=="4")){
                             echo '<a href="javascript:;" class="btn green" onclick="saveData();"> '
                                 .'<i class="fa fa-check"></i> Save </a> ';
                         }
-                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && $myData['status']=="3"){
+                        if( ($group_id==1 || $group_id==21 || $hak_akses['approve_spb']==1) && $myData['status']=="3"){
                             echo '<a href="javascript:;" class="btn green" onclick="approveData();"> '
                                 .'<i class="fa fa-check"></i> Approve </a> ';
                         }
-                        if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="3"){
+                        if( ($group_id==1 || $group_id==21 || $hak_akses['reject_spb']==1) && $myData['status']=="3"){
                             echo '<a href="javascript:;" class="btn red" onclick="rejectFulfilment();"> '
                                 .'<i class="fa fa-ban"></i> Reject Pemenuhan </a>';
                         }
-                        if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="0"){
+                        if( ($group_id==1 || $group_id==21 || $hak_akses['reject_spb']==1) && $myData['status']=="0"){
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
                         }
@@ -436,7 +436,7 @@
                         <a href="<?php echo base_url('index.php/GudangWIP/spb_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                     <?php } ?>
-                    <?php if($group_id==1 || $hak_akses['print_spb']==1){ ?>
+                    <?php if($group_id==1 || $group_id==21 || $hak_akses['print_spb']==1){ ?>
                     <a class="btn btn-circle blue-ebonyclay" href="<?php echo base_url('index.php/GudangWIP/print_spb_fulfilment/').$myData['id'];?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                     <?php } ?>
                 </div>    

@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['hasil_produksi']==1) ){
+            if( ($group_id==1 || $group_id == 21)||($hak_akses['hasil_produksi']==1) ){
         ?>
         
         <div class="row">
@@ -30,7 +30,7 @@
                 </div>  
                 <div class="tools">    
                 <?php
-                    if( ($group_id==1)||($hak_akses['add_produksi']==1) ){
+                    if( ($group_id==1 || $group_id == 21)||($hak_akses['add_produksi']==1) ){
                         echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/Ingot/add_produksi').'"> '
                         .'<i class="fa fa-plus"></i> Input Hasil Produksi </a>';
                     }

@@ -92,7 +92,7 @@
             </div>
         </div>
         <?php
-            if( ($group_id==1)||($hak_akses['view_spb']==1) ){
+            if( ($group_id==1 || $group_id==21)||($hak_akses['view_spb']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -493,23 +493,23 @@
             <div class="row">
                 <div class="col-md-10">
                     <?php
-                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && ($myData['status']=='3' || $myData['status']=='1' || $myData['status']=='9')){
+                        if( ($group_id==1 || $group_id==21 || $hak_akses['approve_spb']==1) && ($myData['status']=='3' || $myData['status']=='1' || $myData['status']=='9')){
                             echo '<a href="javascript:;" class="btn blue" onclick="tambahData();"> '
                                 .'<i class="fa fa-plus"></i> Tambah </a> ';
                         }
-                        if( ($group_id==1 || $hak_akses['save_spb']==1) && ($myData['status']=="0" || $myData['status']=="4")){
+                        if( ($group_id==1 || $group_id==21 || $hak_akses['save_spb']==1) && ($myData['status']=="0" || $myData['status']=="4")){
                             echo '<a href="javascript:;" class="btn green" onclick="saveFulfilment();"> '
                                 .'<i class="fa fa-check"></i> Save </a> ';
                         }
-                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && $myData['status']=="3"){
+                        if( ($group_id==1 || $group_id==21 || $hak_akses['approve_spb']==1) && $myData['status']=="3"){
                             echo '<a href="javascript:;" class="btn green" onclick="approveData();"> '
                                 .'<i class="fa fa-check"></i> Approve </a> ';
                         }
-                        if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="0"){
+                        if( ($group_id==1 || $group_id==21 || $hak_akses['reject_spb']==1) && $myData['status']=="0"){
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
                         }
-                        if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="3"){
+                        if( ($group_id==1 || $group_id==21 || $hak_akses['reject_spb']==1) && $myData['status']=="3"){
                             echo '<a href="javascript:;" class="btn red" onclick="rejectFulfilment();"> '
                                 .'<i class="fa fa-ban"></i> Reject Pemenuhan </a>';
                         }
@@ -520,7 +520,7 @@
                 </div>   
                 <div class="col-md-2">
                     <?php
-                        if( ($group_id==1 || $hak_akses['save_spb']==1) && ($myData['status']=="0" || $myData['status']=="4")){
+                        if( ($group_id==1 || $group_id==21 || $hak_akses['save_spb']==1) && ($myData['status']=="0" || $myData['status']=="4")){
                             echo '<a href="javascript:;" class="btn red" onclick="showCloseBox();"> '
                                 .'<i class="fa fa-ban"></i> Close SPB </a> ';
                         }

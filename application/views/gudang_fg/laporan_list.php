@@ -67,7 +67,7 @@
                         <td style="background-color: turquoise;"><?=number_format($bruto_akhir, 2, '.', ',') ;?></td>
                         <td style="background-color: turquoise;"><?=number_format($netto_akhir, 2, '.', ',') ;?></td>
                         <td><?php
-                        if($group_id==1 || $hak_akses['view_spb']==1){
+                        if($group_id==1 || $group_id==21 || $hak_akses['view_spb']==1){
                         ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangFG/view_laporan/<?php echo $data['tanggal']; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangFG/print_laporan_bulanan/<?php echo $data['tanggal']; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print &nbsp; </a>
