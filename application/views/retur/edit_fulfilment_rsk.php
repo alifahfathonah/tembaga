@@ -46,7 +46,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>  
                     <div class="row">&nbsp;</div>
@@ -125,7 +125,7 @@
                     <hr class="divider"/>
                     <div class="row">
                         <div class="col-md-12">
-                            <h4 align="center">Pemenuhan SPB FG</h4>
+                            <h4 align="center">Pemenuhan SPB Rongsok</h4>
                             <div class="table-scrollable">
                                 <table class="table table-bordered table-striped table-hover">
                                     <thead>
@@ -291,7 +291,7 @@ function hapusDetail(id){
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
 $(function(){        
-    $("#tgl_spare_part").datepicker({
+    $("#tanggal").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,

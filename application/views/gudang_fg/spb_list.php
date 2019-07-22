@@ -38,6 +38,7 @@
                     <th style="width:50px;">No</th>
                     <th>No. SPB FG</th>
                     <th>Tanggal</th>
+                    <th>Nama Customer</th>
                     <th>Pemohon</th>
                     <th>Jumlah <br>Items</th>
                     <th>Remarks</th>
@@ -56,6 +57,7 @@
                         <td style="text-align:center;"><?php echo $no; ?></td>
                         <td style="background-color: "><?php echo $data->no_spb; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
+                        <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->pic; ?></td>                            
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td><?php echo $data->keterangan; ?></td>

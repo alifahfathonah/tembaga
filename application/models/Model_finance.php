@@ -661,57 +661,53 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function query_penjualan(){
-        $data = $this->db->query("select 
-        x.tanggal, x.no_invoice, s1.no_sales_order, 
-        case when s1.flag_ppn=1 then m.nama_customer else m.nama_customer_kh end customer, 
-        case when tso.jenis_barang = 'FG' then jb.kode else r.kode_rongsok end kode_barang,
-        case when tso.jenis_barang = 'FG' then jb.jenis_barang else r.nama_item end nama_barang
-        ,  x.netto, x.total_harga,tso.jenis_barang tipe,s1.flag_tolling,
-        s1.flag_ppn,x.keterangan,
-        case flag_ppn when  0 then 'KKH' when 1 then 'KMP' end penjualan
-        from
-        (
-        select 
-        i.keterangan, i.tanggal, i.no_invoice,  i.currency, id.jenis_barang_id, i.id_sales_order, i.id_surat_jalan, sum(id.netto) netto
-        ,sum(id.total_harga) total_harga
-        from
-        f_invoice_detail id,
-        f_invoice i 
-        left join t_surat_jalan tsj on tsj.id = i.id_surat_jalan
-        where 
-        id.id_invoice = i.id
-        group by i.keterangan,i.tanggal, i.no_invoice, i.currency, id.jenis_barang_id,i.id_sales_order, i.id_surat_jalan
-        )x
-        left join sales_order s1 on s1.id = x.id_sales_order
-        left join t_sales_order tso on tso.so_id =  x.id_sales_order
-        left join jenis_barang jb on tso.jenis_barang = 'FG' and jb.id = x.jenis_barang_id
-        left join rongsok r on tso.jenis_barang = 'RONGSOK' and  r.id = x.jenis_barang_id
-        left join m_customers m on m.id = s1.m_customer_id
-        union all
-        select 
-        x.tanggal, x.no_invoice_jasa as no_invoice, s1.no_so, 
-         m.nama_cv customer, 
-        jb.kode  kode_barang,
-        jb.jenis_barang nama_barang,
-        x.netto, x.total_harga, s1.jenis_barang tipe, 2 as flag_tolling, 1 as flag_ppn, s1.jenis_so as keterangan,'CV' as penjualan
-        from
-        (
-        select  i.tanggal, i.no_invoice_jasa ,   id.jenis_barang_id, i.r_t_so_id, i.sjr_id, 
-         sum(id.netto) netto
-        ,sum(id.total_amount) total_harga
-        from
-        r_t_inv_jasa_detail id,
-        r_t_inv_jasa i 
-        where 
-        i.jenis_invoice='INVOICE KMP KE CV'
-        and id.inv_jasa_id = i.id
-        group by  i.tanggal, i.no_invoice_jasa ,   id.jenis_barang_id, i.r_t_so_id, i.sjr_id
-        )x
-        left join r_t_so s1 on s1.id = x.r_t_so_id
-        left join jenis_barang jb on  jb.id = x.jenis_barang_id
-        left join m_cv m on m.id = s1.cv_id
-        ;");
+    function query_penjualan($s,$e,$c){
+        $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai as total_harga, IF(v.currency='USD',0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100) as nilai_ppn from v_data_faktur_all v 
+            where v.PENJUALAN != '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."')
+            order by v.flag_ppn, v.flag_tolling, v.kode_customer, v.tanggal, v.no_invoice
+            ");
         return $data;
     }
+
+    function print_laporan_penjualan($s,$e,$ppn){
+        $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai as total_harga, IF(v.currency='USD',0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100) as nilai_ppn from v_data_faktur_all v 
+            where v.flag_ppn =".$ppn." and (v.tanggal BETWEEN '".$s."' AND '".$e."')
+            order by v.flag_tolling, v.kode_customer
+            ");
+        return $data;
+    }
+
+    function print_query_penjualan($ppn){
+        $data = $this->db->query("select v.*, v.total_harga/110*100 as nilai_sebelum_ppn, v.total_harga/110*10 as nilai_ppn from v_data_faktur_all v 
+            where v.flag_ppn =".$ppn."
+            order by v.flag_ppn, v.flag_tolling, v.kode_customer, v.tanggal, v.no_invoice
+            ");
+        return $data;
+    }
+
+    function print_penjualan_customer($ppn){
+        $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
+            SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
+            group by v.flag_tolling, v.kode_customer
+            order by v.flag_tolling, total_harga desc
+            ");
+        return $data;
+    }
+
+    function print_penjualan_jb($ppn){
+        $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
+            SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
+            group by v.flag_tolling, v.kode_barang
+            order by v.flag_tolling, total_harga desc
+            ");
+        return $data;
+    }
+
+    // function print_penjualan_customer($ppn){
+    //     $data = $this->db->query("select v.*, (v.total_harga*v.kurs) as total_harga, IF(v.currency='USD',v.total_harga*v.kurs,v.total_harga*v.kurs/110*100) as nilai_sebelum_ppn, IF(v.currency='USD',v.total_harga*v.kurs,v.total_harga*v.kurs/110*10) as nilai_ppn from v_data_faktur_all v 
+    //         where v.flag_ppn =".$ppn."
+    //         order by v.kode_customer, v.flag_tolling, total_harga desc
+    //         ");
+    //     return $data;
+    // }
 }

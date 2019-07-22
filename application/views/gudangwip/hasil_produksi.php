@@ -111,7 +111,7 @@
                             echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Ingot/print_afkir/'.$data->id_dtr.'" target="_blank"><i class="fa fa-print">&nbsp;</i> Print AFKIR &nbsp;</a>';
                             }
                             if($data->status==0){
-                            echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/GudangWIP/edit_produksi_wip/'.$data->id_dtr.'" ><i class="fa fa-edit">&nbsp;</i> Edit &nbsp;</a>';
+                            echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/GudangWIP/edit_produksi_wip/'.$data->id.'" ><i class="fa fa-edit">&nbsp;</i> Edit &nbsp;</a>';
                             }
                         ?>
                         </td>

@@ -782,6 +782,88 @@ class SalesOrder extends CI_Controller{
         }
     }
 
+    function close_so(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $jenis    = $this->input->post('jenis_barang');
+        
+        #Update status t_surat_jalan
+        $data = array(
+                'flag_invoice'=>1,
+                'flag_sj'=>1,
+                'modified'=>$tanggal,
+                'modified_by'=>$user_id
+            );
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('sales_order', $data);
+
+        if($jenis=='FG'){
+            $this->db->where('id', $this->input->post('id_spb'));
+            $this->db->update('t_spb_fg', array(
+                'status'=>1,
+            ));
+        }elseif($jenis=='WIP'){
+            $this->db->where('id', $this->input->post('id_spb'));
+            $this->db->update('t_spb_wip', array(
+                'status'=>1,
+            ));
+        }elseif($jenis=='RONGSOK'){
+            $this->db->where('id', $this->input->post('id_spb'));
+            $this->db->update('spb', array(
+                'status'=>1,
+            ));
+        }elseif($jenis=='AMPAS'){
+            $this->db->where('id', $this->input->post('id_spb'));
+            $this->db->update('t_spb_ampas', array(
+                'status'=>1,
+            ));
+        }
+        
+        $this->session->set_flashdata('flash_msg', 'Sales Order berhasil di close');
+        redirect('index.php/SalesOrder/');
+    }
+
+    function open_so(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $jenis    = $this->input->post('jenis_barang');
+        
+        #Update status t_surat_jalan
+        $data = array(
+                'flag_invoice'=>0,
+                'flag_sj'=>0,
+                'modified'=>$tanggal,
+                'modified_by'=>$user_id
+            );
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('sales_order', $data);
+
+        if($jenis=='FG'){
+            $this->db->where('id', $this->input->post('id_spb'));
+            $this->db->update('t_spb_fg', array(
+                'status'=>2,
+            ));
+        }elseif($jenis=='WIP'){
+            $this->db->where('id', $this->input->post('id_spb'));
+            $this->db->update('t_spb_wip', array(
+                'status'=>2,
+            ));
+        }elseif($jenis=='RONGSOK'){
+            $this->db->where('id', $this->input->post('id_spb'));
+            $this->db->update('spb', array(
+                'status'=>2,
+            ));
+        }elseif($jenis=='AMPAS'){
+            $this->db->where('id', $this->input->post('id_spb'));
+            $this->db->update('t_spb_ampas', array(
+                'status'=>2,
+            ));
+        }
+        
+        $this->session->set_flashdata('flash_msg', 'Sales Order berhasil di open');
+        redirect('index.php/SalesOrder/');
+    }
+
     function spb_list(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');       
@@ -1406,7 +1488,11 @@ class SalesOrder extends CI_Controller{
             $jenis = $data['header']['jenis_barang'];
             if($jenis=='FG'){
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_fg($id)->result();
+                if($data['header']['status'] == 1){
+                    $this->load->view('sales_order/print_sj_approve', $data);
+                }else{
                     $this->load->view('sales_order/print_sj', $data);
+                }
                     // $header = $this->load->view("sales_order/print_sj/headerpdf", $data, true);
                     // $body = $this->load->view("sales_order/print_sj/bodypdf", $data, true);
                     // $footer = $this->load->view("sales_order/print_sj/footerpdf", $data, true);
@@ -1606,6 +1692,22 @@ class SalesOrder extends CI_Controller{
         }
     }
 
+    function laporan_so_bulan(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "sales_order/laporan_so_bulan";
+        $this->load->model('Model_sales_order');
+
+        $this->load->view('layout', $data);   
+    }
+
     function laporan_so(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
@@ -1655,37 +1757,37 @@ class SalesOrder extends CI_Controller{
         }
     }
 
-    function print_laporan_so(){
-        $module_name = $this->uri->segment(1);
-        $tanggal = $this->uri->segment(3);
-        if($tanggal){
-            $group_id    = $this->session->userdata('group_id');        
-            if($group_id != 1){
-                $this->load->model('Model_modules');
-                $roles = $this->Model_modules->get_akses($module_name, $group_id);
-                $data['hak_akses'] = $roles;
-            }
-            $data['group_id']  = $group_id;
+    // function print_laporan_so(){
+    //     $module_name = $this->uri->segment(1);
+    //     $tanggal = $this->uri->segment(3);
+    //     if($tanggal){
+    //         $group_id    = $this->session->userdata('group_id');        
+    //         if($group_id != 1){
+    //             $this->load->model('Model_modules');
+    //             $roles = $this->Model_modules->get_akses($module_name, $group_id);
+    //             $data['hak_akses'] = $roles;
+    //         }
+    //         $data['group_id']  = $group_id;
 
-            // $items = strval($id);
-            // $tgl=str_split($id,2);
-            // $tahun=$tgl[1];
-            // $bulan=$tgl[0];
+    //         // $items = strval($id);
+    //         // $tgl=str_split($id,2);
+    //         // $tahun=$tgl[1];
+    //         // $bulan=$tgl[0];
 
-            // $data['tgl'] = array(
-            //     'tahun' => $tahun,
-            //     'bulan' => $bulan
-            // );
+    //         // $data['tgl'] = array(
+    //         //     'tahun' => $tahun,
+    //         //     'bulan' => $bulan
+    //         // );
 
-            // $data['content']= "sales_order/view_laporan_so";
-            $this->load->model('Model_sales_order');
-            $data['detailLaporan'] = $this->Model_sales_order->show_view_laporan($tanggal)->result();
-            // print_r($data['detailLaporan']);die();
-            $this->load->view('sales_order/print_laporan_so', $data);   
-        }else{
-            redirect('index.php/SalesOrder/laporan_list_so');
-        }
-    }
+    //         // $data['content']= "sales_order/view_laporan_so";
+    //         $this->load->model('Model_sales_order');
+    //         $data['detailLaporan'] = $this->Model_sales_order->show_view_laporan($tanggal)->result();
+    //         // print_r($data['detailLaporan']);die();
+    //         $this->load->view('sales_order/print_laporan_so', $data);   
+    //     }else{
+    //         redirect('index.php/SalesOrder/laporan_list_so');
+    //     }
+    // }
 
     function view_laporan_so_by_sj(){
         $module_name = $this->uri->segment(1);
@@ -1711,7 +1813,6 @@ class SalesOrder extends CI_Controller{
 
             $data['content']= "sales_order/laporan_so_by_sj";
             $this->load->model('Model_sales_order');
-            $data['detailLaporan'] = $this->Model_sales_order->show_view_laporan_by_sj($tanggal)->result();
             // print_r($data['detailLaporan']);die();
             $this->load->view('layout', $data);   
         }else{
@@ -1722,7 +1823,10 @@ class SalesOrder extends CI_Controller{
     function print_laporan_so_by_sj(){
         $module_name = $this->uri->segment(1);
         $tanggal = $this->uri->segment(3);
-        if($tanggal){
+        $ppn = $this->session->userdata('user_ppn');
+            $start = date('Y-m-d', strtotime($_GET['ts']));
+            $end = date('Y-m-d', strtotime($_GET['te']));
+        if($start){
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
                 $this->load->model('Model_modules');
@@ -1730,6 +1834,7 @@ class SalesOrder extends CI_Controller{
                 $data['hak_akses'] = $roles;
             }
             $data['group_id']  = $group_id;
+            $this->load->helper('tanggal_indo');
 
             // $items = strval($id);
             // $tgl=str_split($id,2);
@@ -1743,16 +1848,55 @@ class SalesOrder extends CI_Controller{
 
             // $data['content']= "sales_order/view_laporan_so";
             $this->load->model('Model_sales_order');
-            $data['detailLaporan'] = $this->Model_sales_order->show_view_laporan_by_sj($tanggal)->result();
+            $data['detailLaporan'] = $this->Model_sales_order->show_view_laporan_by_sj($start,$end,$ppn)->result();
             // print_r($data['detailLaporan']);die();
             $this->load->view('sales_order/print_laporan_so_by_sj', $data);   
         }else{
-            redirect('index.php/SalesOrder/laporan_list_so');
+            redirect('index.php/SalesOrder/index');
+        }
+    }
+
+    function print_laporan_so_by_jb(){
+        $module_name = $this->uri->segment(1);
+        $tanggal = $this->uri->segment(3);
+        $ppn = $this->session->userdata('user_ppn');
+        $start = date('Y-m-d', strtotime($_GET['ts']));
+        $end = date('Y-m-d', strtotime($_GET['te']));
+
+        if($start){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $this->load->helper('tanggal_indo');
+
+            // $items = strval($id);
+            // $tgl=str_split($id,2);
+            // $tahun=$tgl[1];
+            // $bulan=$tgl[0];
+
+            // $data['tgl'] = array(
+            //     'tahun' => $tahun,
+            //     'bulan' => $bulan
+            // );
+
+            // $data['content']= "sales_order/view_laporan_so";
+            $this->load->model('Model_sales_order');
+            $data['detailLaporan'] = $this->Model_sales_order->show_view_laporan_by_jb($start,$end,$ppn)->result();
+            // print_r($data['detailLaporan']);die();
+            $this->load->view('sales_order/print_laporan_so_by_jb', $data);   
+        }else{
+            redirect('index.php/SalesOrder/index');
         }
     }
 
     function print_sisa_so(){
             $module_name = $this->uri->segment(1);
+            $ppn = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
 
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -1763,7 +1907,43 @@ class SalesOrder extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $this->load->model('Model_sales_order');
-            $data['detailLaporan'] = $this->Model_sales_order->sisa_so()->result();
+            $data['detailLaporan'] = $this->Model_sales_order->sisa_so($ppn)->result();
+            $this->load->view('sales_order/print_sisa_so', $data);
+    }
+
+    function print_sisa_so_gabungan(){
+            $module_name = $this->uri->segment(1);
+            $this->load->helper('tanggal_indo');
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_sales_order');
+            $data['detailLaporan'] = $this->Model_sales_order->sisa_so_gabungan()->result();
+            $this->load->view('sales_order/print_sisa_so', $data);
+    }
+
+    function print_so_bulan(){
+            $module_name = $this->uri->segment(1);
+            $ppn = $this->session->userdata('user_ppn');
+            $start = date('Y-m-d', strtotime($_GET['ts']));
+            $end = date('Y-m-d', strtotime($_GET['te']));
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_sales_order');
+            $data['detailLaporan'] = $this->Model_sales_order->laporan_per_sj_bulan($start,$end,$ppn)->result();
             $this->load->view('sales_order/print_sisa_so', $data);
     }
 }

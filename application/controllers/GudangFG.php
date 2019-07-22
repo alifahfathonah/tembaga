@@ -714,15 +714,15 @@ class GudangFG extends CI_Controller{
 
         $this->db->trans_start();
 
-        // $this->load->model('Model_m_numberings');
+        $this->load->model('Model_m_numberings');
 
-        // $code = $this->Model_m_numberings->getNumbering('KARDUS',$tgl_input);
+        $code = $this->Model_m_numberings->getNumbering('KARDUS',$tgl_input);
 
-        // $first = $this->input->post('no_packing');
-        // $ukuran = $this->input->post('ukuran');
-        // $no_packing = $tgl_code.$first.$ukuran.substr($code,12,4);
+        $first = $this->input->post('no_packing');
+        $ukuran = $this->input->post('ukuran');
+        $no_packing = $tgl_code.$first.$ukuran.substr($code,12,4);
 
-        $no_packing = $this->input->post('no_barcode');
+        // $no_packing = $this->input->post('no_barcode');
         
         $this->db->insert('produksi_fg_detail', array(
             'tanggal' => $tgl_input,
@@ -2003,5 +2003,29 @@ class GudangFG extends CI_Controller{
         $data['detailLaporan'] = $this->Model_gudang_fg->stok_fg_detail()->result();
 
         $this->load->view('gudang_fg/print_stok_fg', $data);
+    }
+
+    function laporan_pemasukan(){
+        $module_name = $this->uri->segment(1);
+            $group_id    = $this->session->userdata('group_id');
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['content']= "gudang_fg/laporan_pemasukan";
+
+            $this->load->view('layout', $data);
+    }
+
+    function print_laporan_pemasukan(){
+
+        $tgl_input = date('Y-m-d', strtotime($_GET['ts']));
+        $this->load->helper('tanggal_indo');  
+        $this->load->model('Model_gudang_fg');
+        $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($tgl_input)->result();
+
+        $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
     }
 }

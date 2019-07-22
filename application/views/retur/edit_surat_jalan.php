@@ -164,6 +164,7 @@
                                     '<td style="width: 200px"><input type="text" id="nama_barang" class="form-control myline" readonly="readonly" value="'.$row->jenis_barang.'"></td>'.
                                     '<input type="hidden" name="details['.$no.'][id_barang]" id="id_barang_'.$no.'" value="'.$row->id.'">'.
                                     '<input type="hidden" id="jenis_barang_id_'.$no.'" name="details['.$no.'][jenis_barang_id]" class="form-control myline" value="'.$row->jenis_barang_id.'">'.
+                                    '<input type="hidden" id="nama_barang_alias_'.$no.'" name="details['.$no.'][nama_barang_alias]" class="form-control myline" value="">'.
                                     '<td><input type="text" id="no_packing_'.$no.'" name="details['.$no.'][no_packing]" class="form-control myline" readonly="readonly" value="'.$row->no_packing.'"></td>'.
                                     '<td><input type="text" id="bruto_'.$no.'" name="details['.$no.'][bruto]" class="form-control myline" readonly="readonly" value="'.$row->bruto.'"></td>'.
                                     '<td><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" class="form-control myline" readonly="readonly" value="'.$row->netto.'"></td>'.

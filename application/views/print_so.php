@@ -5,10 +5,10 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
+        <table border="0" cellpadding="2" cellspacing="0" width="900px">
             <tr>
                 <td width="40%">
-                    <table border="0" cellpadding="2" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="2" cellspacing="0" width="100%" style="font-family:Times New Roman">
                         <tr>
                             <td>Kepada</td>
                             <td>: <?php echo $header['nama_customer']; ?></td>
@@ -29,7 +29,7 @@
                 </td>
                 <td>&nbsp;</td>
                 <td width="40%">
-                    <table border="0" cellpadding="2" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="2" cellspacing="0" width="100%" style="font-family:Times New Roman">
                         <tr>
                             <td>No. Sales Order</td>
                             <td>: <?php echo $header['no_sales_order']; ?></td>
@@ -43,7 +43,7 @@
             </tr>
             <tr><td colspan="3">&nbsp;</td></tr>
             <tr><td colspan="3">
-                    <table border="0" cellpadding="4" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="4" cellspacing="0" width="100%" style="font-family:Times New Roman">
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nama Item</strong></td>
@@ -85,7 +85,6 @@
                     </table>
                 </td>
             </tr>
-            
         </table>
 	<body onLoad="window.print()">
     </body>

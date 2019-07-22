@@ -572,7 +572,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function get_last_sj_cv($ppn){
-        $data = $this->db->query("select no_sj_resmi from r_t_surat_jalan where id = ( select max(tsj.id) from r_t_surat_jalan tsj where tsj.jenis_surat_jalan = 'SURAT JALAN KMP KE CV')");
+        $data = $this->db->query("select no_sj_resmi from r_t_surat_jalan tsj where tsj.jenis_surat_jalan = 'SURAT JALAN KMP KE CV' order by no_sj_resmi desc limit 1");
         return $data;
     }
 
@@ -603,25 +603,53 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
-    function show_view_laporan_by_sj($tanggal){
-        $data = $this->db->query("select tsjd.t_sj_id, tsj.no_surat_jalan, tsj.tanggal, sum(tsjd.qty) as qty, sum(tsjd.bruto) as bruto, 
-            (case when tsjd.jenis_barang_alias = 0 then tsjd.jenis_barang_id else tsjd.jenis_barang_alias end) as jbid,
+    function show_view_laporan_by_sj($s,$e,$ppn){
+        $data = $this->db->query("select tsjd.t_sj_id, tsj.no_surat_jalan, so.flag_ppn, tsj.tanggal, sum(tsjd.qty) as qty, sum(tsjd.bruto) as bruto, 
+            COALESCE(NULLIF(tso.alias,''),(case when tsjd.jenis_barang_alias = 0 then tsjd.jenis_barang_id else tsjd.jenis_barang_alias end)) as jbid, (case when so.flag_ppn = 1 then mc.nama_customer else mc.nama_customer_kh end) as nama_customer,
             round((case when tsjd.netto_r > 0 then sum(tsjd.netto_r) else sum(tsjd.netto) end),3) as netto,
-            COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom) as uom,
+            COALESCE(r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as jenis_barang, COALESCE(r.uom,r2.uom,sp.uom,jb.uom) as uom,
             (select tsod.amount from t_sales_order_detail tsod left join t_sales_order tso on tso.id = tsod.t_so_id where tso.so_id = tsj.sales_order_id and tsod.jenis_barang_id = case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)as amount 
             from t_surat_jalan_detail tsjd 
             left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id 
             left join t_sales_order tso on tso.so_id = tsj.sales_order_id
-            left join jenis_barang jb on tso.jenis_barang != 'RONGSOK' and jb.id = (case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
-            left join rongsok r on tso.jenis_barang = 'RONGSOK' and r.id=tsjd.jenis_barang_id
+            left join sales_order so on so.id = tso.so_id
+            left join m_customers mc on mc.id = tsj.m_customer_id
+            left join rongsok r on (tsj.jenis_barang = 'RONGSOK' and r.id = tsjd.jenis_barang_id)
+            left join rongsok r2 on (tsj.jenis_barang = 'AMPAS' and r2.id = tsjd.jenis_barang_id)
+            left join sparepart sp on (tsj.jenis_barang = 'LAIN' and sp.id = tsjd.jenis_barang_id)
+            left join jenis_barang jb on (jb.id = tsjd.jenis_barang_id)
                         where tsj.tanggal 
-                         between '".$tanggal."-01' and '".$tanggal."-30'
+                        between '".$s."' and '".$e."'
                         group by jb.id, tsj.no_surat_jalan
-                        order by 3,2;");
+                        order by tsj.tanggal, jenis_barang;");
         return $data;
     }
 
-    function sisa_so(){
+    function show_view_laporan_by_jb($s,$e,$ppn){
+        $data = $this->db->query("select tsjd.t_sj_id, tsj.no_surat_jalan, so.flag_ppn, tsj.tanggal, sum(tsjd.qty) as qty, sum(tsjd.bruto) as bruto, (case when so.flag_ppn = 1 then mc.nama_customer else mc.nama_customer_kh end) as nama_customer,
+            (case when tsjd.jenis_barang_alias = 0 then tsjd.jenis_barang_id else tsjd.jenis_barang_alias end) as jbid,
+            round((case when tsjd.netto_r > 0 then sum(tsjd.netto_r) else sum(tsjd.netto) end),3) as netto, COALESCE(r.kode_rongsok,r2.kode_rongsok,sp.alias,jb.kode) as kode,
+            COALESCE(r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as jenis_barang, COALESCE(r.uom,r2.uom,sp.uom,jb.uom) as uom,
+            (select tsod.amount from t_sales_order_detail tsod 
+            left join t_sales_order tso on tso.id = tsod.t_so_id 
+            where tso.so_id = tsj.sales_order_id and tsod.jenis_barang_id = case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)as amount 
+            from t_surat_jalan_detail tsjd 
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id 
+            left join t_sales_order tso on tso.so_id = tsj.sales_order_id
+            left join sales_order so on so.id = tso.so_id
+            left join m_customers mc on mc.id = tsj.m_customer_id
+            left join rongsok r on (tsj.jenis_barang = 'RONGSOK' and r.id = tsjd.jenis_barang_id)
+            left join rongsok r2 on (tsj.jenis_barang = 'AMPAS' and r2.id = tsjd.jenis_barang_id)
+            left join sparepart sp on (tsj.jenis_barang = 'LAIN' and sp.id = tsjd.jenis_barang_id)
+            left join jenis_barang jb on (jb.id = tsjd.jenis_barang_id)
+                        where tsj.tanggal 
+                        between '".$s."' and '".$e."'
+                        group by jb.id, tsj.no_surat_jalan
+                        order by so.flag_ppn, jb.ukuran");
+        return $data;
+    }
+
+    function query_pak_yo(){
         return $this->db->query('
         select
         so2.no_sales_order,  so2.tanggal as tgl_so, so2.kode_barang, so2.nama_barang, so2.customer, so2.netto netto_order, soc.netto nettto_kirim, 
@@ -660,6 +688,82 @@ class Model_sales_order extends CI_Model{
         and so2.jenis_barang_id = soc.jenis_barang_id
         order by 1,2
         ');
+    }
+
+    function sisa_so_gabungan(){
+        return $this->db->query("
+            select so.no_sales_order, COALESCE(NULLIF(tso.alias,''),(case when so.flag_ppn = 1 then mc.nama_customer else mc.nama_customer_kh end)) as nama_customer, so.flag_ppn, so.tanggal as tgl_so, tso.tgl_po, IF(so.flag_tolling = 2,1,so.flag_tolling) as flag_tolling, tso.no_po, tsod.jenis_barang_id, tsod.amount, COALESCE(NULLIF(tsod.nama_barang_alias,''),r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as nama_barang, COALESCE(r.kode_rongsok,r2.kode_rongsok,sp.alias,jb.kode) as kode_barang, IF(tso.jenis_barang = 'RONGSOK', tsod.qty, tsod.netto)as netto, tsod.amount,
+             (select sum(tsjd.netto) from t_surat_jalan_detail tsjd
+             left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id and tsjd.t_sj_id
+             where tsj.sales_order_id = so.id and CASE WHEN tsjd.jenis_barang_alias = 0 THEN tsjd.jenis_barang_id=tsod.jenis_barang_id ELSE tsjd.jenis_barang_alias=tsod.jenis_barang_id END) as netto_kirim, tso.no_po
+            from t_sales_order_detail tsod
+            left join t_sales_order tso on tso.id = tsod.t_so_id
+            left join sales_order so on so.id = tso.so_id
+            left join m_customers mc on mc.id = so.m_customer_id
+            left join rongsok r on (tso.jenis_barang = 'RONGSOK' and r.id = tsod.jenis_barang_id)
+            left join rongsok r2 on (tso.jenis_barang = 'AMPAS' and r2.id = tsod.jenis_barang_id)
+            left join sparepart sp on (tso.jenis_barang = 'LAIN' and sp.id = tsod.jenis_barang_id)
+            left join jenis_barang jb on (jb.id = tsod.jenis_barang_id)
+            where so.flag_sj = 0
+            order by so.flag_ppn, so.flag_tolling, mc.nama_customer asc, so.tanggal asc, kode_barang asc
+            ");
+    }
+
+    function sisa_so($ppn){
+        return $this->db->query("
+            select so.no_sales_order, so.flag_ppn, COALESCE(NULLIF(tso.alias,''),(case when so.flag_ppn = 1 then mc.nama_customer else mc.nama_customer_kh end)) as nama_customer, so.tanggal as tgl_so, tso.tgl_po, IF(so.flag_tolling = 2,1,so.flag_tolling) as flag_tolling, tso.no_po, tsod.jenis_barang_id, tsod.amount, COALESCE(NULLIF(tsod.nama_barang_alias,''),r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as nama_barang, COALESCE(r.kode_rongsok,r2.kode_rongsok,sp.alias,jb.kode) as kode_barang, IF(tso.jenis_barang = 'RONGSOK', tsod.qty, tsod.netto)as netto, tsod.amount,
+             (select sum(tsjd.netto) from t_surat_jalan_detail tsjd
+             left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id and tsjd.t_sj_id
+             where tsj.sales_order_id = so.id and CASE WHEN tsjd.jenis_barang_alias = 0 THEN tsjd.jenis_barang_id=tsod.jenis_barang_id ELSE tsjd.jenis_barang_alias=tsod.jenis_barang_id END) as netto_kirim, tso.no_po
+            from t_sales_order_detail tsod
+            left join t_sales_order tso on tso.id = tsod.t_so_id
+            left join sales_order so on so.id = tso.so_id
+            left join m_customers mc on mc.id = so.m_customer_id
+            left join rongsok r on (tso.jenis_barang = 'RONGSOK' and r.id = tsod.jenis_barang_id)
+            left join rongsok r2 on (tso.jenis_barang = 'AMPAS' and r2.id = tsod.jenis_barang_id)
+            left join sparepart sp on (tso.jenis_barang = 'LAIN' and sp.id = tsod.jenis_barang_id)
+            left join jenis_barang jb on (jb.id = tsod.jenis_barang_id)
+            where so.flag_ppn =".$ppn." and so.flag_sj = 0
+            order by so.flag_tolling, mc.nama_customer asc, so.tanggal asc, kode_barang asc
+            ");
+    }
+
+    function laporan_so_bulan($s,$e,$ppn){
+        return $this->db->query("
+            select so.no_sales_order, (case when so.flag_ppn = 1 then mc.nama_customer else mc.nama_customer_kh end) as nama_customer, so.tanggal as tgl_so, tso.tgl_po, IF(so.flag_tolling = 2,1,so.flag_tolling) as flag_tolling, tso.no_po, tsod.jenis_barang_id, tsod.amount, COALESCE(NULLIF(tsod.nama_barang_alias,''),r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as nama_barang, COALESCE(r.kode_rongsok,r2.kode_rongsok,sp.alias,jb.kode) as kode_barang, IF(tso.jenis_barang = 'RONGSOK', tsod.qty, tsod.netto)as netto, tsod.amount,
+             (select sum(tsjd.netto) from t_surat_jalan_detail tsjd
+             left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id and tsjd.t_sj_id
+             where tsj.sales_order_id = so.id and CASE WHEN tsjd.jenis_barang_alias = 0 THEN tsjd.jenis_barang_id=tsod.jenis_barang_id ELSE tsjd.jenis_barang_alias=tsod.jenis_barang_id END) as netto_kirim, tso.no_po
+            from t_sales_order_detail tsod
+            left join t_sales_order tso on tso.id = tsod.t_so_id
+            left join sales_order so on so.id = tso.so_id
+            left join m_customers mc on mc.id = so.m_customer_id
+            left join rongsok r on (tso.jenis_barang = 'RONGSOK' and r.id = tsod.jenis_barang_id)
+            left join rongsok r2 on (tso.jenis_barang = 'AMPAS' and r2.id = tsod.jenis_barang_id)
+            left join sparepart sp on (tso.jenis_barang = 'LAIN' and sp.id = tsod.jenis_barang_id)
+            left join jenis_barang jb on (jb.id = tsod.jenis_barang_id)
+            where so.flag_ppn =".$ppn." and (so.tanggal BETWEEN '".$s."' AND '".$e."')
+            order by so.flag_tolling, mc.nama_customer asc, so.tanggal asc, kode_barang asc
+            ");
+    }
+
+    function laporan_per_sj_bulan($s,$e,$ppn){
+        return $this->db->query("
+            select so.no_sales_order, so.flag_ppn, (case when so.flag_ppn = 1 then mc.nama_customer else mc.nama_customer_kh end) as nama_customer, so.tanggal as tgl_so, tso.tgl_po, IF(so.flag_tolling = 2,1,so.flag_tolling) as flag_tolling, tso.no_po, tsod.jenis_barang_id, tsod.amount, COALESCE(NULLIF(tsod.nama_barang_alias,''),r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as nama_barang, COALESCE(r.kode_rongsok,r2.kode_rongsok,sp.alias,jb.kode) as kode_barang, IF(tso.jenis_barang = 'RONGSOK', tsod.qty, tsod.netto)as netto, tsod.amount,
+             (select sum(tsjd.netto) from t_surat_jalan_detail tsjd
+             left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id and tsjd.t_sj_id
+             where tsj.sales_order_id = so.id and CASE WHEN tsjd.jenis_barang_alias = 0 THEN tsjd.jenis_barang_id=tsod.jenis_barang_id ELSE tsjd.jenis_barang_alias=tsod.jenis_barang_id END) as netto_kirim, tso.no_po
+            from t_sales_order_detail tsod
+            left join t_sales_order tso on tso.id = tsod.t_so_id
+            left join sales_order so on so.id = tso.so_id
+            left join m_customers mc on mc.id = so.m_customer_id
+            left join rongsok r on (tso.jenis_barang = 'RONGSOK' and r.id = tsod.jenis_barang_id)
+            left join rongsok r2 on (tso.jenis_barang = 'AMPAS' and r2.id = tsod.jenis_barang_id)
+            left join sparepart sp on (tso.jenis_barang = 'LAIN' and sp.id = tsod.jenis_barang_id)
+            left join jenis_barang jb on (jb.id = tsod.jenis_barang_id)
+            where so.flag_ppn =".$ppn." and (so.tanggal BETWEEN '".$s."' AND '".$e."')
+            order by so.flag_tolling, mc.nama_customer asc, so.tanggal asc, kode_barang asc
+            ");
     }
 
     // Select tsjd.*, tsod.nama_barang_alias, COALESCE(tsod.nama_barang_alias, jb.jenis_barang,r.nama_item) as jenis_barang , COALESCE(jb.kode,r.kode_rongsok) as kode from t_surat_jalan_detail tsjd

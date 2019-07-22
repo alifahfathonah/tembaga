@@ -58,7 +58,7 @@ class Model_gudang_fg extends CI_Model{
     }
     
     function show_header_bpb($id){
-        $data = $this->db->query("Select tbf.*, COALESCE(pf.no_laporan_produksi,r.no_retur) as no_laporan_produksi, COALESCE(pf.jenis_packing_id,r.jenis_packing_id,0) as jenis_packing_id, jb.jenis_barang, jb.id as id_jenis_barang,
+        $data = $this->db->query("Select tbf.*, COALESCE(pf.no_laporan_produksi,r.no_retur) as no_laporan_produksi, COALESCE(pf.jenis_packing_id,r.jenis_packing_id,0) as jenis_packing_id, jb.jenis_barang, jb.id as id_jenis_barang, jb.kode,
                     usr.realname As pengirim
                     From t_bpb_fg tbf
                         Left Join users usr On (tbf.created_by = usr.id)
@@ -71,7 +71,7 @@ class Model_gudang_fg extends CI_Model{
     }
     
     function show_detail_bpb($id){
-        $data = $this->db->query("Select tbfd.*, jb.jenis_barang, mb.nomor_bobbin, mb.id as id_bobbin
+        $data = $this->db->query("Select tbfd.*, jb.jenis_barang, jb.kode, mb.nomor_bobbin, mb.id as id_bobbin
                     From t_bpb_fg_detail tbfd 
                         Left Join jenis_barang jb On (tbfd.jenis_barang_id = jb.id) 
                         left join m_bobbin mb on (mb.id = tbfd.bobbin_id)
@@ -85,8 +85,12 @@ class Model_gudang_fg extends CI_Model{
                     aprv.realname As approved_name,
                     rjt.realname As rejected_name,
                     rcv.realname As receiver_name,
+                    COALESCE(mc.nama_customer, '') as nama_customer,
                 (Select count(tsfd.id)As jumlah_item From t_spb_fg_detail tsfd Where tsfd.t_spb_fg_id = tsf.id)As jumlah_item
                 From t_spb_fg tsf
+                    Left join t_sales_order tso on (tso.jenis_barang = 'FG' and tso.no_spb = tsf.id)
+                    Left join sales_order so on (so.id = tso.so_id)
+                    Left join m_customers mc on (mc.id = so.m_customer_id)
                     Left Join users usr On (tsf.created_by = usr.id) 
                     Left Join users aprv On (tsf.approved_by = aprv.id) 
                     Left Join users rjt On (tsf.rejected_by = rjt.id)
@@ -449,6 +453,15 @@ class Model_gudang_fg extends CI_Model{
         $data = $this->db->query("select sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
             where tgf.jenis_trx = 0 and jb.ukuran > '1000' group by tgf.jenis_barang_id order by jb.ukuran, jb.jenis_barang asc");
+        return $data;
+    }
+
+    function print_laporan_pemasukan($tgl){
+        $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            where tanggal_masuk = '".$tgl."'
+            order by jb.ukuran, jb.jenis_barang
+            ");
         return $data;
     }
     /*

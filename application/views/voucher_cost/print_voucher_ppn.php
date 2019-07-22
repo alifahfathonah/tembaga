@@ -5,6 +5,11 @@
     </head>
     <body class="margin-left:40px;">
         <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWAT MAS PRAKASA<br>'; }?><?php echo ($header['id_bank'] > 3) ? 'BANK' : 'KAS';?> KELUAR</h3>
+        <?php if($header['currency']=='IDR'){
+            $c = 'Rp. ';
+        }else{
+            $c = '$ ';
+        }?>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="60%">
@@ -81,9 +86,9 @@
                         ?>
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
-                            <td style="border-left:1px solid #000;"><?=$row->nama.' '.$row->keterangan;?></td>
+                            <td style="border-left:1px solid #000;"><?=$row->nama.' '.$row->no_po.$row->keterangan;?></td>
                             <td style="text-align:right; border-left:1px solid #000;"></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=number_format($row->amount,2,',', '.');?></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=$c.' '.number_format($row->amount,2,',', '.');?></td>
                         </tr>
                         <?php
                                 $total_vc += $row->amount;
@@ -107,7 +112,7 @@
                         <tr>
                             <td style="text-align:right;" colspan="3"><strong>Total</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;">
-                                <strong><?=number_format($total_vc,2,',', '.');?></strong>
+                                <strong><?=$c.' '.number_format($total_vc,2,',', '.');?></strong>
                             </td>
                         </tr>
                     </table>

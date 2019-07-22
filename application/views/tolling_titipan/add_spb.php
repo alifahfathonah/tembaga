@@ -77,6 +77,7 @@
                                 <option value="RONGSOK">Rongsok</option>
                                 <option value="WIP">WIP</option>
                                 <option value="FG">FinishGood</option>
+                                <option value="AMPAS">Ampas</option>
                             </select>
                         </div>
                     </div>

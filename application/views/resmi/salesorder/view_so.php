@@ -134,7 +134,7 @@
                                 <?php $no= 0; foreach($myDetails as $row){ $no++;?>
                                     <tr>
                                         <td><?=$no;?></td>
-                                        <td><?=$row->jenis_barang;?></td>
+                                        <td><?='('.$row->kode.') '.$row->jenis_barang;?></td>
                                         <td><?=$row->uom;?></td>
                                         <td><?=number_format($row->amount,0,',','.');?></td>
                                         <td><?=$row->netto;?></td>

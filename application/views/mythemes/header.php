@@ -47,7 +47,7 @@ $module_name = $this->uri->segment(1);
 <link id="style_color" href="<?php echo base_url(); ?>assets/admin/layout/css/themes/darkblue.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo base_url(); ?>assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo base_url(); ?>assets/css/dini-aminarti.css" rel="stylesheet" type="text/css"/>
-<link rel="shortcut icon" href="favicon.ico">
+<link rel="shortcut icon" href="/favicon.ico">
 
 </head>
 <body class="page-header-fixed page-quick-sidebar-over-content page-style-square"> 

@@ -4,9 +4,29 @@
         <meta charset="utf-8" />
     </head>
     <body class="margin-left:40px;">
-        <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;">PT. KAWAT MAS PRAKASA<br>PACKING LIST</h3>
-        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
+        <table border="0" cellpadding="0" width="900px" cellspacing="0" style="font-family:Microsoft Sans Serif">
+            <tr>
+                <td align="left" colspan="3">
+                    <strong><span style="font-size:20px;">PT. KAWAT MAS PRAKASA</span></strong>
+                </td>
+            </tr>
+            <tr>
+                <td height="5px"></td>
+            </tr>
+            <tr>
+                <td colspan="3"><span style="font-size:15px;">JL. HALIM PERDANA KUSUMA NO. 51,Tangerang</td>
+            </tr>
+            <tr>
+                <td>T: (021) 5523547-46, F:(021) 5523548</span></td>
+            </tr>
+            <tr>
+                <td colspan="3">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="3"><p align="center" style="font-size:22px;"><strong><u>PACKING LIST</u></strong></p></td>
+            </tr>
+        </table>
+        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Times New Roman">
             <tr>
                 <td width="60%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
@@ -85,6 +105,9 @@
                             $bruto = 0;
                             $bobin = 0;
                             $netto = 0;
+                            $tbruto = 0;
+                            $tbobin = 0;
+                            $tnetto = 0;
                             foreach ($list_sj_detail as $row){
                                 if($row->jenis_barang!=$last_series && $last_series!=null){
                                     echo '<tr><td colspan="4" style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>Total :</strong></td>';
@@ -120,6 +143,9 @@
                                 $bruto += $row->bruto;
                                 $bobin += $row->bruto-$row->netto;
                                 $netto += $row->netto;
+                                $tbruto += $row->bruto;
+                                $tbobin += $row->bruto-$row->netto;
+                                $tnetto += $row->netto;
                                 $no++;
                             }
                             // $no = 1;
@@ -154,6 +180,18 @@
                             </td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;">
                                 <strong><?php echo number_format($netto, 2, '.', ','); ?></strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align:right; border-left:1px solid #000; border-top:5px solid #000; border-bottom:1px solid #000;"><strong>Grand Total</strong></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-top:5px solid #000; border-bottom:1px solid #000">
+                                <strong><?php echo number_format($tbruto, 2, '.', ','); ?></strong>
+                            </td>
+                            <td style="text-align:right; border-left:1px solid #000; border-top:5px solid #000; border-bottom:1px solid #000">
+                                <strong><?php echo number_format($tbobin, 2, '.', ','); ?></strong>
+                            </td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-top:5px solid #000; border-right:1px solid #000;">
+                                <strong><?php echo number_format($tnetto, 2, '.', ','); ?></strong>
                             </td>
                         </tr>
                     </table>

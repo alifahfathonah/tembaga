@@ -37,7 +37,7 @@
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Times New Roman">
             <tr>
                 <td width="60%">
-                    <table border="0" cellpadding="2" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="2" cellspacing="0" width="100%" style="font-size: 18px;">
                         <tr>
                             <td>No. Surat Jalan</td>
                             <td>: <?php echo $header['no_surat_jalan']; ?></td>
@@ -66,7 +66,7 @@
                 </td>
                 <td>&nbsp;</td>
                 <td width="40%">
-                    <table border="0" cellpadding="2" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="2" cellspacing="0" width="100%" style="font-size: 18px;">
                         <tr>
                             <td>Tanggal SJ</td>
                             <td>: <?php echo tanggal_indo($header['tanggal']); ?></td>
@@ -86,7 +86,7 @@
                 </td>
             </tr>
             <tr><td colspan="3">
-                    <table border="0" cellpadding="4" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="4" cellspacing="0" width="100%" style="font-size: 18px;">
                         <tr>
                             <td colspan="2">No. Kendaraan: <?php echo $header['no_kendaraan']; ?></td>
                             <td colspan="2">Type Kendaraan: <?php echo $header['type_kendaraan']; ?></td>
@@ -145,7 +145,7 @@
             </tr>
             <tr><td colspan="3">
                     <p>&nbsp;</p>
-                    <table border="0" width="100%">
+                    <table border="0" width="100%" style="font-size: 18px;">
                         <tr>
                             <td style="text-align:center">Tanda Terima</td>
                             <td style="text-align:center">Pembawa / Supir</td>

@@ -35,10 +35,11 @@ class Model_invoice_jasa extends CI_Model{
 	}
 
 	function list_sj_so($id){
-		$data = $this->db->query("select tsjd.*, jb.jenis_barang, jb.uom, (select so.amount from r_t_so_detail so where so.so_id = rtsj.r_so_id and so.jenis_barang_id = tsjd.jenis_barang_id ) as amount from r_t_surat_jalan_detail tsjd 
+		$data = $this->db->query("select tsjd.*, count(tsjd.id) as qty, sum(tsjd.bruto) as bruto, sum(tsjd.netto) as netto, jb.jenis_barang, jb.uom, (select so.amount from r_t_so_detail so where so.so_id = rtsj.r_so_id and so.jenis_barang_id = tsjd.jenis_barang_id ) as amount from r_t_surat_jalan_detail tsjd 
 		left join r_t_surat_jalan rtsj on rtsj.id = tsjd.sj_resmi_id
 		left join jenis_barang jb on jb.id = tsjd.jenis_barang_id
-		where tsjd.sj_resmi_id =".$id);
+		where tsjd.sj_resmi_id =".$id."
+        group by tsjd.jenis_barang_id");
 		return $data;
 	}
 
@@ -90,11 +91,18 @@ class Model_invoice_jasa extends CI_Model{
 	}
 
 	function show_detail_inv_jasa($id){
-		$data = $this->db->query("select tijd.*, count(tijd.id) as qty, sum(tijd.total_amount) as sum_total_amount, sum(tijd.bruto) as sum_bruto, sum(tijd.netto) as sum_netto, jb.jenis_barang, jb.uom FROM r_t_inv_jasa_detail tijd
+		$data = $this->db->query("select tijd.*, sum(tijd.total_amount) as sum_total_amount, sum(tijd.bruto) as sum_bruto, sum(tijd.netto) as sum_netto, jb.jenis_barang, jb.uom FROM r_t_inv_jasa_detail tijd
 		left join jenis_barang jb on jb.id = tijd.jenis_barang_id
 		where tijd.inv_jasa_id=".$id." group by jb.jenis_barang");
 		return $data;
 	}
+
+	// function show_detail_inv_jasa($id){
+	// 	$data = $this->db->query("select tijd.*, jb.jenis_barang, jb.uom FROM r_t_inv_jasa_detail tijd
+	// 	left join jenis_barang jb on jb.id = tijd.jenis_barang_id
+	// 	where tijd.inv_jasa_id=".$id." group by jb.jenis_barang");
+	// 	return $data;
+	// }
 
 	function show_header_print_inv_jasa($id){
 		$data = $this->db->query("select tij.*, tsj.no_sj_resmi, ts.no_so,ts.tanggal as tgl_so, tp.no_po, tp.tanggal as tgl_po, mc.nama_customer, cv.nama_cv, mc.pic, cv.pic as pic_cv, cv.alamat as alamat_cv, cv.npwp, tp2.no_po as no_po2, b.kode_bank, b.nama_bank, b.nomor_rekening, b.kantor_cabang from r_t_inv_jasa tij

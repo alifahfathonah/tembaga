@@ -44,6 +44,7 @@
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Satuan</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Jumlah</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Harga</strong></td>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Diskon</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>PPN</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Sub Total</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;"><strong>Keterangan</strong></td>
@@ -52,8 +53,9 @@
                             $no = 1;
                             $total = 0;
                             foreach ($details as $row){
+                                $diskon = $row->total*$header['diskon']/100;
                                 if($row->ppn==1){
-                                    $hp = $row->total*10/100;
+                                    $hp = ($row->total-$diskon)*10/100;
                                 }else{
                                     $hp = 0;
                                 }
@@ -63,16 +65,32 @@
                                 echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000;">'.$row->uom.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->qty,0,',', '.').'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->amount,0,',', '.').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($diskon,0,',', '.').'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($hp,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->total+$hp,0,',', '.').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->total-$diskon+$hp,0,',', '.').'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000;">'.$row->line_remarks.'</td>';
                                 echo '</tr>';
-                                $total += $row->total+$hp;
+                                $total += ($row->total-$diskon)+$hp;
                                 $no++;
                             }
+                        if($header['materai']>0 && $header['id']==$header['cek']){
+                            $total += $header['materai'];
                         ?>
-                        <tr style="height:100px">
+                        <tr>
+                            <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000"><?=$no;?></td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000"><?=number_format($header['materai'],0,',','.');?></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">Materai</td>
+                        </tr>
+                        <?php } ?>
+                        <tr style="height:50px">
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
@@ -82,7 +100,7 @@
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                         </tr>
                         <tr>
-                            <td colspan="6" style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;"><strong>Total</strong></td>
+                            <td colspan="7" style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;"><strong>Total</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;"><?=number_format($total,0,',', '.');?></td>
                             <td style=" border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;"></td>
                         </tr>

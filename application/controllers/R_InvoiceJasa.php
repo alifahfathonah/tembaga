@@ -173,32 +173,13 @@ class R_InvoiceJasa extends CI_Controller{
         $jenis = $this->input->jenis_barang;
 
             $details = $this->input->post('details');
-            // echo $details[1]['id'];
-            // print_r($details); die();
-            
-            // foreach ($details as $v) {
-            //     if($v['id']!=''){
-            //         $data = array(
-            //                 'jenis_barang_id'=> $v['barang_id'],
-            //                 'bruto'=> str_replace('.', '', $v['bruto']),
-            //                 'netto'=> str_replace('.', '', $v['netto']),
-            //                 'amount'=> str_replace('.', '', $v['amount']),
-            //                 'total_amount'=> str_replace('.', '', $v['total_amount']),
-            //                 'line_remarks'=> $v['line_remarks'],
-            //                 'modified_at'=> $tanggal,
-            //                 'modified_by'=> $user_id
-            //             );
-            //         $this->db->where('id', $v['id']);
-            //         $this->db->update('r_t_inv_jasa_detail', $data);
-            //     }
-            // }
 
-            $this->db->delete('r_t_inv_jasa_detail', ['inv_jasa_id' => $this->input->post('id')]);
             foreach ($details as $v) {
                 
                 $data = array(
                         'inv_jasa_id'=> $this->input->post('id'),
                         'jenis_barang_id'=> $v['barang_id'],
+                        'qty'=> $v['qty'],
                         'bruto'=> str_replace(',', '', $v['bruto']),
                         'netto'=> str_replace(',', '', $v['netto']),
                         'amount'=> str_replace(',', '', $v['amount']),
@@ -207,10 +188,29 @@ class R_InvoiceJasa extends CI_Controller{
                         'modified_at'=> $tanggal,
                         'modified_by'=> $user_id
                     );
-                $this->db->insert('r_t_inv_jasa_detail', $data);
-                $total_amount = str_replace(',', '', $v['total_amount']);
-                // $nilai_invoice += (int)$total_amount;
+                $this->db->where('id', $v['id']);
+                $this->db->update('r_t_inv_jasa_detail', $data);
             }
+
+            // $this->db->delete('r_t_inv_jasa_detail', ['inv_jasa_id' => $this->input->post('id')]);
+            // foreach ($details as $v) {
+                
+            //     $data = array(
+            //             'inv_jasa_id'=> $this->input->post('id'),
+            //             'jenis_barang_id'=> $v['barang_id'],
+            //             'qty'=> $v['qty'],
+            //             'bruto'=> str_replace(',', '', $v['bruto']),
+            //             'netto'=> str_replace(',', '', $v['netto']),
+            //             'amount'=> str_replace(',', '', $v['amount']),
+            //             'total_amount'=> str_replace(',', '', $v['total_amount']),
+            //             'line_remarks'=> $v['line_remarks'],
+            //             'modified_at'=> $tanggal,
+            //             'modified_by'=> $user_id
+            //         );
+            //     $this->db->insert('r_t_inv_jasa_detail', $data);
+            //     $total_amount = str_replace(',', '', $v['total_amount']);
+            //     $nilai_invoice += (int)$total_amount;
+            // }
 
         $data = array(
                 'no_invoice_jasa'=> $this->input->post('no_inv_jasa'),
@@ -236,6 +236,37 @@ class R_InvoiceJasa extends CI_Controller{
             $this->session->set_flashdata('flash_msg', 'Surat Jalan gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/R_InvoiceJasa/edit_inv_jasa/'.$this->input->post('id'));  
         }   
+    }
+
+    function delete_invoice_jasa(){
+        $user_id  = $this->session->userdata('user_id');
+        $id = $this->uri->segment(3);
+        $tanggal  = date('Y-m-d h:m:s');
+
+        // $this->load->model('Model_m_numberings');
+        // $code = $this->Model_m_numberings->getNumbering('INV-KMP', $tgl_input);
+        $code = 'INV-KMP.'.$tgl_inv.'.'.$this->input->post('no_inv_jasa');
+        
+        $this->db->trans_start();
+
+            $this->db->where('id', $id);
+            $this->db->delete('r_t_inv_jasa');
+
+            $this->db->where('inv_jasa_id', $id);
+            $this->db->delete('r_t_inv_jasa_detail');
+
+            $this->db->where('r_inv_jasa_id', $id);
+            $this->db->update('r_t_surat_jalan', array(
+                'r_inv_jasa_id'=> 0
+            ));
+
+            if($this->db->trans_complete()){
+                $this->session->set_flashdata('flash_msg', 'Data Invoice berhasil di hapus!');
+                redirect('index.php/R_InvoiceJasa/');  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data surat jalan gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/R_InvoiceJasa/');  
+            }
     }
 
     function view_invoice_jasa(){

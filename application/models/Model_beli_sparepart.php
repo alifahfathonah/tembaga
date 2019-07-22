@@ -211,8 +211,8 @@ class Model_beli_sparepart extends CI_Model{
     }
     
     function show_header_bpb($id){
-        $data = $this->db->query("Select lpb.*, 
-                    po.no_po,
+        $data = $this->db->query("Select lpb.*, (select id from lpb l1 where l1.po_id = lpb.po_id limit 1) as cek,
+                    po.no_po, po.diskon, po.materai,
                     spl.nama_supplier,
                     usr.realname As penerima
                     From lpb

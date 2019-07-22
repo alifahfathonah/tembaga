@@ -167,6 +167,77 @@ class PengirimanAmpas extends CI_Controller{
         header('Content-Type: application/json');
         echo json_encode($tabel); 
     }
+
+    function load_detail_spb(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $no    = 1;
+        $total = 0;
+        $netto = 0;
+        
+        $this->load->model('Model_pengiriman_ampas'); 
+        // $list_ampas = $this->Model_pengiriman_ampas->ampas()->result();
+        $myDetail = $this->Model_pengiriman_ampas->load_detail_spb($id)->result(); 
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>('.$row->kode_rongsok.') '.$row->nama_item.'</td>';
+            $tabel .= '<td>'.$row->uom.'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.$row->keterangan.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a></td>';
+            $tabel .= '</tr>';
+            $netto += $row->netto;
+            $no++;
+        }
+
+        $tabel .= '<tr>';
+        $tabel .= '<td colspan="3" style="text-align:right"><strong>Total (Rp) </strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
+        $tabel .= '<td colspan="2"></td>';
+        $tabel .= '</tr>';
+        
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function save_detail_spb(){
+        $return_data = array();
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        if($this->db->insert('t_spb_ampas_detail', array(
+            't_spb_ampas_id'=>$this->input->post('id'),
+            'tanggal'=>$tgl_input,
+            'jenis_barang_id'=>$this->input->post('barang_id'),
+            'uom'=>$this->input->post('uom'),
+            'netto'=> $this->input->post('berat'),
+            'keterangan'=>$this->input->post('keterangan')
+        ))){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item ampas! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+    
+    function delete_detail_spb(){
+        $id = $this->input->post('id');
+        $return_data = array();
+        $this->db->where('id', $id);
+        if($this->db->delete('t_spb_ampas_detail')){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menghapus item ampas! Silahkan coba kembali";
+        }           
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
     
     function get_uom(){
         $id = $this->input->post('id');
@@ -567,6 +638,93 @@ class PengirimanAmpas extends CI_Controller{
         $this->load->view('layout', $data);
     }
 
+    function add_spb(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "pengiriman_ampas/add_spb";
+        
+        $this->load->view('layout', $data);
+    }
+
+    function save_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('SPB-AMP', $tgl_input); 
+        
+        if($code){
+            $data = array(
+                'tanggal'=> $tgl_input,
+                'no_spb_ampas'=> $code,
+                'status'=>0,
+                'keterangan'=>$remarks,
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id
+            );
+
+            if($this->db->insert('t_spb_ampas', $data)){
+                redirect('index.php/PengirimanAmpas/edit_spb/'.$this->db->insert_id());  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data SPB WIP gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/PengirimanAmpas/add_spb');  
+            }            
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data SPB WIP gagal disimpan, penomoran belum disetup!');
+            redirect('index.php/PengirimanAmpas/spb_list');
+        }
+    }
+
+    function edit_spb(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "pengiriman_ampas/edit_spb";
+            $this->load->model('Model_pengiriman_ampas');
+            $data['header'] = $this->Model_pengiriman_ampas->show_header_spb($id)->row_array();
+            $this->load->model('Model_beli_rongsok');
+            $data['list_barang'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
+
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/PengirimanAmpas/spb_list');
+        }
+    }
+
+    function update_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+
+            $data = array(
+                'tanggal'=> $tgl_input,
+                'keterangan'=>$this->input->post('remarks')
+            );
+            $this->db->where('id',$this->input->post('id'));
+            if($this->db->update('t_spb_ampas', $data)){
+                redirect('index.php/PengirimanAmpas/spb_list');  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data SPB WIP gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/PengirimanAmpas/edit_spb/'.$this->input->post('id'));
+            }
+    }
+
     function view_spb(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
@@ -600,7 +758,7 @@ class PengirimanAmpas extends CI_Controller{
         }
     }
 
-    function save_detail_spb(){
+    function save_detail_spb_fulfilment(){
         $return_data = array();
         
         if($this->db->insert('t_spb_ampas_fulfilment', array(
@@ -618,7 +776,7 @@ class PengirimanAmpas extends CI_Controller{
         echo json_encode($return_data); 
     }
 
-    function delete_detail_spb(){
+    function delete_detail_spb_fulfilment(){
         $id = $this->input->post('id');
 
         $this->db->where('id', $id);

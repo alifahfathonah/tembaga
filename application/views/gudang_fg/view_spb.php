@@ -92,10 +92,19 @@
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
-
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nama Customer
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo (($this->session->userdata('user_ppn')==1)? $myData['nama_customer']:$myData['nama_customer_kh']); ?>">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Catatan

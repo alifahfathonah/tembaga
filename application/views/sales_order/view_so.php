@@ -25,6 +25,8 @@
             if( ($group_id==1)||($hak_akses['view_so']==1) ){
                 $c = $header['currency'];
         ?> 
+        <form class="eventInsForm" method="post" target="_self" name="formku" 
+              id="formku">  
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
@@ -327,6 +329,14 @@
             </div>
         <a href="<?php echo base_url('index.php/SalesOrder'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
+        <?php if($header['status_spb']!=1){ ?>
+        <a href="javascript:;" onclick="closeSO();" class="btn red"> 
+                        <i class="fa fa-ban"></i> Close SO </a>
+        <?php }else{ ?>
+        <a href="javascript:;" onclick="openSO();" class="btn green"> 
+                        <i class="fa fa-plus"></i> Open SO </a>
+        <?php } ?>
+        </form>
         <?php
             }else{
         ?>
@@ -339,6 +349,23 @@
         ?>
     </div>
 </div>
+<script type="text/javascript">
+function closeSO(){
+    var r=confirm("Anda yakin meng-close SO ini?");
+    if (r==true){
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/SalesOrder/close_so");    
+        $('#formku').submit(); 
+    }
+};
+
+function openSO(){
+    var r=confirm("Anda yakin meng-close SO ini?");
+    if (r==true){
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/SalesOrder/open_so");    
+        $('#formku').submit(); 
+    }
+};
+</script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>

@@ -52,6 +52,45 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="closeModal" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">&nbsp;</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-danger display-hide">
+                                    <button class="close" data-close="alert"></button>
+                                    <span id="message_close">&nbsp;</span>
+                                </div>
+                            </div>
+                        </div>
+                        <form class="eventInsForm" method="post" target="_self" name="frmClose" 
+                              id="frmClose">                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Close Remarks <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <textarea id="close_remarks" name="close_remarks" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>
+                                    
+                                    <input type="hidden" id="close_spb_id" name="header_id">
+                                </div>
+                            </div>                           
+                        </form>
+                    </div>
+                    <div class="modal-footer">                        
+                        <button type="button" class="btn blue" onClick="closeSPB();">Simpan</button>
+                        <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <?php
             if( ($group_id==1)||($hak_akses['view_spb']==1) ){
         ?>
@@ -108,7 +147,28 @@
                                 class="form-control myline" style="margin-bottom:5px; background: green; color: white;" readonly="readonly" value="<?php echo $myData['jumlah']; ?> KG">
                         </div>
                     </div>
-                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Status SPB
+                        </div>
+                        <div class="col-md-8">
+                            <?php
+                                if($myData['status']==0){
+                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Review</div>';
+                                }else if($myData['status']==1){
+                                    echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
+                                }else if($myData['status']==2){
+                                    echo '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
+                                }else if($myData['status']==3){
+                                    echo '<div style="background-color:blue; color:#fff; padding:3px">Waiting Approval</div>';
+                                }else if($myData['status']==4){
+                                    echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
+                                }else if($myData['status']==9){
+                                    echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
+                                }
+                            ?>
+                        </div>
+                    </div>
 
                 </div>
                 <div class="col-md-6">
@@ -371,7 +431,7 @@
                                         <tr>
                                             <td colspan="3">Total</td>
                                             <td style="background-color: green; color: white;"><?=number_format($tn,2,',','.');?></td>
-                                            <td></td>
+                                            <td colspan="3"></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -431,9 +491,9 @@
             </div>
             <div class="row">&nbsp;</div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-10">
                     <?php
-                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && ($myData['status']=='3' || $myData['status']=='1')){
+                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && ($myData['status']=='3' || $myData['status']=='1' || $myData['status']=='9')){
                             echo '<a href="javascript:;" class="btn blue" onclick="tambahData();"> '
                                 .'<i class="fa fa-plus"></i> Tambah </a> ';
                         }
@@ -455,9 +515,17 @@
                         }
                     ?>
 
-                    <a href="<?php echo base_url('index.php/Ingot/spb_list'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/GudangRongsok/spb_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
-                </div>    
+                </div>   
+                <div class="col-md-2">
+                    <?php
+                        if( ($group_id==1 || $hak_akses['save_spb']==1) && ($myData['status']=="0" || $myData['status']=="4")){
+                            echo '<a href="javascript:;" class="btn red" onclick="showCloseBox();"> '
+                                .'<i class="fa fa-ban"></i> Close SPB </a> ';
+                        }
+                    ?>
+                </div> 
             </div>
         </form>
         <?php
@@ -499,6 +567,26 @@ function rejectFulfilment(){
 function tambahData(){
     $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Ingot/tambah_spb");    
     $('#formku').submit(); 
+}
+
+function closeSPB(){
+    var r=confirm("Anda yakin meng-close permintaan barang ini?");
+    if (r==true){
+        $('#frmClose').attr("action", "<?php echo base_url(); ?>index.php/Ingot/close_spb");    
+        $('#frmClose').submit(); 
+    }
+};
+
+function showCloseBox(){
+    var r=confirm("Anda yakin meng-close permintaan barang ini?");
+    if (r==true){
+        $('#close_spb_id').val($('#id').val());
+        $('#message').html("");
+        $('.alert-danger').hide();
+        
+        $("#closeModal").find('.modal-title').text('Close Permintaan Barang');
+        $("#closeModal").modal('show',{backdrop: 'true'}); 
+    }
 }
 
 function approveData(){

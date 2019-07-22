@@ -180,6 +180,7 @@ class Model_beli_rongsok extends CI_Model{
         $data = $this->db->query("Select dtr.*, 
                     COALESCE(po.no_po,r.no_retur) as no_po,
                     spl.nama_supplier,
+                    spl.kode_supplier,
                     usr.realname As penimbang,
                 (Select count(dtrd.id)As jumlah_item From dtr_detail dtrd Where dtrd.dtr_id = dtr.id)As jumlah_item
                 From dtr

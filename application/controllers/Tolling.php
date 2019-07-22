@@ -2209,7 +2209,11 @@ class Tolling extends CI_Controller{
             $data['header']  = $this->Model_tolling_titipan->show_header_sj($id)->row_array();
             $data['details'] = $this->Model_tolling_titipan->load_detail_surat_jalan($id)->result();
 
-            $this->load->view('tolling_titipan/print_sj', $data);
+            if($data['header']['status']==1){
+                $this->load->view('tolling_titipan/print_sj_approve', $data);
+            }else{
+                $this->load->view('tolling_titipan/print_sj', $data);
+            }
         }else{
             redirect('index.php'); 
         }
@@ -2888,6 +2892,28 @@ class Tolling extends CI_Controller{
 
                 if($this->db->insert('spb', $data)){
                     redirect('index.php/Ingot/add_spb/'.$this->db->insert_id());  
+                }else{
+                    $this->session->set_flashdata('flash_msg', 'Data SPB Rongsok gagal disimpan, silahkan dicoba kembali!');
+                    redirect('index.php/Tolling/add_spb');  
+                }            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data SPB Rongsok gagal disimpan, penomoran belum disetup!');
+                redirect('index.php/Tolling/spb_list');
+            }
+        }else if($jenis == 'AMPAS'){
+            $code = $this->Model_m_numberings->getNumbering('SPB-AMPT', $tgl_input); 
+            if($code){        
+                $data = array(
+                    'no_spb_ampas'=> $code,
+                    'tanggal'=> $tgl_input,
+                    'flag_tolling'=> 1,
+                    'remarks'=>$this->input->post('remarks'),
+                    'created_at'=> $tanggal,
+                    'created_by'=> $user_id
+                );
+
+                if($this->db->insert('t_spb_ampas', $data)){
+                    redirect('index.php/PengirimanAmpas/edit_spb/'.$this->db->insert_id());  
                 }else{
                     $this->session->set_flashdata('flash_msg', 'Data SPB Rongsok gagal disimpan, silahkan dicoba kembali!');
                     redirect('index.php/Tolling/add_spb');  

@@ -116,7 +116,7 @@
                         <div class="col-md-8">
                             <input type="text" id="jenis_barang" name="jenis_barang" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['jenis_barang']; ?>">
+                                value="(<?php echo $header['kode'].') '.$header['jenis_barang']; ?>">
                             <input type="hidden" name="id_jenis_barang" value="<?=$header['id_jenis_barang']; ?>">
                         </div>
                     </div>
@@ -140,7 +140,7 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                     <th>No</th>
-                                    <th width="20%">Nama Barang</th>
+                                    <th width="25%">Nama Barang</th>
                                     <th>No Produksi</th>
                                     <th width="20%">No Packing</th>
                                     <th>Bruto (kg)</th>
@@ -227,7 +227,7 @@
                                     // } else {
 
                                             echo '<td><input type="text" name="details['.$no.'][jenis_barang]" '
-                                                    . 'class="form-control myline" value="'.$row->jenis_barang.'" '
+                                                    . 'class="form-control myline" value="('.$row->kode.') '.$row->jenis_barang.'" '
                                                     . 'readonly="readonly"><input type="hidden" name="details['.$no.'][id_jenis_barang]" value="'.$row->jenis_barang_id.'">';
                                             
                                             echo '<input type="hidden" name="details['.$no.'][id]" value="'.$row->id.'">';

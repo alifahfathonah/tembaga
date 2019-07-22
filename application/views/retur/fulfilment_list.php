@@ -43,6 +43,7 @@
                     <th style="width:50px;">No</th>
                     <th>No. Retur</th>
                     <th>Tanggal</th>
+                    <th>Jenis Barang</th>
                     <th>No. SPB</th>
                     <th>Customer</th>
                     <th>Jumlah <br>Items</th>
@@ -60,7 +61,8 @@
                     <tr>
                         <td style="text-align:center;"><?php echo $no; ?></td>
                         <td style="background-color: "><?php echo $data->no_retur; ?></td>
-                        <td><?php echo date('d-m-Y', strtotime($data->created_at)); ?></td>
+                        <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
+                        <td><?php echo $data->jenis_barang ?></td>
                         <td><?php echo $data->no_spb ?></td>
                         <td><?php echo $data->nama_customer; ?></td>                       
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
@@ -72,11 +74,15 @@
                         <td style="text-align:center">
                             <?php
                                 if($data->status_spb==0){
-                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Approval</div>';
+                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Review</div>';
                                 }else if($data->status_spb==1){
                                     echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
                                 }else if($data->status_spb==2){
                                     echo '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
+                                }else if($data->status_spb==3){
+                                    echo '<div style="background-color:blue; color:#fff; padding:3px">Waiting Approval</div>';
+                                }else if($data->status_spb==4){
+                                    echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
                                 }else if($data->status_spb==9){
                                     echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
                                 }
@@ -84,10 +90,19 @@
                         </td>
                         <td style="text-align:center">
                             <?php
+                            if($data->jenis_barang == 'RONGSOK'){
+                                $s = 'GudangRongsok';
+                            }elseif($data->jenis_barang == 'FG'){
+                                $s = 'GudangFG';
+                            }elseif($data->jenis_barang == 'WIP'){
+                                $s = 'GudangWIP';
+                            }
                                 if( ($group_id==1 || $hak_akses['view_retur']==1)/* && $data->ready_to_ttr>0*/){
                                     echo '<a class="btn btn-circle btn-xs green-seagreen" href="'.base_url().'index.php/Retur/view/'.$data->id.'" 
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> View &nbsp; </a>';
                                 }
+                                echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/'.$s.'/view_spb/'.$data->spb_id.'" 
+                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-book"></i> View SPB </a>';
                             ?>
                         </td>
                         <td style="text-align:center"> 

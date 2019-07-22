@@ -361,7 +361,7 @@ function saveDetail(id){
                 '<input type="hidden" id="rongsok_id_'+new_id+'" name="myDetails['+new_id+'][rongsok_id]" value="">'+
                 '<td><select id="name_rongsok_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,'+new_id+');">'+
                     '<option value=""></option>'+
-                    '<?php foreach($list_rongsok_on_po as $v){ print('<option value="'.$v->id.'">'.$v->nama_item.'</option>');}?>'+
+                    '<?php foreach($list_rongsok_on_po as $v){ print('<option value="'.$v->id.'">('.$v->kode_rongsok.') '.$v->nama_item.'</option>');}?>'+
                 '</select>'+
                 '</td>'+
                 '<td><input type="text" id="uom_'+new_id+'" name="myDetails['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+

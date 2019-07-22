@@ -149,6 +149,7 @@
                                 <th style="width:40px">No</th>
                                 <th>Nama Item</th>
                                 <th>Harga</th>
+                                <th>Qty</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Netto (Kg)</th>
                                 <th>Total Amount</th>
@@ -163,6 +164,7 @@
                                     <td style="text-align: center;"><?php echo $no ?></td>
                                     <td><?php echo $row->jenis_barang ?></td>
                                     <td><?php echo number_format($row->amount,2,'.',',') ?></td>
+                                    <td><?php echo $row->qty;?></td>
                                     <td><?php echo number_format($row->sum_bruto,2,'.',',') ?></td>
                                     <td><?php echo number_format($row->sum_netto,2,'.',',') ?></td>
                                     <td><?php echo number_format($row->sum_total_amount,2,'.',',') ?></td>

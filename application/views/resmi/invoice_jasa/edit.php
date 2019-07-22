@@ -227,6 +227,7 @@
                                 <th style="width: 20%">Nama Item Finish Good</th>
                                 <th style="width: 5%">Unit of Measure</th>
                                 <th>Harga (Rp)</th>
+                                <th>Qty</th>
                                 <th>Bruto</th>
                                 <th style="width: 10%">Netto</th>
                                 <th>Sub Total (Rp)</th>
@@ -252,14 +253,16 @@
                                     <td><?php echo '<input type="text" class="form-control myline " style="margin-bottom:5px;" id="uom_'.$no.'" value="'.$row->uom.'" readonly="readonly">';?>
                                     </td>
                                     <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="amount_'.$no.'" name="details['.$no.'][amount]" value="'.number_format($row->amount,2,'.',',').'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
-                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="bruto_'.$no.'" name="details['.$no.'][bruto]" value="'.number_format($row->sum_bruto,2,'.',',').'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
-                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="netto_'.$no.'" name="details['.$no.'][netto]" value="'.number_format($row->sum_netto,2,'.',',').'" onkeyup="getComa(this.value, this.id,'.$no.');hitungSubTotal('.$no.');">';?></td>
-                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="total_amount_'.$no.'" name="details['.$no.'][total_amount]" value="'.number_format($row->sum_total_amount,2,'.',',').'" readonly="readonly">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline " style="margin-bottom:5px;" id="qty_'.$no.'" name="details['.$no.'][qty]" value="'.$row->qty.'">';?>
+                                    </td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="bruto_'.$no.'" name="details['.$no.'][bruto]" value="'.number_format($row->bruto,2,'.',',').'" onkeyup="getComa(this.value, this.id,'.$no.');">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="netto_'.$no.'" name="details['.$no.'][netto]" value="'.number_format($row->netto,2,'.',',').'" onkeyup="getComa(this.value, this.id,'.$no.');hitungSubTotal('.$no.');">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" id="total_amount_'.$no.'" name="details['.$no.'][total_amount]" value="'.number_format($row->total_amount,2,'.',',').'" readonly="readonly">';?></td>
                                      <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px;" name="details['.$no.'][line_remarks]" value="'.$row->line_remarks.'"  onkeyup="this.value = this.value.toUpperCase()">';?></td>
                                 </tr>
                                 <?php
                                     $no++;
-                                    $total += $row->sum_total_amount;
+                                    $total += $row->total_amount;
                                     }
                                 ?>
                                 <input type="hidden" name="total" id="total" value="<?= number_format($total,2,'.',',') ?>">

@@ -151,7 +151,7 @@
                                 <td><input type="number" id="berat_bobbin" = name="berat_bobbin" class="form-control myline"/></td>
                                 <td><a href="javascript:;" onclick="timbang_netto()" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>
                                 <td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"/></td>
-                                <td><input type="text" id="no_barcode" name="no_barcode" class="form-control myline"></td>
+                                <td><input type="text" id="no_barcode" name="no_barcode" class="form-control myline" value="Auto Generate" readonly></td>
                                 <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="myRequest=null; saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
                             </tr>
                         </table>

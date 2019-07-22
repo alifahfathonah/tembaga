@@ -236,9 +236,11 @@ class Model_retur extends CI_Model{
     }
 
     function fulfilment_list(){
-        $data = $this->db->query("select r.*, tsf.no_spb, tsf.status as status_spb, c.nama_customer, (select count(id) as jumlah_item from retur_fulfilment rf where rf.retur_id = r.id) as jumlah_item
+        $data = $this->db->query("select r.*, COALESCE(s.no_spb, tsf.no_spb, tsw.no_spb_wip) as no_spb, COALESCE(s.status, tsf.status, tsw.status) as status_spb, c.nama_customer, (select count(id) as jumlah_item from retur_fulfilment rf where rf.retur_id = r.id) as jumlah_item
             from retur r
-            left join t_spb_fg tsf on (tsf.id = r.spb_id)
+            left join spb s on (r.jenis_barang = 'RONGSOK' and s.id = r.spb_id)
+            left join t_spb_fg tsf on (r.jenis_barang = 'FG' and tsf.id = r.spb_id)
+            left join t_spb_wip tsw on (r.jenis_barang = 'WIP' and tsw.id = r.spb_id)
             left join m_customers c on (c.id = r.customer_id)
             where r.spb_id != 0");
         return $data;
@@ -273,7 +275,7 @@ class Model_retur extends CI_Model{
     }
 
     function load_detail_sj_rsk($id){
-        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, r.nama_item as jenis_barang, r.uom 
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, COALESCE(tsjd.barang_alias, r.nama_item) as jenis_barang, r.uom 
                 from t_surat_jalan_detail tsjd
                 left join rongsok r on (r.id = tsjd.jenis_barang_id)
                 where tsjd.t_sj_id =".$id);

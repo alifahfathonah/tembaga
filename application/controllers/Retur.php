@@ -1337,7 +1337,7 @@ class Retur extends CI_Controller{
             $data = array(
                 'no_spb'=> $code,
                 'tanggal'=> $tgl_input,
-                'keterangan'=>'RETUR FINISH GOOD',
+                'keterangan'=>'RETUR FINISH GOOD No: '.$this->input->post('no_retur'),
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id
             );
@@ -1350,7 +1350,7 @@ class Retur extends CI_Controller{
                     'spb_id' => $spb_id
                 ));
 
-                $key = $this->db->query("select *from retur_fulfilment where retur_id = ".$this->input->post('id'))->result();
+                $key = $this->db->query("select * from retur_fulfilment where retur_id = ".$this->input->post('id'))->result();
 
                 foreach ($key as $row) {
                     $data_spb_detail = array(
@@ -1377,7 +1377,7 @@ class Retur extends CI_Controller{
             $data = array(
                 'no_spb'=> $code,
                 'tanggal'=> $tgl_input,
-                'remarks'=>'RETUR RONGSOK',
+                'remarks'=>'RETUR RONGSOK No: '.$this->input->post('no_retur'),
                 'created'=> $tanggal,
                 'created_by'=> $user_id
             );
@@ -1403,7 +1403,7 @@ class Retur extends CI_Controller{
 
 
             if($this->db->trans_complete()){
-                redirect('index.php/Ingot/spb_list');
+                redirect('index.php/GudangRongsok/spb_list');
             }else{
                 $this->session->set_flashdata('flash_msg', 'Data SPB gagal disimpan, silahkan dicoba kembali!');
                 redirect('index.php/Retur/edit_fulfilment/'.$this->input->post('id'));  
@@ -1414,7 +1414,7 @@ class Retur extends CI_Controller{
             $data = array(
                 'no_spb_wip'=> $code,
                 'tanggal'=> $tgl_input,
-                'keterangan'=>'RETUR WIP',
+                'keterangan'=>'RETUR WIP No: '.$this->input->post('no_retur'),
                 'created'=> $tanggal,
                 'created_by'=> $user_id
             );
@@ -1857,12 +1857,12 @@ class Retur extends CI_Controller{
                             't_sj_id'=>$this->input->post('id'),
                             'gudang_id'=>$v['id_barang'],
                             'jenis_barang_id'=>$v['jenis_barang_id'],
+                            'barang_alias'=>$v['nama_barang_alias'],
                             'no_packing'=>$v['no_packing'],
                             'qty'=>'1',
                             'bruto'=>$v['bruto'],
                             'netto'=>$v['netto'],
                             'nomor_bobbin'=>$v['bobbin'],
-                            'line_remarks'=>$v['line_remarks'],
                             'created_by'=>$user_id,
                             'created_at'=>$tanggal
                         ));

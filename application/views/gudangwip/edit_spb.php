@@ -82,7 +82,21 @@
                             <input type="text" id="keperluan" name="keperluan" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $jenis; ?>">
                                 
-                            <input type="hidden" name="flag_produksi" value="<?php echo $header['flag_produksi'];?>">
+                            <input type="hidden" id="flag_produksi" name="flag_produksi" value="<?php echo $header['flag_produksi'];?>">
+                        </div>
+                    </div>
+                    <?php } if($header['flag_produksi']==5){?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Rongsok yang di Kirim <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="rongsok_id" name="rongsok_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                <option value=""></option>
+                            <?php foreach ($rongsok as $value){
+                                    echo "<option value='".$value->id."'>(".$value->kode_rongsok.') '.$value->nama_item."</option>";
+                                }?>
+                            </select>
                         </div>
                     </div>
                     <?php } ?>
@@ -169,8 +183,15 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else{     
-        $('#formku').submit(); 
+    }else if($("#flag_produksi").val()==5){
+        if($.trim($("#rongsok_id").val())==""){
+            $('#message').html("Rongsok harus diisi, tidak boleh kosong!");
+            $('.alert-danger').show();
+        }else{
+            $('#formku').submit();
+        }
+    }else{
+        $('#formku').submit();
     };
 };
 

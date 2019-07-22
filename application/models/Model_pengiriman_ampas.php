@@ -44,6 +44,13 @@ class Model_pengiriman_ampas extends CI_Model{
         return $data;
     }
 
+    function load_detail_spb($id){
+        $data = $this->db->query("Select tsad.*, r.nama_item, r.uom, r.kode_rongsok from t_spb_ampas_detail tsad
+                Left join rongsok r on (r.id = tsad.jenis_barang_id)
+                where tsad.t_spb_ampas_id =".$id);
+        return $data;
+    }
+
     function load_detail_saved_item($id){
         $data = $this->db->query("select tsaf.*, r.nama_item, r.uom from t_spb_ampas_fulfilment tsaf
                 left join rongsok r on r.id = tsaf.jenis_barang_id
@@ -136,12 +143,11 @@ class Model_pengiriman_ampas extends CI_Model{
     }
     
     function spb_list(){
-        $data = $this->db->query("select tsa.*, usr.realname As pic, aprv.realname As approved_name, rjt.realname As rejected_name, rcv.realname As receiver_name, (select count(tsa.id) as jumlah_item from t_spb_ampas_detail tsad where tsad.t_spb_ampas_id = tsa.id) as jumlah_item
+        $data = $this->db->query("select tsa.*, usr.realname As pic, aprv.realname As approved_name, rjt.realname As rejected_name, (select count(tsa.id) as jumlah_item from t_spb_ampas_detail tsad where tsad.t_spb_ampas_id = tsa.id) as jumlah_item
             from t_spb_ampas tsa
             left join users usr on (usr.id = tsa.created_by)
             left join users aprv on (aprv.id = tsa.approved_by)
             left join users rjt on (rjt.id = tsa.rejected_by)
-            left join users rcv on (rcv.id = tsa.received_by)
             order by tsa.id Desc");
         return $data;
     }
@@ -150,22 +156,20 @@ class Model_pengiriman_ampas extends CI_Model{
         $data = $this->db->query("select tsa.*, 
                 usr.realname As pic,
                 aprv.realname As approved_name,
-                rjt.realname As rejected_name,
-                rcv.realname As receiver_name
+                rjt.realname As rejected_name
             from t_spb_ampas tsa
                 left join users usr on (tsa.created_by = usr.id)
                 left join users aprv on (tsa.approved_by = aprv.id)
                 left join users rjt on (tsa.rejected_by = rjt.id)
-                left join users rcv on (tsa.received_by = rcv.id)
             where tsa.id = ".$id);
         return $data;
     }
 
     function show_detail_spb($id){
-        $data = $this->db->query("Select tsad.*, jb.jenis_barang,
+        $data = $this->db->query("Select tsad.*, r.nama_item,
                     (select sum(berat_masuk - berat_keluar) from stok_ampas) as stok
                     From t_spb_ampas_detail tsad 
-                        Left Join jenis_barang jb On (jb.id = tsad.jenis_barang_id)
+                        Left Join rongsok r On (r.id = tsad.jenis_barang_id)
                     Where tsad.t_spb_ampas_id=".$id);
         return $data;
     }

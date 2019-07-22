@@ -4,8 +4,6 @@ matching invoice dikurang dengan POTONGAN
 
 Laporan DTR yang dipakai di Matching Invoice CV
 
-jumlah afkiran di ttr
-
 edit terima retur
 
 laporan finish good
@@ -14,8 +12,10 @@ Kode Barang setiap dropdown list.
 
 stock opname delete ama benerin yang bagus
 
-edit tanggal hasil produksi
-
-edit hasil produksi cuci jenis barang dan tanggal
-
 approve matching po dengan dtbj/dtwip tanggal nya belum sama di bpb. masih ngikutin tanggal saat approve
+
+print voucher rongsok tampilin dtr nya
+
+qty surat jalan di tolling masih 0 untuk finish good
+
+edit nomor BPB Sparepart

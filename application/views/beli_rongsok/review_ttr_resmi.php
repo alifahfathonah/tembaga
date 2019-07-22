@@ -158,7 +158,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="number" id="jumlah_packing" name="jumlah_packing" 
-                                class="form-control myline" style="margin-bottom:5px" value="0">
+                                class="form-control myline" style="margin-bottom:5px" value="<?=$header['pengepakan'];?>">
                         </div>
                     </div> 
                     <div class="row">

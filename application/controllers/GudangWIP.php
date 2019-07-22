@@ -552,6 +552,61 @@ class GudangWIP extends CI_Controller{
         redirect('index.php/GudangWIP/produksi_wip/'.$jenis);  
     }
 
+    function edit_produksi_wip(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id'); 
+        $id = $this->uri->segment(3);
+
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Edit Hasil Barang WIP";
+        $data['content']   = "gudangwip/edit_produksi_wip";
+
+        $this->load->model('Model_gudang_wip');
+            $data['header']  = $this->Model_gudang_wip->show_header_thw($id)->row_array();
+            // $data['details'] = $this->Model_gudang_wip->show_detail_bpb($id)->result();
+            $data['jenis_barang'] = $this->Model_gudang_wip->jenis_barang_list()->result();
+        
+        $this->load->view('layout', $data);  
+    }
+
+    function update_proses_wip(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $this->db->trans_start();
+        
+        #Update status SPB
+        $this->db->where('id', $this->input->post('id_thw'));
+        $this->db->update('t_hasil_wip', array(
+                        'tanggal'=>$tgl_input,
+                        'jenis_barang_id'=>$this->input->post('jenis_barang')
+        ));
+
+        $this->db->where('bpb_wip_id', $this->input->post('id_bpb'));
+        $this->db->update('t_bpb_wip_detail', array(
+            'jenis_barang_id'=>$this->input->post('jenis_barang')
+        ));
+
+        $this->db->where('id', $this->input->post('id_bpb'));
+        $this->db->update('t_bpb_wip', array(
+            'tanggal'=>$tgl_input
+        ));
+            
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'Detail SPB sudah disimpan');            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }             
+        
+       redirect('index.php/GudangWIP/produksi_wip/'.$this->input->post('jenis_masak'));
+    }
+
     function send(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
@@ -912,6 +967,10 @@ class GudangWIP extends CI_Controller{
                 $data['list_barang'] = $this->Model_gudang_wip->jenis_barang_spb(2)->result();
             }else if($jenis==3){
                 $data['list_barang'] = $this->Model_gudang_wip->jenis_barang_spb_cuci()->result();
+            }else if($jenis==5){
+                $data['list_barang'] = $this->Model_gudang_wip->jenis_barang_list()->result();
+                $this->load->model('Model_beli_rongsok');
+                $data['rongsok'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
             }else{
                 $data['list_barang'] = $this->Model_gudang_wip->jenis_barang_list()->result();
             }
@@ -1106,23 +1165,36 @@ class GudangWIP extends CI_Controller{
             
             #insert DTR_Detail ke gudang rongsok
             $this->load->model('Model_gudang_wip');
+
+            $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
+
             $loop = $this->Model_gudang_wip->load_detail($this->input->post('id'))->result();
             foreach ($loop as $row) {
-                $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
+                // $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
+                $code_palette = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
+                $no_pallete= $tgl_code.substr($code_palette,13,4);
+
                 $this->db->insert('dtr_detail', array(
                             'dtr_id'=>$dtr_id,
                             //sisa WIP id 8
-                            'rongsok_id' => 8,
+                            'rongsok_id' => $this->input->post('rongsok_id'),
                             'qty'=> $row->qty,
+                            'bruto'=> $row->berat,
                             'netto'=> $row->berat,
-                            'no_pallete'=> date("dmyHis").$rand,
+                            'no_pallete'=> $no_pallete,
                             'line_remarks'=> 'Kirim Rongsok dari WIP'
                         ));
             }
         }
+
+        if($this->input->post('flag_produksi')==3){
+            $r = 'CUCI';
+        }else{
+            $r = '';
+        }
         if($this->db->trans_complete()){
             $this->session->set_flashdata('flash_msg', 'Data SPB WIP berhasil disimpan');
-            redirect('index.php/GudangWIP/spb_list');
+            redirect('index.php/GudangWIP/spb_list/'.$r);
         }else{
             $this->session->set_flashdata('flash_msg', 'Gagal');
             redirect('index.php/GudangWIP/edit_spb/'.$id);

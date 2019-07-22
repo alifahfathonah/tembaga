@@ -14,7 +14,7 @@ class Model_gudang_wip extends CI_Model{
     }          
 
     function gudang_wip_produksi_list($jenis){
-        $data = $this->db->query("Select COALESCE(NULLIF(thw.no_produksi_wip,''), pi.no_produksi) as no_produksi_wip,thw.jenis_masak, thw.tanggal, thw.qty, thw.uom, thw.berat, thw.susut, thw.keras, thw.bs, jb.jenis_barang, usr.realname As pembuat, dtr.id as id_dtr, tbw.id as id_bpb, tbw.status
+        $data = $this->db->query("Select thw.id, COALESCE(NULLIF(thw.no_produksi_wip,''), pi.no_produksi) as no_produksi_wip,thw.jenis_masak, thw.tanggal, thw.qty, thw.uom, thw.berat, thw.susut, thw.keras, thw.bs, jb.jenis_barang, usr.realname As pembuat, dtr.id as id_dtr, tbw.id as id_bpb, tbw.status
                 From t_hasil_wip thw
                     left join t_hasil_masak thm On (thm.id = thw.hasil_masak_id)
                     left join produksi_ingot pi On (pi.id = thm.id_produksi)
@@ -302,6 +302,19 @@ class Model_gudang_wip extends CI_Model{
 
     function stok_wip(){
         $data = $this->db->query("select * from stok_wip");
+        return $data;
+    }
+
+    function show_header_thw($id){
+        $data = $this->db->query("Select thw.*, COALESCE(NULLIF(thw.no_produksi_wip,''), pi.no_produksi) as no_produksi_wip, usr.realname As pembuat, dtr.id as id_dtr, tbw.id as id_bpb, tbw.status
+                From t_hasil_wip thw
+                    left join t_hasil_masak thm On (thm.id = thw.hasil_masak_id)
+                    left join produksi_ingot pi On (pi.id = thm.id_produksi)
+                    Left Join users usr On (thw.created_by = usr.id)
+                    left join jenis_barang jb on (jb.id = thw.jenis_barang_id)   
+                    left join dtr On (dtr.prd_id = thw.id)
+                    left join t_bpb_wip tbw on (tbw.hasil_wip_id = thw.id)
+                where thw.id =".$id);
         return $data;
     }
     /*

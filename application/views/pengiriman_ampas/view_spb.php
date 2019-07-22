@@ -156,7 +156,7 @@
                                             ($status) ? $stat = '<div style="background:green;color:white;"><span class="fa fa-check"></span> OK </div>' : $stat = '<div style="background:red;color:white;"> <span class="fa fa-times"></span> NOK</div>';
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
-                                                echo '<td>'.$row->jenis_barang.'</td>';
+                                                echo '<td>'.$row->nama_item.'</td>';
                                                 echo '<td>'.$row->netto.' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
                                                 echo '<td>'.$stat.'</td>';
@@ -565,7 +565,7 @@ function saveDetail(){
     }else{
         $.ajax({
             type:"POST",
-            url:'<?php echo base_url('index.php/PengirimanAmpas/save_detail_spb'); ?>',
+            url:'<?php echo base_url('index.php/PengirimanAmpas/save_detail_spb_fulfilment'); ?>',
             data:{
                 spb_id:$('#id').val(),
                 jenis_barang_id:$('#barang_1').val(),
@@ -600,7 +600,7 @@ function hapusDetail(id){
     if (r==true){
         $.ajax({
             type:"POST",
-            url:'<?php echo base_url('index.php/PengirimanAmpas/delete_detail_spb'); ?>',
+            url:'<?php echo base_url('index.php/PengirimanAmpas/delete_detail_spb_fulfilment'); ?>',
             data:"id="+ id,
             success:function(result){
                 if(result['message_type']=="sukses"){

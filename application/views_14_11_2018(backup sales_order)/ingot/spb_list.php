@@ -2,9 +2,9 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Produksi Ingot 
+            <i class="fa fa-angle-right"></i> Gudang Rongsok 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Ingot/spb_list'); ?>"> SPB List </a> 
+            <a href="<?php echo base_url('index.php/GudangRongsok/spb_list'); ?>"> SPB Rongsok </a> 
         </h5>          
     </div>
 </div>

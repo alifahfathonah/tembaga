@@ -428,7 +428,7 @@ class Ingot extends CI_Controller{
             }else{
                 $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create SPB, silahkan coba kembali!');
             }                   
-        redirect('index.php/Ingot/spb_list');    
+        redirect('index.php/GudangRongsok/spb_list');    
     }
     
     function spb_list(){
@@ -470,7 +470,7 @@ class Ingot extends CI_Controller{
 
             $this->load->view('layout', $data);
         }else{
-            redirect('index.php/Ingot/spb_list');
+            redirect('index.php/GudangRongsok/spb_list');
         }
     }
     
@@ -1450,6 +1450,30 @@ class Ingot extends CI_Controller{
        redirect('index.php/Ingot/view_spb/'.$spb_id);
     }
 
+    function close_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $spb_id = $this->input->post('header_id');
+
+        $this->db->trans_start();
+
+        // echo $this->input->post('close_remarks');
+        // die();
+            $this->db->where('id',$spb_id);
+            $this->db->update('spb', array(
+                'reject_remarks'=>$this->input->post('close_remarks'),
+                'status'=>1,
+            ));
+
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'SPB sudah di-approve. Detail Pemenuhan SPB sudah disimpan');                 
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }
+       redirect('index.php/GudangRongsok/view_spb/'.$spb_id);
+    }
+
     function approve_spb(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal_keluar = date('Y-m-d', strtotime($this->input->post('tanggal_keluar')));
@@ -1571,7 +1595,7 @@ class Ingot extends CI_Controller{
         $this->db->update('spb', $data);
         
         $this->session->set_flashdata('flash_msg', 'Data permintaan barang berhasil direject');
-        redirect('index.php/Ingot/spb_list');
+        redirect('index.php/GudangRongsok/spb_list');
     }
     
     function get_detail_produksi(){

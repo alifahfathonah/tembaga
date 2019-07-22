@@ -53,6 +53,7 @@
                     <th>Susut</th>
                     <th>Ampas</th>
                     <th>Serbuk</th>
+                    <th>Status</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -74,7 +75,18 @@
                         <td><?php echo $data->bs;?></td>
                         <td><?php echo $data->susut;?></td>
                         <td><?php echo $data->ampas;?></td>
-                        <td><?php echo $data->serbuk;?></td>  
+                        <td><?php echo $data->serbuk;?></td> 
+                        <td style="text-align:center">
+                            <?php 
+                                if($data->status_bpb_wip==0){ 
+                                    echo '<div style="background-color:bisque; padding:4px">Waiting review</div>';
+                                }else if($data->status_bpb_wip==1){ 
+                                    echo '<div style="background-color:green; color:white; padding:4px">Approved</div>';
+                                }else if($data->status_bpb_wip==9){ 
+                                    echo '<div style="background-color:red; padding:4px; color:white">Rejected</div>';
+                                }
+                            ?>
+                        </td> 
                         <td><?php
                         if( (($group_id==1)||($hak_akses['edit']==1)) && $data->status_bpb_wip == 0){
                             echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/Ingot/edit_hasil/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit </a>';

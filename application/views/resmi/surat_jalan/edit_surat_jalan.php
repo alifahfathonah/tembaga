@@ -354,7 +354,7 @@
                                     <?php echo '<select name="details['.$no.'][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px; top: auto; bottom: auto;" onchange="window.scrollTo(0, 150);">
                                         <option value=""></option>';
                                         foreach ($jenis_barang as $value){ 
-                                            echo '<option value="'.$value->id.'" '.(($value->id==$row->jenis_barang_id)? 'selected="selected"': '').'>'.$value->jenis_barang.'</option>';
+                                            echo '<option value="'.$value->id.'" '.(($value->id==$row->jenis_barang_id)? 'selected="selected"': '').'>('.$value->kode.') '.$value->jenis_barang.'</option>';
                                          } 
                                         '</select>';?>
                                     </td>

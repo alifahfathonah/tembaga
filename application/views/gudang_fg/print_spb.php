@@ -27,6 +27,10 @@
                             <td>Jenis Barang</td>
                             <td>: Finish Good</td>
                         </tr>
+                        <tr>
+                            <td>Keterangan</td>
+                            <td>: <?=$header['keterangan'];?></td>
+                        </tr>
                     <?php
                         if($header['status'] == '9'){
                     ?>

@@ -48,7 +48,7 @@
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto,2) ?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->total_harga,2) ?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= ($row->flag_tolling==0) ? 'SO Biasa' : 'SO Tolling'; ?></td>
-                <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?= $row->penjualan;?></td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?= $row->PENJUALAN;?></td>
         <?php $no++;
           $last_series = $row->no_sales_order;
           } ?>

@@ -281,30 +281,30 @@
                                     <table class="table table-bordered table-striped table-hover">
                                         <tr>
                                             <td>Harga Total Invoice</td>
-                                            <td><?=$header['currency'].' '.number_format($total_all,0,',','.');?></td>
+                                            <td><?=$header['currency'].' '.number_format($total_all,2,',','.');?></td>
                                         </tr>
                                         <tr>
                                             <td>Diskon</td>
                                             <td>(<i class="fa fa-minus"></i>)
                                                 <label id="lblDiskon"><?=number_format($header['diskon'],0,',','.');?></label>
-                                                <input type="text" name="diskon" id="diskon" value="<?=number_format($header['diskon'],0,',','.');?>" style="display: none;"  onkeyup="getComa(this.value, this.id)"> 
+                                                <input type="text" name="diskon" id="diskon" value="<?=number_format($header['diskon'],2,',','.');?>" style="display: none;"  onkeyup="getComa(this.value, this.id)"> 
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Biaya Tambahan</td>
                                             <td>(<i class="fa fa-minus"></i>)
                                                 <label id="lblCost"><?=number_format($header['add_cost'],0,',','.');?></label>
-                                                <input type="text" name="cost" id="cost" value="<?=number_format($header['add_cost'],0,',','.');?>" style="display: none;"  onkeyup="getComa(this.value, this.id)"></td>
+                                                <input type="text" name="cost" id="cost" value="<?=number_format($header['add_cost'],2,',','.');?>" style="display: none;"  onkeyup="getComa(this.value, this.id)"></td>
                                         </tr>
                                         <tr>
                                             <td>Materai</td>
                                             <td>(<i class="fa fa-plus"></i>)
                                                 <label id="lblMaterai"><?=number_format($header['materai'],0,',','.');?></label>
-                                                <input type="text" name="materai" id="materai" value="<?=number_format($header['materai'],0,',','.');?>" style="display: none;"  onkeyup="getComa(this.value, this.id)"> </td>
+                                                <input type="text" name="materai" id="materai" value="<?=number_format($header['materai'],2,',','.');?>" style="display: none;"  onkeyup="getComa(this.value, this.id)"> </td>
                                         </tr>
                                         <tr>
                                             <td>Pajak</td>
-                                            <td>(<i class="fa fa-plus"></i>) <?=number_format($ppn,0,',','.');?></td>
+                                            <td>(<i class="fa fa-plus"></i>) <?=number_format($ppn,2,',','.');?></td>
                                         </tr>
                                         <?php 
                                         $total_bersih = 0;
@@ -312,7 +312,7 @@
                                         ?>
                                         <tr>
                                             <td style="text-align: right;"><strong>Total Bersih</strong></td>
-                                            <td style="background-color: green; color: white;"><?=$header['currency'].' '.number_format($total_bersih,0,',','.');?>
+                                            <td style="background-color: green; color: white;"><?=$header['currency'].' '.number_format($total_bersih,2,',','.');?>
                                             </td>
                                         </tr>
                                     </table>

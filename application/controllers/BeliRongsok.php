@@ -1650,6 +1650,12 @@ class BeliRongsok extends CI_Controller{
             $this->load->model('Model_beli_rongsok');
             $data['header']  = $this->Model_beli_rongsok->show_header_ttr($id)->row_array();
             $data['details'] = $this->Model_beli_rongsok->show_detail_ttr($id)->result();
+            $pengepakan = 0;
+            foreach ($data['details'] as $v) {
+                $pengepakan += $v->bruto-$v->netto;
+            }
+            $data['header']['pengepakan'] = $pengepakan;
+            
             if($user_ppn == 1){
                 $data['content'] = 'beli_rongsok/review_ttr_resmi';
             }else{

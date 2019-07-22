@@ -2578,8 +2578,44 @@ class Finance extends CI_Controller{
         }            
     }
 
-    function print_query_penjualan(){
+    function laporan_penjualan(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/laporan_penjualan";
+        $this->load->model('Model_sales_order');
+
+        $this->load->view('layout', $data);   
+    }
+
+    function laporan_penjualan_gabungan(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/laporan_penjualan_gabungan";
+        $this->load->model('Model_sales_order');
+
+        $this->load->view('layout', $data);   
+    }
+
+    function print_laporan_penjualan(){
             $module_name = $this->uri->segment(1);
+            $ppn = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+            $start = date('Y-m-d', strtotime($_GET['ts']));
+            $end = date('Y-m-d', strtotime($_GET['te']));
 
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -2590,7 +2626,67 @@ class Finance extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $this->load->model('Model_finance');
-            $data['detailLaporan'] = $this->Model_finance->query_penjualan()->result();
-            $this->load->view('finance/print_query_penjualan', $data);
+            $data['detailLaporan'] = $this->Model_finance->print_laporan_penjualan($start,$end,$ppn)->result();
+            $this->load->view('finance/print_laporan_penjualan', $data);
+    }
+
+    function print_penjualan_customer(){
+            $module_name = $this->uri->segment(1);
+            $ppn = $this->session->userdata('user_ppn');
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_finance');
+            $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer($ppn)->result();
+            $this->load->view('finance/print_penjualan_customer', $data);
+    }
+
+    function print_penjualan_jb(){
+            $module_name = $this->uri->segment(1);
+            $ppn = $this->session->userdata('user_ppn');
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_finance');
+            $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb($ppn)->result();
+            $this->load->view('finance/print_penjualan_jb', $data);
+    }
+
+    function print_query_penjualan(){
+            $module_name = $this->uri->segment(1);
+            $this->load->helper('tanggal_indo');
+            $l = $_GET['laporan'];
+            $start = date('Y-m-d', strtotime($_GET['ts']));
+            $end = date('Y-m-d', strtotime($_GET['te']));
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_finance');
+            if($l == 1){
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_penjualan($start,$end,0)->result();
+            }elseif ($l == 2) {
+                $data['detailLaporan'] = $this->Model_finance->query_penjualan($start,$end,'CV')->result();
+            }elseif ($l == 3) {
+                $data['detailLaporan'] = $this->Model_finance->query_penjualan($start,$end,'KKH')->result();
+            }
+            $this->load->view('finance/print_laporan_penjualan', $data);
     }
 }
