@@ -864,6 +864,24 @@ class SalesOrder extends CI_Controller{
         redirect('index.php/SalesOrder/');
     }
 
+    function open_inv(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $jenis    = $this->input->post('jenis_barang');
+        
+        #Update status t_surat_jalan
+        $data = array(
+                'flag_invoice'=>0,
+                'modified'=>$tanggal,
+                'modified_by'=>$user_id
+            );
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('sales_order', $data);
+        
+        $this->session->set_flashdata('flash_msg', 'Invoice berhasil di open');
+        redirect('index.php/Finance/add_invoice');
+    }
+
     function spb_list(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');       

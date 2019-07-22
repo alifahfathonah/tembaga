@@ -912,6 +912,8 @@ class BeliRongsok extends CI_Controller{
 
             $this->db->where('id', $this->input->post('id'));
             $this->db->update('dtr', array(
+                        'supplier_id'=>$this->input->post('supplier_id'),
+                        'tanggal'=>$tgl_input,
                         'status'=>0,
                         'remarks'=>$this->input->post('remarks'),
                         'modified'=>$tanggal,
@@ -1339,6 +1341,7 @@ class BeliRongsok extends CI_Controller{
 
             $data['content']= "beli_rongsok/edit_dtr";
             $this->load->model('Model_beli_rongsok');
+            $data['supplier_list'] = $this->Model_beli_rongsok->supplier_list()->result();
             $data['header']  = $this->Model_beli_rongsok->show_header_dtr($id)->row_array(); 
             $data['details'] = $this->Model_beli_rongsok->show_detail_dtr($id)->result();
             

@@ -184,7 +184,7 @@ class PengirimanAmpas extends CI_Controller{
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
             $tabel .= '<td>('.$row->kode_rongsok.') '.$row->nama_item.'</td>';
             $tabel .= '<td>'.$row->uom.'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:right">'.number_format($row->netto,2,',','.').'</td>';
             $tabel .= '<td style="text-align:right">'.$row->keterangan.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
@@ -196,7 +196,7 @@ class PengirimanAmpas extends CI_Controller{
 
         $tabel .= '<tr>';
         $tabel .= '<td colspan="3" style="text-align:right"><strong>Total (Rp) </strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,2,',','.').'</strong></td>';
         $tabel .= '<td colspan="2"></td>';
         $tabel .= '</tr>';
         
@@ -764,8 +764,8 @@ class PengirimanAmpas extends CI_Controller{
         if($this->db->insert('t_spb_ampas_fulfilment', array(
             't_spb_ampas_id'=>$this->input->post('spb_id'),
             'jenis_barang_id'=>$this->input->post('jenis_barang_id'),
-            'berat'=>str_replace('.', '', $this->input->post('berat')),
-            'keterangan'=>str_replace('.', '', $this->input->post('keterangan'))
+            'berat'=>str_replace(',', '', $this->input->post('berat')),
+            'keterangan'=> $this->input->post('keterangan')
         ))){
             $return_data['message_type']= "sukses";
         }else{
@@ -830,7 +830,7 @@ class PengirimanAmpas extends CI_Controller{
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
             $tabel .= '<td>'.$row->nama_item.'</td>';
             $tabel .= '<td>'.$row->uom.'</td>';
-            $tabel .= '<td>'.$row->berat.'</td>';
+            $tabel .= '<td>'.number_format($row->berat,2,',','.').'</td>';
             $tabel .= '<td>'.$row->keterangan.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
@@ -842,7 +842,7 @@ class PengirimanAmpas extends CI_Controller{
 
         $tabel .= '<tr>';
         $tabel .= '<td colspan="3" style="text-align:right"><strong>Total (Kg) </strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.$total.'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($total,2,',','.').'</strong></td>';
         $tabel .= '<td colspan="2"></td>';
         $tabel .= '</tr>';
 

@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-    <div class="collapse well" id="form_filter" >
+    <!-- <div class="collapse well" id="form_filter" >
         <form class="eventInsForm" method="post" target="_self" name="formku" 
         id="formku">
             <div class="row">
@@ -46,14 +46,14 @@
                 </div>
             </div>
         </form>
-    </div>
+    </div> -->
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-file-word-o"></i>List SPB Tolling
                 </div> 
                 <div class="tools">    
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter"><i class="fa fa-search"></i> Filter Jenis Barang</a>
+                <!-- <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter"><i class="fa fa-search"></i> Filter Jenis Barang</a> -->
                 <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Tolling/add_spb"> <i class="fa fa-plus"></i> Ajukan SPB Tolling Keluar</a>
                 </div>               
             </div>
@@ -65,6 +65,7 @@
                     <th>No. SPB</th>
                     <th>Tanggal</th>
                     <th>Pemohon</th>
+                    <th>Jenis Barang</th>
                     <th>Jumlah <br>Items</th>
                     <th>Remarks</th>
                     <th>Status</th>
@@ -82,7 +83,8 @@
                         <td style="text-align:center;"><?php echo $no; ?></td>
                         <td style="background-color: "><?php echo $data->no_spb; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <td><?php echo $data->pic; ?></td>                            
+                        <td><?php echo $data->pic; ?></td>
+                        <td><?php echo $data->jenis_barang; ?></td>                            
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td><?php echo $data->keterangan; ?></td>
                         <td style="text-align:center">
@@ -108,14 +110,15 @@
                             ?>
                         </td>
                         <td style="text-align:center">
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangFG/view_spb/<?php echo $data->id; ?>" 
-                               style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
-                            <?php
-                                if($group_id==1 || $hak_akses['print_po']==1){
-                                    echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangFG/print_spb/'.$data->id.'" 
-                                        style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
-                                }
-                            ?>
+                        <?php if($data->jenis_barang == 'FG'){ ?>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangFG/view_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                        <?php }elseif($data->jenis_barang == 'WIP'){ ?>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangWIP/view_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                        <?php }elseif($data->jenis_barang == 'RONGSOK'){ ?>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangRongsok/view_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                        <?php }elseif($data->jenis_barang == 'AMPAS'){ ?>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/PengirimanAmpas/view_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                        <?php } ?>
                         </td>
                     </tr>
                     <?php
