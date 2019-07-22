@@ -349,7 +349,7 @@
                         </li>
                     </ul>
                 </li>
-            <?php } if($group_id==1 || (isset($akses_menu['Ingot']) && $akses_menu['Ingot']==1)){ ?>
+            <?php } if($group_id==1 || $group_id == 21 || (isset($akses_menu['Ingot']) && $akses_menu['Ingot']==1)){ ?>
                 <li <?php if($module_name=="Ingot" || $action_name=="produksi_wip" || $action_name=="produksi_fg") echo 'class="start active open"'; ?>>
                     <a href="javascript:;">
                     <i class="fa fa-industry"></i>
@@ -369,7 +369,7 @@
                                     <i class="fa fa-flask"></i>
                                     Create Produksi</a>
                                 </li>
-                                <?php if($group_id==1 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
+                                <?php if($group_id==1 || $group_id == 21 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/Ingot/filter_spb/1">
                                         <i class="fa fa-file-excel-o"></i>
@@ -381,7 +381,7 @@
                                         <i class="fa fa-file-powerpoint-o"></i>
                                         SKB List </a>
                                     </li> -->
-                                <?php if($group_id==1 || (isset($akses_menu['hasil_produksi']) && $akses_menu['hasil_produksi']==1)){ ?>
+                                <?php if($group_id==1 || $group_id == 21 || (isset($akses_menu['hasil_produksi']) && $akses_menu['hasil_produksi']==1)){ ?>
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/Ingot/hasil_produksi">
                                         <i class="fa fa-fire"></i>
@@ -395,7 +395,7 @@
                                 <?php } ?>
                             </ul>
                         </li>
-                        <?php if($group_id==1 || (isset($akses_menu['hasil_produksi']) && $akses_menu['hasil_produksi']==1)){ ?>
+                        <?php if($group_id==1 || $group_id == 21 || (isset($akses_menu['hasil_produksi']) && $akses_menu['hasil_produksi']==1)){ ?>
                         <li><a href="javascript:;">
                                 <i class="fa fa-life-ring"></i>
                                 <span class="title">Rolling</span>
@@ -450,7 +450,7 @@
                                 </li>
                             </ul>
                         </li>
-                        <?php } if($group_id==1 || (isset($akses_menu['produksi']) && $akses_menu['produksi']==1)){  ?>
+                        <?php } if($group_id==1 || $group_id == 21 || (isset($akses_menu['produksi']) && $akses_menu['produksi']==1)){  ?>
                         <li <?php if($action_name=="produksi_fg") echo 'class="start active open"'; ?>>
                             <a href="<?php echo base_url(); ?>index.php/GudangFG/produksi_fg">
                             <i class="fa fa-cube"></i>
@@ -460,7 +460,7 @@
                         
                     </ul>
                 </li>
-            <?php } if($group_id==1 || ( (isset($akses_menu['GudangWIP'])&&$akses_menu['GudangWIP']==1) || (isset($akses_menu['GudangFG'])&&$akses_menu['GudangFG']==1) ) ){ ?>
+            <?php } if($group_id==1 || $group_id == 21 || ( (isset($akses_menu['GudangWIP'])&&$akses_menu['GudangWIP']==1) || (isset($akses_menu['GudangFG'])&&$akses_menu['GudangFG']==1) ) ){ ?>
                 <li <?php if(($module_name=="GudangRongsok") || ($module_name=="GudangWIP" && $action_name!="produksi_wip" && $action_name!="proses_wip") || ($module_name=="GudangFG" && $action_name!="produksi_fg") || ($module_name=="StokOpname")) echo 'class="start active open"'; ?>>
                     <a href="#">
                     <i class="fa fa-cubes"></i>
@@ -475,13 +475,13 @@
                         <span class="arrow "></span>
                         </a>
                         <ul class="sub-menu">
-                        <?php if($group_id==1 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
+                        <?php if($group_id==1 || $group_id == 21 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangRongsok/spb_list">
                                 <i class="fa fa-file-excel-o"></i>
                                 SPB Rongsok </a>
                             </li>
-                        <?php }  if($group_id==1 || (isset($akses_menu['view_laporan']) && $akses_menu['view_laporan']==1)){ ?>
+                        <?php }  if($group_id==1 || $group_id == 21 || (isset($akses_menu['view_laporan']) && $akses_menu['view_laporan']==1)){ ?>
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangRongsok/index">
                                 <i class="fa fa-search"></i>
@@ -508,19 +508,19 @@
                         <span class="arrow "></span>
                         </a>
                         <ul class="sub-menu">
-                        <?php if($group_id==1 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
+                        <?php if($group_id==1 || $group_id == 21 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangWIP/spb_list">
                                 <i class="fa fa-file-word-o"></i>
                                 SPB WIP </a>
                             </li>
-                        <?php } if($group_id==1 || (isset($akses_menu['bpb_list']) && $akses_menu['bpb_list']==1)){ ?>
+                        <?php } if($group_id==1 || $group_id == 21 || (isset($akses_menu['bpb_list']) && $akses_menu['bpb_list']==1)){ ?>
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangWIP/bpb_list">
                                 <i class="fa fa-file-excel-o"></i>
                                 BPB WIP </a>
                             </li>
-                        <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                        <?php } if($group_id==1 || $group_id == 21 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangWIP">
                                 <i class="fa fa-cubes"></i>
@@ -528,13 +528,13 @@
                             </li>
                         <?php }  ?>
                             <!-- ambil produksi disini -->
-                        <?php if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                        <?php if($group_id==1 || $group_id == 21 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangWIP/laporan_list">
                                 <i class="fa fa-briefcase"></i>
                                 Laporan WIP </a>
                             </li>
-                        <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                        <?php } if($group_id==1 || $group_id == 21 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangWIP/stok_wip">
                                 <i class="fa fa-inbox"></i>
@@ -557,19 +557,19 @@
                                 <i class="fa fa-file-word-o"></i>
                                 SPB FG </a>
                             </li>
-                        <?php if($group_id==1 || (isset($akses_menu['bpb_list']) && $akses_menu['bpb_list']==1)){ ?>
+                        <?php if($group_id==1 || $group_id == 21 || (isset($akses_menu['bpb_list']) && $akses_menu['bpb_list']==1)){ ?>
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangFG/bpb_list">
                                 <i class="fa fa-file-excel-o"></i>
                                 BPB FG </a>
                             </li>
-                        <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                        <?php } if($group_id==1 || $group_id == 21 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangFG/">
                                 <i class="fa fa-cubes"></i>
                                 Gudang FG </a>
                             </li>
-                            <?php } if($group_id==1 || (isset($akses_menu['laporan_so']) && $akses_menu['laporan_so']==1)){ ?>
+                            <?php } if($group_id==1 || $group_id == 21 || (isset($akses_menu['laporan_so']) && $akses_menu['laporan_so']==1)){ ?>
                             <li>
                                 <a href="javascript:;">
                                 <i class="fa fa-book"></i>
@@ -605,7 +605,7 @@
                         <span class="arrow "></span>
                         </a>
                         <ul class="sub-menu">
-                        <?php if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                        <?php if($group_id==1 || $group_id == 21 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/StokOpname/report">
                                 <i class="fa fa-briefcase"></i>

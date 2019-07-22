@@ -63,7 +63,7 @@
                         <td style="background-color: turquoise;"><?=number_format($arr['qty_awal'][$no] + ($data['qty_masuk'] - $data['qty_keluar']), 2, '.', ',') ;?></td>
                         <td style="background-color: turquoise;"><?=number_format($arr['berat_awal'][$no] + ($data['berat_masuk'] - $data['berat_keluar']), 2, '.', ',') ;?></td>
                         <td><?php
-                        if($group_id==1 || $hak_akses['view_spb']==1){
+                        if($group_id==1 || $group_id==21 || $hak_akses['view_spb']==1){
                         ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangWIP/view_laporan/<?php echo $data['tanggal']; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
                         <?php

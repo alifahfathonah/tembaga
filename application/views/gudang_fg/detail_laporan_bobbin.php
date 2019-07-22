@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['edit']==1) ){
+            if( ($group_id==1 || $group_id==21)||($hak_akses['edit']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -99,7 +99,7 @@
             </div>
             <hr class="divider"/>
     <?php
-        if(($group_id==1 && !$header['flag_result']) || (!$header['flag_result'])){
+        if(($group_id==1 || $group_id==21 && !$header['flag_result']) || (!$header['flag_result'])){
     ?>
             <h4 class="text-center">Detail Produksi List</h4>
             *Note Isi Bruto Dahulu sebelum Tulis nomor Bobbin

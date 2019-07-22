@@ -15,7 +15,7 @@
     </div>
 </div>
 <?php
-        if( ($group_id==1)||($hak_akses['hasil_produksi']==1) ){
+        if( ($group_id==1 || $group_id==21)||($hak_akses['hasil_produksi']==1) ){
     ?>
 <div class="row">
     <div class="col-md-12">
@@ -37,7 +37,7 @@
             </div>
             <div class="tools">
             <?php
-                if( ($group_id==1)||($hak_akses['add']==1) ){
+                if( ($group_id==1 || $group_id==21)||($hak_akses['add']==1) ){
             ?>
                 <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="
                     <?=base_url('index.php/GudangWIP/proses_wip/'.$this->uri->segment(3));?>">

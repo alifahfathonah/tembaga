@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['edit_produksi']==1) ){
+            if( ($group_id==1 || $group_id==21)||($hak_akses['edit_produksi']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">

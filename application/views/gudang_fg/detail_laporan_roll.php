@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['edit']==1) ){
+            if( ($group_id==1 || $group_id==21)||($hak_akses['edit']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -103,7 +103,7 @@
                         </div>
                     </div>
     <?php
-        if(($group_id==1 && !$header['flag_result']) || (!$header['flag_result'])){
+        if(($group_id==1 || $group_id==21 && !$header['flag_result']) || (!$header['flag_result'])){
     ?>
                     
                     <div class="row">
