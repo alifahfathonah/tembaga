@@ -143,7 +143,7 @@ class Model_pengiriman_ampas extends CI_Model{
     }
     
     function spb_list(){
-        $data = $this->db->query("select tsa.*, usr.realname As pic, aprv.realname As approved_name, rjt.realname As rejected_name, (select count(tsa.id) as jumlah_item from t_spb_ampas_detail tsad where tsad.t_spb_ampas_id = tsa.id) as jumlah_item
+        $data = $this->db->query("select tsa.*, usr.realname As pic, aprv.realname As approved_name, rjt.realname As rejected_name, (select count(tsad.id) from t_spb_ampas_detail tsad where tsad.t_spb_ampas_id = tsa.id) as jumlah_item
             from t_spb_ampas tsa
             left join users usr on (usr.id = tsa.created_by)
             left join users aprv on (aprv.id = tsa.approved_by)
@@ -166,7 +166,7 @@ class Model_pengiriman_ampas extends CI_Model{
     }
 
     function show_detail_spb($id){
-        $data = $this->db->query("Select tsad.*, r.nama_item,
+        $data = $this->db->query("Select tsad.*, r.nama_item as jenis_barang,
                     (select sum(berat_masuk - berat_keluar) from stok_ampas) as stok
                     From t_spb_ampas_detail tsad 
                         Left Join rongsok r On (r.id = tsad.jenis_barang_id)

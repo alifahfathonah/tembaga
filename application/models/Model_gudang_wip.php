@@ -306,7 +306,7 @@ class Model_gudang_wip extends CI_Model{
     }
 
     function show_header_thw($id){
-        $data = $this->db->query("Select thw.*, COALESCE(NULLIF(thw.no_produksi_wip,''), pi.no_produksi) as no_produksi_wip, usr.realname As pembuat, dtr.id as id_dtr, tbw.id as id_bpb, tbw.status
+        $data = $this->db->query("Select thw.*, pi.id as id_produksi_ingot, COALESCE(NULLIF(thw.no_produksi_wip,''), pi.no_produksi) as no_produksi_wip, usr.realname As pembuat, dtr.id as id_dtr, tbw.id as id_bpb, tbw.status
                 From t_hasil_wip thw
                     left join t_hasil_masak thm On (thm.id = thw.hasil_masak_id)
                     left join produksi_ingot pi On (pi.id = thm.id_produksi)

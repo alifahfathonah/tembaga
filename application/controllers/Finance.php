@@ -301,10 +301,12 @@ class Finance extends CI_Controller{
     function update_um(){
         $user_id = $this->session->userdata('user_id');
         $id = $this->input->post('header_id');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal_baru')));
         $tanggal  = date('Y-m-d h:m:s');
         $jenis = $this->input->post('jenis1');
         if($jenis=="Cek Mundur"){
             $data = array(
+                'tanggal'=>$tgl_input,
                 'nominal'=>str_replace('.', '', $this->input->post('nominal_baru')),
                 'status'=>0,
                 'tgl_cair'=>$this->input->post('tanggal_cek_baru'),
@@ -314,6 +316,7 @@ class Finance extends CI_Controller{
             );
         }else if($jenis=="Cek"){
             $data = array(
+                'tanggal'=>$tgl_input,
                 'nominal'=>str_replace('.', '', $this->input->post('nominal_baru')),
                 'status'=>0,
                 'nomor_cek'=>$this->input->post('nomor'),
@@ -323,6 +326,7 @@ class Finance extends CI_Controller{
             );
         }else if($jenis=="Giro"){
             $data = array(
+                'tanggal'=>$tgl_input,
                 'nominal'=>str_replace('.', '', $this->input->post('nominal_baru')),
                 'status'=>0,
                 'rekening_pembayaran'=>$this->input->post('nomor'),

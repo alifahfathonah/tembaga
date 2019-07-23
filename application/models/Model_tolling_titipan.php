@@ -567,14 +567,21 @@ class Model_tolling_titipan extends CI_Model{
     }
 
     function load_tolling_detail($id){
-        $data = $this->db->query("Select pod.*, jb.jenis_barang, jb.uom From po_detail pod 
-                Left Join jenis_barang jb On(pod.jenis_barang_id = jb.id) 
+        $data = $this->db->query("Select pod.*, COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom) as uom  From po_detail pod 
+                Left Join po on po.id = pod.po_id
+                Left Join jenis_barang jb On (po.jenis_po != 'Rongsok' and pod.jenis_barang_id = jb.id) 
+                Left Join rongsok r On (po.jenis_po = 'Rongsok' and pod.jenis_barang_id = r.id )
                 Where pod.po_id=".$id);
         return $data;
     }
 
     function get_uom_tolling($id){
         $data = $this->db->query("Select uom from jenis_barang where id=".$id);
+        return $data;
+    }
+
+    function get_uom_tolling_rsk($id){
+        $data = $this->db->query("Select uom from rongsok where id=".$id);
         return $data;
     }
 
@@ -639,6 +646,11 @@ class Model_tolling_titipan extends CI_Model{
         return $data;
     }
 
+    function jenis_barang_rsk(){
+        $data = $this->db->query("select id, nama_item as jenis_barang, kode_rongsok as kode from rongsok where type_barang = 'Rongsok'");
+        return $data;
+    }
+
     function dtt_list(){
         $data = $this->db->query("Select dtt.*, 
                     po.no_po, 
@@ -669,19 +681,31 @@ class Model_tolling_titipan extends CI_Model{
     }
 
     function spb_list(){
-        $data = $this->db->query("Select tsf.*, 
-                    usr.realname As pic,
-                    aprv.realname As approved_name,
-                    rjt.realname As rejected_name,
-                    rcv.realname As receiver_name,
-                (Select count(tsfd.id)As jumlah_item From t_spb_fg_detail tsfd Where tsfd.t_spb_fg_id = tsf.id)As jumlah_item
+        $data = $this->db->query("SELECT * FROM (
+    Select tsf.id, tsf.tanggal, tsf.no_spb, tsf.status, tsf.flag_tolling, tsf.keterangan, usr.realname As pic,
+    aprv.realname As approved_name, rjt.realname As rejected_name, (Select count(tsfd.id)As jumlah_item From t_spb_fg_detail tsfd Where tsfd.t_spb_fg_id = tsf.id)As jumlah_item, 'FG' as jenis_barang
                 From t_spb_fg tsf
                     Left Join users usr On (tsf.created_by = usr.id) 
                     Left Join users aprv On (tsf.approved_by = aprv.id) 
                     Left Join users rjt On (tsf.rejected_by = rjt.id)
-                    Left join users rcv on (tsf.received_by = rcv.id)
-                Where flag_tolling > 0
-                Order By tsf.id Desc");
+    UNION
+    Select tsw.id, tsw.tanggal, tsw.no_spb_wip as no_spb, tsw.status, tsw.flag_tolling, tsw.keterangan,  usr.realname As pic, aprv.realname As approved_name, rjt.realname As rejected_name, (Select count(tswd.id)As jumlah_item From t_spb_wip_detail tswd Where tswd.t_spb_wip_id = tsw.id)As jumlah_item, 'WIP' as jenis_barang
+                From t_spb_wip tsw
+                    Left Join users usr On (tsw.created_by = usr.id) 
+                    Left Join users aprv On (tsw.approved_by = aprv.id) 
+                    Left Join users rjt On (tsw.rejected_by = rjt.id)
+    UNION
+    Select spb.id, spb.tanggal, spb.no_spb, spb.status, spb.flag_tolling, spb.remarks as keterangan, usr.realname As pic, aprv.realname As approved_name, rjt.realname As rejected_name, (Select count(sd.id)As jumlah_item From spb_detail sd Where sd.spb_id = spb.id)As jumlah_item, 'RONGSOK' as jenis_barang
+                From spb
+                    Left Join users usr On (spb.created_by = usr.id) 
+                    Left Join users aprv On (spb.approved_by = aprv.id) 
+                    Left Join users rjt On (spb.rejected_by = rjt.id)
+    UNION
+    Select tsa.id, tsa.tanggal, tsa.no_spb_ampas as no_spb, tsa.status, tsa.flag_tolling, tsa.keterangan, usr.realname as pic, aprv.realname as approved_name, rjt.realname as rejected_name, (select count(tsad.id) from t_spb_ampas_detail tsad where tsad.t_spb_ampas_id = tsa.id) as jumlah_item, 'AMPAS' as jenis_barang From t_spb_ampas tsa
+                    Left Join users usr On (tsa.created_by = usr.id)
+                    Left Join users aprv On (tsa.approved_by = aprv.id)
+                    Left Join users rjt On (tsa.rejected_by = rjt.id)
+) a where flag_tolling > 0");
         return $data;
     }
 
@@ -746,6 +770,11 @@ class Model_tolling_titipan extends CI_Model{
 
     function get_spb_list_fg(){
         $data = $this->db->query("select id, no_spb from t_spb_fg where flag_tolling = 1 and status not in (0,9)");
+        return $data;
+    }
+
+    function get_spb_list_ampas(){
+        $data = $this->db->query("select id, no_spb_ampas as no_spb from t_spb_ampas where flag_tolling = 1 and status not in (0,9)");
         return $data;
     }
 
@@ -818,12 +847,22 @@ class Model_tolling_titipan extends CI_Model{
         return $data;
     }
 
+    function list_item_sjk_ampas($id){
+        $data = $this->db->query("select tsj.id, tga.id as id_gudang, tga.berat, tga.rongsok_id, r.nama_item, r.kode_rongsok, r.uom 
+                from t_surat_jalan tsj
+                left join t_gudang_ampas tga on tga.id_spb = tsj.spb_id
+                left join rongsok r on r.id = tga.rongsok_id
+                where tsj.spb_id =".$id." and flag_taken = 0");
+        return $data;
+    }
+
     function show_header_sj_only($id){
-        $data = $this->db->query("select tsj.*, po.no_po, coalesce(tsf.no_spb, tsw.no_spb_wip, spb.no_spb)as no_spb, mc.id as id_customer, mc.nama_customer, mc.alamat, coalesce(tsf.status, tsw.status, spb.status) as status_spb, tkdr.type_kendaraan, usr.realname, aprv.realname as approved_name, rjct.realname as rejected_name from t_surat_jalan tsj
+        $data = $this->db->query("select tsj.*, po.no_po, coalesce(tsf.no_spb, tsw.no_spb_wip, spb.no_spb, tsa.no_spb_ampas)as no_spb, mc.id as id_customer, mc.nama_customer, mc.alamat, coalesce(tsf.status, tsw.status, spb.status, tsa.status) as status_spb, tkdr.type_kendaraan, usr.realname, aprv.realname as approved_name, rjct.realname as rejected_name from t_surat_jalan tsj
                     Left Join po On (po.id = tsj.po_id)
                     Left Join t_spb_fg tsf On (tsj.jenis_barang = 'FG' and tsf.id = tsj.spb_id)
                     Left Join t_spb_wip tsw On (tsj.jenis_barang = 'WIP' and tsw.id = tsj.spb_id)
                     Left Join spb On (tsj.jenis_barang = 'RONGSOK' and spb.id = tsj.spb_id)
+                    Left Join t_spb_ampas tsa On (tsj.jenis_barang = 'AMPAS' and tsa.id = tsj.spb_id)
                     Left Join m_customers mc On (tsj.m_customer_id = mc.id)
                     Left Join m_type_kendaraan tkdr On (tsj.m_type_kendaraan_id = tkdr.id) 
                     Left Join users usr On (tsj.created_by = usr.id)

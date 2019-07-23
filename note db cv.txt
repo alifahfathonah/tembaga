@@ -1,2 +1,0 @@
-r_t_surat_jalan
-add m_cv_id int(11)

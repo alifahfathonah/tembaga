@@ -6,7 +6,6 @@
                 <i class="fa fa-home"></i> Home 
             </a>
             <i class="fa fa-angle-right"></i> Gudang
-            
             <i class="fa fa-angle-right"></i>
             <a href="
                 <?php echo base_url('index.php/GudangWIP/hasil_produksi'); ?>"> Hasil Produksi WIP 
@@ -33,7 +32,6 @@
         <div class="portlet-title">
             <div class="caption">
                 <i class="fa fa-hourglass"></i> Hasil Produksi WIP 
-                
             </div>
             <div class="tools">
             <?php
@@ -112,6 +110,7 @@
                             }
                             if($data->status==0){
                             echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/GudangWIP/edit_produksi_wip/'.$data->id.'" ><i class="fa fa-edit">&nbsp;</i> Edit &nbsp;</a>';
+                            echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/GudangWIP/delete_produksi_wip/'.$data->id.'"  onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash">&nbsp;</i> Delete &nbsp;</a>';
                             }
                         ?>
                         </td>

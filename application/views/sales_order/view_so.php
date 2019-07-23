@@ -335,6 +335,9 @@
         <?php }else{ ?>
         <a href="javascript:;" onclick="openSO();" class="btn green"> 
                         <i class="fa fa-plus"></i> Open SO </a>
+        <?php } if($header['flag_invoice']==1){?>
+        <a href="javascript:;" onclick="openINV();" class="btn green"> 
+                        <i class="fa fa-money"></i> Open Untuk Buat Invoice </a>
         <?php } ?>
         </form>
         <?php
@@ -362,6 +365,14 @@ function openSO(){
     var r=confirm("Anda yakin meng-close SO ini?");
     if (r==true){
         $('#formku').attr("action", "<?php echo base_url(); ?>index.php/SalesOrder/open_so");    
+        $('#formku').submit(); 
+    }
+};
+
+function openINV(){
+    var r=confirm("Anda yakin meng-close SO ini?");
+    if (r==true){
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/SalesOrder/open_inv");    
         $('#formku').submit(); 
     }
 };

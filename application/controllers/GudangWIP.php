@@ -607,6 +607,78 @@ class GudangWIP extends CI_Controller{
        redirect('index.php/GudangWIP/produksi_wip/'.$this->input->post('jenis_masak'));
     }
 
+    function delete_produksi_wip(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $this->db->trans_start();
+
+            $this->load->model('Model_gudang_wip');
+            $header  = $this->Model_gudang_wip->show_header_thw($id)->row_array();
+            $this->db->where('id', $header['id']);
+            $this->db->delete('t_hasil_wip');
+
+            $this->db->where('id', $header['hasil_masak_id']);
+            $this->db->delete('t_hasil_masak');
+
+            if(!empty($header['id_produksi_ingot'])){
+                $this->db->where('id', $header['id_produksi_ingot']);
+                $this->db->delete('produksi_ingot');
+
+                $this->db->where('produksi_ingot_id', $header['id_produksi_ingot']);
+                $this->db->delete('produksi_ingot_detail');
+            }
+
+            $this->db->where('id', $header['id_bpb']);
+            $this->db->delete('t_bpb_wip');
+
+            $this->db->where('bpb_wip_id', $header['id_bpb']);
+            $this->db->delete('t_bpb_wip_detail');
+
+            if(!empty($header['id_dtr'])){
+                $this->db->where('id', $header['id_dtr']);
+                $this->db->delete('dtr');
+
+                $this->db->where('dtr_id', $header['id_dtr']);
+                $this->db->delete('dtr_detail');
+            }
+
+            if($header['jenis_masak']=='CUCI'){
+                $this->db->where('id', $header['t_spb_wip_id']);
+                $this->db->update('t_spb_wip', array(
+                    'flag_produksi'=>3
+                ));
+            }elseif($header['jenis_masak']=='BAKAR ULANG'){
+                $this->db->where('t_hasil_wip_id', $header['id']);
+                $this->db->delete('t_gudang_keras');
+            }
+
+            if($this->db->trans_complete()){
+                $this->session->set_flashdata('flash_msg', 'Data Produksi berhasil dihapus');
+                if ($header['jenis_masak'] == 'ROLLING') {
+                    redirect('index.php/GudangWIP/produksi_wip/ROLLING');
+                } else if ($header['jenis_masak'] == 'CUCI') {
+                    redirect('index.php/GudangWIP/produksi_wip/CUCI');
+                } else if ($header['jenis_masak'] == 'INGOT') {
+                    redirect('index.php/Ingot/hasil_produksi');
+                } else {
+                    redirect('index.php/GudangWIP/produksi_wip/BAKAR%20ULANG');
+                }
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data Produksi gagal dihapus');
+                if ($header['jenis_masak'] == 'ROLLING') {
+                    redirect('index.php/GudangWIP/produksi_wip/ROLLING');
+                } else if ($header['jenis_masak'] == 'CUCI'){
+                    redirect('index.php/GudangWIP/produksi_wip/CUCI');
+                } else if ($header['jenis_masak'] == 'INGOT'){
+                    redirect('index.php/Ingot/hasil_produksi');
+                } else {
+                    redirect('index.php/GudangWIP/produksi_wip/BAKAR%20ULANG');
+                }
+            }
+        }
+    }
+
     function send(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        

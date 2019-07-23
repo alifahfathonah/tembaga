@@ -90,9 +90,10 @@
                         <div class="col-md-8">
                             <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_no_spb(this.value);">
                                 <option value=""></option>
+                                <option value="FG">FinishGood</option>
                                 <option value="RONGSOK">Rongsok</option>
                                 <option value="WIP">WIP</option>
-                                <option value="FG">FinishGood</option>
+                                <option value="AMPAS">Ampas</option>
                             </select>
                         </div>
                     </div>

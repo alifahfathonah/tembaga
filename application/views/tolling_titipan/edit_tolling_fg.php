@@ -84,13 +84,12 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Term Of Payment <font color="#f00">*</font>
+                            Catatan
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="top" name="top" 
-                                class="form-control input-small myline" style="margin-bottom:5px; float:left;" readonly="readonly" value="<?php echo $header['term_of_payment']; ?>">
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px"><?=$header['remarks'];?></textarea>                           
                         </div>
-                    </div>
+                    </div> 
                     <div class="row">&nbsp;</div>
                 </div>
                 <div class="col-md-2">&nbsp;</div>
@@ -128,7 +127,16 @@
                             <input type="text" id="jenis_po" name="jenis_po" readonly="readonly"
                                    class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['jenis_po']; ?>">
                         </div>
-                    </div>   
+                    </div>  
+                    <div class="row">
+                        <div class="col-md-4">
+                            Term Of Payment <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="top" name="top" 
+                                class="form-control input myline" style="margin-bottom:5px; float:left;" value="<?php echo $header['term_of_payment']; ?>">
+                        </div>
+                    </div> 
                 </div>              
             </div>
             <div class="row">&nbsp;</div>
@@ -151,10 +159,10 @@
                             <tr>
                                 <td style="text-align:center"><i class="fa fa-plus"></i></td>
                                 <td>
-                                <select id="barang_id" name="barang_id" class="form-control select2me myline"  data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
+                                <select id="barang_id" name="barang_id" class="form-control select2me myline"  data-placeholder="Pilih..." style="margin-bottom:5px" <?=($header['jenis_po']=='Rongsok')? 'onclick="get_uom_rsk(this.value);"' : 'onclick="get_uom(this.value);"';?> >
                                     <option value=""></option>
                                     <?php foreach ($list_barang as $value){
-                                        echo '<option value="'.$value->id.'">'.$value->jenis_barang.'</option>';
+                                        echo '<option value="'.$value->id.'">('.$value->kode.') '.$value->jenis_barang.'</option>';
                                     }?>
                                 </select>
                                 </td>
@@ -197,24 +205,18 @@
     </div>
 </div> 
 <script>
-function myCurrency(evt) {
-    var charCode = (evt.which) ? evt.which : event.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
-        return false;
-    return true;
-}
-
 function getComa(value, id){
-    angka = value.toString().replace(/\./g, "");
-    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    angka = value.toString().replace(/\,/g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     hitungSubTotal();
 }
 
 function hitungSubTotal(){
-    harga = $('#harga').val().toString().replace(/\./g, "");
-    qty   = $('#qty').val().toString().replace(/\./g, "");
+    harga = $('#harga').val().toString().replace(/\,/g, "");
+    qty   = $('#qty').val().toString().replace(/\,/g, "");
     total_harga = Number(harga)* Number(qty);
-    $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    total_harga = total_harga.toFixed(2);
+    $('#total_harga').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }
 
 function simpanData(){
@@ -240,6 +242,19 @@ function loadDetail(id){
 function get_uom(id){
     $.ajax({
         url: "<?php echo base_url('index.php/Tolling/get_uom_tolling'); ?>",
+        async: false,
+        type: "POST",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result) {
+            $('#uom').val(result['uom']);
+        }
+    })
+}
+
+function get_uom_rsk(id){
+    $.ajax({
+        url: "<?php echo base_url('index.php/Tolling/get_uom_tolling_rsk'); ?>",
         async: false,
         type: "POST",
         data: "id="+id,
