@@ -464,6 +464,46 @@ class Model_gudang_fg extends CI_Model{
             ");
         return $data;
     }
+
+    function stok_fg_kawat_rambut_jenis(){
+        $data = $this->db->query("select sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            where tgf.jenis_trx = 0 and jb.ukuran <= '0500' and substr(tgf.no_packing,7,2) IN ('A0','B0','C0') group by tgf.jenis_barang_id order by jb.jenis_barang asc");
+        return $data;
+    }
+
+    function stok_fg_kawat_halus_jenis(){
+        $data = $this->db->query("select * from 
+            ((select sum(tgf.netto) as netto, jb.ukuran, jb.jenis_barang, jb.kode, jb.uom, tgf.jenis_barang_id from t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            where tgf.jenis_trx = 0 and jb.ukuran <= '0500' and substr(tgf.no_packing,7,2) IN ('A0','B0','C0') group by tgf.jenis_barang_id)
+            UNION ALL
+            (select sum(tgf.netto) as netto, jb.ukuran, jb.jenis_barang, jb.kode, jb.uom, tgf.jenis_barang_id from t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            where tgf.jenis_trx = 0 and jb.ukuran BETWEEN '0600' and '0900' group by tgf.jenis_barang_id )) a order by ukuran asc");
+        return $data;
+    }
+
+    function stok_fg_kawat_besar_jenis(){
+        $data = $this->db->query("select sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            where tgf.jenis_trx = 0 and jb.ukuran >= '1000' group by tgf.jenis_barang_id order by jb.jenis_barang asc");
+        return $data;
+    }
+
+    function stok_penjualan_hari($date){
+        $data = $this->db->query("select sum(netto) as netto from t_surat_jalan_detail tsjd 
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
+            where tsj.tanggal = '".$date."'");
+        return $data;
+    }
+
+    function stok_t_penjualan_hari($date,$m,$y){
+        $data = $this->db->query("select sum(netto) as netto from t_surat_jalan_detail tsjd 
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
+            where (tsj.tanggal BETWEEN '".$y."-".$m."-01' AND '".$date."')");
+        return $data;
+    }
     /*
     cara membuat view stok fg
     CREATE OR REPLACE VIEW stok_fg(jenis_barang_id, jenis_barang, total_qty, total_bruto, total_netto)

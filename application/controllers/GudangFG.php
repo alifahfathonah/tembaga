@@ -2028,4 +2028,19 @@ class GudangFG extends CI_Controller{
 
         $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
     }
+
+    function print_stok_ukuran_fg(){
+        $this->load->helper('tanggal_indo');  
+        $this->load->model('Model_gudang_fg');
+        $date=date('Y-m-d');
+        $m=date('m');
+        $y=date('Y');
+        $data['detailLaporan'] = $this->Model_gudang_fg->stok_fg_kawat_rambut_jenis()->result();
+        $data['detailLaporan2'] = $this->Model_gudang_fg->stok_fg_kawat_halus_jenis()->result();
+        $data['detailLaporan3'] = $this->Model_gudang_fg->stok_fg_kawat_besar_jenis()->result();
+        $data['header']['penjualan'] = $this->Model_gudang_fg->stok_penjualan_hari($date)->row_array();
+        $data['header']['t_penjualan'] = $this->Model_gudang_fg->stok_t_penjualan_hari($date,$m,$y)->row_array();
+
+        $this->load->view('gudang_fg/print_stok_fg_jenis', $data);
+    }
 }

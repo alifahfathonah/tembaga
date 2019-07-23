@@ -33,6 +33,7 @@
                                         onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>
                                     
                                     <input type="hidden" id="headers_id" name="header_id">
+                                    <input type="hidden" id="tanggal_baru" name="tanggal_baru">
                                     <input type="hidden" id="tanggal_cek_baru" name="tanggal_cek_baru">
                                     <input type="hidden" id="nominal_baru" name="nominal_baru">
                                     <input type="hidden" id="nomor" name="nomor">
@@ -258,7 +259,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal_cek" name="tanggal_cek" readonly="readonly"
-                                class="form-control myline input-small" style="margin-bottom:5px" value="<?php echo date('d-m-Y', strtotime($myData['tgl_cair'])); ?>">
+                                class="form-control myline input-small" style="margin-bottom:5px; float:left;" value="<?php echo date('d-m-Y', strtotime($myData['tgl_cair'])); ?>">
                         </div>
                     </div>
                     <?php
@@ -301,11 +302,11 @@
                     if($group_id==1 || $hak_akses['print_um']==1){
                             echo '<a class="btn blue-ebonyclay" href="'.base_url().'index.php/Finance/print_um_match/'.$myData['id'].'" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print Match &nbsp; </a> ';
                         }
-                    if( ($group_id==1 || $hak_akses['edit_um']==1) && $myData['jenis_pembayaran']=='Cek Mundur' && $myData['status']==9){
+                    if( ($group_id==1 || $hak_akses['edit_um']==1) && $myData['jenis_pembayaran']=='Cek Mundur' && $myData['status']!=1){
                             echo '<a href="javascript:;" class="btn green" id="editDataCekMundur" onclick="editDataCekMundur();"> 
                         <i class="fa fa-pencil"></i> Edit Cek Mundur </a>';
                         }
-                    if( ($group_id==1 || $hak_akses['edit_um']==1) && ($myData['jenis_pembayaran']=='Cek' || $myData['jenis_pembayaran']=='Giro') && $myData['status']==9){
+                    if( ($group_id==1 || $hak_akses['edit_um']==1) && ($myData['jenis_pembayaran']=='Cek' || $myData['jenis_pembayaran']=='Giro') && $myData['status']!=1){
                             echo '<a href="javascript:;" class="btn green" id="editData" onclick="editData();"> 
                         <i class="fa fa-pencil"></i> Edit </a>';
                         }
@@ -376,12 +377,32 @@ function editDataCekMundur(){
             changeYear: true,
             dateFormat: 'yy-mm-dd'
         });
+    $("#tanggal").attr("readonly", false);
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });      
     $("#saveData").show();
 }
 
 function editData(){
     $("#editData").hide();
     $("#nominal").prop('readonly', false);
+    $("#tanggal").attr("readonly", false);
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });      
     if($("#jenis").val()=="Cek"){
         $("#nomor_cek").prop('readonly', false);
     }else if($("jenis").val()=="Giro"){
@@ -398,6 +419,7 @@ function showUpdateBox(){
     }else{
         if (r==true){
             $('#headers_id').val($('#id').val());
+            $('#tanggal_baru').val($('#tanggal').val());
             $('#jenis1').val($('#jenis').val());
             $('#nominal_baru').val($('#nominal').val());
             if($("#jenis").val()=="Cek Mundur"){

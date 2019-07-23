@@ -588,6 +588,11 @@
                                         Print Stok FG </a>
                                     </li>
                                     <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangFG/print_stok_ukuran_fg" target="_blank">
+                                        <i class="fa fa-print"></i>
+                                        Stok Per Ukuran FG </a>
+                                    </li>
+                                    <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangFG/laporan_pemasukan">
                                         <i class="fa fa-briefcase"></i>
                                         Pemasukan FG </a>

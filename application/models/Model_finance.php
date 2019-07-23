@@ -420,12 +420,12 @@ class Model_finance extends CI_Model{
 
     function load_invoice_match_print($id){
         $data = $this->db->query("
-            (select fi.no_invoice as nomor, fmd.inv_bayar+fi.nilai_pembulatan as nominal
+            (select fi.no_invoice as nomor, fmd.inv_bayar+fi.nilai_pembulatan as nominal, fi.tanggal
             from f_match_detail fmd
             left join f_invoice fi on fi.id = fmd.id_inv
             where fmd.id_match =".$id." and fmd.id_um = 0)
                 UNION ALL
-            (select 'SELISIH' as nomor, fi.nilai_pembulatan*-1 as nominal from f_match_detail fmd
+            (select 'SELISIH' as nomor, fi.nilai_pembulatan*-1 as nominal, '' as tanggal from f_match_detail fmd
                         left join f_invoice fi on fi.id = fmd.id_inv
                         where fmd.id_match =".$id." and fi.nilai_pembulatan < 0 and fmd.id_um = 0)");
         return $data;
@@ -433,11 +433,12 @@ class Model_finance extends CI_Model{
 
     function load_um_match_print($id){
         $data = $this->db->query("
-            (select fum.no_uang_masuk as nomor, fum.nominal from f_match_detail fmd
+            (select fum.no_uang_masuk as nomor, fum.nominal,  COALESCE(NULLIF(fum.rekening_pembayaran,''),fum.nomor_cek) as nomor_cek, b.nama_bank from f_match_detail fmd
             left join f_uang_masuk fum on fum.id = fmd.id_um
+            left join bank b on b.id = fum.rekening_tujuan
             where fmd.id_match =".$id." and fmd.id_inv = 00)
                 UNION ALL
-            (select 'SELISIH' as nomor, fi.nilai_pembulatan as nominal from f_match_detail fmd
+            (select 'SELISIH' as nomor, fi.nilai_pembulatan as nominal, '' as nomor_cek, '' as nama_bank from f_match_detail fmd
             left join f_invoice fi on fi.id = fmd.id_inv
             where fmd.id_match =".$id." and fi.nilai_pembulatan > 0 and fmd.id_um = 0)");
         return $data;

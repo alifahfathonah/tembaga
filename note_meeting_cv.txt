@@ -11,3 +11,5 @@ approve matching po dengan dtbj/dtwip tanggal nya belum sama di bpb. masih ngiku
 print voucher rongsok tampilin dtr nya
 
 edit nomor BPB Sparepart
+
+matching invoice dengan potongan belum
