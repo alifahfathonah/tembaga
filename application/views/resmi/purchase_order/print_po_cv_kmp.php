@@ -162,12 +162,15 @@
         </p>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
+                <td height="20" colspan="3">&nbsp;</td>
+            </tr>
+            <tr>
                 <td><u>Disetujui oleh,</u><br>Approved by</td>
                 <td width="60%"></td>
                 <td><u>Hormat kami</u><br>Your faithfully</td>
             </tr>
             <tr>
-                <td height="20" colspan="3">&nbsp;</td>
+                <td height="60" colspan="3">&nbsp;</td>
             </tr>
             <tr>
                 <td><u>Tanggal Kirim</u><br>Shipment Date</td>
