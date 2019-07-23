@@ -157,7 +157,7 @@
                                 </td>
                                 <td>
                                     <?php
-                if(($group_id==1 || $group_id==21 && !$data->flag_result) || (!$data->flag_result)){
+                if(( ($group_id==1 || $group_id==21) && !$data->flag_result) || (!$data->flag_result)){
                     echo '
                                     <a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/GudangFG/edit_laporan/'.$data->id.'" style="margin-bottom:4px"> &nbsp; 
                                         <i class="fa fa-edit"></i> Edit &nbsp; 
