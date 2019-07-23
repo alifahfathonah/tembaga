@@ -145,28 +145,28 @@
                 <td style="text-align: right;"><?=number_format($header['t_penjualan']['netto'],2,',','.');?></td>
                 <td width="40%"></td>
             </tr>
-            <!-- <tr>
+            <tr>
                 <td width="10%"></td>
                 <td style="text-align: left;" width="25%">STOCK 8 MM TMS</td>
                 <td style="text-align: left;" width="15%"><strong>PER <?=date("d-m-Y");?></strong></td>
-                <td style="text-align: right;"><?=number_format($netto1+$netto2+$netto3,2,',','.');?></td>
+                <td style="text-align: right;"><?=number_format($header['8mm']['total_berat_in']-$header['8mm']['total_berat_out'],2,',','.');?></td>
                 <td width="40%"></td>
             </tr>
             <tr>
                 <td width="10%"></td>
                 <td style="text-align: left;" width="25%">STOCK 7,6 ALUM MM</td>
                 <td style="text-align: left;" width="15%"><strong>PER <?=date("d-m-Y");?></strong></td>
-                <td style="text-align: right;"><?=number_format($netto1+$netto2+$netto3,2,',','.');?></td>
+                <td style="text-align: right;"><?=number_format($header['76mm']['total_netto'],2,',','.');?></td>
                 <td width="40%"></td>
             </tr>
             <tr>
                 <td width="10%"></td>
-                <td style="text-align: left;" width="25%">STOCK 2,60 MM INDOKA</td>
+                <td style="text-align: left;" width="25%">STOCK 2,60 MM TMS</td>
                 <td style="text-align: left;" width="15%"><strong>PER <?=date("d-m-Y");?></strong></td>
-                <td style="text-align: right;"><?=number_format($netto1+$netto2+$netto3,2,',','.');?></td>
+                <td style="text-align: right;"><?=number_format($header['26mm']['total_netto'],2,',','.');?></td>
                 <td width="40%"></td>
             </tr>
-            <tr>
+            <!-- <tr>
                 <td width="10%"></td>
                 <td style="text-align: left;" width="25%">STOCK 2,80 MM TMS</td>
                 <td style="text-align: left;" width="15%"><strong>PER <?=date("d-m-Y");?></strong></td>
