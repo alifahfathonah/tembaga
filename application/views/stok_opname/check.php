@@ -26,7 +26,7 @@
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-beer"></i>Stok Opname
+                    <i class="fa fa-beer"></i>Stok Opname (Ada data di gudang, tapi belum discan)
                 </div>
                 <div class="tools">
                                  
@@ -38,9 +38,13 @@
                 <tr>
                     <th style="width:50px;">No</th>
                     <th>Tanggal</th>
-                    <th>Jenis</th> 
-                    <th>Jumlah <br>Items</th>
-                    <th>Actions</th>
+                    <th>Nama Barang</th> 
+                    <th>UOM</th>
+                    <th>Bruto</th>
+                    <th>Netto</th>
+                    <th>Berat Bobbin</th>
+                    <th>No. Packing</th>
+                    <!-- <th>Actions</th> -->
                 </tr>
                 </thead>
                 <tbody>
@@ -52,9 +56,13 @@
                     <tr>
                         <td style="text-align:center;"><?php echo $no; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <td><?php echo $data->jenis_stok_opname; ?></td>
-                        <td><?php echo $data->jumlah_item; ?></td>
-                        <td style="text-align:center"> 
+                        <td><?php echo $data->jenis_barang; ?></td>
+                        <td><?php echo $data->uom; ?></td>
+                        <td><?php echo number_format($data->bruto,2,'.',','); ?></td>
+                        <td><?php echo number_format($data->netto,2,'.',','); ?></td>
+                        <td><?php echo number_format($data->berat_bobbin,2,'.',','); ?></td>
+                        <td><?php echo $data->no_packing; ?></td>
+                        <!-- <td style="text-align:center"> 
                             <?php
                                 if( ($group_id==1 || $hak_akses['edit']==1)){
                             ?>
@@ -76,7 +84,7 @@
                             <?php
                                 }
                             ?>
-                        </td>
+                        </td> -->
                     </tr>
                     <?php
                         }

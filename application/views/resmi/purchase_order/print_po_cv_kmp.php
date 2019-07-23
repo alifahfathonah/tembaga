@@ -10,7 +10,7 @@
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="40%">
-                    <table border="0" cellpadding="2" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="5" cellspacing="0" width="100%">
                         <tr>
                             <td style="border-bottom: 1px solid;">Kepada Yth.</td>
                             <td rowspan="2" valign="middle">: PT. KAWAT MAS PRAKASA</td>
@@ -20,7 +20,7 @@
                         </tr>
                         <tr>
                             <td style="border-bottom: 1px solid;">U. P.</td>
-                            <td rowspan="2" valign="middle">: <?= $header['pic'] ?></td>
+                            <td rowspan="2" valign="middle">: TJAN LIN OY</td>
                         </tr>
                         <tr>
                             <td>Attention to</td>
@@ -128,21 +128,21 @@
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="20%" style="border-bottom: 1px solid;">Total Harga</td>
-                <td rowspan="2">: <?php echo 'Rp. '.number_format($total_amount,2,'.',',');?></td>
+                <td rowspan="2">: <?php echo 'Rp. &nbsp;'.number_format($total_amount,2,'.',',');?></td>
             </tr>
             <tr>
                 <td>Total Value</td>
             </tr>
             <tr>
                 <td width="20%" style="border-bottom: 1px solid;">Pembayaran</td>
-                <td rowspan="2">: <?= $header['term_of_payment'] ?></td>
+                <td rowspan="2">: <?= ucwords($header['term_of_payment']) ?></td>
             </tr>
             <tr>
                 <td>Payment</td>
             </tr>
             <tr>
                 <td width="20%" style="border-bottom: 1px solid;">Penyerahan</td>
-                <td rowspan="2">: </td>
+                <td rowspan="2">: Ditempat</td>
             </tr>
             <tr>
                 <td>Delivery</td>

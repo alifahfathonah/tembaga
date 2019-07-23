@@ -41,4 +41,16 @@ class Model_stok_opname extends CI_Model{
             ;");
         return $data;
     }
+
+    function stock_missing($tanggal){
+        $data = $this->db->query("SELECT tfg.*, jb.jenis_barang, jb.uom
+            FROM t_gudang_fg tfg
+            LEFT JOIN jenis_barang jb ON jb.id = tfg.jenis_barang_id
+            WHERE (tfg.tanggal_keluar = '0000-00-00' OR tfg.tanggal_keluar > '2019-06-28') AND tfg.tanggal_masuk <= '".$tanggal."' AND tfg.id NOT IN (
+                SELECT gudang_id 
+                FROM stok_opname_detail sod
+                LEFT JOIN stok_opname so ON so.tanggal = '".$tanggal."' AND so.id = sod.stok_opname_id
+                )");
+        return $data;
+    }
 }
