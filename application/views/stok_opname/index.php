@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Stok Opname 
             <i class="fa fa-angle-right"></i>
-            <a href="<?php echo base_url('index.php/VoucherCost/kas_keluar'); ?>"> Scan FG</a>
+            <a href="<?php echo base_url('index.php/StokOpname'); ?>"> Scan FG</a>
         </h4>          
     </div>
 </div>
@@ -43,7 +43,7 @@
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Proses </a>
-                    <a href="<?php echo base_url('index.php/BeliRongsok'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/StokOpname/Report'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>

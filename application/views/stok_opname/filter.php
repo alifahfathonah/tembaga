@@ -3,8 +3,6 @@
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Stok Opname 
-            <i class="fa fa-angle-right"></i>
-            <a href="<?php echo base_url('index.php/StokOpname'); ?>"> Scan FG</a>
         </h5>          
     </div>
 </div>
@@ -33,56 +31,9 @@
                 </div>
             </div>
             <div class="portlet-body">
-                <table class="table table-striped table-bordered table-hover" id="sample_6">
-                <thead>
-                <tr>
-                    <th style="width:50px;">No</th>
-                    <th>Tanggal</th>
-                    <th>Jenis</th> 
-                    <th>Jumlah <br>Items</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                    <?php 
-                        $no = 0;
-                        foreach ($list_data as $data){
-                            $no++;
-                    ?>
-                    <tr>
-                        <td style="text-align:center;"><?php echo $no; ?></td>
-                        <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <td><?php echo $data->jenis_stok_opname; ?></td>
-                        <td><?php echo $data->jumlah_item; ?></td>
-                        <td style="text-align:center"> 
-                            <?php
-                                if( ($group_id==1 || $hak_akses['edit']==1)){
-                            ?>
-                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/StokOpname/detail_fg/<?php echo $data->id; ?>" style="margin-bottom:4px">
-                                &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
-                            <?php 
-                                }
-                                if( (($group_id==1)||($hak_akses['delete']==1))){
-                            ?>
-                            <a href="<?php echo base_url(); ?>index.php/BeliFinishGood/delete_po/<?php echo $data->id; ?>" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus po ini?');">
-                                <i class="fa fa-trash-o"></i> Delete 
-                            </a>                            
-                            <?php 
-                                }
-                                if($group_id==1 || $hak_akses['view']==1){
-                            ?>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/StokOpname/view/<?php echo $data->id; ?>" 
-                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-file"></i> View &nbsp; </a>
-                            <?php
-                                }
-                            ?>
-                        </td>
-                    </tr>
-                    <?php
-                        }
-                    ?>                                                                                    
-                </tbody>
-                </table>
+                Pilih tanggal<br>
+                <input type="text" name="tanggal" id="tanggal" class="form-control myline input-small" style="float: left;">
+                <a href="javascript:;" onclick="proses()" class="btn blue">Proses</a>
             </div>
         </div>
         <?php
@@ -98,6 +49,9 @@
     </div>
 </div> 
 <script>
+function proses(){
+    window.location.href="<?= base_url() ?>index.php/StokOpname/check/"+$('#tanggal').val();
+}
 function myCurrency(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))

@@ -42,14 +42,19 @@ class StokOpname extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
-        $this->db->insert('stok_opname', [
-            'tanggal' => $tgl_input,
-            'jenis_stok_opname' => "FG",
-            'created_by' => $user_id,
-            'created_at' => $tanggal,
-        ]);
+        $cek = $this->db->get_where('stok_opname', ['tanggal' => $tgl_input]);
+        if ($cek->num_rows() > 0) {
+            $id = $cek->row()->id;
+        } else {
+            $this->db->insert('stok_opname', [
+                'tanggal' => $tgl_input,
+                'jenis_stok_opname' => "FG",
+                'created_by' => $user_id,
+                'created_at' => $tanggal,
+            ]);
 
-        $id = $this->db->insert_id();
+            $id = $this->db->insert_id();
+        }
 
         // $this->session->set_flashdata('flash_msg', 'Voucher cost berhasil di-create dengan nomor : '.$code);
 
@@ -229,5 +234,148 @@ class StokOpname extends CI_Controller{
         $data['detailLaporan'] = $this->Model_stok_opname->print_stok_v1()->result();
 
         $this->load->view('stok_opname/print_stok', $data);
+    }
+
+    function refreshData(){
+        $id = $this->input->post('id');
+
+        $this->db->trans_start();
+        $opname = $this->db->get_where('stok_opname_detail', ['stok_opname_id' => $id, 'gudang_id' => 0])->result();
+        foreach ($opname as $key => $row) {
+            $gudang = $this->db->get_where('t_gudang_fg', ['no_packing' => $row->no_packing])->row();
+            $this->db->update('stok_opname_detail', [
+                'gudang_id' => $gudang->id,
+                'jenis_barang_id' => $gudang->jenis_barang_id,
+                'netto' => $gudang->netto,
+            ], ['no_packing' => $row->no_packing]);
+        }
+
+        if($this->db->trans_complete()){
+            $return_data['response']= "success";
+        }else{
+            $return_data['response']= "error";
+            $return_data['message']= "Gagal!";
+        } 
+
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
+
+    function adjustment(){
+        $id = $this->uri->segment(3);
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "stok_opname/adjustment";
+        $this->load->model('Model_stok_opname');
+        // $data['header'] = $this->Model_stok_opname->header_stok_opname_fg($id)->row_array();
+        // $data['details'] = $this->Model_stok_opname->list_stok_opname_fg($id)->result();
+        $this->load->model('Model_beli_fg');
+        $data['list_fg'] = $this->Model_beli_fg->list_fg()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function getBobbin(){
+        // $id = $this->input->post('id');
+        $nomor_bobbin = $this->input->post('no_bobbin');
+
+        $this->db->trans_start();
+        $bobbin = $this->db->get_where('m_bobbin', ['nomor_bobbin' => $nomor_bobbin])->row();
+        $return_data['bobbin']['nomor_bobbin'] = $bobbin->nomor_bobbin;
+        $return_data['bobbin']['berat'] = $bobbin->berat;
+        $return_data['bobbin']['id'] = $bobbin->id;
+
+        if($this->db->trans_complete()){
+            $return_data['response']= "success";
+        }else{
+            $return_data['response']= "error";
+            $return_data['message']= "Gagal!";
+        } 
+
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
+
+    function saveAdjustment(){
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $this->db->trans_start();
+        $details = $this->input->post('myDetails');
+        foreach ($details as $row){
+            if($row['fg_id']!=0){
+                $this->db->insert('t_gudang_fg', array(
+                    'tanggal' => $tgl_input,
+                    'jenis_trx' => 0,
+                    'jenis_barang_id'=>$row['fg_id'],
+                    'bruto'=>$row['bruto'],
+                    'berat_bobbin'=>$row['berat_bobbin'],
+                    'netto'=>$row['netto'],
+                    'nomor_bobbin'=>$row['no_bobbin'],
+                    'no_packing'=>$row['no_packing'],
+                    'keterangan'=>"STOCKOPNAME ADJUSTMENT ".$tgl_input,
+                    'created_at'=>$tanggal,
+                    'created_by'=>$user_id,
+                    'tanggal_masuk'=>$tgl_input
+                ));
+
+                // if(isset($row['bobbin'])){
+                //     $updatebobbin = array('status'=>1);
+                //     $this->db->where('nomor_bobbin', $row['no_bobbin']);
+                //     $this->db->update('m_bobbin', $updatebobbin);
+                // }
+            }
+        }
+
+        // $this->session->set_flashdata('flash_msg', 'Voucher cost berhasil di-create dengan nomor : '.$code);
+
+        if ($this->db->trans_complete()) {
+            redirect('index.php/StokOpname/');
+        }
+    }
+
+    function filter(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "stok_opname/filter";
+        // $this->load->model('Model_stok_opname');
+        // $data['list_data'] = $this->Model_stok_opname->stok_missing()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function check($tanggal){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "stok_opname/check";
+        $this->load->model('Model_stok_opname');
+        $data['list_data'] = $this->Model_stok_opname->stock_missing($tanggal)->result();
+
+        $this->load->view('layout', $data);
     }
 }

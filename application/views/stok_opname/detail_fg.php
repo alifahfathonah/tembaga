@@ -116,6 +116,8 @@
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
+                    <a href="javascript:;" class="btn blue-ebonyclay" id="refreshData" onclick="refreshData();"> 
+                        <i class="fa fa-refresh"></i> Refresh </a>
                     <a href="<?php echo base_url('index.php/BeliRongsok'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
@@ -283,6 +285,29 @@ function simpanData(){
         $('#formku').submit();
     };
 };
+
+function refreshData(){
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url('index.php/StokOpname/refreshData'); ?>",
+        data: {
+            id: $('#id').val(),
+        },
+        cache: false,
+        success: function(result) {
+            var res = result['response'];
+            if(res=='success'){
+                loadDetail($("#id").val());
+            }else{
+                // $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+                // $('#message').html("");
+                // $('.alert-danger').hide(); 
+                // $('#formku').submit();
+            }
+        }
+    });
+}
+
 </script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
