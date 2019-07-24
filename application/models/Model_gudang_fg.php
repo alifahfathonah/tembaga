@@ -504,6 +504,21 @@ class Model_gudang_fg extends CI_Model{
             where (tsj.tanggal BETWEEN '".$y."-".$m."-01' AND '".$date."')");
         return $data;
     }
+
+    function stok_8mm(){
+        $data = $this->db->query("select * from stok_wip where jenis_barang_id=655");
+        return $data;
+    }
+
+    function stok_76mm(){
+        $data = $this->db->query("select * from stok_fg where jenis_barang_id=678");
+        return $data;
+    }
+
+    function stok_26mm(){
+        $data = $this->db->query("select * from stok_fg where jenis_barang_id=273");
+        return $data;
+    }
     /*
     cara membuat view stok fg
     CREATE OR REPLACE VIEW stok_fg(jenis_barang_id, jenis_barang, total_qty, total_bruto, total_netto)
