@@ -19,26 +19,26 @@ class Model_stok_opname extends CI_Model{
     }
 
     function list_stok_opname_fg($id){
-        $data = $this->db->query("select sod.*, jb.jenis_barang, jb.uom from stok_opname_detail sod 
+        $data = $this->db->query("select sod.*, jb.kode, jb.jenis_barang, jb.uom, tgf.no_produksi, tgf.bruto, tgf.berat_bobbin, tgf.tanggal_masuk from stok_opname_detail sod 
                 left JOIN jenis_barang jb on jb.id = sod.jenis_barang_id
+                LEFT JOIN t_gudang_fg tgf ON tgf.id = sod.gudang_id
                 WHERE sod.stok_opname_id = ".$id);
         return $data;
     }
 
     function print_stok_v1(){
-        $data = $this->db->query("select x.*, g.no_packing no_packing_gudang, g.bruto, g.netto, g.nomor_bobbin, jb.kode, jb.jenis_barang
+        $data = $this->db->query("select x.*, g.no_packing no_packing_gudang, g.bruto, g.netto, g.nomor_bobbin, jb.kode, jb.jenis_barang, g.berat_bobbin, g.no_produksi, g.tanggal_masuk
             from
-            (select o.tanggal, o.id, od.gudang_id, od.no_packing hasil_scan, od.jenis_barang_id
-            from 
-            stok_opname_detail od,
-            stok_opname o
-            where
-            od.stok_opname_id = o.id
-            ) x
+                (select o.tanggal, o.id, od.gudang_id, od.no_packing hasil_scan, od.jenis_barang_id
+                from 
+                stok_opname_detail od,
+                stok_opname o
+                where
+                od.stok_opname_id = o.id
+                ) x
             left join t_gudang_fg g on g.id = x.gudang_id
             left join jenis_barang jb on jb.id = x.jenis_barang_id
-            order by jb.kode
-            ;");
+            order by jb.kode;");
         return $data;
     }
 

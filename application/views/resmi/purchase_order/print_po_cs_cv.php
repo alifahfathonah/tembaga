@@ -12,15 +12,18 @@
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>Tanggal</td>
-                            <td>: <?= date("d/m/Y", strtotime($header['tanggal'])) ?></td>
+                            <td>:</td>
+                            <td><?= date("d/m/Y", strtotime($header['tanggal'])) ?></td>
                         </tr>
                         <tr>
                             <td>No. PO</td>
-                            <td>: <?= $header['no_po'] ?></td>
+                            <td>:</td>
+                            <td><?= $header['no_po'] ?></td>
                         </tr>
                         <tr>
-                            <td>Kepada</td>
-                            <td>: <?= $header['nama_cv'] ?><br><?= $header['alamat_cv'] ?></td>
+                            <td valign="top">Kepada</td>
+                            <td valign="top">:</td>
+                            <td valign="top"><?= $header['nama_cv'] ?><br><?= $header['alamat_cv'] ?></td>
                         </tr>
                         
                     </table>

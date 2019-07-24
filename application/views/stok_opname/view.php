@@ -44,13 +44,23 @@
                     <div class="table-scrollable">
                         <table class="table table-bordered table-striped table-hover" id="tabel_dtr">
                             <thead>
-                                <th style="width:40px">No</th>
-                                <th>No. Packing</th>
-                                <th>Nama Barang</th>
-                                <th>UOM</th>
-                                <th>Netto</th>
-                                <th>Keterangan</th>
-                                <th></th>
+                                <tr>
+                                    <th style="width:40px" rowspan="2">No</th>
+                                    <th rowspan="2">Kode</th>
+                                    <th rowspan="2">Nama Barang</th>
+                                    <th rowspan="2">No. Packing</th>
+                                    <th rowspan="2">UOM</th>
+                                    <th colspan="2" style="border-bottom: 1px solid lightgrey;">Produksi</th>
+                                    <th colspan="3" style="border-bottom: 1px solid lightgrey;">Berat</th>
+                                    <th rowspan="2">Keterangan</th>
+                                </tr>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Tgl.</th>
+                                    <th>Bruto</th>
+                                    <th>Bobbin</th>
+                                    <th>Netto</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 <?php 
@@ -61,10 +71,15 @@
 
                                 <tr>
                                     <td><?= $no ?></td>
-                                    <td><?= $detail->no_packing ?></td>
+                                    <td><?= $detail->kode ?></td>
                                     <td><?= $detail->jenis_barang ?></td>
+                                    <td><?= $detail->no_packing ?></td>
                                     <td><?= $detail->uom ?></td>
-                                    <td><?= $detail->netto ?></td>
+                                    <td><?= $detail->no_produksi ?></td>
+                                    <td><?= date('d-m-Y', strtotime($detail->tanggal_masuk)) ?></td>
+                                    <td align="right"><?= number_format($detail->bruto,2,'.',',') ?></td>
+                                    <td align="right"><?= number_format($detail->berat_bobbin,2,'.',',') ?></td>
+                                    <td align="right"><?= number_format($detail->netto,2,'.',',') ?></td>
                                     <td><?= $detail->keterangan ?></td>
                                 </tr>
                                 <?php
