@@ -57,7 +57,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="term_of_payment" name="term_of_payment" 
-                                class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" 
+                                class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['term_of_payment']; ?>">
                         </div>
                     </div>
