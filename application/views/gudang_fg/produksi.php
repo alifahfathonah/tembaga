@@ -123,6 +123,7 @@
                                 <th>Total Detail</th>
                                 <th>Total Netto</th>
                                 <th>PIC</th>
+                                <th>Status BPB</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -154,6 +155,17 @@
                                 </td>
                                 <td>
                                     <?= $data->pembuat; ?>
+                                </td>
+                                <td style="text-align:center">
+                                    <?php 
+                                        if($data->status==0){ 
+                                            echo '<div style="background-color:bisque; padding:4px">Waiting review</div>';
+                                        }else if($data->status==1){ 
+                                            echo '<div style="background-color:green; color:white; padding:4px">Approved</div>';
+                                        }else if($data->status==9){ 
+                                            echo '<div style="background-color:red; padding:4px; color:white">Rejected</div>';
+                                        }
+                                    ?>
                                 </td>
                                 <td>
                                     <?php

@@ -244,7 +244,7 @@
                                             foreach ($myDetail as $row){
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
-                                                echo '<td>'.$row->jenis_barang.'</td>';
+                                                echo '<td>'.$row->nama_item.'</td>';
                                                 echo '<td>'.$row->uom.'</td>';
                                                 echo '<td>'.$row->netto.' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
@@ -345,7 +345,7 @@
                                             foreach ($myDetail as $row){
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
-                                                echo '<td>'.$row->jenis_barang.'</td>';
+                                                echo '<td>'.$row->nama_item.'</td>';
                                                 echo '<td>'.$row->uom.'</td>';
                                                 echo '<td>'.$row->netto.' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';

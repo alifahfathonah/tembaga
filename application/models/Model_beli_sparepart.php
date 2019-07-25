@@ -111,6 +111,7 @@ class Model_beli_sparepart extends CI_Model{
     
     function show_header_po($id){
         $data = $this->db->query("Select po.*, bsp.no_pengajuan, bsp.tgl_pengajuan, bsp.approved,
+                (Select count(lpb.id) from lpb left join po p on p.id = lpb.po_id where lpb.po_id = po.id and lpb.vk_id > 0)As lpb_dibayar,
                     spl.nama_supplier, spl.pic,
                     usr.realname As approved_name,
                     crt.realname As pemohon

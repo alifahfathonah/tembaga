@@ -1936,42 +1936,13 @@ class Finance extends CI_Controller{
         $tabel .= '<td style="text-align:right;" colspan="3"><strong>Total Harga </strong></td>';
         $tabel .= '<td style="text-align:right;">';
         $tabel .= '<strong>'.number_format($total_invoice,0,',','.').'</strong>';
-        $tabel .= '<input type="hidden" name="total_invoice" value="'.$total_invoice.'">';
+        $tabel .= '<input type="hidden" id="load_total_invoice" name="total_invoice" value="'.$total_invoice.'">';
         $tabel .= '</td>';
-        $tabel .= '<td></td>';
+        $tabel .= '<td id="view_total_invoice"></td>';
         $tabel .= '</tr>';
 
         header('Content-Type: application/json');
         echo json_encode($tabel); 
-    }
-
-    function add_um_match(){
-        $user_id   = $this->session->userdata('user_id');
-        $return_data = array();
-        $tanggal   = date('Y-m-d h:m:s');
-        
-        $this->db->where('id',$this->input->post('um_id'));
-        $this->db->update('f_uang_masuk', array(
-            'flag_matching'=>$this->input->post('id_modal')
-        ));
-
-        $data = array(
-            'id_match'=>$this->input->post('id_modal'),
-            'id_um'=>$this->input->post('um_id'),
-            'id_inv'=>0,
-            'biaya1'=>str_replace(',', '',$this->input->post('b_1')),
-            'ket1'=>$this->input->post('k_1'),
-            'biaya2'=>str_replace(',', '',$this->input->post('b_2')),
-            'ket2'=>$this->input->post('k_2')
-        );
-
-        if($this->db->insert('f_match_detail', $data)){
-            $this->session->set_flashdata('flash_msg', 'Matching sudah diupdate');    
-        }else{
-            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat penginputan Data Matching, silahkan coba kembali!');
-        }
-
-        redirect('index.php/Finance/matching_invoice/'.$this->input->post('id_modal'));
     }
 
     function add_instant_um_match(){
@@ -2005,26 +1976,63 @@ class Finance extends CI_Controller{
         echo json_encode($return_data);
     }
 
-    function save_um_match(){
+    function add_potongan_match(){
+        $user_id   = $this->session->userdata('user_id');
+        $return_data = array();
+
+        $this->db->trans_start();
+
+        $data = array(
+            'id_match'=>$this->input->post('id_modal'),
+            'id_um'=>0,
+            'id_inv'=>0,
+            'currency'=>$this->input->post('currency'),
+            'kurs'=>$this->input->post('kurs'),
+            'biaya'=>str_replace(',', '',$this->input->post('nominal')),
+            'keterangan'=>$this->input->post('k_1')
+        );
+        $this->db->insert('f_match_detail', $data);
+
+        if($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+            $return_data['message']= "Berhasil menambahkan potongan! Silahkan coba kembali";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan potongan! Silahkan coba kembali";
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+
+        // redirect('index.php/Finance/matching_invoice/'.$this->input->post('id_modal'));
+    }
+
+    function save_potongan_match(){
         $user_id   = $this->session->userdata('user_id');
         $return_data = array();
         $tanggal   = date('Y-m-d h:m:s');
         
+        $this->db->trans_start();
         $data = array(
-            'biaya1'=>str_replace('.', '',$this->input->post('b_1')),
-            'ket1'=>$this->input->post('k_1'),
-            'biaya2'=>str_replace('.', '',$this->input->post('b_2')),
-            'ket2'=>$this->input->post('k_2')
+            'biaya'=>str_replace(',', '',$this->input->post('nominal')),
+            'currency'=>$this->input->post('currency'),
+            'kurs'=>$this->input->post('kurs'),
+            'keterangan'=>$this->input->post('k_1')
         );
 
-        $this->db->where('id', $this->input->post('um_id'));
-        if($this->db->update('f_match_detail', $data)){
-            $this->session->set_flashdata('flash_msg', 'Matching sudah diupdate');    
+        $this->db->where('id', $this->input->post('id_detail'));
+        $this->db->update('f_match_detail', $data);
+
+        if($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+            $return_data['message']= "Berhasil mengupdate potongan!";
         }else{
-            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat penginputan Data Matching, silahkan coba kembali!');
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal mengupdate potongan! Silahkan coba kembali";
         }
 
-        redirect('index.php/Finance/matching_invoice/'.$this->input->post('id_modal'));
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
     }
 
     function view_data_inv(){
@@ -2228,7 +2236,10 @@ class Finance extends CI_Controller{
                 }
             $tabel .= '</td>';
             $tabel .= '<td style="text-align:right;">'.$row->currency.' '.number_format($row->total,0,',', '.').'</td>';
-            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle blue" onclick="view_um('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-floppy-o"></i> View </a>';
+            $tabel .= '<td style="text-align:center">';
+            if($row->biaya>0){
+                $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle blue" onclick="view_um('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-floppy-o"></i> View </a>';
+            }
             $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle red" onclick="delUM('.$row->id.','.$row->id_um.');" style="margin-top:2px; margin-bottom:2px;" id="addUM"><i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';            
             $no++;
@@ -2238,9 +2249,9 @@ class Finance extends CI_Controller{
         $tabel .= '<td style="text-align:right;" colspan="4"><strong>Total Nominal Invoice </strong></td>';
         $tabel .= '<td style="text-align:right;">';
         $tabel .= '<strong>'.number_format($total_nominal,0,',','.').'</strong>';
-        $tabel .= '<input type="hidden" name="total_nominal" value="'.$total_nominal.'">';
+        $tabel .= '<input type="hidden" id="load_total_nominal" name="total_nominal" value="'.$total_nominal.'">';
         $tabel .= '</td>';
-        $tabel .= '<td></td>';
+        $tabel .= '<td id="view_total_nominal"></td>';
         $tabel .= '</tr>';
 
         header('Content-Type: application/json');
@@ -2253,10 +2264,13 @@ class Finance extends CI_Controller{
         $tanggal   = date('Y-m-d h:m:s');
         
         $this->db->trans_start();
-        $this->db->where('id',$this->input->post('id_um'));
-        $this->db->update('f_uang_masuk', array(
-            'flag_matching'=>0
-        ));
+
+        if($this->input->post('id_um')>0){
+            $this->db->where('id',$this->input->post('id_um'));
+            $this->db->update('f_uang_masuk', array(
+                'flag_matching'=>0
+            ));
+        }
 
         $this->db->where('id', $this->input->post('id'));
         $this->db->delete('f_match_detail');

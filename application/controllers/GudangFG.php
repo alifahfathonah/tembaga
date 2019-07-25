@@ -31,7 +31,7 @@ class GudangFG extends CI_Controller{
     function view_gudang_fg(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
-        $group_id    = $this->session->userdata('group_id');
+        $group_id = $this->session->userdata('group_id');
 
         if($id){
             if($group_id != 1){
@@ -1108,6 +1108,38 @@ class GudangFG extends CI_Controller{
 
             $this->load->model('Model_gudang_fg');
             $details = $this->Model_gudang_fg->show_detail_spb_fulfilment($spb_id)->result();
+            // echo '<pre>';print_r($details);echo'</pre>';
+            // die();
+            foreach ($details as $v){
+                $this->db->update('t_gudang_fg',['jenis_trx'=>0, 't_spb_fg_id'=>NULL, 'nomor_SPB'=>NULL],['id'=>$v->id]);
+            }
+
+            $check = $this->Model_gudang_fg->check_spb_reject($spb_id)->row_array();
+            if($check['count'] > 0){
+                $status = 4;
+            }else{
+                $status = 0;
+            }
+            $this->db->update('t_spb_fg',['status'=>$status],['id'=>$spb_id]);
+
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'SPB sudah di-approve. Detail Pemenuhan SPB sudah disimpan');                 
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }
+       redirect('index.php/GudangFG/view_spb/'.$spb_id);
+    }
+
+    function reject_approved(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $spb_id = $this->input->post('id');
+
+        $this->db->trans_start();
+
+            $this->load->model('Model_gudang_fg');
+            $details = $this->Model_gudang_fg->show_detail_spb_fulfilment_approved_belum_dikirim($spb_id)->result();
             // echo '<pre>';print_r($details);echo'</pre>';
             // die();
             foreach ($details as $v){

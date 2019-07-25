@@ -294,6 +294,7 @@
                                 <th>Nama Item</th>
                                 <th>UOM</th>
                                 <th>Qty</th>
+                                <th>Bruto</th>
                                 <th>Netto (Kg)</th>
                                 <th>Keterangan</th>
                             </thead>
@@ -307,6 +308,7 @@
                                     <td><?php echo $row->jenis_barang; ?></td>
                                     <td><?php echo $row->uom; ?></td>
                                     <td><?php echo $row->qty; ?></td>
+                                    <td><?php echo $row->bruto; ?></td>
                                     <td><?php echo $row->netto; ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
                                 </tr>

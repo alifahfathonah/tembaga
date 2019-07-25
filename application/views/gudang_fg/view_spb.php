@@ -282,6 +282,7 @@
                                         </tr>
                                         </tbody>
                                     </table>
+                                <a href="javascript:;" class="btn red" onclick="rejectApproved();"><i class="fa fa-ban"></i> Reject yang Belum Dikirim </a>
                                 </div>
                         </div>
                     </div>
@@ -436,6 +437,7 @@
                                         </tr>
                                         </tbody>
                                     </table>
+                                <a href="javascript:;" class="btn red" onclick="rejectApproved();"><i class="fa fa-ban"></i> Reject yang Belum Dikirim </a>
                                 </div>
                         </div>
                     </div>
@@ -577,6 +579,14 @@
             data: {id: id_barang}, // Send the slected option to the PHP page
         });
     });*/
+function rejectApproved(){
+    var r=confirm("Anda yakin me-reject barang yang sudah di approve ini?");
+    if (r==true){
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/GudangFG/reject_approved");    
+        $('#formku').submit(); 
+    }
+};
+
 function rejectFulfilment(){
     var r=confirm("Anda yakin me-reject pemenuhan barang ini?");
     if (r==true){

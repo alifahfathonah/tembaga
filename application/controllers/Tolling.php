@@ -160,7 +160,9 @@ class Tolling extends CI_Controller{
 
             $data['content']= "tolling_titipan/view";
             $this->load->model('Model_tolling_titipan');
-            $data['header'] = $this->Model_tolling_titipan->show_header_so($id)->row_array();
+            $this->load->model('Model_sales_order');
+
+            $data['header'] = $this->Model_sales_order->show_header_so($id)->row_array();
             $data['detail'] = $this->Model_tolling_titipan->load_detail_edit($id)->result(); 
             $this->load->view('layout', $data);   
         }else{
@@ -1826,6 +1828,7 @@ class Tolling extends CI_Controller{
                         't_sj_id'=>$this->input->post('id'),
                         'gudang_id'=>$v['id_barang'],
                         'jenis_barang_id'=>$v['jenis_barang_id'],
+                        'barang_alias'=>$v['barang_alias'],
                         'no_packing'=>0,
                         'qty'=>$v['qty'],
                         'bruto'=>0,
@@ -1840,6 +1843,7 @@ class Tolling extends CI_Controller{
                         't_sj_id'=>$this->input->post('id'),
                         'gudang_id'=>$v['id_barang'],
                         'jenis_barang_id'=>$v['jenis_barang_id'],
+                        'barang_alias'=>$v['barang_alias'],
                         'no_packing'=>$v['no_palette'],
                         'qty'=>$v['qty'],
                         'bruto'=>$v['bruto'],
@@ -1855,9 +1859,10 @@ class Tolling extends CI_Controller{
                         't_sj_id'=>$this->input->post('id'),
                         'gudang_id'=>$v['id_barang'],
                         'jenis_barang_id'=>$v['jenis_barang_id'],
+                        'barang_alias'=>$v['barang_alias'],
                         'no_packing'=>0,
                         'qty'=>1,
-                        'bruto'=>0,
+                        'bruto'=>$v['netto'],
                         'berat'=>0,
                         'netto'=>$v['netto'],
                         'nomor_bobbin'=>0,
@@ -1934,13 +1939,14 @@ class Tolling extends CI_Controller{
             $jenis = $data['header']['jenis_barang'];
 
             $data['list_po'] = $this->Model_tolling_titipan->get_po_tolling($custid,$user_ppn)->result();
-            if($jenis == 'FG'){
-                $data['list_sj'] = $this->Model_sales_order->load_view_sjd($id)->result();
-            }else if($jenis == 'WIP'){
-                $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
-            }else{
-                $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id,0)->result();
-            }
+            $data['list_sj'] = $this->Model_tolling_titipan->load_detail_surat_jalan($id)->result();
+            // if($jenis == 'FG'){
+            //     $data['list_sj'] = $this->Model_sales_order->load_view_sjd($id)->result();
+            // }else if($jenis == 'WIP'){
+            //     $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
+            // }else{
+            //     $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id,0)->result();
+            // }
 
             $this->load->view('layout', $data);   
         }else{
@@ -2203,11 +2209,23 @@ class Tolling extends CI_Controller{
         redirect('index.php/Tolling/surat_jalan_keluar');
     }
 
+    function delete_surat_jalan(){
+        $id = $this->uri->segment(3);
+        $this->db->trans_start();
+        if(!empty($id)){
+            $this->db->delete('t_surat_jalan', ['id' => $id]);
+        }
+
+        if($this->db->trans_complete()) {
+            $this->session->set_flashdata('flash_msg', 'Data Surat Jalan berhasil dihapus');
+            redirect('index.php/Tolling/surat_jalan');
+        }
+    }
+
     function delete_surat_jalan_keluar(){
         $id = $this->uri->segment(3);
         $this->db->trans_start();
         if(!empty($id)){
-
             $this->db->delete('t_surat_jalan', ['id' => $id]);
         }
 
@@ -2586,6 +2604,7 @@ class Tolling extends CI_Controller{
 
     function dtt_list(){
         $module_name = $this->uri->segment(1);
+        $flag_ppn    = $this->session->userdata('user_ppn');
         $group_id    = $this->session->userdata('group_id');        
         if($group_id != 1){
             $this->load->model('Model_modules');
@@ -2596,7 +2615,7 @@ class Tolling extends CI_Controller{
 
         $data['content']= "tolling_titipan/dtt_list";
         $this->load->model('Model_tolling_titipan');
-        $data['list_data'] = $this->Model_tolling_titipan->dtt_list()->result();
+        $data['list_data'] = $this->Model_tolling_titipan->dtt_list($flag_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -2634,6 +2653,7 @@ class Tolling extends CI_Controller{
             $this->db->trans_start();    
             $data = array(
                 'no_dtt'=> $code,
+                'flag_ppn'=>$user_ppn,
                 'tanggal'=> $tgl_input,
                 'customer_id'=>$this->input->post('customer_id'),
                 'jenis_barang'=>$this->input->post('jenis_barang'),
@@ -3244,5 +3264,124 @@ class Tolling extends CI_Controller{
         }else{
             'GAGAL';
         }
+    }
+
+    function close_so(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $jenis    = $this->input->post('jenis_barang');
+        
+        #Update status t_surat_jalan
+        $data = array(
+                'flag_invoice'=>1,
+                'flag_sj'=>1,
+                'modified'=>$tanggal,
+                'modified_by'=>$user_id
+            );
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('sales_order', $data);
+
+        if($jenis=='FG'){
+            $this->db->where('id', $this->input->post('id_spb'));
+            $this->db->update('t_spb_fg', array(
+                'status'=>1,
+            ));
+        }elseif($jenis=='WIP'){
+            $this->db->where('id', $this->input->post('id_spb'));
+            $this->db->update('t_spb_wip', array(
+                'status'=>1,
+            ));
+        }elseif($jenis=='RONGSOK'){
+            $this->db->where('id', $this->input->post('id_spb'));
+            $this->db->update('spb', array(
+                'status'=>1,
+            ));
+        }elseif($jenis=='AMPAS'){
+            $this->db->where('id', $this->input->post('id_spb'));
+            $this->db->update('t_spb_ampas', array(
+                'status'=>1,
+            ));
+        }
+        
+        $this->session->set_flashdata('flash_msg', 'Sales Order berhasil di close');
+        redirect('index.php/Tolling/');
+    }
+
+    function open_so(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $jenis    = $this->input->post('jenis_barang');
+        
+        #Update status t_surat_jalan
+        $data = array(
+                'flag_invoice'=>0,
+                'flag_sj'=>0,
+                'modified'=>$tanggal,
+                'modified_by'=>$user_id
+            );
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('sales_order', $data);
+
+        if($jenis=='FG'){
+            $this->db->where('id', $this->input->post('id_spb'));
+            $this->db->update('t_spb_fg', array(
+                'status'=>4,
+            ));
+        }elseif($jenis=='WIP'){
+            $this->db->where('id', $this->input->post('id_spb'));
+            $this->db->update('t_spb_wip', array(
+                'status'=>4,
+            ));
+        }elseif($jenis=='RONGSOK'){
+            $this->db->where('id', $this->input->post('id_spb'));
+            $this->db->update('spb', array(
+                'status'=>4,
+            ));
+        }elseif($jenis=='AMPAS'){
+            $this->db->where('id', $this->input->post('id_spb'));
+            $this->db->update('t_spb_ampas', array(
+                'status'=>4,
+            ));
+        }
+        
+        $this->session->set_flashdata('flash_msg', 'Sales Order berhasil di open');
+        redirect('index.php/Tolling/');
+    }
+
+    function open_inv(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $jenis    = $this->input->post('jenis_barang');
+        
+        #Update status t_surat_jalan
+        $data = array(
+                'flag_invoice'=>0,
+                'modified'=>$tanggal,
+                'modified_by'=>$user_id
+            );
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('sales_order', $data);
+        
+        $this->session->set_flashdata('flash_msg', 'Invoice berhasil di open');
+        redirect('index.php/Finance/add_invoice');
+    }
+
+    function open_sj(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $jenis    = $this->input->post('jenis_barang');
+        
+        #Update status t_surat_jalan
+        $data = array(
+                'flag_sj'=>0,
+                'flag_invoice'=>0,
+                'modified'=>$tanggal,
+                'modified_by'=>$user_id
+            );
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('sales_order', $data);
+        
+        $this->session->set_flashdata('flash_msg', 'Surat Jalan berhasil di open');
+        redirect('index.php/Tolling/add_surat_jalan');
     }
 }

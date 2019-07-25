@@ -42,17 +42,15 @@
                             <td>No. Surat Jalan</td>
                             <td>: <?php echo $header['no_surat_jalan']; ?></td>
                         </tr>
+                        <?php if(!empty($header['no_sales_order'])){ ?>
                         <tr>
                             <td>No. Sales Order</td>
                             <td>: <?php echo $header['no_sales_order']; ?></td>
                         </tr>
+                        <?php } ?>
                         <tr>
                             <td>No. PO</td>
                             <td>: <?php echo $header['no_po']; ?></td>
-                        </tr>
-                        <tr>
-                            <td>Tanggal</td>
-                            <td>: <?php echo tanggal_indo($header['tanggal']); ?></td>
                         </tr>
                         <tr>
                             <td>Customer</td>
@@ -71,10 +69,12 @@
                             <td>Tanggal SJ</td>
                             <td>: <?php echo tanggal_indo($header['tanggal']); ?></td>
                         </tr>
+                        <?php if($header['tanggal_so']!=null){?>
                         <tr>
                             <td>Tanggal SO</td>
                             <td>: <?php echo tanggal_indo($header['tanggal_so']); ?></td>
                         </tr>
+                        <?php } ?>
                         <tr>
                             <td>Alamat</td>
                             <td>:</td>

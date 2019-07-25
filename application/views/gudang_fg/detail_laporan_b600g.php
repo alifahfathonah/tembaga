@@ -103,7 +103,7 @@
                         </div>
                     </div>
         <?php
-            if(($group_id==1 || $group_id==21 && !$header['flag_result']) || (!$header['flag_result'])){
+            if((($group_id==1 || $group_id==21) && !$header['flag_result']) || (!$header['flag_result'])){
         ?>
                     <div class="row">
                         <div class="col-md-4">
