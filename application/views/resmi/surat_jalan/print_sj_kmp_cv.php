@@ -40,7 +40,7 @@
                         </tr>
                         <tr>
                             <td>No. PO</td>
-                            <td>: <?php echo $header['no_po']; ?></td>
+                            <td>: <?php echo $header['no_po2']; ?></td>
                         </tr>
                         <tr>
                             <td>Tanggal</td>
@@ -48,7 +48,7 @@
                         </tr>
                         <tr>
                             <td>Customer</td>
-                            <td>: <?php echo $header['nama_customer']; ?></td>
+                            <td>: <?php echo $header['nama_cv']; ?></td>
                         </tr>
                         <!-- <tr>
                             <td>Jenis Barang</td>
@@ -215,19 +215,12 @@
                             <td style="text-align:center">&nbsp;</td>
                             <td style="text-align:center">&nbsp;</td>
                         </tr>
-                        <tr><?php if($this->session->userdata('user_ppn')==1){?>
+                        <tr>
                             <td style="text-align:center">(_____________)</td>
                             <td style="text-align:center">(_____________)</td>
                             <td style="text-align:center">(_____________)</td>
                             <td style="text-align:center"><strong>(Tjan Lin Oy)</strong></td>
                             <td style="text-align:center"><strong>(Istadi)</strong></td>
-                            <?php }else{ ?>
-                            <td style="text-align:center">(_____________)</td>
-                            <td style="text-align:center">(_____________)</td>
-                            <td style="text-align:center">(_____________)</td>
-                            <td style="text-align:center"><strong>(Andi)</strong></td>
-                            <td style="text-align:center"><strong>(Bambang)</strong></td>
-                            <?php } ?>
                         </tr>
                     </table>
                 </td>

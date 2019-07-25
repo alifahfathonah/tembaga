@@ -12,4 +12,22 @@ print voucher rongsok tampilin dtr nya
 
 edit nomor BPB Sparepart
 
-matching invoice dengan potongan belum
+laporan pembelian
+
+print stok wip dan rongsok
+
+view bm bk voucher
+
+produksi simpannya kasih proteksi biar ga dobel
+
+surat jalan bisa delete detail, untuk case sudah approve
+
+matching ampas yg dtr nya sudah approve
+
+delete sj yang reject
+
+delete semua spb fulfilment yang udah di approve tapi belum di kirim
+
+open so,open sj, open invoice di sales order tolling belum
+
+data customer dan data supplier belum dibenerin. kan campur data kmp dan kh

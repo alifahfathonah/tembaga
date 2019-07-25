@@ -68,7 +68,9 @@ class Model_bobbin extends CI_Model{
     function get_size_list(){
         $data = $this->db->query("select mbs.id,bobbin_size, mbs.keterangan, mjp.jenis_packing, mjp.id as id_packing
             from m_bobbin_size mbs
-            left join m_jenis_packing mjp on(mjp.id = mbs.jenis_packing_id)");
+            left join m_jenis_packing mjp on(mjp.id = mbs.jenis_packing_id)
+            order by jenis_packing_id, bobbin_size asc
+            ");
         return $data;
     }
 

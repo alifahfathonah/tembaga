@@ -335,6 +335,9 @@
         <?php }else{ ?>
         <a href="javascript:;" onclick="openSO();" class="btn green"> 
                         <i class="fa fa-plus"></i> Open SO </a>
+        <?php } if($header['flag_sj']==1){?>
+        <a href="javascript:;" onclick="openSJ();" class="btn green"> 
+                        <i class="fa fa-car"></i> Open Untuk Buat Surat Jalan </a>
         <?php } if($header['flag_invoice']==1){?>
         <a href="javascript:;" onclick="openINV();" class="btn green"> 
                         <i class="fa fa-money"></i> Open Untuk Buat Invoice </a>
@@ -362,7 +365,7 @@ function closeSO(){
 };
 
 function openSO(){
-    var r=confirm("Anda yakin meng-close SO ini?");
+    var r=confirm("Anda yakin meng-Open SO ini?");
     if (r==true){
         $('#formku').attr("action", "<?php echo base_url(); ?>index.php/SalesOrder/open_so");    
         $('#formku').submit(); 
@@ -370,9 +373,17 @@ function openSO(){
 };
 
 function openINV(){
-    var r=confirm("Anda yakin meng-close SO ini?");
+    var r=confirm("Anda yakin meng-Open Invoice SO ini?");
     if (r==true){
         $('#formku').attr("action", "<?php echo base_url(); ?>index.php/SalesOrder/open_inv");    
+        $('#formku').submit(); 
+    }
+};
+
+function openSJ(){
+    var r=confirm("Anda yakin meng-Open Surat Jalan SO ini?");
+    if (r==true){
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/SalesOrder/open_sj");    
         $('#formku').submit(); 
     }
 };

@@ -841,22 +841,22 @@ class SalesOrder extends CI_Controller{
         if($jenis=='FG'){
             $this->db->where('id', $this->input->post('id_spb'));
             $this->db->update('t_spb_fg', array(
-                'status'=>2,
+                'status'=>4,
             ));
         }elseif($jenis=='WIP'){
             $this->db->where('id', $this->input->post('id_spb'));
             $this->db->update('t_spb_wip', array(
-                'status'=>2,
+                'status'=>4,
             ));
         }elseif($jenis=='RONGSOK'){
             $this->db->where('id', $this->input->post('id_spb'));
             $this->db->update('spb', array(
-                'status'=>2,
+                'status'=>4,
             ));
         }elseif($jenis=='AMPAS'){
             $this->db->where('id', $this->input->post('id_spb'));
             $this->db->update('t_spb_ampas', array(
-                'status'=>2,
+                'status'=>4,
             ));
         }
         
@@ -880,6 +880,25 @@ class SalesOrder extends CI_Controller{
         
         $this->session->set_flashdata('flash_msg', 'Invoice berhasil di open');
         redirect('index.php/Finance/add_invoice');
+    }
+
+    function open_sj(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $jenis    = $this->input->post('jenis_barang');
+        
+        #Update status t_surat_jalan
+        $data = array(
+                'flag_sj'=>0,
+                'flag_invoice'=>0,
+                'modified'=>$tanggal,
+                'modified_by'=>$user_id
+            );
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('sales_order', $data);
+        
+        $this->session->set_flashdata('flash_msg', 'Surat Jalan berhasil di open');
+        redirect('index.php/SalesOrder/add_surat_jalan');
     }
 
     function spb_list(){

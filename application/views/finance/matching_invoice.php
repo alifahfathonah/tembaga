@@ -115,20 +115,40 @@
                             <div class="col-md-12">
                                 <div class="alert alert-danger display-hide">
                                     <button class="close" data-close="alert"></button>
-                                    <span id="message">&nbsp;</span>
+                                    <span id="message2">&nbsp;</span>
                                 </div>
                             </div>
                         </div>
                         <form class="eventInsForm" method="post" target="_self" name="frmDetail" 
                               id="frmDetail">
                             <input type="hidden" id="id_modal" name="id_modal">
+                            <input type="hidden" id="id_detail" name="id_detail">
                             <div class="row">
                                 <div class="col-md-4">
-                                    No. Uang Masuk<font color="#f00">*</font>
+                                    Keterangan
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" id="no_um" name="no_um" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
-                                    <input type="hidden" id="um_id" name="um_id">
+                                    <input type="text" id="k_1" name="k_1" class="form-control myline" style="margin-bottom:5px" placeholder="Input Keterangan ..." onkeyup="this.value = this.value.toUpperCase()">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    Currency
+                                </div>
+                                <div class="col-md-4">
+                                    <select id="currency" name="currency" class="form-control myline select2me" 
+                                        data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cur(this.value);">
+                                        <option value="IDR">IDR</option>
+                                        <option value="USD">USD</option>
+                                    </select>
+                                </div>
+                                <div id="show_kurs">
+                                <div class="col-md-2">
+                                    Kurs
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="number" id="kurs" name="kurs" class="form-control myline" value="1">
+                                </div>
                                 </div>
                             </div>
                             <div class="row">
@@ -136,54 +156,14 @@
                                     Nominal
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" id="nominal" name="nominal" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    Biaya 1
-                                </div>
-                                <div class="col-md-8">
-                                    <input type="text" id="b_1" name="b_1" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id); hitungSubTotal();">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    Keterangan 1
-                                </div>
-                                <div class="col-md-8">
-                                    <input type="text" id="k_1" name="k_1" class="form-control myline" style="margin-bottom:5px" placeholder="Input Keterangan ...">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    Biaya 2
-                                </div>
-                                <div class="col-md-8">
-                                    <input type="text" id="b_2" name="b_2" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id); hitungSubTotal();" max="10">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    Keterangan 2
-                                </div>
-                                <div class="col-md-8">
-                                    <input type="text" id="k_2" name="k_2" class="form-control myline" style="margin-bottom:5px" placeholder="Input Keterangan ...">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    Total Nominal
-                                </div>
-                                <div class="col-md-8">
-                                    <input type="text" id="total_nominal" name="total_nominal" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                                    <input type="text" id="nominal" name="nominal" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);" placeholder="Input Nominal ...">
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">                        
-                        <button type="button" class="btn blue" id="tambah" onclick="addUM();">Tambah</button>
-                        <button type="button" class="btn blue" id="simpan" onclick="saveUM();">Simpan</button>
+                        <button type="button" class="btn blue" id="tambah_potongan">Tambah</button>
+                        <button type="button" class="btn blue" id="simpan_potongan">Simpan</button>
                         <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
                     </div>
                 </div>
@@ -257,8 +237,7 @@
                             Alamat
                         </div>
                         <div class="col-md-8">
-                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly"><?php echo $header['alamat']; ?></textarea>                           
+                            <textarea id="remarks" name="remarks" rows="2" class="form-control myline" style="margin-bottom:5px" readonly="readonly"><?php echo $header['alamat']; ?></textarea>                           
                         </div>
                     </div>
                 </div>
@@ -347,7 +326,10 @@
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="fa fa-file-word-o"></i>Data Uang Masuk
-                        </div>                 
+                        </div>  
+                        <div class="tools">    
+                            <a class="btn btn-xs btn-circle blue-ebonyclay" style="height: 22px;" id="addPotongan" href="<?=base_url();?>index.php/Finance/add_potongan_matching"> <i class="fa fa-plus"></i> Tambah Potongan</a>                
+                        </div>               
                     </div>
                     <div class="portlet-body">
                         <div class="table-scrollable">
@@ -549,6 +531,7 @@ function data_inv(id){
         dataType: "json",
         success: function(result) {
             $('#data_inv').html(result);
+            load_sisa();
         }
     });
 }
@@ -683,19 +666,16 @@ function view_um(id){
         data: "id="+id,
         dataType: "json",
         success: function(result){
-            $("#myModal").find('.modal-title').text('Edit Matching');
+            $("#myModal").find('.modal-title').text('Edit Potongan');
             $("#myModal").modal('show',{backdrop: 'true'});
-            $("#tambah").hide();
-            $("#simpan").show();
+            $("#tambah_potongan").hide();
+            $("#simpan_potongan").show();
             $("#id_modal").val(<?php echo $header['id'];?>);
-            $("#no_um").val(result['no_uang_masuk']);
-            $("#um_id").val(id);
-            $('#b_1').val(numberWithCommas(result['biaya1']));
-            $('#k_1').val(result['ket1'])
-            $('#b_2').val(numberWithCommas(result['biaya2']));
-            $('#k_2').val(result['ket2']);
-            $("#nominal").val(numberWithCommas(result['nominal']));
-            $("#total_nominal").val(numberWithCommas(Number(result['nominal'])+(Number(result['biaya1'])+Number(result['biaya2']))));
+            $("#id_detail").val(result['id']);
+            $('#k_1').val(result['keterangan'])
+            $('#currency').select2('val',result['currency']);
+            $('#kurs').val(result['kurs']);
+            $("#nominal").val(numberWithCommas(result['biaya']));
         }
     });
 }
@@ -728,8 +708,121 @@ function data_um(id){
         dataType: "json",
         success: function(result) {
             $('#data_um').html(result);
+            load_sisa();
         }
     });
+}
+
+function load_sisa(){
+    var sisa_invoice = $('#load_total_nominal').val()-$('#load_total_invoice').val();
+    var sisa_nominal = $('#load_total_invoice').val()-$('#load_total_nominal').val();
+    if(sisa_invoice>=0){
+        $('#view_total_invoice').css({'color': 'white', 'background-color':'green'});
+    }else{
+        $('#view_total_invoice').css({'color': 'white', 'background-color':'red'});
+    }
+
+    if(sisa_nominal>=0){
+        $('#view_total_nominal').css({'color': 'white', 'background-color':'green'});
+    }else{
+        $('#view_total_nominal').css({'color': 'white', 'background-color':'red'});
+    }
+    $('#view_total_invoice').html(numberWithCommas(sisa_invoice));
+    $('#view_total_nominal').html(numberWithCommas(sisa_nominal));
+}
+
+$('#addPotongan').click(function(event) {
+    event.preventDefault();
+    $("#myModal").find('.modal-title').text('Tambah Potongan');
+    $("#myModal").modal('show',{backdrop: 'true'});
+    $('#id_modal').val($('#id').val());
+    $('#k_1').val('');
+    $('#currency').val('');
+    $('#nominal').val('');
+    $('#id_detail').val('');
+    $('#simpan_potongan').hide();
+    $('#tambah_potongan').show();
+});
+
+$('#tambah_potongan').click(function(event) {
+    event.preventDefault(); /*  Stops default form submit on click */
+
+    if($.trim($("#nominal").val()) == ("" || 0)){
+        $('#message2').html("Nominal harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else if($.trim($("#k_1").val()) == ("" || 0)){
+        $('#message2').html("Keterangan harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else{
+        $.ajax({// Run getUnlockedCall() and return values to form
+            url: "<?php echo base_url('index.php/Finance/add_potongan_match'); ?>",
+            data:{
+               id_modal:$('#id_modal').val(),
+               k_1:$('#k_1').val(),
+               currency:$('#currency').val(),
+               kurs:$('#kurs').val(),
+               nominal:$('#nominal').val()
+            },
+            type: "POST",
+            success: function(result){
+                if (result['message_type'] == 'sukses') {
+                    $("#myModal").modal('hide'); 
+                    list_um(<?php echo $header['id_customer'].','.$header['id'];?>);
+                    data_um(<?php echo $header['id'];?>);
+                    $('#k_1').val('');
+                    $('#currency').val('');
+                    $('#nominal').val('');
+                } else {
+                    $("#myModal").modal('hide'); 
+                }
+            }
+        });
+    }
+});
+
+$('#simpan_potongan').click(function(event) {
+    event.preventDefault(); /*  Stops default form submit on click */
+    if($.trim($("#nominal").val()) == ("" || 0)){
+        $('#message2').html("Nominal harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else if($.trim($("#k_1").val()) == ("" || 0)){
+        $('#message2').html("Keterangan harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else{
+        $.ajax({// Run getUnlockedCall() and return values to form
+            url: "<?php echo base_url('index.php/Finance/save_potongan_match'); ?>",
+            data:{
+               id_modal:$('#id_modal').val(),
+               id_detail:$('#id_detail').val(),
+               k_1:$('#k_1').val(),
+               nominal:$('#nominal').val(),
+               currency:$('#currency').val(),
+               kurs:$('#kurs').val()
+            },
+            type: "POST",
+            success: function(result){
+                if (result['message_type'] == 'sukses') {
+                    $("#myModal").modal('hide'); 
+                    list_um(<?php echo $header['id_customer'].','.$header['id'];?>);
+                    data_um(<?php echo $header['id'];?>);
+                    $('#k_1').val('');
+                    $('#currency').val('');
+                    $('#nominal').val('');
+                } else {
+                    $("#myModal").modal('hide'); 
+                }
+            }
+        });
+    }
+});
+
+function get_cur(id){
+    if(id=='USD'){
+        $('#show_kurs').show();
+    }else if(id=='IDR'){
+        $('#show_kurs').hide();
+        $('#kurs').val(1);
+    }
 }
 
 $(function(){        
@@ -746,5 +839,7 @@ $(function(){
     list_um(<?php echo $header['id_customer']; ?>);
     data_inv(<?php echo $header['id']; ?>);
     data_um(<?php echo $header['id']; ?>);
+    load_sisa();
+    $('#show_kurs').hide();
 });
 </script>

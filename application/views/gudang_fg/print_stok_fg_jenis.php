@@ -67,7 +67,7 @@
         <td width="32%" style="vertical-align: top">
             <table width="100%" border="0" cellpadding="4" cellspacing="0" style="font-size: 13px;">
                 <thead>
-                    <th colspan="3" style="border-left:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;">KAWAT BERAS</th>
+                    <th colspan="3" style="border-left:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;">KAWAT BESAR</th>
                 </thead>
                 <thead>
                     <th style="border-bottom:1px solid #000; border-left:1px solid #000; border-top:1px solid #000;">Nama Item</th>

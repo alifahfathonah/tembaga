@@ -31,7 +31,7 @@ class GudangFG extends CI_Controller{
     function view_gudang_fg(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
-        $group_id    = $this->session->userdata('group_id');
+        $group_id = $this->session->userdata('group_id');
 
         if($id){
             if($group_id != 1){

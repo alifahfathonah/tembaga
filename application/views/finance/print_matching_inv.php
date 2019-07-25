@@ -95,7 +95,7 @@
                         ?>
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
-                            <td style="text-align:left; border-left:1px solid #000;"><?=$row->nomor.' | '.$row->nomor_cek.' ('.$row->nama_bank.')';?></td>
+                            <td style="text-align:left; border-left:1px solid #000;"><?=$row->nomor.(($row->nomor_cek!=null)? ' | '.$row->nomor_cek : '').(($row->nama_bank!=null)? ' ('.$row->nama_bank.')':'');?></td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000;"><?=number_format($row->nominal,2,',','.');?></td>
                         </tr>
                         <?php $nominal += $row->nominal; $no++; } ?>

@@ -406,7 +406,7 @@ class Model_sales_order extends CI_Model{
                     Left Join sales_order so On (tsj.sales_order_id = so.id) 
                     Left Join f_invoice fi on (fi.id_surat_jalan = tsj.id)
                 Where so.flag_tolling = 0  And so.flag_ppn = ".$user_ppn."
-                Order By tsj.id Desc");
+                Order By tsj.no_surat_jalan Desc");
         return $data;
     }
 
@@ -567,7 +567,11 @@ class Model_sales_order extends CI_Model{
     }
 
     function get_last_sj($ppn){
-        $data = $this->db->query("select no_surat_jalan from t_surat_jalan where id = ( select max(tsj.id) from t_surat_jalan tsj left join sales_order so on so.id = tsj.sales_order_id where so.flag_ppn =".$ppn.")");
+        $data = $this->db->query("select no_surat_jalan from t_surat_jalan tsj
+            left join sales_order so on so.id = tsj.sales_order_id 
+            where so.flag_ppn =".$ppn."
+            order by no_surat_jalan desc limit 1
+            ");
         return $data;
     }
 

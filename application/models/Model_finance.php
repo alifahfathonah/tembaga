@@ -265,7 +265,7 @@ class Model_finance extends CI_Model{
     }
 
     function show_detail_matching_um($id){
-        $data = $this->db->query("select fum.*, b.kode_bank, b.nama_bank, b.nomor_rekening, fmd.biaya1, fmd.biaya2, fmd.ket1, fmd.ket2 from f_match_detail fmd
+        $data = $this->db->query("select fum.*, b.kode_bank, b.nama_bank, b.nomor_rekening, from f_match_detail fmd
             left join f_uang_masuk fum on fum.id = fmd.id_um
             left join bank b on b.id = fum.rekening_tujuan
             where id_inv = 0 and fmd.id_match =".$id);
@@ -423,7 +423,7 @@ class Model_finance extends CI_Model{
             (select fi.no_invoice as nomor, fmd.inv_bayar+fi.nilai_pembulatan as nominal, fi.tanggal
             from f_match_detail fmd
             left join f_invoice fi on fi.id = fmd.id_inv
-            where fmd.id_match =".$id." and fmd.id_um = 0)
+            where fmd.id_match =".$id." and fmd.id_um = 0 and biaya = 0)
                 UNION ALL
             (select 'SELISIH' as nomor, fi.nilai_pembulatan*-1 as nominal, '' as tanggal from f_match_detail fmd
                         left join f_invoice fi on fi.id = fmd.id_inv
@@ -433,10 +433,10 @@ class Model_finance extends CI_Model{
 
     function load_um_match_print($id){
         $data = $this->db->query("
-            (select fum.no_uang_masuk as nomor, fum.nominal,  COALESCE(NULLIF(fum.rekening_pembayaran,''),fum.nomor_cek) as nomor_cek, b.nama_bank from f_match_detail fmd
+            (select COALESCE(fmd.keterangan,fum.no_uang_masuk) as nomor, COALESCE(NULLIF(fmd.biaya,0),fum.nominal) as nominal,  COALESCE(NULLIF(fum.rekening_pembayaran,''),fum.nomor_cek) as nomor_cek, b.nama_bank from f_match_detail fmd
             left join f_uang_masuk fum on fum.id = fmd.id_um
             left join bank b on b.id = fum.rekening_tujuan
-            where fmd.id_match =".$id." and fmd.id_inv = 00)
+            where fmd.id_match =".$id." and fmd.id_inv = 0)
                 UNION ALL
             (select 'SELISIH' as nomor, fi.nilai_pembulatan as nominal, '' as nomor_cek, '' as nama_bank from f_match_detail fmd
             left join f_invoice fi on fi.id = fmd.id_inv
@@ -477,20 +477,19 @@ class Model_finance extends CI_Model{
         $data = $this->db->query("select fmd.*, fi.jenis_trx, fi.no_invoice, fmd.inv_bayar as total
             from f_match_detail fmd
             left join f_invoice fi on fi.id = fmd.id_inv
-            where fmd.id_match =".$id." and fmd.id_um = 0");
+            where fmd.id_match =".$id." and fmd.id_inv != 0 and fmd.id_um = 0");
         return $data;
     }
 
     function view_um_match($id){
-        $data = $this->db->query("select fmd.*, fum.no_uang_masuk, fum.nominal
+        $data = $this->db->query("select fmd.*
             from f_match_detail fmd
-            left join f_uang_masuk fum on fum.id = fmd.id_um
             where fmd.id =".$id);
         return $data;
     }
 
     function load_um_match($id){
-        $data = $this->db->query("select fmd.*, fum.no_uang_masuk, fum.nomor_cek, fum.currency, fum.nominal, (fum.nominal + fmd.biaya1 + fmd.biaya2) as total, fum.status  from f_match_detail fmd
+        $data = $this->db->query("select fmd.*, COALESCE(fmd.keterangan,fum.no_uang_masuk) as no_uang_masuk, fum.nomor_cek, COALESCE(fmd.currency,fum.currency) as currency, COALESCE(NULLIF(fmd.biaya,0),fum.nominal) as total, fum.status  from f_match_detail fmd
             left join f_uang_masuk fum on fum.id = fmd.id_um
             where fmd.id_match =".$id." and fmd.id_inv = 0");
         return $data;
