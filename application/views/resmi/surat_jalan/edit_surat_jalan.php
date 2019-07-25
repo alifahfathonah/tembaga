@@ -357,7 +357,7 @@
                                 <td><input type="text" class="form-control myline" style="margin-bottom:5px" name="uom" id="uom" readonly></td>
                                 <td><input type="text" class="form-control myline" style="margin-bottom:5px" name="bruto" id="bruto"></td>
                                 <td><input type="text" class="form-control myline" style="margin-bottom:5px" name="netto" id="netto"></td>
-                                <td><input type="text" class="form-control myline" style="margin-bottom:5px" name="no_packing" id="no_packing"></td>
+                                <td><input type="text" class="form-control myline" style="margin-bottom:5px" name="no_packing" id="no_packing" readonly></td>
                                 <td><input type="text" class="form-control myline" style="margin-bottom:5px" name="nomor_bobbin" id="nomor_bobbin"></td>
                                 <td><input type="text" class="form-control myline" style="margin-bottom:5px" name="line_remarks" id="line_remarks"></td>
                                 <td>

@@ -600,14 +600,14 @@ class R_SuratJalan extends CI_Controller{
         $details = $this->Model_surat_jalan->list_sj_detail($id)->result();
         foreach ($details as $key => $detail) {
             $table .= '<tr id="row_'.$detail->id.'">';
-                $table .= '<td align="center">'.$no.'<input type="hidden" name="detail_id" id="detail_id_'.$detail->id.'" value="'.$detail->id.'"></td>';
-                $table .= '<td>'.$detail->jenis_barang.'</td>';
+                $table .= '<td align="center">'.$no.'<input type="hidden" name="details['.$no.'][id]" value="'.$detail->id.'"></td>';
+                $table .= '<td>'.$detail->jenis_barang.'<input type="hidden" name="details['.$no.'][barang_id]" value="'.$detail->jenis_barang_id.'"></td>';
                 $table .= '<td>'.$detail->uom.'</td>';
-                $table .= '<td align="right">'.number_format($detail->bruto,2,'.',',').'</td>';
-                $table .= '<td align="right">'.number_format($detail->netto,2,'.',',').'</td>';
-                $table .= '<td>'.$detail->no_packing.'</td>';
-                $table .= '<td>'.$detail->nomor_bobbin.'</td>';
-                $table .= '<td>'.$detail->line_remarks.'</td>';
+                $table .= '<td align="right">'.number_format($detail->bruto,2,'.',',').'<input type="hidden" name="details['.$no.'][bruto]" value="'.$detail->bruto.'"></td>';
+                $table .= '<td align="right">'.number_format($detail->netto,2,'.',',').'<input type="hidden" name="details['.$no.'][netto]" value="'.$detail->netto.'"></td>';
+                $table .= '<td>'.$detail->no_packing.'<input type="hidden" name="details['.$no.'][no_packing]" value="'.$detail->no_packing.'"></td>';
+                $table .= '<td>'.$detail->nomor_bobbin.'<input type="hidden" name="details['.$no.'][nomor_bobbin]" value="'.$detail->nomor_bobbin.'"></td>';
+                $table .= '<td>'.$detail->line_remarks.'<input type="hidden" name="details['.$no.'][line_remarks]" value="'.$detail->line_remarks.'"></td>';
                 $table .= '<td><a class="btn btn-circle btn-xs green" href="javascript:;" onclick="edit('.$detail->id.')" style="margin-bottom:4px"> &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a></td>';
             $table .= '</tr>';
             $no++;
@@ -720,7 +720,8 @@ class R_SuratJalan extends CI_Controller{
                             'modified_at'=> $tanggal,
                             'modified_by'=> $user_id
                         );
-                    $this->db->where('sj_resmi_id', $v['id']);
+                    $this->db->where('sj_resmi_id', $this->input->post('id'));
+                    $this->db->where('no_packing', $v['no_packing']);
                     $this->db->update('r_t_bpb_detail', $data_bpb_detail);
                 }
             }
