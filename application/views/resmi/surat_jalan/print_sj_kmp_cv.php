@@ -82,7 +82,7 @@
                         <tr>
                             <td colspan="3">No. Kendaraan: <?php echo $header['no_kendaraan']; ?></td>
                             <td colspan="3">Type Kendaraan: <?php echo $header['type_kendaraan']; ?></td>
-                            <td colspan="3">Catatan: <?php echo $header['remarks']; ?></td>
+                            <td colspan="3">Catatan: ONGKOS KERJA</td>
                         </tr>
                         <tr>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>NO</strong></td>

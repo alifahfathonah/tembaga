@@ -1,4 +1,5 @@
 matching invoice dikurang dengan POTONGAN
+matching invoice dengan bank masuk
 
 Laporan DTR yang dipakai di Matching Invoice CV
 
@@ -27,7 +28,5 @@ matching ampas yg dtr nya sudah approve
 delete sj yang reject
 
 delete semua spb fulfilment yang udah di approve tapi belum di kirim
-
-open so,open sj, open invoice di sales order tolling belum
 
 data customer dan data supplier belum dibenerin. kan campur data kmp dan kh

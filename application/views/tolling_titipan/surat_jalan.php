@@ -103,6 +103,8 @@
                                 if(($group_id==1 || $hak_akses['edit_surat_jalan']==1) && $data->status==9){
                             ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Tolling/edit_surat_jalan/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/Tolling/delete_surat_jalan/<?php echo $data->id; ?>" onclick="return confirm('Anda yakin menghapus surat jalan ini?');"
+                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-trash"></i> Delete &nbsp; </a>
                             <?php
                             }
                                 if(($group_id==1 || $hak_akses['revisi_surat_jalan']==1) && $data->jenis_barang=='FG' && $data->status==1 && $data->inv==NULL){

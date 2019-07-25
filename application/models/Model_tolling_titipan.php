@@ -365,13 +365,14 @@ class Model_tolling_titipan extends CI_Model{
     function show_header_sj($id){
         $data = $this->db->query("Select tsj.*, cust.id as id_customer, cust.nama_customer, cust.alamat, so.tanggal as tanggal_so, 
                     COALESCE(tsf.no_spb, tsw.no_spb_wip, s.no_spb, tsa.no_spb_ampas) as nomor_spb,
-                    COALESCE(tsf.status, tsw.status, s.status, tsa.status) as status_spb,
-                    tso.no_spb, so.no_sales_order, tso.no_po,
+                    COALESCE(tsf.status, tsw.status, s.status, tsa.status) as status_spb, 
+                    tso.no_spb, so.no_sales_order, COALESCE(po.no_po,tso.no_po) as no_po,
                     tkdr.type_kendaraan,
                     usr.realname,
                     aprv.realname as approved_name,
                     rjct.realname as rejected_name
                 From t_surat_jalan tsj
+                    Left Join po on (po.id = tsj.po_id)
                     Left Join m_customers cust On (tsj.m_customer_id = cust.id)
                     Left Join t_sales_order tso On (tsj.sales_order_id = tso.so_id) 
                     Left Join t_spb_fg tsf On (tso.jenis_barang = 'FG' and tsf.id = tso.no_spb)
@@ -392,15 +393,15 @@ class Model_tolling_titipan extends CI_Model{
     }
     
     function load_detail_surat_jalan($id){
-        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, jb.uom, tgf.no_produksi, mb.berat, jb1.kode as kode_lama, coalesce(jb2.kode, 0) as kode_baru
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, COALESCE(tsjd.barang_alias, jb.jenis_barang,r.nama_item) as jenis_barang, COALESCE(r.uom,jb.uom) as uom, tgf.no_produksi, COALESCE(tsjd.berat,mb.berat) as berat, COALESCE(r.kode_rongsok,jb1.kode) as kode_lama, coalesce(jb2.kode, 0) as kode_baru
                 from t_surat_jalan_detail tsjd
                 left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
-                left join jenis_barang jb on tsj.jenis_barang != 'RONGSOK' and jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
-                left join rongsok r on tsj.jenis_barang = 'RONGSOK' and r.id = tsjd.jenis_barang_id
-                left join t_gudang_fg tgf on tgf.id = tsjd.gudang_id
+                left join jenis_barang jb on tsj.jenis_barang != 'RONGSOK' and tsj.jenis_barang != 'AMPAS' and jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
+                left join rongsok r on tsj.jenis_barang = 'RONGSOK' or tsj.jenis_barang = 'AMPAS' and r.id = tsjd.jenis_barang_id
+                left join t_gudang_fg tgf on tsj.jenis_barang = 'FG' and tgf.id = tsjd.gudang_id
                 left join m_bobbin mb on tgf.bobbin_id>0 and mb.id = tgf.bobbin_id
-                left join jenis_barang jb1 on jb1.id = tsjd.jenis_barang_id
-                left join jenis_barang jb2 on jb2.id = tsjd.jenis_barang_alias
+                left join jenis_barang jb1 on tsj.jenis_barang != 'RONGSOK' and jb1.id = tsjd.jenis_barang_id
+                left join jenis_barang jb2 on tsj.jenis_barang != 'RONGSOK' and jb2.id = tsjd.jenis_barang_alias
                 where tsjd.t_sj_id =".$id);
         return $data;
     }
@@ -651,7 +652,7 @@ class Model_tolling_titipan extends CI_Model{
         return $data;
     }
 
-    function dtt_list(){
+    function dtt_list($ppn){
         $data = $this->db->query("Select dtt.*, 
                     po.no_po, 
                     mc.nama_customer,
@@ -661,6 +662,7 @@ class Model_tolling_titipan extends CI_Model{
                     Left Join po On (dtt.po_id = po.id) 
                     Left Join m_customers mc On (po.customer_id = mc.id) or (dtt.customer_id = mc.id) 
                     Left Join users usr On (dtt.created_by = usr.id) 
+                where dtt.flag_ppn = ".$ppn."
                 Order By dtt.id Desc");
         return $data;
     }
