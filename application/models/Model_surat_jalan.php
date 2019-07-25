@@ -131,6 +131,14 @@ class Model_surat_jalan extends CI_Model{
     	return $data;
     }
 
+    function get_detail_sj($id){
+    	$data = $this->db->query('SELECT rtsjd.*, jb.uom
+    		FROM r_t_surat_jalan_detail rtsjd
+    		LEFT JOIN jenis_barang jb ON jb.id = rtsjd.jenis_barang_id
+    		WHERE rtsjd.id = '.$id);
+    	return $data;
+    }
+
     function show_header_sj_cv($id){
     	$data = $this->db->query("select rtsj.*, rtsj2.m_cv_id from r_t_surat_jalan rtsj
 			left join r_t_surat_jalan rtsj2 on rtsj.r_sj_id = rtsj2.id
