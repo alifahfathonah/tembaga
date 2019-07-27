@@ -29,7 +29,8 @@
                     <i class="fa fa-beer"></i>Stok Opname (Ada data di gudang, tapi belum discan)
                 </div>
                 <div class="tools">
-                                 
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?= base_url('index.php/StokOpname/print_check_stock/'.$tanggal) ?>" target="_blank">
+                                    <i class="fa fa-print"></i> Print</a>
                 </div>
             </div>
             <div class="portlet-body">

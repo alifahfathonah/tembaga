@@ -375,7 +375,16 @@ class StokOpname extends CI_Controller{
         $data['content']= "stok_opname/check";
         $this->load->model('Model_stok_opname');
         $data['list_data'] = $this->Model_stok_opname->stock_missing($tanggal)->result();
+        $data['tanggal'] = $tanggal;
 
         $this->load->view('layout', $data);
+    }
+
+    function print_check_stock($tanggal){
+        $this->load->helper('tanggal_indo');  
+        $this->load->model('Model_stok_opname');
+        $data['list_data'] = $this->Model_stok_opname->stock_missing($tanggal)->result();
+
+        $this->load->view('stok_opname/print_check_stock', $data);
     }
 }

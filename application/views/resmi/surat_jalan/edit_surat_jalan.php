@@ -520,6 +520,7 @@ function get_alamat(id){
 
 $('#btnUpdate').click(function(event){
     event.preventDefault();
+    console.log('masuk');
     id = $('#d_id').val();
     barang_id = $('#barang_id').val();
     bruto = $('#bruto').val();
@@ -544,11 +545,12 @@ $('#btnUpdate').click(function(event){
         $('#no_packing').focus();
         $('.alert-danger').show();
         $('#message').html("Nomor packing tidak boleh kosong!");
-    } else if (nomor_bobbin == '') {
-        $('#nomor_bobbin').focus();
-        $('.alert-danger').show();
-        $('#message').html("Nomor bobbin tidak boleh kosong!");
+    // } else if (nomor_bobbin == '') {
+    //     $('#nomor_bobbin').focus();
+    //     $('.alert-danger').show();
+    //     $('#message').html("Nomor bobbin tidak boleh kosong!");
     } else {
+        console.log('atas ajax');
         $.ajax({
             type: "POST",
             dataType: "JSON",
@@ -563,7 +565,7 @@ $('#btnUpdate').click(function(event){
                 line_remarks: line_remarks,
             },
             success: function(result){
-                
+                console.log(result);
                 $('#tfoot').hide();
                 loadDetail($('#id').val());
                 $('html, body').animate({
