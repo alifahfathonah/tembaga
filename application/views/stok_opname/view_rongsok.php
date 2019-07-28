@@ -3,8 +3,8 @@
         <h4 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Stok Opname 
-            <i class="fa fa-angle-right"></i>
-            <a href="<?php echo base_url('index.php/StokOpname/'); ?>"> Scan FG</a>
+            <!-- <i class="fa fa-angle-right"></i>
+            <a href="<?php echo base_url('index.php/StokOpname/'); ?>"> Scan FG</a> -->
         </h4>          
     </div>
 </div>
@@ -47,16 +47,14 @@
                                 <tr>
                                     <th style="width:40px" rowspan="2">No</th>
                                     <th rowspan="2">Kode</th>
-                                    <th rowspan="2">Nama Barang</th>
-                                    <th rowspan="2">No. Packing</th>
+                                    <th rowspan="2">Nama Item</th>
+                                    <th rowspan="2">No. Palette</th>
                                     <th rowspan="2">UOM</th>
-                                    <th colspan="2" style="border-bottom: 1px solid lightgrey;">Produksi</th>
+                                    <th rowspan="2">Tanggal Masuk</th>
                                     <th colspan="3" style="border-bottom: 1px solid lightgrey;">Berat</th>
                                     <th rowspan="2">Keterangan</th>
                                 </tr>
                                 <tr>
-                                    <th>No.</th>
-                                    <th>Tgl.</th>
                                     <th>Bruto</th>
                                     <th>Bobbin</th>
                                     <th>Netto</th>
@@ -71,14 +69,13 @@
 
                                 <tr>
                                     <td><?= $no ?></td>
-                                    <td><?= $detail->kode ?></td>
-                                    <td><?= $detail->jenis_barang ?></td>
+                                    <td><?= $detail->kode_rongsok ?></td>
+                                    <td><?= $detail->nama_item ?></td>
                                     <td><?= $detail->no_packing ?></td>
                                     <td><?= $detail->uom ?></td>
-                                    <td><?= $detail->no_produksi ?></td>
                                     <td><?= date('d-m-Y', strtotime($detail->tanggal_masuk)) ?></td>
                                     <td align="right"><?= number_format($detail->bruto,2,'.',',') ?></td>
-                                    <td align="right"><?= number_format($detail->berat_bobbin,2,'.',',') ?></td>
+                                    <td align="right"><?= number_format($detail->berat_palette,2,'.',',') ?></td>
                                     <td align="right"><?= number_format($detail->netto,2,'.',',') ?></td>
                                     <td><?= $detail->keterangan ?></td>
                                 </tr>
@@ -110,7 +107,7 @@
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
-                    <a href="<?php echo base_url('index.php/StokOpname/report/FG'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/StokOpname/report/rongsok'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>

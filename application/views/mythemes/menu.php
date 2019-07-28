@@ -612,29 +612,72 @@
                         <ul class="sub-menu">
                         <?php if($group_id==1 || $group_id == 21 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                             <li>
-                                <a href="<?php echo base_url(); ?>index.php/StokOpname/">
-                                <i class="fa fa-barcode"></i>
-                                Scan FG </a>
+                                <a href="#">
+                                    <i class="fa fa-circle"></i>
+                                    <span class="title">FG</span>
+                                    <span class="arrow "></span>
+                                </a>
+                                <ul class="sub-menu">
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/StokOpname/">
+                                        <i class="fa fa-barcode"></i>
+                                        Scan FG </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/StokOpname/adjustment">
+                                        <i class="fa fa-tasks"></i>
+                                        Adjusment Stok FG </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/StokOpname/report/FG">
+                                        <i class="fa fa-briefcase"></i>
+                                        Stock FG </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/StokOpname/filter">
+                                        <i class="fa fa-briefcase"></i>
+                                        Stok perlu periksa </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/StokOpname/print_stok">
+                                        <i class="fa fa-print"></i>
+                                        Print Stok Opname </a>
+                                    </li>
+                                </ul>
                             </li>
                             <li>
-                                <a href="<?php echo base_url(); ?>index.php/StokOpname/adjustment">
-                                <i class="fa fa-tasks"></i>
-                                Adjusment Stok FG </a>
-                            </li>
-                            <li>
-                                <a href="<?php echo base_url(); ?>index.php/StokOpname/report">
-                                <i class="fa fa-briefcase"></i>
-                                Stock FG </a>
-                            </li>
-                            <li>
-                                <a href="<?php echo base_url(); ?>index.php/StokOpname/filter">
-                                <i class="fa fa-briefcase"></i>
-                                Stok perlu periksa </a>
-                            </li>
-                            <li>
-                                <a href="<?php echo base_url(); ?>index.php/StokOpname/print_stok">
-                                <i class="fa fa-print"></i>
-                                Print Stok Opname </a>
+                                <a href="#">
+                                    <i class="fa fa-circle"></i>
+                                    <span class="title">Rongsok</span>
+                                    <span class="arrow "></span>
+                                </a>
+                                <ul class="sub-menu">
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/StokOpname/add_rongsok">
+                                        <i class="fa fa-barcode"></i>
+                                        Scan Rongsok </a>
+                                    </li>
+                                    <!-- <li>
+                                        <a href="<?php echo base_url(); ?>index.php/StokOpname/adjustment">
+                                        <i class="fa fa-tasks"></i>
+                                        Adjusment Stok Rongsok </a>
+                                    </li> -->
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/StokOpname/report/rongsok">
+                                        <i class="fa fa-briefcase"></i>
+                                        Stock Rongsok </a>
+                                    </li>
+                                    <!-- <li>
+                                        <a href="<?php echo base_url(); ?>index.php/StokOpname/filter">
+                                        <i class="fa fa-briefcase"></i>
+                                        Stok perlu periksa </a>
+                                    </li> -->
+                                    <!-- <li>
+                                        <a href="<?php echo base_url(); ?>index.php/StokOpname/print_stok_rongsok">
+                                        <i class="fa fa-print"></i>
+                                        Print Stok Opname </a>
+                                    </li> -->
+                                </ul>
                             </li>
                         <?php } ?>
                         </ul>

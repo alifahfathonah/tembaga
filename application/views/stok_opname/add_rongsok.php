@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Stok Opname 
             <i class="fa fa-angle-right"></i>
-            <a href="<?php echo base_url('index.php/StokOpname'); ?>"> Scan FG</a>
+            <a href="<?php echo base_url('index.php/StokOpname'); ?>"> Scan Rongsok</a>
         </h4>          
     </div>
 </div>
@@ -23,8 +23,8 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-            id="formku" action="<?php echo base_url('index.php/StokOpname/save'); ?>">  
-            <input type="hidden" name="jenis" id="jenis" value="FG">
+            id="formku" action="<?php echo base_url('index.php/StokOpname/save_rongsok'); ?>">  
+            <input type="hidden" name="jenis" id="jenis" value="Rongsok">
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -65,13 +65,13 @@
 function get_packing(no){
     console.log(no);
     $.ajax({
-        url: "<?php echo base_url('index.php/StokOpname/get_packing'); ?>",
+        url: "<?php echo base_url('index.php/StokOpname/get_palette'); ?>",
         type: "POST",
         data : {no: no},
         success: function (result){
             if (result!=null){
                 $("#nama_barang").val(result['jenis_barang']);
-                $("#id_barang").val(result['id']);
+                $("#rongsok_id").val(result['id']);
                 $("#uom").val(result['uom']);
                 $("#netto").val(result['netto']);
                 $("#keterangan").val(result['keterangan']);
