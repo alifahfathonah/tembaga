@@ -590,6 +590,75 @@ class R_SuratJalan extends CI_Controller{
         }
     }
 
+    function load_detail_fg(){
+        $id = $this->input->post('id');
+        $no = 1;
+        $bruto = 0;
+        $netto = 0;
+        $table = '';
+        $this->load->model('Model_surat_jalan');
+        $details = $this->Model_surat_jalan->list_sj_detail($id)->result();
+        foreach ($details as $key => $detail) {
+            $table .= '<tr id="row_'.$detail->id.'">';
+                $table .= '<td align="center">'.$no.'<input type="hidden" name="details['.$no.'][id]" value="'.$detail->id.'"></td>';
+                $table .= '<td>'.$detail->jenis_barang.'<input type="hidden" name="details['.$no.'][barang_id]" value="'.$detail->jenis_barang_id.'"></td>';
+                $table .= '<td>'.$detail->uom.'</td>';
+                $table .= '<td align="right">'.number_format($detail->bruto,2,'.',',').'<input type="hidden" name="details['.$no.'][bruto]" value="'.$detail->bruto.'"></td>';
+                $table .= '<td align="right">'.number_format($detail->netto,2,'.',',').'<input type="hidden" name="details['.$no.'][netto]" value="'.$detail->netto.'"></td>';
+                $table .= '<td>'.$detail->no_packing.'<input type="hidden" name="details['.$no.'][no_packing]" value="'.$detail->no_packing.'"></td>';
+                $table .= '<td>'.$detail->nomor_bobbin.'<input type="hidden" name="details['.$no.'][nomor_bobbin]" value="'.$detail->nomor_bobbin.'"></td>';
+                $table .= '<td>'.$detail->line_remarks.'<input type="hidden" name="details['.$no.'][line_remarks]" value="'.$detail->line_remarks.'"></td>';
+                $table .= '<td><a class="btn btn-circle btn-xs green" href="javascript:;" onclick="edit('.$detail->id.')" style="margin-bottom:4px"> &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a></td>';
+            $table .= '</tr>';
+            $no++;
+            $bruto += $detail->bruto;
+            $netto += $detail->netto;
+        }
+        $table .= '<tr>';
+            $table .= '<td colspan="3" style="text-align: right;"><strong>Total :</strong></td>';
+            $table .= '<td style="background-color: green; color: white;" align="right">'.number_format($bruto,2,'.',',').'</td>';
+            $table .= '<td style="background-color: green; color: white;" align="right">'.number_format($netto,2,'.',',').'</td>';
+            $table .= '<td colspan="3"></td>';
+        $table .= '</tr>';
+
+        header('Content-Type: application/json');
+        echo json_encode($table);
+    }
+
+    function edit_detail_sj(){
+        $id = $this->input->post('id');
+        
+        $return = [];
+        $this->load->model('Model_surat_jalan');
+        $return['data'] = $this->Model_surat_jalan->get_detail_sj($id)->row();
+
+        header('Content-Type: application/json');
+        echo json_encode($return);
+    }
+
+    function update_detail_sj(){
+        $id = $this->input->post('id');
+        $return = [];
+        $return['input'] = $this->input->post();
+        try {
+            $this->db->update('r_t_surat_jalan_detail', [
+                'jenis_barang_id' => $this->input->post('barang_id'),
+                'bruto' => $this->input->post('bruto'),
+                'netto' => $this->input->post('netto'),
+                'no_packing' => $this->input->post('no_packing'),
+                'nomor_bobbin' => $this->input->post('nomor_bobbin'),
+                'line_remarks' => $this->input->post('line_remarks'),
+            ], ['id' => $id]);
+            $return['response'] = 'sukses';
+        } catch (\Exception $e) {
+            $return['response'] = 'gagal';
+            $return['message'] = $e->getMessage();
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($return);     
+    }
+
     function update_surat_jalan(){
         $user_id   = $this->session->userdata('user_id');
         $reff_cv   = $this->session->userdata('cv_id');
@@ -651,7 +720,8 @@ class R_SuratJalan extends CI_Controller{
                             'modified_at'=> $tanggal,
                             'modified_by'=> $user_id
                         );
-                    $this->db->where('sj_resmi_id', $v['id']);
+                    $this->db->where('sj_resmi_id', $this->input->post('id'));
+                    $this->db->where('no_packing', $v['no_packing']);
                     $this->db->update('r_t_bpb_detail', $data_bpb_detail);
                 }
             }

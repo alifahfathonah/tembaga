@@ -339,31 +339,45 @@
                                 <th style="width: 15%">No. Packing</th>
                                 <th>Nomor Bobbin</th>
                                 <th>Keterangan</th>
-                                <th align="center">Action</th>
                             </thead>
                             <tbody id="boxDetail">
-                                
+                                <?php 
+                                    $no=1; 
+                                    $bruto = 0;
+                                    $netto = 0;
+                                    foreach ($list_sj_detail as $row) {
+                                echo '<input type="hidden" name="details['.$no.'][id]" value="'.$row->id.'">';
+                                ?>
+                                <tr>
+                                    <td style="text-align: center;"><?= $no ;?></td>
+                                    <td>
+                                    <?php echo '<select name="details['.$no.'][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px; top: auto; bottom: auto;" onchange="window.scrollTo(0, 150);">
+                                        <option value=""></option>';
+                                        foreach ($jenis_barang as $value){ 
+                                            echo '<option value="'.$value->id.'" '.(($value->id==$row->jenis_barang_id)? 'selected="selected"': '').'>('.$value->kode.') '.$value->jenis_barang.'</option>';
+                                         } 
+                                        '</select>';?>
+                                    </td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" value="'.$row->uom.'">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][bruto]" value="'.$row->bruto.'">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][netto]" value="'.$row->netto.'">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][no_packing]" value="'.$row->no_packing.'">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][nomor_bobbin]" value="'.$row->nomor_bobbin.'">';?></td>
+                                    <td><?php echo '<input type="text" class="form-control myline" style="margin-bottom:5px" name="details['.$no.'][line_remarks]" value="'.$row->line_remarks.'">';?></td>
+                                </tr>
+                                <?php
+                                    $no++;
+                                    $bruto += $row->bruto;
+                                    $netto += $row->netto;
+                                    }
+                                ?>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><strong>Total :</strong></td>
+                                    <td style="background-color: green; color: white;"><?= $bruto;?></td>
+                                    <td style="background-color: green; color: white;"><?= $netto;?></td>
+                                    <td colspan="2"></td>
+                                </tr>
                             </tbody>
-                            <tfoot id="tfoot" style="display: none;">
-                                <td align="center">#<input type="hidden" name="d_id" id="d_id"></td>
-                                <td>
-                                    <select name="barang_id" id="barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px; top: auto; bottom: auto;">
-                                        <option value=""></option>'
-                                        <?php foreach ($jenis_barang as $value){  ?>
-                                            <option value="<?= $value->id ?>"><?= '('.$value->kode.') '.$value->jenis_barang ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </td>
-                                <td><input type="text" class="form-control myline" style="margin-bottom:5px" name="uom" id="uom" readonly></td>
-                                <td><input type="text" class="form-control myline" style="margin-bottom:5px" name="bruto" id="bruto"></td>
-                                <td><input type="text" class="form-control myline" style="margin-bottom:5px" name="netto" id="netto"></td>
-                                <td><input type="text" class="form-control myline" style="margin-bottom:5px" name="no_packing" id="no_packing" readonly></td>
-                                <td><input type="text" class="form-control myline" style="margin-bottom:5px" name="nomor_bobbin" id="nomor_bobbin"></td>
-                                <td><input type="text" class="form-control myline" style="margin-bottom:5px" name="line_remarks" id="line_remarks"></td>
-                                <td>
-                                    <a class="btn btn-circle btn-xs blue" href="javascript:;" style="margin-bottom:4px" id="btnUpdate"> &nbsp; <i class="fa fa-save"></i> Update &nbsp; </a>
-                                </td>
-                            </tfoot>
                         </table>
                     <?php
                     }else{
@@ -447,47 +461,6 @@
     </div>
 </div> 
 <script>
-function loadDetail(id){
-    $.ajax({
-        type: "POST",
-        // dataType: 'json',
-        url: '<?= base_url("index.php/R_SuratJalan/load_detail_fg") ?>',
-        data: {
-            id: id,
-        },
-        success: function(result) {
-            $('#boxDetail').html(result);
-        }
-    });
-}
-
-function edit(id){
-    $.ajax({
-        type: "POST",
-        url: "<?= base_url('index.php/R_SuratJalan/edit_detail_sj') ?>",
-        data: {
-            id: id,
-        },
-        success: function(result){
-            
-            $('#tfoot').show();
-            $('html, body').animate({
-                scrollTop: $("#tfoot").offset().top
-            }, 1000);
-            $('#d_id').val(result['data']['id']);
-            $('#barang_id').select2('val', result['data']['jenis_barang_id']);
-            $('#barang_id').val(result['data']['jenis_barang_id']);
-            $('#uom').val(result['data']['uom']);
-            $('#bruto').val(result['data']['bruto']);
-            $('#netto').val(result['data']['netto']);
-            $('#no_packing').val(result['data']['no_packing']);
-            $('#nomor_bobbin').val(result['data']['nomor_bobbin']);
-            $('#line_remarks').val(result['data']['line_remarks']);
-        }
-    });
-}
-
-
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
@@ -517,67 +490,6 @@ function get_alamat(id){
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-
-$('#btnUpdate').click(function(event){
-    event.preventDefault();
-    console.log('masuk');
-    id = $('#d_id').val();
-    barang_id = $('#barang_id').val();
-    bruto = $('#bruto').val();
-    netto = $('#netto').val();
-    no_packing = $('#no_packing').val();
-    nomor_bobbin = $('#nomor_bobbin').val();
-    line_remarks = $('#line_remarks').val();
-
-    if (barang_id == '') {
-        $('#barang_id').focus();
-        $('.alert-danger').show();
-        $('#message').html("Silahkan pilih barang!");
-    } else if (bruto == '') {
-        $('#bruto').focus();
-        $('.alert-danger').show();
-        $('#message').html("Bruto tidak boleh kosong!");
-    } else if (netto == '') {
-        $('#netto').focus();
-        $('.alert-danger').show();
-        $('#message').html("Netto tidak boleh kosong!");
-    } else if (no_packing == '') {
-        $('#no_packing').focus();
-        $('.alert-danger').show();
-        $('#message').html("Nomor packing tidak boleh kosong!");
-    // } else if (nomor_bobbin == '') {
-    //     $('#nomor_bobbin').focus();
-    //     $('.alert-danger').show();
-    //     $('#message').html("Nomor bobbin tidak boleh kosong!");
-    } else {
-        console.log('atas ajax');
-        $.ajax({
-            type: "POST",
-            dataType: "JSON",
-            url: "<?= base_url('index.php/R_SuratJalan/update_detail_sj') ?>",
-            data: {
-                id: id,
-                barang_id: barang_id,
-                bruto: bruto,
-                netto: netto,
-                no_packing: no_packing,
-                nomor_bobbin: nomor_bobbin,
-                line_remarks: line_remarks,
-            },
-            success: function(result){
-                console.log(result);
-                $('#tfoot').hide();
-                loadDetail($('#id').val());
-                $('html, body').animate({
-                    scrollTop: $("#row_"+id).position().top
-                }, 1000);
-            }
-        });
-
-        
-    }
-});
-
 $(function(){        
     $("#tanggal").datepicker({
         showOn: "button",
@@ -598,10 +510,6 @@ $(function(){
         changeYear: true,
         dateFormat: 'dd-mm-yy'
     }); 
-
-    if ($('#jenis_barang').val() == 'FG') {
-        loadDetail($('#id').val());
-    }
 });
 </script>
       

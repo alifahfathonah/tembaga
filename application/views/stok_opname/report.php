@@ -58,20 +58,20 @@
                             <?php
                                 if( ($group_id==1 || $hak_akses['edit']==1)){
                             ?>
-                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/StokOpname/detail_fg/<?php echo $data->id; ?>" style="margin-bottom:4px">
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/StokOpname/<?= ($jenis == 'FG')? 'detail_fg' : 'detail_rongsok' ?>/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                             <?php 
                                 }
                                 if( (($group_id==1)||($hak_akses['delete']==1))){
                             ?>
-                            <a href="<?php echo base_url(); ?>index.php/BeliFinishGood/delete_po/<?php echo $data->id; ?>" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus po ini?');">
+                            <!-- <a href="<?php echo base_url(); ?>index.php/BeliFinishGood/delete_po/<?php echo $data->id; ?>" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus po ini?');">
                                 <i class="fa fa-trash-o"></i> Delete 
-                            </a>                            
+                            </a>   -->                          
                             <?php 
                                 }
                                 if($group_id==1 || $hak_akses['view']==1){
                             ?>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/StokOpname/view/<?php echo $data->id; ?>" 
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/StokOpname/<?= ($jenis == 'FG')? 'view' : 'view_rongsok' ?>/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-file"></i> View &nbsp; </a>
                             <?php
                                 }

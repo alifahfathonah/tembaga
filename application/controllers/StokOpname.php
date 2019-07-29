@@ -41,14 +41,15 @@ class StokOpname extends CI_Controller{
         $user_ppn = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $jenis = $this->input->post('jenis');
         
-        $cek = $this->db->get_where('stok_opname', ['tanggal' => $tgl_input]);
+        $cek = $this->db->get_where('stok_opname', ['tanggal' => $tgl_input, 'jenis_stok_opname' => $jenis]);
         if ($cek->num_rows() > 0) {
             $id = $cek->row()->id;
         } else {
             $this->db->insert('stok_opname', [
                 'tanggal' => $tgl_input,
-                'jenis_stok_opname' => "FG",
+                'jenis_stok_opname' => $jenis,
                 'created_by' => $user_id,
                 'created_at' => $tanggal,
             ]);
@@ -187,10 +188,13 @@ class StokOpname extends CI_Controller{
 
         $this->session->set_flashdata('flash_msg', 'Stok opname berhasil dibuat');
 
-        redirect('index.php/StokOpname/report');
+        redirect('index.php/StokOpname/report/FG');
     }
 
-    function report(){
+    function report($jenis){
+        if (!isset($jenis)) {
+            redirect('index.php/StokOpname/report/FG');
+        }
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');
         $ppn         = $this->session->userdata('user_ppn');
@@ -203,7 +207,8 @@ class StokOpname extends CI_Controller{
 
         $data['content']= "stok_opname/report";
         $this->load->model('Model_stok_opname');
-        $data['list_data'] = $this->Model_stok_opname->list_report()->result();
+        $data['list_data'] = $this->Model_stok_opname->list_report($jenis)->result();
+        $data['jenis'] = $jenis;
 
         $this->load->view('layout', $data);
     }
@@ -375,7 +380,198 @@ class StokOpname extends CI_Controller{
         $data['content']= "stok_opname/check";
         $this->load->model('Model_stok_opname');
         $data['list_data'] = $this->Model_stok_opname->stock_missing($tanggal)->result();
+        $data['tanggal'] = $tanggal;
 
         $this->load->view('layout', $data);
+    }
+
+    function print_check_stock($tanggal){
+        $this->load->helper('tanggal_indo');  
+        $this->load->model('Model_stok_opname');
+        $data['list_data'] = $this->Model_stok_opname->stock_missing($tanggal)->result();
+
+        $this->load->view('stok_opname/print_check_stock', $data);
+    }
+
+    function add_rongsok(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "stok_opname/add_rongsok";
+
+        $this->load->view('layout', $data);
+    }
+
+    function load_detail_rongsok(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $no    = 1;
+        $total_netto = 0;
+        $this->load->model('Model_stok_opname');
+        $myDetail = $this->Model_stok_opname->list_stok_opname_rongsok($id)->result();
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->no_packing.'</td>';
+            $tabel .= '<td>'.$row->nama_item.'</td>';
+            $tabel .= '<td>'.$row->uom.'</td>';
+            $tabel .= '<td align="right">'.number_format($row->netto,2,".",",").'</td>';
+            $tabel .= '<td>'.$row->keterangan.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a>';
+            $tabel .= '</tr>';            
+            $no++;
+            $total_netto += $row->netto;
+        }
+            
+        $tabel .= '<tr>';
+        $tabel .= '<td colspan="4" style="text-align:right">TOTAL : </td>';
+        $tabel .= '<td align="right">'.number_format($total_netto,2,".",",").'</td>';
+        $tabel .= '<td colspan="2"></td>';
+        $tabel .= '</tr>';
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel);
+    }
+
+    function save_rongsok(){
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $jenis = $this->input->post('jenis');
+        
+        $cek = $this->db->get_where('stok_opname', ['tanggal' => $tgl_input, 'jenis_stok_opname' => $jenis]);
+        if ($cek->num_rows() > 0) {
+            $id = $cek->row()->id;
+        } else {
+            $this->db->insert('stok_opname', [
+                'tanggal' => $tgl_input,
+                'jenis_stok_opname' => $jenis,
+                'created_by' => $user_id,
+                'created_at' => $tanggal,
+            ]);
+
+            $id = $this->db->insert_id();
+        }
+
+        // $this->session->set_flashdata('flash_msg', 'Voucher cost berhasil di-create dengan nomor : '.$code);
+
+        redirect('index.php/StokOpname/detail_rongsok/'.$id);
+    }
+
+    function get_palette(){
+        $no = $this->input->post('no');
+
+        $this->load->model('Model_stok_opname');
+        $result = $this->Model_stok_opname->get_palette($no)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    } 
+
+    function detail_rongsok(){
+        $id = $this->uri->segment(3);
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "stok_opname/detail_rongsok";
+        $this->load->model('Model_stok_opname');
+        $data['header'] = $this->Model_stok_opname->header_stok_opname_fg($id)->row_array();
+        $data['details'] = $this->Model_stok_opname->list_stok_opname_rongsok($id)->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function save_detail_rongsok(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $stok_opname_id = $this->input->post('id');
+        $no_palette = $this->input->post('no_palette');
+        $dtr_detail_id = $this->input->post('dtr_detail_id');
+        $rongsok_id = $this->input->post('rongsok_id');
+        $netto = $this->input->post('netto');
+        $keterangan = $this->input->post('keterangan');
+
+        $return_data = [];
+        $data = [
+                'stok_opname_id'=> $stok_opname_id,
+                'dtr_detail_id'=> $dtr_detail_id,
+                'jenis_barang_id'=> $rongsok_id,
+                'netto'=> $netto,
+                'no_packing'=> $no_palette,
+                'keterangan'=> $keterangan,
+            ];
+        
+        if($this->db->insert('stok_opname_detail', $data)){
+            $return_data['response']= "success";
+        }else{
+            $return_data['response']= "error";
+            $return_data['message']= "Gagal!";
+        } 
+
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
+
+    function update_rongsok(){
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $this->db->update('stok_opname', [
+            'tanggal' => $tgl_input,
+            'modified_by' => $user_id,
+            'modified_at' => $tanggal,
+        ], ['id' => $this->input->post('id')]);
+
+        $this->session->set_flashdata('flash_msg', 'Stok opname berhasil dibuat');
+
+        redirect('index.php/StokOpname/report/rongsok');
+    }
+
+    function view_rongsok(){
+        $id = $this->uri->segment(3);
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "stok_opname/view_rongsok";
+        $this->load->model('Model_stok_opname');
+        $data['header'] = $this->Model_stok_opname->header_stok_opname_fg($id)->row_array();
+        $data['details'] = $this->Model_stok_opname->list_stok_opname_rongsok($id)->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function print_stok_rongsok(){
+        $this->load->helper('tanggal_indo');  
+        $this->load->model('Model_stok_opname');
+        $data['detailLaporan'] = $this->Model_stok_opname->print_stok_rongsok()->result();
+
+        $this->load->view('stok_opname/print_stok_rongsok', $data);
     }
 }
