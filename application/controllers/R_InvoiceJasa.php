@@ -569,4 +569,29 @@ class R_InvoiceJasa extends CI_Controller{
             redirect('index.php'); 
         }
     }
+
+    function update_all(){
+        $details = $this->db->query('SELECT inv_jasa_id, SUM(total_amount) AS total_amount_sum FROM r_t_inv_jasa_detail GROUP BY inv_jasa_id')->result();
+        foreach ($details as $key => $detail) {
+            echo "detail ".$detail->inv_jasa_id."<br>";
+            echo "detail ".$detail->total_amount_sum."<br>";
+            $header = $this->db->query('SELECT *FROM r_t_inv_jasa WHERE id = '.$detail->inv_jasa_id)->row();
+            if (!empty($header)) {
+                echo "header ".$header->id."<br>";
+                echo "header ".$header->no_invoice_jasa."<br>";
+                $nilai_invoice = (($detail->total_amount_sum - $header->diskon - $header->cost) * 110 / 100) + $header->materai;
+                echo "nilai invoice ".$nilai_invoice."<br>";
+                if ($this->db->update('r_t_inv_jasa', ['nilai_invoice' => $nilai_invoice], ['id' => $detail->inv_jasa_id])) {
+                    echo "data berhasil diupdate<br>";
+                } else {
+                    echo "data gagal diupdate<br>";
+                }
+            }
+        }
+        // $headers = $this->db->query('SELECT *FROM r_t_inv_jasa')->result();
+        // foreach ($headers as $key => $header) {
+        //     echo $header->id."<br>";
+        //     echo $header->no_invoice_jasa."<br>";
+        // }
+    }
 }
