@@ -648,8 +648,8 @@ class Model_sales_order extends CI_Model{
             left join jenis_barang jb on (jb.id = tsjd.jenis_barang_id)
                         where tsj.tanggal 
                         between '".$s."' and '".$e."'
-                        group by jb.id, tsj.no_surat_jalan
-                        order by so.flag_ppn, jb.ukuran");
+                        group by jb.id
+                        order by so.flag_ppn, tsjd.jenis_barang_id");
         return $data;
     }
 

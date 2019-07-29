@@ -2665,6 +2665,23 @@ class Finance extends CI_Controller{
             $this->load->view('finance/print_penjualan_customer', $data);
     }
 
+    function print_penjualan_customer2(){
+            $module_name = $this->uri->segment(1);
+            $ppn = $this->session->userdata('user_ppn');
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_finance');
+            $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer2($ppn)->result();
+            $this->load->view('finance/print_penjualan_customer2', $data);
+    }
+
     function print_penjualan_jb(){
             $module_name = $this->uri->segment(1);
             $ppn = $this->session->userdata('user_ppn');
@@ -2680,6 +2697,23 @@ class Finance extends CI_Controller{
             $this->load->model('Model_finance');
             $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb($ppn)->result();
             $this->load->view('finance/print_penjualan_jb', $data);
+    }
+
+    function print_penjualan_jb2(){
+            $module_name = $this->uri->segment(1);
+            $ppn = $this->session->userdata('user_ppn');
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_finance');
+            $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb2($ppn)->result();
+            $this->load->view('finance/print_penjualan_jb2', $data);
     }
 
     function print_query_penjualan(){

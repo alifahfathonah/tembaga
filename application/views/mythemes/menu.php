@@ -470,11 +470,11 @@
                                 </a>
                                 <ul class="sub-menu">
                                     <li>
-                                        <a href="<?php echo base_url(); ?>index.php/GudangWI/laporan_list">
+                                        <a href="<?php echo base_url(); ?>index.php/GudangWIP/laporan_list">
                                         <i class="fa fa-briefcase"></i>
                                         Laporan Produksi Cuci </a>
                                     </li>
-                                    <li>
+                                    <!-- <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangFG/print_stok_fg" target="_blank">
                                         <i class="fa fa-print"></i>
                                         Print Stok FG </a>
@@ -488,7 +488,7 @@
                                         <a href="<?php echo base_url(); ?>index.php/GudangFG/laporan_pemasukan">
                                         <i class="fa fa-briefcase"></i>
                                         Pemasukan FG </a>
-                                    </li>
+                                    </li> -->
                                 </ul>
                             </li>
                     </ul>
@@ -516,19 +516,28 @@
                             </li>
                         <?php }  if($group_id==1 || $group_id == 21 || (isset($akses_menu['view_laporan']) && $akses_menu['view_laporan']==1)){ ?>
                             <li>
-                                <a href="<?php echo base_url(); ?>index.php/GudangRongsok/index">
-                                <i class="fa fa-search"></i>
-                                Laporan Rongsok </a>
-                            </li>
-                            <li>
-                                <a href="<?php echo base_url(); ?>index.php/GudangRongsok/laporan_list">
-                                <i class="fa fa-briefcase"></i>
-                                Laporan Rongsok Bulanan</a>
-                            </li>
-                            <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangRongsok/gudang_rongsok">
                                 <i class="fa fa-cubes"></i>
                                 Gudang Rongsok </a>
+                            </li>
+                            <li>
+                                <a href="javascript:;">
+                                <i class="fa fa-book"></i>
+                                <span class="title">Laporan Rongsok</span>
+                                <span class="arrow "></span>
+                                </a>
+                                <ul class="sub-menu">
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangRongsok/index">
+                                        <i class="fa fa-search"></i>
+                                        Laporan Rongsok </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangRongsok/laporan_list">
+                                        <i class="fa fa-briefcase"></i>
+                                        Laporan Rongsok Bulanan</a>
+                                    </li>
+                                </ul>
                             </li>
                             <?php } ?>
                         </ul>
@@ -1061,15 +1070,23 @@
                                 </li>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_jb/" target="_blank">
-                                    <i class="fa fa-print"></i> Laporan Penjualan Rekap per Jenis Barang</a>
+                                    <i class="fa fa-print"></i> Rekap per Jenis Barang Gabungan</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_jb/" target="_blank">
+                                    <i class="fa fa-print"></i> Rekap per Jenis Barang KH</a>
                                 </li>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_customer/" target="_blank">
-                                    <i class="fa fa-print"></i> Print Laporan Penjualan per Customer</a>
+                                    <i class="fa fa-print"></i> Rekap per Customer</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_customer2/" target="_blank">
+                                    <i class="fa fa-print"></i> Rekap per Customer KH</a>
                                 </li>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_piutang/" target="_blank">
-                                    <i class="fa fa-print"></i> Print Laporan Penjualan piutang</a>
+                                    <i class="fa fa-print"></i> Penjualan piutang</a>
                                 </li>
                             </ul>
                         </li>

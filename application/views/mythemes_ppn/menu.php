@@ -931,17 +931,25 @@
                                     <a href="<?php echo base_url(); ?>index.php/Finance/laporan_penjualan_gabungan/">
                                     <i class="fa fa-search"></i> Laporan Penjualan </a>
                                 </li>
-                                <!-- <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/laporan_penjualan_gabungan/">
-                                    <i class="fa fa-search"></i> Laporan Penjualan Gabungan</a>
-                                </li> -->
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_jb/" target="_blank">
+                                    <i class="fa fa-print"></i> Rekap per Jenis Barang Gabungan</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_jb/" target="_blank">
+                                    <i class="fa fa-print"></i> Rekap per Jenis Barang KMP</a>
+                                </li>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_customer/" target="_blank">
-                                    <i class="fa fa-print"></i> Print Laporan Penjualan Customer</a>
+                                    <i class="fa fa-print"></i> Rekap per Customer</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_customer2/" target="_blank">
+                                    <i class="fa fa-print"></i> Rekap per Customer KMP</a>
                                 </li>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_piutang/" target="_blank">
-                                    <i class="fa fa-print"></i> Print Laporan Penjualan piutang</a>
+                                    <i class="fa fa-print"></i> Penjualan piutang</a>
                                 </li>
                             </ul>
                         </li>

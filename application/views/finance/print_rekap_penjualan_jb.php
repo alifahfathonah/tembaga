@@ -7,7 +7,7 @@
       <table width="100%">
         <tr>
           <td align="center">
-            <h4>Laporan Rekap Jenis Barang per <?=tanggal_indo(date('Y-m-d', strtotime($_GET['ts']))).' sampai '.tanggal_indo(date('Y-m-d', strtotime($_GET['te'])));?></h4>
+            <h4>Laporan Rekap Penjualan per <?=tanggal_indo(date('Y-m-d', strtotime($_GET['ts']))).' sampai '.tanggal_indo(date('Y-m-d', strtotime($_GET['te'])));?></h4>
           </td>
         </tr>
       </table>
@@ -47,12 +47,11 @@
         $total_amount_n = 0;
         $total_a_b = 0;
         $total_a_n = 0;
-        $last_series = null;
         foreach($detailLaporan as $row){
             $total_amount_b = $row->bruto * $row->amount;
             $total_amount_n = $row->netto * $row->amount;
         
-        if($last_series!=$row->flag_ppn && $last_series!=null){
+        if($last_series!=$row->flag_ppn){
           echo '<tr>
             <td colspan="3" style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; "><strong>Total</strong></td>
             <td style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>'.number_format($bruto,2,',','.').'</strong></td>

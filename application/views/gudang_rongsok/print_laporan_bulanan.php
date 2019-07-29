@@ -61,3 +61,5 @@
     </tr>
     </tbody>
 </table>
+    <body onLoad="window.print()">
+    </body>

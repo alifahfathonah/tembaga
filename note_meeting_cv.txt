@@ -29,3 +29,5 @@ done
 laporan piutang customer
 	kalo udah abis dan matching lunas terakhir bulan ini. berarti masi muncul. 
 	kalo udah abis dan matching lunas bulan sebelumnya. berarti ga muncul
+
+finance edit bank, nama direktur

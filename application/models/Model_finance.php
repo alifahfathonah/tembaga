@@ -694,9 +694,28 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function print_penjualan_customer2($ppn){
+        $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
+            SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
+            where v.flag_ppn =".$ppn."
+            group by v.flag_tolling, v.kode_customer
+            order by v.flag_tolling, total_harga desc");
+        return $data;
+    }
+
     function print_penjualan_jb($ppn){
         $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
             SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
+            group by v.flag_tolling, v.kode_barang
+            order by v.flag_tolling, total_harga desc
+            ");
+        return $data;
+    }
+
+    function print_penjualan_jb2($ppn){
+        $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
+            SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
+            where v.flag_ppn =".$ppn."
             group by v.flag_tolling, v.kode_barang
             order by v.flag_tolling, total_harga desc
             ");
@@ -713,13 +732,12 @@ class Model_finance extends CI_Model{
             from f_invoice fi
             left join t_surat_jalan tsj on tsj.inv_id =  fi.id
             left join m_customers mc on mc.id = fi.id_customer
-            where MONTH((select fm.tanggal from f_match_detail fmd 
+            where (MONTH((select fm.tanggal from f_match_detail fmd 
              left join f_match fm on fm.id = fmd.id_match
-             where fmd.id_inv = fi.id order by fmd.id desc limit 1)) = MONTH('".$date."') or fi.nilai_invoice > (fi.nilai_bayar + fi.nilai_pembulatan) and fi.flag_ppn = ".$ppn."
+             where fmd.id_inv = fi.id order by fmd.id desc limit 1)) = MONTH('".$date."') or fi.nilai_invoice > (fi.nilai_bayar + fi.nilai_pembulatan)) and fi.flag_ppn = ".$ppn."
              order by fi.id_customer, fi.tanggal asc");
         return $data;
     }
-
     // function print_penjualan_customer($ppn){
     //     $data = $this->db->query("select v.*, (v.total_harga*v.kurs) as total_harga, IF(v.currency='USD',v.total_harga*v.kurs,v.total_harga*v.kurs/110*100) as nilai_sebelum_ppn, IF(v.currency='USD',v.total_harga*v.kurs,v.total_harga*v.kurs/110*10) as nilai_ppn from v_data_faktur_all v 
     //         where v.flag_ppn =".$ppn."
