@@ -414,7 +414,7 @@ class Model_sales_order extends CI_Model{
         $data = $this->db->query("Select tsj.*, cust.id as id_customer, COALESCE(NULLIF(tso.alias,''), cust.nama_customer) as nama_customer, cust.alamat, COALESCE(NULLIF(tso.alias,''), cust.nama_customer_kh) as nama_customer_kh, cust.alamat_kh, so.tanggal as tanggal_so, 
                     COALESCE(tsf.no_spb, tsw.no_spb_wip, s.no_spb, tsa.no_spb_ampas) as nomor_spb,
                     COALESCE(tsf.status, tsw.status, s.status, tsa.status) as status_spb,
-                    tso.no_spb, so.no_sales_order, tso.no_po,
+                    tso.no_spb, so.no_sales_order, tso.no_po, 
                     tkdr.type_kendaraan,
                     usr.realname,
                     aprv.realname as approved_name,
@@ -768,6 +768,17 @@ class Model_sales_order extends CI_Model{
             where so.flag_ppn =".$ppn." and (so.tanggal BETWEEN '".$s."' AND '".$e."')
             order by so.flag_tolling, mc.nama_customer asc, so.tanggal asc, kode_barang asc
             ");
+    }
+
+    function t_sj_only($id){
+        return $this->db->query("select tsj.*, mbj.id as id_bobbin_peminjaman, tso.no_spb from t_surat_jalan tsj
+            left join t_sales_order tso on tso.id = tsj.sales_order_id
+            left join m_bobbin_peminjaman mbj on mbj.id_surat_jalan = tsj.id
+            where tsj.id =".$id);
+    }
+
+    function t_sj_detail_only($id){
+        return $this->db->query("select * from t_surat_jalan_detail where t_sj_id =".$id);
     }
 
     // Select tsjd.*, tsod.nama_barang_alias, COALESCE(tsod.nama_barang_alias, jb.jenis_barang,r.nama_item) as jenis_barang , COALESCE(jb.kode,r.kode_rongsok) as kode from t_surat_jalan_detail tsjd

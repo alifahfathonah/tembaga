@@ -168,6 +168,7 @@
                 </thead>
                 <tbody>
                     <?php 
+                        $ppn = $this->session->userdata('user_ppn');
                         $no = 0;
                         foreach ($list_data as $data){
                             $no++;
@@ -175,13 +176,13 @@
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
                         <td><?php echo $data->kode_customer; ?></td>
-                        <td><?php echo $data->nama_customer; ?></td>
-                        <td><?php echo $data->pic; ?></td>
-                        <td><?php echo $data->telepon; ?></td>
-                        <td><?php echo $data->hp; ?></td>
-                        <td><?php echo $data->fax; ?></td>
+                        <td><?php echo (($ppn==1)? $data->nama_customer : $data->nama_customer_kh); ?></td>
+                        <td><?php echo (($ppn==1)? $data->pic : $data->pic_kh); ?></td>
+                        <td><?php echo (($ppn==1)? $data->telepon : $data->telepon_kh); ?></td>
+                        <td><?php echo (($ppn==1)? $data->hp : $data->hp_kh); ?></td>
+                        <td><?php echo (($ppn==1)? $data->fax : $data->fax_kh); ?></td>
                         <td><?php echo $data->jenis_customer; ?></td>
-                        <td><?php echo substr($data->alamat, 0, 30).' ...'; ?></td>
+                        <td><?php echo substr((($ppn==1)?$data->alamat:$data->alamat_kh), 0, 30).' ...'; ?></td>
                         <td style="text-align:center"> 
                             <?php
                                 if( ($group_id==1 || $group_id==9 || $group_id==14)||($hak_akses['edit']==1) ){
@@ -192,7 +193,7 @@
                                 }
                                 if( ($group_id==1 || $group_id==9 || $group_id==14)||($hak_akses['delete']==1) ){
                             ?>
-                            <a href="<?php echo base_url(); ?>index.php/CustomerCV/delete/<?php echo $data->id; ?>" 
+                            <a href="<?php echo base_url(); ?>index.php/Customer/delete/<?php echo $data->id; ?>" 
                                class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus data ini?');">
                                 <i class="fa fa-trash-o"></i> Hapus </a>
                             <?php }?>
@@ -269,13 +270,22 @@ function editData(id){
         type: "POST",
         data : {id: id},
         success: function (result){
-            $('#kode_customer').val(result['kode_customer']);
-            $('#nama_customer').val(result['nama_customer']);            
+        <?php if($this->session->userdata('user_ppn')==1){ ?>
+            $('#nama_customer').val(result['nama_customer']);
             $('#pic').val(result['pic']);
             $('#telepon').val(result['telepon']);
             $('#hp').val(result['hp']);
             $('#alamat').val(result['alamat']);
             $('#fax').val(result['fax']);
+        <?php }else{ ?>
+            $('#nama_customer').val(result['nama_customer_kh']);
+            $('#pic').val(result['pic_kh']);
+            $('#telepon').val(result['telepon_kh']);
+            $('#hp').val(result['hp_kh']);
+            $('#alamat').val(result['alamat_kh']);
+            $('#fax').val(result['fax_kh']);
+        <?php } ?>
+            $('#kode_customer').val(result['kode_customer']);
             $('#jenis_customer').select2('val', result['jenis_customer']);
             $('#npwp').val(result['npwp']);
             $('#id').val(result['id']);

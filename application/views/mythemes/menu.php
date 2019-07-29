@@ -264,7 +264,7 @@
                         <li <?php if($module_name=="Tolling") echo 'class="start active open"'; ?>>
                             <a href="javascript:;">
                             <i class="fa fa-cogs"></i>
-                            <span class="title">Tolling Dari Customer</span>
+                            <span class="title">Tolling Customer</span>
                             <span class="arrow "></span>
                             </a>
                             <ul class="sub-menu">
@@ -303,11 +303,16 @@
                         <li <?php if($module_name=="Tolling") echo 'class="start active open"'; ?>>
                             <a href="javascript:;">
                             <i class="fa fa-rocket"></i>
-                            <span class="title">Tolling Ke Customer</span>
+                            <span class="title">Tolling Supplier</span>
                             <span class="arrow "></span>
                             </a>
                             <ul class="sub-menu">
-                            <?php if($group_id==1 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
+                                <li>
+                                    <a href="#">
+                                    <i class="fa fa-file-word-o"></i>
+                                    Under Construction </a>
+                                </li>
+                            <!-- <?php if($group_id==1 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Tolling/spb_list">
                                     <i class="fa fa-file-word-o"></i>
@@ -344,7 +349,7 @@
                                     <a href="<?php echo base_url(); ?>index.php/Tolling/cek_balance">
                                     <i class="fa fa-truck"></i>
                                     Cek Balance </a>
-                                </li>
+                                </li> -->
                             </ul>
                         </li>
                     </ul>
@@ -457,7 +462,35 @@
                             Produksi FG </a>
                         </li>
                         <?php } ?>
-                        
+                            <li>
+                                <a href="javascript:;">
+                                <i class="fa fa-book"></i>
+                                <span class="title">Laporan Produksi</span>
+                                <span class="arrow "></span>
+                                </a>
+                                <ul class="sub-menu">
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangWI/laporan_list">
+                                        <i class="fa fa-briefcase"></i>
+                                        Laporan Produksi Cuci </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangFG/print_stok_fg" target="_blank">
+                                        <i class="fa fa-print"></i>
+                                        Print Stok FG </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangFG/print_stok_ukuran_fg" target="_blank">
+                                        <i class="fa fa-print"></i>
+                                        Stok Per Ukuran FG </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangFG/laporan_pemasukan">
+                                        <i class="fa fa-briefcase"></i>
+                                        Pemasukan FG </a>
+                                    </li>
+                                </ul>
+                            </li>
                     </ul>
                 </li>
             <?php } if($group_id==1 || $group_id == 21 || ( (isset($akses_menu['GudangWIP'])&&$akses_menu['GudangWIP']==1) || (isset($akses_menu['GudangFG'])&&$akses_menu['GudangFG']==1) ) ){ ?>
@@ -990,6 +1023,10 @@
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_customer/" target="_blank">
                                     <i class="fa fa-print"></i> Print Laporan Penjualan per Customer</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_piutang/" target="_blank">
+                                    <i class="fa fa-print"></i> Print Laporan Penjualan piutang</a>
                                 </li>
                             </ul>
                         </li>

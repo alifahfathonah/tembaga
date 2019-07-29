@@ -1,11 +1,6 @@
-matching invoice dikurang dengan POTONGAN
-matching invoice dengan bank masuk
-
 Laporan DTR yang dipakai di Matching Invoice CV
 
 Kode Barang setiap dropdown list.
-
-stock opname delete ama benerin yang bagus
 
 approve matching po dengan dtbj/dtwip tanggal nya belum sama di bpb. masih ngikutin tanggal saat approve
 
@@ -19,14 +14,18 @@ print stok wip dan rongsok
 
 view bm bk voucher
 
-produksi simpannya kasih proteksi biar ga dobel
-
-surat jalan bisa delete detail, untuk case sudah approve
-
 matching ampas yg dtr nya sudah approve
 
-delete sj yang reject
+{
+	laporan masuk berapa keluar berapa sisa berapa
 
-delete semua spb fulfilment yang udah di approve tapi belum di kirim
+	pemasukan ada beli dan produksi
+}
+fg
+rongsok
+wip
 
-data customer dan data supplier belum dibenerin. kan campur data kmp dan kh
+done
+laporan piutang customer
+	kalo udah abis dan matching lunas terakhir bulan ini. berarti masi muncul. 
+	kalo udah abis dan matching lunas bulan sebelumnya. berarti ga muncul

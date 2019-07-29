@@ -1490,6 +1490,7 @@ class Tolling extends CI_Controller{
     
     function add_surat_jalan(){
         $module_name = $this->uri->segment(1);
+        $user_ppn    = $this->session->userdata('user_ppn');
         $group_id    = $this->session->userdata('group_id');        
         if($group_id != 1){
             $this->load->model('Model_modules');
@@ -1502,6 +1503,8 @@ class Tolling extends CI_Controller{
         $this->load->model('Model_tolling_titipan');
         $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
         $this->load->model('Model_sales_order');
+        $data['sj'] = $this->Model_sales_order->get_last_sj($user_ppn)->row_array();
+        $data['sjr'] = $this->Model_sales_order->get_last_sj_cv($user_ppn)->row_array();
         $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
         $this->load->view('layout', $data);
     }
@@ -1808,18 +1811,22 @@ class Tolling extends CI_Controller{
         // die();
         foreach ($details as $v) {
             if($v['id_barang']!=''){
+                if($v['barang_alias']==''){
+                    $v['barang_alias']=null;
+                }
                 if($jenis=='FG'){// BARANG FINISH GOOD
                     $this->db->insert('t_surat_jalan_detail', array(
                         't_sj_id'=>$this->input->post('id'),
                         'gudang_id'=>$v['id_barang'],
                         'jenis_barang_id'=>$v['jenis_barang_id'],
+                        'barang_alias'=>$v['barang_alias'],
                         'no_packing'=>$v['no_packing'],
                         'qty'=>'1',
                         'bruto'=>$v['bruto'],
                         'berat'=>$v['berat'],
                         'netto'=>$v['netto'],
                         'nomor_bobbin'=>$v['bobbin'],
-                        'line_remarks'=>$v['line_remarks'],
+                        'line_remarks'=>'',
                         'created_by'=>$user_id,
                         'created_at'=>$tanggal
                     ));
@@ -2016,16 +2023,18 @@ class Tolling extends CI_Controller{
 
             $query = $this->db->query('select *from t_surat_jalan_detail where t_sj_id = '.$sjid)->result();
             foreach ($query as $row) {
-                $this->db->where('nomor_bobbin', $row->nomor_bobbin);
-                $this->db->update('m_bobbin', array(
-                    'borrowed_by' => $custid,
-                    'status' => 2
-                ));
+                if($row->nomor_bobbin!=''){
+                    $this->db->where('nomor_bobbin', $row->nomor_bobbin);
+                    $this->db->update('m_bobbin', array(
+                        'borrowed_by' => $custid,
+                        'status' => 2
+                    ));
 
-                $this->db->insert('m_bobbin_peminjaman_detail', array(
-                    'id_peminjaman' => $insert_id,
-                    'nomor_bobbin' => $row->nomor_bobbin
-                ));
+                    $this->db->insert('m_bobbin_peminjaman_detail', array(
+                        'id_peminjaman' => $insert_id,
+                        'nomor_bobbin' => $row->nomor_bobbin
+                    ));
+                }
             }
         }
 
@@ -2449,7 +2458,7 @@ class Tolling extends CI_Controller{
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
-            $tabel .= '<td>'.$row->jenis_barang.'</td>';
+            $tabel .= '<td>('.$row->kode.') '.$row->jenis_barang.'</td>';
             $tabel .= '<td>'.$row->uom.'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->qty,2,',','.').'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->amount,2,',','.').'</td>';
@@ -2786,7 +2795,6 @@ class Tolling extends CI_Controller{
                             'netto'=>$row['netto'],
                             'no_bobbin'=>$row['no_bobbin'],
                             'no_packing'=>$row['no_packing'],
-                            'line_remarks'=>$row['line_remarks'],
                             'created'=>$tanggal,
                             'created_by'=>$user_id,
                             'tanggal_masuk'=>$tgl_input
@@ -2804,7 +2812,6 @@ class Tolling extends CI_Controller{
                             'jenis_barang_id'=>$row['jb_id'],
                             'qty'=>$row['qty'],
                             'netto'=>$row['netto'],
-                            'line_remarks'=>$row['line_remarks'],
                             'created'=>$tanggal,
                             'created_by'=>$user_id,
                             'tanggal_masuk'=>$tgl_input
@@ -3102,21 +3109,59 @@ class Tolling extends CI_Controller{
         print form_dropdown('no_po', $arr_so);
     }
 
+    // function create_voucher(){
+    //     $id = $this->input->post('id');
+    //     $this->load->helper('terbilang_helper');
+    //     $this->load->model('Model_tolling_titipan');
+    //     $data = $this->Model_tolling_titipan->voucher_po($id)->row_array();
+    //     $terbilang = $data['nilai_po'];
+    //     $sisa = $data['nilai_po'] - $data['nilai_dp'];
+    //     $data['nilai_po'] = number_format($data['nilai_po'],0,',','.');
+    //     $data['nilai_dp'] = number_format($data['nilai_dp'],0,',','.');
+    //     $data['sisa']     = number_format($sisa,0,',','.');
+
+    //     $data['terbilang'] = ucwords(number_to_words($terbilang));
+        
+    //     header('Content-Type: application/json');
+    //     echo json_encode($data);  
+    // }
+
     function create_voucher(){
         $id = $this->input->post('id');
-        $this->load->helper('terbilang_helper');
+        // $this->load->helper('terbilang_d_helper');
         $this->load->model('Model_tolling_titipan');
         $data = $this->Model_tolling_titipan->voucher_po($id)->row_array();
-        $terbilang = $data['nilai_po'];
-        $sisa = $data['nilai_po'] - $data['nilai_dp'];
-        $data['nilai_po'] = number_format($data['nilai_po'],0,',','.');
+         if($data['ppn']==1){
+            if($data['nilai_po']==0){
+                $nilai_po = 0;
+                $data['nilai_ppn'] = 0;
+            }else{
+                $data['nilai_before_ppn'] = number_format($data['nilai_po'],0,',','.');
+                $nilai_po = ($data['nilai_po']-$data['diskon'])*110/100+$data['materai'];
+                $data['nilai_ppn'] = number_format($data['nilai_po']*10/100,0,',','.');
+            }
+        }else{
+            if($data['nilai_po']==0){
+                $nilai_po = 0;
+                $data['nilai_ppn'] = 0;
+            }else{
+                $nilai_po = $data['nilai_po']-$data['diskon'];
+                $data['nilai_ppn'] = 0;
+            }
+        }
+
+        // $terbilang = $nilai_po;
+        $sisa = $nilai_po - $data['nilai_dp'];
+        $data['materai'] = number_format($data['materai'],0,',','.');
+        $data['diskon'] = number_format($data['diskon'],0,',','.');
+        $data['nilai_po'] = number_format($nilai_po,0,',','.');
         $data['nilai_dp'] = number_format($data['nilai_dp'],0,',','.');
         $data['sisa']     = number_format($sisa,0,',','.');
+        // $nilai_po = $data['nilai_po'];
+        // $data['terbilang'] = ucwords(number_to_words_d($terbilang, $data['currency']));
 
-        $data['terbilang'] = ucwords(number_to_words($terbilang));
-        
         header('Content-Type: application/json');
-        echo json_encode($data);  
+        echo json_encode($data);    
     }
 
     function save_voucher(){

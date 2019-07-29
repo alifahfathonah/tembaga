@@ -45,6 +45,11 @@ class Customer extends CI_Controller{
                     'alamat'=> $this->input->post('alamat'),
                     'jenis_customer'=> $this->input->post('jenis_customer'),
                     'fax'=>$this->input->post('fax'),
+                    'nama_customer_kh'=> $this->input->post('nama_customer'),
+                    'pic_kh'=> $this->input->post('pic'),
+                    'telepon_kh'=> $this->input->post('telepon'),
+                    'hp_kh'=> $this->input->post('hp'),
+                    'alamat_kh'=> $this->input->post('alamat'),
                     'created'=> $tanggal,
                     'created_by'=> $user_id,
                     'modified'=> $tanggal,
@@ -87,23 +92,42 @@ class Customer extends CI_Controller{
     
     function update(){
         $user_id  = $this->session->userdata('user_id');
+        $ppn      = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');
         
-        $data = array(
-                'kode_customer'=> $this->input->post('kode_customer'),
-                'nama_customer'=> $this->input->post('nama_customer'),
-                'npwp'=> $this->input->post('npwp'),
-                'pic'=> $this->input->post('pic'),
-                'telepon'=> $this->input->post('telepon'),
-                'hp'=> $this->input->post('hp'),
-                'alamat'=> $this->input->post('alamat'),
-                'jenis_customer'=> $this->input->post('jenis_customer'),
-                'fax'=>$this->input->post('fax'),
-                //'flag_sinkronisasi'=>0,
-                //'flag_action'=>'U',
-                'modified'=> $tanggal,
-                'modified_by'=> $user_id
-            );
+        if($ppn == 1){
+            $data = array(
+                    'kode_customer'=> $this->input->post('kode_customer'),
+                    'nama_customer'=> $this->input->post('nama_customer'),
+                    'npwp'=> $this->input->post('npwp'),
+                    'pic'=> $this->input->post('pic'),
+                    'telepon'=> $this->input->post('telepon'),
+                    'hp'=> $this->input->post('hp'),
+                    'alamat'=> $this->input->post('alamat'),
+                    'jenis_customer'=> $this->input->post('jenis_customer'),
+                    'fax'=>$this->input->post('fax'),
+                    //'flag_sinkronisasi'=>0,
+                    //'flag_action'=>'U',
+                    'modified'=> $tanggal,
+                    'modified_by'=> $user_id
+                );
+        }else{
+            $data = array(
+                    'kode_customer'=> $this->input->post('kode_customer'),
+                    'nama_customer_kh'=> $this->input->post('nama_customer'),
+                    'npwp'=> $this->input->post('npwp'),
+                    'pic_kh'=> $this->input->post('pic'),
+                    'telepon_kh'=> $this->input->post('telepon'),
+                    'hp_kh'=> $this->input->post('hp'),
+                    'alamat_kh'=> $this->input->post('alamat'),
+                    'jenis_customer'=> $this->input->post('jenis_customer'),
+                    'fax_kh'=>$this->input->post('fax'),
+                    //'flag_sinkronisasi'=>0,
+                    //'flag_action'=>'U',
+                    'modified'=> $tanggal,
+                    'modified_by'=> $user_id
+                );
+        }
         
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('m_customers', $data);

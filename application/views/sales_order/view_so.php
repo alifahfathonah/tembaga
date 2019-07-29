@@ -329,7 +329,7 @@
             </div>
         <a href="<?php echo base_url('index.php/SalesOrder'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
-        <?php if($header['status_spb']!=1){ ?>
+        <?php if($header['status_spb']!=1 || $header['flag_sj']!=1 || $header['flag_invoice']!=1){ ?>
         <a href="javascript:;" onclick="closeSO();" class="btn red"> 
                         <i class="fa fa-ban"></i> Close SO </a>
         <?php }else{ ?>

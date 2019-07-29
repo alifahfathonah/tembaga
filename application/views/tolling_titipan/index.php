@@ -116,7 +116,7 @@
                         </td>  
                         <td style="text-align:center">
                             <?php
-                            if(($group_id==1 || $hak_akses['view']==1) && $data->flag_tolling == 2){
+                            if(($group_id==1 || $hak_akses['view']==1)){
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/Tolling/view/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-book"></i> View &nbsp; </a>
                             <?php } if($group_id==1 || $hak_akses['print_so']==1){

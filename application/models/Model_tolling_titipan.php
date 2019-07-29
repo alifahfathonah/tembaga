@@ -393,11 +393,12 @@ class Model_tolling_titipan extends CI_Model{
     }
     
     function load_detail_surat_jalan($id){
-        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, COALESCE(tsjd.barang_alias, jb.jenis_barang,r.nama_item) as jenis_barang, COALESCE(r.uom,jb.uom) as uom, tgf.no_produksi, COALESCE(tsjd.berat,mb.berat) as berat, COALESCE(r.kode_rongsok,jb1.kode) as kode_lama, coalesce(jb2.kode, 0) as kode_baru
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, COALESCE(tsjd.barang_alias, jb.jenis_barang,r.nama_item,ra.nama_item) as jenis_barang, COALESCE(r.uom,ra.uom,jb.uom) as uom, tgf.no_produksi, COALESCE(tsjd.berat,mb.berat) as berat, COALESCE(r.kode_rongsok,ra.kode_rongsok,jb1.kode) as kode_lama, coalesce(jb2.kode, 0) as kode_baru
                 from t_surat_jalan_detail tsjd
                 left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
                 left join jenis_barang jb on tsj.jenis_barang != 'RONGSOK' and tsj.jenis_barang != 'AMPAS' and jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
-                left join rongsok r on tsj.jenis_barang = 'RONGSOK' or tsj.jenis_barang = 'AMPAS' and r.id = tsjd.jenis_barang_id
+                left join rongsok r on tsj.jenis_barang = 'RONGSOK' and r.id = tsjd.jenis_barang_id
+                left join rongsok ra on tsj.jenis_barang = 'AMPAS' and r.id = tsjd.jenis_barang_id
                 left join t_gudang_fg tgf on tsj.jenis_barang = 'FG' and tgf.id = tsjd.gudang_id
                 left join m_bobbin mb on tgf.bobbin_id>0 and mb.id = tgf.bobbin_id
                 left join jenis_barang jb1 on tsj.jenis_barang != 'RONGSOK' and jb1.id = tsjd.jenis_barang_id
@@ -568,7 +569,7 @@ class Model_tolling_titipan extends CI_Model{
     }
 
     function load_tolling_detail($id){
-        $data = $this->db->query("Select pod.*, COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom) as uom  From po_detail pod 
+        $data = $this->db->query("Select pod.*, COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom) as uom, COALESCE(jb.kode,r.kode_rongsok)as kode  From po_detail pod 
                 Left Join po on po.id = pod.po_id
                 Left Join jenis_barang jb On (po.jenis_po != 'Rongsok' and pod.jenis_barang_id = jb.id) 
                 Left Join rongsok r On (po.jenis_po = 'Rongsok' and pod.jenis_barang_id = r.id )
@@ -804,7 +805,7 @@ class Model_tolling_titipan extends CI_Model{
     }
 
     function list_item_sjk_fg($id){
-        $data = $this->db->query("select tsj.id, tgf.id as gudang_id, jb.jenis_barang, jb.uom from t_surat_jalan tsj
+        $data = $this->db->query("select tsj.id, tgf.id as gudang_id, tgf.netto, tgf.bruto, tgf.berat_bobbin, tgf.no_packing, tgf.nomor_bobbin, tgf.jenis_barang_id, jb.ukuran, jb.jenis_barang, jb.uom, jb.kode from t_surat_jalan tsj
                 left join t_gudang_fg tgf on tgf.t_spb_fg_id = tsj.spb_id
                 left join jenis_barang jb on jb.id = tgf.jenis_barang_id
                 where tsj.spb_id =".$id." and flag_taken = 0");

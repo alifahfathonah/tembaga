@@ -265,7 +265,7 @@ class Model_finance extends CI_Model{
     }
 
     function show_detail_matching_um($id){
-        $data = $this->db->query("select fum.*, b.kode_bank, b.nama_bank, b.nomor_rekening, from f_match_detail fmd
+        $data = $this->db->query("select fum.*, b.kode_bank, b.nama_bank, b.nomor_rekening from f_match_detail fmd
             left join f_uang_masuk fum on fum.id = fmd.id_um
             left join bank b on b.id = fum.rekening_tujuan
             where id_inv = 0 and fmd.id_match =".$id);
@@ -489,7 +489,7 @@ class Model_finance extends CI_Model{
     }
 
     function load_um_match($id){
-        $data = $this->db->query("select fmd.*, COALESCE(fmd.keterangan,fum.no_uang_masuk) as no_uang_masuk, fum.nomor_cek, COALESCE(fmd.currency,fum.currency) as currency, COALESCE(NULLIF(fmd.biaya,0),fum.nominal) as total, fum.status  from f_match_detail fmd
+        $data = $this->db->query("select fmd.*, COALESCE(fmd.keterangan,fum.no_uang_masuk) as no_uang_masuk, fum.nomor_cek, COALESCE(fmd.currency,fum.currency) as currency, COALESCE(NULLIF(fmd.biaya,0),fum.nominal) as total, COALESCE(fum.status,1) as status from f_match_detail fmd
             left join f_uang_masuk fum on fum.id = fmd.id_um
             where fmd.id_match =".$id." and fmd.id_inv = 0");
         return $data;
@@ -700,6 +700,23 @@ class Model_finance extends CI_Model{
             group by v.flag_tolling, v.kode_barang
             order by v.flag_tolling, total_harga desc
             ");
+        return $data;
+    }
+
+    function print_laporan_piutang($date,$ppn){
+        $data = $this->db->query("select fi.*, (CASE WHEN fi.nilai_invoice = (fi.nilai_bayar + fi.nilai_pembulatan) THEN 0 
+            WHEN fi.currency = 'IDR' THEN fi.nilai_invoice ELSE 0 END) as nilai_invoice,
+            (CASE WHEN fi.currency='USD' THEN fi.nilai_invoice ELSE 0 END) as nilai_us, 
+            (CASE WHEN fi.nilai_invoice = (fi.nilai_bayar + fi.nilai_pembulatan) THEN fi.nilai_invoice ELSE 0 END) as nilai_cm,
+            tsj.no_surat_jalan, 
+            mc.kode_customer, mc.nama_customer, mc.nama_customer_kh
+            from f_invoice fi
+            left join t_surat_jalan tsj on tsj.inv_id =  fi.id
+            left join m_customers mc on mc.id = fi.id_customer
+            where MONTH((select fm.tanggal from f_match_detail fmd 
+             left join f_match fm on fm.id = fmd.id_match
+             where fmd.id_inv = fi.id order by fmd.id desc limit 1)) = MONTH('".$date."') or fi.nilai_invoice > (fi.nilai_bayar + fi.nilai_pembulatan) and fi.flag_ppn = ".$ppn."
+             order by fi.id_customer, fi.tanggal asc");
         return $data;
     }
 

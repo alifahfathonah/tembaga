@@ -1299,6 +1299,18 @@ class GudangWIP extends CI_Controller{
         }
     }
 
+    function delSPBSudahDipenuhi(){
+        $id = $this->uri->segment(3);
+        $id_spb = $this->uri->segment(4);
+        
+        $this->db->where('id', $id);
+        if($this->db->delete('t_gudang_wip')){
+            redirect('index.php/GudangWIP/view_spb/'.$id_spb);
+        }else{
+            redirect('index.php/GudangWIP/spb_list');
+        }
+    }
+
     function save_spb_fulfilment(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');

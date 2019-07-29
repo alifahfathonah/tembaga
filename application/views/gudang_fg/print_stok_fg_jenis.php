@@ -28,7 +28,7 @@
 
                 foreach ($detailLaporan as $row){
                     echo '<tr>';
-                    echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000;">'.$row->jenis_barang.'</td>';
+                    echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000;">'.$row->jenis_barang.' | '.$row->jenis_packing.'</td>';
                     echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000;">'.number_format($row->netto,2,',','.').'</td>';
                     echo '</tr>';
                     $no++;
@@ -54,7 +54,7 @@
 
                 foreach ($detailLaporan2 as $row){
                     echo '<tr>';
-                    echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000;">'.$row->jenis_barang.'</td>';
+                    echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000;">'.$row->jenis_barang.' | '.$row->jenis_packing.'</td>';
                     echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000;">'.number_format($row->netto,2,',','.').'</td>';
                     echo '</tr>';
                     $no++;
@@ -80,7 +80,7 @@
 
                 foreach ($detailLaporan3 as $row){
                     echo '<tr>';
-                    echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000;">'.$row->jenis_barang.'</td>';
+                    echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000;">'.$row->jenis_barang.' | '.$row->jenis_packing.'</td>';
                     echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000;">'.number_format($row->netto,2,',','.').'</td>';
                     echo '</tr>';
                     $no++;

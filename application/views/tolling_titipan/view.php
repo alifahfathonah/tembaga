@@ -131,7 +131,7 @@
                         </div>
                 </div>              
             </div>
-            <div class="row">&nbsp;</div>
+        <div class="row">&nbsp;</div>
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="row">
@@ -173,7 +173,7 @@
                 <div class="col-md-12">
                     <a href="<?php echo base_url('index.php/Tolling'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
-                    <?php if($header['status_spb']!=1){ ?>
+                    <?php if($header['status_spb']!=1 || $header['flag_sj']!=1 || $header['flag_invoice']!=1){ ?>
                     <a href="javascript:;" onclick="closeSO();" class="btn red"> 
                                     <i class="fa fa-ban"></i> Close SO </a>
                     <?php }else{ ?>

@@ -44,42 +44,70 @@ class PengirimanAmpas extends CI_Controller{
     }
     
     function save(){
-        $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $user_id   = $this->session->userdata('user_id');
+        $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
         
-        $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('POAMP', $tgl_input); 
-        
-        if($code){        
-            $data = array(
-                'no_po'=> $code,
-                'tanggal'=> $tgl_input,
-                'flag_ppn'=> $user_ppn,
-                'ppn'=> $this->input->post('ppn'),
-                'currency'=> $this->input->post('currency'),
-                'kurs'=> $this->input->post('kurs'),
-                'supplier_id'=>$this->input->post('supplier_id'),
-                'remarks'=> $this->input->post('remarks'),
-                'term_of_payment'=>$this->input->post('term_of_payment'),
-                'jenis_po'=>'Ampas',
-                'created'=> $tanggal,
-                'created_by'=> $user_id,
-                'modified'=> $tanggal,
-                'modified_by'=> $user_id
-            );
+        $this->db->trans_start();
+        if($user_ppn == 0){
+            $this->load->model('Model_m_numberings');
+            $code = $this->Model_m_numberings->getNumbering('PO', $tgl_input); 
+        }else{
+            $code = 'PO-KMP.'.$tgl_po.'.'.$this->input->post('no_po');
+            $count = $this->db->query("Select count(id) as count from po where no_po = '".$code."'")->row_array();
+            if($count['count']){
+                $this->session->set_flashdata('flash_msg', 'Nomor PO sudah Ada. Please try again!');
+                redirect('index.php/BeliRongsok/add');
+            }
+        }
 
-            if($this->db->insert('po', $data)){
-                redirect('index.php/PengirimanAmpas/edit/'.$this->db->insert_id());  
+        $data = array(
+            'no_po'=> $code,
+            'tanggal'=> $tgl_input,
+            'flag_ppn'=> $user_ppn,
+            'ppn'=> $this->input->post('ppn'),
+            'diskon'=>str_replace('.', '', $this->input->post('diskon')),
+            'materai'=>$this->input->post('materai'),
+            'currency'=> $this->input->post('currency'),
+            'kurs'=> $this->input->post('kurs'),
+            'supplier_id'=>$this->input->post('supplier_id'),
+            'remarks'=> $this->input->post('remarks'),
+            'term_of_payment'=>$this->input->post('term_of_payment'),
+            'jenis_po'=>'Ampas',
+            'created'=> $tanggal,
+            'created_by'=> $user_id,
+            'modified'=> $tanggal,
+            'modified_by'=> $user_id
+        );
+        $this->db->insert('po', $data);
+        $po_id = $this->db->insert_id();
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $data_id = array('reff1' => $po_id);
+                $data_post = array_merge($data, $data_id);
+
+                $data_post = http_build_query($data_post);
+
+                $ch = curl_init(target_url().'api/BeliRongsokAPI/po');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
+
+            if($this->db->trans_complete()){
+                redirect('index.php/PengirimanAmpas/edit/'.$po_id);  
             }else{
                 $this->session->set_flashdata('flash_msg', 'PO ampas gagal disimpan, silahkan dicoba kembali!');
                 redirect('index.php/PengirimanAmpas');  
-            }            
-        }else{
-            $this->session->set_flashdata('flash_msg', 'PO ampas gagal disimpan, penomoran belum disetup!');
-            redirect('index.php/PengirimanAmpas');
-        }
+            }
     }    
     
     function edit(){

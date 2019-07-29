@@ -14,7 +14,7 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='Rongsok' and po.tanggal >= NOW()-INTERVAL 2 MONTH and po.flag_ppn = ".$ppn."
+                Where po.jenis_po='Rongsok' and po.tanggal >= NOW()-INTERVAL 2 MONTH and po.flag_ppn = ".$ppn." and po.customer_id = 0
                 Order By po.id Desc");
         return $data;
     }
@@ -701,6 +701,44 @@ class Model_beli_rongsok extends CI_Model{
             from dtr_detail dd
             left join dtr d on d.id = dd.dtr_id
                 where d.status = 1 and dd.rongsok_id = ".$rongsok_id." and d.tanggal < '".$start."'");
+        return $data;
+    }
+
+    function get_po_from_voucher($id){
+        $data = $this->db->query("select * from voucher where id=".$id);
+        return $data;
+    }
+
+    function ranking_ttr(){
+        $data = $this->db->query("Select s.nama_supplier, Coalesce(sum(dd.netto*pd.amount),0) as nilai_po, 
+            sum(dd.netto) as netto
+            From po
+            inner join dtr on dtr.po_id = po.id
+            inner join dtr_detail dd on dd.dtr_id = dtr.id
+            inner join po_detail pd on pd.id = dd.po_detail_id
+            inner join supplier s on s.id = po.supplier_id
+            Where dtr.status=1
+            group by po.supplier_id");
+        return $data;
+    }
+
+    function permintaan_rongsok_dari_produksi(){
+        $data = $this->db->query("select r.nama_item, dd.* from spb_detail_fulfilment sdf
+            left join dtr_detail dd on dd.id = sdf.dtr_detail_id
+            left join rongsok r on r.id = dd.rongsok_id
+            left join spb on spb.id = sdf.spb_id
+            where spb.produksi_ingot_id > 0
+            order by dd.rongsok_id, dd.tanggal_keluar");
+        return $data;
+    }
+
+    function permintaan_rongsok_external(){
+        $data = $this->db->query("select * from t_sales_order tso
+            left join spb on spb.id = tso.no_spb
+            left join spb_detail_fulfilment sdf on sdf.spb_id = spb.id
+            left join dtr_detail dd on dd.id = sdf.dtr_detail_id
+            left join rongsok r on r.id = dd.rongsok_id
+            where tso.jenis_barang = 'RONGSOK' and sdf.id is not null");
         return $data;
     }
 }

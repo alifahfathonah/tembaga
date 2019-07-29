@@ -216,6 +216,7 @@
                                             <th>Quantity</th>
                                             <th>Berat (kg)</th>
                                             <th>Keterangan</th>
+                                            <th>Status</th>
                                         </thead>
                                         <tbody>
                                             <?php $no=1; $qty=0; $berat=0; foreach($detailSPB as $v) { ?>
@@ -226,6 +227,14 @@
                                                 <td><?=$v->qty;?></td>
                                                 <td><?=number_format($v->berat,2,',','.');?></td>
                                                 <td><?=$v->keterangan;?></td>
+                                                <?php 
+                                                if($v->flag_taken==1){
+                                                echo '<td style="background-color: green; color: white">Sudah di Kirim</td>';
+                                                echo '<td></td>';
+                                                }else{
+                                                    echo '<td>Belum Dikirim</td>';
+                                                    echo '<td><a href="'.base_url().'index.php/GudangWIP/delSPBSudahDipenuhi/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete</a></td>';
+                                                } ?>
                                             </tr>
                                             <?php 
                                             $no++; 
@@ -302,6 +311,7 @@
                                             <th>Quantity</th>
                                             <th>Berat (kg)</th>
                                             <th>Keterangan</th>
+                                            <th>Status</th>
                                         </thead>
                                         <tbody>
                                             <?php $no=1; foreach($detailSPB as $v) { ?>
@@ -312,6 +322,14 @@
                                                 <td><?=$v->qty;?></td>
                                                 <td><?=$v->berat;?></td>
                                                 <td><?=$v->keterangan;?></td>
+                                                <?php 
+                                                if($v->flag_taken==1){
+                                                echo '<td style="background-color: green; color: white">Sudah di Kirim</td>';
+                                                echo '<td></td>';
+                                                }else{
+                                                    echo '<td>Belum Dikirim</td>';
+                                                    echo '<td><a href="'.base_url().'index.php/GudangWIP/delSPBSudahDipenuhi/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete</a></td>';
+                                                } ?>
                                             </tr>
                                             <?php $no++; } ?>
                                         </tbody>
@@ -369,6 +387,7 @@
                                             <th>Quantity</th>
                                             <th>Berat (kg)</th>
                                             <th>Keterangan</th>
+                                            <th>Status</th>
                                         </thead>
                                         <tbody>
                                             <?php $no=1; $qty = 0; $berat = 0; foreach($detailSPB as $v) { ?>
@@ -379,6 +398,14 @@
                                                 <td><?=$v->qty;?></td>
                                                 <td><?=$v->berat;?></td>
                                                 <td><?=$v->keterangan;?></td>
+                                                <?php 
+                                                if($v->flag_taken==1){
+                                                echo '<td style="background-color: green; color: white">Sudah di Kirim</td>';
+                                                echo '<td></td>';
+                                                }else{
+                                                    echo '<td>Belum Dikirim</td>';
+                                                    echo '<td><a href="'.base_url().'index.php/GudangWIP/delSPBSudahDipenuhi/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete</a></td>';
+                                                } ?>
                                             </tr>
                                             <?php 
                                             $no++; 

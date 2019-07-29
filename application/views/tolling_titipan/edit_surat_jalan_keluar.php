@@ -195,19 +195,11 @@
                                 foreach ($list_produksi as $row) { $no++;
                                 echo '<tr id="row_'.$no.'">'.
                                     '<td style="text-align: center;">'.$no.'</td>'.
-                                    '<td>('.$row->kode.')'.$row->jenis_barang.'</td>'.
+                                    '<td>('.$row->kode.') '.$row->jenis_barang.'</td>'.
                                     '<input type="hidden" name="details['.$no.'][id_barang]" id="id_barang_'.$no.'" value="'.$row->id.'">'.
                                     '<input type="hidden" id="jenis_barang_id_'.$no.'" name="details['.$no.'][jenis_barang_id]" value="'.$row->jenis_barang_id.'" data-id="'.$row->ukuran.'">'.
-                                    '<td>'.
-                                        '<select id="barang_alias_id_'.$no.'" name="details['.$no.'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="genPacking('.$no.');">
-                                            <option></option>
-                                            <option value="0" data-id="0">TIDAK ADA ALIAS</option>';
-                                            foreach ($jenis_barang as $value){
-                                            echo '<option value="'.$value->id.'" data-id="'.$value->ukuran.'">'.$value->jenis_barang.'</option>';
-                                            }
-                                        echo '</select>'.
-                                    '</td>'.
-                                    '<td><input type="text" class="form-control myline" style="margin-bottom:5px" id="no_packing_'.$no.'" name="details['.$no.'][no_packing]" value="'.$row->no_packing.'" data-id="'.$value->ukuran.'" readonly="readonly">'.
+                                    '<td><input type="text" id="barang_alias_'.$no.'" name="details['.$no.'][barang_alias]" class="form-control myline" placeholder="Nama Barang Alias ..." onkeyup="this.value = this.value.toUpperCase()"></td>'.
+                                    '<td><input type="text" class="form-control myline" style="margin-bottom:5px" id="no_packing_'.$no.'" name="details['.$no.'][no_packing]" value="'.$row->no_packing.'" data-id="'.$row->ukuran.'" readonly="readonly">'.
                                     '</td>'.
                                     '<td><input type="text" id="bruto_'.$no.'" name="details['.$no.'][bruto]" class="form-control myline" readonly="readonly" value="'.$row->bruto.'"></td>'.
                                     '<td><input type="text" id="berat_'.$no.'" name="details['.$no.'][berat]" class="form-control myline" readonly="readonly" value="'.$row->berat_bobbin.'"></td>'.

@@ -2707,4 +2707,23 @@ class Finance extends CI_Controller{
             }
             $this->load->view('finance/print_laporan_penjualan', $data);
     }
+
+    function print_penjualan_piutang(){
+            $module_name = $this->uri->segment(1);
+            $user_ppn    = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+            $tanggal = date('Y-m-d');
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_finance');
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang($tanggal,$user_ppn)->result();
+            $this->load->view('finance/print_laporan_piutang', $data);
+    }
 }

@@ -169,7 +169,7 @@
                                             ($status) ? $stat = '<div style="background:green;color:white;"><span class="fa fa-check"></span> OK </div>' : $stat = '<div style="background:red;color:white;"> <span class="fa fa-times"></span> NOK</div>';
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
-                                                echo '<td>'.$row->jenis_barang.'</td>';
+                                                echo '<td>('.$row->kode.') '.$row->jenis_barang.'</td>';
                                                 echo '<td>'.number_format($row->netto,2,',','.').' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
                                                 echo '<td>'.$stat.'</td>';
@@ -244,7 +244,7 @@
                                                     $stat = '<td>Belum Dikirim</td>';
                                                 }
                                                 echo '<td style="text-align:center">'.$no.'</td>';
-                                                echo '<td>'.$row->jenis_barang.'</td>';
+                                                echo '<td>('.$row->kode.') '.$row->jenis_barang.'</td>';
                                                 echo '<td>'.$row->no_packing.'</td>';
                                                 echo '<td>'.$row->nomor_bobbin.'</td>';
                                                 echo '<td>'.$row->bruto.'</td>';
@@ -344,7 +344,7 @@
                                             foreach ($myDetail as $row){
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
-                                                echo '<td>'.$row->jenis_barang.'</td>';
+                                                echo '<td>('.$row->kode.') '.$row->jenis_barang.'</td>';
                                                 echo '<td>'.$row->uom.'</td>';
                                                 echo '<td>'.number_format($row->netto,2,',','.').' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
@@ -399,7 +399,7 @@
                                                     $stat = '<td>Belum Dikirim</td>';
                                                 }
                                                 echo '<td style="text-align:center">'.$no.'</td>';
-                                                echo '<td>'.$row->jenis_barang.'</td>';
+                                                echo '<td>('.$row->kode.') '.$row->jenis_barang.'</td>';
                                                 echo '<td>'.$row->no_packing.'</td>';
                                                 echo '<td>'.$row->nomor_bobbin.'</td>';
                                                 echo '<td>'.$row->bruto.'</td>';
@@ -480,7 +480,7 @@
                                             }
                                             ?>
                                                 <td><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
-                                                <td><?=$v->jenis_barang;?></td>
+                                                <td><?='('.$row->kode.') '.$v->jenis_barang;?></td>
                                                 <td><?=$v->uom;?></td>
                                                 <td><?=number_format($v->netto,2,',',',');?></td>
                                                 <td><?=$v->no_packing?></td>

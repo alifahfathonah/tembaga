@@ -1817,6 +1817,30 @@ class BeliRongsok extends CI_Controller{
         $id = $this->uri->segment(3);
         
         $this->db->trans_start();
+        $this->load->model('Model_beli_rongsok');
+
+        $get = $this->Model_beli_rongsok->get_po_from_voucher($id)->row_array();
+
+                $po_dtr_list = $this->Model_beli_rongsok->check_po_dtr($get['po_id'])->result();
+                foreach ($po_dtr_list as $v) {
+                    #penghitungan +- 10 % PO ke DTR
+                    // if(((int)$v->tot_netto) >= (0.9*((int)$v->qty))){
+                    //     #update po_detail flag_dtr
+                    //     $this->Model_beli_rongsok->update_flag_dtr_po_detail($po_id);
+                    // }
+                    // $total_qty += $v->qty;
+                        if(((int)$v->tot_netto) >= (0.9*((int)$v->tot_qty))){
+                            $this->db->where('id',$get['po_id']);
+                            $this->db->update('po',array(
+                                            'status'=>3,
+                                            'flag_pelunasan'=>0));
+                        }else {
+                            $this->db->where('id',$get['po_id']);
+                            $this->db->update('po',array(
+                                            'status'=>2));
+                        }
+                }
+
         if(!empty($id)){
             $this->db->delete('voucher', ['id' => $id]);
         }

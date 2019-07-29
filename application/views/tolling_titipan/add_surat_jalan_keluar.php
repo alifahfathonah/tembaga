@@ -183,13 +183,13 @@ function simpanData(){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#no_surat_jalan").val()) == ""){
-        $('#message').html("Silahkan pilih customer");
+        $('#message').html("Silahkan isi Nomor SUrat Jalan");
         $('.alert-danger').show();
     }else if($.trim($("#m_customer_id").val()) == ""){
         $('#message').html("Silahkan pilih customer");
         $('.alert-danger').show(); 
     }else if($.trim($("#no_spb").val()) == ""){
-        $('#message').html("Silahkan pilih no. sales order");
+        $('#message').html("Silahkan pilih no. SPB");
         $('.alert-danger').show();
     }else{     
         $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");

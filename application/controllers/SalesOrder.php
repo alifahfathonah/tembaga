@@ -1158,7 +1158,6 @@ class SalesOrder extends CI_Controller{
 
     function delete_surat_jalan(){
         $id = $this->uri->segment(3);
-
         $this->db->trans_start();
 
         $this->db->where('id', $id);
@@ -1439,16 +1438,18 @@ class SalesOrder extends CI_Controller{
 
             $query = $this->db->query('select *from t_surat_jalan_detail where t_sj_id = '.$sjid)->result();
             foreach ($query as $row) {
-                $this->db->where('nomor_bobbin', $row->nomor_bobbin);
-                $this->db->update('m_bobbin', array(
-                    'borrowed_by' => $custid,
-                    'status' => 2
-                ));
+                if($row->nomor_bobbin!=''){
+                    $this->db->where('nomor_bobbin', $row->nomor_bobbin);
+                    $this->db->update('m_bobbin', array(
+                        'borrowed_by' => $custid,
+                        'status' => 2
+                    ));
 
-                $this->db->insert('m_bobbin_peminjaman_detail', array(
-                    'id_peminjaman' => $insert_id,
-                    'nomor_bobbin' => $row->nomor_bobbin
-                ));
+                    $this->db->insert('m_bobbin_peminjaman_detail', array(
+                        'id_peminjaman' => $insert_id,
+                        'nomor_bobbin' => $row->nomor_bobbin
+                    ));
+                }
             }
         }
         
@@ -1490,6 +1491,86 @@ class SalesOrder extends CI_Controller{
         }             
         
        redirect('index.php/SalesOrder/surat_jalan');
+    }
+
+    function delete_approved_surat_jalan(){
+        $id = $this->uri->segment(3);
+        $this->db->trans_start();
+
+        $this->load->model('Model_sales_order');
+
+        $header = $this->Model_sales_order->t_sj_only($id)->row_array();
+        $data = $this->Model_sales_order->t_sj_detail_only($id)->result();
+        foreach ($data as $v) {
+            if ($header['jenis_barang'] == 'FG') {
+                $this->db->where('id', $v->gudang_id);
+                $this->db->update('t_gudang_fg', array(
+                    't_spb_fg_id'=>NULL,
+                    'nomor_SPB'=>NULL,
+                    'jenis_trx'=>0,
+                    'flag_taken'=>0,
+                    'tanggal_keluar'=>'0000-00-00'
+                ));
+
+                $this->db->where('nomor_bobbin', $v->nomor_bobbin);
+                $this->db->update('m_bobbin', array(
+                    'borrowed_by' => 0,
+                    'status' => 1
+                ));
+            } else if ($header['jenis_barang'] == 'RONGSOK'){
+                $this->db->where('id', $v->gudang_id);
+                $this->db->update('dtr_detail', array(
+                    'so_id' => 0,
+                    'flag_taken' => 0,
+                    'flag_sj' => 0,
+                    'tanggal_keluar' => NULL
+                ));
+
+                $this->db->where('dtr_detail_id', $v->gudang_id);
+                $this->db->delete('spb_detail_fulfilment');
+            }
+        }
+
+        if($header['jenis_barang']=='FG'){
+            #delete bobbin_peminjaman
+
+            $this->db->where('id_surat_jalan', $id);
+            $this->db->delete('m_bobbin_peminjaman');
+
+            $this->db->where('id_peminjaman',  $header['id_bobbin_peminjaman']);
+            $this->db->delete('m_bobbin_peminjaman_detail');
+        }
+
+        $this->db->where('id',$header['sales_order_id']);
+        $this->db->update('sales_order', array(
+            'flag_sj'=>0,
+            'flag_invoice'=>0
+        ));
+
+        $this->db->where('id',$header['no_spb']);
+        if($header['jenis_barang']=='FG'){
+            $this->db->update('t_spb_fg', array(
+                'status'=>4
+            ));
+        }elseif($header['jenis_barang']=='RONGSOK'){
+            $this->db->update('spb', array(
+                'status'=>4
+            ));
+        }
+
+        $this->db->where('t_sj_id', $id);
+        $this->db->delete('t_surat_jalan_detail');
+
+        $this->db->where('id', $id);
+        $this->db->delete('t_surat_jalan');
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Surat Jalan berhasil di hapus');
+            redirect('index.php/SalesOrder/surat_jalan');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Surat Jalan gagal dihapus');
+            redirect('index.php/SalesOrder/surat_jalan');
+        }
     }
 
     function reject_surat_jalan(){

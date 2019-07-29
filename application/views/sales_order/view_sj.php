@@ -501,6 +501,11 @@
                     ?>
                     <a href="<?php echo base_url('index.php/SalesOrder/surat_jalan'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
+                        &nbsp;
+
+                    <?php if($header['status']==1 && $header['inv_id']==null && ($header['jenis_barang']=='FG' || $header['jenis_barang']=='RONGSOK')){ ?>
+                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/delete_approved_surat_jalan/<?php echo $header['id']; ?>" class="btn btn-circle btn-lg red" onclick="return confirm('Anda yakin menghapus surat jalan ini?');"><i class="fa fa-warning"></i> Delete Surat Jalan</a>
+                    <?php } ?>
                 </div>    
             </div>
         </form>

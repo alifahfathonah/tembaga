@@ -191,7 +191,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('Y-m-d'); ?>">
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>  
                     <div class="row">
@@ -737,7 +737,6 @@ $('#addPotongan').click(function(event) {
     $("#myModal").modal('show',{backdrop: 'true'});
     $('#id_modal').val($('#id').val());
     $('#k_1').val('');
-    $('#currency').val('');
     $('#nominal').val('');
     $('#id_detail').val('');
     $('#simpan_potongan').hide();

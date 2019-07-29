@@ -18,9 +18,9 @@
         ?>
         <div class="row">
             <div class="col-md-12">
-                <div class="alert alert-danger display-hide">
+                <div class="alert alert-danger <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
                     <button class="close" data-close="alert"></button>
-                    <span id="message">&nbsp;</span>
+                    <span id="message"><?php echo $this->session->flashdata('flash_msg'); ?></span>
                 </div>
             </div>
         </div>
@@ -33,9 +33,13 @@
                             No. PO <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
+                            <?php if($this->session->userdata('user_ppn')==1){ ?>
+                            <input type="text" id="no_po" name="no_po" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor PO ..." onkeyup="this.value = this.value.toUpperCase()">
+                            <?php }else{ ?>
                             <input type="text" id="no_po" name="no_po" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
+                                class="form-control myline" style="margin-bottom:5px"
                                 value="Auto generate">
+                            <?php } ?>
                         </div>
                     </div>
                     <div class="row">
@@ -69,8 +73,8 @@
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                                <i class="fa fa-floppy-o"></i> Input Details Ampas </a>
+                            <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
+                                <i class="fa fa-floppy-o"></i> Input Details Rongsok </a>
                         </div>    
                     </div>
                 </div>
@@ -99,6 +103,25 @@
                         <div class="col-md-8">
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            Discount
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="diskon" name="diskon" class="form-control myline" style="margin-bottom:5px" onkeyup="getComa(this.value, this.id)">
+                        </div>
+                        <div class="col-md-2">
+                            Materai
+                        </div>
+                        <div class="col-md-4">
+                            <select id="materai" name="materai" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option></option>
+                                <option value="3000">Materai 3000</option>
+                                <option value="6000">Materai 6000</option>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -137,7 +160,8 @@
                     <?php } else{ ?>
                         <input type="hidden" id="ppn" name="ppn" value="0">
                     <?php } ?>
-                </div>
+                    </div>
+                </div>              
             </div>
             
         </form>
@@ -159,16 +183,25 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
+    }else if($.trim($("#no_po").val()) == ""){
+        $('#message').html("Nomor PO harus diisi!");
+        $('.alert-danger').show(); 
     }else if($.trim($("#supplier_id").val()) == ""){
         $('#message').html("Silahkan pilih nama supplier!");
         $('.alert-danger').show(); 
     }else if($.trim($("#term_of_payment").val()) == ""){
         $('#message').html("Term of payment harus diisi!");
         $('.alert-danger').show(); 
-    }else{     
+    }else{
+        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').submit(); 
     };
 };
+
+function getComa(value, id){
+    angka = value.toString().replace(/\./g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+}
 
 function get_contact(id){
     $.ajax({
@@ -197,7 +230,7 @@ function get_cur(id){
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
 $(function(){        
-    $('#show_kurs').hide(); 
+    $('#show_kurs').hide();   
     $("#tanggal").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
@@ -208,5 +241,4 @@ $(function(){
         dateFormat: 'dd-mm-yy'
     });       
 });
-</script>
-      
+</script>     
