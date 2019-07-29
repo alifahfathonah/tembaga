@@ -558,6 +558,20 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
 
+    function show_laporan_barang_detail($tgl,$bulan,$tahun){
+        $data = $this->db->query("select dd.rongsok_id, rsk.nama_item, rsk.kode_rongsok, rsk.uom, count(dd.id) as jumlah, sum(bruto) as bruto_masuk, sum(netto) as netto_masuk,
+                COALESCE((select sum(netto) from dtr_detail dtd where dtd.rongsok_id = dd.rongsok_id and dtd.tanggal_masuk < '".$tgl."'),0)as netto_masuk_before,
+                COALESCE((select sum(netto) from dtr_detail dtd where dtd.rongsok_id = dd.rongsok_id and dtd.tanggal_keluar < '".$tgl."'),0)as netto_keluar_before,
+                (select sum(bruto) from dtr_detail dd where month(dd.tanggal_keluar) =".$bulan." and year(dd.tanggal_keluar) =".$tahun." and dd.rongsok_id=rsk.id) as bruto_keluar,
+                (select sum(netto) from dtr_detail dd where month(dd.tanggal_keluar) =".$bulan." and year(dd.tanggal_keluar) =".$tahun." and dd.rongsok_id=rsk.id) as netto_keluar
+                from dtr_detail dd
+                    left join dtr d on d.id = dd.dtr_id
+                    left join rongsok rsk on rsk.id = dd.rongsok_id
+                where rsk.type_barang = 'Rongsok' and month(d.tanggal) =".$bulan." and year(d.tanggal) =".$tahun." and d.status = 1
+            group by dd.rongsok_id order by rsk.kode_rongsok asc");
+        return $data;
+    }
+
     function show_view_laporan($bulan, $tahun){
         $data = $this->db->query("select dd.rongsok_id, rsk.nama_item, rsk.kode_rongsok, rsk.uom, count(dd.id) as jumlah, sum(bruto) as bruto_masuk, sum(netto) as netto_masuk,
                 (select sum(bruto) from dtr_detail dd where month(dd.tanggal_keluar) =".$bulan." and year(dd.tanggal_keluar) =".$tahun." and dd.rongsok_id=rsk.id) as bruto_keluar,
