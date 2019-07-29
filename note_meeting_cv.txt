@@ -31,3 +31,7 @@ laporan piutang customer
 	kalo udah abis dan matching lunas bulan sebelumnya. berarti ga muncul
 
 finance edit bank, nama direktur
+
+nomor po sparepart masih bisa dobel, kasih cek nomor po
+
+print po fg dan wip belum ada harga

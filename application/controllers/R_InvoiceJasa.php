@@ -167,7 +167,7 @@ class R_InvoiceJasa extends CI_Controller{
         $diskon = str_replace(',', '', $this->input->post('diskon'));
         $cost = str_replace(',', '', $this->input->post('add_cost'));
         $materai = str_replace(',', '', $this->input->post('materai'));
-        $nilai_invoice = ($total - $diskon - $cost - $materai) * 10 / 100;
+        $nilai_invoice = (($total - $diskon - $cost) * 110 / 100) + $materai;
 
         $this->db->trans_start();
         $jenis = $this->input->jenis_barang;
