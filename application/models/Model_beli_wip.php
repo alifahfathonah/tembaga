@@ -123,6 +123,15 @@ class Model_beli_wip extends CI_Model
         return $data;
     }
 
+    function show_detail_dtwip_harga($id){
+        $data = $this->db->query("Select dtwipd.*, jb.jenis_barang, jb.uom, pd.amount
+                    From dtwip_detail dtwipd 
+                        Left Join po_detail pd on pd.id = dtwipd.po_detail_id
+                        Left Join jenis_barang jb On (dtwipd.jenis_barang_id = jb.id) 
+                    Where dtwipd.dtwip_id=".$id);
+        return $data;
+    }
+
     function show_header_dtwip($id){
         $data = $this->db->query("Select dtwip.*, 
                     po.no_po,

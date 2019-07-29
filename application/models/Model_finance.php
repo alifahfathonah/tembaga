@@ -703,7 +703,7 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function print_penjualan_jb($ppn){
+    function print_penjualan_jb(){
         $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
             SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
             group by v.flag_tolling, v.kode_barang

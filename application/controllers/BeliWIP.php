@@ -551,6 +551,19 @@ class BeliWIP extends CI_Controller{
         }
     }
 
+    function print_dtwip_harga(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_beli_wip');
+            $data['header']  = $this->Model_beli_wip->show_header_dtwip($id)->row_array();
+            $data['details'] = $this->Model_beli_wip->show_detail_dtwip_harga($id)->result();
+
+            $this->load->view('beli_wip/print_dtwip_harga', $data);
+        }else{
+            redirect('BeliWIP/index.php'); 
+        }
+    }
+
     function matching(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');      

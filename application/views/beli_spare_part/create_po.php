@@ -290,6 +290,9 @@ function hitungSubTotal(id){
     
     $('#harga_'+id).val(harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
     $('#total_harga_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+
+    $('#uniform-check_'+id+' span').attr('class', 'checked');
+    $('#check_'+id).attr('checked', true);
 }
 
 function checkAll(){
@@ -336,10 +339,25 @@ function simpanData(){
             $('#message').html("Silahkan pilih item spare part yang akan di-create PO!"); 
             $('.alert-danger').show(); 
         }else{
-            $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
-            $('#message').html("");
-            $('.alert-danger').hide(); 
-            $('#formku').submit(); 
+            $.ajax({
+                type: "POST",
+                url: "<?php echo base_url('index.php/BeliSparePart/get_penomoran_po'); ?>",
+                data: {
+                    no_po: $('#no_po').val(),
+                    tanggal: $('#tanggal').val()
+                },
+                cache: false,
+                success: function(result) {
+                    var res = result['type'];
+                    if(res=='duplicate'){
+                        $('#message').html("Nomor PO sudah ada, tolong coba lagi!");
+                        $('.alert-danger').show();
+                    }else{
+                        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+                        $('#formku').submit(); 
+                    }
+                }
+            });
         }
     };
 };

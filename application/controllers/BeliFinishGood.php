@@ -1389,6 +1389,19 @@ class BeliFinishGood extends CI_Controller{
         }
     }
 
+    function print_dtbj_harga(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_beli_fg');
+            $data['header']  = $this->Model_beli_fg->show_header_dtbj($id)->row_array();
+            $data['details'] = $this->Model_beli_fg->show_detail_dtbj_harga($id)->result();
+
+            $this->load->view('beli_fg/print_dtbj_harga', $data);
+        }else{
+            redirect('BeliFinishGood/index.php'); 
+        }
+    }
+
     function print_voucher(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);

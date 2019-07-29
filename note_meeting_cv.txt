@@ -30,8 +30,8 @@ laporan piutang customer
 	kalo udah abis dan matching lunas terakhir bulan ini. berarti masi muncul. 
 	kalo udah abis dan matching lunas bulan sebelumnya. berarti ga muncul
 
-finance edit bank, nama direktur
+flag lunas bagi tolling yg dipotong 2%
 
-nomor po sparepart masih bisa dobel, kasih cek nomor po
+rekap per jenis barang
 
-print po fg dan wip belum ada harga
+saat print sisa so gabungan, kasih di atas total netto hari ini yg dikirim so sama total yg bulan ini dikirim so

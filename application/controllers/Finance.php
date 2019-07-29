@@ -1420,6 +1420,7 @@ class Finance extends CI_Controller{
     function view_invoice(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
+        $ppn = $this->session->userdata('user_ppn');
         if($id){
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -1433,6 +1434,7 @@ class Finance extends CI_Controller{
 
             $this->load->model('Model_finance');
             $data['header'] = $this->Model_finance->show_header_invoice($id)->row_array();
+            $data['bank_list'] = $this->Model_finance->bank_list($ppn)->result();
             $id_match = $data['header']['flag_matching'];
             if($data['header']['id_retur']==0){
                 $data['detailInvoice'] = $this->Model_finance->show_detail_invoice($id)->result();
@@ -1493,6 +1495,7 @@ class Finance extends CI_Controller{
         
         $data = [
             'no_invoice' => $this->input->post('no_invoice'),
+            'bank_id' => $this->input->post('bank_id'),
             'term_of_payment' => $this->input->post('term_of_payment'),
             'tanggal' => $tgl_input,
             'tgl_jatuh_tempo' => $tgl_jatuh_tempo,
@@ -1501,6 +1504,7 @@ class Finance extends CI_Controller{
             'add_cost' => $cost,
             'materai' => $materai,
             'nilai_invoice' => $update_total,
+            'nama_direktur' => $this->input->post('nama_direktur')
         ];
 
         $this->db->update('f_invoice', $data, ['id' => $this->input->post('id')]);
@@ -2695,7 +2699,7 @@ class Finance extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $this->load->model('Model_finance');
-            $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb($ppn)->result();
+            $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb()->result();
             $this->load->view('finance/print_penjualan_jb', $data);
     }
 

@@ -165,6 +165,15 @@ class Model_beli_fg extends CI_Model
     	return $data;
     }
 
+    function show_detail_dtbj_harga($id){
+        $data = $this->db->query("Select dtbjd.*, jb.jenis_barang, jb.uom, pd.amount
+                    From dtbj_detail dtbjd 
+                        Left Join po_detail pd on pd.id = dtbjd.po_detail_id
+                        Left Join jenis_barang jb On (dtbjd.jenis_barang_id = jb.id) 
+                    Where dtbjd.dtbj_id=".$id);
+        return $data;
+    }
+
     function get_dtbj_approve($id){
     	$data = $this->db->query("Select dtbj.*,  
                     spl.nama_supplier,

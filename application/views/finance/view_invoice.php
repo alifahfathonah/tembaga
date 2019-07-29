@@ -148,6 +148,16 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
+                            Nama Direktur <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_direktur" name="nama_direktur" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['nama_direktur']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Term Of Payment <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -190,9 +200,15 @@
                             Nama Bank <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_bank" name="nama_bank" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['nama_bank']; ?>">
+                            <select id="bank_id" name="bank_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px" disabled>
+                            <option value=""></option>
+                                <?php
+                                    foreach ($bank_list as $row){
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['bank_id'])? 'selected="selected"': '').'>'.$row->nama_bank.'</option>';
+                                    }
+                                ?>
+                             </select>
                         </div>
                     </div>
                     <div class="row">
@@ -214,12 +230,12 @@
                             <input type="text" id="currency" name="currency" class="form-control myline" readonly="readonly" value="<?=$header['currency'];?>">
                         </div>
                         <div id="show_kurs">
-                        <div class="col-md-2">
-                            Kurs
-                        </div>
-                        <div class="col-md-4">
-                            <input type="text" id="kurs" name="kurs" class="form-control myline" readonly="readonly" value="<?=$header['kurs'];?>">
-                        </div>
+                            <div class="col-md-2">
+                                Kurs
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" id="kurs" name="kurs" class="form-control myline" readonly="readonly" value="<?=$header['kurs'];?>">
+                            </div>
                         </div>
                     </div>
                 </div>              
@@ -407,6 +423,8 @@
         $('#tanggal').removeAttr('readonly');
         $('#tgl_jatuh_tempo').removeAttr('readonly');
         $('#remarks').removeAttr('readonly');
+        $('#bank_id').removeAttr('disabled');
+        $('#nama_direktur').removeAttr('readonly');
 
         $('#lblMaterai').hide();
         $('#lblCost').hide();

@@ -321,4 +321,86 @@ class GudangRongsok extends CI_Controller{
             redirect('index.php/BeliRongsok/laporan_list');
         }
     }
+
+    function print_permintaan_gudang(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+
+        $start = date('Y/m/d', strtotime($_GET['ts']));
+        $end = date('Y/m/d', strtotime($_GET['te']));
+
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Gudang Rongsok";
+
+        $this->load->model('Model_beli_rongsok');
+        $data['start'] = $start;
+        $data['end'] = $end;
+
+            $data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_dari_produksi($start,$end)->result();
+
+            $this->load->view('gudang_rongsok\print_permintaan_gudang', $data);
+    }
+
+    function search_permintaan_gudang(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Gudang Rongsok";
+        $data['content']   = "gudang_rongsok/search_permintaan_gudang";
+
+        $this->load->model('Model_beli_rongsok');
+
+        $this->load->view('layout', $data);  
+    }
+
+    function print_permintaan_external(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+
+        $start = date('Y/m/d', strtotime($_GET['ts']));
+        $end = date('Y/m/d', strtotime($_GET['te']));
+
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Gudang Rongsok";
+
+        $this->load->model('Model_beli_rongsok');
+        $data['start'] = $start;
+        $data['end'] = $end;
+
+            $data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_external($start,$end)->result();
+
+            $this->load->view('gudang_rongsok\print_permintaan_external', $data);
+    }
+
+    function search_permintaan_external(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Gudang Rongsok";
+        $data['content']   = "gudang_rongsok/search_permintaan_external";
+
+        $this->load->model('Model_beli_rongsok');
+
+        $this->load->view('layout', $data);  
+    }
 }

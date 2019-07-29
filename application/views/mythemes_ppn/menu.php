@@ -126,7 +126,8 @@
                                     <i class="fa fa-usd"></i>
                                     Voucher List </a>
                                 </li>
-                                <?php } if($group_id==1 || (isset($akses_menu['view_laporan']) && $akses_menu['view_laporan']==1)){ ?>
+                                <?php } ?>
+                                <!-- <?php if($group_id==1 || (isset($akses_menu['view_laporan']) && $akses_menu['view_laporan']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliRongsok/laporan_list">
                                     <i class="fa fa-briefcase"></i>
@@ -137,7 +138,7 @@
                                     <i class="fa fa-cubes"></i>
                                     Gudang Rongsok </a>
                                 </li>
-                                <?php } ?>
+                                <?php } ?> -->
                             </ul>
                         </li>
                         <?php } ?>
@@ -936,12 +937,12 @@
                                     <i class="fa fa-print"></i> Rekap per Jenis Barang Gabungan</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_jb/" target="_blank">
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_jb2/" target="_blank">
                                     <i class="fa fa-print"></i> Rekap per Jenis Barang KMP</a>
                                 </li>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_customer/" target="_blank">
-                                    <i class="fa fa-print"></i> Rekap per Customer</a>
+                                    <i class="fa fa-print"></i> Rekap per Customer Gabungan</a>
                                 </li>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_customer2/" target="_blank">
@@ -949,7 +950,7 @@
                                 </li>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_piutang/" target="_blank">
-                                    <i class="fa fa-print"></i> Penjualan piutang</a>
+                                    <i class="fa fa-print"></i> Penjualan Piutang</a>
                                 </li>
                             </ul>
                         </li>

@@ -556,6 +556,21 @@ class BeliSparePart extends CI_Controller{
             redirect('index.php/BeliSparePart');
         }
     }
+
+    function get_penomoran_po(){
+        $tgl_so = date('Ym', strtotime($this->input->post('tanggal')));
+        
+        $code = 'PO-KMP.'.$tgl_so.'.'.$this->input->post('no_po');
+        
+        $count = $this->db->query("Select count(id) as count from po where no_po = '".$code."'")->row_array();
+        if($count['count']>0){
+            $data['type'] = 'duplicate';
+        }else{
+            $data['type'] = 'sukses';
+        }
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
     
     function po_list(){
         $module_name = $this->uri->segment(1);

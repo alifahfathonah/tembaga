@@ -722,23 +722,27 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
 
-    function permintaan_rongsok_dari_produksi(){
-        $data = $this->db->query("select r.nama_item, dd.* from spb_detail_fulfilment sdf
+    function permintaan_rongsok_dari_produksi($s,$e){
+        $data = $this->db->query("select r.nama_item,r.kode_rongsok, spb.no_spb, dd.id, sum(dd.bruto) as bruto, sum(dd.netto) as netto, dd.tanggal_keluar from spb_detail_fulfilment sdf
             left join dtr_detail dd on dd.id = sdf.dtr_detail_id
             left join rongsok r on r.id = dd.rongsok_id
             left join spb on spb.id = sdf.spb_id
-            where spb.produksi_ingot_id > 0
-            order by dd.rongsok_id, dd.tanggal_keluar");
+            where spb.produksi_ingot_id > 0 and dd.tanggal_keluar between '".$s."' and '".$e."'
+            group by dd.rongsok_id, dd.tanggal_keluar
+            order by dd.rongsok_id, dd.tanggal_keluar asc");
         return $data;
     }
 
-    function permintaan_rongsok_external(){
-        $data = $this->db->query("select * from t_sales_order tso
+    function permintaan_rongsok_external($s,$e){
+        $data = $this->db->query("select r.nama_item,r.kode_rongsok, spb.no_spb, dd.id, sum(dd.bruto) as bruto, sum(dd.netto) as netto, dd.tanggal_keluar, so.no_sales_order from t_sales_order tso
+            left join sales_order so on so.id = tso.so_id
             left join spb on spb.id = tso.no_spb
             left join spb_detail_fulfilment sdf on sdf.spb_id = spb.id
             left join dtr_detail dd on dd.id = sdf.dtr_detail_id
             left join rongsok r on r.id = dd.rongsok_id
-            where tso.jenis_barang = 'RONGSOK' and sdf.id is not null");
+            where tso.jenis_barang = 'RONGSOK' and sdf.id is not null and dd.tanggal_keluar between '".$s."' and '".$e."'
+            group by dd.rongsok_id, dd.tanggal_keluar
+            order by dd.rongsok_id, dd.tanggal_keluar asc");
         return $data;
     }
 }
