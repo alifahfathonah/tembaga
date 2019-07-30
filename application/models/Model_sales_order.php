@@ -91,7 +91,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function load_detail_view_sj($id){
-        $data = $this->db->query("select tsjd.*, jb.jenis_barang, jb.uom 
+        $data = $this->db->query("select tsjd.*, jb.jenis_barang, jb.uom, jb.kode
                 from t_surat_jalan_detail tsjd
                 left join t_surat_jalan tsj on tsj.id= tsjd.t_sj_id
                 left join t_sales_order tso on tso.so_id = tsj.sales_order_id
@@ -101,7 +101,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function load_detail_view_sj_rsk($id){
-        $data = $this->db->query("select tsjd.*, r.nama_item as jenis_barang, r.uom 
+        $data = $this->db->query("select tsjd.*, r.nama_item as jenis_barang, r.uom, r.kode_rongsok as kode
                 from t_surat_jalan_detail tsjd
                 left join t_surat_jalan tsj on tsj.id= tsjd.t_sj_id
                 left join t_sales_order tso on tso.so_id = tsj.sales_order_id
@@ -111,7 +111,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function load_detail_view_sj_sp($id){
-        $data = $this->db->query("Select tsjd.*, s.nama_item as jenis_barang, s.uom
+        $data = $this->db->query("Select tsjd.*, s.nama_item as jenis_barang, s.uom, s.alias as kode
                 from t_surat_jalan_detail tsjd
                 left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
                 left join t_sales_order tso on tso.so_id = tsj.sales_order_id
@@ -372,7 +372,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function show_detail_spb_fulfilment($id){
-        $data = $this->db->query("select  jb.jenis_barang as nama_barang,jb.uom,
+        $data = $this->db->query("select  jb.jenis_barang as nama_barang,jb.uom,jb.kode,
         coalesce(tgf.no_packing, 0) as no_packing,
         coalesce(tgf.bruto, 0) as bruto,
         coalesce(tgf.netto, tgw.berat) as berat,
@@ -388,7 +388,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function show_detail_spb_fulfilment_rsk($id){
-        $data = $this->db->query("Select rsk.nama_item as nama_barang, rsk.uom, dtrd.no_pallete as no_packing,dtrd.bruto, dtrd.netto as berat, dtrd.qty, dtrd.line_remarks as keterangan
+        $data = $this->db->query("Select rsk.nama_item as nama_barang, rsk.uom, rsk.kode_rongsok as kode, dtrd.no_pallete as no_packing,dtrd.bruto, dtrd.netto as berat, dtrd.qty, dtrd.line_remarks as keterangan
             From spb_detail_fulfilment spdf 
             Left Join dtr_detail dtrd on (dtrd.id = spdf.dtr_detail_id) 
             Left Join rongsok rsk On (dtrd.rongsok_id = rsk.id)
@@ -436,7 +436,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function jenis_barang_in_so($id){
-        $data = $this->db->query("select jb.id,jb.jenis_barang, jb.ukuran from t_sales_order_detail tsod 
+        $data = $this->db->query("select jb.id,jb.jenis_barang, jb.ukuran, jb.kode from t_sales_order_detail tsod 
             left join t_sales_order tso on tso.id = tsod.t_so_id
             left join jenis_barang jb on jb.id = tsod.jenis_barang_id
             where tso.so_id =".$id);
@@ -465,7 +465,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function load_detail_surat_jalan_wip($id){
-        $data = $this->db->query("select tsjd.*, jb.jenis_barang, jb.uom 
+        $data = $this->db->query("select tsjd.*, jb.jenis_barang, jb.uom, jb.kode
                 from t_surat_jalan_detail tsjd
                 left join jenis_barang jb on jb.id = tsjd.jenis_barang_id
                 where tsjd.t_sj_id =".$id);
@@ -481,7 +481,7 @@ class Model_sales_order extends CI_Model{
     // }
 
     function load_detail_surat_jalan_rsk($id,$soid){
-        $data =  $this->db->query("select tsjd.*,(case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, rsk.nama_item as jenis_barang, rsk.uom,
+        $data =  $this->db->query("select tsjd.*,(case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, rsk.nama_item as jenis_barang, rsk.uom, rsk.kode_rongsok as kode,
             (select tsod.nama_barang_alias from t_sales_order_detail tsod left join t_sales_order tso on tso.so_id =".$soid." where tsod.t_so_id = tso.id and tsod.jenis_barang_id = tsjd.jenis_barang_id) as nama_barang_alias
                 from t_surat_jalan_detail tsjd
                 left join rongsok rsk on rsk.id = tsjd.jenis_barang_id
@@ -490,7 +490,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function load_detail_surat_jalan_lain($id){
-        $data = $this->db->query("select tsjd.*, s.nama_item as jenis_barang, s.uom 
+        $data = $this->db->query("select tsjd.*, s.nama_item as jenis_barang, s.uom, s.alias as kode
                 from t_surat_jalan_detail tsjd
                 left join sparepart s on s.id = tsjd.jenis_barang_id
                 where tsjd.t_sj_id =".$id);
@@ -503,7 +503,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function load_view_sjd($id){
-        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.berat, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jba.jenis_barang as jenis_barang_a, jb.uom 
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.berat, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jba.jenis_barang as jenis_barang_a, jb.uom, jb.kode, jba.kode as kode_alias
                 from t_surat_jalan_detail tsjd
                 left join jenis_barang jb on jb.id= tsjd.jenis_barang_id
                 left join jenis_barang jba on tsjd.jenis_barang_alias != 0 and jba.id = tsjd.jenis_barang_alias
@@ -779,6 +779,38 @@ class Model_sales_order extends CI_Model{
 
     function t_sj_detail_only($id){
         return $this->db->query("select * from t_surat_jalan_detail where t_sj_id =".$id);
+    }
+
+    function detail_bulanan_so($ppn){
+        return $this->db->query("select sum(tsjd.netto) as netto from t_surat_jalan_detail tsjd
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
+            left join sales_order so on so.id = tsj.sales_order_id
+            WHERE MONTH(tsj.tanggal) = MONTH(CURRENT_DATE())
+            AND YEAR(tsj.tanggal) = YEAR(CURRENT_DATE()) and so.flag_ppn = ".$ppn."
+            ");
+    }
+
+    function detail_harian_so($ppn){
+        return $this->db->query("select sum(tsjd.netto) as netto from t_surat_jalan_detail tsjd
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
+            left join sales_order so on so.id = tsj.sales_order_id
+            WHERE DAY(tsj.tanggal) = DAY(CURRENT_DATE()) and so.flag_ppn = ".$ppn."
+            ");
+    }
+
+    function detail_bulanan_sog(){
+        return $this->db->query("select sum(tsjd.netto) as netto from t_surat_jalan_detail tsjd
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
+            WHERE MONTH(tsj.tanggal) = MONTH(CURRENT_DATE())
+            AND YEAR(tsj.tanggal) = YEAR(CURRENT_DATE())
+            ");
+    }
+
+    function detail_harian_sog(){
+        return $this->db->query("select sum(tsjd.netto) as netto from t_surat_jalan_detail tsjd
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
+            WHERE DAY(tsj.tanggal) = DAY(CURRENT_DATE())
+            ");
     }
 
     // Select tsjd.*, tsod.nama_barang_alias, COALESCE(tsod.nama_barang_alias, jb.jenis_barang,r.nama_item) as jenis_barang , COALESCE(jb.kode,r.kode_rongsok) as kode from t_surat_jalan_detail tsjd

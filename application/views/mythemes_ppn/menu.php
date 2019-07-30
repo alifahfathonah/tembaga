@@ -477,19 +477,38 @@
                             </li>
                         <?php }  if($group_id==1 || (isset($akses_menu['view_laporan']) && $akses_menu['view_laporan']==1)){ ?>
                             <li>
-                                <a href="<?php echo base_url(); ?>index.php/GudangRongsok/index">
-                                <i class="fa fa-search"></i>
-                                Laporan Rongsok </a>
-                            </li>
-                            <li>
-                                <a href="<?php echo base_url(); ?>index.php/GudangRongsok/laporan_list">
-                                <i class="fa fa-briefcase"></i>
-                                Laporan Rongsok Bulanan</a>
-                            </li>
-                            <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangRongsok/gudang_rongsok">
                                 <i class="fa fa-cubes"></i>
                                 Gudang Rongsok </a>
+                            </li>
+                            <li>
+                                <a href="javascript:;">
+                                <i class="fa fa-book"></i>
+                                <span class="title">Laporan Rongsok</span>
+                                <span class="arrow "></span>
+                                </a>
+                                <ul class="sub-menu">
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangRongsok/index">
+                                        <i class="fa fa-search"></i>
+                                        Kartu Stok Rongsok </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangRongsok/laporan_list">
+                                        <i class="fa fa-briefcase"></i>
+                                        Laporan Bulanan</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangRongsok/search_permintaan_gudang">
+                                        <i class="fa fa-print"></i>
+                                        Permintaan Gudang</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangRongsok/search_permintaan_external">
+                                        <i class="fa fa-print"></i>
+                                        Permintaan External</a>
+                                    </li>
+                                </ul>
                             </li>
                             <?php } ?>
                         </ul>
@@ -554,13 +573,13 @@
                                 <i class="fa fa-file-excel-o"></i>
                                 BPB FG </a>
                             </li>
-                        <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                        <?php } if($group_id==1 || $group_id == 21 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangFG/">
                                 <i class="fa fa-cubes"></i>
                                 Gudang FG </a>
                             </li>
-                            <?php } if($group_id==1 || (isset($akses_menu['laporan_so']) && $akses_menu['laporan_so']==1)){ ?>
+                            <?php } if($group_id==1 || $group_id == 21 || (isset($akses_menu['laporan_so']) && $akses_menu['laporan_so']==1)){ ?>
                             <li>
                                 <a href="javascript:;">
                                 <i class="fa fa-book"></i>
@@ -579,13 +598,18 @@
                                         Print Stok FG </a>
                                     </li>
                                     <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangFG/print_stok_ukuran_fg" target="_blank">
+                                        <i class="fa fa-print"></i>
+                                        Stok Per Ukuran FG </a>
+                                    </li>
+                                    <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangFG/laporan_pemasukan">
                                         <i class="fa fa-briefcase"></i>
                                         Pemasukan FG </a>
                                     </li>
                                 </ul>
                             </li>
-                        <?php } ?>
+                            <?php } ?>
                         </ul>
                         </li>
                     </ul>

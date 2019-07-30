@@ -154,7 +154,7 @@
                                         ?>
                                         <tr>
                                             <td><?php echo $no;?></td>
-                                            <td><?php echo $row->jenis_barang;?></td>
+                                            <td><?php echo '('.$row->kode.') '.$row->jenis_barang;?></td>
                                             <td><?php echo $row->uom;?></td>
                                             <td>
                                                 <?php 
@@ -213,7 +213,7 @@
                                         ?>
                                         <tr>
                                             <td><?php echo $no;?></td>
-                                            <td><?php echo $row->nama_barang;?></td>
+                                            <td><?php echo '('.$row->kode.') '.$row->nama_barang;?></td>
                                             <td><?php 
                                             if($row->no_packing == 0){
                                             echo ' - ';
@@ -281,7 +281,7 @@
                                         ?>
                                         <tr>
                                             <td><?php echo $no;?></td>
-                                            <td><?php echo $row->jenis_barang;?></td>
+                                            <td><?php echo '('.$row->kode.') '.$row->jenis_barang;?></td>
                                             <td><?php 
                                             if($row->no_packing == 0){
                                                 echo ' - ';

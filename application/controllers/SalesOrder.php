@@ -248,8 +248,8 @@ class SalesOrder extends CI_Controller{
         foreach ($myDetail as $row) {
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align: center;">'.$no.'</td>';
-            $tabel .= '<td><label id="lbl_jenis_barang_'.$no.'">'.$row->nama_barang.'</label>';
-            $tabel .= '<input typed="text" id="jenis_barang_id_'.$no.'" name="jenis_barang_id_'.$no.'" class="form-control select2me myline" readonly="readonly" value="'.$row->nama_barang.'"';
+            $tabel .= '<td><label id="lbl_jenis_barang_'.$no.'">('.$row->kode.') '.$row->nama_barang.'</label>';
+            $tabel .= '<input typed="text" id="jenis_barang_id_'.$no.'" name="jenis_barang_id_'.$no.'" class="form-control select2me myline" readonly="readonly" value="('.$row->kode.') '.$row->nama_barang.'"';
             $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px; display:none">';
             $tabel .= '<input type="hidden" id="detail_id_'.$no.'" name="detail_id_'.$no.'" value="'.$row->id.'">';
             $tabel .= '<input type="hidden" id="spb_detail_id_'.$no.'" name="spb_detail_id_'.$no.'" value="'.$row->no_spb_detail.'">';
@@ -2025,6 +2025,8 @@ class SalesOrder extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $this->load->model('Model_sales_order');
+            $data['detailHarian'] = $this->Model_sales_order->detail_harian_so($ppn)->row_array();
+            $data['detailBulanan'] = $this->Model_sales_order->detail_bulanan_so($ppn)->row_array();
             $data['detailLaporan'] = $this->Model_sales_order->sisa_so($ppn)->result();
             $this->load->view('sales_order/print_sisa_so', $data);
     }
@@ -2042,6 +2044,8 @@ class SalesOrder extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $this->load->model('Model_sales_order');
+            $data['detailHarian'] = $this->Model_sales_order->detail_harian_sog()->row_array();
+            $data['detailBulanan'] = $this->Model_sales_order->detail_bulanan_sog()->row_array();
             $data['detailLaporan'] = $this->Model_sales_order->sisa_so_gabungan()->result();
             $this->load->view('sales_order/print_sisa_so', $data);
     }

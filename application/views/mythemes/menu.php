@@ -531,7 +531,7 @@
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangRongsok/index">
                                         <i class="fa fa-search"></i>
-                                        Laporan Rongsok </a>
+                                        Kartu Stok Rongsok </a>
                                     </li>
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangRongsok/laporan_list">

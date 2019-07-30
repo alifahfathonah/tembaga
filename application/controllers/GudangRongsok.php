@@ -287,7 +287,7 @@ class GudangRongsok extends CI_Controller{
             $data['stok_before'] = $this->Model_beli_rongsok->get_stok_before($start,$rongsok_id)->row_array();
             $data['detailLaporan'] = $this->Model_beli_rongsok->show_kartu_stok($start,$end,$rongsok_id)->result();
 
-            $this->load->view('gudang_rongsok\kartu_stok', $data);
+            $this->load->view('gudang_rongsok/kartu_stok', $data);
     }
 
     function print_laporan_bulanan(){
@@ -369,7 +369,7 @@ class GudangRongsok extends CI_Controller{
 
         $start = date('Y/m/d', strtotime($_GET['ts']));
         $end = date('Y/m/d', strtotime($_GET['te']));
-
+    }
 
     function print_laporan_bulanan_detail(){
         $module_name = $this->uri->segment(1);
@@ -391,6 +391,9 @@ class GudangRongsok extends CI_Controller{
             $data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_external($start,$end)->result();
 
             $this->load->view('gudang_rongsok\print_permintaan_external', $data);
+        }else{
+            redirect('index.php/BeliRongsok/laporan_list');
+        }
     }
 
     function search_permintaan_external(){
@@ -425,8 +428,5 @@ class GudangRongsok extends CI_Controller{
             $this->load->model('Model_beli_rongsok');
             $data['detailLaporan'] = $this->Model_beli_rongsok->show_laporan_barang_detail($tgl,$bulan,$tahun)->result();
             $this->load->view("gudang_rongsok/print_laporan_bulanan_detail", $data);
-        }else{
-            redirect('index.php/BeliRongsok/laporan_list');
-        }
     }
 }

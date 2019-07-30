@@ -35,3 +35,5 @@ flag lunas bagi tolling yg dipotong 2%
 rekap per jenis barang
 
 saat print sisa so gabungan, kasih di atas total netto hari ini yg dikirim so sama total yg bulan ini dikirim so
+
+Urutkan by tms sama ngga nya, terus ukuran

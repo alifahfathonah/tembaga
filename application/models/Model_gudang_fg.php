@@ -30,16 +30,14 @@ class Model_gudang_fg extends CI_Model{
     }
 
     function gudang_fg_produksi_list(){
-        $data = $this->db->query("Select pf.*, jb.jenis_barang, jp.jenis_packing,
+        $data = $this->db->query("Select pf.*, jb.jenis_barang, jp.jenis_packing, COALESCE((select status from t_bpb_fg where produksi_fg_id = pf.id limit 1),0) as status,
                     (select count(pfd.id) from produksi_fg_detail pfd where pfd.produksi_fg_id = pf.id)as total_barang,
                     (select sum(netto) from produksi_fg_detail pfd where pfd.produksi_fg_id = pf.id)as total_netto,
-                    usr.realname As pembuat, tbf.status
+                    usr.realname As pembuat
                 From produksi_fg pf
-                    Left join t_bpb_fg tbf On (tbf.produksi_fg_id=pf.id)
                     Left Join users usr On (pf.created_by = usr.id)
                     left join jenis_barang jb on (jb.id = pf.jenis_barang_id)
-                    left join m_jenis_packing jp on (jp.id = pf.jenis_packing_id)  
-                where tbf.status != 9
+                    left join m_jenis_packing jp on (jp.id = pf.jenis_packing_id)
                 Order By pf.tanggal desc, pf.id desc");
         return $data;
     } 
@@ -160,7 +158,7 @@ class Model_gudang_fg extends CI_Model{
     }
     
     function show_header_laporan($id){
-        $data = $this->db->query("Select pf.*, jb.id as jenis_barang_id, jb.jenis_barang, mjp.jenis_packing, jb.ukuran,
+        $data = $this->db->query("Select pf.*, jb.id as jenis_barang_id, jb.jenis_barang, jb.kode, mjp.jenis_packing, jb.ukuran,
                     usr.realname As pembuat
                     From produksi_fg pf
                         Left Join users usr On (pf.created_by = usr.id)

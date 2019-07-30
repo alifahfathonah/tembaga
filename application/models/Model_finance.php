@@ -722,7 +722,7 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function print_laporan_piutang($date,$ppn){
+    function print_laporan_piutang_old($date,$ppn){
         $data = $this->db->query("select fi.*, (CASE WHEN fi.nilai_invoice = (fi.nilai_bayar + fi.nilai_pembulatan) THEN 0 
             WHEN fi.currency = 'IDR' THEN fi.nilai_invoice ELSE 0 END) as nilai_invoice,
             (CASE WHEN fi.currency='USD' THEN fi.nilai_invoice ELSE 0 END) as nilai_us, 
@@ -736,6 +736,26 @@ class Model_finance extends CI_Model{
              left join f_match fm on fm.id = fmd.id_match
              where fmd.id_inv = fi.id order by fmd.id desc limit 1)) = MONTH('".$date."') or fi.nilai_invoice > (fi.nilai_bayar + fi.nilai_pembulatan)) and fi.flag_ppn = ".$ppn."
              order by fi.id_customer, fi.tanggal asc");
+        return $data;
+    }
+
+    function print_laporan_piutang($date,$ppn){
+        $data = $this->db->query("select * from (select fi.id, fi.id_customer, fi.nilai_invoice, fi.tanggal, fi.nilai_bayar, fi.nilai_pembulatan, fi.no_invoice, fi.tgl_jatuh_tempo, sum(fmd.inv_bayar) as nilai_invoice_bayar,
+            (CASE WHEN fi.currency='USD' THEN fi.nilai_invoice ELSE 0 END) as nilai_us, 
+            (select sum(fmd.inv_bayar) from v_inv_um_status vi
+            left join f_match_detail fmd on fmd.id_inv = vi.id_inv
+            where vi.status = 0 and fi.id = vi.id_inv) as nilai_cm,
+            tsj.no_surat_jalan, 
+            mc.kode_customer, mc.nama_customer, mc.nama_customer_kh
+            from f_invoice fi
+            left join f_match_detail fmd on fmd.id_inv = fi.id
+            left join t_surat_jalan tsj on tsj.inv_id =  fi.id
+            left join m_customers mc on mc.id = fi.id_customer
+            where fi.flag_ppn = ".$ppn."
+             group by fi.id
+            ) as i
+             where i.nilai_invoice > (i.nilai_bayar + i.nilai_pembulatan) or i.nilai_cm is not null
+             order by i.id_customer, i.tanggal asc");
         return $data;
     }
     // function print_penjualan_customer($ppn){

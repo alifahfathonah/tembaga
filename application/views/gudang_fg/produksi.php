@@ -182,7 +182,7 @@
                 }
                 if(($group_id==1 || $group_id==21) && $data->total_barang==0){
                     echo '
-                                    <a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/GudangFG/delete_produksi_fg/'.$data->id.'" style="margin-bottom:4px"> &nbsp; 
+                                    <a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/GudangFG/delete_produksi_fg/'.$data->id.'" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"> &nbsp; 
                                         <i class="fa fa-trash"></i> Delete &nbsp; 
                                     </a> ';
                 }

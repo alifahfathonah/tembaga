@@ -271,18 +271,18 @@
                                 ?>
                                 <tr>
                                     <td><?php echo $no; ?></td>
-                                    <td><?php echo $row->jenis_barang; ?></td>
+                                    <td><?php echo '('.$row->kode.') '.$row->jenis_barang; ?></td>
                                     <td>
                                     <?php if(is_null($row->jenis_barang_a)){
                                     echo '<label class="lbl_alias">TIDAK ADA ALIAS</label>';
                                     } else {
-                                    echo '<label class="lbl_alias">'.$row->jenis_barang_a.'</label>';
+                                    echo '<label class="lbl_alias">('.$row->kode_alias.') '.$row->jenis_barang_a.'</label>';
                                     } 
                                     echo '<input type="hidden" style="display: none;" class="id_tsj_detail" name="details['.$no.'][id_tsj_detail]" value="'.$row->id.'">';
                                     echo '<select class="jb_alias" name="details['.$no.'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px; display: none;">
                                             <option value="0" data-id="0">TIDAK ADA ALIAS</option>';
                                             foreach ($jenis_barang as $value){
-                                            echo '<option value="'.$value->id.'" '.(($value->id==$row->jenis_barang_alias)? 'selected="selected"': '').'>'.$value->jenis_barang.'</option>';
+                                            echo '<option value="'.$value->id.'" '.(($value->id==$row->jenis_barang_alias)? 'selected="selected"': '').'>('.$value->kode.') '.$value->jenis_barang.'</option>';
                                             }
                                         echo '</select>';
                                     ?>

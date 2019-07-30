@@ -11,7 +11,7 @@
           </td>
         </tr>
       </table>
-      <table width="100%" cellpadding="2" cellspacing="0" style="font-size: 13px;">
+      <table width="100%" cellpadding="1" cellspacing="0" style="font-size: 11px;">
         <thead>
            <tr>
                 <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">No</th>
@@ -23,7 +23,7 @@
                 <th style="border-top: 1px solid; border-left: 1px solid;">Tgl JT</th>
                 <th style="border-top: 1px solid; border-left: 1px solid;">Saldo (Rp.)</th>
                 <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Saldo (US$)</th>
-                <th style="text-align: center; border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">C.MUNDUR</th>
+                <th style="text-align: center; border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">CM</th>
            </tr>
          </thead>
          <tbody>
@@ -33,10 +33,11 @@
         $ni = 0;
         $nus = 0;
         $nt = 0;
-        $nilai_invoice = 0;
+        $total_invoice = 0;
         $nilai_us = 0;
         $nilai_total = 0;
         foreach($detailLaporan as $row){ 
+              $nilai_invoice = $row->nilai_invoice - $row->nilai_invoice_bayar;
  /*           $total_amount = $row->netto * $row->amount;  */
               if($last_series != $row->kode_customer && $last_series != null){
                 echo '<tr>
@@ -59,15 +60,14 @@
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->no_surat_jalan ?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= date('d-m-Y', strtotime($row->tanggal)) ?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= date('d-m-Y', strtotime($row->tgl_jatuh_tempo)) ?></td>
-                <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->nilai_invoice,2,',','.');?></td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($nilai_invoice,2,',','.');?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->nilai_us,2,',','.');?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?= number_format($row->nilai_cm,2,',','.');?></td>
         <?php 
           $last_series = $row->kode_customer;
-          $ni +=$row->nilai_invoice;
-          $nus += $row->nilai_us;
+          $ni +=$nilai_invoice;
           $nt += $row->nilai_cm;
-          $nilai_invoice +=$row->nilai_invoice;
+          $total_invoice +=$nilai_invoice;
           $nilai_us += $row->nilai_us;
           $nilai_total += $row->nilai_cm;
           } ?>
@@ -79,7 +79,7 @@
           </tr>
           <tr>
             <td colspan="7" style="text-align: right; border-top: 5px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Grand Total</strong></td>
-            <td align="right" style="border-top: 5px solid;border-bottom:1px solid; border-left: 1px solid;"><?=number_format($nilai_invoice,2,',','.');?></td>
+            <td align="right" style="border-top: 5px solid;border-bottom:1px solid; border-left: 1px solid;"><?=number_format($total_invoice,2,',','.');?></td>
             <td align="right" style="border-top: 5px solid;border-bottom:1px solid; border-left: 1px solid;"><?=number_format($nilai_us,2,',','.');?></td>
             <td align="right" style="border-top: 5px solid;border-bottom:1px solid; border-left: 1px solid; border-right: 1px solid;"><?=number_format($nilai_total,2,',','.');?></td></td>
           </tr>

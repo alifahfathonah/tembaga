@@ -87,7 +87,7 @@
                         <div class="col-md-8">
                             <input type="text" id="jenis_barang" name="jenis_barang" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['jenis_barang']; ?>">
+                                value="<?php echo '('.$header['kode'].') '.$header['jenis_barang']; ?>">
                                 
                             <input type="hidden" name="jenis_barang_id" value="<?=$header['jenis_barang_id'];?>">                         
                         </div>
