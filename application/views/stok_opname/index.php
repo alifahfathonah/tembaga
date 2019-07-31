@@ -44,7 +44,7 @@
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Proses </a>
-                    <a href="<?php echo base_url('index.php/StokOpname/Report'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/StokOpname/Report/FG'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>

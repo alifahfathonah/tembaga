@@ -83,7 +83,7 @@
                         <i class="fa fa-floppy-o"></i> Simpan </a>
                     <!-- <a href="javascript:;" class="btn blue-ebonyclay" id="refreshData" onclick="refreshData();"> 
                         <i class="fa fa-refresh"></i> Refresh </a> -->
-                    <a href="<?php echo base_url('index.php/StokOpname/add_rongsok'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/StokOpname/report/rongsok'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>

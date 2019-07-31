@@ -18,6 +18,14 @@ class Model_stok_opname extends CI_Model{
         return $this->db->get_where('stok_opname', ['id' => $id]);
     }
 
+    function list_stok_opname_fg_new($id){
+        $data = $this->db->query("select sod.*, jb.kode, jb.jenis_barang, jb.uom, tgf.no_produksi, tgf.bruto, tgf.berat_bobbin, tgf.tanggal_masuk from stok_opname_detail sod 
+                left JOIN jenis_barang jb on jb.id = sod.jenis_barang_id
+                LEFT JOIN t_gudang_fg tgf ON tgf.id = sod.gudang_id
+                WHERE sod.stok_opname_id = ".$id." and flag_simpan = 0");
+        return $data;
+    }
+
     function list_stok_opname_fg($id){
         $data = $this->db->query("select sod.*, jb.kode, jb.jenis_barang, jb.uom, tgf.no_produksi, tgf.bruto, tgf.berat_bobbin, tgf.tanggal_masuk from stok_opname_detail sod 
                 left JOIN jenis_barang jb on jb.id = sod.jenis_barang_id
@@ -51,6 +59,14 @@ class Model_stok_opname extends CI_Model{
                 FROM stok_opname_detail sod
                 LEFT JOIN stok_opname so ON so.tanggal = '".$tanggal."' AND so.id = sod.stok_opname_id
                 )");
+        return $data;
+    }
+
+    function list_stok_opname_rongsok_new($id){
+        $data = $this->db->query("select sod.*, r.kode_rongsok, r.nama_item, r.uom, dtrd.bruto, dtrd.berat_palette, dtrd.tanggal_masuk from stok_opname_detail sod 
+                left JOIN rongsok r on r.id = sod.jenis_barang_id
+                LEFT JOIN dtr_detail dtrd ON dtrd.id = sod.dtr_detail_id
+                WHERE sod.stok_opname_id = ".$id." and flag_simpan = 0");
         return $data;
     }
 

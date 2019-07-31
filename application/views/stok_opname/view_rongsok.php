@@ -56,12 +56,12 @@
                                 </tr>
                                 <tr>
                                     <th>Bruto</th>
-                                    <th>Bobbin</th>
+                                    <th>Palette</th>
                                     <th>Netto</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <?php 
+                            <tbody id="boxDetail">
+                                <!-- <?php 
                                     if($details !== null) { 
                                         $no = 1;
                                         foreach ($details as $detail) {
@@ -83,7 +83,7 @@
                                             $no++;
                                         }
                                     }
-                                ?>
+                                ?> -->
 
                                 <!-- <tr>
                                     <td><div id="no_tabel_1">1</div></td>
@@ -127,3 +127,68 @@
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+<script type="text/javascript">
+    function loadDetail(id){
+        id = $('#id').val();
+        $.ajax({
+            type:"POST",
+            url:'<?php echo base_url('index.php/StokOpname/load_detail_view_rongsok'); ?>',
+            data:{
+                id: id,
+            },
+            success:function(result){
+                $('#boxDetail').html(result);     
+            }
+        });
+    }
+
+    function hapusDetail(id){
+        var r=confirm("Anda yakin menghapus packing ini?");
+        if (r==true){
+            $.ajax({
+                type: "POST",
+                url: "<?php echo base_url('index.php/StokOpname/delete_detail_fg'); ?>",
+                data: {
+                    id: id,
+                },
+                cache: false,
+                success: function(result) {
+                    var res = result['response'];
+                    if(res=='success'){
+                        loadDetail($("#id").val());
+                    }else{
+                        // $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+                        // $('#message').html("");
+                        // $('.alert-danger').hide(); 
+                        // $('#formku').submit();
+                    }
+                }
+            });
+        }
+    }
+    function refreshData(){
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url('index.php/StokOpname/refreshData'); ?>",
+            data: {
+                id: $('#id').val(),
+            },
+            cache: false,
+            success: function(result) {
+                var res = result['response'];
+                if(res=='success'){
+                    loadDetail($("#id").val());
+                }else{
+                    // $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+                    // $('#message').html("");
+                    // $('.alert-danger').hide(); 
+                    // $('#formku').submit();
+                }
+            }
+        });
+    }
+
+    $(function(){
+        loadDetail($('#id').val());
+    });
+</script>
