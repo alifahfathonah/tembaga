@@ -43,5 +43,3 @@ sj 06.0014
 nilai invoice yang ada di uang masuk yg udah dibayar aja
 
 print matching masih error selisih di uang masuk
-
-kmp dan kh masih ada yg cv, harusnya gaada

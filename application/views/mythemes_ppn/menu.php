@@ -981,7 +981,7 @@
                                     <i class="fa fa-money" style="color: green;"></i> Rekap Penerimaan Kas/Bank</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_pengeluran/">
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_pengeluaran/">
                                     <i class="fa fa-money" style="color: red;"></i> Rekap Pengeluaran Kas/Bank</a>
                                 </li>
                             </ul>
