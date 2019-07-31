@@ -1107,6 +1107,14 @@
                                     <a href="<?php echo base_url(); ?>index.php/Finance/search_pengeluaran/">
                                     <i class="fa fa-money" style="color: red;"></i> Rekap Pengeluaran Kas/Bank</a>
                                 </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_trx/">
+                                    <i class="fa fa-money" style="color: blue;"></i> Rekap Trs. Kas/Bank</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_penerimaan_cm/">
+                                    <i class="fa fa-money" style="color: orange;"></i> Rekap Penerimaan CM</a>
+                                </li>
                             </ul>
                         </li>
                         <?php } ?>
