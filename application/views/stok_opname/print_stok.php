@@ -54,7 +54,7 @@
                 if($row->jenis_barang!=$last_series && $last_series!=null){
                     echo '<tr>'.
                         '<td colspan="8"></td>'.
-                        '<td class="green" style="border-bottom:1px solid #000; border-top:1px solid #000; background-color:green; color: white;" align="right">'.number_format($netto,2,',','.').'</td>'.
+                        '<td style="border-bottom:1px solid #000; border-top:1px solid #000; font-weight: bold;" align="right">'.number_format($netto,2,',','.').'</td>'.
                         '<td></td>'.
                     '</tr>';
                     $netto = 0;
@@ -82,7 +82,7 @@
             ?>
             <tr>
                 <td colspan="7"></td>
-                <td class="green" style="border-bottom:1px solid #000; border-top:1px solid #000; background-color:green; color: white;" align="right"><?=number_format($netto,2,',','.');?></td>
+                <td style="border-bottom:1px solid #000; border-top:1px solid #000; font-weight: bold;" align="right"><?=number_format($netto,2,',','.');?></td>
                 <td></td>
             </tr>
             </tbody>

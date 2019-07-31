@@ -116,9 +116,9 @@
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
-                    <a href="javascript:;" class="btn blue-ebonyclay" id="refreshData" onclick="refreshData();"> 
-                        <i class="fa fa-refresh"></i> Refresh </a>
-                    <a href="<?php echo base_url('index.php/StokOpname/report'); ?>" class="btn blue-hoki"> 
+                    <!-- <a href="javascript:;" class="btn blue-ebonyclay" id="refreshData" onclick="refreshData();"> 
+                        <i class="fa fa-refresh"></i> Refresh </a> -->
+                    <a href="<?php echo base_url('index.php/StokOpname/report/FG'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>

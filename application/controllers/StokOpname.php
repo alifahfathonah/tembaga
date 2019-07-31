@@ -42,7 +42,6 @@ class StokOpname extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis');
-        
         $cek = $this->db->get_where('stok_opname', ['tanggal' => $tgl_input, 'jenis_stok_opname' => $jenis]);
         if ($cek->num_rows() > 0) {
             $id = $cek->row()->id;
@@ -89,7 +88,7 @@ class StokOpname extends CI_Controller{
         $no    = 1;
         $total_netto = 0;
         $this->load->model('Model_stok_opname');
-        $myDetail = $this->Model_stok_opname->list_stok_opname_fg($id)->result();
+        $myDetail = $this->Model_stok_opname->list_stok_opname_fg_new($id)->result();
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
@@ -134,6 +133,7 @@ class StokOpname extends CI_Controller{
                 'netto'=> $netto,
                 'no_packing'=> $no_packing,
                 'keterangan'=> $keterangan,
+                'flag_simpan' => 0,
             ];
         
         if($this->db->insert('stok_opname_detail', $data)){
@@ -186,6 +186,10 @@ class StokOpname extends CI_Controller{
             'modified_at' => $tanggal,
         ], ['id' => $this->input->post('id')]);
 
+        $this->db->update('stok_opname_detail', [
+            'flag_simpan' => 1,
+        ], ['stok_opname_id' => $this->input->post('id')]);
+
         $this->session->set_flashdata('flash_msg', 'Stok opname berhasil dibuat');
 
         redirect('index.php/StokOpname/report/FG');
@@ -231,6 +235,45 @@ class StokOpname extends CI_Controller{
         $data['details'] = $this->Model_stok_opname->list_stok_opname_fg($id)->result();
 
         $this->load->view('layout', $data);
+    }
+
+    function load_detail_view_fg(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $no    = 1;
+        $total_netto = 0;
+        $this->load->model('Model_stok_opname');
+        $myDetail = $this->Model_stok_opname->list_stok_opname_fg($id)->result();
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->kode.'</td>';
+            $tabel .= '<td>'.$row->jenis_barang.'</td>';
+            $tabel .= '<td>'.$row->no_packing.'</td>';
+            $tabel .= '<td>'.$row->uom.'</td>';
+            $tabel .= '<td>'.$row->no_produksi.'</td>';
+            $tabel .= '<td>'.date('d-m-Y', strtotime($row->tanggal_masuk)).'</td>';
+            $tabel .= '<td align="right">'.number_format($row->bruto,2,".",",").'</td>';
+            $tabel .= '<td align="right">'.number_format($row->berat_bobbin,2,".",",").'</td>';
+            $tabel .= '<td align="right">'.number_format($row->netto,2,".",",").'</td>';
+            $tabel .= '<td>'.$row->keterangan.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a>';
+            $tabel .= '</tr>';            
+            $no++;
+            $total_netto += $row->netto;
+        }
+            
+        // $tabel .= '<tr>';
+        // $tabel .= '<td colspan="4" style="text-align:right">TOTAL : </td>';
+        // $tabel .= '<td align="right">'.number_format($total_netto,2,".",",").'</td>';
+        // $tabel .= '<td colspan="2"></td>';
+        // $tabel .= '</tr>';
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel);
     }
 
     function print_stok(){
@@ -416,7 +459,7 @@ class StokOpname extends CI_Controller{
         $no    = 1;
         $total_netto = 0;
         $this->load->model('Model_stok_opname');
-        $myDetail = $this->Model_stok_opname->list_stok_opname_rongsok($id)->result();
+        $myDetail = $this->Model_stok_opname->list_stok_opname_rongsok_new($id)->result();
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
@@ -517,6 +560,7 @@ class StokOpname extends CI_Controller{
                 'netto'=> $netto,
                 'no_packing'=> $no_palette,
                 'keterangan'=> $keterangan,
+                'flag_simpan' => 0,
             ];
         
         if($this->db->insert('stok_opname_detail', $data)){
@@ -542,6 +586,10 @@ class StokOpname extends CI_Controller{
             'modified_at' => $tanggal,
         ], ['id' => $this->input->post('id')]);
 
+        $this->db->update('stok_opname_detail', [
+            'flag_simpan' => 1,
+        ], ['stok_opname_id' => $this->input->post('id')]);
+
         $this->session->set_flashdata('flash_msg', 'Stok opname berhasil dibuat');
 
         redirect('index.php/StokOpname/report/rongsok');
@@ -565,6 +613,44 @@ class StokOpname extends CI_Controller{
         $data['details'] = $this->Model_stok_opname->list_stok_opname_rongsok($id)->result();
 
         $this->load->view('layout', $data);
+    }
+
+    function load_detail_view_rongsok(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $no    = 1;
+        $total_netto = 0;
+        $this->load->model('Model_stok_opname');
+        $myDetail = $this->Model_stok_opname->list_stok_opname_rongsok($id)->result();
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->kode_rongsok.'</td>';
+            $tabel .= '<td>'.$row->nama_item.'</td>';
+            $tabel .= '<td>'.$row->no_packing.'</td>';
+            $tabel .= '<td>'.$row->uom.'</td>';
+            $tabel .= '<td>'.date('d-m-Y', strtotime($row->tanggal_masuk)).'</td>';
+            $tabel .= '<td align="right">'.number_format($row->bruto,2,".",",").'</td>';
+            $tabel .= '<td align="right">'.number_format($row->berat_palette,2,".",",").'</td>';
+            $tabel .= '<td align="right">'.number_format($row->netto,2,".",",").'</td>';
+            $tabel .= '<td>'.$row->keterangan.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a>';
+            $tabel .= '</tr>';            
+            $no++;
+            $total_netto += $row->netto;
+        }
+            
+        // $tabel .= '<tr>';
+        // $tabel .= '<td colspan="4" style="text-align:right">TOTAL : </td>';
+        // $tabel .= '<td align="right">'.number_format($total_netto,2,".",",").'</td>';
+        // $tabel .= '<td colspan="2"></td>';
+        // $tabel .= '</tr>';
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel);
     }
 
     function print_stok_rongsok(){
