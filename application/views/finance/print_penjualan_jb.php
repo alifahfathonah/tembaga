@@ -8,7 +8,8 @@
         <tr>
           <td align="center">
             <!-- <h4>Laporan sisa Sales Order per <?= date("M Y", strtotime($this->uri->segment(3))) ?></h4> -->
-            <h4>Rekap Penjualan Ranking per Item <?= date("M Y") ?></h4>
+            <?=($this->session->userdata('user_ppn')==1)? '<h3>PT. KAWAT MAS PRAKASA</h3>' : '';?>
+            <h4>Rekap Penjualan per Item <?= date("M Y") ?></h4>
           </td>
         </tr>
       </table>

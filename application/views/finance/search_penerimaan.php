@@ -17,25 +17,20 @@
             </div>
         </div>
     </div>
-  
    <div class="col-md-12" style="margin-top: 10px;"> 
-        <h3>Laporan Penjualan Gabungan</h3>
+        <h3>Laporan Rekap Penerimaan Kak / Bank</h3>
         <hr class="divider">
         <div class="row">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                           Laporan <font color="#f00">*</font>
+                           Jenis Penerimaan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <select id="laporan" name="laporan" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
                                     <option value=""></option>
-                                <?php if($this->session->userdata('user_ppn')==0){ ?>
-                                    <option value="1">KH</option>
-                                    <option value="2">KMP + KH</option>
-                                <?php }else{ ?>
-                                    <option value="3">KMP + CV</option>
-                                <?php } ?>
+                                    <option value="1">KAS</option>
+                                    <option value="2">BANK</option>
                                 </select>
                         </div>
                     </div>
@@ -81,7 +76,7 @@ function simpanData(){
         var l=$('#laporan').val();
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/Finance/print_query_penjualan?laporan='+l+'&ts='+s+'&te='+e,'_blank');
+        window.open('<?php echo base_url();?>index.php/Finance/print_penerimaan_kb?laporan='+l+'&ts='+s+'&te='+e,'_blank');
     };
 };
 </script>

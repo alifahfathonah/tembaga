@@ -1208,7 +1208,7 @@ class GudangFG extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_gudang_fg');
         $data['check'] = $this->Model_gudang_fg->check_spb($spb_id)->row_array();
-        if(((int)$data['check']['tot_so']) >= (0.95*((int)$data['check']['tot_spb']))){
+        if(((int)$data['check']['tot_so']) >= ((int)$data['check']['tot_spb'])){
             $status = 1;
         }else{
             $status = 4;

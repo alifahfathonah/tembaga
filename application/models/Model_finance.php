@@ -707,7 +707,7 @@ class Model_finance extends CI_Model{
         $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
             SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
             group by v.flag_tolling, v.kode_barang
-            order by v.flag_tolling, total_harga desc
+            order by v.flag_tolling, v.kode_barang asc
             ");
         return $data;
     }
@@ -717,7 +717,7 @@ class Model_finance extends CI_Model{
             SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
             where v.flag_ppn =".$ppn."
             group by v.flag_tolling, v.kode_barang
-            order by v.flag_tolling, total_harga desc
+            order by v.flag_tolling, v.kode_barang asc
             ");
         return $data;
     }
@@ -757,6 +757,22 @@ class Model_finance extends CI_Model{
              where i.nilai_invoice > (i.nilai_bayar + i.nilai_pembulatan) or i.nilai_cm is not null
              order by i.id_customer, i.tanggal asc");
         return $data;
+    }
+
+    function trx_kas($s,$e,$id,$ppn){
+        return $this->db->query("select fk.id, fk.tanggal, fk.flag_ppn, fk.nomor, fk.jenis_trx, (fk.nominal*fk.kurs) as nominal, COALESCE(mc.nama_customer,'') as nama_customer, b.nama_bank from f_kas fk 
+            left join bank b on b.id = fk.id_bank
+            left join f_uang_masuk fum on fum.id = fk.id_um
+            left join m_customers mc on mc.id = fum.m_customer_id
+            where fk.tanggal BETWEEN '".$s."' and '".$e."' and id_bank < 5 and fk.flag_ppn =".$ppn." and jenis_trx=".$id." and fum.rekening_tujuan != 0");
+    }
+
+    function trx_bank($s,$e,$id,$ppn){
+        return $this->db->query("select fk.id, fk.tanggal, fk.flag_ppn, fk.nomor, fk.jenis_trx, (fk.nominal*fk.kurs) as nominal, COALESCE(mc.nama_customer,'') as nama_customer, b.nama_bank from f_kas fk 
+            left join bank b on b.id = fk.id_bank
+            left join f_uang_masuk fum on fum.id = fk.id_um
+            left join m_customers mc on mc.id = fum.m_customer_id
+            where fk.tanggal BETWEEN '".$s."' and '".$e."' and id_bank >= 5 and fk.flag_ppn =".$ppn." and jenis_trx=".$id." and fum.rekening_tujuan != 0");
     }
     // function print_penjualan_customer($ppn){
     //     $data = $this->db->query("select v.*, (v.total_harga*v.kurs) as total_harga, IF(v.currency='USD',v.total_harga*v.kurs,v.total_harga*v.kurs/110*100) as nilai_sebelum_ppn, IF(v.currency='USD',v.total_harga*v.kurs,v.total_harga*v.kurs/110*10) as nilai_ppn from v_data_faktur_all v 

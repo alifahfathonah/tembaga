@@ -1469,7 +1469,7 @@ class GudangWIP extends CI_Controller{
  
         $this->db->trans_start();
         $data['check'] = $this->Model_gudang_wip->check_spb($spb_id)->row_array();
-        if(((int)$data['check']['tot_fulfilment']) >= (0.9*((int)$data['check']['tot_spb']))){
+        if(((int)$data['check']['tot_fulfilment']) >= ((int)$data['check']['tot_spb'])){
             $status = 1;
         }else{
             $status = 4;

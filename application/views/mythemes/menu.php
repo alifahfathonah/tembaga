@@ -1099,6 +1099,14 @@
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_piutang/" target="_blank">
                                     <i class="fa fa-print"></i> Penjualan Piutang</a>
                                 </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_penerimaan/">
+                                    <i class="fa fa-money" style="color: green;"></i> Rekap Penerimaan Kas/Bank</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_pengeluran/">
+                                    <i class="fa fa-money" style="color: red;"></i> Rekap Pengeluaran Kas/Bank</a>
+                                </li>
                             </ul>
                         </li>
                         <?php } ?>
