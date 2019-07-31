@@ -705,7 +705,7 @@ class Model_finance extends CI_Model{
     }
 
     function print_penjualan_jb($c){
-        $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
+        $data = $this->db->query("select v.*, (CASE WHEN v.flag_tolling = 0 THEN 0 ELSE 1 END) as flag_tolling, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
             SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
             where v.PENJUALAN != '".$c."'
             group by v.flag_tolling, v.kode_barang
@@ -715,7 +715,7 @@ class Model_finance extends CI_Model{
     }
 
     function print_penjualan_jb2($c){
-        $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
+        $data = $this->db->query("select v.*, (CASE WHEN v.flag_tolling = 0 THEN 0 ELSE 1 END) as flag_tolling, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
             SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
             where v.PENJUALAN = '".$c."'
             group by v.flag_tolling, v.kode_barang

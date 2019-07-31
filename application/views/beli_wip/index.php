@@ -237,8 +237,7 @@
                                 </div>
                                 <div class="col-md-7">
                                     <input type="text" id="amount" name="amount" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);">
+                                        class="form-control myline" style="margin-bottom:5px" onkeyup="getComa(this.value, this.id);">
                                 </div>
                             </div>
                             <div class="row">
@@ -279,7 +278,7 @@
                         </div>
                         <form class="eventInsForm" method="post" target="_self" name="formku" 
                               id="formku">                      
-                            <input type="text" id="status_vc" name="status_vc">      
+                            <input type="hidden" id="status_vc" name="status_vc">      
                             <div class="row">
                                 <div class="col-md-5">
                                     No. Voucher <font color="#f00">*</font>
@@ -373,8 +372,7 @@
                                 </div>
                                 <div class="col-md-7">
                                     <input type="text" id="amount" name="amount" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);">           
+                                        class="form-control myline" style="margin-bottom:5px" onkeyup="getComa(this.value, this.id);">           
                                 </div>
                             </div>
                             <div class="row">
@@ -546,8 +544,8 @@ function myCurrency(evt) {
 }
 
 function getComa(value, id){
-    angka = value.toString().replace(/\./g, "");
-    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    angka = value.toString().replace(/\,/g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }
 
 function get_currency(id){

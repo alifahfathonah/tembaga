@@ -43,3 +43,13 @@ sj 06.0014
 nilai invoice yang ada di uang masuk yg udah dibayar aja
 
 print matching masih error selisih di uang masuk
+
+po create voucher belum bisa koma
+
+edit nomor bk bm
+
+sub total per jenis kode barang 01,02,05
+
+create voucher kalo masih 0 terus di input create voucher. status berubah jadi sudah dibayar (done)
+
+SPB scan gaboleh beda ukuran

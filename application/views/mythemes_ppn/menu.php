@@ -960,18 +960,18 @@
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_jb/" target="_blank">
                                     <i class="fa fa-print"></i> Rekap per Jenis Barang Gabungan</a>
                                 </li>
-                                <li>
+                                <!-- <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_jb2/" target="_blank">
                                     <i class="fa fa-print"></i> Rekap per Jenis Barang KMP</a>
-                                </li>
+                                </li> -->
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_customer/" target="_blank">
                                     <i class="fa fa-print"></i> Rekap per Customer Gabungan</a>
                                 </li>
-                                <li>
+                                <!-- <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_customer2/" target="_blank">
                                     <i class="fa fa-print"></i> Rekap per Customer KMP</a>
-                                </li>
+                                </li> -->
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_piutang/" target="_blank">
                                     <i class="fa fa-print"></i> Penjualan Piutang</a>
@@ -983,6 +983,10 @@
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/search_pengeluaran/">
                                     <i class="fa fa-money" style="color: red;"></i> Rekap Pengeluaran Kas/Bank</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_trx/">
+                                    <i class="fa fa-money" style="color: blue;"></i> Rekap Trs. Kas/Bank</a>
                                 </li>
                             </ul>
                         </li>

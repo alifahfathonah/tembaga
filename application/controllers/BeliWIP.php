@@ -876,15 +876,15 @@ class BeliWIP extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $nilai_po  = str_replace('.', '', $this->input->post('nilai_po'));
-        $nilai_dp  = str_replace('.', '', $this->input->post('nilai_dp'));
-        $amount  = str_replace('.', '', $this->input->post('amount'));
+        $nilai_po  = str_replace(',', '', $this->input->post('nilai_po'));
+        $nilai_dp  = str_replace(',', '', $this->input->post('nilai_dp'));
+        $amount  = str_replace(',', '', $this->input->post('amount'));
         $id = $this->input->post('id');
         
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('VWIP', $tgl_input);
-        if($nilai_po-($nilai_dp+$amount)>0 && $this->input->post('status_vc')==3){
+        if($nilai_po-($nilai_dp+$amount)>=0){
             $jenis_voucher = 'Pelunasan';
             $this->db->where('id', $id);
             $this->db->update('po', array('flag_pelunasan'=>1,'status'=>4));
@@ -902,7 +902,7 @@ class BeliWIP extends CI_Controller{
                 'po_id'=>$this->input->post('id'),
                 'supplier_id'=>$this->input->post('supplier_id'),
                 'jenis_barang'=>$this->input->post('jenis_barang'),
-                'amount'=>str_replace('.', '', $this->input->post('amount')),
+                'amount'=>str_replace(',', '', $this->input->post('amount')),
                 'keterangan'=>$this->input->post('keterangan'),
                 'created'=> $tanggal,
                 'created_by'=> $user_id,
@@ -928,10 +928,10 @@ class BeliWIP extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
-        $nilai_po  = str_replace('.', '', $this->input->post('nilai_po'));
-        $jumlah_dibayar  = str_replace('.', '', $this->input->post('jumlah_dibayar'));
-        $amount  = str_replace('.', '', $this->input->post('amount'));
-        if($nilai_po-($jumlah_dibayar+$amount)>0){
+        $nilai_po  = str_replace(',', '', $this->input->post('nilai_po'));
+        $jumlah_dibayar  = str_replace(',', '', $this->input->post('jumlah_dibayar'));
+        $amount  = str_replace(',', '', $this->input->post('amount'));
+        if($nilai_po-($jumlah_dibayar+$amount)<0){
             $jenis_voucher = 'Parsial';
         }else{
             $jenis_voucher = 'Pelunasan';
@@ -964,7 +964,7 @@ class BeliWIP extends CI_Controller{
                 'id_bank'=>$this->input->post('bank_id'),
                 'id_vc'=>$id_vc,
                 'currency'=>$this->input->post('currency'),
-                'nominal'=>str_replace('.', '', $amount),
+                'nominal'=>str_replace(',', '', $amount),
                 'created_at'=>$tanggal,
                 'created_by'=>$user_id
             );

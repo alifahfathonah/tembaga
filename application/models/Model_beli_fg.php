@@ -82,7 +82,7 @@ class Model_beli_fg extends CI_Model
 	}
 
     function load_detail($id){
-        $data = $this->db->query("Select dd.*, jb.jenis_barang, jb.uom from dtbj_detail dd
+        $data = $this->db->query("Select dd.*, jb.jenis_barang, jb.uom, jb.kode from dtbj_detail dd
                 left join jenis_barang jb on (jb.id = dd.jenis_barang_id)
                 Where dd.dtbj_id=".$id);
         return $data;
