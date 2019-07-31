@@ -186,11 +186,16 @@ function get_packing(no){
 }
 
 function check_duplicate(no){
-    console.log(no);
+    id= $('#id').val();
+    // tanggal: $('#tanggal').val();
     $.ajax({
         url: "<?php echo base_url('index.php/StokOpname/check_duplicate'); ?>",
         type: "POST",
-        data : {no: no},
+        data : {
+            id: id,
+            no: no,
+            // tanggal: tanggal,
+        },
         success: function (result){
             console.log(result);
             if (result['response'] == "ok"){

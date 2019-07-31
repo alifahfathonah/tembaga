@@ -3,7 +3,7 @@ class Model_stok_opname extends CI_Model{
     
     function list_report($jenis){
         $data = $this->db->query("SELECT sop.*, (SELECT COUNT(id) FROM stok_opname_detail sopd WHERE sopd.stok_opname_id = sop.id) AS jumlah_item
-            FROM stok_opname sop WHERE sop.jenis_stok_opname = '".$jenis."' ORDER BY tanggal");
+            FROM stok_opname sop WHERE sop.jenis_stok_opname = '".$jenis."' ORDER BY tanggal DESC");
         return $data;
     }
 

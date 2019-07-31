@@ -148,8 +148,12 @@ class StokOpname extends CI_Controller{
     }
 
     function check_duplicate(){
+        $id = $this->input->post('id');
         $no = $this->input->post('no');
-        $sql = $this->db->get_where('stok_opname_detail', ['no_packing' => $no]);
+        // $tanggal = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $sql = $this->db->query('SELECT sopd.no_packing FROM stok_opname_detail sopd 
+            WHERE sopd.stok_opname_id = '.$id.' AND sopd.no_packing = "'.$no.'"');
+        // $sql = $this->db->get_where('stok_opname_detail', ['no_packing' => $no]);
 
         if($sql->num_rows() > 0){
             $return_data['response']= "duplicate";
