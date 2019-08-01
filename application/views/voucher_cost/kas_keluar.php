@@ -18,16 +18,25 @@
                         <h4 class="modal-title">&nbsp;</h4>
                     </div>
                     <div class="modal-body">
-                        <form class="eventInsForm" method="post" target="_self" name="formku" 
-                              id="formku">                            
+                        <form class="eventInsForm" method="post" target="_self" name="formedit" id="formedit"> 
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger display-hide">
+                                        <button class="close" data-close="alert"></button>
+                                        <span id="message">&nbsp;</span>
+                                    </div>
+                                </div>
+                            </div>                           
                             <div class="row">
                                 <div class="col-md-5">
                                     No. Voucher <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-7">
                                     <input type="text" id="no_voucher" name="no_voucher" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        readonly="readonly" value="Auto generate">
+                                        class="form-control myline" style="margin-bottom:5px">
+
+                                    <input type="hidden" id="id" name="id">
+                                    <input type="hidden" id="bank_id" name="bank_id">
                                 </div>
                             </div> 
                             <div class="row">
@@ -36,131 +45,7 @@
                                 </div>
                                 <div class="col-md-7">
                                     <input type="text" id="tanggal" name="tanggal" 
-                                        class="form-control input-small myline" style="margin-bottom:5px; float:left;" 
-                                        value="<?php echo date('Y-m-d'); ?>">
-                                </div>
-                            </div> 
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Nama Group Cost <font color="#f00">*</font>
-                                </div>
-                                <div class="col-md-7">
-                                    <select id="group_cost_id" name="group_cost_id" class="form-control myline select2me" 
-                                        data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cost(this.value);">
-                                        <option value=""></option>
-                                        <?php
-                                            foreach ($list_group_cost as $row){
-                                                echo '<option value="'.$row->id.'">'.$row->nama_group_cost.'</option>';
-                                            }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Nama Cost <font color="#f00">*</font>
-                                </div>
-                                <div class="col-md-7">
-                                    <select id="cost_id" name="cost_id" class="form-control myline select2me" 
-                                        data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                        <option value=""></option>
-                                    </select>
-                                    <input type="text" id="nm_cost" name="nm_cost" style="margin-bottom:5px" class="form-control myline hidden" disabled="disabled" placeholder="Nama Cost" onkeyup="this.value = this.value.toUpperCase()">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Keterangan
-                                </div>
-                                <div class="col-md-7">
-                                    <textarea id="remarks" name="remarks" rows="3"
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeyup="this.value = this.value.toUpperCase()"></textarea>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="alert alert-danger display-hide">
-                                        <button class="close" data-close="alert"></button>
-                                        <span id="message">&nbsp;</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="width: 100%; margin-bottom: 5px;text-align: center">
-                              <span>
-                                Data Uang Keluar <!--Padding is optional-->
-                              </span>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Nomor Uang Keluar
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="no_uk" name="no_uk" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" placeholder="Nomor Uang Keluar ...">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Nomor Giro
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="nomor_giro" name="nomor_giro" 
-                                        class="form-control myline" style="margin-bottom:5px" placeholder="Nomor Giro ...">   
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Bank
-                                </div>
-                                <div class="col-md-7">
-                                    <select id="bank_id" name="bank_id" class="form-control myline select2me"
-                                    data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                    <option value=""></option>
-                                    <?php
-                                        foreach ($bank_list as $row){
-                                            echo '<option value="'.$row->id.'">'.$row->kode_bank.' ('.$row->nomor_rekening.')</option>';
-                                        }
-                                    ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Tanggal Jatuh Tempo
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="tanggal_jatuh" name="tanggal_jatuh" 
-                                        class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                        value="<?php echo date('Y-m-d'); ?>">
-                                </div>
-                            </div> 
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Currency
-                                </div>
-                                <div class="col-md-7">
-                                    <select id="currency" name="currency" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cur(this.value);">
-                                    <option value="IDR">IDR</option>
-                                    <option value="USD">USD</option>
-                                    </select>         
-                                </div>
-                            </div>
-                            <div class="row" id="show_kurs">
-                                <div class="col-md-5">
-                                    Kurs
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="number" id="kurs" name="kurs" class="form-control myline" value="1" style="margin-bottom:5px">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    Amount (Rp)<font color="#f00">*</font>
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" id="amount" name="amount" 
-                                        class="form-control myline" style="margin-bottom:5px" onkeyup="getComa(this.value, this.id);">
+                                        class="form-control input-small myline" style="margin-bottom:5px; float:left;">
                                 </div>
                             </div>
                         </form>
@@ -226,6 +111,9 @@
                         <td><?php echo $data->currency; ?></td>
                         <td style="text-align:right"><?php echo number_format($data->nominal,2,',','.'); ?></td>
                         <td style="text-align:center"> 
+                            <a class="btn btn-circle btn-xs blue" style="margin-bottom:4px" onclick="editData(<?=$data->id;?>)">
+                                <i class="fa fa-pencil"></i> Edit 
+                            </a>
                             <?php 
                                 if( ($group_id==1)||($hak_akses['delete']==1) ){
                             ?>
@@ -262,158 +150,46 @@
         ?>
     </div>
 </div> 
+<script>
+function editData(id){
+    dsState = "Edit";
+    $.ajax({
+        url: "<?php echo base_url('index.php/VoucherCost/get_voucher'); ?>",
+        type: "POST",
+        data : {id: id},
+        success: function (result){
+            $('#id').val(result['id']);
+            $('#no_voucher').val(result['nomor']);
+            $('#tanggal').val(result['tanggal']);
+            $('#bank_id').val(result['id_bank']);
+            
+            $("#myModal").find('.modal-title').text('Edit Voucher');
+            $("#myModal").modal('show',{backdrop: 'true'});           
+        }
+    });
+}
+
+function simpandata(){
+    if($.trim($("#no_voucher").val()) == ""){
+        $('#message').html("Nomor Voucher harus diisi!");
+        $('.alert-danger').show();
+    }else if($.trim($("#tanggal").val()) == ""){
+        $('#message').html("Tanggal harus diisi!");
+        $('.alert-danger').show();
+    }else{
+        $('#simpandata').text('Please Wait ...').prop("onclick", null).off("click");
+        $('#message').html("");
+        $('.alert-danger').hide();
+        $('#formedit').attr("action", "<?php echo base_url(); ?>index.php/VoucherCost/update");
+        $('#formedit').submit(); 
+    };
+};
+</script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-function getComa(value, id){
-    angka = value.toString().replace(/\,/g, "");
-    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-}
-
-function newData(){
-    $('#group_cost_id').select2('val', '');
-    $('#cost_id').select2('val', '');
-    $('#amount').val('');
-    $('#remarks').val('');
-    dsState = "Input";
-    
-    $('#message').html("");
-    $('.alert-danger').hide(); 
-    
-    $("#myModal").find('.modal-title').text('Input Voucher Cost');
-    $("#myModal").modal('show',{backdrop: 'true'}); 
-}
-
-function newDataKH(){
-    $('#group_cost_id').select2('val', '');
-    $('#cost_id').select2('val', '');
-    $('#amount').val('');
-    $('#remarks').val('');
-    dsState = "Input";
-    
-    $('#message').html("");
-    $('.alert-danger').hide(); 
-    
-    $("#myModalKH").find('.modal-title').text('Input Voucher Cost');
-    $("#myModalKH").modal('show',{backdrop: 'true'});
-}
-
-function simpandata(){
-    if($.trim($("#amount").val()) == ""){
-        $('#message').html("Amount harus diisi!");
-        $('.alert-danger').show();
-    }else if($.trim($("#tanggal").val()) == ""){
-        $('#message').html("Tanggal harus diisi!");
-        $('.alert-danger').show();
-    }else if($.trim($("#group_cost_id").val()) == ""){
-        $('#message').html("Silahkan pilih group cost!");
-        $('.alert-danger').show(); 
-    }else if(($.trim($("#cost_id").val()) == "") && ($.trim($("#group_cost_id").val()) == "")){
-        $('#message').html("Silahkan pilih nama cost!");
-        $('.alert-danger').show();
-    }else{
-        $.ajax({
-            type: "POST",
-            url: "<?php echo base_url('index.php/BeliRongsok/get_no_uang_keluar'); ?>",
-            data: {
-                no_uk: $('#no_uk').val(),
-                tanggal: $('#tanggal').val(),
-                bank_id: $('#bank_id').val()
-            },
-            cache: false,
-            success: function(result) {
-                var res = result['type'];
-                if(res=='duplicate'){
-                    $('#message').html("Nomor Uang Keluar sudah ada, tolong coba lagi!");
-                    $('.alert-danger').show();
-                }else{
-                    $('#simpandata').text('Please Wait ...').prop("onclick", null).off("click");
-                    $('#message').html("");
-                    $('.alert-danger').hide();
-                    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/VoucherCost/save");
-                    $('#formku').submit(); 
-                }
-            }
-        });                                 
-    };
-};
-
-function simpandatakh(){
-    if($.trim($("#amount").val()) == ""){
-        $('#message').html("Amount harus diisi!");
-        $('.alert-danger').show();
-    }else if($.trim($("#tanggal").val()) == ""){
-        $('#message').html("Tanggal harus diisi!");
-        $('.alert-danger').show();
-    }else if($.trim($("#group_cost_id").val()) == ""){
-        $('#message').html("Silahkan pilih group cost!");
-        $('.alert-danger').show(); 
-    }else if(($.trim($("#cost_id").val()) == "") && ($.trim($("#group_cost_id").val()) == "")){
-        $('#message').html("Silahkan pilih nama cost!");
-        $('.alert-danger').show();
-    }else{
-        $.ajax({
-            type: "POST",
-            url: "<?php echo base_url('index.php/BeliRongsok/get_no_uang_keluar'); ?>",
-            data: {
-                no_uk: $('#no_uk').val(),
-                tanggal: $('#tanggal').val(),
-                bank_id: $('#bank_id').val()
-            },
-            cache: false,
-            success: function(result) {
-                var res = result['type'];
-                if(res=='duplicate'){
-                    $('#message').html("Nomor Uang Keluar sudah ada, tolong coba lagi!");
-                    $('.alert-danger').show();
-                }else{
-                    $('#simpandata').text('Please Wait ...').prop("onclick", null).off("click");
-                    $('#message').html("");
-                    $('.alert-danger').hide();
-                    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/VoucherCost/save");
-                    $('#formku').submit(); 
-                }
-            }
-        });                                 
-    };
-};
-
-function get_cur(id){
-    if(id=='USD'){
-        $('#show_kurs').show();
-    }else if(id=='IDR'){
-        $('#show_kurs').hide();
-        $('#kurs').val(1);
-    }
-}
-
-function get_cost(id){   
-    if (id == 3) {
-        $('#cost_id').attr('disabled','disabled');
-        $('#cost_id').addClass('hidden');
-        $('#nm_cost').attr('disabled',false);
-        $('#nm_cost').removeClass('hidden');
-    } else {
-        $('#cost_id').val('');
-        $('#cost_id').removeAttr('disabled');
-        $('#cost_id').removeClass('hidden');
-        $('#nm_cost').attr('disabled','disabled');
-        $('#nm_cost').addClass('hidden');
-        $.ajax({
-            url: "<?php echo base_url('index.php/VoucherCost/get_cost_list'); ?>",
-            type: "POST",
-            data: "id="+id,
-            dataType: "html",
-            success: function(result) {
-                $('#cost_id').html(result);
-            }
-        });
-    }
-}
-
-$(function(){ 
-    $('#show_kurs').hide(); 
+$(function(){
     $("#tanggal").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
@@ -436,4 +212,4 @@ $(function(){
 
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });
-</script>         
+</script>

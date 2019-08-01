@@ -445,7 +445,7 @@ class Model_finance extends CI_Model{
     }
 
     function load_invoice_print_um_match($id){
-        $data = $this->db->query("select fmd.*, fi.jenis_trx, fi.no_invoice, fi.nilai_invoice as total 
+        $data = $this->db->query("select fmd.*, fi.jenis_trx, fi.no_invoice, fi.nilai_bayar as total 
             from f_match_detail fmd
             left join f_invoice fi on fi.id = fmd.id_inv
             where fmd.id_match =".$id." and fmd.id_um = 0");

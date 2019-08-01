@@ -40,15 +40,13 @@ kasih di spb button close spb, nanti status berubah jadi approve
 
 sj 06.0014
 
-nilai invoice yang ada di uang masuk yg udah dibayar aja
+nilai invoice yang ada di uang masuk yg udah dibayar aja (done)
 
-print matching masih error selisih di uang masuk
+print matching masih error selisih di uang masuk (done)
 
-po create voucher belum bisa koma
+po create voucher belum bisa koma (done)
 
 edit nomor bk bm
-
-sub total per jenis kode barang 01,02,05
 
 create voucher kalo masih 0 terus di input create voucher. status berubah jadi sudah dibayar (done)
 

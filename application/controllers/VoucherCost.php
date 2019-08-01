@@ -622,4 +622,45 @@ class VoucherCost extends CI_Controller{
             redirect('index.php/VoucherCost');
         }
     }
+
+    function get_voucher(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_finance');
+        $data = $this->Model_finance->show_header_voucher_ppn($id)->row_array(); 
+        
+        header('Content-Type: application/json');
+        echo json_encode($data);       
+    }
+
+    function update(){
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+
+        $this->db->trans_start();
+
+            $this->db->where('id', $this->input->post('id'));
+            $this->db->update('f_kas', array(
+                'nomor' => $this->input->post('no_voucher'),
+                'tanggal' => $this->input->post('tanggal')
+            ));
+
+            $this->db->where('id_fk', $this->input->post('id'));
+            $this->db->update('voucher', array(
+                'tanggal' => $this->input->post('tanggal')
+            ));
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Voucher cost berhasil di-update dengan nomor : '.$this->input->post('no_voucher'));
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Voucher cost gagal di-update, penomoran belum disetup!');            
+        }
+
+        if ($this->input->post('bank_id') <= 3) {
+            redirect('index.php/VoucherCost/kas_keluar');
+        } else {
+            redirect('index.php/VoucherCost/bank_keluar');
+        }
+    }
 }
