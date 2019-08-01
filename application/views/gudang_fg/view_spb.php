@@ -521,7 +521,7 @@
             </div>
             <div class="row">&nbsp;</div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-10">
                     <?php
                         if( ($group_id==1 || $hak_akses['approve_spb']==1) && ($myData['status']=='3' || $myData['status']=='1')){
                             echo '<a href="javascript:;" class="btn blue" onclick="tambahData();"> '
@@ -548,13 +548,18 @@
                                 .'<i class="fa fa-refresh"></i> Input Ulang </a>';
                         }
                     ?>
-
                     <a href="<?php echo base_url('index.php/GudangFG/spb_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                     <?php if($group_id==1 || $hak_akses['print_spb']==1){ ?>
                     <a class="btn btn-circle blue-ebonyclay" href="<?php echo base_url('index.php/GudangFG/print_spb_fulfilment/').$myData['id'];?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                     <?php } ?>
                 </div>    
+                <div class="col-md-2">
+                    <?php if($myData['status']==0 || $myData['status']==2 || $myData['status']==4){ ?>
+                    <a href="javascript:;" class="btn red" onclick="closeSPB();">
+                        <i class="fa fa-ban"></i> CLOSE SPB </a>
+                    <?php } ?>
+                </div>
             </div>
         </form>
         <?php
@@ -643,6 +648,11 @@ function rejectData(){
         $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/GudangFG/reject_spb");
         $('#frmReject').submit(); 
     }
+}
+
+function closeSPB(){
+    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/GudangFG/close_spb");    
+    $('#formku').submit(); 
 }
 
 function check_duplicate(){
