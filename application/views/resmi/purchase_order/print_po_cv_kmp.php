@@ -2,12 +2,23 @@
     <head>
         <title></title>
         <meta charset="utf-8" />
+        <style type="text/css">
+            body{
+                font-family: "Times New Roman", Times, serif;
+            }
+
+            @media print{
+                body{
+                    font-family: "Times New Roman", Times, serif;
+                }
+            }
+        </style>
     </head>
-    <body class="margin-left:40px;">
-        <h2 style="margin-top: -10px"><?php echo $header['nama_cv']; ?></h2>
+    <body>
+        <h2 style="margin-top: -10px;"><?php echo $header['nama_cv']; ?></h2>
         <h2 align="center"><u>SURAT PESANAN</u></h2>
         <h3 align="center" style="margin-top: -20px;">PURCHASE ORDER</h3>
-        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
+        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:'Times New Roman'">
             <tr>
                 <td width="40%">
                     <table border="0" cellpadding="5" cellspacing="0" width="100%">
@@ -37,14 +48,10 @@
                 </td>
                 <td>&nbsp;</td>
                 <td width="40%">
-                    <table border="0" cellpadding="2" cellspacing="0" width="100%">
-                        <tr>
+                    <table border="0" cellpadding="5" cellspacing="0" width="100%">
+                        <tr height="50">
                             <td>No. PO</td>
                             <td>: <?= $header['no_po'] ?></td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
                         </tr>
                         <tr>
                             <td style="border-bottom: 1px solid;">Tanggal</td>
@@ -53,13 +60,9 @@
                         <tr>
                             <td>Date</td>
                         </tr>
-                        <tr>
+                        <tr height="50">
                             <td>No. PP</td>
                             <td>: </td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
                         </tr>
                     </table>
                 </td>
@@ -70,7 +73,7 @@
             <span style="border-bottom: 1px solid;">Dengan ini kami memesan barang-barang kepada Tuan, harap disupply menurut keterangan dan kondisi sebagai berikut :</span><br>
             We have pleasure in placing the following order with you, which is to be supplied strictly in accordance with the specification and conditions, as follows :
         </p>
-        <table cellpadding="5" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif; border: 1px solid;">
+        <table cellpadding="5" cellspacing="0" width="900px" style="font-family:'Times New Roman'; border: 1px solid;">
             <thead>
                 <th style="border-bottom: 1px solid;">NO.</th>
                 <th style="border-bottom: 1px solid;">URAIAN / DESCRIPTION</th>
@@ -125,7 +128,7 @@
                 </tr> -->
             </tbody>
         </table>
-        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
+        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:'Times New Roman'">
             <tr>
                 <td width="20%" style="border-bottom: 1px solid;">Total Harga</td>
                 <td rowspan="2">: <?php echo 'Rp. &nbsp;'.number_format($total_amount,2,'.',',');?></td>
@@ -160,13 +163,13 @@
             <u>Harap kembalikan copy dari surat pesanan ini setelah disetujui dan di tanda-tangani.</u><br>
             Kindly return the copies duly signed acceptan
         </p>
-        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
+        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:'Times New Roman'">
             <tr>
                 <td height="20" colspan="3">&nbsp;</td>
             </tr>
             <tr>
                 <td><u>Disetujui oleh,</u><br>Approved by</td>
-                <td width="60%"></td>
+                <td width="50%"></td>
                 <td><u>Hormat kami</u><br>Your faithfully</td>
             </tr>
             <tr>
