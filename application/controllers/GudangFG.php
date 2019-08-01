@@ -1056,6 +1056,31 @@ class GudangFG extends CI_Controller{
        redirect('index.php/GudangFG/view_spb/'.$spb_id);
     }
 
+    function close_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $spb_id = $this->input->post('id');
+        
+        $this->db->trans_start();
+
+        #Update status SPB
+        $this->db->where('id', $spb_id);
+        $this->db->update('t_spb_fg', array(
+                        'status'=> 1,
+                        'modified_at'=> $tanggal,
+                        'modified_by'=>$user_id
+        ));
+            
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'SPB sudah disimpan');            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }             
+        
+       redirect('index.php/GudangFG/view_spb/'.$spb_id);
+    }
+
     function save_fulfilment(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');

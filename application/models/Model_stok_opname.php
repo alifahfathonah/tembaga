@@ -23,7 +23,7 @@ class Model_stok_opname extends CI_Model{
                 left JOIN jenis_barang jb on jb.id = sod.jenis_barang_id
                 LEFT JOIN t_gudang_fg tgf ON tgf.id = sod.gudang_id
                 WHERE sod.stok_opname_id = ".$id." and flag_simpan = 0
-                ORDER BY sod.id ASC");
+                order by sod.id desc");
         return $data;
     }
 
@@ -31,7 +31,7 @@ class Model_stok_opname extends CI_Model{
         $data = $this->db->query("select sod.*, jb.kode, jb.jenis_barang, jb.uom, tgf.no_produksi, tgf.bruto, tgf.berat_bobbin, tgf.tanggal_masuk from stok_opname_detail sod 
                 left JOIN jenis_barang jb on jb.id = sod.jenis_barang_id
                 LEFT JOIN t_gudang_fg tgf ON tgf.id = sod.gudang_id
-                WHERE sod.stok_opname_id = ".$id);
+                WHERE sod.stok_opname_id = ".$id." order by sod.id desc");
         return $data;
     }
 

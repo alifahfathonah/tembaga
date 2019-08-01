@@ -1,4 +1,4 @@
- <h3 align="center"><b> Rekap Penerimaan <?=($_GET['laporan']==0)? 'Kas' : 'Bank';?></b></h3>
+ <h3 align="center"><b> Rekap Pengeluaran <?=($_GET['laporan']==0)? 'Kas' : 'Bank';?></b></h3>
  <table width="100%" >
     <tr>
         <td width="33%"></td>
@@ -11,7 +11,7 @@
         <th style="width:40px">No</th>
         <th>Tanggal</th>
         <th>Nomor Bukti</th>
-        <th>Nama Customer</th>
+        <th>Keterangan</th>
         <th>Nama Bank</th>     
         <th>Nominal</th>
     </thead>
@@ -24,7 +24,7 @@
         echo '<td style="text-align:center; border-bottom:1px solid #000;">'.$no.'</td>';
         echo '<td style="border-bottom:1px solid #000;">'.$row->tanggal.'</td>';
         echo '<td style="border-bottom:1px solid #000;">'.$row->nomor.'</td>';
-        echo '<td style="border-bottom:1px solid #000;">'.$row->nama_customer.'</td>';
+        echo '<td style="border-bottom:1px solid #000;">'.$row->keterangan.'</td>';
         echo '<td style="border-bottom:1px solid #000;">'.$row->nama_bank.'</td>';
         echo '<td style="text-align:right; border-bottom:1px solid #000;">'.number_format($row->nominal,2,',','.').'</td>';
         echo '</tr>';

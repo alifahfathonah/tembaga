@@ -7,7 +7,7 @@
       <table width="100%" style="page-break-after: auto;">
         <tr>
           <td align="center">
-            <h4>Laporan Rekap Penjualan per <?=tanggal_indo(date('Y-m-d', strtotime($_GET['ts']))).' sampai '.tanggal_indo(date('Y-m-d', strtotime($_GET['te'])));?></h4>
+            <h4>Laporan Detail Penjualan per <?=tanggal_indo(date('Y-m-d', strtotime($_GET['ts']))).' sampai '.tanggal_indo(date('Y-m-d', strtotime($_GET['te'])));?></h4>
           </td>
         </tr>
       </table>

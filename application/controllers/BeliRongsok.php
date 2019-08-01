@@ -419,9 +419,9 @@ class BeliRongsok extends CI_Controller{
                 $nilai_po = 0;
                 $data['nilai_ppn'] = 0;
             }else{
-                $data['nilai_before_ppn'] = number_format($data['nilai_po'],0,',','.');
+                $data['nilai_before_ppn'] = number_format($data['nilai_po'],0,'.',',');
                 $nilai_po = ($data['nilai_po']-$data['diskon'])*110/100+$data['materai'];
-                $data['nilai_ppn'] = number_format($data['nilai_po']*10/100,0,',','.');
+                $data['nilai_ppn'] = number_format($data['nilai_po']*10/100,0,'.',',');
             }
         }else{
             if($data['nilai_po']==0){
@@ -435,11 +435,11 @@ class BeliRongsok extends CI_Controller{
 
         // $terbilang = $nilai_po;
         $sisa = $nilai_po - $data['nilai_dp'];
-        $data['materai'] = number_format($data['materai'],0,',','.');
-        $data['diskon'] = number_format($data['diskon'],0,',','.');
-        $data['nilai_po'] = number_format($nilai_po,0,',','.');
-        $data['nilai_dp'] = number_format($data['nilai_dp'],0,',','.');
-        $data['sisa']     = number_format($sisa,0,',','.');
+        $data['materai'] = number_format($data['materai'],0,'.',',');
+        $data['diskon'] = number_format($data['diskon'],0,'.',',');
+        $data['nilai_po'] = number_format($nilai_po,0,'.',',');
+        $data['nilai_dp'] = number_format($data['nilai_dp'],0,'.',',');
+        $data['sisa']     = number_format($sisa,0,'.',',');
         // $nilai_po = $data['nilai_po'];
         // $data['terbilang'] = ucwords(number_to_words_d($terbilang, $data['currency']));
 
@@ -451,15 +451,15 @@ class BeliRongsok extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $nilai_po  = str_replace('.', '', $this->input->post('nilai_po'));
-        $nilai_dp  = str_replace('.', '', $this->input->post('nilai_dp'));
-        $amount  = str_replace('.', '', $this->input->post('amount'));
+        $nilai_po  = str_replace(',', '', $this->input->post('nilai_po'));
+        $nilai_dp  = str_replace(',', '', $this->input->post('nilai_dp'));
+        $amount  = str_replace(',', '', $this->input->post('amount'));
         $id = $this->input->post('id');
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('VRSK', $tgl_input);
-        if($nilai_po-($nilai_dp+$amount)==0 && $this->input->post('status_vc')==3){
+        if($nilai_po-($nilai_dp+$amount)>=0){
             $jenis_voucher = 'Pelunasan';
             $this->db->where('id', $id);
             $this->db->update('po', array('flag_pelunasan'=>1,'status'=>1));
@@ -477,7 +477,7 @@ class BeliRongsok extends CI_Controller{
                 'po_id'=>$this->input->post('id'),
                 'supplier_id'=>$this->input->post('supplier_id'),
                 'jenis_barang'=>$this->input->post('jenis_barang'),
-                'amount'=>str_replace('.', '', $this->input->post('amount')),
+                'amount'=>str_replace(',', '', $this->input->post('amount')),
                 'keterangan'=>$this->input->post('keterangan'),
                 'created'=> $tanggal,
                 'created_by'=> $user_id,
@@ -656,9 +656,9 @@ class BeliRongsok extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
-        $nilai_po  = str_replace('.', '', $this->input->post('nilai_po'));
-        $jumlah_dibayar  = str_replace('.', '', $this->input->post('jumlah_dibayar'));
-        $amount  = str_replace('.', '', $this->input->post('amount'));
+        $nilai_po  = str_replace(',', '', $this->input->post('nilai_po'));
+        $jumlah_dibayar  = str_replace(',', '', $this->input->post('jumlah_dibayar'));
+        $amount  = str_replace(',', '', $this->input->post('amount'));
         if($nilai_po-($jumlah_dibayar+$amount)>0){
             $jenis_voucher = 'Parsial';
         }else{
@@ -693,7 +693,7 @@ class BeliRongsok extends CI_Controller{
                 'id_bank'=>$this->input->post('bank_id'),
                 'id_vc'=>0,
                 'currency'=>$this->input->post('currency'),
-                'nominal'=>str_replace('.', '', $amount),
+                'nominal'=>str_replace(',', '', $amount),
                 'created_at'=>$tanggal,
                 'created_by'=>$user_id
             );

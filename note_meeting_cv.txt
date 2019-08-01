@@ -38,10 +38,14 @@ Urutkan by tms sama ngga nya, terus ukuran
 
 kasih di spb button close spb, nanti status berubah jadi approve
 
-sj 06.0014
+nilai invoice yang ada di uang masuk yg udah dibayar aja (done)
 
-nilai invoice yang ada di uang masuk yg udah dibayar aja
+print matching masih error selisih di uang masuk (done)
 
-print matching masih error selisih di uang masuk
+po create voucher belum bisa koma (done)
 
-kmp dan kh masih ada yg cv, harusnya gaada
+edit nomor bk bm (done)
+
+create voucher kalo masih 0 terus di input create voucher. status berubah jadi sudah dibayar (done)
+
+SPB scan gaboleh beda ukuran

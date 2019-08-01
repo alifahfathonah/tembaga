@@ -1339,6 +1339,7 @@ class Finance extends CI_Controller{
 
         foreach($loop_detail as $k => $row){
             $total = $row->amount * $row->netto;
+            $total = round($total,0);
             $fid = array(
                     'id_invoice'=>$id_new,
                     'sj_detail_id'=>$row->t_sj_id,
@@ -1364,6 +1365,8 @@ class Finance extends CI_Controller{
             $total_invoice = ($nilai_invoice-str_replace('.', '', $this->input->post('diskon'))-str_replace('.', '', $this->input->post('add_cost'))) + str_replace('.', '', $this->input->post('materai'));
         }
         
+        $total_invoice = round($total_invoice,0);
+
         $this->db->where('id',$id_new);
         $this->db->update('f_invoice', array(
             'nilai_invoice' => $total_invoice
@@ -2663,10 +2666,15 @@ class Finance extends CI_Controller{
                 $data['hak_akses'] = $roles;
             }
             $data['group_id']  = $group_id;
+            if($ppn==1){
+                $c = 'KKH';
+            }else{
+                $c = 'CV';
+            }
 
             $this->load->model('Model_finance');
-            $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer($ppn)->result();
-            $this->load->view('finance/print_penjualan_customer', $data);
+            $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer($c)->result();
+            $this->load->view('finance/print_penjualan_customer2', $data);
     }
 
     function print_penjualan_customer2(){
@@ -2680,9 +2688,14 @@ class Finance extends CI_Controller{
                 $data['hak_akses'] = $roles;
             }
             $data['group_id']  = $group_id;
+            if($ppn==1){
+                $c = 'KMP';
+            }else{
+                $c = 'KKH';
+            }
 
             $this->load->model('Model_finance');
-            $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer2($ppn)->result();
+            $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer2($c)->result();
             $this->load->view('finance/print_penjualan_customer2', $data);
     }
 
@@ -2699,7 +2712,12 @@ class Finance extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $this->load->model('Model_finance');
-            $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb()->result();
+            if($ppn==1){
+                $c = 'KKH';
+            }else{
+                $c = 'CV';
+            }
+            $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb($c)->result();
             $this->load->view('finance/print_penjualan_jb', $data);
     }
 
@@ -2714,9 +2732,14 @@ class Finance extends CI_Controller{
                 $data['hak_akses'] = $roles;
             }
             $data['group_id']  = $group_id;
+            if($ppn==1){
+                $c = 'KMP';
+            }else{
+                $c = 'KKH';
+            }
 
             $this->load->model('Model_finance');
-            $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb2($ppn)->result();
+            $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb2($c)->result();
             $this->load->view('finance/print_penjualan_jb2', $data);
     }
 
@@ -2804,5 +2827,128 @@ class Finance extends CI_Controller{
                 $data['detailLaporan'] = $this->Model_finance->trx_bank($start,$end,0,$ppn)->result();
             }
             $this->load->view('finance/print_penerimaan_kb', $data);
+    }
+
+    function search_pengeluaran(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/search_pengeluaran";
+        $this->load->model('Model_sales_order');
+
+        $this->load->view('layout', $data);   
+    }
+
+    function print_pengeluaran_kb(){
+            $module_name = $this->uri->segment(1);
+            $ppn         = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+            $l = $_GET['laporan'];
+            $start = date('Y-m-d', strtotime($_GET['ts']));
+            $end = date('Y-m-d', strtotime($_GET['te']));
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_finance');
+            if($l == 1){
+                $data['detailLaporan'] = $this->Model_finance->trx_keluar_kas($start,$end,1,$ppn)->result();
+            }elseif ($l == 2) {
+                $data['detailLaporan'] = $this->Model_finance->trx_keluar_bank($start,$end,1,$ppn)->result();
+            }
+
+            $this->load->view('finance/print_pengeluaran_kb', $data);
+    }
+
+    function search_penerimaan_cm(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/search_penerimaan_cm";
+        $this->load->model('Model_sales_order');
+
+        $this->load->view('layout', $data);   
+    }
+
+    function print_penerimaan_cm(){
+            $module_name = $this->uri->segment(1);
+            $ppn         = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+            $start = date('Y-m-d', strtotime($_GET['ts']));
+            $end = date('Y-m-d', strtotime($_GET['te']));
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_finance');
+
+            $data['detailLaporan'] = $this->Model_finance->trx_cm($start,$end,0,$ppn)->result();
+
+            $this->load->view('finance/print_penerimaan_cm', $data);
+    }
+
+    function search_trx(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');   
+        $ppn = $this->session->userdata('user_ppn');
+
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/search_trx";
+
+        $this->load->model('Model_finance');
+        $data['bank_list'] = $this->Model_finance->bank_list($ppn)->result();
+
+        $this->load->view('layout', $data);   
+    }
+
+    function print_trx(){
+            $module_name = $this->uri->segment(1);
+            $ppn         = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+            $l = $_GET['laporan'];
+            $start = date('Y-m-d', strtotime($_GET['ts']));
+            $end = date('Y-m-d', strtotime($_GET['te']));
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_finance');
+
+                $data['saldo_awal'] = $this->Model_finance->saldo_awal($start,$l)->row_array();
+                $data['detailLaporan'] = $this->Model_finance->trx_keluar_masuk($start,$end,$l)->result();
+            $this->load->view('finance/print_trx', $data);
     }
 }
