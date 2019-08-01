@@ -480,7 +480,7 @@
                                             }
                                             ?>
                                                 <td><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
-                                                <td><?='('.$row->kode.') '.$v->jenis_barang;?></td>
+                                                <td><?='('.$v->kode.') '.$v->jenis_barang;?></td>
                                                 <td><?=$v->uom;?></td>
                                                 <td><?=number_format($v->netto,2,',',',');?></td>
                                                 <td><?=$v->no_packing?></td>

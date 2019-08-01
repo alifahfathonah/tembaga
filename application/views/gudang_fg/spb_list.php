@@ -64,7 +64,7 @@
                         <td style="text-align:center">
                             <?php
                                 if($data->status==0){
-                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Approval</div>';
+                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Review</div>';
                                 }else if($data->status==1){
                                     echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
                                 }else if($data->status==2 || $data->status ==4){
