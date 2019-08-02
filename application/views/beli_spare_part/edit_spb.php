@@ -89,7 +89,7 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th>No</th>
-                                <th>Nama Item Sparepart</th>
+                                <th width="25%">Nama Item Sparepart</th>
                                 <th>UOM</th>
                                 <th>Quantity</th>
                                 <th>Keterangan</th>
@@ -98,6 +98,23 @@
                             <tbody id="boxDetail">
 
                             </tbody>
+                            <tr>
+                                <td style="text-align:center"><strong>+</strong></td>
+                                <td>
+                                <select id="barang_id" name="barang_id" class="form-control select2me myline" 
+                                    data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
+                                    <option value=""></option>
+                                    <?php
+                                    foreach ($list_sparepart as $value){
+                                        echo "<option value='".$value->id."' data-id='".$value->nama_produk."'>".$value->nama_produk."</option>";
+                                    } ?>
+                                </select>
+                                </td>
+                                <td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="qty_item" name="qty" class="form-control myline"/></td>
+                                <td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>        
+                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -105,7 +122,7 @@
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
-                    <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                    <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
                         
                     <a href="<?php echo base_url('index.php/BeliSparePart/spb_list'); ?>" class="btn blue-hoki"> 
@@ -133,6 +150,7 @@ function simpanData(){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else{     
+        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').submit(); 
     };
 };
@@ -185,6 +203,10 @@ function saveDetail(){
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
+                    $('#barang_id').select2('val','');
+                    $('#uom').val('');
+                    $('#qty_item').val('');
+                    $('#line_remarks').val('');
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{

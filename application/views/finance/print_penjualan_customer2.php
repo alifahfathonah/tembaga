@@ -9,7 +9,7 @@
           <td align="center">
             <!-- <h4>Laporan sisa Sales Order per <?= date("M Y", strtotime($this->uri->segment(3))) ?></h4> -->
             <?=($this->session->userdata('user_ppn')==1)? '<h3>PT. KAWAT MAS PRAKASA</h3>' : '';?>
-            <h4>Rekap Penjualan Ranking Customer <?= date("M Y") ?></h4>
+            <h4>Rekap Penjualan Ranking Customer<br>Per Tanggal : <?php echo " <i>".tanggal_indo(date("Y-m-d", strtotime($_GET['ts']))).' s/d '.tanggal_indo(date("Y-m-d", strtotime($_GET['te'])))."</i>";?></h4>
           </td>
         </tr>
       </table>

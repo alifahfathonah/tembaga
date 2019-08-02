@@ -314,7 +314,7 @@ class Model_gudang_fg extends CI_Model{
         $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.uom, jb.kode from t_gudang_fg tgf 
                 left join jenis_barang jb on jb.id = tgf.jenis_barang_id
                 where tgf.t_spb_fg_id =".$id." and tgf.jenis_trx = 0
-                order by tgf.id");
+                order by jb.ukuran, jb.kode, tgf.no_packing");
         return $data;
     }
 
@@ -322,7 +322,7 @@ class Model_gudang_fg extends CI_Model{
         $data = $this->db->query("select jb.jenis_barang, jb.uom, jb.kode, tgf.* from  t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id 
             where tgf.t_spb_fg_id =".$id." and tgf.jenis_trx=1
-            order by tgf.jenis_barang_id");
+            order by jb.ukuran, jb.kode");
         return $data;
     }
 

@@ -2655,9 +2655,34 @@ class Finance extends CI_Controller{
             $this->load->view('finance/print_laporan_penjualan', $data);
     }
 
+    function search_penjualan_customer(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');   
+        $ppn = $this->session->userdata('user_ppn');
+
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/search_penjualan_customer";
+
+        $this->load->model('Model_finance');
+        $data['customer_list'] = $this->Model_finance->customer_list($ppn)->result();
+
+        $this->load->view('layout', $data);   
+    }
+
     function print_penjualan_customer(){
             $module_name = $this->uri->segment(1);
             $ppn = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+
+            // $l = $_GET['laporan'];
+            $s = date('Y-m-d', strtotime($_GET['ts']));
+            $e = date('Y-m-d', strtotime($_GET['te']));
 
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -2673,13 +2698,45 @@ class Finance extends CI_Controller{
             }
 
             $this->load->model('Model_finance');
-            $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer($c)->result();
+            // if($l==0){
+            //     $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer_all($s,$e,$c)->result();
+            // }else{
+            //     $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer($s,$e,$c,$l)->result();
+            // }
+
+            
+                $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer_all($s,$e,$c)->result();
             $this->load->view('finance/print_penjualan_customer2', $data);
+    }
+
+    function search_penjualan_customer2(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');   
+        $ppn = $this->session->userdata('user_ppn');
+
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/search_penjualan_customer2";
+
+        $this->load->model('Model_finance');
+        $data['customer_list'] = $this->Model_finance->customer_list($ppn)->result();
+
+        $this->load->view('layout', $data);   
     }
 
     function print_penjualan_customer2(){
             $module_name = $this->uri->segment(1);
             $ppn = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+
+            // $l = $_GET['laporan'];
+            $s = date('Y-m-d', strtotime($_GET['ts']));
+            $e = date('Y-m-d', strtotime($_GET['te']));
 
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -2695,13 +2752,38 @@ class Finance extends CI_Controller{
             }
 
             $this->load->model('Model_finance');
-            $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer2($c)->result();
+            // if($l==0){
+            //     $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer2_all($s,$e,$c)->result();
+            // }else{
+            //     $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer2($s,$e,$c,$l)->result();
+            // }
+                $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer2_all($s,$e,$c)->result();
             $this->load->view('finance/print_penjualan_customer2', $data);
+    }
+
+    function search_penjualan_jb(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/search_penjualan_jb";
+        $this->load->model('Model_sales_order');
+
+        $this->load->view('layout', $data);   
     }
 
     function print_penjualan_jb(){
             $module_name = $this->uri->segment(1);
             $ppn = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+
+            $s = date('Y-m-d', strtotime($_GET['ts']));
+            $e = date('Y-m-d', strtotime($_GET['te']));
 
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -2717,13 +2799,34 @@ class Finance extends CI_Controller{
             }else{
                 $c = 'CV';
             }
-            $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb($c)->result();
+
+            $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb($s,$e,$c)->result();
             $this->load->view('finance/print_penjualan_jb', $data);
+    }
+
+    function search_penjualan_jb2(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/search_penjualan_jb2";
+        $this->load->model('Model_sales_order');
+
+        $this->load->view('layout', $data);   
     }
 
     function print_penjualan_jb2(){
             $module_name = $this->uri->segment(1);
             $ppn = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+
+            $s = date('Y-m-d', strtotime($_GET['ts']));
+            $e = date('Y-m-d', strtotime($_GET['te']));
 
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -2739,7 +2842,7 @@ class Finance extends CI_Controller{
             }
 
             $this->load->model('Model_finance');
-            $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb2($c)->result();
+            $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb2($s,$e,$c)->result();
             $this->load->view('finance/print_penjualan_jb2', $data);
     }
 

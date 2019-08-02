@@ -18,23 +18,23 @@
         </div>
     </div>
    <div class="col-md-12" style="margin-top: 10px;"> 
-        <h3>Laporan Rekap Penerimaan Kas / Bank</h3>
+        <h3>Laporan Rekap per Customer Gabungan</h3>
         <hr class="divider">
         <div class="row">
                 <div class="col-md-6">
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-4">
-                           Jenis Penerimaan <font color="#f00">*</font>
+                           Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <select id="laporan" name="laporan" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
-                                    <option value=""></option>
-                                    <?php foreach ($bank_list as $v) {
-                                        echo '<option value="'.$v->id.'">('.$v->no_acc.') '.$v->nama_bank.'</option>';
+                                    <option value="0">**SEMUA CUSTOMER**</option>
+                                    <?php foreach ($customer_list as $v) {
+                                        echo '<option value="'.$v->id.'">('.$v->kode_customer.') '.$v->nama_customer.'</option>';
                                     } ?>
                             </select>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="row">
                         <div class="col-md-4">
                             Tanggal Awal <font color="#f00">*</font>
@@ -77,7 +77,7 @@ function simpanData(){
         var l=$('#laporan').val();
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/Finance/print_trx?laporan='+l+'&ts='+s+'&te='+e,'_blank');
+        window.open('<?php echo base_url();?>index.php/Finance/print_penjualan_customer?ts='+s+'&te='+e,'_blank');
     };
 };
 </script>

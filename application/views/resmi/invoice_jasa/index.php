@@ -88,6 +88,7 @@
                             <?php } if((($group_id==9 || $group_id==16) && $hak_akses['print_po']==1) && $data->jenis_invoice == "INVOICE KMP KE CV"){
                             ?>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/print_invoice/<?php echo $data->id; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
+                        <?php }if((($group_id==9) || ($group_id == 16)) && $data->flag_sjr == 0 ){ ?>
                             <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/delete_invoice_jasa/<?php echo $data->id; ?>" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus transaksi ini?');"> &nbsp; <i class="fa fa-trash"></i> Delete &nbsp; </a>
                             <?php
                                 }if((($group_id==9) || ($group_id == 14)) && $data->flag_sjr == 0 ){

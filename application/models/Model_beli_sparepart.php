@@ -11,7 +11,7 @@ class Model_beli_sparepart extends CI_Model{
                     Left Join users usr On (bsp.created_by = usr.id) 
                     Left Join users aprv On (bsp.approved_by = aprv.id) 
                 Where bsp.flag_ppn=".$ppn."
-                Order By tgl_pengajuan Desc");
+                Order By no_pengajuan Desc");
         return $data;
     }
     
@@ -557,6 +557,20 @@ class Model_beli_sparepart extends CI_Model{
     function get_no_bpb(){
         $data = $this->db->query("select no_bpb from lpb where id = (select max(id) from lpb)");
         return $data;
+    }
+
+    function get_last_po($jenis){
+        $data = $this->db->query("select no_po from po where jenis_po = '".$jenis."' order by no_po desc limit 1");
+        return $data;
+    }
+
+    function get_last_bk($jenis){
+        $data = $this->db->query("select nomor from f_kas where flag_ppn = '".$jenis."' order by nomor desc limit 1");
+        return $data;
+    }
+
+    function spb_detail_only($id){
+        return $this->db->query("select * from t_spb_sparepart_detail where t_spb_sparepart_id=".$id);
     }
 }
 

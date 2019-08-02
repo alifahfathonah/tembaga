@@ -49,3 +49,5 @@ edit nomor bk bm (done)
 create voucher kalo masih 0 terus di input create voucher. status berubah jadi sudah dibayar (done)
 
 SPB scan gaboleh beda ukuran
+
+CM dibedain input dan view nya. kasih menu baru.

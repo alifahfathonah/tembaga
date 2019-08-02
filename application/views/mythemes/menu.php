@@ -1080,24 +1080,24 @@
                                     <i class="fa fa-search"></i> Laporan Penjualan </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_jb/" target="_blank">
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_jb/">
                                     <i class="fa fa-print"></i> Rekap per Jenis Barang Gabungan</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_jb2/" target="_blank">
-                                    <i class="fa fa-print"></i> Rekap per Jenis Barang KMP</a>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_jb2/">
+                                    <i class="fa fa-print"></i> Rekap per Jenis Barang KKH</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_customer/" target="_blank">
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_customer/">
                                     <i class="fa fa-print"></i> Rekap per Customer Gabungan</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_customer2/" target="_blank">
-                                    <i class="fa fa-print"></i> Rekap per Customer KMP</a>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_customer2/">
+                                    <i class="fa fa-print"></i> Rekap per Customer KKH</a>
                                 </li>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_piutang/" target="_blank">
-                                    <i class="fa fa-print"></i> Penjualan Piutang</a>
+                                    <i class="fa fa-print"></i> Penjualan Piutang Belum Lunas</a>
                                 </li>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/search_penerimaan/">
