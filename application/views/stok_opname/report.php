@@ -73,6 +73,10 @@
                             ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/StokOpname/<?= ($jenis == 'FG')? 'view' : 'view_rongsok' ?>/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-file"></i> View &nbsp; </a>
+                            <?php if($jenis == 'FG'){ ?>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/StokOpname/<?= ($jenis == 'FG')? 'print_stok_fg_per_tanggal' : '' ?>/<?php echo $data->id; ?>" 
+                                target="_blank" style="margin-bottom:4px"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>                                
+                            <?php } ?>
                             <?php
                                 }
                             ?>
