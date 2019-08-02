@@ -288,6 +288,14 @@ class StokOpname extends CI_Controller{
         $this->load->view('stok_opname/print_stok', $data);
     }
 
+    function print_stok_fg_per_tanggal($id){
+        $this->load->helper('tanggal_indo');  
+        $this->load->model('Model_stok_opname');
+        $data['detailLaporan'] = $this->Model_stok_opname->print_stok_v2($id)->result();
+        // print_r($data); die();
+        $this->load->view('stok_opname/print_stok_fg_per_tanggal', $data);
+    }
+
     function refreshData(){
         $id = $this->input->post('id');
 

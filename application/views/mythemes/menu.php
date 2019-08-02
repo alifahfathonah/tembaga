@@ -1026,10 +1026,20 @@
                     </a>
                     <ul class="sub-menu">
                     <?php if($group_id==1 || (isset($akses_menu['view_um']) && $akses_menu['view_um']==1)){ ?>
-                        <li>
+                        <!-- <li>
                             <a href="<?php echo base_url(); ?>index.php/Finance">
                             <i class="fa fa-file-word-o"></i>
                             Uang Masuk </a>
+                        </li> -->
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/Finance/cek_masuk">
+                            <i class="fa fa-file-o"></i>
+                            Cek Masuk </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/Finance/bank_masuk">
+                            <i class="fa fa-file-o"></i>
+                            Bank Masuk </a>
                         </li>
                     <?php } if($group_id==1 || (isset($akses_menu['matching']) && $akses_menu['matching']==1)){ ?>
                         <li>

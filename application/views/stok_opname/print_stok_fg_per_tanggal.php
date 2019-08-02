@@ -13,15 +13,15 @@
          </style>
      </head>
      <body>
-         <h2 align="center"><b><u>Daftar Stok Saat Ini</u></b></h2>
+         <h2 align="center"><b><u>Stok Opname</u></b></h2>
          <table width="100%">
             <tr>
                 <td width="33%">&nbsp;</td>
                 <?php
-                $tanggal = tanggal_indo(date("Y-m-d"));
+                $tanggal = tanggal_indo($detailLaporan[0]->tanggal);
                 $split = explode('-', $tanggal);
                 ?>
-                <td width="34%" align="center"><h3>As Of : <?=date('h:i:s').' '.$split['0'].' '.$split['1'].' '.$split['2'];?></h3></td>
+                <td width="34%" align="center"><h3>As Of : <?= $tanggal ?></h3></td>
                 <td width="33%">&nbsp;</td>
             </tr>
         </table>
