@@ -2951,4 +2951,84 @@ class Finance extends CI_Controller{
                 $data['detailLaporan'] = $this->Model_finance->trx_keluar_masuk($start,$end,$l)->result();
             $this->load->view('finance/print_trx', $data);
     }
+
+    function cek_masuk(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');   
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "finance/cm";
+        $this->load->model('Model_finance');
+        $data['list_data'] = $this->Model_finance->list_data_cm($ppn)->result();
+        $data['list_customer'] = $this->Model_finance->customer_list()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function add_cm(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Finance";
+        $data['content']   = "finance/add_cm";
+        
+        $this->load->model('Model_finance');
+        $data['customer_list'] = $this->Model_finance->customer_list()->result();
+        $data['bank_list'] = $this->Model_finance->bank_list($ppn)->result();
+        $this->load->view('layout', $data); 
+    }
+
+    function bank_masuk(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');   
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "finance/bm";
+        $this->load->model('Model_finance');
+        $data['list_data'] = $this->Model_finance->list_data_bm($ppn)->result();
+        $data['list_customer'] = $this->Model_finance->customer_list()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function add_bm(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Finance";
+        $data['content']   = "finance/add_bm";
+        
+        $this->load->model('Model_finance');
+        $data['customer_list'] = $this->Model_finance->customer_list()->result();
+        $data['bank_list'] = $this->Model_finance->bank_list($ppn)->result();
+        $this->load->view('layout', $data); 
+    }
 }
