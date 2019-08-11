@@ -66,14 +66,21 @@
                         <td style="background-color: "><?php echo $data->no_spb_wip; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->pic; ?></td>
-                        <?php if($data->flag_produksi==2){
+                        <?php 
+                            if($data->flag_produksi==0){
+                                $flag_produksi = 'SDM';
+                            }else if($data->flag_produksi==2){
                                 $flag_produksi = 'ROLLING';
                             }else if($data->flag_produksi==3){
                                 $flag_produksi = 'CUCI';
                             }else if($data->flag_produksi==5){
                                 $flag_produksi = 'KIRIM KE RONGSOK';
-                            }else{
-                                $flag_produksi = 'SDM';
+                            }else if($data->flag_produksi==6){
+                                $flag_produksi = 'SO';
+                            }else if($data->flag_produksi==7){
+                                $flag_produksi = 'Retur';
+                            }else if($data->flag_produksi==8){
+                                $flag_produksi = 'Repacking';
                             } ?>
                         <td><?=$flag_produksi;?></td>
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
@@ -116,7 +123,7 @@
                                 if(($group_id==1 || $group_id==21 || $hak_akses['edit_spb']==1) && $data->jumlah_fulfilment==0 && $data->flag_produksi!=5){
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/GudangWIP/edit_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
-                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/GudangWIP/delete_spb/<?php echo $data->id; ?>/<?= $data->flag_produksi ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-trash"></i> Hapus &nbsp; </a>
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/GudangWIP/delete_spb/<?php echo $data->id; ?>/<?= $data->flag_produksi ?>" onclick="return confirm('Anda yakin menghapus transaksi ini?');" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-trash"></i> Hapus &nbsp; </a>
                             <?php   
                                 }
                                 if($group_id==1 || $group_id==21 || $hak_akses['print_spb']==1){

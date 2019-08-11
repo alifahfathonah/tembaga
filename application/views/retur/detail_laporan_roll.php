@@ -2,9 +2,9 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Gudang FG
-            <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/GudangFG/edit_laporan'); ?>"> Detail Laporan Produksi FG </a> 
+            <i class="fa fa-angle-right"></i> Retur 
+            <i class="fa fa-angle-right"></i>  
+            <a href="<?php echo base_url('index.php/Retur/edit'); ?>"> Edit Data Retur </a> 
         </h5>          
     </div>
 </div>
@@ -23,20 +23,19 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/GudangFG/update_laporan'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/Retur/update'); ?>">          
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
-                            No. Laporan <font color="#f00">*</font>
+                            No. Retur <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_prd" name="no_prd" readonly="readonly"
+                            <input type="text" id="no_retur" name="no_retur" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['no_laporan_produksi']; ?>">
+                                value="<?php echo $header['no_retur']; ?>">
                             
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
-                            <input type="hidden" id="ukuran" name="ukuran" value="<?php echo $header['ukuran']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -45,66 +44,103 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal"
-                                class="form-control input-small myline" style="margin-bottom:5px; float:left;" 
-                                value="<?=$header['tanggal'];?>">
+                                class="form-control myline input-small" style="margin-bottom:5px; float:left" 
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            PIC
+                            Jenis Barang <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="pembuat" name="pembuat" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['pembuat']; ?>">
+                            <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['jenis_barang']; ?>">
                         </div>
-                    </div>         
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Surat Jalan
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_sj" name="no_sj" 
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_sj']; ?>">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">
                             <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px"><?=$header['remarks'];?></textarea>                           
+                                class="form-control myline" style="margin-bottom:5px"><?php echo  $header['remarks']; ?></textarea>                           
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
                 </div>
-                <div class="col-md-2">&nbsp;</div>
-                <div class="col-md-5">
+                <div class="col-md-1">&nbsp;</div>
+                <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            Jenis Barang <font color="#f00">*</font>
+                            Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['jenis_barang']; ?>">
-                                
-                            <input type="hidden" name="jenis_barang_id" value="<?=$header['jenis_barang_id'];?>">                         
+                            <input type="text" id="m_customer_id" name="m_customer_id" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?= (($this->session->userdata('user_ppn') == 1)? $header['nama_customer'] : $header['nama_customer_kh']) ?>">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Contact Person
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="contact_person" name="contact_person" readonly="readonly"
+                                   class="form-control myline" style="margin-bottom:5px" value="<?= (($this->session->userdata('user_ppn') == 1)? $header['pic'] : $header['pic_kh']) ?>">
+                        </div>
+                    </div>       
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nama Penimbang
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $header['penimbang']; ?>">
+                        </div>
+                    </div>             
                     <div class="row">
                         <div class="col-md-4">
                             Jenis Packing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="jenis_packing" name="jenis_packing" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['jenis_packing']; ?>">                         
+                            <input type="text" id="jenis_packing_id" name="jenis_packing_id" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['jenis_packing']; ?>">
                         </div>
                     </div>
-    <?php
-        if(($group_id==1 && !$header['flag_result']) || (!$header['flag_result'])){
-    ?>
-                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            Type Retur <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <?php if ($header['jenis_retur'] == 0){ ?>
+                            <input type="text" id="type_retur" name="type_retur" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="Ganti Barang">
+                            <?php } else if ($header['jenis_retur'] == 1){ ?>
+                            <input type="text" id="type_retur" name="type_retur" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="Mengurangi Hutang">
+                            <?php } ?>
+                        </div>
+                    </div> 
                     <div class="row">
                         <div class="col-md-4">
                             Pilih Packing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select  id="no_packing" name="no_packing" placeholder="Silahkan pilih..." 
-                                class="form-control myline select2me" style="margin-bottom:5px">
+                            <select  id="no_packing" name="no_packing" placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom:5px">
                                 <option value=""></option>
                                 <?php 
                                 foreach($packing as $p){
@@ -114,30 +150,39 @@
                             </select> 
                             <input type="hidden" name="id_packing" id="id_packing">                       
                         </div>
-                    </div>
+                    </div>                    
                 </div>              
             </div>
-            <hr class="divider"/>
-            <h4 class="text-center">Detail Produksi List</h4>
             
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
-                        <table class="table table-bordered table-striped table-hover">
+                        <table class="table table-bordered table-striped table-hover" id="tabel_dtr">
                             <thead>
-                                <th>No</th>
-                                <th>No Produksi</th>
+                                <th style="width:40px">No</th>
+                                <th style="width:20%">Nama Item Finish Good</th>
+                                <th>UOM</th>
                                 <th></th>
                                 <th>Netto (Kg)</th>
-                                <th>Nomor Packing / Barcode</th>
-                                <th width="20%">Actions</th>
+                                <th>No. Packing</th>
+                                <th>Action</th>
                             </thead>
                             <tbody id="boxDetail">
-
                             </tbody>
                             <tr>
                                 <td style="text-align:center"><i class="fa fa-plus"></td>
-                                <td><input type="text" id="no_produksi" name="no_produksi" class="form-control myline"></td>
+                                <td>
+                                    <select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom(this.value)">
+                                        <option value=""></option>
+                                        <?php foreach ($jenis_barang_list as $value){ ?>
+                                                <option value='<?=$value->id;?>'>
+                                                    <?='('.$value->kode.') '.$value->jenis_barang;?>
+                                                </option>
+                                        <?php } ?>
+                                    </select>
+                                </td>
+                                <td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"/></td>
+                                <input type="hidden" id="ukuran" name="ukuran">
                                 <td><a href="javascript:;" onclick="timbang_netto()" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>
                                 <td><input type="text" id="netto" name="netto" class="form-control myline"/></td>
                                 <td><input type="text" value="Auto" class="form-control myline" readonly="readonly"></td>
@@ -152,60 +197,13 @@
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
-                        
-                    <a href="<?php echo base_url('index.php/GudangFG/produksi_fg'); ?>" class="btn blue-hoki"> 
+
+                    <a href="<?php echo base_url('index.php/Retur/'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
         </form>
         <?php
-        }else{
-        ?>
-            </div>              
-        </div>
-        <hr class="divider"/>
-        <h4 class="text-center">Detail Produksi List</h4>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="table-scrollable">
-                        <table class="table table-bordered table-striped table-hover">
-                            <thead>
-                                <th>No</th>
-                                <th>Bruto</th>
-                                <th>Netto (Kg)</th>
-                                <th>Nomor Packing / Barcode</th>
-                                <th>Keterangan</th>
-                            </thead>
-                            <tbody>
-                            <?php
-                                $no=0;
-                                foreach ($myDetail as $row) {
-                                $no++;
-                            ?>
-                            <tr>
-                                <td style="text-align:center;"><?php echo $no; ?></td>
-                                <td><?php echo $row->bruto; ?></td>
-                                <td><?php echo $row->netto; ?></td>       
-                                <td><?php echo $row->no_packing_barcode; ?></td>
-                                <td><?php echo $row->keterangan; ?></td>
-                            </tr>
-                            <?php
-                                }
-                            ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="row">&nbsp;</div>
-            <div class="row">
-                <div class="col-md-12">                        
-                    <a href="<?php echo base_url('index.php/GudangFG/produksi_fg'); ?>" class="btn blue-hoki"> 
-                        <i class="fa fa-angle-left"></i> Kembali </a>
-                </div>    
-            </div>
-        <?php
-        }//if flag
             }else{
         ?>
         <div class="alert alert-danger">
@@ -238,7 +236,7 @@ function simpanData(){
 function loadDetail(id){
     $.ajax({
         type:"POST",
-        url:'<?php echo base_url('index.php/GudangFG/load_detail_roll'); ?>',
+        url:'<?php echo base_url('index.php/Retur/load_detail_roll'); ?>',
         data:"id="+ id,
         success:function(result){
             $('#boxDetail').html(result);     
@@ -246,17 +244,17 @@ function loadDetail(id){
     });
 }
 
-function get_packing(id){
+function get_uom(id){
     if(''!=id){
     $.ajax({
-        url: "<?php echo base_url('index.php/GudangFG/get_bobbin'); ?>",
-        async: false,
+        url: "<?php echo base_url('index.php/GudangFG/get_uom'); ?>",
         type: "POST",
         data: "id="+id,
         dataType: "json",
         success: function(result) {
             if(result){
-                $('#id_packing').val(result['id']);
+                $('#uom').val(result['uom']);
+                $('#ukuran').val(result['ukuran']);
             } else {
                 alert('Bobbin/Keranjang tidak ditemukan, coba lagi');
                 $('#no_packing').val('');
@@ -274,13 +272,12 @@ function saveDetail(){
         $('#message').html("Silahkan pilih packing barang!");
         $('.alert-danger').show(); 
     } else{
-        console.log($('#no_produksi').val());
         $.ajax({
             type:"POST",
-            url:'<?php echo base_url('index.php/GudangFG/save_detail_roll'); ?>',
+            url:'<?php echo base_url('index.php/Retur/save_detail_roll'); ?>',
             data:{
                 id:$('#id').val(),
-                no_produksi: $('#no_produksi').val(),
+                jenis_barang: $('#jenis_barang_id').val(),
                 tanggal: $('#tanggal').val(),
                 netto: $('#netto').val(),
                 ukuran: $('#ukuran').val(),
@@ -290,10 +287,9 @@ function saveDetail(){
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
-                    $('#no_produksi').val('');
-                    $('#bruto').val('');
-                    $('#berat_bobbin').val('');
+                    $('#jenis_barang_id').select2('val','');
                     $('#netto').val('');
+                    $('#uom').val('');
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{
@@ -310,7 +306,7 @@ function hapusDetail(id){
     if (r==true){
         $.ajax({
             type:"POST",
-            url:'<?php echo base_url('index.php/GudangFG/delete_detail'); ?>',
+            url:'<?php echo base_url('index.php/Retur/delete_detail'); ?>',
             data:"id="+ id,
             success:function(result){
                 if(result['message_type']=="sukses"){
@@ -324,15 +320,13 @@ function hapusDetail(id){
 }
 
 function printBarcode(id){
-    window.open('<?php echo base_url('index.php/GudangFG/print_barcode_kardus?id=');?>'+id,'_blank');
+    window.open('<?php echo base_url('index.php/Retur/print_barcode_kardus?id=');?>'+id,'_blank');
 }
 </script>
-
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
-<script>    
-    loadDetail(<?php echo $header['id']; ?>);
+<script>
 $(function(){        
     $("#tanggal").datepicker({
         showOn: "button",
@@ -341,7 +335,8 @@ $(function(){
         buttonText: "Select date",
         changeMonth: true,
         changeYear: true,
-        dateFormat: 'dd-mm-yy'
-    });       
+        dateFormat: 'yy-mm-dd'
+    });
+    loadDetail(<?php echo $header['id']; ?>);
 });
 </script>

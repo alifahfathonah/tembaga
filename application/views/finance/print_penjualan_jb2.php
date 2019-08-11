@@ -28,12 +28,32 @@
         <?php 
         $no = 1; 
         $last_series = null;
+        $last_series2 = null;
+        $ni2 = 0;
+        $nt2 = 0;
         $ni = 0;
         $nt = 0;
         $nilai_invoice = 0;
         $nilai_netto = 0;
         foreach($detailLaporan as $row){ 
           $total_harga = $row->total_harga + $row->nilai_ppn;
+
+          if($last_series!=$row->flag_tolling && $last_series != null){
+            $last_series2 = '0';
+          }
+
+          if($last_series2!=substr($row->kode_barang,0,2) && $last_series2 != null){
+            echo '
+          <tr>
+            <td colspan="3" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total per Kode</strong></td>
+            <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;">'.number_format($nt2,2,',','.').'</td>
+            <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;">'.number_format($ni2,2,',','.').'</td>
+            <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid; border-right: 1px solid;"></td>
+          </tr>';
+        $ni2 = 0;
+        $nt2 = 0;
+          }
+
           if($last_series!=$row->flag_tolling && $last_series != null){
             echo '
           <tr>
@@ -52,17 +72,26 @@
                 <?php echo ($last_series==$row->kode_barang) ? '<td style="border-left:1px solid #000">' : '<td style="border-top: 1px solid;border-left: 1px solid;">'.$row->kode_barang ; ?></td>
                 <?php echo ($last_series==$row->kode_barang) ? '<td style="border-left:1px solid #000">' : '<td style="border-top: 1px solid;border-left: 1px solid;">'.$row->nama_barang; ?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto,2,',','.');?></td>
-                <td style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->total_harga,2,',','.');?></td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->total_harga,2,',','.');?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?= ($row->flag_tolling==0) ? 'SO Biasa' : 'SO Tolling'; ?></td>
         <?php 
           // ($last_series==$row->flag_tolling)?'':$no++;
           $no++;
+          $last_series2 = substr($row->kode_barang,0,2);
           $last_series = $row->flag_tolling;
+          $ni2 +=$row->total_harga;
+          $nt2 += $row->netto;
           $ni +=$row->total_harga;
           $nt += $row->netto;
           $nilai_invoice +=$row->total_harga;
           $nilai_netto += $row->netto;
           } ?>
+          <tr>
+            <td colspan="3" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total per Kode</strong></td>
+            <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;"><?=number_format($nt2,2,',','.');?></td>
+            <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;"><?=number_format($ni2,2,',','.');?></td>
+            <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid; border-right: 1px solid;"></td>
+          </tr>
           <tr>
             <td colspan="3" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total</strong></td>
             <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;"><?=number_format($nt,2,',','.');?></td>

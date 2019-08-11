@@ -37,15 +37,15 @@
             <div class="portlet-body">
                 <table class="table table-striped table-bordered table-hover" id="sample_6">
                 <thead>
-                <tr>
-                    <th style="text-align: center">No</th>
-                    <th>No. Invoice Jasa</th>
-                    <th>Tanggal</th>
-                    <th>No. Surat Jalan</th>
-                    <th>No. Sales Order<br>No. Purchase Order</th>
-                    <th>Customer</th>
-                    <th style="text-align: center;">Actions</th>
-                </tr>
+                    <tr>
+                        <th style="text-align: center">No</th>
+                        <th>No. Invoice Jasa</th>
+                        <th>Tanggal</th>
+                        <th>No. Surat Jalan</th>
+                        <th>No. Sales Order<br>No. Purchase Order</th>
+                        <th>Customer</th>
+                        <th style="text-align: center;">Actions</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <?php 

@@ -153,6 +153,7 @@
                                 <th>Nama Item</th>
                                 <th>No. Packing</th>
                                 <th>Bruto (Kg)</th>
+                                <th>Berat (Kg)</th>
                                 <th>Netto (Kg)</th>
                                 <th>Bobbin</th>
                                 <th>Keterangan</th>
@@ -167,6 +168,7 @@
                                     '<input type="hidden" id="nama_barang_alias_'.$no.'" name="details['.$no.'][nama_barang_alias]" class="form-control myline" value="">'.
                                     '<td><input type="text" id="no_packing_'.$no.'" name="details['.$no.'][no_packing]" class="form-control myline" readonly="readonly" value="'.$row->no_packing.'"></td>'.
                                     '<td><input type="text" id="bruto_'.$no.'" name="details['.$no.'][bruto]" class="form-control myline" readonly="readonly" value="'.$row->bruto.'"></td>'.
+                                    '<td><input type="text" id="netto_'.$no.'" name="details['.$no.'][berat_bobbin]" class="form-control myline" readonly="readonly" value="'.$row->berat_bobbin.'"></td>'.
                                     '<td><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" class="form-control myline" readonly="readonly" value="'.$row->netto.'"></td>'.
                                     '<td><input type="text" id="bobbin_'.$no.'" name="details['.$no.'][bobbin]" class="form-control myline" readonly="readonly" value="'.$row->nomor_bobbin.'"></td>'.
                                     '<td><input type="text" id="line_remarks_'.$no.'" name="details['.$no.'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" value="'.$row->keterangan.'" readonly="readonly"></td>'.

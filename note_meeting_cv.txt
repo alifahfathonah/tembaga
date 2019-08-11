@@ -50,4 +50,31 @@ create voucher kalo masih 0 terus di input create voucher. status berubah jadi s
 
 SPB scan gaboleh beda ukuran
 
-CM dibedain input dan view nya. kasih menu baru.
+ubahin data nilai INV dan detailnya di KMP1 yang nomor 
+0707 (done)
+0712 (done)
+0774 (done)
+
+masih ada materai di laporan penjualan(done)
+
+spb fg global. untuk kirim rongsok.(done) 
+
+retur sj belum insert berat(done)
+
+create voucher rsk cek lagi(done)
+
+matching voucher ke klik 2x(done)
+
+print laporan fg masih ke rongsok. print rongsok error
+
+edit customer di matching invoice
+
+produksi fg dan po show 1 bulan terakhir aja
+
+bp berat packing nya otomatis sesuai yg dipilih
+
+laporan piutan gaada sj(done)
+
+repacking tandain
+
+saldo harian di laporan sisa so masih salah(done)

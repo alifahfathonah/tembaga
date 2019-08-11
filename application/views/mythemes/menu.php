@@ -1090,6 +1090,10 @@
                                     <i class="fa fa-search"></i> Laporan Penjualan </a>
                                 </li>
                                 <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/laporan_penjualan_per_jb/">
+                                    <i class="fa fa-search"></i> Laporan Penjualan per Jenis Barang </a>
+                                </li>
+                                <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_jb/">
                                     <i class="fa fa-print"></i> Rekap per Jenis Barang Gabungan</a>
                                 </li>

@@ -120,7 +120,6 @@ class GudangRongsok extends CI_Controller{
                         //bulan ini
                         $data['reg'][$i]['showdate']=$r->showdate;
                         $data['reg'][$i]['tanggal']=$r->tanggal;
-                        $data['reg'][$i]['jumlah']=$r->jumlah;
                         $data['reg'][$i]['bruto_masuk']=$r->bruto_masuk;
                         $data['reg'][$i]['netto_masuk']=$r->netto_masuk;
                         $data['reg'][$i]['bruto_keluar']=$r->bruto_keluar;
@@ -308,7 +307,7 @@ class GudangRongsok extends CI_Controller{
             $bulan=$tgl[1];
 
             $tgl = $tahun.'/'.$bulan.'/01';
-            print_r($tgl); die();
+            // print_r($tgl); die();
             $data['tgl'] = array(
                 'tahun' => $tahun,
                 'bulan' => $bulan
@@ -343,7 +342,7 @@ class GudangRongsok extends CI_Controller{
 
             $data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_dari_produksi($start,$end)->result();
 
-            $this->load->view('gudang_rongsok\print_permintaan_gudang', $data);
+            $this->load->view('gudang_rongsok/print_permintaan_gudang', $data);
     }
 
     function search_permintaan_gudang(){
@@ -369,31 +368,14 @@ class GudangRongsok extends CI_Controller{
 
         $start = date('Y/m/d', strtotime($_GET['ts']));
         $end = date('Y/m/d', strtotime($_GET['te']));
-    }
 
-    function print_laporan_bulanan_detail(){
-        $module_name = $this->uri->segment(1);
-        $id = $this->uri->segment(3);
-        if($id){
-            $group_id    = $this->session->userdata('group_id');       
-            if($group_id != 1){
-                $this->load->model('Model_modules');
-                $roles = $this->Model_modules->get_akses($module_name, $group_id);
-                $data['hak_akses'] = $roles;
-            }
-            $data['group_id']  = $group_id;
-            $data['judul']     = "Gudang Rongsok";
-
-        $this->load->model('Model_beli_rongsok');
         $data['start'] = $start;
         $data['end'] = $end;
 
+        $this->load->model('Model_beli_rongsok');
             $data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_external($start,$end)->result();
 
-            $this->load->view('gudang_rongsok\print_permintaan_external', $data);
-        }else{
-            redirect('index.php/BeliRongsok/laporan_list');
-        }
+            $this->load->view('gudang_rongsok/print_permintaan_external', $data);
     }
 
     function search_permintaan_external(){
@@ -408,25 +390,25 @@ class GudangRongsok extends CI_Controller{
         $data['judul']     = "Gudang Rongsok";
         $data['content']   = "gudang_rongsok/search_permintaan_external";
 
-        $this->load->model('Model_beli_rongsok');
+        // $this->load->model('Model_beli_rongsok');
 
         $this->load->view('layout', $data);  
 
             $this->load->helper('tanggal_indo');            
-            $items = strval($id);
-            $tgl=str_split($id,4);
-            $tahun=$tgl[0];
-            $bulan=$tgl[1];
+            // $items = strval($id);
+            // $tgl=str_split($id,4);
+            // $tahun=$tgl[0];
+            // $bulan=$tgl[1];
 
-            $tgl = $tahun.'/'.$bulan.'/01';
+            // $tgl = $tahun.'/'.$bulan.'/01';
 
-            $data['tgl'] = array(
-                'tahun' => $tahun,
-                'bulan' => $bulan
-            );
+            // $data['tgl'] = array(
+            //     'tahun' => $tahun,
+            //     'bulan' => $bulan
+            // );
 
-            $this->load->model('Model_beli_rongsok');
-            $data['detailLaporan'] = $this->Model_beli_rongsok->show_laporan_barang_detail($tgl,$bulan,$tahun)->result();
-            $this->load->view("gudang_rongsok/print_laporan_bulanan_detail", $data);
+            // $this->load->model('Model_beli_rongsok');
+            // $data['detailLaporan'] = $this->Model_beli_rongsok->show_laporan_barang_detail($tgl,$bulan,$tahun)->result();
+            // $this->load->view("gudang_rongsok/print_laporan_bulanan_detail", $data);
     }
 }

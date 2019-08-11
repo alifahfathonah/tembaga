@@ -1,17 +1,17 @@
 <div class="row">
     <div class="col-md-12 alert-warning alert-dismissable">        
-        <h5 style="color:navy">
+        <h4 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Retur'); ?>"> Retur </a> 
-        </h5>          
+            <i class="fa fa-angle-right"></i> Ambil Rongsok
+        </h4>          
     </div>
 </div>
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12"> 
+
         <?php
-            if( ($group_id==1)||($hak_akses['index']==1) ){
+            if( ($group_id==166)||($hak_akses['index']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -24,31 +24,25 @@
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-beer"></i>Retur List
-                </div>  
-                <div class="tools">    
-                <?php
-                    if( ($group_id==1)||($hak_akses['add']==1) ){
-                        echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/Retur/add').'"> '
-                        .'<i class="fa fa-plus"></i> Input Retur </a>';
-                    }
-                ?>                    
+                    <i class="fa fa-beer"></i>List Ambil Rongsok
+                </div>
+                <div class="tools">
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_Rongsok/add">
+                        <i class="fa fa-plus"></i> Tambah</a>
                 </div>
             </div>
-            
             <div class="portlet-body">
                 <table class="table table-striped table-bordered table-hover" id="sample_6">
                 <thead>
                 <tr>
                     <th style="width:50px;">No</th>
-                    <th>No. Retur</th>
+                    <th>No. DTR</th>
                     <th>Tanggal</th>
-                    <th>Customer</th>
-                    <th>PIC</th>
+                    <th>No. PO</th>
+                    <th>Supplier</th>
                     <th>Penimbang</th>
                     <th>Jumlah <br>Items</th>
-                    <th>Tipe <br>Retur</th>
-                    <th>Pemenuhan</th>
+                    <th>Remarks</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -61,14 +55,13 @@
                     ?>
                     <tr>
                         <td style="text-align:center;"><?php echo $no; ?></td>
-                        <td style="background-color: "><?php echo $data->no_retur; ?></td>
+                        <td style="background-color: "><?php echo $data->no_dtr; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <td><?php echo $data->nama_customer; ?></td>
-                        <td><?php echo $data->pic; ?></td>
+                        <td><?php echo $data->no_po; ?></td>
+                        <td><?php echo $data->nama_supplier; ?></td>
                         <td><?php echo $data->penimbang; ?></td>                        
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
-                        <td><?php echo (($data->jenis_retur==0)? "Ganti Barang": "Ganti Voucher"); ?></td>
-                        <?php echo (($data->spb_id==0 && $data->flag_taken==0)? "<td style='background-color:orange; color: white;'>Belum ada pengganti": "<td style='background-color:green; color: white;'>Sudah ada pengganti"); ?></td>
+                        <td><?php echo $data->remarks; ?></td>
                         <td style="text-align:center">
                             <?php 
                                 if($data->status==0){ 
@@ -79,25 +72,23 @@
                                     echo '<div style="background-color:red; padding:4px; color:white">Rejected</div>';
                                 }
                             ?>
-                        </td>
-                        <td style="text-align:center">
+                        </td>                        
+                        <td style="text-align:center"> 
                             <?php
-                                if( ($group_id==1 || $hak_akses['view_retur']==1)/* && $data->ready_to_ttr>0*/){
-                                    echo '<a class="btn btn-circle btn-xs green-seagreen" href="'.base_url().'index.php/Retur/view/'.$data->id.'" 
-                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-book"></i> View &nbsp; </a>';
-                                }                                                      
-                                if($group_id==1 || $hak_akses['print_retur']==1){
-                                    echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Retur/print/'.$data->id.'" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
+                                if(($group_id==16) && $data->status!=1){
+                                    echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/R_Rongsok/edit/'.$data->id.'" 
+                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit &nbsp; </a> ';
                                 }
-                                if(($group_id==1 || $hak_akses['create_invoice']==1) && $data->jenis_retur==1 && $data->status==1 && $data->flag_taken==0){
-                                    echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/Retur/add_invoice/'.$data->id.'" 
-                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Create Hutang Invoice &nbsp; </a> ';
+                                // if ($data->status==0 && ((($data->supplier_id==0 || strpos($data->kode_supplier, '999') !== false) && $data->customer_id==0) || ($data->customer_id > 0 && $data->retur_id > 0)) ){
+                                //     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliRongsok/proses_dtr/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
+                                // }
+                                if($group_id==16 || $hak_akses['print_dtr']==1){
+                                    echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliRongsok/print_dtr/'.$data->id.'" 
+                                        style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }
-                                if(($group_id==1 || $hak_akses['edit']==1) && $data->status==0){
-                                     echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/Retur/edit/'.$data->id.'" style="margin-bottom:4px"><i class="fa fa-edit"></i> Edit &nbsp;</a> ';
-                                }
-                                if(($group_id==1 || $hak_akses['delete']==1) && $data->status!=1){
-                                     echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/Retur/delete/'.$data->id.'" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash"></i> Delete &nbsp;</a> ';
+                                if(($group_id==16 || $hak_akses['revisi_dtr']==1) && $data->status!=1){
+                                    echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/R_Rongsok/delete_dtr/'.$data->id.'" 
+                                        style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"> &nbsp; <i class="fa fa-trash"></i> Delete &nbsp; </a> ';
                                 }
                             ?>
                         </td>
@@ -128,4 +119,4 @@
 $(function(){    
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });
-</script>         
+</script>

@@ -65,7 +65,7 @@
                         <td style="text-align:center;"><?php echo $no; ?></td>
                         <td><?php echo $data->no_pengajuan; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tgl_pengajuan)); ?></td>
-                        <td><?php echo $data->realname; ?></td>
+                        <td><?php echo $data->nama_pengaju; ?></td>
                         <td>
                         <?php 
                             if($data->jenis_kebutuhan==1){

@@ -30,6 +30,16 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
+                            No. PO Terakhir <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_po" name="no_po" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px"
+                                value="<?=$no['no_po'];?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             No. PO <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -146,19 +156,30 @@
                     </div>
                     <?php if($this->session->userdata('user_ppn')==1){?>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             PPN
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-4">
                             <select id="ppn" name="ppn" class="form-control myline" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                 <option value="1">Yes</option>
                                 <option value="0">No</option>
                             </select>
                         </div>
+                        <div class="col-md-2">
+                            Jenis
+                        </div>
+                        <div class="col-md-4">
+                            <select id="type" name="type" class="form-control myline" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value="0">KMP</option>
+                                <option value="1">Bodong</option>
+                            </select>
+                        </div>
                     </div>
                     <?php } else{ ?>
                         <input type="hidden" id="ppn" name="ppn" value="0">
+                        <input type="hidden" id="type" name="type" value="0">
                     <?php } ?>
                     </div>
                 </div>              

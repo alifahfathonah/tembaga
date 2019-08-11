@@ -167,7 +167,7 @@
                             Discount
                         </div>
                         <div class="col-md-4">
-                            <input type="text" id="diskon" name="diskon" class="form-control myline" style="margin-bottom:5px" onkeyup="getComa(this.value, this.id)">
+                            <input type="text" id="diskon" name="diskon" class="form-control myline" placeholder="%" style="margin-bottom:5px" onkeyup="getComa(this.value, this.id)">
                         </div>
                     <?php if($this->session->userdata('user_ppn')==1){?>
                         <div class="col-md-2">
@@ -195,8 +195,8 @@
                                 <th>
                                     <input type="checkbox" id="check_all" name="check_all" onclick="checkAll()" class="form-control">
                                 </th>
-                                <th>Nama Item Spare Part</th>
-                                <th>Unit of Measure</th>
+                                <th width="25%">Nama Item Spare Part</th>
+                                <th width="10%">Unit of Measure</th>
                                 <th>Harga</th>
                                 <th>Jumlah</th>
                                 <th>Sub Total</th>
@@ -221,7 +221,7 @@
                                             . 'readonly="readonly"></td>';
                                     echo '<td><input type="text" id="harga_'.$no.'" name="myDetails['.$no.'][harga]" '
                                             . 'class="form-control myline" value="0" '
-                                            . 'onkeydown="return myCurrency(event);" onkeyup="hitungSubTotal('.$no.');"></td>';
+                                            . 'onkeyup="hitungSubTotal('.$no.');"></td>';
                                     echo '<td><input type="text" id="qty_'.$no.'" name="myDetails['.$no.'][qty]" '
                                             . 'class="form-control myline" value="'.$row->qty.'" '
                                             . 'readonly="readonly"></td>';
@@ -273,8 +273,8 @@ function get_contact(id){
 }
 
 function getComa(value, id){
-    angka = value.toString().replace(/\./g, "");
-    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    angka = value.toString().replace(/\,/g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }
 
 function get_cur(id){
@@ -286,20 +286,14 @@ function get_cur(id){
     }
 }
 
-function myCurrency(evt) {
-    var charCode = (evt.which) ? evt.which : event.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
-        return false;
-    return true;
-}
-
 function hitungSubTotal(id){
-    harga = $('#harga_'+id).val().toString().replace(/\./g, "");
-    qty   = $('#qty_'+id).val().toString().replace(/\./g, "");
+    harga = $('#harga_'+id).val().toString().replace(/\,/g, "");
+    qty   = $('#qty_'+id).val().toString().replace(/\,/g, "");
     total_harga = Number(harga)* Number(qty);
+    total_harga = total_harga.toFixed(2);
     
-    $('#harga_'+id).val(harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
-    $('#total_harga_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    $('#harga_'+id).val(harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+    $('#total_harga_'+id).val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
     $('#uniform-check_'+id+' span').attr('class', 'checked');
     $('#check_'+id).attr('checked', true);

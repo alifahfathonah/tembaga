@@ -64,6 +64,7 @@ class SalesOrder extends CI_Controller{
     function add(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
+        $ppn = $this->session->userdata('user_ppn');
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -75,6 +76,10 @@ class SalesOrder extends CI_Controller{
         $this->load->model('Model_sales_order');
         $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
         $data['marketing_list'] = $this->Model_sales_order->marketing_list()->result();
+        $data['no_so_kmp'] = $this->Model_sales_order->get_last_so($ppn)->row_array();
+        if($ppn == 1){
+            $data['no_so_cv'] = $this->Model_sales_order->get_last_so_cv()->row_array();
+        }
         // $data['option_jenis_barang'] = $this->Model_sales_order->jenis_barang_list()->result();
         $this->load->view('layout', $data);
     }
@@ -394,6 +399,7 @@ class SalesOrder extends CI_Controller{
                 $num = $this->Model_m_numberings->getNumbering('SPB-FG', $tgl_input); 
                 $dataC = array(
                     'no_spb'=> $num,
+                    'jenis_spb'=> 6,//JENIS SPB SO
                     'tanggal'=> $tgl_input,
                     'keterangan'=> $code.' | '.$this->input->post('keterangan'),
                     'created_at'=> $tanggal,
@@ -407,6 +413,7 @@ class SalesOrder extends CI_Controller{
                 $dataC = array(
                     'no_spb_wip'=> $num,
                     'tanggal'=> $tgl_input,
+                    'flag_produksi'=> 6,//JENIS SPB SO
                     'keterangan'=> $code.' | '.$this->input->post('keterangan'),
                     'created'=> $tanggal,
                     'created_by'=> $user_id
@@ -418,6 +425,7 @@ class SalesOrder extends CI_Controller{
                 $num = $this->Model_m_numberings->getNumbering('SPB-RSK', $tgl_input);
                 $dataC = array(
                     'no_spb'=> $num,
+                    'jenis_spb'=> 6,//JENIS SPB SO
                     'jenis_barang'=> 1,
                     'tanggal'=> $tanggal,
                     'remarks'=> $code.' | '.$this->input->post('keterangan'),
@@ -430,6 +438,7 @@ class SalesOrder extends CI_Controller{
                 $num = $this->Model_m_numberings->getNumbering('SPB-AMP', $tgl_input);
                 $dataC = array(
                     'no_spb_ampas' => $num,
+                    'jenis_spb'=> 6,//JENIS SPB SO
                     'tanggal' => $tgl_input,
                     'keterangan'=> $code.' | '.$this->input->post('keterangan'),
                     'created_by' => $user_id,

@@ -623,8 +623,8 @@ class Model_sales_order extends CI_Model{
             left join sparepart sp on (tsj.jenis_barang = 'LAIN' and sp.id = tsjd.jenis_barang_id)
             left join jenis_barang jb on (jb.id = tsjd.jenis_barang_id)
                         where tsj.tanggal 
-                        between '".$s."' and '".$e."'
-                        group by jb.id, tsj.no_surat_jalan
+                        between '".$s."' and '".$e."' and so.flag_ppn=".$ppn."
+                        group by jbid, tsj.no_surat_jalan
                         order by tsj.tanggal, jenis_barang;");
         return $data;
     }
@@ -647,8 +647,8 @@ class Model_sales_order extends CI_Model{
             left join sparepart sp on (tsj.jenis_barang = 'LAIN' and sp.id = tsjd.jenis_barang_id)
             left join jenis_barang jb on (jb.id = tsjd.jenis_barang_id)
                         where tsj.tanggal 
-                        between '".$s."' and '".$e."'
-                        group by jb.id
+                        between '".$s."' and '".$e."' and so.flag_ppn = ".$ppn."
+                        group by jbid
                         order by so.flag_ppn, tsjd.jenis_barang_id");
         return $data;
     }
@@ -794,7 +794,7 @@ class Model_sales_order extends CI_Model{
         return $this->db->query("select sum(tsjd.netto) as netto from t_surat_jalan_detail tsjd
             left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
             left join sales_order so on so.id = tsj.sales_order_id
-            WHERE DAY(tsj.tanggal) = DAY(CURRENT_DATE()) and so.flag_ppn = ".$ppn."
+            WHERE tsj.tanggal = CURRENT_DATE() and so.flag_ppn = ".$ppn."
             ");
     }
 
@@ -809,8 +809,16 @@ class Model_sales_order extends CI_Model{
     function detail_harian_sog(){
         return $this->db->query("select sum(tsjd.netto) as netto from t_surat_jalan_detail tsjd
             left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
-            WHERE DAY(tsj.tanggal) = DAY(CURRENT_DATE())
+            WHERE tsj.tanggal = CURRENT_DATE()
             ");
+    }
+
+    function get_last_so($ppn){
+        return $this->db->query("select no_sales_order from sales_order where flag_ppn =".$ppn." order by no_sales_order desc limit 1");
+    }
+
+    function get_last_so_cv(){
+        return $this->db->query("select no_so from r_t_so order by no_so desc limit 1");
     }
 
     // Select tsjd.*, tsod.nama_barang_alias, COALESCE(tsod.nama_barang_alias, jb.jenis_barang,r.nama_item) as jenis_barang , COALESCE(jb.kode,r.kode_rongsok) as kode from t_surat_jalan_detail tsjd

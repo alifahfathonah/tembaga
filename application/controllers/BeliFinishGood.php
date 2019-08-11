@@ -1173,7 +1173,7 @@ class BeliFinishGood extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('VFG', $tgl_input);
-        if(($nilai_po-($nilai_dp+$amount))<0){
+        if(($nilai_po-($nilai_dp+$amount))>0){
             $jenis_voucher = 'DP';
         }else{
             $jenis_voucher = 'Pelunasan';

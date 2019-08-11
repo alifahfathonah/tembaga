@@ -138,13 +138,19 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-3">
                                     Currency <font color="#f00">*</font>
                                 </div>
-                                <div class="col-md-7">
+                                <div class="col-md-3">
                                     <input type="text" id="currency_po" name="currency_po" 
                                         class="form-control myline" style="margin-bottom:5px" 
                                         readonly="readonly">                                                                       
+                                </div>
+                                <div class="col-md-2">
+                                    Kurs <font color="#f00">*</font>     
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" id="kurs_po" name="kurs_po" class="form-control myline" style="margin-bottom:5px" readonly="readonly">           
                                 </div>
                             </div>
                             <!-- <div class="row">
@@ -225,11 +231,17 @@
                                 </div>
                             </div> 
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-3">
                                     Currency
                                 </div>
-                                <div class="col-md-7">
+                                <div class="col-md-3">
                                     <input type="text" id="currency" name="currency" class="form-control myline" style="margin-bottom:5px" readonly="readonly">           
+                                </div>
+                                <div class="col-md-3">
+                                    Kurs
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" id="kurs" name="kurs" class="form-control myline" style="margin-bottom:5px" readonly="readonly">           
                                 </div>
                             </div>
                             <div class="row">
@@ -574,6 +586,7 @@ function createVoucher(id){
             $('#nilai_ppn').val(result['nilai_ppn']);
             $('#nilai_before_ppn').val(result['nilai_before_ppn']);
             $('#currency_po').val(result['currency']);
+            $('#kurs_po').val(result['kurs']);
             $('#amount').val(result['sisa']);
             $('#keterangan').val('');
             $('#status_vc').val(result['status']);
@@ -658,6 +671,13 @@ function get_currency(id){
             dataType: "json",
             success: function(result) {
                 $('#currency').val(result['currency']);
+                if(result['currency']=='IDR'){
+                    $('#kurs').prop('readonly', true);
+                    $('#kurs').val(1);
+                }else{
+                    $('#kurs').prop('readonly', false);
+                    $('#kurs').val(1);
+                }
             }
         });
     }else{

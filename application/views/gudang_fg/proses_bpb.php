@@ -305,7 +305,6 @@
     </div>
 </div> 
 <script>
-
 function simpanData(){
     var r =confirm('Apakah anda yakin ingin menerima BPB FG ini?');
     if(r){
@@ -338,4 +337,19 @@ function rejectData(){
     }
 }
 </script>
-      
+<link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+<script>
+$(function(){        
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });       
+});
+</script>

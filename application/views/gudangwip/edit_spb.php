@@ -63,8 +63,9 @@
                 <div class="col-md-2">&nbsp;</div>
                 <div class="col-md-5">
                     <?php 
-                    if($header['flag_produksi']!=0){
-                        if($header['flag_produksi']==2){
+                        if($header['flag_produksi']==0){
+                            $jenis='SDM';
+                        }else if($header['flag_produksi']==2){
                             $jenis='ROLLING (INGOT)';
                         }else if($header['flag_produksi']==3){
                             $jenis='CUCI (KAWAT HITAM)';
@@ -72,6 +73,12 @@
                             $jenis='TOLLING';
                         }else if($header['flag_produksi']==5){
                             $jenis='KIRIM KE RONGSOK';
+                        }else if($header['flag_produksi']==6){
+                            $jenis= 'SO';
+                        }else if($header['flag_produksi']==7){
+                            $jenis= 'Retur';
+                        }else if($header['flag_produksi']==8){
+                            $jenis= 'Repacking';
                         }
                     ?>
                     <div class="row">
@@ -85,7 +92,7 @@
                             <input type="hidden" id="flag_produksi" name="flag_produksi" value="<?php echo $header['flag_produksi'];?>">
                         </div>
                     </div>
-                    <?php } if($header['flag_produksi']==5){?>
+                    <?php if($header['flag_produksi']==5){?>
                     <div class="row">
                         <div class="col-md-4">
                             Rongsok yang di Kirim <font color="#f00">*</font>

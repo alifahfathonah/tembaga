@@ -51,6 +51,8 @@ class R_SO extends CI_Controller{
         $data['header'] = $this->Model_purchase_order->show_header_po($po_id)->row_array();
         $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
         $data['marketing_list'] = $this->Model_sales_order->marketing_list()->result();
+        $data['no_so_kmp'] = $this->Model_sales_order->get_last_so(1)->row_array();
+        $data['no_so_cv'] = $this->Model_sales_order->get_last_so_cv()->row_array();
         $this->load->view('layout', $data);
     }
 

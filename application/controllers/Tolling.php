@@ -30,7 +30,8 @@ class Tolling extends CI_Controller{
     
     function add(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');       
+        $ppn = $this->session->userdata('user_ppn');   
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -41,6 +42,11 @@ class Tolling extends CI_Controller{
         
         $this->load->model('Model_tolling_titipan');
         $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
+        $this->load->model('Model_sales_order');
+        $data['no_so_kmp'] = $this->Model_sales_order->get_last_so($ppn)->row_array();
+        if($ppn==1){
+            $data['no_so_cv'] = $this->Model_sales_order->get_last_so_cv()->row_array();
+        }
         // $data['marketing_list'] = $this->Model_tolling_titipan->marketing_list()->result();
         $this->load->view('layout', $data);
     }
@@ -98,6 +104,7 @@ class Tolling extends CI_Controller{
             $num = $this->Model_m_numberings->getNumbering('SPB-FG', $tgl_input); 
                 $dataC = array(
                     'no_spb'=> $num,
+                    'jenis_spb'=> 6,//JENIS SPB SO
                     'tanggal'=> $tgl_input,
                     'keterangan'=>'TOLLING '.$code,
                     'created_at'=> $tanggal,
@@ -110,6 +117,7 @@ class Tolling extends CI_Controller{
                 $dataC = array(
                     'no_spb_wip'=> $num,
                     'tanggal'=> $tgl_input,
+                    'flag_produksi'=> 6,//JENIS SPB SO
                     'keterangan'=>'TOLLING '.$code,
                     'created'=> $tanggal,
                     'created_by'=> $user_id
@@ -319,6 +327,61 @@ class Tolling extends CI_Controller{
         echo json_encode($return_data); 
     }
     
+    function delete(){
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d h:m:s');
+        $id = $this->uri->segment(3);
+
+        $this->db->trans_start();
+
+        $get = $this->db->query("select so_id, no_spb, jenis_barang from t_sales_order
+                where id =".$id)->row_array();
+
+        $this->db->where('id', $id);
+        $this->db->delete('t_sales_order');
+
+        $this->db->where('id', $get['so_id']);
+        $this->db->delete('sales_order');
+
+        if($get['jenis_barang'] == 'FG'){
+            $this->db->where('id', $get['no_spb']);
+            $this->db->delete('t_spb_fg');
+        }else if($get['jenis_barang'] == 'WIP'){
+            $this->db->where('id', $get['no_spb']);
+            $this->db->delete('t_spb_wip');
+        }else if($get['jenis_barang'] == 'RONGSOK'){
+            $this->db->where('id', $get['no_spb']);
+            $this->db->delete('spb');
+        }else if($get['jenis_barang'] == 'AMPAS'){
+            $this->db->where('id', $get['no_spb']);
+            $this->db->delete('t_spb_ampas');
+        }
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+                $url = target_url().'api/SalesOrderAPI/so_del/id/'.$id;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                $result = curl_exec($ch);
+                $response = json_decode($result);
+                curl_close($ch);
+            }
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Sales Order berhasil di hapus');
+            redirect('index.php/Tolling');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Sales order gagal dihapus');
+            redirect('index.php/Tolling');
+        }
+    }
+
     function delete_detail(){
         $id = $this->input->post('id');
         $id_spb = $this->input->post('id_spb');
@@ -2957,6 +3020,7 @@ class Tolling extends CI_Controller{
                     'no_spb'=> $code,
                     'tanggal'=> $tgl_input,
                     'jenis_barang'=>1,
+                    'jenis_spb'=> 6,//JENIS SPB SO
                     'flag_tolling'=> 1,
                     'jumlah'=> $this->input->post('jumlah_rsk'),
                     'remarks'=>$this->input->post('remarks'),

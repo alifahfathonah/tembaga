@@ -376,7 +376,8 @@ class BeliSparePart extends CI_Controller{
             $response = curl_exec($ch);
             $result = json_decode($response, true);
             curl_close($ch);
-
+            // print_r($response);
+            // die();
             if ($result['id'] > 0){
 
                 $this->load->model('Model_beli_sparepart');
@@ -483,7 +484,7 @@ class BeliSparePart extends CI_Controller{
                         'flag_ppn'=> $user_ppn,
                         'beli_sparepart_id'=> $this->input->post('beli_sparepart_id'),
                         'ppn'=>$this->input->post('ppn'),
-                        'diskon'=>str_replace('.', '', $this->input->post('diskon')),
+                        'diskon'=>str_replace(',', '', $this->input->post('diskon')),
                         'materai'=>$this->input->post('materai'),
                         'currency'=>$this->input->post('currency'),
                         'kurs'=>$this->input->post('kurs'),
@@ -504,9 +505,9 @@ class BeliSparePart extends CI_Controller{
                         'po_id'=>$po_id,
                         'beli_sparepart_detail_id'=>$row['beli_sparepart_detail_id'],
                         'sparepart_id'=>$row['sparepart_id'],
-                        'amount'=>str_replace('.', '', $row['harga']),
+                        'amount'=>str_replace(',', '', $row['harga']),
                         'qty'=>str_replace('.', '', $row['qty']),
-                        'total_amount'=>str_replace('.', '', $row['total_harga'])
+                        'total_amount'=>str_replace(',', '', $row['total_harga'])
                     ));
                     
                     $this->db->where('id', $row['beli_sparepart_detail_id']);
@@ -699,6 +700,8 @@ class BeliSparePart extends CI_Controller{
                 'diskon'=>$this->input->post('diskon'),
                 'ppn'=>$this->input->post('ppn'),
                 'materai'=>$this->input->post('materai'),
+                'currency'=>$this->input->post('currency'),
+                'kurs'=>$this->input->post('kurs'),
                 'modified'=> $tanggal,
                 'modified_by'=> $user_id
             );
@@ -1330,20 +1333,20 @@ class BeliSparePart extends CI_Controller{
         $this->load->model('Model_m_numberings');
         $this->load->helper('target_url');
 
-                $url = target_url().'api/BeliSparepartAPI/numbering?id=SPB-SP&tgl='.$tgl_input;
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $url);
-                // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-                // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_HEADER, 0);
+                // $url = target_url().'api/BeliSparepartAPI/numbering?id=SPB-SP&tgl='.$tgl_input;
+                // $ch = curl_init();
+                // curl_setopt($ch, CURLOPT_URL, $url);
+                // // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                // // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+                // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                // curl_setopt($ch, CURLOPT_HEADER, 0);
 
-                $result = curl_exec($ch);
-                $result = json_decode($result);
-                curl_close($ch);
-                $code = $result->code;
-        // $code = $this->Model_m_numberings->getNumbering('SPB-SP', $tgl_input); 
+                // $result = curl_exec($ch);
+                // $result = json_decode($result);
+                // curl_close($ch);
+                // $code = $result->code;
+        $code = $this->Model_m_numberings->getNumbering('SPB-SP', $tgl_input); 
         
         if($code){        
             $data = array(
@@ -1694,18 +1697,20 @@ class BeliSparePart extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d');
+        $user_ppn = $this->session->userdata('user_ppn');
         $id = $this->input->post('id');
         
         $this->db->trans_start();
         
         #Update status SPB
-        $this->db->where('id', $id);
-        $this->db->update('t_spb_sparepart', array(
+        $data = array(
                         'status'=> 1,
                         'keterangan' => $this->input->post('remarks'),
                         'approved_at'=> $tanggal,
-                        'approved_by'=> $user_id
-        ));
+                        'approved_by'=> $user_id);
+
+        $this->db->where('id', $id);
+        $this->db->update('t_spb_sparepart', $data);
 
         $this->load->model('Model_beli_sparepart');
         $myDetail = $this->Model_beli_sparepart->load_detail_saved_item($id)->result(); 
@@ -1730,8 +1735,34 @@ class BeliSparePart extends CI_Controller{
                         'stok_netto'=> ($get_stok['stok_netto'] - $row->qty),
                         'modified'=> $tanggal,
                         'modified_by'=> $user_id
-        ));
+            ));
         }
+
+                if($user_ppn == 1){
+                $this->load->helper('target_url');
+                    $detail = array();
+
+                    $this->load->model('Model_beli_sparepart');
+                    $detail['tgl_input'] = $tgl_input;
+                    $detail['id'] = $id;
+                    $detail['header'] = $data;
+                    $detail['detail'] = $this->Model_beli_sparepart->load_detail_saved_item_only($id)->result_array();
+                    $detail_post = json_encode($detail);
+
+                    // print("<pre>".print_r($detail_post,true)."</pre>");
+                    // die();
+
+                    $ch2 = curl_init(target_url().'api/BeliSparepartAPI/spb_keluar');
+                    curl_setopt($ch2, CURLOPT_POST, true);
+                    curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                    curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_post);
+                    curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+                    $response2 = curl_exec($ch2);
+                    $result2 = json_decode($response2, true);
+                    curl_close($ch2);
+                    // print_r($response2);
+                    // die();
+                }
             
             if($this->db->trans_complete()){    
                 $this->session->set_flashdata('flash_msg', 'SPB sudah di-approve. Detail SPB sudah disimpan');            
@@ -1970,19 +2001,19 @@ class BeliSparePart extends CI_Controller{
         if($user_ppn==1){
                 $this->load->helper('target_url');
 
-                $url = target_url().'api/BeliSparepartAPI/numbering?id=VK-KMP&tgl='.$tgl_input;
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $url);
-                // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-                // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_HEADER, 0);
+                // $url = target_url().'api/BeliSparepartAPI/numbering?id=VK-KMP&tgl='.$tgl_input;
+                // $ch = curl_init();
+                // curl_setopt($ch, CURLOPT_URL, $url);
+                // // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                // // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+                // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                // curl_setopt($ch, CURLOPT_HEADER, 0);
 
-                $result = curl_exec($ch);
-                $result = json_decode($result);
-                curl_close($ch);
-                $code = $result->code;
+                // $result = curl_exec($ch);
+                // $result = json_decode($result);
+                // curl_close($ch);
+                // $code = $result->code;
             $code = $this->Model_m_numberings->getNumbering('VK-KMP', $tgl_input);
         }else{
             $code = $this->Model_m_numberings->getNumbering('VK', $tgl_input);
@@ -2039,6 +2070,8 @@ class BeliSparePart extends CI_Controller{
 
             $this->load->model('Model_beli_sparepart');
             $data['header'] = $this->Model_beli_sparepart->list_detail_pembayaran($id)->row_array();
+            $data['kas'] = $this->Model_beli_sparepart->kas_keluar_terakhir($user_ppn)->row_array();
+            $data['bank'] = $this->Model_beli_sparepart->bank_keluar_terakhir($user_ppn)->row_array();
             $this->load->model('Model_finance');
             $data['bank_list'] = $this->Model_finance->bank_list($user_ppn)->result();
             $this->load->view('layout', $data);   
@@ -2092,19 +2125,19 @@ class BeliSparePart extends CI_Controller{
         if($user_ppn==1){
                 $this->load->helper('target_url');
 
-                $url = target_url().'api/BeliSparepartAPI/numbering?id=VSP-KMP&tgl='.$tgl_input;
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $url);
-                // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-                // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_HEADER, 0);
+                // $url = target_url().'api/BeliSparepartAPI/numbering?id=VSP-KMP&tgl='.$tgl_input;
+                // $ch = curl_init();
+                // curl_setopt($ch, CURLOPT_URL, $url);
+                // // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                // // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+                // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                // curl_setopt($ch, CURLOPT_HEADER, 0);
 
-                $result = curl_exec($ch);
-                $result = json_decode($result);
-                curl_close($ch);
-                $code = $result->code;
+                // $result = curl_exec($ch);
+                // $result = json_decode($result);
+                // curl_close($ch);
+                // $code = $result->code;
             $code = $this->Model_m_numberings->getNumbering('VSP-KMP', $tgl_input);
         }else{
             $code = $this->Model_m_numberings->getNumbering('VSP', $tgl_input);
@@ -2139,6 +2172,7 @@ class BeliSparePart extends CI_Controller{
                     'no_giro'=>$this->input->post('nomor_giro'),
                     'id_bank'=>$this->input->post('bank_id'),
                     'id_vc'=>0,
+                    'kurs'=>$this->input->post('kurs'),
                     'currency'=>$this->input->post('currency'),
                     'nominal'=>str_replace('.', '', $this->input->post('nominal')),
                     'created_at'=>$tanggal,

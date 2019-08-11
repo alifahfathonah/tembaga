@@ -69,6 +69,25 @@ class Model_stok_opname extends CI_Model{
         return $data;
     }
 
+    function print_stok_v2_all($id){
+        $data = $this->db->query("select x.*, g.no_packing no_packing_gudang, sum(g.bruto) as bruto, sum(g.netto) as netto, g.nomor_bobbin, jb.kode, jb.jenis_barang, sum(g.berat_bobbin) berat_bobbin, g.no_produksi, g.tanggal_masuk
+            from
+                (select o.tanggal, o.id, od.gudang_id, od.no_packing hasil_scan, od.jenis_barang_id
+                from 
+                stok_opname_detail od,
+                stok_opname o
+                where
+                od.stok_opname_id = o.id
+                and
+                o.id = ".$id." 
+                ) x
+            left join t_gudang_fg g on g.id = x.gudang_id
+            left join jenis_barang jb on jb.id = x.jenis_barang_id
+            group by jb.kode
+            order by jb.kode;");
+        return $data;
+    }
+
     function stock_missing($tanggal){
         $data = $this->db->query("SELECT tfg.*, jb.jenis_barang, jb.uom, jb.kode
             FROM t_gudang_fg tfg

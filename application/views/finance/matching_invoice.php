@@ -459,6 +459,7 @@ $('#tambah_inv').click(function(event) {
         $('#message').html("Nominal di Bayar harus diisi, tidak boleh kosong!");
         $('.alert-danger').show();
     }else{
+        $(this).prop('disabled', true);
         $.ajax({// Run getUnlockedCall() and return values to form
             url: "<?php echo base_url('index.php/Finance/add_inv_match'); ?>",
             data:{
@@ -475,6 +476,7 @@ $('#tambah_inv').click(function(event) {
                     $("#InvModal").modal('hide'); 
                     list_inv(<?php echo $header['id_customer'].','.$header['id'];?>);
                     data_inv(<?php echo $header['id'];?>);
+                    $('#tambah_inv').prop('disabled', false);
                 } else {
                     $("#InvModal").modal('hide'); 
                 }
@@ -632,6 +634,7 @@ function addUM(){
 
 function instantADDUM(id){
     // console.log($('#id').val());
+    $('.addUM').prop('disabled', true);
     $.ajax({
         type:"POST",
         url:'<?php echo base_url('index.php/Finance/add_instant_um_match'); ?>',
@@ -641,6 +644,7 @@ function instantADDUM(id){
         },
         success:function(result){
             if(result['message_type']=="sukses"){
+                $('.addUM').prop('disabled', false);
                 list_um(<?php echo $header['id_customer'];?>);
                 data_um(<?php echo $header['id'];?>);
             }else{
@@ -681,6 +685,7 @@ function view_um(id){
 }
 
 function delUM(id,id_um){
+    $('#delInv').prop('disabled', true);
     $.ajax({
         type:"POST",
         url:'<?php echo base_url('index.php/Finance/del_um_match'); ?>',
@@ -690,6 +695,7 @@ function delUM(id,id_um){
         },
         success:function(result){
             if(result['message_type']=="sukses"){
+                $('#delInv').prop('disabled', false);
                 list_um(<?php echo $header['id_customer'];?>);
                 data_um(<?php echo $header['id'];?>);
             }else{

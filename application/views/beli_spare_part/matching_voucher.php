@@ -194,6 +194,22 @@
                     <h4 align="center" style="font-weight: bold;">Detail Uang Keluar</h4>  
                     <div class="row">
                         <div class="col-md-3">
+                            Nomor Kas Keluar Terakkhir
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" id="no_terakhir" name="no_terakhir" class="form-control myline" style="margin-bottom:5px" value="<?=$kas['nomor'];?>" readonly="readonly">   
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            Nomor Bank Keluar Terakhir
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" id="no_terakhir" name="no_terakhir" class="form-control myline" style="margin-bottom:5px" value="<?=$bank['nomor'];?>" readonly="readonly">   
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
                             Nomor Kas/Bank Keluar
                         </div>
                         <div class="col-md-9">
@@ -229,8 +245,14 @@
                         <div class="col-md-3">
                             Currency <font color="#f00">*</font>
                         </div>
-                        <div class="col-md-9">
-                            <input type="text" id="currency" name="currency" class="form-control myline" style="margin-bottom:5px;" placeholder="Nominal" readonly="readonly">
+                        <div class="col-md-3">
+                            <input type="text" id="currency" name="currency" class="form-control myline" style="margin-bottom:5px;" placeholder="Currency" readonly="readonly">
+                        </div>
+                        <div class="col-md-1">
+                            Kurs <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="kurs" name="kurs" class="form-control myline" style="margin-bottom:5px;" placeholder="Kurs" readonly="readonly">
                         </div>
                     </div>
                     <div class="row">
@@ -436,6 +458,13 @@ function get_currency(id){
             dataType: "json",
             success: function(result) {
                 $('#currency').val(result['currency']);
+                if(result['currency']=='IDR'){
+                    $('#kurs').prop('readonly', true);
+                    $('#kurs').val(1);
+                }else{
+                    $('#kurs').prop('readonly', false);
+                    $('#kurs').val(1);
+                }
             }
         });
     }else{

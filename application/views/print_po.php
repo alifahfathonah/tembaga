@@ -25,7 +25,7 @@ $total_harga = 0;
         <h3 align="center" style="margin-top: -20px;">PURCHASE ORDER</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
-                <td width="30%">
+                <td width="50%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td style="border-bottom: 1px solid;">Kepada Yth.</td>
@@ -51,8 +51,7 @@ $total_harga = 0;
 
                     </table>
                 </td>
-                <td>&nbsp;</td>
-                <td width="40%">
+                <td width="50%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>No. PO</td>

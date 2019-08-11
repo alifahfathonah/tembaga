@@ -41,6 +41,13 @@
                         <span class="title">MATCHING INVOICE</span>
                     </a>
                 </li>
+                <?php } if($group_id==9 || (isset($akses_menu['R_Rongsok']) && $akses_menu['R_Rongsok']==1)){ ?>
+                <li <?php if ($module_name=="Rongsok") echo 'class="start active open"'; ?>>
+                    <a href="<?php echo base_url(); ?>index.php/R_Rongsok">
+                        <i class="fa fa-trash"></i>
+                        <span class="title">AMBIL RONGSOK</span>
+                    </a>
+                </li>
                 <?php } if($group_id==9 || (isset($akses_menu['R_SuratJalan']) && $akses_menu['R_SuratJalan']==1)){ ?>
                 <li <?php if ($module_name=="SuratJalan") echo 'class="start active open"'; ?>>
                     <a href="<?php echo base_url(); ?>index.php/R_SuratJalan">

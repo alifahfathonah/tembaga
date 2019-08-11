@@ -3,7 +3,8 @@
 if ( ! function_exists('target_url'))
 {
 	function target_url(){
-		$url = 'http://localhost/tembaga_resmi/index.php/';
+		// $url = 'http://localhost/tembaga_resmi/index.php/';
+		$url = 'http://kmp.tanghosting.net/index.php/';
 		return $url;
 	}
 

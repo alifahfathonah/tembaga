@@ -1851,7 +1851,7 @@ class Finance extends CI_Controller{
     function print_um_match(){
         $id = $this->uri->segment(3);
         if($id){       
-            $this->load->helper('terbilang_helper');
+            $this->load->helper('terbilang_koma_helper');
             $this->load->helper('tanggal_indo');
             $this->load->model('Model_finance');
             $data['header'] = $this->Model_finance->matching_header_um_print($id)->row_array();
@@ -2199,7 +2199,7 @@ class Finance extends CI_Controller{
                 }
             $tabel .= '</td>';
             $tabel .= '<td style="text-align:right;">'.$row->currency.' '.number_format($row->nominal,0,',', '.').'</td>';
-            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="instantADDUM('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addUM"><i class="fa fa-plus"></i> Tambah </a></td>';
+            $tabel .= '<td style="text-align:center"><button href="javascript:;" class="btn btn-xs btn-circle yellow-gold addUM" onclick="this.disabled=true; instantADDUM('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addUM"><i class="fa fa-plus"></i> Tambah</button></td>';
             $tabel .= '</tr>';            
             $no++;
             $total_nominal += $row->nominal;
@@ -2635,6 +2635,22 @@ class Finance extends CI_Controller{
         $this->load->view('layout', $data);   
     }
 
+    function laporan_penjualan_per_jb(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/laporan_penjualan_per_jb";
+        $this->load->model('Model_sales_order');
+
+        $this->load->view('layout', $data);   
+    }
+
     function print_laporan_penjualan(){
             $module_name = $this->uri->segment(1);
             $ppn = $this->session->userdata('user_ppn');
@@ -2870,6 +2886,32 @@ class Finance extends CI_Controller{
                 $data['detailLaporan'] = $this->Model_finance->query_penjualan($start,$end,'KKH')->result();
             }
             $this->load->view('finance/print_laporan_penjualan', $data);
+    }
+
+    function print_query_penjualan_jb(){
+            $module_name = $this->uri->segment(1);
+            $this->load->helper('tanggal_indo');
+            $l = $_GET['laporan'];
+            $start = date('Y-m-d', strtotime($_GET['ts']));
+            $end = date('Y-m-d', strtotime($_GET['te']));
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_finance');
+            if($l == 1){
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_penjualan_jb($start,$end,0)->result();
+            }elseif ($l == 2) {
+                $data['detailLaporan'] = $this->Model_finance->query_penjualan_jb($start,$end,'CV')->result();
+            }elseif ($l == 3) {
+                $data['detailLaporan'] = $this->Model_finance->query_penjualan_jb($start,$end,'KKH')->result();
+            }
+            $this->load->view('finance/print_laporan_penjualan_jb', $data);
     }
 
     function print_penjualan_piutang(){

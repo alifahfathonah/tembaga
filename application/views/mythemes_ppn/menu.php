@@ -885,10 +885,10 @@
                                     <a href="<?php echo base_url(); ?>index.php/SalesOrder/print_sisa_so/" target="_blank">
                                     <i class="fa fa-print"></i> Print Sisa SO </a>
                                 </li>
-                                <li>
+                                <!-- <li>
                                     <a href="<?php echo base_url(); ?>index.php/SalesOrder/print_sisa_so_gabungan/" target="_blank">
                                     <i class="fa fa-print"></i> Print Sisa SO Gabungan </a>
-                                </li>
+                                </li> -->
                             </ul>
                         </li>
                         <?php } ?>
@@ -957,8 +957,12 @@
                                     <i class="fa fa-search"></i> Laporan Penjualan </a>
                                 </li>
                                 <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/laporan_penjualan_per_jb/">
+                                    <i class="fa fa-search"></i> Laporan Penjualan per Jenis Barang </a>
+                                </li>
+                                <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_jb/">
-                                    <i class="fa fa-print"></i> Rekap per Jenis Barang Gabungan</a>
+                                    <i class="fa fa-print"></i> Rekap per Jenis Barang</a>
                                 </li>
                                 <!-- <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_jb2/" target="_blank">
@@ -966,7 +970,7 @@
                                 </li> -->
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_customer/">
-                                    <i class="fa fa-print"></i> Rekap per Customer Gabungan</a>
+                                    <i class="fa fa-print"></i> Rekap per Customer</a>
                                 </li>
                                 <!-- <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_customer2/" target="_blank">

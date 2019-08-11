@@ -45,6 +45,7 @@
                                     <input type="hidden" id="jml_packing" name="jml_packing">
                                     <input type="hidden" id="jml_lain" name="jml_lain">
                                     <input type="hidden" id="tgl" name="tanggal">
+                                    <input type="hidden" id="dtr_type_1" name="dtr_type">
                                 </div>
                             </div>     
                             <div class="row">
@@ -87,6 +88,8 @@
                             <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_dtr']; ?>">
+
+                            <input type="hidden" id="dtr_type" name="dtr_type" value="<?=$header['type'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -297,6 +300,7 @@ function approveTTR(id_ttr){
     $('#jml_packing').val($('#jumlah_packing').val());
     $('#jml_lain').val($('#jumlah_lain').val());
     $('#tgl').val($('#tanggal').val());
+    $('#dtr_type_1').val($('#dtr_type').val());
     $('#message').html("");
     $('.alert-danger').hide();
         

@@ -28,8 +28,7 @@
                 <div class="caption">
                     <i class="fa fa-beer"></i>Stok Opname
                 </div>
-                <div class="tools">
-                                 
+                <div class="tools">    
                 </div>
             </div>
             <div class="portlet-body">
@@ -75,7 +74,9 @@
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-file"></i> View &nbsp; </a>
                             <?php if($jenis == 'FG'){ ?>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/StokOpname/<?= ($jenis == 'FG')? 'print_stok_fg_per_tanggal' : '' ?>/<?php echo $data->id; ?>" 
-                                target="_blank" style="margin-bottom:4px"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>                                
+                                target="_blank" style="margin-bottom:4px"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/StokOpname/<?= ($jenis == 'FG')? 'print_stok_fg_per_tanggal_all' : '' ?>/<?php echo $data->id; ?>" 
+                                target="_blank" style="margin-bottom:4px"> &nbsp; <i class="fa fa-print"></i> Print Global &nbsp; </a>
                             <?php } ?>
                             <?php
                                 }

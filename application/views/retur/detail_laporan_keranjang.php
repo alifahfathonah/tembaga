@@ -2,9 +2,9 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Gudang FG
-            <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/GudangFG/edit_laporan'); ?>"> Detail Laporan Produksi FG </a> 
+            <i class="fa fa-angle-right"></i> Retur 
+            <i class="fa fa-angle-right"></i>  
+            <a href="<?php echo base_url('index.php/Retur/edit'); ?>"> Edit Data Retur </a> 
         </h5>          
     </div>
 </div>
@@ -23,20 +23,19 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/GudangFG/update_laporan'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/Retur/update'); ?>">          
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
-                            No. Laporan <font color="#f00">*</font>
+                            No. Retur <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_produksi" name="no_produksi" readonly="readonly"
+                            <input type="text" id="no_retur" name="no_retur" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['no_laporan_produksi']; ?>">
+                                value="<?php echo $header['no_retur']; ?>">
                             
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
-                            <input type="hidden" id="ukuran" name="ukuran" value="<?php echo $header['ukuran']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -45,53 +44,95 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal"
-                                class="form-control input-small myline" style="margin-bottom:5px; float:left;" 
-                                value="<?=$header['tanggal'];?>">
+                                class="form-control myline input-small" style="margin-bottom:5px; float:left" 
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            PIC
+                            Jenis Barang <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="pembuat" name="pembuat" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['pembuat']; ?>">
+                            <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['jenis_barang']; ?>">
                         </div>
-                    </div>     
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Surat Jalan
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_sj" name="no_sj" 
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_sj']; ?>">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">
                             <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px"><?=$header['remarks'];?></textarea>                           
+                                class="form-control myline" style="margin-bottom:5px"><?php echo  $header['remarks']; ?></textarea>                           
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
                 </div>
-                <div class="col-md-2">&nbsp;</div>
-                <div class="col-md-5">
+                <div class="col-md-1">&nbsp;</div>
+                <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            Jenis Barang <font color="#f00">*</font>
+                            Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['jenis_barang']; ?>"> 
-                                
-                            <input type="hidden" name="jenis_barang_id" value="<?=$header['jenis_barang_id'];?>">                        
+                            <input type="text" id="m_customer_id" name="m_customer_id" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?= (($this->session->userdata('user_ppn') == 1)? $header['nama_customer'] : $header['nama_customer_kh']) ?>">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Contact Person
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="contact_person" name="contact_person" readonly="readonly"
+                                   class="form-control myline" style="margin-bottom:5px" value="<?= (($this->session->userdata('user_ppn') == 1)? $header['pic'] : $header['pic_kh']) ?>">
+                        </div>
+                    </div>       
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nama Penimbang
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $header['penimbang']; ?>">
+                        </div>
+                    </div>             
                     <div class="row">
                         <div class="col-md-4">
                             Jenis Packing <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="jenis_packing" name="jenis_packing" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['jenis_packing']; ?>">                         
+                            <input type="text" id="jenis_packing_id" name="jenis_packing_id" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['jenis_packing']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Type Retur <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <?php if ($header['jenis_retur'] == 0){ ?>
+                            <input type="text" id="type_retur" name="type_retur" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="Ganti Barang">
+                            <?php } else if ($header['jenis_retur'] == 1){ ?>
+                            <input type="text" id="type_retur" name="type_retur" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="Mengurangi Hutang">
+                            <?php } ?>
                         </div>
                     </div>
                 </div>              

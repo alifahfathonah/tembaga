@@ -8,7 +8,7 @@
         <h3 style="text-align: center; text-decoration: underline;">PT. KAWAT MAS PRAKASA<br>RETUR</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
-                <td width="40%" valign="top">
+                <td width="50%" valign="top">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>No. Retur</td>
@@ -32,8 +32,7 @@
                         </tr>
                     </table>
                 </td>
-                <td>&nbsp;</td>
-                <td width="40%">
+                <td width="50%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>Customer</td>
@@ -50,6 +49,10 @@
                         <tr>
                             <td>Penimbang</td>
                             <td>: <?php echo $header['penimbang']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>No. Surat Jalan</td>
+                            <td>: <?php echo $header['no_sj']; ?></td>
                         </tr>
                     </table>
                 </td>

@@ -42,6 +42,7 @@
                     <th>Pemohon</th>
                     <th>Jumlah <br>Items</th>
                     <th>Remarks</th>
+                    <th>Jenis</th>
                     <th>Status</th>
                     <th>Approve/<br>Reject Oleh</th> 
                     <th>Actions</th>
@@ -61,6 +62,21 @@
                         <td><?php echo $data->pic; ?></td>                            
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td><?php echo $data->keterangan; ?></td>
+                        <td style="text-align:center">
+                            <?php
+                                if($data->jenis_spb==0){
+                                    echo 'SDM';
+                                }else if($data->jenis_spb==5){
+                                    echo 'Kirim Rongsok';
+                                }else if($data->jenis_spb==6){
+                                    echo 'SO';
+                                }else if($data->jenis_spb==7){
+                                    echo 'Retur';
+                                }else if($data->jenis_spb==8){
+                                    echo 'Repacking';
+                                }
+                            ?>
+                        </td>
                         <td style="text-align:center">
                             <?php
                                 if($data->status==0){

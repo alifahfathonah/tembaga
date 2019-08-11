@@ -387,6 +387,11 @@ class Model_beli_sparepart extends CI_Model{
         return $data;
     }
 
+    function load_detail_saved_item_only($id){
+        $data = $this->db->query("select * from t_spb_sparepart_detail_keluar where t_spb_sparepart_id=".$id);
+        return $data;
+    }
+
     function get_stok($iv_id){
         $data = $this->db->query("select * from t_inventory where id =".$iv_id);
         return $data;
@@ -571,6 +576,14 @@ class Model_beli_sparepart extends CI_Model{
 
     function spb_detail_only($id){
         return $this->db->query("select * from t_spb_sparepart_detail where t_spb_sparepart_id=".$id);
+    }
+
+    function kas_keluar_terakhir($ppn){
+        return $this->db->query("select nomor from f_kas where id_bank < 5 and jenis_trx = 1 and flag_ppn=".$ppn." order by nomor desc limit 1");
+    }
+
+    function bank_keluar_terakhir($ppn){
+        return $this->db->query("select nomor from f_kas where id_bank >= 5 and jenis_trx = 1 and flag_ppn=".$ppn." order by nomor desc limit 1");
     }
 }
 

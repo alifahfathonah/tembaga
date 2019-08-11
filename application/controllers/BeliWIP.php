@@ -884,7 +884,7 @@ class BeliWIP extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('VWIP', $tgl_input);
-        if($nilai_po-($nilai_dp+$amount)>=0){
+        if($nilai_po-($nilai_dp+$amount)<=0){
             $jenis_voucher = 'Pelunasan';
             $this->db->where('id', $id);
             $this->db->update('po', array('flag_pelunasan'=>1,'status'=>4));

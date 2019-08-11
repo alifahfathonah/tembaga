@@ -70,8 +70,15 @@
                         <td><?php echo date('d-m-Y', strtotime($data->tgl_dtr)); ?></td>  
                         <td><?php echo $data->no_sj;?></td>   
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
-                        <?php ($data->ttr_status=='0') ? $status = '<div class="bg-yellow">Waiting Approval</div>': (($data->ttr_status <> '1') ? $status = '<div class="bg-red">Rejected</div>' :  $status = '<div class="bg-green">Approved</div>'); ?>
-                        <td style="text-align:center"><?php echo $status; ?></td>
+                        <td>
+                        <?php 
+                        if($data->ttr_status==0){
+                            echo '<div class="bg-yellow">Waiting Approval</div>';
+                        }else if($data->ttr_status==9){
+                            echo '<div class="bg-red">Rejected</div>';
+                        }else if($data->ttr_status==1 || $data->ttr_status==2){
+                            echo '<div class="bg-green">Approve</div>';
+                        }?></td>
                         <td style="text-align:right"><?php echo number_format($data->bruto,2,'.',','); ?></td>
                         <td style="text-align:right"><?php echo number_format($data->netto,2,'.',','); ?></td>
                         <td style="text-align:right"><?php echo number_format($data->jmlh_afkiran,2,'.',','); ?></td>

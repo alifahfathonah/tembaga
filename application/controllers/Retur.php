@@ -86,6 +86,7 @@ class Retur extends CI_Controller{
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'jenis_retur'=>$this->input->post('type_retur'),
                 'jenis_packing_id' => $this->input->post('jenis_packing_id'),
+                'no_sj' => $this->input->post('no_sj'),
                 'remarks'=>$this->input->post('remarks'),
                 'status' => 0,
                 'created_at'=> $tanggal,
@@ -122,6 +123,7 @@ class Retur extends CI_Controller{
             $jb = $data['header']['jenis_barang'];
 
             if($jb == 'FG'){
+            $this->load->model('Model_gudang_fg');
                 $jp = $data['header']['jenis_packing_id'];  
                 if($jp == 1){
                     $data['content']= "retur/edit";
@@ -133,6 +135,7 @@ class Retur extends CI_Controller{
                     $data['packing'] = $this->Model_gudang_fg->get_bobbin_g($jp)->result();
                     $data['content']= "retur/detail_laporan_rambut";
                 }elseif($jp == 4){
+                    $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('ROLL')->result();
                     $data['content']= "retur/detail_laporan_roll";
                 }elseif($jp == 5){
                     $this->load->model('Model_gudang_fg');
@@ -153,6 +156,21 @@ class Retur extends CI_Controller{
             redirect('index.php/Retur');
         }
     }
+
+    function delete(){
+        $user_id  = $this->session->userdata('user_id');
+        $id = $this->uri->segment(3);
+        $tanggal  = date('Y-m-d h:m:s');
+
+        $this->db->where('id',$id);
+        $this->db->delete('retur');
+
+        $this->db->where('retur_id',$id);
+        $this->db->delete('retur_detail');
+
+        $this->session->set_flashdata('flash_msg', 'Data Retur berhasil disimpan');
+        redirect('index.php/Retur');
+    }
     
     function update(){
         $user_id  = $this->session->userdata('user_id');
@@ -162,6 +180,8 @@ class Retur extends CI_Controller{
         
         #update retur
         $data = array(
+                'no_sj'=> $this->input->post('no_sj'),
+                'remarks'=> $this->input->post('remarks'),
                 'tanggal'=> $tgl_input,
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id
@@ -192,6 +212,7 @@ class Retur extends CI_Controller{
             $tabel .= '<td>'.$row->jenis_barang.'</td>';
             $tabel .= '<td>'.$row->no_packing.'</td>';
             $tabel .= '<td style="text-align:right">'.$row->bruto.'</td>';
+            $tabel .= '<td>'.$row->berat_palette.'</td>';
             $tabel .= '<td style="text-align:right">'.$row->netto.'</td>';
             $tabel .= '<td>'.$row->nomor_bobbin.'</td>';
             $tabel .= '<td>'.$row->line_remarks.'</td>';
@@ -206,12 +227,55 @@ class Retur extends CI_Controller{
                     
         $tabel .= '<tr>';
         $tabel .= '<td colspan="3" style="text-align:right"><strong>Total</strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($bruto,0,',','.').'</strong></td>';
-        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,0,',','.').'</strong></td>';
-        $tabel .= '<td colspan="3"></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($bruto,2,',','.').'</strong></td>';
+        $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,2,',','.').'</strong></td>';
+        $tabel .= '<td colspan="4"></td>';
         $tabel .= '</tr>';
        
         
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function load_detail_roll(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $no    = 1;
+        $this->load->model('Model_retur');
+        $jenis_barang_list = $this->Model_retur->jenis_barang_list()->result();
+         
+        $myDetail = $this->Model_retur->load_detail($id)->result(); 
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->jenis_barang.'</td>';
+            $tabel .= '<td>'.$row->uom.'</td>';
+            $tabel .= '<td></td>';
+            $tabel .= '<td>'.$row->netto.'</td>';
+            $tabel .= '<td>'.$row->no_packing.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a>'
+                    . '<a href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay"'
+                    . 'onclick="printBarcode('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-print"></i> Print Barcode </a></td>';
+            $tabel .= '</tr>';            
+            $no++;
+        }
+            
+        // $tabel .= '<tr>';
+        // $tabel .= '<td style="text-align:center">'.$no.'</td>';
+        // $tabel .= '<td><a href="javascript:;" onclick="timbang(this)" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>';
+        // $tabel .= '<td><input type="text" id="bruto" name="bruto" class="form-control myline"/></td>';
+        // $tabel .= '<td><input type="number" id="berat_bobbin" = name="berat_bobbin" class="form-control myline"/></td>';
+        // $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" onclick="timbang_netto();" readonly="readonly"/></td>';
+        // $tabel .= '<td><input type="text" id="no_packing" value="Auto" name="no_packing" class="form-control myline" readonly="readonly"></td>';
+        // $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+        //         . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
+        //         . '<i class="fa fa-plus"></i> Tambah </a></td>';
+        // $tabel .= '</tr>';
+
         header('Content-Type: application/json');
         echo json_encode($tabel); 
     }
@@ -234,6 +298,7 @@ class Retur extends CI_Controller{
             $tabel .= '<td><a href="javascript:;" onclick="timbang(this)" class="btn btn-xs btn-circle blue disabled"><i class="fa fa-dashboard"></i> Timbang</a></td>';
             $tabel .= '<td>'.$row->netto.'</td>';
             $tabel .= '<td>'.$row->no_packing.'</td>';
+            $tabel .= '<td>'.$row->line_remarks.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a>'
@@ -362,6 +427,7 @@ class Retur extends CI_Controller{
             'retur_id'=>$this->input->post('id'),
             'jenis_barang_id'=>$this->input->post('jenis_barang_id'), 
             'bruto'=>$this->input->post('bruto'),
+            'berat_palette'=>$this->input->post('berat'),
             'netto'=>$this->input->post('netto'),
             'bobbin_id'=>$this->input->post('id_bobbin'),
             'no_packing'=>$no_packing,
@@ -436,6 +502,41 @@ class Retur extends CI_Controller{
             'line_remarks' =>$this->input->post('keterangan')
         ));
         if($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function save_detail_roll(){
+        $return_data = array();
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
+        $this->db->trans_start();
+
+        $this->load->model('Model_m_numberings');
+        $first = substr($this->input->post('no_packing'),0,1);
+        $sec = substr($this->input->post('no_packing'),1,1);
+        $num = $first.$sec;
+        $code = $this->Model_m_numberings->getNumbering($num,$tgl_input);
+
+        $ukuran = $this->input->post('ukuran');
+        $no_packing = $tgl_code.$first.$ukuran.$sec.substr($code,8,3);
+        
+        $this->db->insert('retur_detail', array(
+            'retur_id' => $this->input->post('id'),
+            'jenis_barang_id' => $this->input->post('jenis_barang'),
+            'bruto' => $this->input->post('netto'),
+            'netto' => $this->input->post('netto'),
+            'no_packing' =>$no_packing,
+            'berat_palette' => 0,
+            'bobbin_id' => 0,
+            'line_remarks' => ''
+        ));
+        if ($this->db->trans_complete()){
             $return_data['message_type']= "sukses";
         }else{
             $return_data['message_type']= "error";
@@ -894,12 +995,12 @@ class Retur extends CI_Controller{
                     'no_bpb_fg' => $code_bpb,
                     'tanggal' => $tgl_input,
                     'flag_ppn' => $user_ppn,
-                    'produksi_fg_id' => $this->input->post('id'),
+                    'retur_id' => $this->input->post('id'),
                     'jenis_barang_id' => $row1->jenis_barang_id,
                     'created_at' => $tanggal,
                     'created_by' => $user_id,
                     'status' => 0,
-                    'keterangan' => $this->input->post('remarks')
+                    'keterangan' => 'RETUR | '.$this->input->post('remarks')
                 ));
 
                 $bpb_id = $this->db->insert_id();
@@ -911,6 +1012,7 @@ class Retur extends CI_Controller{
                         'jenis_barang_id' => $row2->jenis_barang_id,
                         'no_produksi' => 0,
                         'bruto' => $row2->bruto,
+                        'berat_bobbin'=> $row2->berat_palette,
                         'netto' => $row2->netto,
                         'no_packing_barcode' => $row2->no_packing,
                         'bobbin_id' => $row2->bobbin_id
@@ -1337,6 +1439,7 @@ class Retur extends CI_Controller{
             $data = array(
                 'no_spb'=> $code,
                 'tanggal'=> $tgl_input,
+                'jenis_spb'=> 7,//JENIS SPB RETUR
                 'keterangan'=>'RETUR FINISH GOOD No: '.$this->input->post('no_retur'),
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id
@@ -1377,6 +1480,7 @@ class Retur extends CI_Controller{
             $data = array(
                 'no_spb'=> $code,
                 'tanggal'=> $tgl_input,
+                'jenis_spb'=> 7,//JENIS SPB RETUR
                 'remarks'=>'RETUR RONGSOK No: '.$this->input->post('no_retur'),
                 'created'=> $tanggal,
                 'created_by'=> $user_id
@@ -1413,6 +1517,7 @@ class Retur extends CI_Controller{
 
             $data = array(
                 'no_spb_wip'=> $code,
+                'flag_produksi'=> 7,//JENIS SPB RETUR
                 'tanggal'=> $tgl_input,
                 'keterangan'=>'RETUR WIP No: '.$this->input->post('no_retur'),
                 'created'=> $tanggal,
@@ -1861,6 +1966,7 @@ class Retur extends CI_Controller{
                             'no_packing'=>$v['no_packing'],
                             'qty'=>'1',
                             'bruto'=>$v['bruto'],
+                            'berat'=>$v['berat_bobbin'],
                             'netto'=>$v['netto'],
                             'nomor_bobbin'=>$v['bobbin'],
                             'created_by'=>$user_id,
