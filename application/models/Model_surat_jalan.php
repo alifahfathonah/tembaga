@@ -151,9 +151,14 @@ class Model_surat_jalan extends CI_Model{
     	return $data;
     }
 
-    function sj_detail($id){
-    	$data = $this->db->query("select *from r_t_surat_jalan_detail where sj_resmi_id = ".$id);
-    	return $data;
+    // function sj_detail($id){
+    // 	$data = $this->db->query("select * from r_t_surat_jalan_detail where sj_resmi_id = ".$id);
+    // 	return $data;
+    // }
+
+    function sj_detail($id,$poid){
+        $data = $this->db->query("select *, (select id from r_t_po_detail rtpd where rtpd.po_id =".$poid." and rtpd.jenis_barang_id = rtsjd.jenis_barang_id) as po_detail_id from r_t_surat_jalan_detail rtsjd where rtsjd.sj_resmi_id = ".$id);
+        return $data;
     }
 
     function cv_list(){

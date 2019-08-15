@@ -149,6 +149,19 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Jenis SO <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis_so" name="jenis_so" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
+                                <option value=""></option>
+                                <option value="0">Lokal</option>
+                                <option value="1">Export</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -233,6 +246,9 @@ function simpanData(){
         $('.alert-danger').show();
     }else if($.trim($("#m_customer_id").val()) == ""){
         $('#message').html("Silahkan pilih nama customer!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#jenis_so").val()) == ""){
+        $('#message').html("Silahkan pilih Jenis SO!");
         $('.alert-danger').show(); 
     }else if($.trim($("#no_po").val()) == ""){
         var result = confirm("No PO Belum Diisi, Lanjutkan ?");

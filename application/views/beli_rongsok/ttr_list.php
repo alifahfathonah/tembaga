@@ -93,9 +93,10 @@
                                     }
                                 }
                                 if($group_id==1 || $hak_akses['print_ttr']==1){
-                                    echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliRongsok/print_ttr/'.$data->id.'" 
-                                        style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a><br/>';
-                                    echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliRongsok/print_ttr_harga/'.$data->id.'" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print dengan Harga &nbsp; </a><br/>';
+                                        echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliRongsok/print_ttr/'.$data->id.'" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a><br/>';
+                                    if($data->no_po != ''){
+                                        echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliRongsok/print_ttr_harga/'.$data->id.'" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print dengan Harga &nbsp; </a><br/>';
+                                    }
                                 }
                             ?>
                         </td>

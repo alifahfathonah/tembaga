@@ -101,14 +101,14 @@ class SalesOrder extends CI_Controller{
             if($data['header']['jenis_barang'] == 'RONGSOK'){
             $data['detailSPB'] = $this->Model_sales_order->show_detail_spb_fulfilment_rsk($id)->result();
             $data['details'] = $this->Model_sales_order->show_detail_so_rsk($id)->result();
-            $data['detailSJ'] = $this->Model_sales_order->load_detail_view_sj_rsk($id)->result();
+            // $data['detailSJ'] = $this->Model_sales_order->load_detail_view_sj_rsk($id)->result();
             }else if($data['header']['jenis_barang'] == 'LAIN'){
             $data['details'] = $this->Model_sales_order->show_detail_so_sp($id)->result();
-            $data['detailSJ'] = $this->Model_sales_order->load_detail_view_sj_sp($id)->result();
+            // $data['detailSJ'] = $this->Model_sales_order->load_detail_view_sj_sp($id)->result();
             }else{
             $data['detailSPB'] = $this->Model_sales_order->show_detail_spb_fulfilment($id)->result();
             $data['details'] = $this->Model_sales_order->show_detail_so($id)->result();
-            $data['detailSJ'] = $this->Model_sales_order->load_detail_view_sj($id)->result();
+            // $data['detailSJ'] = $this->Model_sales_order->load_detail_view_sj($id)->result();
             }
 
             $this->load->view('layout', $data);
@@ -473,6 +473,7 @@ class SalesOrder extends CI_Controller{
                 'term_of_payment'=>$this->input->post('term_of_payment'),
                 'no_spb'=>$insert_id,
                 'tgl_po'=>$tgl_po,
+                'jenis_so'=>$this->input->post('jenis_so'),
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'currency'=>$this->input->post('currency'),
                 'kurs'=>$this->input->post('kurs')
@@ -485,11 +486,16 @@ class SalesOrder extends CI_Controller{
 
                 $reff_so = array('reff1' => $so_id);
                 $reff_tso = array('reff1' => $tso_id);
+                $reff_spb = array('reff1' => $insert_id);
+                $data_post['category'] = $category;
                 $data_post['so'] = array_merge($data, $reff_so);
                 $data_post['tso'] = array_merge($t_data, $reff_tso);
+                $data_post['spb'] = array_merge($dataC, $reff_spb);
 
                 $post = json_encode($data_post);
 
+                // print_r($post);
+                // die();
                 $ch = curl_init(target_url().'api/SalesOrderAPI/so');
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
@@ -498,6 +504,8 @@ class SalesOrder extends CI_Controller{
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
+                // print_r($response);
+                // die();
             }
 
             if($this->db->trans_complete()){
@@ -753,24 +761,38 @@ class SalesOrder extends CI_Controller{
                 'alias'=> $this->input->post('alias'),
                 'no_po'=> $this->input->post('no_po'),
                 'tgl_po'=> $tanggal_po,
+                'jenis_so'=> $this->input->post('jenis_so'),
                 'modified_at'=> $tanggal,
                 'modified_by'=> $user_id
             );
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('t_sales_order', $t_data);
 
-
             if($user_ppn == 1){
                 $this->load->helper('target_url');
+                $this->load->model('Model_sales_order');
+                $jenis = $this->input->post('jenis_barang');
+                // if($jenis == 'FG'){
+                //     $data_post['detail_spb'] =$this->Model_sales_order->spb_fg_detail_only($this->input->post('no_spb'))->result();
+                // }else if($jenis == 'WIP'){
+                //     $data_post['detail_spb'] =$this->Model_sales_order->spb_wip_detail_only($this->input->post('no_spb'))->result();
+                // }else if($jenis == 'RONGSOK'){
+                //     $data_post['detail_spb'] =$this->Model_sales_order->spb_rsk_detail_only($this->input->post('no_spb'))->result();
+                // }else if($jenis == 'AMPAS'){
+                //     $data_post['detail_spb'] =$this->Model_sales_order->spb_ampas_detail_only($this->input->post('no_spb'))->result();
+                // }
 
+                $data_post['category'] = $jenis;
                 $data_post['so_id'] = $this->input->post('so_id');
                 $data_post['tso_id'] = $this->input->post('id');
                 $data_post['so'] = $data;
                 $data_post['tso'] = $t_data;
-                $this->load->model('Model_sales_order');
                 $data_post['details'] =$this->Model_sales_order->load_detail_only($this->input->post('id'))->result();
 
                 $post = json_encode($data_post);
+
+                // print_r($post);
+                // die();
 
                 $ch = curl_init(target_url().'api/SalesOrderAPI/so_detail');
                 curl_setopt($ch, CURLOPT_POST, true);
@@ -1473,12 +1495,17 @@ class SalesOrder extends CI_Controller{
 
             if($user_ppn == 1){
                 $this->load->helper('target_url');
+                    $data_post['flag_sj'] = $flag_sj;
+                    $data_post['tsj'] = $this->Model_sales_order->tsj_header_only($sjid)->row_array();
 
-                $data_post['flag_sj'] = $flag_sj;
-                $data_post['tsj'] = $this->Model_sales_order->tsj_header_only($sjid)->row_array();
-                $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang($sjid)->result();
-
-                $post = json_encode($data_post);
+                if($jenis == 'FG'){
+                    $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang($sjid)->result();
+                }elseif($jenis == 'WIP'){
+                    $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang_wip($sjid)->result();
+                }elseif($jenis == 'RONGSOK'){
+                    $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang_rsk($sjid)->result();
+                }
+                    $post = json_encode($data_post);
                 // print_r($post);
                 // die();
                 $ch = curl_init(target_url().'api/SalesOrderAPI/sj');

@@ -75,7 +75,7 @@ if ( ! function_exists('number_to_words'))
   {
     $after_comma = stristr($number,',');
     $arr_number = array(
-    "nol",
+    "",
     "satu",
     "dua",
     "tiga",

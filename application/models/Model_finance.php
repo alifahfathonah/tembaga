@@ -840,9 +840,9 @@ class Model_finance extends CI_Model{
     function print_laporan_piutang($date,$ppn){
         $data = $this->db->query("select * from (select fi.id, fi.id_customer, fi.nilai_invoice, fi.tanggal, fi.nilai_bayar, fi.nilai_pembulatan, fi.no_invoice, fi.tgl_jatuh_tempo, sum(fmd.inv_bayar) as nilai_invoice_bayar,
             (CASE WHEN fi.currency='USD' THEN fi.nilai_invoice ELSE 0 END) as nilai_us, 
-            (select sum(fmd.inv_bayar) from v_inv_um_status vi
-            left join f_match_detail fmd on fmd.id_inv = vi.id_inv
-            where vi.status = 0 and fi.id = vi.id_inv) as nilai_cm,
+            (select sum(fmd.inv_bayar) from f_invoice fi2
+            left join f_match_detail fmd on fmd.id_inv = fi2.id
+            where (select count(id_inv) from v_inv_um_status vi where vi.status = 0 and vi.id_inv = 1609 group by vi.id_match) > 0 and fi2.id = fi.id) as nilai_cm,
             tsj.no_surat_jalan, 
             mc.kode_customer, mc.nama_customer, mc.nama_customer_kh
             from f_invoice fi
@@ -853,7 +853,7 @@ class Model_finance extends CI_Model{
              group by fi.id
             ) as i
              where i.nilai_invoice > (i.nilai_bayar + i.nilai_pembulatan) or i.nilai_cm is not null
-             order by i.id_customer, i.tanggal asc");
+             order by i.id_customer, i.no_invoice, i.tanggal asc");
         return $data;
     }
 

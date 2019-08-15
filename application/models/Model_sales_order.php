@@ -264,7 +264,44 @@ class Model_sales_order extends CI_Model{
     }
 
     function load_detail_only($id){
-        $data = $this->db->query("select * from t_sales_order_detail where t_so_id =".$id);
+        $data = $this->db->query("select tsod.*, COALESCE(jb.uom, jb2.uom, r.uom, r2.uom) as uom from t_sales_order_detail tsod
+            left join t_sales_order tso on tso.id = tsod.t_so_id
+            left join jenis_barang jb on tso.jenis_barang = 'FG' and jb.id = tsod.jenis_barang_id
+            left join jenis_barang jb2 on  tso.jenis_barang = 'WIP' and jb2.id = tsod.jenis_barang_id
+            left join rongsok r on  tso.jenis_barang = 'RONGSOK' and r.id = tsod.jenis_barang_id
+            left join rongsok r2 on  tso.jenis_barang = 'AMPAS' and r2.id = tsod.jenis_barang_id
+            where t_so_id =".$id);
+        return $data;
+    }
+
+    // function load_detail_only($id){
+    //     $data = $this->db->query("select * from t_sales_order_detail tsod
+    //         left join t_sales_order tso on tso.id =  tsod.t_so_id
+    //         left join t_spb_fg_detail tsfd on tso.jenis_barang = 'FG' and tsfd.id = tsod.no_spb_detail
+    //         left join t_spb_wip_detail tswd on tso.jenis_barang = 'WIP' and tswd.id = tsod.no_spb_detail
+    //         left join t_spb_ampas_detail tsad on tso.jenis_barang = 'AMPAS' and tsad.id = tsod.no_spb_detail
+    //         left join spb on tso.jenis_barang = 'RONGSOK' and spb.id = tsod.no_spb_detail
+    //         where t_so_id =".$id);
+    //     return $data;
+    // }
+
+    function spb_fg_detail_only($id){
+        $data = $this->db->query("select * from t_spb_fg_detail where t_spb_fg_id =".$id);
+        return $data;
+    }
+
+    function spb_wip_detail_only($id){
+        $data = $this->db->query("select * from t_spb_wip_detail where t_spb_wip_id =".$id);
+        return $data;
+    }
+
+    function spb_ampas_detail_only($id){
+        $data = $this->db->query("select * from t_spb_ampas_detail where t_spb_ampas_id =".$id);
+        return $data;
+    }
+
+    function spb_rsk_detail_only($id){
+        $data = $this->db->query("select * from spb_detail where spb_id =".$id);
         return $data;
     }
 
@@ -378,7 +415,8 @@ class Model_sales_order extends CI_Model{
         coalesce(tgf.netto, tgw.berat) as berat,
         coalesce(tgw.qty, 1) as qty,
         coalesce(tgw.uom, NULL) as uom,
-        coalesce(tgf.keterangan, tgw.keterangan) as keterangan
+        coalesce(tgf.keterangan, tgw.keterangan) as keterangan,
+        coalesce(tgf.flag_taken, tgw.flag_taken) as flag_taken
         from t_sales_order tso
         left join t_gudang_fg tgf on tso.jenis_barang = 'FG' and tgf.t_spb_fg_id = tso.no_spb
         left join t_gudang_wip tgw on tso.jenis_barang = 'WIP' and tgw.t_spb_wip_id = tso.no_spb
@@ -388,7 +426,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function show_detail_spb_fulfilment_rsk($id){
-        $data = $this->db->query("Select rsk.nama_item as nama_barang, rsk.uom, rsk.kode_rongsok as kode, dtrd.no_pallete as no_packing,dtrd.bruto, dtrd.netto as berat, dtrd.qty, dtrd.line_remarks as keterangan
+        $data = $this->db->query("Select rsk.nama_item as nama_barang, rsk.uom, rsk.kode_rongsok as kode, dtrd.no_pallete as no_packing,dtrd.bruto, dtrd.netto as berat, dtrd.qty, dtrd.line_remarks as keterangan, dtrd.so_id, dtrd.flag_taken
             From spb_detail_fulfilment spdf 
             Left Join dtr_detail dtrd on (dtrd.id = spdf.dtr_detail_id) 
             Left Join rongsok rsk On (dtrd.rongsok_id = rsk.id)
@@ -522,7 +560,13 @@ class Model_sales_order extends CI_Model{
     }
 
     function tsj_header_only($id){
-        $data = $this->db->query("Select * from t_surat_jalan where id =".$id);
+        $data = $this->db->query("Select tsj.*, COALESCE(tsf.status, tsw.status, spb.status, tsa.status, 0) as status_spb from t_surat_jalan tsj
+            left join t_sales_order tso on tso.id =tsj.sales_order_id
+            left join t_spb_fg tsf on tso.jenis_barang = 'FG' and tsf.id = tso.no_spb
+            left join t_spb_wip tsw on tso.jenis_barang = 'WIP' and tsw.id = tso.no_spb
+            left join spb on tso.jenis_barang = 'RONGSOK' and spb.id = tso.no_spb
+            left join t_spb_ampas tsa on tso.jenis_barang = 'AMPAS' and tsa.id = tso.no_spb
+            where tsj.id =".$id);
         return $data;
     }
 
@@ -545,6 +589,21 @@ class Model_sales_order extends CI_Model{
                 left join produksi_fg pf on pf.id = tbf.produksi_fg_id
                 where tsjd.t_sj_id =".$id);
         return $data;
+    }
+
+    function tsjd_get_gudang_wip($id){
+        return $this->db->query("select tsjd.id as id_sj_d, tsjd.t_sj_id, tsjd.jenis_barang_id as sj_jb, tsjd.jenis_barang_alias, tsjd.qty as jb_qty, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, tgw.*, jb.uom
+            from t_surat_jalan_detail tsjd
+            left join t_gudang_wip tgw on tgw.id = tsjd.gudang_id
+            left join jenis_barang jb on jb.id = tsjd.jenis_barang_id
+            where tsjd.t_sj_id=".$id);
+    }
+
+    function tsjd_get_gudang_rsk($id){
+        return $this->db->query("select tsjd.id as id_sj_d, tsjd.t_sj_id, tsjd.jenis_barang_id as sj_jb, tsjd.jenis_barang_alias, tsjd.qty as jb_qty, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, dd.*, td.id as id_ttr_detail from t_surat_jalan_detail tsjd
+            left join dtr_detail dd on dd.id = tsjd.gudang_id
+            left join ttr_detail td on td.dtr_detail_id = dd.id
+            where tsjd.t_sj_id=".$id);
     }
 
     function get_sj_detail($id,$jb){

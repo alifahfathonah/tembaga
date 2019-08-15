@@ -517,6 +517,9 @@
 
                     <a href="<?php echo base_url('index.php/GudangRongsok/spb_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
+                    <?php if($group_id==1 || $hak_akses['print_spb']==1){ ?>
+                    <a class="btn btn-circle blue-ebonyclay" href="<?php echo base_url('index.php/Ingot/print_spb_fulfilment/').$myData['id'];?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
+                    <?php } ?>
                 </div>   
                 <div class="col-md-2">
                     <?php

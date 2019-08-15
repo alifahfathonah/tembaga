@@ -31,7 +31,7 @@
                         </div>
                         <div class="col-md-8">
                         <?php if($this->session->userdata('user_ppn')==1){?>
-                            <input type="text" id="no_uk" name="no_uk" class="form-control myline" style="margin-bottom:5px" placeholder="Nomor Uang Keluar...">
+                            <input type="text" id="no_uk" name="no_uk" class="form-control myline" style="margin-bottom:5px" placeholder="Nomor Uang Keluar..." onkeyup="this.value = this.value.toUpperCase()">
                         <?php }else{ ?>
                             <input type="text" id="no_uk" name="no_uk" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 

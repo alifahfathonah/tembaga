@@ -189,7 +189,7 @@ class Finance extends CI_Controller{
         }
 
         if(($this->input->post('jenis_id') != 'Cek')||($this->input->post('jenis_id') != 'Cek Mundur')){
-            $data = array(
+            $dataf = array(
                 'jenis_trx'=>0,
                 'nomor'=> $code,
                 'flag_ppn'=> $user_ppn,
@@ -203,8 +203,33 @@ class Finance extends CI_Controller{
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id
             );
-            $this->db->insert('f_kas', $data);
+            $this->db->insert('f_kas', $dataf);
+            $f_kas_insert_id = $this->db->insert_id();
         }
+
+            if($user_ppn==1){
+                $this->load->helper('target_url');
+
+                $this->load->model('Model_beli_rongsok');
+
+                $data_post['fum'] = array_merge($data, array('reff1'=>$insert_id));
+                $data_post['f_kas'] = array_merge($dataf, array('reff1'=>$f_kas_insert_id));
+
+                $detail_post = json_encode($data_post);
+                // print_r($detail_post);
+                // die();
+
+                $ch = curl_init(target_url().'api/FinanceAPI/um');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
 
         if($this->db->trans_complete()){
             redirect('index.php/Finance/');  
@@ -216,10 +241,28 @@ class Finance extends CI_Controller{
 
     function delete_um(){
         $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
         $this->db->trans_start();
         if(!empty($id)){
             $this->db->delete('f_uang_masuk', ['id' => $id]);
             $this->db->delete('f_kas', ['id_um' => $id]);
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+                $url = target_url().'api/FinanceAPI/um_del/id/'.$id;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                $result = curl_exec($ch);
+                $response = json_decode($result);
+                curl_close($ch);
+                // print_r($result);
+                // die();
+            }
         }
 
         if ($this->db->trans_complete()) {
@@ -1454,6 +1497,7 @@ class Finance extends CI_Controller{
 
     function delete_invoice(){
         $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
         $this->db->trans_start();
         if(!empty($id)){
 
@@ -1470,6 +1514,23 @@ class Finance extends CI_Controller{
 
             $this->db->delete('f_invoice', ['id' => $id]);
             $this->db->delete('f_invoice_detail', ['id_invoice' => $id]);
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+                $url = target_url().'api/FinanceAPI/inv_del/id/'.$id;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                $result = curl_exec($ch);
+                $response = json_decode($result);
+                curl_close($ch);
+                // print_r($result);
+                // die();
+            }
         }
 
         if($this->db->trans_complete()) {
@@ -1502,7 +1563,7 @@ class Finance extends CI_Controller{
             'term_of_payment' => $this->input->post('term_of_payment'),
             'tanggal' => $tgl_input,
             'tgl_jatuh_tempo' => $tgl_jatuh_tempo,
-            'keterangan' => $this->input->post('remarks'),
+            'keterangan' => nl2br($this->input->post('remarks')),
             'diskon' => $diskon,
             'add_cost' => $cost,
             'materai' => $materai,

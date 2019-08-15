@@ -482,14 +482,14 @@ class BeliRongsok extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('VRSK', $tgl_input);
-        if($nilai_po-($nilai_dp+$amount)<=0){
-            $jenis_voucher = 'Pelunasan';
-            $this->db->where('id', $id);
-            $this->db->update('po', array('status'=>4));
-        }else{
+        if($nilai_po-($nilai_dp+$amount)>0){
             $jenis_voucher = 'DP';
             $this->db->where('id', $id);
             $this->db->update('po', array('flag_dp'=>1));
+        }else{
+            $jenis_voucher = 'Pelunasan';
+            $this->db->where('id', $id);
+            $this->db->update('po', array('flag_pelunasan'=>1,'status'=>4));
         } 
 
         if($code){ 
@@ -1723,6 +1723,8 @@ class BeliRongsok extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_beli_rongsok');
 
+        if(!empty($id)){
+
         $get = $this->Model_beli_rongsok->get_po_from_voucher($id)->row_array();
 
                 $po_dtr_list = $this->Model_beli_rongsok->check_po_dtr($get['po_id'])->result();
@@ -1744,8 +1746,6 @@ class BeliRongsok extends CI_Controller{
                                             'status'=>2));
                         }
                 }
-
-        if(!empty($id)){
             $this->db->delete('voucher', ['id' => $id]);
         }
 

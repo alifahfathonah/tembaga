@@ -1366,6 +1366,8 @@ class GudangFG extends CI_Controller{
             $this->db->where('id', $bpb_id);
             $this->db->update('t_bpb_fg', $bpb_update);
             
+            $detail_push = [];
+            
             #Create Inventori FG
             $details = $this->input->post('details');
             $this->load->model('Model_gudang_fg');
@@ -1392,41 +1394,42 @@ class GudangFG extends CI_Controller{
                             'created_at' => $tanggal
                         );
                     $this->db->insert('t_gudang_fg', $data_else);
-                    // if($user_ppn == 1){
-                    //     $detail_push = [];
-                    //     $tgf_id = $this->db->insert_id();
-                    //     $data_id = array('reff1' => $tgf_id);
-                    //     $detail_push[] = array_merge($details[$k], $data_id);
-                    // }
+                    if($user_ppn == 1){
+                        $tgf_id = $this->db->insert_id();
+                        $data_id = array('reff1' => $tgf_id);
+                        unset($data['flag_ppn']);
+                        unset($data['created_by']);
+                        unset($data['created_at']);
+                        $detail_push[$k] = array_merge($details[$k], $data_id);
+                    }
                 }
                 
                 /** API TRANSACTION **/
-                // if($user_ppn = 1 && strpos($this->input->post('remarks'), 'BARANG PO') !== false ){
-                //     $this->load->helper('target_url');
+                if($user_ppn==1 && strpos($this->input->post('remarks'), 'BARANG PO') !== false ){
+                    $this->load->helper('target_url');
 
-                //     $data_post['bpb_id'] = $bpb_id;
-                //     $data_post['tgl_input'] = $tgl_input;
-                //     $data_post['bpb'] = $bpb_update;
-                //     $data_post['details'] = $detail_push;
-                //     $detail_post = json_encode($data_post);
+                    $data_post['bpb_id'] = $bpb_id;
+                    $data_post['tgl_input'] = $tgl_input;
+                    $data_post['bpb'] = $bpb_update;
+                    $data_post['details'] = $detail_push;
+                    $detail_post = json_encode($data_post);
 
-                //     // print_r($detail_post);
-                //     // die();
+                    // print_r($detail_post);
+                    // die();
 
-                //     $ch = curl_init(target_url().'api/BeliFinishGoodAPI/bpb');
-                //     curl_setopt($ch, CURLOPT_POST, true);
-                //     curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-                //     curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
-                //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                //     $response = curl_exec($ch);
-                //     $result = json_decode($response, true);
-                //     curl_close($ch);
-                //     // print_r($response);
-                //     // die();
-                // }
+                    $ch = curl_init(target_url().'api/BeliFinishGoodAPI/bpb');
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    $response = curl_exec($ch);
+                    $result = json_decode($response, true);
+                    curl_close($ch);
+                    // print_r($response);
+                    // die();
+                }
             
-        if($this->db->trans_complete()){  
-                
+            if($this->db->trans_complete()){
                 $this->session->set_flashdata("message", "Inventori FG sudah dibuat dan masuk gudang");
             }else{
                 $this->session->set_flashdata("message","Pembuatan Inventori FG gagal, silahkan coba lagi!");

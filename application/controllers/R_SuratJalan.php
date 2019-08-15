@@ -91,8 +91,6 @@ class R_SuratJalan extends CI_Controller{
         
         $this->db->trans_start();
 
-            
-
         if($jenis == 'matching'){
             $data = array(
                 'no_bpb'=> $this->input->post('no_surat_jalan'),
@@ -364,14 +362,14 @@ class R_SuratJalan extends CI_Controller{
             $this->db->insert('r_t_surat_jalan', $data);
             $sjr_id = $this->db->insert_id();
 
-            $this->db->where('id', $this->input->post('po_id'));
+            $this->db->where('id', $this->input->post('po_id'));// PO CUSTOMER
             $this->db->update('r_t_po', array('flag_sj' => $sjr_id));
 
             $tanggal_bpb = date('Y-m-d', strtotime($this->input->post('tanggal_bpb')));
 
             $po_id = $this->db->query("select sj.r_po_id from r_t_bpb bpb
                 left join r_t_surat_jalan sj on bpb.r_sj_id = sj.id
-                where bpb.r_po_id = ".$this->input->post('po_id'))->row_array();
+                where bpb.r_po_id = ".$this->input->post('po_id'))->row_array();// PO CV KE KMP
 
             $data_bpb = array(
                 'no_bpb' => $this->input->post('no_bpb'),
@@ -401,14 +399,13 @@ class R_SuratJalan extends CI_Controller{
             $this->db->update('r_t_surat_jalan', array('r_bpb_id' => $bpb_id));
 
             $this->db->where('sjr_id', $this->input->post('r_sj_id'));
-            $this->db->update('r_t_inv_jasa', array('flag_sjr'=>1));
+            $this->db->update('r_t_inv_jasa', array('flag_sjr'=>1));            
 
-            
-
-            $sj_detail = $this->Model_surat_jalan->sj_detail($this->input->post('r_sj_id'))->result();
+            $sj_detail = $this->Model_surat_jalan->sj_detail($this->input->post('r_sj_id'), $this->input->post('po_id'))->result();
             foreach ($sj_detail as $row) {
                 $detail = array(
                     'sj_resmi_id' => $sjr_id,
+                    'po_detail_id' => $row->po_detail_id,
                     'jenis_barang_id' => $row->jenis_barang_id,
                     'no_packing' => $row->no_packing,
                     'qty' => $row->qty,
@@ -422,6 +419,7 @@ class R_SuratJalan extends CI_Controller{
 
                 $detail_bpb = array(
                     'bpb_resmi_id' => $bpb_id,
+                    'po_detail_id' => $row->po_detail_id,
                     'sj_resmi_id' => $sjr_id,
                     'jenis_barang_id' => $row->jenis_barang_id,
                     'no_packing' => $row->no_packing,
@@ -451,6 +449,10 @@ class R_SuratJalan extends CI_Controller{
                 'bpb_id'=>$bpb_id,
             );
 
+            // print_r($data_sj_api);
+            // // print("<pre>".print_r($data_sj_api,true)."</pre>");
+            // die();
+
             $ch = curl_init(target_url_cv($reff_cv).'api/SuratJalanAPI/sjcs');
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
@@ -460,7 +462,10 @@ class R_SuratJalan extends CI_Controller{
             $result = json_decode($response, true);
             curl_close($ch);
 
-            log_message('debug', 'sj = '.print_r($result,1));
+            // print_r($response);
+            // die();
+
+            // log_message('debug', 'sj = '.print_r($result,1));
 
             $this->load->model('Model_surat_jalan');
             $sj_detail_api = $this->Model_surat_jalan->get_sj_detail_only($sjr_id)->result_array();
@@ -472,8 +477,10 @@ class R_SuratJalan extends CI_Controller{
             }
 
             $detail_api = json_encode($sj_detail_api);
+            // print_r($detail_api);
+            // die();
 
-            log_message('debug', 'sj detail = '.print_r($detail_api,1));
+            // log_message('debug', 'sj detail = '.print_r($detail_api,1));
 
             $ch2 = curl_init(target_url_cv($reff_cv).'api/SuratJalanAPI/sj_detail');
             curl_setopt($ch2, CURLOPT_POST, true);
@@ -502,7 +509,8 @@ class R_SuratJalan extends CI_Controller{
                 'remarks'=>$this->input->post('remarks'),
                 'reff'=>$bpb_id,
             );
-
+            // print("<pre>".print_r($data_bpb_api,true)."</pre>");
+            // die();
             $ch = curl_init(target_url_cv($reff_cv).'api/BPBAPI/bpbs');
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
@@ -511,8 +519,9 @@ class R_SuratJalan extends CI_Controller{
             $response = curl_exec($ch);
             $result = json_decode($response, true);
             curl_close($ch);
-
-            log_message('debug', 'bpb = '.print_r($result,1));
+            // print_r($response);
+            // die();
+            // log_message('debug', 'bpb = '.print_r($result,1));
 
             $this->load->model('Model_bpb');
             $bpb_detail_api = $this->Model_bpb->list_bpb_detail_only($bpb_id)->result_array();
@@ -544,6 +553,36 @@ class R_SuratJalan extends CI_Controller{
                 $this->session->set_flashdata('flash_msg', 'Data surat jalan gagal disimpan, silahkan dicoba kembali!');
                 redirect('index.php/R_SuratJalan/surat_jalan');  
             }
+    }
+
+/** LANJUTIN NANTI YAAAAA, TINGGAL TEST DOANG SAMA API **/
+    function delete_inv_cust(){
+        $id = $this->uri->segment(3);
+
+        $get = $this->db->query("select rtsj.*, rtb.id as id_bpb from r_t_surat_jalan rtsj
+                left join r_t_bpb rtb on rtb.r_sj_id = rtsj.id
+                where rtsj.id=".$id)->row_array();
+
+        $this->db->where('id', $get['r_po_id']);// PO CUSTOMER
+        $this->db->update('r_t_po', array('flag_sj' => 0));
+
+        $this->db->where('flag_sj_cv', $id);
+        $this->db->update('r_t_surat_jalan', array('flag_sj_cv' => 0));
+
+        $this->db->where('id', $id);
+        $this->db->delete('r_t_surat_jalan');
+
+        $this->db->where('sj_resmi_id', $id);
+        $this->db->delete('r_t_surat_jalan_detail');
+
+        $this->db->where('sjr_id', $get['r_sj_id']);
+        $this->db->update('r_t_inv_jasa', array('flag_sjr'=>0));
+
+        $this->db->where('id', $get['id_bpb']);
+        $this->db->delete('r_t_bpb');
+
+        $this->db->where('bpb_resmi_id', $get['id_bpb']);
+        $this->db->delete('r_t_bpb_detail');
     }
 
     function edit_surat_jalan(){

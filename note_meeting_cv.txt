@@ -65,11 +65,11 @@ create voucher rsk cek lagi(done)
 
 matching voucher ke klik 2x(done)
 
-print laporan fg masih ke rongsok. print rongsok error
+print laporan fg masih ke rongsok. print rongsok error(done)
 
 edit customer di matching invoice
 
-produksi fg dan po show 1 bulan terakhir aja
+produksi fg dan po show 1 bulan terakhir aja(done)
 
 bp berat packing nya otomatis sesuai yg dipilih
 
@@ -78,3 +78,7 @@ laporan piutan gaada sj(done)
 repacking tandain
 
 saldo harian di laporan sisa so masih salah(done)
+
+so tambahin pilihan export atau lokal. kalau export gaada ppn samsekali
+
+edit jenis barang di so

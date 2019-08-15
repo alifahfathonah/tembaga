@@ -396,11 +396,42 @@ class VoucherCost extends CI_Controller{
     function delete_voucher(){
         $id = $this->uri->segment(3);
         $jenis = $this->uri->segment(4);
+        $user_ppn = $this->session->userdata('user_ppn');
         
         $this->db->trans_start();
         if(!empty($id)){
+            $this->load->model('Model_voucher_cost');
+            $get = $this->Model_voucher_cost->get_f_kas($id)->row_array();
+            print_r($get);
+            // die();
+
             $this->db->delete('voucher', ['id_fk' => $id]);
             $this->db->delete('f_kas', ['id' => $id]);
+
+            if($get['po_id']>0){
+                $this->db->where('id', $get['po_id']);
+                $this->db->update('po', array(
+                    'status'=>3,
+                    'flag_pelunasan'=>0
+                ));
+            }
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+                $url = target_url().'api/VoucherAPI/vc_del/id/'.$id;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                $result = curl_exec($ch);
+                $response = json_decode($result);
+                curl_close($ch);
+                // print_r($result);
+                // die();
+            }
         }
 
         if ($this->db->trans_complete()) {
@@ -528,7 +559,7 @@ class VoucherCost extends CI_Controller{
         }
 
         if($code_um){
-                $this->db->insert('f_kas', array(
+                $data = array(
                     'jenis_trx'=>1,
                     'nomor'=>$code_um,
                     'flag_ppn'=>$user_ppn,
@@ -541,10 +572,12 @@ class VoucherCost extends CI_Controller{
                     'nominal'=>str_replace(',', '', $this->input->post('total_nominal')),
                     'created_at'=>$tanggal,
                     'created_by'=>$user_id
-                ));
+                );
+                $this->db->insert('f_kas', $data);
                 $insert_id = $this->db->insert_id();
 
             $details = $this->input->post('myDetails');
+            $detail_post = [];
             foreach ($details as $i => $row){
                 if($row['nominal']!=''){
 
@@ -561,7 +594,7 @@ class VoucherCost extends CI_Controller{
                     // }
 
                     if($row['group_cost_id'] == 1){
-                        $this->db->insert('voucher', array(
+                        $detail = array(
                             'no_voucher'=> $code,
                             'tanggal'=> $tgl_input,
                             'flag_ppn'=> $user_ppn,
@@ -574,9 +607,10 @@ class VoucherCost extends CI_Controller{
                             'id_fk'=> $insert_id,
                             'created'=> $tanggal,
                             'created_by'=> $user_id
-                        ));
+                        );
+                        $this->db->insert('voucher', $detail);
                     }elseif($row['group_cost_id'] == 2){
-                        $this->db->insert('voucher', array(
+                        $detail = array(
                             'no_voucher'=> $code,
                             'tanggal'=> $tgl_input,
                             'flag_ppn'=> $user_ppn,
@@ -589,9 +623,10 @@ class VoucherCost extends CI_Controller{
                             'id_fk'=> $insert_id,
                             'created'=> $tanggal,
                             'created_by'=> $user_id
-                        ));
+                        );
+                        $this->db->insert('voucher', $detail);
                     }else{
-                        $this->db->insert('voucher', array(
+                        $detail = array(
                             'no_voucher'=> $code,
                             'tanggal'=> $tgl_input,
                             'flag_ppn'=> $user_ppn,
@@ -604,14 +639,38 @@ class VoucherCost extends CI_Controller{
                             'id_fk'=> $insert_id,
                             'created'=> $tanggal,
                             'created_by'=> $user_id
-                        ));
+                        );
+                        $this->db->insert('voucher', $detail);
                     }
+                    $detail_id = $this->db->insert_id();
+                    $detail_post[$i] = array_merge($detail, ['reff1'=>$detail_id]);
                 }
             }
             $this->session->set_flashdata('flash_msg', 'Uang Keluar berhasil di-create dengan nomor : '.$code_um);
         }else{
             $this->session->set_flashdata('flash_msg', 'Uang Keluar gagal di-create, penomoran belum disetup!');            
         }
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $data_post['header'] = array_merge($data,['reff1'=>$insert_id]);
+                $data_post['details'] = $detail_post;
+
+                $post = json_encode($data_post);
+                // print_r($post);
+                // die();
+                $ch = curl_init(target_url().'api/VoucherAPI/vc_add');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
         if($this->db->trans_complete()){
             if ($this->input->post('bank_id') <= 3) {
                 redirect('index.php/VoucherCost/kas_keluar');

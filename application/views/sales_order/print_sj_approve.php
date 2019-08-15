@@ -25,7 +25,7 @@
                 <td colspan="3">&nbsp;</td>
             </tr>
             <tr>
-                <td colspan="3"><p align="center" style="font-size:20px;" style="font-size: 18px;"><strong><u>
+                <td colspan="3"><p align="center" style="font-size:18px;"><strong><u>
                     <?php
                     if($header['status']==1){
                         echo 'PACKING LIST';

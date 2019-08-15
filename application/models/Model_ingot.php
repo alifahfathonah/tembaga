@@ -124,7 +124,7 @@ class Model_ingot extends CI_Model{
     }
     
     function show_header_spb($id){
-        $data = $this->db->query("Select spb.*, pi.id_apolo, pi.id as id_pi,
+        $data = $this->db->query("Select spb.*, pi.id_apolo, pi.id as id_pi, mc.nama_customer, mc.nama_customer_kh,
                     pi.no_produksi,
                     jb.jenis_barang,
                     usr.realname As pic,
@@ -132,6 +132,9 @@ class Model_ingot extends CI_Model{
                     rjct.realname As reject_name,
                     a.tipe_apolo
                     From spb
+                        Left Join t_sales_order tso on (tso.jenis_barang = 'RONGSOK' and tso.no_spb = spb.id)
+                        Left Join sales_order so on (so.id = tso.so_id)
+                        Left Join m_customers mc on (mc.id = so.m_customer_id)
                         Left Join produksi_ingot pi On (spb.produksi_ingot_id = pi.id)
                         Left Join apolo a On (a.id = pi.id_apolo)
                         Left join jenis_barang jb on (jb.id = spb.jenis_barang)
@@ -143,7 +146,7 @@ class Model_ingot extends CI_Model{
     }
     
     function show_detail_spb($id){
-        $data = $this->db->query("Select spbd.*, rsk.nama_item, rsk.uom, sr.stok_netto as stok
+        $data = $this->db->query("Select spbd.*, rsk.nama_item, rsk.uom, rsk.kode_rongsok, sr.stok_netto as stok
                     From spb_detail spbd 
                         Left Join rongsok rsk On (spbd.rongsok_id = rsk.id) 
                         Left Join stok_rsk sr On (sr.rongsok_id = rsk.id)
@@ -153,7 +156,7 @@ class Model_ingot extends CI_Model{
     }
     
     function show_detail_spb_fulfilment_approved($id){
-        $data = $this->db->query("Select rsk.nama_item, rsk.uom, spdf.id, dtrd.no_pallete,dtrd.netto, COALESCE(NULLIF(dtrd.so_id,0),dtrd.retur_id) as so_id, sr.stok_netto as stok, dtrd.line_remarks
+        $data = $this->db->query("Select rsk.nama_item, rsk.uom, rsk.kode_rongsok, spdf.id, dtrd.no_pallete,dtrd.netto, COALESCE(NULLIF(dtrd.so_id,0),dtrd.retur_id) as so_id, sr.stok_netto as stok, dtrd.line_remarks
                     From spb_detail_fulfilment spdf 
                         left join dtr_detail dtrd on (dtrd.id = spdf.dtr_detail_id)
                         Left Join rongsok rsk On (dtrd.rongsok_id = rsk.id)
@@ -163,7 +166,7 @@ class Model_ingot extends CI_Model{
     }
 
     function show_detail_spb_fulfilment($id){
-        $data = $this->db->query("Select rsk.nama_item, rsk.uom, spdf.id, dtrd.no_pallete,dtrd.netto, sr.stok_netto as stok, dtrd.line_remarks
+        $data = $this->db->query("Select rsk.nama_item, rsk.uom, rsk.kode_rongsok, spdf.id, dtrd.no_pallete,dtrd.bruto, dtrd.berat_palette, dtrd.netto, sr.stok_netto as stok, dtrd.line_remarks
                     From spb_detail_fulfilment spdf 
                         left join dtr_detail dtrd on (dtrd.id = spdf.dtr_detail_id)
                         Left Join rongsok rsk On (dtrd.rongsok_id = rsk.id)

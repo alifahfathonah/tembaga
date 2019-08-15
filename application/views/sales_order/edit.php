@@ -122,6 +122,19 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Jenis SO <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis_so" name="jenis_so" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
+                                <option value=""></option>
+                                <option value="0" <?=($header['jenis_so']==0)? 'selected="selected"':'';?> >Lokal</option>
+                                <option value="1" <?=($header['jenis_so']==1)? 'selected="selected"':'';?>>Export</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -220,7 +233,7 @@
                     echo '<td><input type="text" id="qty_1" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="5" value="0"></td>'.
                         '<td><input type="text" id="netto_1" name="netto" class="form-control myline" maxlength="10" value="0" onkeyup="hitungSubTotal_a(1)"></td>';  
         } else if($header['jenis_barang'] == 'FG' || $header['jenis_barang'] == 'AMPAS') {
-                    echo '<input type="hidden" id="qty_1" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="1">'.
+                    echo '<input type="hidden" id="qty_1" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0">'.
                         '<input type="hidden" id="bruto" name="bruto" class="form-control myline" maxlength="10" value="0">'.
                         '<td><input type="text" id="netto_1" name="netto" class="form-control myline" maxlength="10" value="0" onkeyup="hitungSubTotal_a(1)"></td>';
         } else {

@@ -298,10 +298,27 @@ class BeliWIP extends CI_Controller{
 
     function delete_po(){
         ## BELOM ADA API
+        $user_ppn = $this->session->userdata('user_ppn');
         $id = $this->uri->segment(3);
         $this->db->trans_start();
         if(!empty($id)){
             $this->db->delete('po', ['id' => $id]);
+
+             if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $url = target_url().'api/BeliFinishGoodAPI/delete_po?id='.$id;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
         }
 
         if ($this->db->trans_complete()) {

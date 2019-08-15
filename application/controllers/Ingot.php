@@ -489,6 +489,20 @@ class Ingot extends CI_Controller{
         }
     }
 
+    function print_spb_fulfilment(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->helper('tanggal_indo_helper');
+            $this->load->model('Model_ingot');
+            $data['header']  = $this->Model_ingot->show_header_spb($id)->row_array();
+            $data['details'] = $this->Model_ingot->show_detail_spb_fulfilment($id)->result();
+
+            $this->load->view('ingot/print_spb_fulfilment', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
+
     function print_afkir(){
         $id = $this->uri->segment(3);
         if($id){        

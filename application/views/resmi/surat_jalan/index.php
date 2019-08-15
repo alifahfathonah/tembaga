@@ -93,6 +93,9 @@
                             <?php }if(($group_id==9 || $hak_akses['create_invoice_jasa']) && ($row->flag_tolling==0 && ($row->r_so_id > 0 && $row->r_po_id > 0) && $row->r_inv_jasa_id == 0) && $row->jenis_barang == 'FG' && $row->r_sj_id != 0){ ?>
                             <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/add_inv_cust/<?php echo $row->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-truck"></i> Create Invoice Jasa&nbsp; </a>
+                            <a href="<?php echo base_url(); ?>index.php/R_SuratJalan/delete_inv_cust/<?php echo $row->id; ?>" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus transaksi ini?');">
+                                <i class="fa fa-trash-o"></i> Delete 
+                            </a>
                             <?php }if($group_id==9 && ($row->jenis_surat_jalan == 'SURAT JALAN CUSTOMER KE CV' && $row->r_invoice_id > 0 && $row->flag_sj_cv == 0)){
                             ?>
                             <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_SuratJalan/add_surat_jalan/sj_cv/<?php echo $row->id; ?>" 

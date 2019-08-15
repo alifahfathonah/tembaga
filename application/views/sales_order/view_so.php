@@ -205,6 +205,7 @@
                                             <th>Berat</th>
                                             <th>Jumlah</th>
                                             <th>Keterangan</th>
+                                            <th>Status</th>
                                         </thead>
                                         <tbody>
                                         <?php
@@ -238,6 +239,11 @@
                                             }else{
                                                 echo '<td>'.$row->keterangan.'</td>';
                                             }
+                                            if($header['jenis_barang']=='FG'||$header['jenis_barang']=='WIP'){
+                                            echo (($row->flag_taken==1)? '<td style="background-color: green; color: white">Sudah di Kirim</td>':'<td>Belum Dikirim</td>');
+                                            }elseif($header['jenis_barang']=='RONGSOK'){
+                                            echo (($row->so_id>0)?'<td style="background-color: green; color: white">Sudah di Kirim</td>':'<td>Belum Dikirim</td>');
+                                            }
                                             ?>
                                         </tr>
                                         <?php
@@ -257,7 +263,7 @@
                         </div>
                     </div>
                 </div>
-                <?php } ?>
+                <?php }else{ ?>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12">
@@ -326,6 +332,7 @@
                         </div>
                     </div>
                 </div>
+                <?php } ?>
             </div>
         <a href="<?php echo base_url('index.php/SalesOrder'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
