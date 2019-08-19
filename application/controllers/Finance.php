@@ -352,7 +352,9 @@ class Finance extends CI_Controller{
                 'tanggal'=>$tgl_input,
                 'nominal'=>str_replace('.', '', $this->input->post('nominal_baru')),
                 'status'=>0,
-                'tgl_cair'=>$this->input->post('tanggal_cek_baru'),
+                'bank_pembayaran'=>$this->input->post('nama_bank'),
+                'nomor_cek'=>$this->input->post('nomor_cek'),
+                'tgl_cair'=>date('Y-m-d', strtotime($this->input->post('tanggal_cek_baru'))),
                 'modified_at'=>$tanggal,
                 'modified_by'=>$user_id,
                 'update_remarks'=>$this->input->post('update_remarks')
@@ -381,7 +383,7 @@ class Finance extends CI_Controller{
         $this->db->where('id', $id);
         if($this->db->update('f_uang_masuk', $data)){
             $this->session->set_flashdata('flash_msg', 'Uang Masuk berhasil di update');
-            redirect('index.php/Finance');
+            redirect('index.php/Finance/view_um/'.$id);
         }else{
             $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
         }             
@@ -2990,7 +2992,11 @@ class Finance extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $this->load->model('Model_finance');
+            if($user_ppn==1){
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_kmp($tanggal,$user_ppn)->result();
+            }else{
                 $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang($tanggal,$user_ppn)->result();
+            }
             $this->load->view('finance/print_laporan_piutang', $data);
     }
 

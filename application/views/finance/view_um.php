@@ -36,6 +36,8 @@
                                     <input type="hidden" id="tanggal_baru" name="tanggal_baru">
                                     <input type="hidden" id="tanggal_cek_baru" name="tanggal_cek_baru">
                                     <input type="hidden" id="nominal_baru" name="nominal_baru">
+                                    <input type="hidden" id="nama_bank_baru" name="nama_bank">
+                                    <input type="hidden" id="nomor_cek_baru" name="nomor_cek">
                                     <input type="hidden" id="nomor" name="nomor">
                                     <input type="hidden" id="jenis1" name="jenis1">
                                 </div>
@@ -367,6 +369,8 @@
 <script>
 function editDataCekMundur(){
     $("#editDataCekMundur").hide();
+    $("#nama_bank").attr("readonly", false);
+    $("#nomor_cek").attr("readonly", false);
     $("#tanggal_cek").attr("readonly", false);
     $("#tanggal_cek").datepicker({
             showOn: "button",
@@ -424,6 +428,8 @@ function showUpdateBox(){
             $('#nominal_baru').val($('#nominal').val());
             if($("#jenis").val()=="Cek Mundur"){
                 $('#tanggal_cek_baru').val($('#tanggal_cek').val());
+                $('#nama_bank_baru').val($('#nama_bank').val());
+                $('#nomor_cek_baru').val($('#nomor_cek').val());
             }else if($("#jenis").val()=="Cek"){
                 $('#nomor').val($('#nomor_cek').val());
             }else if($("#jenis").val()=="Giro"){

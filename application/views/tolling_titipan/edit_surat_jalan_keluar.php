@@ -76,13 +76,13 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Customer <font color="#f00">*</font>
+                            Supplier <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_customer" name="nama_customer" readonly="readonly"
+                            <input type="text" id="nama_supplier" name="nama_supplier" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['nama_customer']; ?>">
-                            <input type="hidden" id="id_customer" name="id_customer" value="<?php echo $header['id_customer'];?>" readonly="readonly">
+                                value="<?php echo $header['nama_supplier']; ?>">
+                            <input type="hidden" id="supplier_id" name="supplier_id" value="<?php echo $header['supplier_id'];?>" readonly="readonly">
                         </div>
                     </div>                    
                     <div class="row">
@@ -420,13 +420,7 @@ function simpanData(){
         $('.alert-danger').show(); 
     }else if($.trim($("#jenis_barang").val()) == ""){
         $('#message').html("Silahkan pilih jenis barang!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#nama_customer").val()) == ""){
-        $('#message').html("Silahkan pilih customer");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#no_sales_order").val()) == ""){
-        $('#message').html("Silahkan pilih no. sales order");
-        $('.alert-danger').show(); 
+        $('.alert-danger').show();
     }else{
         $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').submit(); 

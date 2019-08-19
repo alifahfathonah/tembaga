@@ -128,13 +128,13 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Customer <font color="#f00">*</font>
+                            Supplier <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_customer" name="nama_customer" readonly="readonly"
+                            <input type="text" id="nama_supplier" name="nama_supplier" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['nama_customer']; ?>">
-                            <input type="hidden" id="id_customer" name="id_customer" value="<?php echo $header['id_customer'];?>" readonly="readonly">
+                                value="<?php echo $header['nama_supplier']; ?>">
+                            <input type="hidden" id="supplier_id" name="supplier_id" value="<?php echo $header['supplier_id'];?>" readonly="readonly">
                         </div>
                     </div>                    
                     <div class="row">

@@ -838,11 +838,10 @@ class Model_finance extends CI_Model{
     }
 
     function print_laporan_piutang($date,$ppn){
-        $data = $this->db->query("select * from (select fi.id, fi.id_customer, fi.nilai_invoice, fi.tanggal, fi.nilai_bayar, fi.nilai_pembulatan, fi.no_invoice, fi.tgl_jatuh_tempo, sum(fmd.inv_bayar) as nilai_invoice_bayar,
-            (CASE WHEN fi.currency='USD' THEN fi.nilai_invoice ELSE 0 END) as nilai_us, 
-            (select sum(fmd.inv_bayar) from f_invoice fi2
+        $data = $this->db->query("select *, (select sum(fmd.inv_bayar) from f_invoice fi2
             left join f_match_detail fmd on fmd.id_inv = fi2.id
-            where (select count(id_inv) from v_inv_um_status vi where vi.status = 0 and vi.id_inv = 1609 group by vi.id_match) > 0 and fi2.id = fi.id) as nilai_cm,
+            where i.count_fmd > 0 and fi2.id = i.id group by i.id) as nilai_cm from (select fi.id, fi.id_customer, fi.nilai_invoice, fi.tanggal, fi.nilai_bayar, fi.nilai_pembulatan, fi.no_invoice, fi.tgl_jatuh_tempo, (sum(fmd.inv_bayar) + fi.nilai_pembulatan) as nilai_invoice_bayar,
+            (CASE WHEN fi.currency='USD' THEN fi.nilai_invoice ELSE 0 END) as nilai_us, (select count(id_inv) from v_inv_um_status vi where vi.status = 0 and vi.id_inv = fi.id group by vi.id_inv) as count_fmd,
             tsj.no_surat_jalan, 
             mc.kode_customer, mc.nama_customer, mc.nama_customer_kh
             from f_invoice fi
@@ -852,10 +851,49 @@ class Model_finance extends CI_Model{
             where fi.flag_ppn = ".$ppn."
              group by fi.id
             ) as i
-             where i.nilai_invoice > (i.nilai_bayar + i.nilai_pembulatan) or i.nilai_cm is not null
+             where i.nilai_invoice > (i.nilai_bayar + i.nilai_pembulatan)
              order by i.id_customer, i.no_invoice, i.tanggal asc");
         return $data;
     }
+
+    function print_laporan_piutang_kmp($date,$ppn){
+        $data = $this->db->query("
+            select * from ((select fi.id, fi.id_customer, fi.nilai_invoice, fi.tanggal, fi.nilai_bayar as nilai_invoice_bayar, fi.nilai_pembulatan, fi.no_invoice, fi.tgl_jatuh_tempo,
+            (CASE WHEN fi.currency='USD' THEN fi.nilai_invoice ELSE 0 END) as nilai_us, 0 as nilai_cm,
+            tsj.no_surat_jalan, 
+            mc.kode_customer, mc.nama_customer, mc.nama_customer_kh
+            from f_invoice fi
+            left join t_surat_jalan tsj on tsj.inv_id =  fi.id
+            left join m_customers mc on mc.id = fi.id_customer
+            where fi.flag_ppn = ".$ppn.")
+            UNION ALL
+            (select rinv.id, mc2.id as id_customer, rinv.nilai_invoice, rinv.tanggal, rinv.nilai_bayar as nilai_invoice_bayar, rinv.nilai_pembulatan, rinv.no_invoice_jasa as no_invoice, rinv.jatuh_tempo as tgl_jatuh_tempo, 0 as nilai_us, 0 as nilai_cm, rtsj.no_sj_resmi as no_surat_jalan, mc2.kode_customer, mc2.nama_customer, mc2.nama_customer_kh
+                from r_t_inv_jasa rinv
+                left join r_t_surat_jalan rtsj on rtsj.id = rinv.sjr_id
+                left join m_cv mcv on mcv.id = rinv.cv_id
+                left join m_customers mc2 on mc2.id = mcv.idkmp
+                where customer_id = 0
+            )) as i where i.nilai_invoice > (i.nilai_invoice_bayar + i.nilai_pembulatan) order by i.id_customer, i.tanggal, i.no_surat_jalan
+            ");
+        return $data;
+    }
+
+    // function print_laporan_piutang_kmp($date,$ppn){
+    //     $data = $this->db->query("select * from (select fi.id, fi.id_customer, fi.nilai_invoice, fi.tanggal, fi.nilai_bayar, fi.nilai_pembulatan, fi.no_invoice, fi.tgl_jatuh_tempo, (sum(fmd.inv_bayar) + fi.nilai_pembulatan) as nilai_invoice_bayar,
+    //         (CASE WHEN fi.currency='USD' THEN fi.nilai_invoice ELSE 0 END) as nilai_us,
+    //         tsj.no_surat_jalan, 
+    //         mc.kode_customer, mc.nama_customer, mc.nama_customer_kh, 0 as nilai_cm
+    //         from f_invoice fi
+    //         left join f_match_detail fmd on fmd.id_inv = fi.id
+    //         left join t_surat_jalan tsj on tsj.inv_id =  fi.id
+    //         left join m_customers mc on mc.id = fi.id_customer
+    //         where fi.flag_ppn = ".$ppn."
+    //          group by fi.id
+    //         ) as i
+    //          where i.nilai_invoice > (i.nilai_bayar + i.nilai_pembulatan)
+    //          order by i.id_customer, i.no_invoice, i.tanggal asc");
+    //     return $data;
+    // }
 
     function trx_kas($s,$e,$id,$ppn){
         return $this->db->query("select fk.id, fk.tanggal, fk.flag_ppn, fk.nomor, fk.jenis_trx, (fk.nominal*fk.kurs) as nominal, COALESCE(mc.nama_customer,'') as nama_customer, b.nama_bank from f_kas fk 

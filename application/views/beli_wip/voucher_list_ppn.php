@@ -3,9 +3,9 @@
         <h4 style="color:navy">
             <i class="fa fa-angle-right"></i> Pembelian 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>"> Pembelian Finish Good </a> 
+            <a href="<?php echo base_url('index.php/BeliWIP'); ?>"> Pembelian WIP </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood/voucher_list'); ?>"> Voucher List </a> 
+            <a href="<?php echo base_url('index.php/BeliWIP/voucher_list'); ?>"> Voucher List </a> 
         </h4>          
     </div>
 </div>
@@ -47,12 +47,12 @@
                     ?>
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
-                        <td><?php echo $data->no_voucher; ?></td>
+                        <td><?php echo $data->nomor; ?></td>
                         <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->jenis_voucher; ?></td>
                         <td><?php echo $data->no_po; ?></td>
                         <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal_po)); ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->amount,0,',','.'); ?></td>
+                        <td style="text-align:right"><?php echo number_format($data->nominal,2,',','.'); ?></td>
                         <td><?php echo $data->keterangan; ?></td>
                         <td style="text-align:center">
                             <?php 
@@ -63,11 +63,8 @@
                                 }
                             ?>
                         </td>                 
-                        <td style="text-align:center">
-                            <?php if($data->status==0){?>
-                            <a href="<?php echo base_url(); ?>index.php/BeliRongsok/delete_voucher/<?php echo $data->id; ?>" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus transaksi ini?');"><i class="fa fa-trash-o"></i> Delete</a>
-                            <?php } ?>                      
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" target="_blank" href="<?php echo base_url(); ?>index.php/BeliRongsok/print_voucher/<?php echo $data->id; ?>" 
+                        <td style="text-align:center">                             
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" target="_blank" href="<?php echo base_url(); ?>index.php/BeliWIP/print_voucher/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-print"></i> Print &nbsp; </a>    
                         </td>
                     </tr>

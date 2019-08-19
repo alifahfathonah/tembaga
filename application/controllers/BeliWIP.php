@@ -91,6 +91,7 @@ class BeliWIP extends CI_Controller{
             'no_po'=> $code,
             'tanggal'=> $tgl_input,
             'flag_ppn'=> $user_ppn,
+            'flag_tolling'=> 0,
             'ppn'=> $this->input->post('ppn'),
             'currency'=> $this->input->post('currency'),
             'diskon'=> $this->input->post('diskon'),
@@ -335,6 +336,7 @@ class BeliWIP extends CI_Controller{
         
         $data = array(
                 'status'=> 1,
+                'flag_pelunasan'=> 1,
                 'modified'=> $tanggal,
                 'modified_by'=>$user_id,
                 'remarks'=>$this->input->post('reject_remarks')
@@ -901,14 +903,12 @@ class BeliWIP extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('VWIP', $tgl_input);
-        if($nilai_po-($nilai_dp+$amount)<=0){
+        if(($nilai_po-($nilai_dp+$amount))>0){
+            $jenis_voucher = 'DP';
+        }else{
             $jenis_voucher = 'Pelunasan';
             $this->db->where('id', $id);
-            $this->db->update('po', array('flag_pelunasan'=>1,'status'=>4));
-        }else{
-            $jenis_voucher = 'DP';
-            $this->db->where('id', $id);
-            $this->db->update('po', array('flag_dp'=>1));
+            $this->db->update('po', array('status'=>4));
         } 
 
         if($code){ 
@@ -948,7 +948,7 @@ class BeliWIP extends CI_Controller{
         $nilai_po  = str_replace(',', '', $this->input->post('nilai_po'));
         $jumlah_dibayar  = str_replace(',', '', $this->input->post('jumlah_dibayar'));
         $amount  = str_replace(',', '', $this->input->post('amount'));
-        if($nilai_po-($jumlah_dibayar+$amount)<0){
+        if($nilai_po-($jumlah_dibayar+$amount)>0){
             $jenis_voucher = 'Parsial';
         }else{
             $jenis_voucher = 'Pelunasan';
@@ -1068,8 +1068,10 @@ class BeliWIP extends CI_Controller{
         $data['content']= "beli_wip/voucher_list";
         $this->load->model('Model_beli_wip');
         if($user_ppn==1){
+            $data['content']= "beli_wip/voucher_list_ppn";
             $data['list_data'] = $this->Model_beli_wip->voucher_list_ppn($user_ppn)->result();
         }else{
+            $data['content']= "beli_wip/voucher_list";
             $data['list_data'] = $this->Model_beli_wip->voucher_list($user_ppn)->result();
         }
 

@@ -9,7 +9,6 @@
     </div>
 </div>
 <div class="row">&nbsp;</div>
-<div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
@@ -139,13 +138,19 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-3">
                                     Currency <font color="#f00">*</font>
                                 </div>
-                                <div class="col-md-7">
+                                <div class="col-md-3">
                                     <input type="text" id="currency_po" name="currency_po" 
                                         class="form-control myline" style="margin-bottom:5px" 
                                         readonly="readonly">                                                                       
+                                </div>
+                                <div class="col-md-2">
+                                    Kurs <font color="#f00">*</font>     
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" id="kurs_po" name="kurs_po" class="form-control myline" style="margin-bottom:5px" readonly="readonly">           
                                 </div>
                             </div>
                             <!-- <div class="row">
@@ -226,11 +231,17 @@
                                 </div>
                             </div> 
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-3">
                                     Currency
                                 </div>
-                                <div class="col-md-7">
+                                <div class="col-md-3">
                                     <input type="text" id="currency" name="currency" class="form-control myline" style="margin-bottom:5px" readonly="readonly">           
+                                </div>
+                                <div class="col-md-3">
+                                    Kurs
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" id="kurs" name="kurs" class="form-control myline" style="margin-bottom:5px" readonly="readonly">           
                                 </div>
                             </div>
                             <div class="row">
@@ -239,8 +250,7 @@
                                 </div>
                                 <div class="col-md-7">
                                     <input type="text" id="amount" name="amount" 
-                                        class="form-control myline" style="margin-bottom:5px" 
-                                        onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);">
+                                        class="form-control myline" style="margin-bottom:5px" onkeyup="getComa(this.value, this.id);">
                                 </div>
                             </div>
                             <div class="row">
@@ -299,9 +309,7 @@
                                     Tanggal <font color="#f00">*</font>
                                 </div>
                                 <div class="col-md-7">
-                                    <input type="text" id="tanggal" name="tanggal" 
-                                        class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                        value="<?php echo date('d-m-Y'); ?>">
+                                    <input type="text" id="tanggal" name="tanggal" class="form-control myline input-small" style="margin-bottom:5px;float:left;" value="<?php echo date('d-m-Y'); ?>">
                                 </div>
                             </div> 
                             <div class="row">
@@ -438,12 +446,11 @@
                     <i class="fa fa-beer"></i>Purchase Order List
                 </div>
                 <div class="tools">
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter"><i class="fa fa-search"></i> Filter Tanggal</a>
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliRongsok/po_list_outdated"> <i class="fa fa-minus"></i> PO LIST OUTDATED</a>
+                <!-- <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter"><i class="fa fa-search"></i> Filter Tanggal</a> -->
+                <!-- <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliRongsok/po_list_outdated"> <i class="fa fa-minus"></i> PO LIST OUTDATED</a> -->
                 <?php
                     if( ($group_id==1)||($hak_akses['add']==1) ){
-                        echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/BeliRongsok/add').'"> '
-                        .'<i class="fa fa-plus"></i> Input PO </a>';
+                        echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/Tolling/add_po').'"><i class="fa fa-plus"></i> Input PO </a>';
                     }
                 ?>                    
                 </div>
@@ -456,7 +463,7 @@
                     <th>No. PO</th>
                     <th>Tanggal</th>
                     <th>Supplier</th> 
-                    <th>Attention To</th>
+                    <th>Jenis PO</th>
                     <th>PPN</th> 
                     <th>Jumlah <br>Items</th>
                     <th>Status</th>
@@ -475,8 +482,8 @@
                         <td style="text-align:center;"><?php echo $no; ?></td>
                         <td><?php echo $data->no_po; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <td><?php echo $data->nama_customer; ?></td>
-                        <td><?php echo $data->pic; ?></td>
+                        <td><?php echo $data->nama_supplier; ?></td>
+                        <td><?php echo $data->jenis_po; ?></td>
                         <?php 
                            echo (($data->ppn==1)? '<td><i class="fa fa-check"></i> Yes</td>': '<td><i class="fa fa-times"></i> No</td>');
                         ?>
@@ -513,13 +520,18 @@
                             <?php
                                 if( ($group_id==1 || $hak_akses['edit']==1) && $data->status != 1 ){
                             ?>
-                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/BeliRongsok/edit/<?php echo $data->id; ?>" style="margin-bottom:4px">
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/Tolling/edit_po/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
+                            <?php
+                                }
+                                if(($group_id==1 || $hak_akses['delete']==1) && $data->status == 0){
+                            ?>
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/Tolling/delete_po/<?php echo $data->id; ?>" style="margin-bottom:4px">&nbsp; <i class="fa fa-trash"></i> Delete &nbsp; </a>
                             <?php
                                 }
                                 if($group_id==1 || $hak_akses['print_po']==1){
                             ?>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/BeliRongsok/print_po/<?php echo $data->id; ?>" 
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/BeliFinishGood/print_po/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
                                 }
@@ -557,8 +569,8 @@ function myCurrency(evt) {
 }
 
 function getComa(value, id){
-    angka = value.toString().replace(/\./g, "");
-    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    angka = value.toString().replace(/\,/g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }
 
 function get_currency(id){
@@ -570,6 +582,13 @@ function get_currency(id){
             dataType: "json",
             success: function(result) {
                 $('#currency').val(result['currency']);
+                if(result['currency']=='IDR'){
+                    $('#kurs').prop('readonly', true);
+                    $('#kurs').val(1);
+                }else{
+                    $('#kurs').prop('readonly', false);
+                    $('#kurs').val(1);
+                }
             }
         });
     }else{
@@ -585,15 +604,22 @@ function createVoucher(id){
         success: function (result){
             $('#no_po').val(result['no_po']);
             $('#tanggal_po').val(result['tanggal']);
-            $('#nama_customer').val(result['nama_customer']);
-            $('#customer_id').val(result['customer_id']);
-            $('#jenis_barang').val(result['jenis_po']);
+            $('#nama_supplier').val(result['nama_supplier']);
+            $('#supplier_id').val(result['supplier_id']);
+            $('#diskon').val(result['diskon']);
+            $('#materai').val(result['materai']);
             $('#amount').val('0');
             $('#nilai_po').val(result['nilai_po']);
-            $('#terbilang').val(result['terbilang']);
+            // $('#terbilang').val(result['terbilang']);
+            $('#jenis_barang').val(result['jenis_po']);
             $('#nilai_dp').val(result['nilai_dp']);
+            $('#nilai_ppn').val(result['nilai_ppn']);
+            $('#nilai_before_ppn').val(result['nilai_before_ppn']);
+            $('#currency_po').val(result['currency']);
+            $('#kurs_po').val(result['kurs']);
             $('#amount').val(result['sisa']);
             $('#keterangan').val('');
+            $('#status_vc').val(result['status']);
             $('#id').val(result['id']);
             
             $('#message').html("");
@@ -652,7 +678,7 @@ function prosesVoucher(){
                     $('#prosesVoucher').text('Please Wait ...').prop("onclick", null).off("click");
                     $('#msg_voucher').html("");
                     $('#box_error_voucher').hide();
-                    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/BeliRongsok/save_voucher_pembayaran");
+                    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Tolling/save_voucher_pembayaran");
                     $('#formku').submit(); 
                 }
             }

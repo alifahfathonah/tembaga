@@ -70,13 +70,15 @@ class Tolling extends CI_Controller{
     }
     
     function save(){
-        $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $user_id = $this->session->userdata('user_id');
+        $tanggal = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_so = date('Ym', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
-        $user_ppn  = $this->session->userdata('user_ppn');
+        $user_ppn = $this->session->userdata('user_ppn');
         
+        $this->db->trans_start();
+
         $this->load->model('Model_m_numberings');
         if($user_ppn == 1){
             $code = 'SO-KMP.'.$tgl_so.'.'.$this->input->post('no_so');
@@ -141,8 +143,37 @@ class Tolling extends CI_Controller{
                 'modified_at'=> $tanggal,
                 'modified_by'=> $user_id
             );
+            $this->db->insert('t_sales_order', $t_data);
+            $tso_id = $this->db->insert_id();
 
-            if($this->db->insert('t_sales_order', $t_data)){
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $reff_so = array('reff1' => $so_id);
+                $reff_tso = array('reff1' => $tso_id);
+                $reff_spb = array('reff1' => $insert_id);
+                $data_post['category'] = $this->input->post('jenis_barang');
+                $data_post['so'] = array_merge($data, $reff_so);
+                $data_post['tso'] = array_merge($t_data, $reff_tso);
+                $data_post['spb'] = array_merge($dataC, $reff_spb);
+
+                $post = json_encode($data_post);
+
+                // print_r($post);
+                // die();
+                $ch = curl_init(target_url().'api/SalesOrderAPI/so');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
+
+            if($this->db->trans_complete()){
                 redirect('index.php/Tolling/edit/'.$so_id);  
             }else{
                 $this->session->set_flashdata('flash_msg', 'Sales order gagal disimpan, silahkan dicoba kembali!');
@@ -205,6 +236,7 @@ class Tolling extends CI_Controller{
     
     function update(){
         $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
@@ -219,12 +251,52 @@ class Tolling extends CI_Controller{
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('sales_order', $data);
 
-        $this->db->where('so_id', $this->input->post('id'));
-        $this->db->update('t_sales_order', array(
+        $t_data =  array(
             'term_of_payment' => $this->input->post('term_of_payment'),
             'no_po' => $this->input->post('no_po'),
             'tgl_po' => $tgl_po
-        ));
+        );
+
+        $this->db->where('so_id', $this->input->post('id'));
+        $this->db->update('t_sales_order',$t_data);
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+                $this->load->model('Model_sales_order');
+                $jenis = $this->input->post('jenis_barang');
+                // if($jenis == 'FG'){
+                //     $data_post['detail_spb'] =$this->Model_sales_order->spb_fg_detail_only($this->input->post('no_spb'))->result();
+                // }else if($jenis == 'WIP'){
+                //     $data_post['detail_spb'] =$this->Model_sales_order->spb_wip_detail_only($this->input->post('no_spb'))->result();
+                // }else if($jenis == 'RONGSOK'){
+                //     $data_post['detail_spb'] =$this->Model_sales_order->spb_rsk_detail_only($this->input->post('no_spb'))->result();
+                // }else if($jenis == 'AMPAS'){
+                //     $data_post['detail_spb'] =$this->Model_sales_order->spb_ampas_detail_only($this->input->post('no_spb'))->result();
+                // }
+
+                $data_post['category'] = $jenis;
+                $data_post['so_id'] = $this->input->post('id');
+                $data_post['tso_id'] = $this->input->post('id');
+                $data_post['so'] = $data;
+                $data_post['tso'] = $t_data;
+                $data_post['details'] =$this->Model_sales_order->load_detail_only($this->input->post('id'))->result();
+
+                $post = json_encode($data_post);
+
+                // print_r($post);
+                // die();
+
+                $ch = curl_init(target_url().'api/SalesOrderAPI/so_detail');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
         
         $this->session->set_flashdata('flash_msg', 'Data sales order berhasil disimpan');
         redirect('index.php/Tolling');
@@ -244,7 +316,7 @@ class Tolling extends CI_Controller{
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
-            $tabel .= '<td>'.$row->jenis_barang.'</td>';
+            $tabel .= '<td>('.$row->kode.') '.$row->jenis_barang.'</td>';
             $tabel .= '<td>'.$row->uom.'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->amount,3,',','.').'</td>';
             $tabel .= '<td style="text-align:right">'.number_format($row->netto,2,',','.').'</td>';
@@ -448,8 +520,8 @@ class Tolling extends CI_Controller{
         }
         $data['dtt_app'] = $dtt_app;
         $jenis = $data['header_po']['jenis_po'];
-        $customer_id = $data['header_po']['customer_id'];
-        $dtt = $this->Model_tolling_titipan->get_dtt($customer_id,$jenis)->result();
+        $supplier_id = $data['header_po']['supplier_id'];
+        $dtt = $this->Model_tolling_titipan->get_dtt($supplier_id,$jenis)->result();
         foreach ($dtt as $index=>$row){
             $dtt[$index]->details = $this->Model_tolling_titipan->show_detail_dtt($row->id)->result();
         }
@@ -462,6 +534,7 @@ class Tolling extends CI_Controller{
         $po_id = $this->input->post('po_id');
         $jenis = $this->input->post('jenis_barang');
         $user_id  = $this->session->userdata('user_id');
+        $user_ppn  = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d');
         $return_data = array();
@@ -478,6 +551,7 @@ class Tolling extends CI_Controller{
                     'approved_by'=>$user_id));
                 
                 #update po_detail_id di dtbj_detail
+            // echo $po_id;die()
                 $po_dtt_check_update = $this->Model_tolling_titipan->check_to_update($po_id)->result();
                 foreach ($po_dtt_check_update as $u){
                     $this->db->where('id',$u->dtt_detail_id );
@@ -499,15 +573,16 @@ class Tolling extends CI_Controller{
                 }
 
                if(((int)$total_netto_dtt) >= (0.9*((int)$total_qty))){
-                    $this->db->where('id',$po_id);
-                    $this->db->update('po',array(
-                                    'status'=>3));
+                    $update_po = array(
+                                    'status'=>3,
+                                    'flag_pelunasan'=>0);
                }else {
-                    $this->db->where('id',$po_id);
-                    $this->db->update('po',array(
-                                    'status'=>2));
+                    $update_po = array(
+                        'status'=>2
+                    );
                }
-
+               $this->db->where('id',$po_id);
+               $this->db->update('po', $update_po);
             #Create BPB
                 $this->load->model('Model_m_numberings');
                 $code = $this->Model_m_numberings->getNumbering('BPB-PO-T',$tgl_input);
@@ -520,6 +595,7 @@ class Tolling extends CI_Controller{
                     #insert t_bpb_fg
                     $data_bpb = array(
                             'no_bpb_fg' => $code,
+                            'flag_ppn' => $user_ppn,
                             'tanggal' => $tgl_input,
                             'jenis_barang_id' => $k1->jenis_barang_id,
                             'created_at' => $tanggal,
@@ -550,6 +626,8 @@ class Tolling extends CI_Controller{
                     #insert t_bpb_fg
                     $data_bpb = array(
                             'no_bpb' => $code,
+                            'flag_ppn' => $user_ppn,
+                            'tanggal' => $tanggal,
                             'created' => $tanggal,
                             'created_by' => $user_id,
                             'keterangan' => 'BARANG PO WIP',
@@ -568,11 +646,45 @@ class Tolling extends CI_Controller{
                             'qty' => $k2->qty,
                             'berat' => $k2->netto,
                             'uom' => $k2->uom,
-                            'keterangan' => $k2->line_remarks,
+                            'keterangan' => '',
                             'created_by' => $user_id
                         ));
                     }
                 }
+            }
+
+            if($user_ppn==1){
+                $this->load->helper('target_url');
+            
+                $data_post['po'] = $update_po;
+                $data_post['po_id'] = $po_id;
+                $data_post['jenis'] = $jenis;
+
+                $data_post['dtt'] = $this->Model_tolling_titipan->load_dtt_only($dtt_id)->row_array();
+                $data_post['details'] = $this->Model_tolling_titipan->load_dtt_detail_only($dtt_id)->result();
+
+                unset($data_bpb['flag_ppn']);
+                $data_id = array('reff1' => $id_bpb);
+                $data_post['data_bpb'] = array_merge($data_bpb, $data_id);
+                if($jenis=='FG'){
+                    $data_post['details_bpb'] = $this->Model_tolling_titipan->load_bpb_fg_detail_only($id_bpb)->result();
+                }elseif($jenis=='WIP'){
+                    $data_post['details_bpb'] = $this->Model_tolling_titipan->load_bpb_wip_detail_only($id_bpb)->result();
+                }
+                $detail_post = json_encode($data_post);
+                // print_r($detail_post);
+                // die();
+
+                $ch = curl_init(target_url().'api/TollingAPI/dtt');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
             }
 
         if($this->db->trans_complete()){    
@@ -580,7 +692,39 @@ class Tolling extends CI_Controller{
         }else{
             $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTT, silahkan coba kembali!');
         }
-        redirect('index.php/Tolling/dtt_list');
+        // redirect('index.php/Tolling/dtt_list');
+    }
+
+    function delete_po(){
+        $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
+        $this->db->trans_start();
+        if(!empty($id)){
+            $this->db->delete('po', ['id' => $id]);
+
+            $this->db->delete('po_detail', ['po_id' => $id]);
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $url = target_url().'api/BeliFinishGoodAPI/delete_po?id='.$id;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
+        }
+
+        if ($this->db->trans_complete()) {
+            $this->session->set_flashdata('flash_msg', 'Data PO Finish Good berhasil dihapus');
+            redirect('index.php/Tolling/po_list');
+        }
     }
 
     function reject_matching_dtt(){
@@ -1249,272 +1393,6 @@ class Tolling extends CI_Controller{
         }
     }
     
-    // function produksi_ampas(){
-    //     $module_name = $this->uri->segment(1);
-    //     $group_id    = $this->session->userdata('group_id');        
-    //     if($group_id != 1){
-    //         $this->load->model('Model_modules');
-    //         $roles = $this->Model_modules->get_akses($module_name, $group_id);
-    //         $data['hak_akses'] = $roles;
-    //     }
-    //     $data['group_id']  = $group_id;
-
-    //     $data['content']= "tolling_titipan/produksi_ampas";
-    //     $this->load->model('Model_tolling_titipan');
-    //     $data['list_data'] = $this->Model_tolling_titipan->produksi_ampas()->result();
-
-    //     $this->load->view('layout', $data);
-    // }
-    
-    // function add_produksi_ampas(){
-    //     $module_name = $this->uri->segment(1);
-    //     $group_id    = $this->session->userdata('group_id');        
-    //     if($group_id != 1){
-    //         $this->load->model('Model_modules');
-    //         $roles = $this->Model_modules->get_akses($module_name, $group_id);
-    //         $data['hak_akses'] = $roles;
-    //     }
-    //     $data['group_id']  = $group_id;
-    //     $data['content']= "tolling_titipan/add_produksi_ampas";
-        
-    //     $this->load->model('Model_tolling_titipan');
-    //     $data['ttr_list'] = $this->Model_tolling_titipan->get_ttr_to_pa()->result();
-    //     $data['jenis_barang_list'] = $this->Model_tolling_titipan->jenis_barang_list()->result();
-    //     $this->load->view('layout', $data);
-    // }
-    
-    // function save_produksi_ampas(){
-    //     $user_id  = $this->session->userdata('user_id');
-    //     $tanggal  = date('Y-m-d h:m:s');
-    //     $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        
-    //     $this->load->model('Model_m_numberings');
-    //     $code = $this->Model_m_numberings->getNumbering('PRD', $tgl_input); 
-        
-    //     if($code){        
-    //         $data = array(
-    //             'no_produksi'=> $code,
-    //             'tanggal'=> $tgl_input,
-    //             'jenis_barang'=>$this->input->post('jenis_barang'),
-    //             'remarks'=>$this->input->post('remarks'),
-    //             'ttr_id'=>$this->input->post('ttr_id'),
-    //             'created'=> $tanggal,
-    //             'created_by'=> $user_id,
-    //             'modified'=> $tanggal,
-    //             'modified_by'=> $user_id
-    //         );
-
-    //         if($this->db->insert('produksi_ampas', $data)){
-    //             redirect('index.php/Tolling/edit_produksi_ampas/'.$this->db->insert_id());  
-    //         }else{
-    //             $this->session->set_flashdata('flash_msg', 'Data produksi gagal disimpan, silahkan dicoba kembali!');
-    //             redirect('index.php/Tolling/produksi_ampas');  
-    //         }            
-    //     }else{
-    //         $this->session->set_flashdata('flash_msg', 'Data produksi gagal disimpan, penomoran belum disetup!');
-    //         redirect('index.php/Tolling/produksi_ampas');
-    //     }
-    // }
-    
-    // function edit_produksi_ampas(){
-    //     $module_name = $this->uri->segment(1);
-    //     $id = $this->uri->segment(3);
-    //     if($id){
-    //         $group_id    = $this->session->userdata('group_id');        
-    //         if($group_id != 1){
-    //             $this->load->model('Model_modules');
-    //             $roles = $this->Model_modules->get_akses($module_name, $group_id);
-    //             $data['hak_akses'] = $roles;
-    //         }
-    //         $data['group_id']  = $group_id;
-
-    //         $data['content']= "tolling_titipan/edit_produksi_ampas";
-    //         $this->load->model('Model_tolling_titipan');
-    //         $data['header'] = $this->Model_tolling_titipan->show_header_pa($id)->row_array();  
-            
-    //         $data['ttr_list'] = $this->Model_tolling_titipan->get_ttr_to_pa()->result();
-    //         $data['jenis_barang_list'] = $this->Model_tolling_titipan->jenis_barang_list()->result();
-    //         $this->load->view('layout', $data);   
-    //     }else{
-    //         redirect('index.php/Tolling');
-    //     }
-    // }
-    
-    // function load_detail_produksi_ampas(){
-    //     $id = $this->input->post('id');
-        
-    //     $tabel = "";
-    //     $no    = 1;
-    //     $produksi = 0;
-    //     $sisa = 0;
-
-    //     $this->load->model('Model_ampas');
-    //     $list_ampas = $this->Model_ampas->list_data()->result();
-        
-    //     $this->load->model('Model_tolling_titipan'); 
-    //     $myDetail = $this->Model_tolling_titipan->load_detail_produksi_ampas($id)->result(); 
-    //     foreach ($myDetail as $row){
-    //         $tabel .= '<tr>';
-    //         $tabel .= '<td style="text-align:center">'.$no.'</td>';
-    //         $tabel .= '<td>'.$row->nama_item.'</td>';
-    //         $tabel .= '<td>'.$row->uom.'</td>';
-    //         $tabel .= '<td style="text-align:right">'.number_format($row->hasil_produksi,0,',','.').'</td>';
-    //         $tabel .= '<td style="text-align:right">'.number_format($row->sisa,0,',','.').'</td>';
-    //         $tabel .= '<td>'.$row->line_remarks.'</td>';            
-    //         $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-    //                 . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
-    //                 . '<i class="fa fa-trash"></i> Delete </a></td>';
-    //         $tabel .= '</tr>';
-    //         $produksi += $row->hasil_produksi;
-    //         $sisa += $row->sisa;
-            
-    //         $no++;
-    //     }
-            
-    //     $tabel .= '<tr>';
-    //     $tabel .= '<td style="text-align:center">'.$no.'</td>';
-    //     $tabel .= '<td>';
-    //     $tabel .= '<select id="ampas_id" name="ampas_id" class="form-control select2me myline" ';
-    //         $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">';
-    //         $tabel .= '<option value=""></option>';
-    //         foreach ($list_ampas as $value){
-    //             $tabel .= "<option value='".$value->id."'>".$value->nama_item."</option>";
-    //         }
-    //     $tabel .= '</select>';
-    //     $tabel .= '</td>';
-    //     $tabel .= '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>';
-        
-    //     $tabel .= '<td><input type="text" id="hasil_produksi" name="hasil_produksi" class="form-control myline" '
-    //             . 'onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-    //     $tabel .= '<td><input type="text" id="sisa" name="sisa" class="form-control myline" '
-    //             . 'onkeydown="return myCurrency(event);" maxlength="10" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-        
-    //     $tabel .= '<td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';        
-    //     $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-    //             . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
-    //             . '<i class="fa fa-plus"></i> Tambah </a></td>';
-    //     $tabel .= '</tr>';
-        
-    //     $tabel .= '<tr>';
-    //     $tabel .= '<td colspan="3" style="text-align:right"><strong>Total </strong></td>';
-    //     $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($produksi,0,',','.').'</strong></td>';
-    //     $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($sisa,0,',','.').'</strong></td>';
-    //     $tabel .= '<td></td>';
-    //     $tabel .= '<td></td>';
-    //     $tabel .= '</tr>';
-       
-        
-    //     header('Content-Type: application/json');
-    //     echo json_encode($tabel); 
-    // }
-    
-    // function get_uom_ampas(){
-    //     $id = $this->input->post('id');
-    //     $this->load->model('Model_ampas');
-    //     $ampas= $this->Model_ampas->show_data($id)->row_array();
-        
-    //     header('Content-Type: application/json');
-    //     echo json_encode($ampas); 
-    // }
-    
-    // function delete_detail_produksi_ampas(){
-    //     $id = $this->input->post('id');
-    //     $return_data = array();
-    //     $this->db->where('id', $id);
-    //     if($this->db->delete('produksi_ampas_detail')){
-    //         $return_data['message_type']= "sukses";
-    //     }else{
-    //         $return_data['message_type']= "error";
-    //         $return_data['message']= "Gagal menghapus item ampas! Silahkan coba kembali";
-    //     }           
-    //     header('Content-Type: application/json');
-    //     echo json_encode($return_data);
-    // }
-    
-    // function save_detail_produksi_ampas(){
-    //     $user_id  = $this->session->userdata('user_id');
-    //     $tanggal  = date('Y-m-d h:m:s');
-        
-    //     $return_data = array();
-    //     $this->db->trans_start(); 
-        
-    //     $hasil_produksi = str_replace('.', '', $this->input->post('hasil_produksi'));
-    //     $sisa = str_replace('.', '', $this->input->post('sisa'));
-        
-    //     $this->db->insert('produksi_ampas_detail', array(
-    //         'produksi_ampas_id'=>$this->input->post('id'),
-    //         'ampas_id'=>$this->input->post('ampas_id'),
-    //         'hasil_produksi'=>$hasil_produksi,
-    //         'sisa'=>$sisa,
-    //         'line_remarks'=>$this->input->post('line_remarks')
-    //     ));
-        
-    //     #Update Stok Ampas
-    //     $this->load->model('Model_beli_rongsok');
-    //     $get_stok = $this->Model_beli_rongsok->cek_stok($this->input->post('jenis_item'), 'AMPAS')->row_array(); 
-    //     if($get_stok){
-    //         $stok_id  = $get_stok['id'];            
-    //         $this->db->where('id', $stok_id);
-    //         $this->db->update('t_inventory', array(
-    //                 'stok_bruto'=>($get_stok['stok_bruto']+ $hasil_produksi), 
-    //                 'stok_netto'=>($get_stok['stok_netto']+ $hasil_produksi), 
-    //                 'modified'=>$tanggal, 
-    //                 'modified_by'=>$user_id));
-    //     }else{
-    //         $this->db->insert('t_inventory', array(
-    //                 'nama_produk'=>$this->input->post('jenis_item'),
-    //                 'jenis_item'=>'AMPAS',
-    //                 'stok_bruto'=>$hasil_produksi, 
-    //                 'stok_netto'=>$hasil_produksi, 
-    //                 'created'=>$tanggal, 
-    //                 'created_by'=>$user_id,
-    //                 'modified'=>$tanggal, 
-    //                 'modified_by'=>$user_id));
-
-    //         $stok_id = $this->db->insert_id();
-    //     }
-        
-    //     #Save data ke tabel t_inventory_detail
-    //     $this->db->insert('t_inventory_detail', array(
-    //         't_inventory_id'=>$stok_id,
-    //         'tanggal'=>$tanggal,
-    //         'bruto_masuk'=>$hasil_produksi,
-    //         'netto_masuk'=>$hasil_produksi,
-    //         'remarks'=>'Produksi ampas tolling titipan',
-    //     ));
-        
-    //     if($this->db->trans_complete()){  
-    //         $return_data['message_type']= "sukses";               
-    //     }else{
-    //         $return_data['message_type']= "error";
-    //         $return_data['message']= "Gagal menambahkan item ampas! Silahkan coba kembali";
-    //     }  
-
-    //     header('Content-Type: application/json');
-    //     echo json_encode($return_data); 
-    // }
-    
-    // function update_produksi_ampas(){
-    //     $user_id  = $this->session->userdata('user_id');
-    //     $tanggal  = date('Y-m-d h:m:s');        
-    //     $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        
-    //     $data = array(
-    //             'tanggal'=> $tgl_input,
-    //             'jenis_barang'=>$this->input->post('jenis_barang'),
-    //             'remarks'=>$this->input->post('remarks'),
-    //             'ttr_id'=>$this->input->post('ttr_id'),
-    //             'modified'=> $tanggal,
-    //             'modified_by'=> $user_id
-    //         );
-        
-    //     $this->db->where('id', $this->input->post('id'));
-    //     $this->db->update('produksi_ampas', $data);
-        
-    //     $this->session->set_flashdata('flash_msg', 'Data produksi ampas berhasil disimpan');
-    //     redirect('index.php/Tolling/produksi_ampas');
-    // }
-    
     function surat_jalan(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
@@ -1583,8 +1461,8 @@ class Tolling extends CI_Controller{
         $data['group_id']  = $group_id;
         $data['content']= "tolling_titipan/add_surat_jalan_keluar";
         
-        $this->load->model('Model_tolling_titipan');
-        $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
+        $this->load->model('Model_beli_sparepart');
+        $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
         $this->load->model('Model_sales_order');
         $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
         $this->load->view('layout', $data);
@@ -1606,6 +1484,15 @@ class Tolling extends CI_Controller{
 
         header('Content-Type: application/json');
         echo json_encode($customer); 
+    }
+
+    function get_alamat_supplier(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_tolling_titipan');
+        $supplier = $this->Model_tolling_titipan->get_alamat_supplier($id)->row_array();
+
+        header('Content-Type: application/json');
+        echo json_encode($supplier); 
     }
     
     function get_so_list(){ 
@@ -1682,7 +1569,7 @@ class Tolling extends CI_Controller{
                 'po_id'=>$this->input->post('po_id'),
                 'tanggal'=> $tgl_input,
                 'jenis_barang'=>$this->input->post('jenis_barang'),
-                'm_customer_id'=>$this->input->post('m_customer_id'),
+                'supplier_id'=>$this->input->post('supplier_id'),
                 'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
                 'no_kendaraan'=>$this->input->post('no_kendaraan'),
                 'supir'=>$this->input->post('supir'),
@@ -1958,9 +1845,71 @@ class Tolling extends CI_Controller{
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('t_surat_jalan', $data);
 
-        
         $this->session->set_flashdata('flash_msg', 'Data surat jalan berhasil disimpan');
         redirect('index.php/Tolling/surat_jalan_keluar');
+    }
+
+    function update_surat_jalan_existing(){
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn  = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d h:m:s');        
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $jenis = $this->input->post('jenis_barang');
+        $soid = $this->input->post('so_id');
+
+        #Insert Surat Jalan
+        $details = $this->input->post('details');
+
+        // print_r($details);
+        // die();
+        foreach ($details as $v) {
+            if($v['id_tsj_detail']!=''){
+                $this->db->where('id',$v['id_tsj_detail']);
+                $this->db->update('t_surat_jalan_detail', array(
+                    'jenis_barang_alias'=>$v['barang_alias_id'],
+                    'modified_by'=>$user_id,
+                    'modified_at'=>$tanggal
+                ));
+            }
+        }
+
+        $data = array(
+                'no_surat_jalan'=> $this->input->post('no_surat_jalan'),
+                'tanggal'=> $tgl_input,
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
+                'supir'=>$this->input->post('supir'),
+                'remarks'=>$this->input->post('remarks'),
+                'modified_at'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+        
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('t_surat_jalan', $data);
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                    $data_post['id_sj'] = $this->input->post('id');
+                    $data_post['header'] = $data;
+                    $data_post['details'] = $details;
+                    $post = json_encode($data_post);
+                // print_r($post);
+                // die();
+                $ch = curl_init(target_url().'api/SalesOrderAPI/sj_update');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
+
+        
+        $this->session->set_flashdata('flash_msg', 'Data surat jalan berhasil disimpan');
+        redirect('index.php/Tolling/view_surat_jalan/'.$this->input->post('id'));
     }
 
     function view_surat_jalan(){
@@ -1978,6 +1927,7 @@ class Tolling extends CI_Controller{
             $data['content']= "tolling_titipan/view_sj";
             $this->load->model('Model_sales_order');
             $data['header'] = $this->Model_sales_order->show_header_sj($id)->row_array();  
+            $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_in_so($data['header']['sales_order_id'])->result();
             $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
             $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
             $data['list_sj'] = $this->Model_sales_order->load_view_sjd($id)->result();
@@ -2027,6 +1977,7 @@ class Tolling extends CI_Controller{
     function approve_surat_jalan(){
         $sjid = $this->input->post('id');
         $user_id  = $this->session->userdata('user_id');
+        $user_ppn  = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d');
         $so_id = $this->input->post('so_id');
@@ -2109,6 +2060,33 @@ class Tolling extends CI_Controller{
         
         $this->db->where('id', $sjid);
         $this->db->update('t_surat_jalan', $data);
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+                    $data_post['flag_sj'] = $flag_sj;
+                    $data_post['tsj'] = $this->Model_sales_order->tsj_header_only($sjid)->row_array();
+
+                if($jenis == 'FG'){
+                    $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang($sjid)->result();
+                }elseif($jenis == 'WIP'){
+                    $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang_wip($sjid)->result();
+                }elseif($jenis == 'RONGSOK'){
+                    $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang_rsk($sjid)->result();
+                }
+                    $post = json_encode($data_post);
+                // print_r($post);
+                // die();
+                $ch = curl_init(target_url().'api/SalesOrderAPI/sj');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
 
         if($this->db->trans_complete()){    
             $this->session->set_flashdata('flash_msg', 'Surat jalan sudah di-approve. Detail Surat jalan sudah disimpan');            
@@ -2489,24 +2467,6 @@ class Tolling extends CI_Controller{
         }
     }
 
-    function close_po(){
-        $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
-        
-        $data = array(
-                'status'=> 1,
-                'modified'=> $tanggal,
-                'modified_by'=>$user_id,
-                'remarks'=>$this->input->post('reject_remarks')
-            );
-        
-        $this->db->where('id', $this->input->post('header_id'));
-        $this->db->update('po', $data);
-        
-        $this->session->set_flashdata('flash_msg', 'PO Tolling Berhasil di Close');
-        redirect('index.php/Tolling/po_list');
-    }
-
     function load_detail_tolling(){
         $id = $this->input->post('id');
         
@@ -2670,8 +2630,230 @@ class Tolling extends CI_Controller{
         $data['content']= "tolling_titipan/po_list";
         $this->load->model('Model_tolling_titipan');
         $data['list_data'] = $this->Model_tolling_titipan->po_list($user_ppn)->result();
+        $this->load->model('Model_beli_sparepart');
+        $data['bank_list'] = $this->Model_beli_sparepart->bank($user_ppn)->result();
 
         $this->load->view('layout', $data);
+    }
+
+    function add_po(){
+        $module_name = $this->uri->segment(1);
+        $data['user_ppn'] = $this->session->userdata('user_ppn');
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "tolling_titipan/add_po";
+        
+        $this->load->model('Model_beli_sparepart');
+        $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
+        // $data['no'] = $this->Model_beli_sparepart->get_last_po('Rongsok')->row_array();
+        $this->load->view('layout', $data);
+    }
+
+    function save_po(){
+        $user_id   = $this->session->userdata('user_id');
+        $tanggal   = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
+        $user_ppn  = $this->session->userdata('user_ppn');
+        
+        $this->db->trans_start();
+        if($user_ppn == 0){
+            $this->load->model('Model_m_numberings');
+            $code = $this->Model_m_numberings->getNumbering('PO-T', $tgl_input); 
+        }else{
+            $code = 'PO-KMP.'.$tgl_po.'.'.$this->input->post('no_po');
+            $count = $this->db->query("Select count(id) as count from po where no_po = '".$code."'")->row_array();
+            if($count['count']){
+                $this->session->set_flashdata('flash_msg', 'Nomor PO sudah Ada. Please try again!');
+                redirect('index.php/Tolling/add_po');
+            }
+        }
+
+        $data = array(
+            'no_po'=> $code,
+            'tanggal'=> $tgl_input,
+            'flag_ppn'=> $user_ppn,
+            'flag_tolling'=> 1,
+            'type'=> 0,
+            'ppn'=> $this->input->post('ppn'),
+            'diskon'=>str_replace('.', '', $this->input->post('diskon')),
+            'materai'=>$this->input->post('materai'),
+            'currency'=> $this->input->post('currency'),
+            'kurs'=> $this->input->post('kurs'),
+            'supplier_id'=>$this->input->post('supplier_id'),
+            'remarks'=> $this->input->post('remarks'),
+            'term_of_payment'=>$this->input->post('term_of_payment'),
+            'jenis_po'=>$this->input->post('jenis_barang'),
+            'created'=> $tanggal,
+            'created_by'=> $user_id,
+            'modified'=> $tanggal,
+            'modified_by'=> $user_id
+        );
+        $this->db->insert('po', $data);
+        $po_id = $this->db->insert_id();
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $data_id = array('reff1' => $po_id);
+                $data_post = array_merge($data, $data_id);
+
+                $data_post = http_build_query($data_post);
+
+                $ch = curl_init(target_url().'api/BeliRongsokAPI/po');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
+
+        if($this->db->trans_complete()){
+            redirect('index.php/Tolling/edit_po/'.$po_id);  
+        }else{
+            $this->session->set_flashdata('flash_msg', 'PO rongsok gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/BeliRongsok');  
+        }            
+    }    
+
+    function edit_po(){
+        $module_name = $this->uri->segment(1);
+        $data['user_ppn'] = $this->session->userdata('user_ppn');
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "tolling_titipan/edit_po";
+            $this->load->model('Model_beli_rongsok');
+            $data['header'] = $this->Model_beli_rongsok->show_header_po($id)->row_array();
+            $jenis=$data['header']['jenis_po'];
+
+            $this->load->model('Model_tolling_titipan');
+            if($jenis=='FG'){
+                $data['list_barang'] = $this->Model_tolling_titipan->jenis_barang($jenis)->result();
+            }elseif($jenis=='WIP'){
+                $data['list_barang'] = $this->Model_tolling_titipan->jenis_barang($jenis)->result();
+            }
+
+            if($data['header']['status']==0){
+                $data['count'] = $this->Model_beli_rongsok->count_po_detail($id)->row_array();
+            }else{
+                $data['count'] = $this->Model_beli_rongsok->count_po_detail($id)->row_array();
+                $data['list_data'] = $this->Model_tolling_titipan->load_detail_po($id)->result();
+                $data['list_detail'] = $this->Model_tolling_titipan->show_data_po($id)->result();
+            }
+
+            $this->load->model('Model_beli_sparepart');
+            $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/BeliRongsok');
+        }
+    }
+
+    function close_po(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $this->db->trans_start();
+        
+        $data = array(
+                'status'=> 1,
+                'flag_pelunasan'=> 1,
+                'modified'=> $tanggal,
+                'modified_by'=>$user_id,
+                'remarks'=>$this->input->post('reject_remarks')
+            );
+        
+        $this->db->where('id', $this->input->post('header_id'));
+        $this->db->update('po', $data);
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $data_post = $data;
+                $data_post['po_id'] = $this->input->post('header_id');
+
+                $data_post = http_build_query($data_post);
+
+                $ch = curl_init(target_url().'api/BeliFinishGoodAPI/close_po');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
+        
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'PO Berhasil di Close');
+            redirect('index.php/Tolling/po_list');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'PO GAGAL di Close');
+            redirect('index.php/Tolling/po_list');
+        }
+    }
+
+    function update_po(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $this->db->trans_start();
+        $data = array(
+                'tanggal'=> $tgl_input,
+                'supplier_id'=>$this->input->post('supplier_id'),
+                'term_of_payment'=>$this->input->post('term_of_payment'),
+                'remarks'=>$this->input->post('remarks'),
+                'modified'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+        
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('po', $data);
+
+        if($this->session->userdata('user_ppn')==1){
+            $this->load->helper('target_url');
+            
+            $data_post['master'] = $data;
+            $data_post['po_id'] = $this->input->post('id');
+
+            $this->load->model('Model_beli_rongsok');
+            $data_post['details'] = $this->Model_beli_rongsok->load_detail_only($this->input->post('id'))->result();
+
+            $detail_post = json_encode($data_post);
+
+            $ch = curl_init(target_url().'api/BeliFinishGoodAPI/po_detail');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $result = json_decode($response, true);
+            curl_close($ch);
+        }
+        
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Data PO Finish Good berhasil disimpan');
+            redirect('index.php/Tolling/po_list');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data PO Finish Good gagal disimpan');
+            redirect('index.php/Tolling/'.$this->input->post('id'));
+        }
     }
 
     function dtt_list(){
@@ -2704,8 +2886,8 @@ class Tolling extends CI_Controller{
         $data['group_id']  = $group_id;
         $data['content']= "tolling_titipan/add_dtt";
         
-        $this->load->model('Model_tolling_titipan');
-        $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
+        $this->load->model('Model_beli_sparepart');
+        $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
         $this->load->model('Model_gudang_fg');
         $data['packing'] = $this->Model_gudang_fg->packing_fg_list()->result();
         $this->load->view('layout', $data);
@@ -2727,7 +2909,7 @@ class Tolling extends CI_Controller{
                 'no_dtt'=> $code,
                 'flag_ppn'=>$user_ppn,
                 'tanggal'=> $tgl_input,
-                'customer_id'=>$this->input->post('customer_id'),
+                'supplier_id'=>$this->input->post('supplier_id'),
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'jenis_packing'=>$this->input->post('packing'),
                 'remarks'=>$this->input->post('remarks'),
@@ -3195,14 +3377,14 @@ class Tolling extends CI_Controller{
         // $this->load->helper('terbilang_d_helper');
         $this->load->model('Model_tolling_titipan');
         $data = $this->Model_tolling_titipan->voucher_po($id)->row_array();
-         if($data['ppn']==1){
+        if($data['ppn']==1){
             if($data['nilai_po']==0){
                 $nilai_po = 0;
                 $data['nilai_ppn'] = 0;
             }else{
-                $data['nilai_before_ppn'] = number_format($data['nilai_po'],0,',','.');
+                $data['nilai_before_ppn'] = number_format($data['nilai_po'],0,'.',',');
                 $nilai_po = ($data['nilai_po']-$data['diskon'])*110/100+$data['materai'];
-                $data['nilai_ppn'] = number_format($data['nilai_po']*10/100,0,',','.');
+                $data['nilai_ppn'] = number_format($data['nilai_po']*10/100,0,'.',',');
             }
         }else{
             if($data['nilai_po']==0){
@@ -3216,11 +3398,11 @@ class Tolling extends CI_Controller{
 
         // $terbilang = $nilai_po;
         $sisa = $nilai_po - $data['nilai_dp'];
-        $data['materai'] = number_format($data['materai'],0,',','.');
-        $data['diskon'] = number_format($data['diskon'],0,',','.');
-        $data['nilai_po'] = number_format($nilai_po,0,',','.');
-        $data['nilai_dp'] = number_format($data['nilai_dp'],0,',','.');
-        $data['sisa']     = number_format($sisa,0,',','.');
+        $data['materai'] = number_format($data['materai'],0,'.',',');
+        $data['diskon'] = number_format($data['diskon'],0,'.',',');
+        $data['nilai_po'] = number_format($nilai_po,0,'.',',');
+        $data['nilai_dp'] = number_format($data['nilai_dp'],0,'.',',');
+        $data['sisa']     = number_format($sisa,0,'.',',');
         // $nilai_po = $data['nilai_po'];
         // $data['terbilang'] = ucwords(number_to_words_d($terbilang, $data['currency']));
 
@@ -3232,9 +3414,9 @@ class Tolling extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $nilai_po  = str_replace('.', '', $this->input->post('nilai_po'));
-        $nilai_dp  = str_replace('.', '', $this->input->post('nilai_dp'));
-        $amount  = str_replace('.', '', $this->input->post('amount'));
+        $nilai_po  = str_replace(',', '', $this->input->post('nilai_po'));
+        $nilai_dp  = str_replace(',', '', $this->input->post('nilai_dp'));
+        $amount  = str_replace(',', '', $this->input->post('amount'));
         $id = $this->input->post('id');
         
         $this->db->trans_start();
@@ -3245,7 +3427,7 @@ class Tolling extends CI_Controller{
         }else{
             $jenis_voucher = 'Pelunasan';
             $this->db->where('id', $id);
-            $this->db->update('po', array('flag_pelunasan'=>1,'status'=>4));
+            $this->db->update('po', array('status'=>4));
         } 
 
         if($code){ 
@@ -3254,9 +3436,9 @@ class Tolling extends CI_Controller{
                 'tanggal'=>$tgl_input,
                 'jenis_voucher'=>$jenis_voucher,
                 'po_id'=>$this->input->post('id'),
-                'customer_id'=>$this->input->post('customer_id'),
+                'supplier_id'=>$this->input->post('supplier_id'),
                 'jenis_barang'=>$this->input->post('jenis_barang'),
-                'amount'=>str_replace('.', '', $this->input->post('amount')),
+                'amount'=>str_replace(',', '', $this->input->post('amount')),
                 'keterangan'=>$this->input->post('keterangan'),
                 'created'=> $tanggal,
                 'created_by'=> $user_id,
@@ -3274,6 +3456,158 @@ class Tolling extends CI_Controller{
             $this->session->set_flashdata('flash_msg', 'Pembuatan voucher finish good gagal, penomoran belum disetup!');
             redirect('index.php/Tolling/po_list');
         }
+    }
+
+    function save_voucher_pembayaran(){
+        $ppn = $this->session->userdata('user_ppn');
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
+        $nilai_po  = str_replace(',', '', $this->input->post('nilai_po'));
+        $jumlah_dibayar  = str_replace(',', '', $this->input->post('jumlah_dibayar'));
+        $amount  = str_replace(',', '', $this->input->post('amount'));
+        if($nilai_po-($jumlah_dibayar+$amount)>0){
+            $jenis_voucher = 'Parsial';
+        }else{
+            $jenis_voucher = 'Pelunasan';
+        }
+        
+        $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+
+            if($ppn==0){
+                if($this->input->post('bank_id')<=3){
+                    $num = 'KK';
+                }else{
+                    $num = 'BK';
+                }
+                $code_um = $this->Model_m_numberings->getNumbering($num);
+            }else{
+                if($this->input->post('bank_id')<=3){
+                    $code_um = 'KK-KMP.'.$tgl_code.'.'.$this->input->post('no_uk');
+                }else{
+                    $code_um = 'BK-KMP.'.$tgl_code.'.'.$this->input->post('no_uk');
+                }
+            }
+
+            $data_f = array(
+                'jenis_trx'=>1,
+                'nomor'=>$code_um,
+                'flag_ppn'=>$ppn,
+                'tanggal'=>$tgl_input,
+                'tgl_jatuh_tempo'=>$this->input->post('tanggal_jatuh'),
+                'no_giro'=>$this->input->post('nomor_giro'),
+                'id_bank'=>$this->input->post('bank_id'),
+                'id_vc'=>0,
+                'currency'=>$this->input->post('currency'),
+                'kurs'=>$this->input->post('kurs'),
+                'nominal'=>str_replace(',', '', $amount),
+                'created_at'=>$tanggal,
+                'created_by'=>$user_id
+            );
+            $this->db->insert('f_kas', $data_f);
+            $fk_id = $this->db->insert_id();
+
+        if($ppn==1){
+            $this->load->helper('target_url');
+            // $url = target_url().'api/BeliSparepartAPI/numbering?id=VRSK-KMP&tgl='.$tgl_input;
+            // $ch2 = curl_init();
+            // curl_setopt($ch2, CURLOPT_URL, $url);
+            // // curl_setopt($ch2, CURLOPT_CUSTOMREQUEST, "DELETE");
+            // // curl_setopt($ch2, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+            // curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            // curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+            // curl_setopt($ch2, CURLOPT_HEADER, 0);
+
+            // $result2 = curl_exec($ch2);
+            // $result2 = json_decode($result2);
+            // curl_close($ch2);
+            // $code = $result2->code;
+            $code = $this->Model_m_numberings->getNumbering('VTL-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('VTL', $tgl_input); 
+        }
+
+        if($code){ 
+            $data_v = array(
+                'no_voucher'=>$code,
+                'tanggal'=>$tgl_input,
+                'jenis_voucher'=>$jenis_voucher,
+                'flag_ppn'=>$ppn,
+                'status'=>1,
+                'po_id'=>$this->input->post('id'),
+                'id_fk'=>$fk_id,
+                'supplier_id'=>$this->input->post('supplier_id'),
+                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'amount'=>$amount,
+                'keterangan'=>$this->input->post('keterangan'),
+                'created'=> $tanggal,
+                'created_by'=> $user_id,
+                'modified'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+            $this->db->insert('voucher', $data_v);
+            $id_vc = $this->db->insert_id();
+            
+            $this->db->where('id', $this->input->post('id'));
+            if($jenis_voucher=='Pelunasan' && $this->input->post('status_vc')==3){
+                $update_po = array('flag_pelunasan'=>1, 'status'=>4);
+            }else{
+                $update_po = array('flag_dp'=>1);
+            }
+            $this->db->update('po', $update_po);
+            
+            if($ppn==1){
+                
+                $data_post['voucher'] = array_merge($data_v, array('reff1' => $id_vc));
+                $data_post['f_kas'] = array_merge($data_f, array('reff1' => $fk_id));
+                $data_post['update_po'] = $update_po;
+                $detail_post = json_encode($data_post);
+
+                $ch = curl_init(target_url().'api/BeliRongsokAPI/voucher');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
+
+            if($this->db->trans_complete()){  
+                $this->session->set_flashdata('flash_msg', 'Voucher pembayaran Tolling berhasil di-create dengan nomor : '.$code);
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create voucher pembayaran Tolling, silahkan coba kembali!');
+            }
+            redirect('index.php/Tolling/po_list');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Pembuatan voucher pembayaran Tolling gagal, penomoran belum disetup!');
+            redirect('index.php/Tolling/po_list');
+        }
+    }
+
+    function voucher_list(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');     
+        $user_ppn = $this->session->userdata('user_ppn');   
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $this->load->model('Model_beli_fg');
+        if($user_ppn==1){
+            $data['content']= "tolling_titipan/voucher_list_ppn";
+            $data['list_data'] = $this->Model_beli_fg->voucher_list_ppn($user_ppn)->result();
+        }else{
+            $data['content']= "tolling_titipan/voucher_list";
+            $data['list_data'] = $this->Model_beli_fg->voucher_list($user_ppn)->result();
+        }
+
+        $this->load->view('layout', $data);
     }
 
     function print_barcode_dtt(){

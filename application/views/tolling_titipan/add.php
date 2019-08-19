@@ -119,7 +119,7 @@
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                            <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                                 <i class="fa fa-floppy-o"></i> Input Details</a>
                         </div>    
                     </div>
@@ -227,7 +227,25 @@ function simpanData(){
         $('#message').html("Silahkan pilih jenis barang!");
         $('.alert-danger').show(); 
     }else{
-        $('#formku').submit(); 
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url('index.php/SalesOrder/get_penomoran_so'); ?>",
+            data: {
+                no_so: $('#no_so').val(),
+                tanggal: $('#tanggal').val()
+            },
+            cache: false,
+            success: function(result) {
+                var res = result['type'];
+                if(res=='duplicate'){
+                    $('#message').html("Nomor Sales Order sudah ada, tolong coba lagi!");
+                    $('.alert-danger').show();
+                }else{
+                    $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+                    $('#formku').submit(); 
+                }
+            }
+        });
     };
 };
 

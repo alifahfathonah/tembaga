@@ -90,6 +90,7 @@ class BeliFinishGood extends CI_Controller{
             'no_po'=> $code,
             'tanggal'=> $tgl_input,
             'flag_ppn'=> $user_ppn,
+            'flag_tolling'=> 0,
             'ppn'=> $this->input->post('ppn'),
             'currency'=> $this->input->post('currency'),
             'diskon'=> $this->input->post('diskon'),
@@ -336,6 +337,7 @@ class BeliFinishGood extends CI_Controller{
         
         $data = array(
                 'status'=> 1,
+                'flag_pelunasan'=> 1,
                 'modified'=> $tanggal,
                 'modified_by'=>$user_id,
                 'remarks'=>$this->input->post('reject_remarks')
@@ -372,7 +374,6 @@ class BeliFinishGood extends CI_Controller{
     }
 
     function delete_po(){
-        ## BELOM ADA API
         $id = $this->uri->segment(3);
         $user_ppn = $this->session->userdata('user_ppn');
         $this->db->trans_start();
@@ -1195,7 +1196,7 @@ class BeliFinishGood extends CI_Controller{
         }else{
             $jenis_voucher = 'Pelunasan';
             $this->db->where('id', $id);
-            $this->db->update('po', array('flag_pelunasan'=>1,'status'=>4));
+            $this->db->update('po', array('status'=>4));
         } 
 
         if($code){ 
@@ -1382,11 +1383,12 @@ class BeliFinishGood extends CI_Controller{
         }
         $data['group_id']  = $group_id;
 
-        $data['content']= "beli_fg/voucher_list";
         $this->load->model('Model_beli_fg');
         if($user_ppn==1){
+            $data['content']= "beli_fg/voucher_list_ppn";
             $data['list_data'] = $this->Model_beli_fg->voucher_list_ppn($user_ppn)->result();
         }else{
+            $data['content']= "beli_fg/voucher_list";
             $data['list_data'] = $this->Model_beli_fg->voucher_list($user_ppn)->result();
         }
 

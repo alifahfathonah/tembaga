@@ -482,6 +482,7 @@ class BeliSparePart extends CI_Controller{
                         'no_po'=> $code,
                         'tanggal'=> $tgl_input,
                         'flag_ppn'=> $user_ppn,
+                        'flag_tolling'=> 0,
                         'beli_sparepart_id'=> $this->input->post('beli_sparepart_id'),
                         'ppn'=>$this->input->post('ppn'),
                         'diskon'=>str_replace(',', '', $this->input->post('diskon')),

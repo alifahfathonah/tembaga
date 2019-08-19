@@ -30,7 +30,6 @@ class BeliRongsok extends CI_Controller{
         $this->load->view('layout', $data);
     }
     
-    
     function index(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');
@@ -134,6 +133,7 @@ class BeliRongsok extends CI_Controller{
             'no_po'=> $code,
             'tanggal'=> $tgl_input,
             'flag_ppn'=> $user_ppn,
+            'flag_tolling'=> 0,
             'type'=> $this->input->post('type'),
             'ppn'=> $this->input->post('ppn'),
             'diskon'=>str_replace('.', '', $this->input->post('diskon')),
@@ -437,7 +437,7 @@ class BeliRongsok extends CI_Controller{
         // $this->load->helper('terbilang_d_helper');
         $this->load->model('Model_beli_rongsok');
         $data = $this->Model_beli_rongsok->voucher_po_rsk($id)->row_array();
-         if($data['ppn']==1){
+        if($data['ppn']==1){
             if($data['nilai_po']==0){
                 $nilai_po = 0;
                 $data['nilai_ppn'] = 0;
@@ -1052,7 +1052,8 @@ class BeliRongsok extends CI_Controller{
                 $data_post['detail'] = $this->Model_beli_rongsok->ttr_dtr_detail_only($ttr_id)->result();
 
                 $detail_post = json_encode($data_post);
-
+                // print_r($detail_post);
+                // die();
                 $ch = curl_init(target_url().'api/BeliRongsokAPI/dtr');
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
@@ -1061,6 +1062,8 @@ class BeliRongsok extends CI_Controller{
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
+                // print_r($response);
+                // die();
             }
 
         // #Update Stok Rongsok Tersedia

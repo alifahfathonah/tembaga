@@ -46,7 +46,7 @@
                     <th>Tanggal</th>
                     <th>No. PO</th>
                     <th>Jenis<br>Barang</th>                     
-                    <th>Customer</th> 
+                    <th>Supplier</th> 
                     <th>Alamat</th> 
                     <th>Jumlah<br>Item</th>
                     <th>Kendaraan</th>
@@ -67,8 +67,8 @@
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->no_po;?></td>
                         <td><?php echo $data->jenis_barang; ?></td>
-                        <td><?php echo $data->nama_customer; ?></td>
-                        <td><?php echo $data->alamat; ?></td>  
+                        <td><?php echo $data->nama_supplier; ?></td>
+                        <td><?php echo substr($data->alamat, 0, 10).' ...'; ?></td>  
                         <td><?php echo $data->jumlah_item; ?></td>  
                         <td><?php echo $data->no_kendaraan; ?></td>                         
                         <td><?php echo $data->supir; ?></td>
@@ -99,8 +99,7 @@
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/Tolling/view_surat_jalan_keluar/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-book"></i> View &nbsp; </a>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/Tolling/print_surat_jalan/<?php echo $data->id; ?>" 
-                                style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/Tolling/print_surat_jalan/<?php echo $data->id; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
                                     }
                                 }

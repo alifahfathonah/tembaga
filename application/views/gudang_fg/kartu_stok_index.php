@@ -2,12 +2,13 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Laporan Rongsok
+            <i class="fa fa-angle-right"></i> Laporan FG
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/GudangRongsok/index'); ?>">Gudang Rongsok</a> 
+            <a href="<?php echo base_url('index.php/GudangFG/index'); ?>">Gudang FG</a> 
         </h5>          
     </div>
 </div>
+    
     <div class="row">
         <div class="col-md-12">
             <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
@@ -16,6 +17,7 @@
             </div>
         </div>
     </div>
+  
    <div class="col-md-12" style="margin-top: 10px;"> 
         <h3>Laporan Kartu Stok</h3>
         <hr class="divider">
@@ -23,14 +25,14 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            Nama Item Rongsok <font color="#f00">*</font>
+                            Nama Item <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <select id="rongsok_id" name="rongsok_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,1);">
                                     <option value=""></option>
-                                    <?php foreach ($list_rongsok as $value){ ?>
+                                    <?php foreach ($list_fg as $value){ ?>
                                             <option value='<?=$value->id;?>'>
-                                                <?=$value->nama_item.' ('.$value->kode_rongsok.') ';?>
+                                                <?=' ('.$value->kode.') '.$value->jenis_barang;?>
                                             </option>
                                     <?php } ?>
                                 </select>
@@ -77,11 +79,11 @@ function simpanData(){
     }else if($.trim($("#rongsok_id").val()) == ""){
         $('#message').html("Item harus diisi!");
         $('.alert-danger').show(); 
-    }else{ 
+    }else{     
         var r=$('#rongsok_id').val();
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/GudangRongsok/kartu_stok?r='+r+'&ts='+s+'&te='+e,'_blank');
+        window.open('<?php echo base_url();?>index.php/GudangFG/kartu_stok?r='+r+'&ts='+s+'&te='+e,'_blank');
     };
 };
 </script>

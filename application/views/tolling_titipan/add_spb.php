@@ -122,6 +122,9 @@ function simpanData(){
     }else if($.trim($("#jenis_barang").val()) == ""){
         $('#message').html("Jenis Barang harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
+    }else if($.trim($("#remarks").val()) == ""){
+        $('#message').html("Catatan harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
     }else{
         $('#formku').submit(); 
     };

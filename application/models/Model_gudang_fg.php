@@ -18,7 +18,9 @@ class Model_gudang_fg extends CI_Model{
     // }      
 
     function gudang_fg_list(){
-        $data = $this->db->query("select * from stok_fg");
+        $data = $this->db->query("select sf.*, jb.kode from stok_fg sf
+            left join jenis_barang jb on jb.id = sf.jenis_barang_id
+            ");
         return $data;
     }
 
@@ -414,6 +416,38 @@ class Model_gudang_fg extends CI_Model{
                 FROM t_gudang_fg tgf
                     left join jenis_barang jb on jb.id = tgf.jenis_barang_id
                     where tgf.jenis_barang_id =".$id_barang." and month(tgf.tanggal_keluar) =".$bulan." and year(tgf.tanggal_keluar) =".$tahun.") Order By tanggal asc
+                    ");
+        return $data;
+    }
+
+    function show_kartu_stok_before($start,$end,$id_barang){
+        $data = $this->db->query("(SELECT
+                    tg.id, tg.jenis_barang_id, tg.no_packing, jb.jenis_barang, sum(tg.netto) as netto_masuk, 0 as netto_keluar, tg.tanggal_masuk, tg.tanggal_keluar = null as tanggal_keluar, tg.tanggal_masuk as tanggal
+                FROM t_gudang_fg tg
+                    left join jenis_barang jb on jb.id = tg.jenis_barang_id
+                    where tg.jenis_barang_id =".$id_barang." and tg.tanggal_masuk < '".$start."')
+                UNION ALL
+                (SELECT 
+                    tgf.id, tgf.jenis_barang_id, tgf.no_packing, jb.jenis_barang, 0 as netto_masuk, sum(tgf.netto) as netto_keluar, tgf.tanggal_masuk = null, tgf.tanggal_keluar, tgf.tanggal_keluar as tanggal
+                FROM t_gudang_fg tgf
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                    where tgf.jenis_barang_id =".$id_barang." and tgf.tanggal_keluar <'".$start."') Order By tanggal asc
+                    ");
+        return $data;
+    }
+
+    function show_kartu_stok_detail($start,$end,$id_barang){
+        $data = $this->db->query("(SELECT
+                    tg.id, tg.jenis_barang_id, tg.no_packing, jb.jenis_barang, tg.netto as netto_masuk, 0 as netto_keluar, tg.tanggal_masuk, tg.tanggal_keluar = null as tanggal_keluar, tg.tanggal_masuk as tanggal
+                FROM t_gudang_fg tg
+                    left join jenis_barang jb on jb.id = tg.jenis_barang_id
+                    where tg.jenis_barang_id =".$id_barang." and tg.tanggal_masuk between '".$start."' and '".$end."')
+                UNION ALL
+                (SELECT 
+                    tgf.id, tgf.jenis_barang_id, tgf.no_packing, jb.jenis_barang, 0 as netto_masuk, tgf.netto as netto_keluar, tgf.tanggal_masuk = null, tgf.tanggal_keluar, tgf.tanggal_keluar as tanggal
+                FROM t_gudang_fg tgf
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                    where tgf.jenis_barang_id =".$id_barang." and tgf.tanggal_keluar between '".$start."' and '".$end."') Order By tanggal asc
                     ");
         return $data;
     }

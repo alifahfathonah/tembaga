@@ -1397,9 +1397,9 @@ class GudangFG extends CI_Controller{
                     if($user_ppn == 1){
                         $tgf_id = $this->db->insert_id();
                         $data_id = array('reff1' => $tgf_id);
-                        unset($data['flag_ppn']);
-                        unset($data['created_by']);
-                        unset($data['created_at']);
+                        unset($data_else['flag_ppn']);
+                        unset($data_else['created_by']);
+                        unset($data_else['created_at']);
                         $detail_push[$k] = array_merge($details[$k], $data_id);
                     }
                 }
@@ -2160,5 +2160,51 @@ class GudangFG extends CI_Controller{
         $data['header']['26mm'] = $this->Model_gudang_fg->stok_26mm()->row_array();
 
         $this->load->view('gudang_fg/print_stok_fg_jenis', $data);
+    }
+
+    function kartu_stok_index(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Gudang Finishgood";
+        $data['content']   = "gudang_fg/kartu_stok_index";
+
+        $this->load->model('Model_gudang_fg'); 
+        $data['list_fg'] = $this->Model_gudang_fg->barang_fg_list()->result();
+
+        $this->load->view('layout', $data);  
+    }
+
+    function kartu_stok(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+
+        $jb_id = $_GET['r'];
+        $start = date('Y/m/d', strtotime($_GET['ts']));
+        $end = date('Y/m/d', strtotime($_GET['te']));
+
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Gudang FG";
+
+        $this->load->model('Model_beli_fg');
+        $data['jb'] = $this->Model_beli_fg->get_jb($jb_id)->row_array();
+        $data['start'] = $start;
+        $data['end'] = $end;
+
+            $this->load->model('Model_gudang_fg');
+            $data['stok_before'] = $this->Model_gudang_fg->show_kartu_stok_before($start,$end,$jb_id)->row_array();
+            $data['detailLaporan'] = $this->Model_gudang_fg->show_kartu_stok_detail($start,$end,$jb_id)->result();
+
+            $this->load->view('gudang_fg/kartu_stok', $data);
     }
 }

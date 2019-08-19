@@ -3,16 +3,15 @@
         <h4 style="color:navy">
             <i class="fa fa-angle-right"></i> Pembelian 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood'); ?>"> Pembelian Finish Good </a> 
+            <a href="<?php echo base_url('index.php/Tolling'); ?>"> Pembayaran Tolling </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliFinishGood/voucher_list'); ?>"> Voucher List </a> 
+            <a href="<?php echo base_url('index.php/Tolling/voucher_list'); ?>"> Voucher List </a> 
         </h4>          
     </div>
 </div>
 <div class="row">&nbsp;</div>
 <div class="row">                            
-    <div class="col-md-12">      
-
+    <div class="col-md-12">
         <?php
             if( ($group_id==1)||($hak_akses['voucher_list']==1) ){
         ?>
@@ -89,5 +88,4 @@
             }
         ?>
     </div>
-</div> 
-       
+</div>

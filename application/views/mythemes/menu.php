@@ -308,12 +308,12 @@
                             <span class="arrow "></span>
                             </a>
                             <ul class="sub-menu">
-                                <li>
+                               <!--  <li>
                                     <a href="#">
                                     <i class="fa fa-file-word-o"></i>
                                     Under Construction </a>
-                                </li>
-                            <!-- <?php if($group_id==1 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
+                                </li> -->
+                            <?php if($group_id==1 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Tolling/spb_list">
                                     <i class="fa fa-file-word-o"></i>
@@ -347,10 +347,16 @@
                                 </li>
                             <?php } ?>
                                 <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/voucher_list">
+                                        <i class="fa fa-usd"></i>
+                                        Voucher List
+                                    </a>
+                                </li>
+                                <li>
                                     <a href="<?php echo base_url(); ?>index.php/Tolling/cek_balance">
                                     <i class="fa fa-truck"></i>
                                     Cek Balance </a>
-                                </li> -->
+                                </li>
                             </ul>
                         </li>
                     </ul>
@@ -630,6 +636,11 @@
                                 <span class="arrow "></span>
                                 </a>
                                 <ul class="sub-menu">
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangFG/kartu_stok_index">
+                                        <i class="fa fa-search"></i>
+                                        Kartu Stok FG </a>
+                                    </li>
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangFG/laporan_list">
                                         <i class="fa fa-briefcase"></i>

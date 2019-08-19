@@ -190,7 +190,7 @@
                                 <select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
                                 <option value=""></option><?php
                                     foreach ($list_barang as $value){
-                                        echo "<option value='".$value->id."'>".$value->jenis_barang."</option>";
+                                        echo "<option value='".$value->id."'>(".$value->kode.') '.$value->jenis_barang."</option>";
                                     }?>
                                 </select>
                                 </td>

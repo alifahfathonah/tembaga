@@ -454,6 +454,7 @@ class SalesOrder extends CI_Controller{
             $data = array(
                 'no_sales_order'=> $code,
                 'tanggal'=> $tgl_input,
+                'flag_tolling'=> 0,
                 'flag_ppn'=>$user_ppn,
                 'm_customer_id'=>$this->input->post('m_customer_id'),
                 'marketing_id'=>$this->input->post('marketing_id'),
@@ -1354,6 +1355,7 @@ class SalesOrder extends CI_Controller{
 
     function update_surat_jalan_existing(){
         $user_id  = $this->session->userdata('user_id');
+        $user_ppn  = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis_barang');
@@ -1388,6 +1390,26 @@ class SalesOrder extends CI_Controller{
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('t_surat_jalan', $data);
 
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                    $data_post['id_sj'] = $this->input->post('id');
+                    $data_post['header'] = $data;
+                    $data_post['details'] = $details;
+                    $post = json_encode($data_post);
+                // print_r($post);
+                // die();
+                $ch = curl_init(target_url().'api/SalesOrderAPI/sj_update');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
         
         $this->session->set_flashdata('flash_msg', 'Data surat jalan berhasil disimpan');
         redirect('index.php/SalesOrder/view_surat_jalan/'.$this->input->post('id'));

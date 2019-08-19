@@ -213,7 +213,7 @@ class Model_surat_jalan extends CI_Model{
 			left join r_t_surat_jalan tsj on tsj.id = tsjd.sj_resmi_id
 			left join rongsok rsk on tsj.jenis_barang = 'RONGSOK' and rsk.id = tsjd.jenis_barang_id
 			left join jenis_barang jb on tsj.jenis_barang = 'FG' and jb.id = tsjd.jenis_barang_id
-			where tsjd.sj_resmi_id =".$id);
+			where tsjd.sj_resmi_id =".$id." order by tsjd.jenis_barang_id asc");
     	return $data;
     }
 

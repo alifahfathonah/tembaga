@@ -55,7 +55,7 @@
                                 <div class="col-md-7">
                                     <input type="text" id="jenis_barang" name="jenis_barang" 
                                         class="form-control myline" style="margin-bottom:5px" 
-                                        readonly="readonly" value="RONGSOK">                                                                       
+                                        readonly="readonly" value="">                                                                       
                                 </div>
                             </div> 
                             <div class="row">

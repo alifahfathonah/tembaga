@@ -76,10 +76,10 @@
                 <div class="col-md-5"> 
                     <div class="row">
                         <div class="col-md-4">
-                            Customer <font color="#f00">*</font>
+                            Supplier <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" value="<?php echo $header['nama_customer'];?>" class="form-control myline" style="margin-bottom:5px" readonly>
+                            <input type="text" value="<?php echo $header['nama_supplier'];?>" class="form-control myline" style="margin-bottom:5px" readonly>
                         </div>
                     </div>
                     <div class="row">

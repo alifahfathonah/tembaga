@@ -99,6 +99,37 @@
                     </table>
                 </td>
             </tr>
+            <tr><td colspan="3">
+                    <table width="100%" align="center" border="0">
+                        <tr>
+                            <td style="text-align:center">
+                                Diterima Oleh :<br>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p>(Istadi)</p>
+                            </td>
+                            <td style="text-align:center">
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p></p>
+                            </td>
+                            <td style="text-align:center">
+                                Bagian Gudang,<br>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p>______________</p>
+                            </td>
+                            <td style="text-align:center">
+                                Mengetahui :<br>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                (LINDA)
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
             
         </table>
 	<body onLoad="window.print()">
