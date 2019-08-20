@@ -64,6 +64,22 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
+                            Jenis SPB
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis_spb" name="jenis_spb" placeholder="Silahkan pilih..."
+                                class="form-control myline select2me" style="margin-bottom:5px;">
+                                <option></option>
+                                <option value="0" <?=(($header['jenis_spb']==0)? 'selected="selected"' : '""');?>>SDM</option>
+                                <option value="5" <?=(($header['jenis_spb']==5)? 'selected="selected"' : '""');?>>Kirim Rongsok</option>
+                                <option value="6" <?=(($header['jenis_spb']==6)? 'selected="selected"' : '""');?>>SO</option>
+                                <option value="7" <?=(($header['jenis_spb']==7)? 'selected="selected"' : '""');?>>Retur</option>
+                                <option value="8" <?=(($header['jenis_spb']==8)? 'selected="selected"' : '""');?>>Repacking</option>
+                            </select> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">
@@ -96,7 +112,7 @@
                                 data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
                                 <option value=""></option><?php
                                     foreach ($list_barang as $value){
-                                        echo "<option value='".$value->id."'>".$value->jenis_barang."</option>";
+                                        echo "<option value='".$value->id."'>(".$value->kode.') '.$value->jenis_barang."</option>";
                                     }?>
                                 </select>
                                 </td>

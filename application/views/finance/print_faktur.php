@@ -135,14 +135,14 @@
                                 $total += round($row->total_harga,0);
                                 $no++;
                             }
-                        if($header['flag_ppn']==1){
+                        if($header['flag_ppn']==1 && $header['currency']=='IDR'){
                             $harga_ppn = ($total-$header['diskon']-$header['add_cost']) * 10/100;
                         }
                         ?>
                         <tr style="height:100px">
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
-                            <td colspan="3" style="border-bottom: 1px solid #000;"></td>
+                            <td colspan="3" style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$header['keterangan'];?></td>
+                            <td style="border-bottom: 1px solid #000;"></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td colspan="2" style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>

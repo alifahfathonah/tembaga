@@ -151,9 +151,14 @@ class Model_surat_jalan extends CI_Model{
     	return $data;
     }
 
-    function sj_detail($id){
-    	$data = $this->db->query("select *from r_t_surat_jalan_detail where sj_resmi_id = ".$id);
-    	return $data;
+    // function sj_detail($id){
+    // 	$data = $this->db->query("select * from r_t_surat_jalan_detail where sj_resmi_id = ".$id);
+    // 	return $data;
+    // }
+
+    function sj_detail($id,$poid){
+        $data = $this->db->query("select *, (select id from r_t_po_detail rtpd where rtpd.po_id =".$poid." and rtpd.jenis_barang_id = rtsjd.jenis_barang_id) as po_detail_id from r_t_surat_jalan_detail rtsjd where rtsjd.sj_resmi_id = ".$id);
+        return $data;
     }
 
     function cv_list(){
@@ -208,7 +213,7 @@ class Model_surat_jalan extends CI_Model{
 			left join r_t_surat_jalan tsj on tsj.id = tsjd.sj_resmi_id
 			left join rongsok rsk on tsj.jenis_barang = 'RONGSOK' and rsk.id = tsjd.jenis_barang_id
 			left join jenis_barang jb on tsj.jenis_barang = 'FG' and jb.id = tsjd.jenis_barang_id
-			where tsjd.sj_resmi_id =".$id);
+			where tsjd.sj_resmi_id =".$id." order by tsjd.jenis_barang_id asc");
     	return $data;
     }
 

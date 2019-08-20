@@ -379,7 +379,9 @@ class Model_finance extends CI_Model{
     function list_matching($ppn){
         $data = $this->db->query("select fm.*, mc.nama_customer, mc.pic, (select count(id) from f_match_detail fmd where fmd.id_match = fm.id and fmd.id_um = 0) as jumlah_inv, (select count(id) from f_match_detail fmd where fmd.id_match = fm.id and fmd.id_inv = 0) as jumlah_um from f_match fm 
             left join m_customers mc on mc.id = fm.id_customer
-            where flag_ppn=".$ppn);
+            where flag_ppn=".$ppn."
+            order by fm.no_matching desc
+            ");
         return $data;
     }
 
@@ -678,62 +680,140 @@ class Model_finance extends CI_Model{
     }
 
     function query_penjualan($s,$e,$c){
-        $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai as total_harga, IF(v.currency='USD',0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100) as nilai_ppn from v_data_faktur_all v 
+        $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn = 0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
             where v.PENJUALAN != '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."')
             order by v.flag_ppn, v.flag_tolling, v.kode_customer, v.tanggal, v.no_invoice
             ");
         return $data;
     }
 
+    function query_penjualan_jb($s,$e,$c){
+        $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn = 0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
+            where v.PENJUALAN != '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."')
+            order by v.flag_ppn, v.flag_tolling, v.kode_barang, v.tanggal, v.no_invoice
+            ");
+        return $data;
+    }
+
     function print_laporan_penjualan($s,$e,$ppn){
-        $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai as total_harga, IF(v.currency='USD',0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100) as nilai_ppn from v_data_faktur_all v 
+        $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn=1,(((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100),0)) as nilai_ppn from v_data_faktur_all v 
             where v.flag_ppn =".$ppn." and (v.tanggal BETWEEN '".$s."' AND '".$e."')
             order by v.flag_tolling, v.kode_customer
             ");
         return $data;
     }
 
+    function print_laporan_penjualan_jb($s,$e,$ppn){
+        $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn=1,(((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100),0)) as nilai_ppn from v_data_faktur_all v 
+            where v.flag_ppn =".$ppn." and (v.tanggal BETWEEN '".$s."' AND '".$e."')
+            order by v.flag_tolling, v.kode_barang
+            ");
+        return $data;
+    }
+
     function print_query_penjualan($ppn){
-        $data = $this->db->query("select v.*, v.total_harga/110*100 as nilai_sebelum_ppn, v.total_harga/110*10 as nilai_ppn from v_data_faktur_all v 
+        $data = $this->db->query("select v.*,(CASE WHEN v.flag_ppn = 0 THEN v.total_harga ELSE v.total_harga/110*100) as nilai_sebelum_ppn, (CASE WHEN v.flag_ppn = 0 THEN 0 ELSE v.total_harga/110*10 END) as nilai_ppn from v_data_faktur_all v 
             where v.flag_ppn =".$ppn."
             order by v.flag_ppn, v.flag_tolling, v.kode_customer, v.tanggal, v.no_invoice
             ");
         return $data;
     }
 
-    function print_penjualan_customer($c){
+    function print_penjualan_customer($s,$e,$c,$id){
         $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
             SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v
-            where v.PENJUALAN != '".$c."' 
+            where v.PENJUALAN != '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."') and v.id_customer = ".$id."
             group by v.flag_tolling, v.kode_customer
             order by v.flag_tolling, total_harga desc
             ");
         return $data;
     }
 
-    function print_penjualan_customer2($c){
+//INI PAKE MATERAI
+    // function print_penjualan_customer_all($s,$e,$c){
+    //     $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
+    //         SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v
+    //         where v.PENJUALAN != '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."')
+    //         group by v.flag_tolling, v.kode_customer
+    //         order by v.flag_tolling, total_harga desc
+    //         ");
+    //     return $data;
+    // }
+
+    function print_penjualan_customer_all($s,$e,$c){
+        $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum((v.total_harga-v.diskon-v.add_cost)*v.kurs) as total_harga, 
+            SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v
+            where v.PENJUALAN != '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."')
+            group by v.flag_tolling, v.kode_customer
+            order by v.flag_tolling, total_harga desc
+            ");
+        return $data;
+    }
+
+    function print_penjualan_customer2($s,$e,$c,$id){
         $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
             SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
-            where v.PENJUALAN = '".$c."'
+            where v.PENJUALAN = '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."') and v.id_customer = ".$id."
             group by v.flag_tolling, v.kode_customer
             order by v.flag_tolling, total_harga desc");
         return $data;
     }
 
-    function print_penjualan_jb($c){
-        $data = $this->db->query("select v.*, (CASE WHEN v.flag_tolling = 0 THEN 0 ELSE 1 END) as flag_tolling, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
+//INI PAKE MATERAI
+    // function print_penjualan_customer2_all($s,$e,$c){
+    //     $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
+    //         SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
+    //         where v.PENJUALAN = '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."')
+    //         group by v.flag_tolling, v.kode_customer
+    //         order by v.flag_tolling, total_harga desc");
+    //     return $data;
+    // }
+
+    function print_penjualan_customer2_all($s,$e,$c){
+        $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)) as total_harga, 
             SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
-            where v.PENJUALAN != '".$c."'
+            where v.PENJUALAN = '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."')
+            group by v.flag_tolling, v.kode_customer
+            order by v.flag_tolling, total_harga desc");
+        return $data;
+    }
+
+//INI PAKE MATERAI
+    // function print_penjualan_jb($s,$e,$c){
+    //     $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
+    //         SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
+    //         where v.PENJUALAN != '".$c."' and v.tanggal between '".$s."' and '".$e."'
+    //         group by v.flag_tolling, v.kode_barang
+    //         order by v.flag_tolling, v.kode_barang asc
+    //         ");
+    //     return $data;
+    // }
+
+    // function print_penjualan_jb2($s,$e,$c){
+    //     $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
+    //         SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
+    //         where v.PENJUALAN = '".$c."' and v.tanggal between '".$s."' and '".$e."'
+    //         group by v.flag_tolling, v.kode_barang
+    //         order by v.flag_tolling, v.kode_barang asc
+    //         ");
+    //     return $data;
+    // }
+
+//INI GAPAKE MATERAI
+    function print_penjualan_jb($s,$e,$c){
+        $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)) as total_harga, 
+            SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
+            where v.PENJUALAN != '".$c."' and v.tanggal between '".$s."' and '".$e."'
             group by v.flag_tolling, v.kode_barang
             order by v.flag_tolling, v.kode_barang asc
             ");
         return $data;
     }
 
-    function print_penjualan_jb2($c){
-        $data = $this->db->query("select v.*, (CASE WHEN v.flag_tolling = 0 THEN 0 ELSE 1 END) as flag_tolling, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai) as total_harga, 
+    function print_penjualan_jb2($s,$e,$c){
+        $data = $this->db->query("select v.*, 'IDR' as currency, sum(v.netto) as netto, sum(((v.total_harga-v.diskon-v.add_cost)*v.kurs)) as total_harga, 
             SUM(IF(v.currency='USD' or v.flag_ppn=0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
-            where v.PENJUALAN = '".$c."'
+            where v.PENJUALAN = '".$c."' and v.tanggal between '".$s."' and '".$e."'
             group by v.flag_tolling, v.kode_barang
             order by v.flag_tolling, v.kode_barang asc
             ");
@@ -758,11 +838,10 @@ class Model_finance extends CI_Model{
     }
 
     function print_laporan_piutang($date,$ppn){
-        $data = $this->db->query("select * from (select fi.id, fi.id_customer, fi.nilai_invoice, fi.tanggal, fi.nilai_bayar, fi.nilai_pembulatan, fi.no_invoice, fi.tgl_jatuh_tempo, sum(fmd.inv_bayar) as nilai_invoice_bayar,
-            (CASE WHEN fi.currency='USD' THEN fi.nilai_invoice ELSE 0 END) as nilai_us, 
-            (select sum(fmd.inv_bayar) from v_inv_um_status vi
-            left join f_match_detail fmd on fmd.id_inv = vi.id_inv
-            where vi.status = 0 and fi.id = vi.id_inv) as nilai_cm,
+        $data = $this->db->query("select *, (select sum(fmd.inv_bayar) from f_invoice fi2
+            left join f_match_detail fmd on fmd.id_inv = fi2.id
+            where i.count_fmd > 0 and fi2.id = i.id group by i.id) as nilai_cm from (select fi.id, fi.id_customer, fi.nilai_invoice, fi.tanggal, fi.nilai_bayar, fi.nilai_pembulatan, fi.no_invoice, fi.tgl_jatuh_tempo, (sum(fmd.inv_bayar) + fi.nilai_pembulatan) as nilai_invoice_bayar,
+            (CASE WHEN fi.currency='USD' THEN fi.nilai_invoice ELSE 0 END) as nilai_us, (select count(id_inv) from v_inv_um_status vi where vi.status = 0 and vi.id_inv = fi.id group by vi.id_inv) as count_fmd,
             tsj.no_surat_jalan, 
             mc.kode_customer, mc.nama_customer, mc.nama_customer_kh
             from f_invoice fi
@@ -772,10 +851,49 @@ class Model_finance extends CI_Model{
             where fi.flag_ppn = ".$ppn."
              group by fi.id
             ) as i
-             where i.nilai_invoice > (i.nilai_bayar + i.nilai_pembulatan) or i.nilai_cm is not null
-             order by i.id_customer, i.tanggal asc");
+             where i.nilai_invoice > (i.nilai_bayar + i.nilai_pembulatan)
+             order by i.id_customer, i.no_invoice, i.tanggal asc");
         return $data;
     }
+
+    function print_laporan_piutang_kmp($date,$ppn){
+        $data = $this->db->query("
+            select * from ((select fi.id, fi.id_customer, fi.nilai_invoice, fi.tanggal, fi.nilai_bayar as nilai_invoice_bayar, fi.nilai_pembulatan, fi.no_invoice, fi.tgl_jatuh_tempo,
+            (CASE WHEN fi.currency='USD' THEN fi.nilai_invoice ELSE 0 END) as nilai_us, 0 as nilai_cm,
+            tsj.no_surat_jalan, 
+            mc.kode_customer, mc.nama_customer, mc.nama_customer_kh
+            from f_invoice fi
+            left join t_surat_jalan tsj on tsj.inv_id =  fi.id
+            left join m_customers mc on mc.id = fi.id_customer
+            where fi.flag_ppn = ".$ppn.")
+            UNION ALL
+            (select rinv.id, mc2.id as id_customer, rinv.nilai_invoice, rinv.tanggal, rinv.nilai_bayar as nilai_invoice_bayar, rinv.nilai_pembulatan, rinv.no_invoice_jasa as no_invoice, rinv.jatuh_tempo as tgl_jatuh_tempo, 0 as nilai_us, 0 as nilai_cm, rtsj.no_sj_resmi as no_surat_jalan, mc2.kode_customer, mc2.nama_customer, mc2.nama_customer_kh
+                from r_t_inv_jasa rinv
+                left join r_t_surat_jalan rtsj on rtsj.id = rinv.sjr_id
+                left join m_cv mcv on mcv.id = rinv.cv_id
+                left join m_customers mc2 on mc2.id = mcv.idkmp
+                where customer_id = 0
+            )) as i where i.nilai_invoice > (i.nilai_invoice_bayar + i.nilai_pembulatan) order by i.id_customer, i.tanggal, i.no_surat_jalan
+            ");
+        return $data;
+    }
+
+    // function print_laporan_piutang_kmp($date,$ppn){
+    //     $data = $this->db->query("select * from (select fi.id, fi.id_customer, fi.nilai_invoice, fi.tanggal, fi.nilai_bayar, fi.nilai_pembulatan, fi.no_invoice, fi.tgl_jatuh_tempo, (sum(fmd.inv_bayar) + fi.nilai_pembulatan) as nilai_invoice_bayar,
+    //         (CASE WHEN fi.currency='USD' THEN fi.nilai_invoice ELSE 0 END) as nilai_us,
+    //         tsj.no_surat_jalan, 
+    //         mc.kode_customer, mc.nama_customer, mc.nama_customer_kh, 0 as nilai_cm
+    //         from f_invoice fi
+    //         left join f_match_detail fmd on fmd.id_inv = fi.id
+    //         left join t_surat_jalan tsj on tsj.inv_id =  fi.id
+    //         left join m_customers mc on mc.id = fi.id_customer
+    //         where fi.flag_ppn = ".$ppn."
+    //          group by fi.id
+    //         ) as i
+    //          where i.nilai_invoice > (i.nilai_bayar + i.nilai_pembulatan)
+    //          order by i.id_customer, i.no_invoice, i.tanggal asc");
+    //     return $data;
+    // }
 
     function trx_kas($s,$e,$id,$ppn){
         return $this->db->query("select fk.id, fk.tanggal, fk.flag_ppn, fk.nomor, fk.jenis_trx, (fk.nominal*fk.kurs) as nominal, COALESCE(mc.nama_customer,'') as nama_customer, b.nama_bank from f_kas fk 

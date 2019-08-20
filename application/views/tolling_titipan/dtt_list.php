@@ -41,7 +41,7 @@
                     <th>No. DTT</th>
                     <th>Tanggal</th>
                     <th>No. PO</th>
-                    <th>Customer</th>
+                    <th>Supplier</th>
                     <th>Jenis<br>Barang</th>
                     <th>Penimbang</th>
                     <th>Jumlah <br>Items</th>
@@ -61,7 +61,7 @@
                         <td style="background-color: "><?php echo $data->no_dtt; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->no_po; ?></td>
-                        <td><?php echo $data->nama_customer; ?></td>
+                        <td><?php echo $data->nama_supplier; ?></td>
                         <td><?php echo $data->jenis_barang; ?></td>
                         <td><?php echo $data->penimbang; ?></td>                        
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>

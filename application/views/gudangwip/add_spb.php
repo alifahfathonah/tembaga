@@ -82,6 +82,9 @@
                                 <option value="2">ROLLING (INGOT)</option>
                                 <option value="5">KIRIM RONGSOK</option>
                             <?php } ?>
+                                <option value="6">SO</option>
+                                <option value="7">Retur</option>
+                                <option value="8">Repacking</option>
                             </select> 
                         </div>
                     </div>

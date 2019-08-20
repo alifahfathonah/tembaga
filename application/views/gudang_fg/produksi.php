@@ -86,6 +86,30 @@
                 </div>
             </form>
         </div>
+
+    <div class="collapse well" id="form_filter" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="col-md-12">
+                            Tanggal 
+                            <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-12">
+                            <input type="text" id="tanggal_filter" name="tanggal_filter" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('m-Y'); ?>">
+                                    &nbsp; &nbsp; 
+                                    <a href="javascript:;" onclick="searchFilter()" class="btn green" >
+                                        <i class="fa fa-search"></i> Search 
+                                    </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="alert alert-success 
@@ -104,6 +128,9 @@
                         <i class="fa fa-hourglass"></i>Produksi Finish Good 
                     </div>
                     <div class="tools">
+                        <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter">
+                            <i class="fa fa-search"></i> Filter Bulan
+                        </a>
                         <?php if( ($group_id==1 || $group_id==21)||($hak_akses['add']==1) ){ ?>
                         <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_add" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_add">
                             <i class="fa fa-plus"></i> Tambah
@@ -162,6 +189,8 @@
                                             echo '<div style="background-color:bisque; padding:4px">Waiting review</div>';
                                         }else if($data->status==1){ 
                                             echo '<div style="background-color:green; color:white; padding:4px">Approved</div>';
+                                        }else if($data->status==8){ 
+                                            echo '<div style="background-color:orange; padding:4px; color:white">Belum di Simpan</div>';
                                         }else if($data->status==9){ 
                                             echo '<div style="background-color:red; padding:4px; color:white">Rejected</div>';
                                         }
@@ -180,7 +209,7 @@
                                         <i class="fa fa-book"></i> View &nbsp; 
                                     </a> ';
                 }
-                if(($group_id==1 || $group_id==21) && $data->total_barang==0){
+                if(($group_id==1 || $group_id==21) && $data->status!=1){
                     echo '
                                     <a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/GudangFG/delete_produksi_fg/'.$data->id.'" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"> &nbsp; 
                                         <i class="fa fa-trash"></i> Delete &nbsp; 
@@ -210,6 +239,12 @@
 function simpanData(){
     $('#formku').submit();
 };
+
+
+function searchFilter(){
+    var id=$('#tanggal_filter').val();
+    window.location = '<?php echo base_url('index.php/GudangFG/produksi_fg_filter/');?>'+id;
+}
 </script>
 
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
@@ -225,6 +260,15 @@ $(function(){
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd-mm-yy'
+    });       
+    $("#tanggal_filter").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'mm-yy'
     });       
 });
 </script>

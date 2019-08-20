@@ -46,6 +46,24 @@
                                 value="<?php echo date('d-m-Y'); ?>">
                         </div>
                     </div>  
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nama Penimbang
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $this->session->userdata('realname'); ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Surat Jalan
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_sj" name="no_sj" class="form-control myline" style="margin-bottom:5px" placeholder="Nomor Surat Jalan ...">
+                        </div>
+                    </div>
                     <!-- <div class="row">
                         <div class="col-md-4">
                             Jenis Barang <font color="#f00">*</font>
@@ -68,7 +86,7 @@
                         </div>
                         <div class="col-md-8">
                             <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px" readonly>BARANG RETUR</textarea>                           
+                                class="form-control myline" style="margin-bottom:5px"></textarea>                           
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
@@ -151,16 +169,6 @@
                                 <option value="0">Ganti Barang</option>
                                 <option value="1">Mengurangi Hutang</option>
                             </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Nama Penimbang
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $this->session->userdata('realname'); ?>">
                         </div>
                     </div>
                 </div>              

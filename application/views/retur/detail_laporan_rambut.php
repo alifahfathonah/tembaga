@@ -60,25 +60,23 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Catatan
+                            No. Surat Jalan
                         </div>
                         <div class="col-md-8">
-                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px" readonly><?php echo  $header['remarks']; ?></textarea>                           
+                            <input type="text" id="no_sj" name="no_sj" 
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_sj']; ?>">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Nama Penimbang
+                            Catatan
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['penimbang']; ?>">
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
+                                class="form-control myline" style="margin-bottom:5px"><?php echo  $header['remarks']; ?></textarea>                           
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
-                    
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-6">
@@ -100,7 +98,17 @@
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
                                    class="form-control myline" style="margin-bottom:5px" value="<?= (($this->session->userdata('user_ppn') == 1)? $header['pic'] : $header['pic_kh']) ?>">
                         </div>
-                    </div>                    
+                    </div>       
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nama Penimbang
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $header['penimbang']; ?>">
+                        </div>
+                    </div>             
                     <div class="row">
                         <div class="col-md-4">
                             Jenis Packing <font color="#f00">*</font>
@@ -156,8 +164,9 @@
                                 <th>Berat Packing</th>
                                 <th></th>
                                 <th>Netto (Kg)</th>
-                                <th>Nomor Packing / Barcode</th>
-                                <th width="20%">Actions</th>
+                                <th>No. Packing</th>
+                                <th>Keterangan</th>
+                                <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
 
@@ -180,6 +189,7 @@
                                 <td><a href="javascript:;" onclick="timbang_netto()" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>
                                 <td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"/></td>
                                 <td><input type="text" value="Auto" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="keterangan" value="" class="form-control myline" placeholder="Keterangan"></td>
                                 <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
                             </tr>
                         </table>
@@ -214,7 +224,7 @@ function timbang_netto(){
     var bruto = $("#bruto").val();
     var berat_palette = $("#berat_bobbin").val();
     var total_netto = bruto - berat_palette;
-    const total = total_netto.toFixed(2);
+    const total = total_netto.toFixed(3);
     $("#netto").val(total);
 }
 
@@ -290,13 +300,15 @@ function saveDetail(){
                 netto: $('#netto').val(),
                 ukuran: $('#ukuran').val(),
                 berat_bobbin: $('#berat_bobbin').val(),
-                no_packing: $('#no_packing').val()
+                no_packing: $('#no_packing').val(),
+                keterangan: $('#keterangan').val()
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
                     $('#jenis_barang_id').select2('val','');
                     $('#bruto').val('');
+                    $('#keterangan').val('');
                     $('#berat_bobbin').val('');
                     $('#netto').val('');
                     $('#message').html("");

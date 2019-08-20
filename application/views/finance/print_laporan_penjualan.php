@@ -17,7 +17,7 @@
                 <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">No</th>
                 <th style="border-top: 1px solid; border-left: 1px solid;">Kode</th>
                 <th style="border-top: 1px solid; border-left: 1px solid;">Nama Customer</th>
-                <th style="border-top: 1px solid; border-left: 1px solid;">No. Invoice</th>
+                <th style="border-top: 1px solid; border-left: 1px solid;">No. Surat Jalan</th>
                 <th style="border-top: 1px solid; border-left: 1px solid;">Tanggal</th>
                 <th style="border-top: 1px solid; border-left: 1px solid;">Kode Barang</th>
                 <th style="border-top: 1px solid; border-left: 1px solid;">Jenis Barang</th>
@@ -66,13 +66,13 @@
                 <?php echo ($last_series==$row->kode_customer) ? '<td style="border-left:1px solid #000">' : '<td style="border-top: 1px solid;border-left: 1px solid;">'.$no ; ?></td>
                 <?php echo ($last_series==$row->kode_customer) ? '<td style="border-left:1px solid #000">' : '<td style="border-top: 1px solid;border-left: 1px solid;">'.$row->kode_customer ; ?></td>
                 <?php echo ($last_series==$row->kode_customer) ? '<td style="border-left:1px solid #000">' : '<td style="border-top: 1px solid;border-left: 1px solid;">'.$row->customer; ?></td>
-                <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->no_invoice ?></td>
+                <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->no_surat_jalan ?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= date('d-m-Y', strtotime($row->tanggal)) ?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->kode_barang ?></td>
                 <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->nama_barang ?></td>
                 <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto,2,',','.');?></td>
                 <td style="border-top: 1px solid; border-left: 1px solid;"><?=($row->currency=='IDR')?'Rp.': '$ -> Rp.';?></td>
-                <td style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->total_harga,2,',','.');?></td>
+                <td style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->total_harga-$row->materai,2,',','.');?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->nilai_ppn,2,',','.');?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($total_harga,2,',','.');?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= ($row->flag_tolling==0) ? 'SO Biasa' : 'SO Tolling'; ?></td>

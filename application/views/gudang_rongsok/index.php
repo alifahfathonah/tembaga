@@ -8,7 +8,6 @@
         </h5>          
     </div>
 </div>
-    
     <div class="row">
         <div class="col-md-12">
             <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
@@ -17,7 +16,6 @@
             </div>
         </div>
     </div>
-  
    <div class="col-md-12" style="margin-top: 10px;"> 
         <h3>Laporan Kartu Stok</h3>
         <hr class="divider">
@@ -71,15 +69,15 @@
 <script type="text/javascript">
 function simpanData(){
     if($.trim($("#tgl_start").val()) == ""){
-        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
+        $('#message').html("Tanggal Awal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#tgl_end").val()) == ""){
-        $('#message').html("Silahkan pilih nama supplier!");
+        $('#message').html("Tanggal Akhir harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#rongsok_id").val()) == ""){
-        $('#message').html("Term of payment harus diisi!");
+        $('#message').html("Item harus diisi!");
         $('.alert-danger').show(); 
-    }else{     
+    }else{ 
         var r=$('#rongsok_id').val();
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();

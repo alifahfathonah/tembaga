@@ -51,6 +51,8 @@ class R_SO extends CI_Controller{
         $data['header'] = $this->Model_purchase_order->show_header_po($po_id)->row_array();
         $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
         $data['marketing_list'] = $this->Model_sales_order->marketing_list()->result();
+        $data['no_so_kmp'] = $this->Model_sales_order->get_last_so(1)->row_array();
+        $data['no_so_cv'] = $this->Model_sales_order->get_last_so_cv()->row_array();
         $this->load->view('layout', $data);
     }
 
@@ -112,6 +114,37 @@ class R_SO extends CI_Controller{
 
                 $this->db->insert('r_t_so_detail', $data_sod);
             }
+
+                //API START//
+                $so_old = $this->db->query(
+                    "select tsf.id as id_spb, tsf.no_spb, tsf.jenis_spb, so.tanggal, so.no_sales_order, so.flag_tolling, so.m_customer_id, tso.alias, tso.so_id, tso.no_po, tso.jenis_so, tso.jenis_barang, tso.currency, tso.kurs from r_t_po rtp
+                    left join f_invoice fi on fi.id = rtp.f_invoice_id
+                    left join sales_order so on so.id = fi.id_sales_order
+                    left join t_sales_order tso on tso.id = so.id
+                    left join t_spb_fg tsf on tsf.id = tso.no_spb"
+                );
+
+                $this->load->helper('target_url');
+
+                $reff_so = array('reff2' => $so_id);
+                $data['header']  = array_merge($so_old, $reff_so);
+
+                $post = json_encode($data_post);
+
+                print_r($post);
+                die();
+                $ch = curl_init(target_url().'api/ReffAPI/so');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+
+                //API END//
                       
             if ($this->db->trans_complete()) {
                 redirect('index.php/R_SO/edit_so/'.$so_id);  

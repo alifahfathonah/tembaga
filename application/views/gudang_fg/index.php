@@ -47,7 +47,7 @@
                             <?= $no; ?>
                         </td>
                         <td>
-                            <?= $data->jenis_barang?>
+                            <?=$data->kode.' | '.$data->jenis_barang?>
                         </td>
                         <td>
                             <?= $data->total_qty ?>

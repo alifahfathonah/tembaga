@@ -300,6 +300,7 @@ class Ingot extends CI_Controller{
                         'tanggal'=> $tgl_input,
                         'produksi_ingot_id'=> $this->input->post('produksi_ingot_id'),
                         'jenis_barang'=> $this->input->post('jenis_barang_id'),
+                        'jenis_spb'=> 0,
                         'remarks'=> $this->input->post('remarks'),
                         'created'=> $tanggal,
                         'created_by'=> $user_id,
@@ -350,6 +351,7 @@ class Ingot extends CI_Controller{
                         'tanggal'=> $tgl_input,
                         'produksi_ingot_id'=> 0,
                         'jenis_barang'=> 1,
+                        'jenis_spb'=> $this->input->post('jenis_spb'),
                         'jumlah'=> $this->input->post('qty'),
                         'remarks'=> $this->input->post('remarks'),
                         'created'=> $tanggal,
@@ -482,6 +484,20 @@ class Ingot extends CI_Controller{
             $data['details'] = $this->Model_ingot->show_detail_spb($id)->result();
 
             $this->load->view('ingot/print_spb', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
+
+    function print_spb_fulfilment(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->helper('tanggal_indo_helper');
+            $this->load->model('Model_ingot');
+            $data['header']  = $this->Model_ingot->show_header_spb($id)->row_array();
+            $data['details'] = $this->Model_ingot->show_detail_spb_fulfilment($id)->result();
+
+            $this->load->view('ingot/print_spb_fulfilment', $data);
         }else{
             redirect('index.php'); 
         }

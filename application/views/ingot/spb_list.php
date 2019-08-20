@@ -68,6 +68,7 @@
                     <th>Tipe Apolo</th>
                     <th>Pemohon</th>
                     <th>Remarks</th>
+                    <th>Jenis</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -86,6 +87,21 @@
                         <td><?php echo $data->tipe_apolo; ?></td>
                         <td><?php echo $data->pic; ?></td>                            
                         <td><?php echo $data->remarks; ?></td>
+                        <td style="text-align:center">
+                            <?php
+                                if($data->jenis_spb==0){
+                                    echo 'SDM';
+                                }else if($data->jenis_spb==5){
+                                    echo 'Kirim Rongsok';
+                                }else if($data->jenis_spb==6){
+                                    echo 'SO';
+                                }else if($data->jenis_spb==7){
+                                    echo 'Retur';
+                                }else if($data->jenis_spb==8){
+                                    echo 'Repacking';
+                                }
+                            ?>
+                        </td>
                         <td style="text-align:center">
                             <?php
                                 if($data->status==0){

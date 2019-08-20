@@ -45,6 +45,7 @@
                                     <input type="hidden" id="jml_packing" name="jml_packing">
                                     <input type="hidden" id="jml_lain" name="jml_lain">
                                     <input type="hidden" id="tgl" name="tanggal">
+                                    <input type="hidden" id="dtr_type_1" name="dtr_type">
                                 </div>
                             </div>     
                             <div class="row">
@@ -87,6 +88,8 @@
                             <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_dtr']; ?>">
+
+                            <input type="hidden" id="dtr_type" name="dtr_type" value="<?=$header['type'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -131,6 +134,8 @@
                             <input type="text" id="supplier" name="supplier" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $header['nama_supplier']; ?>">
+
+                            <input type="hidden" id="id_customer" name="id_customer" value="<?php echo $header['id_customer']; ?>">
                         </div>
                     </div> 
                     <div class="row">
@@ -286,7 +291,11 @@ function approveData(){
         $('#approveData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#message').html("");
         $('.alert-danger').hide();
-        $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/BeliRongsok/approve_ttr_resmi");
+        if($('#id_customer').val() > 0){
+            $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/Tolling/approve_ttr_resmi");
+        }else{
+            $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/BeliRongsok/approve_ttr_resmi");
+        }
         $('#frmReject').submit(); 
     }
 }
@@ -297,6 +306,7 @@ function approveTTR(id_ttr){
     $('#jml_packing').val($('#jumlah_packing').val());
     $('#jml_lain').val($('#jumlah_lain').val());
     $('#tgl').val($('#tanggal').val());
+    $('#dtr_type_1').val($('#dtr_type').val());
     $('#message').html("");
     $('.alert-danger').hide();
         

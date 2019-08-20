@@ -43,7 +43,7 @@ class Model_matching extends CI_Model{
             from dtr 
             left join dtr_detail dtrd on (dtr.id = dtrd.dtr_id)
             left join rongsok r on (dtrd.rongsok_id = r.id)
-            where dtr.status = 1 and dtr.flag_taken = 0 group by dtr.no_dtr
+            where dtr.status = 1 and dtr.flag_taken = 0 and type = 0 group by dtr.no_dtr
             order by dtr.tanggal asc");
         return $data;
     }
@@ -76,11 +76,11 @@ class Model_matching extends CI_Model{
     }
 
     function load_detail_jb($id){
-        $data = $this->db->query("select dtrd.*, r.nama_item, (select sum(netto) from dtr_detail where dtr_id = dtrd.id) as total_netto
+        $data = $this->db->query("select dtrd.*, r.nama_item
             from dtr_detail dtrd
             left join rongsok r on (dtrd.rongsok_id = r.id)
             left join dtr on (dtr.id = dtrd.dtr_id)
-            where dtrd.flag_resmi = 0 and r.id = ".$id." group by dtr.id order by dtr.tanggal asc limit 10");
+            where dtrd.flag_resmi = 0 and r.id = ".$id." order by dtr.tanggal asc limit 10");
         return $data;
     }
 

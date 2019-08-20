@@ -150,8 +150,7 @@ class R_BPB extends CI_Controller{
             $result = json_decode($response, true);
             curl_close($ch);
 
-            log_message('debug', print_r($result,1));
-
+            // log_message('debug', print_r($result,1));
 
             $this->load->model('Model_bpb');
             $bpb_detail_api = $this->Model_bpb->list_bpb_detail_only($bpb_id)->result_array();

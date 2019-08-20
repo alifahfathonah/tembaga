@@ -217,7 +217,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
-                        <?php if($header['jenis_barang']=='FG'){ ?>
+                        <?php if($header['jenis_barang']=='FG'){?>
                         <table class="table table-bordered table-striped table-hover" id="tabel_barang">
                             <thead>
                                 <th>No</th>
@@ -226,40 +226,81 @@
                                 <th>UOM</th>
                                 <th style="width: 15%">No. Packing</th>
                                 <th>Bruto (Kg)</th>
+                                <th>Berat</th>
                                 <th>Netto (Kg)</th>
                                 <th>Bobbin</th>
-                                <th>Keterangan</th>
+                                <th>Action</th>
                             </thead>
                             <tbody id="boxDetail">
                                 <?php 
+                                    $last_series = null;
                                     $no=1; 
                                     $bruto=0;
+                                    $berat=0;
                                     $netto=0;
                                     foreach ($list_sj as $row) { 
+                                        if($row->netto_r==0){
+                                            $netto_sj = $row->netto;
+                                        }else{
+                                            $netto_sj = $row->netto_r;
+                                        }
+                                        if($row->jenis_barang!=$last_series && $last_series!=null){
+                                    echo '<tr>
+                                                <td style="text-align: right;" colspan="5"><strong>Total</strong></td>
+                                                <td style="background-color: green; color: white;">'.number_format($bruto,2,',','.').'</td>
+                                                <td style="background-color: green; color: white;">'.number_format($berat,2,',','.').'</td>
+                                                <td style="background-color: green; color: white;">'.number_format($netto,2,',','.').'</td>
+                                                <td colspan="2"></td>
+                                            </tr>';
+                                            $bruto = 0;
+                                            $berat = 0;
+                                            $netto = 0;
+                                            $no = 1;
+                                        }else{
+                                            echo '</tr>';
+                                        }
                                 ?>
                                 <tr>
                                     <td><?php echo $no; ?></td>
-                                    <td><?php echo $row->jenis_barang; ?></td>
-                                    <?php if(is_null($row->jenis_barang_a)){ ?>
-                                    <td>TIDAK ADA ALIAS</td>
-                                    <?php } else { ?>
-                                    <td><?php echo $row->jenis_barang_a; ?></td>
-                                    <?php } ?>
+                                    <td><?php echo '('.$row->kode.') '.$row->jenis_barang; ?></td>
+                                    <td>
+                                    <?php if(is_null($row->jenis_barang_a)){
+                                    echo '<label class="lbl_alias">TIDAK ADA ALIAS</label>';
+                                    } else {
+                                    echo '<label class="lbl_alias">('.$row->kode_alias.') '.$row->jenis_barang_a.'</label>';
+                                    } 
+                                    echo '<input type="hidden" style="display: none;" class="id_tsj_detail" name="details['.$no.'][id_tsj_detail]" value="'.$row->id.'">';
+                                    echo '<select class="jb_alias" name="details['.$no.'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px; display: none;">
+                                            <option value="0" data-id="0">TIDAK ADA ALIAS</option>';
+                                            foreach ($jenis_barang as $value){
+                                            echo '<option value="'.$value->id.'" '.(($value->id==$row->jenis_barang_alias)? 'selected="selected"': '').'>('.$value->kode.') '.$value->jenis_barang.'</option>';
+                                            }
+                                        echo '</select>';
+                                    ?>
+                                    </td>
                                     <td><?php echo $row->uom; ?></td>
                                     <td><?php echo $row->no_packing; ?></td>
-                                    <td><?php echo $row->bruto; ?></td>
-                                    <td><?php echo $row->netto; ?></td>
+                                    <td><?php echo number_format($row->bruto,2,',','.'); ?></td>
+                                    <td><?php echo number_format($row->berat,2,',','.'); ?></td>
+                                    <td><?php echo number_format($netto_sj,2,',','.'); ?></td>
                                     <td><?php echo $row->nomor_bobbin; ?></td>
-                                    <td><?php echo $row->line_remarks; ?></td>
-                                </tr>
-                                <?php $no++;
-                                $bruto += $row->bruto;
-                                $netto += $row->netto;
-                                } ?>
+                                    <td><a id="print" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcodeSJ(<?=$row->id;?>);" style="margin-top:5px;"><i class="fa fa-print"></i> Print Barcode</a></td>
+                                <?php
+                                        if($row->jenis_barang==$last_series){
+                                            echo '<tr>';
+                                        }
+                                    $bruto += $row->bruto;
+                                    $berat += $row->berat;
+                                    $netto += $netto_sj; 
+                                    $no++; 
+                                $last_series = $row->jenis_barang;
+                                    } 
+                                ?>
                                 <tr>
                                     <td style="text-align: right;" colspan="5"><strong>Total</strong></td>
-                                    <td><?=number_format($bruto,2,',','.');?></td>
-                                    <td><?=number_format($netto,2,',','.');?></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($bruto,2,',','.');?></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($berat,2,',','.');?></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($netto,2,',','.');?></td>
                                     <td colspan="2"></td>
                                 </tr>
                             </tbody>
@@ -277,6 +318,8 @@
                             <tbody id="boxDetail">
                                 <?php 
                                     $no=1; 
+                                    $qty = 0;
+                                    $berat = 0;
                                     foreach ($list_sj as $row) { 
                                 ?>
                                 <tr>
@@ -284,10 +327,16 @@
                                     <td><?php echo $row->jenis_barang; ?></td>
                                     <td><?php echo $row->uom; ?></td>
                                     <td><?php echo $row->qty; ?></td>
-                                    <td><?php echo $row->netto; ?></td>
+                                    <td><?php echo number_format($row->netto,2,',','.'); ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
                                 </tr>
-                                <?php $no++; } ?>
+                                <?php $no++; $qty += $row->qty; $berat += $row->netto;} ?>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;">Total :</td>
+                                    <td style="background-color: green; color: white;"><?=$qty;?></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($berat,2,',','.');?></td>
+                                    <td></td>
+                                </tr>
                             </tbody>
                         </table>
                     <?php
@@ -307,6 +356,13 @@
                         if( ($group_id==1 || $hak_akses['reject_sj']==1) && $header['status']=="0"){
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
+                        }
+                        if( ($group_id==1 || $hak_akses['edit_sj']==1) && $header['inv_id']==null){
+                            echo '<a href="javascript:;" class="btn blue" onclick="editData();" id="btnEdit">' 
+                                .'<i class="fa fa-pencil"></i> Edit </a>';
+
+                            echo '<a href="javascript:;" class="btn blue" style="display: none;" onclick="simpanData();" id="btnSimpan">'
+                                .'<i class="fa fa-floppy-o"></i> Simpan </a>';
                         }
                     ?>
 
@@ -330,6 +386,32 @@
     </div>
 </div> 
 <script>
+function editData(){
+    $('#no_surat_jalan').removeAttr('readonly');
+    $('#tanggal').removeAttr('readonly');
+    $('#no_kendaraan').removeAttr('readonly');
+    $('#supir').removeAttr('readonly');
+    $('#remarks').removeAttr('readonly');
+
+    $('.lbl_alias').hide();
+    $('.jb_alias').show();
+    $('.id_tsj_detail').show();
+    $('#approveData').hide();
+    $('#rejectData').hide();
+
+    $('#btnSimpan').show();
+    $('#btnEdit').hide();
+}
+
+function simpanData(){
+    var r=confirm("Anda yakin menyimpan surat jalan ini?");
+    if(r == true){
+        $('#btnSimpan').text('Please Wait ...').prop("onclick", null).off("click");
+        $('#formku').attr("action", "<?php echo base_url('index.php/Tolling/update_surat_jalan_existing'); ?>");
+        $('#formku').submit(); 
+    }
+};
+
 function approveData(){
     var r=confirm("Anda yakin me-approve surat jalan ini?");
     if(r == true){

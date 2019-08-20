@@ -780,9 +780,11 @@ class GudangWIP extends CI_Controller{
             $this->db->where('id', $bpb_id);
             $this->db->update('t_bpb_wip', $bpb_update);
             
+            $detail_push = [];
+
             #Create Inventori WIP
             $details = $this->input->post('details');
-            foreach ($details as $v) {    
+            foreach ($details as $k => $v) {    
                 $data = array(
                         'tanggal'=> $tgl_input,
                         'flag_ppn'=> $user_ppn,
@@ -798,15 +800,22 @@ class GudangWIP extends CI_Controller{
                         'created_by'=> $user_id
                 );
                 $this->db->insert('t_gudang_wip', $data);
+                    if($user_ppn == 1){
+                        $tgf_id = $this->db->insert_id();
+                        $data_id = array('reff1' => $tgf_id);
+                        unset($data['flag_ppn']);
+                        unset($data['created_by']);
+                        $detail_push[$k] = array_merge($details[$k], $data_id);
+                    }
             }
 
-                if(strpos($this->input->post('remarks'), 'BARANG PO') !== false ){
+                if($user_ppn == 1 && strpos($this->input->post('remarks'), 'BARANG PO') !== false ){
                     $this->load->helper('target_url');
 
                     $data_post['bpb_id'] = $bpb_id;
                     $data_post['tgl_input'] = $tgl_input;
                     $data_post['bpb'] = $bpb_update;
-                    $data_post['details'] = $details;
+                    $data_post['details'] = $detail_push;
                     $detail_post = json_encode($data_post);
 
                     // print_r($detail_post);

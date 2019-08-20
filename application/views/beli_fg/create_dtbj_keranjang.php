@@ -62,7 +62,17 @@
                             
                             <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['id']; ?>">
                         </div>
-                    </div>  -->                   
+                    </div>  -->   
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. SJ <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_sj" name="no_sj" placeholder="Nomor Surat Jalan ..."
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?= $header['no_sj'];?>">
+                        </div>
+                    </div>                
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
@@ -124,13 +134,12 @@
                             <thead>
                                 <th style="width:40px">No</th>
                                 <th style="width:20%">Nama Item Finish Good</th>
-                                <th>UOM</th>
                                 <th>Bruto (Kg)</th>
-                                <th>Berat Bobbin</th>
+                                <th>Berat</th>
                                 <th>Netto (Kg)</th>
                                 <th></th>
                                 <th>No. Bobbin</th>
-                                <th>No. Packing</th>
+                                <th width="20%">No. Packing</th>
                                 <th>Keterangan</th>
                             </thead>
                             <tbody id="boxDetail">
@@ -147,7 +156,6 @@
                                     <?php } ?>
                                 </select>
                                 </td>
-                                <td><input type="text" id="uom_1" name="myDetails[1][uom]" class="form-control myline" readonly="readonly"></td>
                                 <td><input type="number" id="bruto_1" name="myDetails[1][bruto]" class="form-control myline" maxlength="10"></td>
                                 <td><input type="text" id="berat_bobbin_1" name="myDetails[1][berat_bobbin]" class="form-control myline" value="0" readonly maxlength="10"></td>
                                 <td><input type="text" id="netto_v_1" name="myDetails[1][netto_v]" class="form-control myline" value="0" maxlength="10" readonly="readonly">
@@ -155,7 +163,7 @@
                                 </td>
                                 <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(1);" id="timbang_1"> <i class="fa fa-dashboard"></i> Timbang </a></td>                          
                                 <td><input type="text" name="myDetails[1][no_bobbin]" id="no_bobbin_1"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" onchange="get_bobbin(this.value,1)"></td>
-                                <td><input type="text" name="myDetails[1][no_packing]" id="no_packing_1" class="form-control myline" readonly placeholder="Auto"></td>
+                                <td><input type="text" name="myDetails[1][no_packing]" id="no_packing_1" class="form-control myline" placeholder="Auto"></td>
                                 <td><input type="text" name="myDetails[1][line_remarks]" id="line_remarks_1" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
                                 <td style="text-align:center"><a id="save_1" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(1);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
                                     <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>
@@ -215,6 +223,8 @@ function get_bobbin(id, nmr){
                     $('#berat_bobbin_'+nmr).val(result['berat']);
                     $('#id_bobbin_'+nmr).val(result['id']);
                     $('#no_packing_'+nmr).val(result['no_packing']);
+                    $('#netto_'+nmr).val(Number($('#bruto_'+nmr).val())-result['berat']);
+                    $('#netto_v_'+nmr).val(Number($('#bruto_'+nmr).val())-result['berat']);
                 } else {
                     alert('Bobbin/Keranjang tidak ditemukan atau belum dipesan, coba lagi');
                     $('#no_bobbin_'+nmr).val('');
@@ -288,7 +298,7 @@ function get_uom_po(id, nmr){
                 data: {id: id},
                 dataType: "json",
                 success: function(result) {
-                    $('#uom_'+nmr).val(result['uom']);
+                    // $('#uom_'+nmr).val(result['uom']);
                     $('#fg_id_'+nmr).val(id);
                 }
             });
@@ -328,17 +338,16 @@ function saveDetail(id){
                 '<input type="hidden" id="fg_id_'+new_id+'" name="myDetails['+new_id+'][fg_id]" value="">'+
                 '<td><select id="name_rongsok_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom_po(this.value,'+new_id+');">'+
                     '<option value=""></option>'+
-                    '<?php foreach($list_fg_on_po as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}?>'+
+                    '<?php foreach($list_fg_on_po as $v){ print('<option value="'.$v->id.'">('.$v->kode.') '.$v->jenis_barang.'</option>');}?>'+
                 '</select>'+
                 '</td>'+
-                '<td><input type="text" id="uom_'+new_id+'" name="myDetails['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+
                 '<td><input type="number" id="bruto_'+new_id+'" name="myDetails['+new_id+'][bruto]" class="form-control myline" maxlength="10"></td>'+
                 '<td><input type="text" id="berat_bobbin_'+new_id+'" name="myDetails['+new_id+'][berat_bobbin]" class="form-control myline" value="0" maxlength="10" readonly="readonly"></td>'+
                 '<td><input type="text" id="netto_v_'+new_id+'" name="myDetails['+new_id+'][netto_v]" class="form-control myline" value="0" maxlength="10" readonly="readonly"></td>'+
                 '<input type="hidden" name="myDetails['+new_id+'][netto]" id="netto_'+new_id+'">'+
                 '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('+new_id+');" id="timbang_'+new_id+'"> <i class="fa fa-dashboard"></i> Timbang </a></td>'+
                 '<td><input type="text" name="myDetails['+new_id+'][no_bobbin]" id="no_bobbin_'+new_id+'"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" onchange="get_bobbin(this.value,'+new_id+');"></td>'+
-                '<td><input type="text" name="myDetails['+new_id+'][no_packing]" id="no_packing_'+new_id+'" class="form-control myline" readonly placeholder="Auto"></td>'+
+                '<td><input type="text" name="myDetails['+new_id+'][no_packing]" id="no_packing_'+new_id+'" class="form-control myline" placeholder="Auto"></td>'+
                 '<td><input type="text" name="myDetails['+new_id+'][line_remarks]" id="line_remarks_'+new_id+'" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
                 '<td style="text-align:center"><a id="save_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail('+new_id+');" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>'+
                     '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td>'+

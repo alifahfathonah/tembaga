@@ -157,12 +157,28 @@
                         <input type="text" id="ppn" name="ppn" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $ppn; ?>">
                     </div>
                 </div>
-                <div class="row">
+                    <div class="row">
                         <div class="col-md-4">
                             Materai
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="materai" name="materai" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['materai']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            Currency
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="currency" name="currency" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['currency']; ?>">
+                        </div>
+                        <div id="show_kurs">
+                        <div class="col-md-2">
+                            Kurs
+                        </div>
+                        <div class="col-md-4">
+                            <input type="number" id="kurs" name="kurs" class="form-control myline" readonly value="<?= $header['kurs'];?>">
+                        </div>
                         </div>
                     </div>
             </div>              
@@ -187,9 +203,9 @@
                                 echo '<td style="text-align:center">'.$no.'</td>';
                                 echo '<td>'.$row->nama_item.'</td>';
                                 echo '<td>'.$row->uom.'</td>';
-                                echo '<td style="text-align:right">'.number_format($row->amount,0,',', '.').'</td>';
-                                echo '<td style="text-align:right">'.number_format($row->qty,0,',', '.').'</td>';
-                                echo '<td style="text-align:right">'.number_format($row->total_amount,0,',', '.').'</td>';
+                                echo '<td style="text-align:right">'.number_format($row->amount,2,',', '.').'</td>';
+                                echo '<td style="text-align:right">'.number_format($row->qty,2,',', '.').'</td>';
+                                echo '<td style="text-align:right">'.number_format($row->total_amount,2,',', '.').'</td>';
                                 echo '</tr>';
                                 $no++;
                             }
@@ -223,9 +239,9 @@
                                 echo '<td style="text-align:center">'.$no.'</td>';
                                 echo '<td>'.$row->nama_item.'</td>';
                                 echo '<td>'.$row->uom.'</td>';
-                                echo '<td style="text-align:right">'.number_format($row->amount,0,',', '.').'</td>';
-                                echo '<td style="text-align:right">'.number_format($row->qty,0,',', '.').'</td>';
-                                echo '<td style="text-align:right">'.number_format($row->total_amount,0,',', '.').'</td>';
+                                echo '<td style="text-align:right">'.number_format($row->amount,2,',', '.').'</td>';
+                                echo '<td style="text-align:right">'.number_format($row->qty,2,',', '.').'</td>';
+                                echo '<td style="text-align:right">'.number_format($row->total_amount,2,',', '.').'</td>';
                                 echo '</tr>';
                                 $jumlah += $row->qty;
                                 $total += $row->total_amount;
@@ -235,7 +251,7 @@
                         <tr>
                             <td colspan="4"> Total</td>
                             <td style="text-align: right;"><?= $jumlah;?></td>
-                            <td style="text-align: right; background-color:green; color: white;"><?= number_format($total,0,',','.');?></td>
+                            <td style="text-align: right; background-color:green; color: white;"><?= number_format($total,2,',','.');?></td>
                         </tr>
                         <tr>
                             <td colspan="5">Diskon</td>
@@ -255,7 +271,7 @@
 
                                     $after_ppn = ($after_diskon)*10/100;
                                     $data_total = $after_diskon + $after_ppn + $header['materai'];
-                                    $total_all = number_format($data_total,0,',','.');
+                                    $total_all = number_format($data_total,2,',','.');
                                 }else{
                                     if($header['diskon'] > 0){
                                         $diskon = $total*$header['diskon']/100;
@@ -265,18 +281,18 @@
                                     }
 
                                     $data_total = $after_diskon + $header['materai'];
-                                    $total_all = number_format($data_total,0,',','.');
+                                    $total_all = number_format($data_total,2,',','.');
                                 }   
                             ?>
-                            <td style="text-align: right; background-color:red; color: white;"><?= number_format($diskon,0,',','.');?></td>
+                            <td style="text-align: right; background-color:red; color: white;"><?= number_format($diskon,2,',','.');?></td>
                         </tr>
                         <tr>
                             <td colspan="5">PPN</td>
-                            <td style="text-align: right; background-color:green; color: white;"><?= number_format($after_ppn,0,',','.');?></td>
+                            <td style="text-align: right; background-color:green; color: white;"><?= number_format($after_ppn,2,',','.');?></td>
                         </tr>
                         <tr>
                             <td colspan="5">Materai</td>
-                            <td style="text-align: right; background-color:green; color: white;"><?= number_format($header['materai'],0,',','.');?></td>
+                            <td style="text-align: right; background-color:green; color: white;"><?= number_format($header['materai'],2,',','.');?></td>
                         </tr>
                         <tr>
                             <td colspan="5">Total Dibayar</td>

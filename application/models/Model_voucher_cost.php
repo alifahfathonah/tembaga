@@ -110,4 +110,11 @@ class Model_voucher_cost extends CI_Model{
                 Order By voucher.no_voucher");
         return $data;
     }
+
+    function get_f_kas($id){
+        $data = $this->db->query("select fk.id, v.id as id_vc, v.po_id FROM f_kas fk
+                left join voucher v on v.id_fk = fk.id
+                WHERE fk.id =".$id." limit 1");
+        return $data;
+    }
 }

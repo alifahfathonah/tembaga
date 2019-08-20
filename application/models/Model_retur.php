@@ -25,7 +25,9 @@ class Model_retur extends CI_Model{
             left join users u on (u.id = r.created_by)
             left join m_jenis_packing jp on (jp.id = r.jenis_packing_id)
             left join m_customers c on (c.id = r.customer_id)
-            where r.flag_ppn =".$user_ppn);
+            where r.flag_ppn =".$user_ppn."
+            order by r.no_retur desc
+            ");
         return $data;
     }
 
@@ -242,7 +244,8 @@ class Model_retur extends CI_Model{
             left join t_spb_fg tsf on (r.jenis_barang = 'FG' and tsf.id = r.spb_id)
             left join t_spb_wip tsw on (r.jenis_barang = 'WIP' and tsw.id = r.spb_id)
             left join m_customers c on (c.id = r.customer_id)
-            where r.spb_id != 0");
+            where r.spb_id != 0
+            order by r.no_retur desc");
         return $data;
     }
     
@@ -267,7 +270,7 @@ class Model_retur extends CI_Model{
     }
 
     function load_detail_sj($id){
-        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jb.uom 
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.berat, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jb.uom 
                 from t_surat_jalan_detail tsjd
                 left join jenis_barang jb on jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
                 where tsjd.t_sj_id =".$id);
@@ -275,7 +278,7 @@ class Model_retur extends CI_Model{
     }
 
     function load_detail_sj_rsk($id){
-        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, COALESCE(tsjd.barang_alias, r.nama_item) as jenis_barang, r.uom 
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.berat, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, COALESCE(tsjd.barang_alias, r.nama_item) as jenis_barang, r.uom 
                 from t_surat_jalan_detail tsjd
                 left join rongsok r on (r.id = tsjd.jenis_barang_id)
                 where tsjd.t_sj_id =".$id);

@@ -18,7 +18,7 @@
         </div>
     </div>
    <div class="col-md-12" style="margin-top: 10px;"> 
-        <h3>Laporan Rekap Penerimaan Kak / Bank</h3>
+        <h3>Laporan Rekap Penerimaan Kas / Bank</h3>
         <hr class="divider">
         <div class="row">
                 <div class="col-md-6">

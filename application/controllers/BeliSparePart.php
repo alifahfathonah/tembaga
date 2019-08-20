@@ -335,6 +335,7 @@ class BeliSparePart extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
 
+        $this->db->trans_start();
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_pengajuan = date('Y-m-d', strtotime($this->input->post('tgl_pengajuan')));
         if($this->input->post('tgl_spare_part')==NULL){
@@ -375,7 +376,8 @@ class BeliSparePart extends CI_Controller{
             $response = curl_exec($ch);
             $result = json_decode($response, true);
             curl_close($ch);
-
+            // print_r($response);
+            // die();
             if ($result['id'] > 0){
 
                 $this->load->model('Model_beli_sparepart');
@@ -399,8 +401,13 @@ class BeliSparePart extends CI_Controller{
             }
         }
 
-        $this->session->set_flashdata('flash_msg', 'Data pengajuan pembelian spare part berhasil diapprove');
-        redirect('index.php/BeliSparePart');
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Data pengajuan pembelian spare part berhasil diapprove');
+            redirect('index.php/BeliSparePart');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data pengajuan pembelian spare part gagal diapprove');
+            redirect('index.php/BeliSparePart');
+        }
     }
     
     function reject(){
@@ -438,6 +445,7 @@ class BeliSparePart extends CI_Controller{
             $data['myData'] = $this->Model_beli_sparepart->show_data($id)->row_array();           
             $data['myDetail'] = $this->Model_beli_sparepart->load_detail_pp($id)->result(); 
             $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
+            $data['no_po'] = $this->Model_beli_sparepart->get_last_po('Sparepart')->row_array();
             
             $this->load->view('layout', $data);   
         }else{
@@ -474,9 +482,10 @@ class BeliSparePart extends CI_Controller{
                         'no_po'=> $code,
                         'tanggal'=> $tgl_input,
                         'flag_ppn'=> $user_ppn,
+                        'flag_tolling'=> 0,
                         'beli_sparepart_id'=> $this->input->post('beli_sparepart_id'),
                         'ppn'=>$this->input->post('ppn'),
-                        'diskon'=>str_replace('.', '', $this->input->post('diskon')),
+                        'diskon'=>str_replace(',', '', $this->input->post('diskon')),
                         'materai'=>$this->input->post('materai'),
                         'currency'=>$this->input->post('currency'),
                         'kurs'=>$this->input->post('kurs'),
@@ -497,9 +506,9 @@ class BeliSparePart extends CI_Controller{
                         'po_id'=>$po_id,
                         'beli_sparepart_detail_id'=>$row['beli_sparepart_detail_id'],
                         'sparepart_id'=>$row['sparepart_id'],
-                        'amount'=>str_replace('.', '', $row['harga']),
+                        'amount'=>str_replace(',', '', $row['harga']),
                         'qty'=>str_replace('.', '', $row['qty']),
-                        'total_amount'=>str_replace('.', '', $row['total_harga'])
+                        'total_amount'=>str_replace(',', '', $row['total_harga'])
                     ));
                     
                     $this->db->where('id', $row['beli_sparepart_detail_id']);
@@ -692,6 +701,8 @@ class BeliSparePart extends CI_Controller{
                 'diskon'=>$this->input->post('diskon'),
                 'ppn'=>$this->input->post('ppn'),
                 'materai'=>$this->input->post('materai'),
+                'currency'=>$this->input->post('currency'),
+                'kurs'=>$this->input->post('kurs'),
                 'modified'=> $tanggal,
                 'modified_by'=> $user_id
             );
@@ -1317,8 +1328,25 @@ class BeliSparePart extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $user_ppn = $this->session->userdata('user_ppn');
         
+        $this->db->trans_start();
         $this->load->model('Model_m_numberings');
+        $this->load->helper('target_url');
+
+                // $url = target_url().'api/BeliSparepartAPI/numbering?id=SPB-SP&tgl='.$tgl_input;
+                // $ch = curl_init();
+                // curl_setopt($ch, CURLOPT_URL, $url);
+                // // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                // // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+                // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                // curl_setopt($ch, CURLOPT_HEADER, 0);
+
+                // $result = curl_exec($ch);
+                // $result = json_decode($result);
+                // curl_close($ch);
+                // $code = $result->code;
         $code = $this->Model_m_numberings->getNumbering('SPB-SP', $tgl_input); 
         
         if($code){        
@@ -1329,9 +1357,31 @@ class BeliSparePart extends CI_Controller{
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id
             );
+            $this->db->insert('t_spb_sparepart', $data);
+            $spb_id = $this->db->insert_id();
 
-            if($this->db->insert('t_spb_sparepart', $data)){
-                redirect('index.php/BeliSparePart/edit_spb/'.$this->db->insert_id());  
+            if($user_ppn == 1){
+                // $this->load->helper('target_url');
+
+                $data_post = $data;
+                $data_post['spb_id'] = $spb_id;
+
+                $data_post = http_build_query($data_post);
+
+                $ch = curl_init(target_url().'api/BeliSparepartAPI/spb');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
+
+            if($this->db->trans_complete()){
+                redirect('index.php/BeliSparePart/edit_spb/'.$spb_id);  
             }else{
                 $this->session->set_flashdata('flash_msg', 'Data SPB Sparepart gagal disimpan, silahkan dicoba kembali!');
                 redirect('index.php/BeliSparePart/add_spb');  
@@ -1371,6 +1421,7 @@ class BeliSparePart extends CI_Controller{
             $this->load->model('Model_beli_sparepart');
             $data['header'] = $this->Model_beli_sparepart->show_header_spb($id)->row_array();
             $data['details'] = $this->Model_beli_sparepart->show_detail_spb($id)->result();
+            $data['list_sparepart'] = $this->Model_beli_sparepart->jenis_barang_spb()->result();
     
             $this->load->view('layout', $data);   
         }else{
@@ -1384,7 +1435,7 @@ class BeliSparePart extends CI_Controller{
         $tabel = "";
         $no = 1;
         $this->load->model('Model_beli_sparepart'); 
-        $list_sparepart = $this->Model_beli_sparepart->jenis_barang_spb()->result();
+        // $list_sparepart = $this->Model_beli_sparepart->jenis_barang_spb()->result();
         
         $myDetail = $this->Model_beli_sparepart->load_detail_spb($id)->result(); 
         foreach ($myDetail as $row){
@@ -1401,25 +1452,25 @@ class BeliSparePart extends CI_Controller{
             $no++;
         }
             
-        $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:center">'.$no.'</td>';
-        $tabel .= '<td>';
-        $tabel .= '<select id="barang_id" name="barang_id" class="form-control select2me myline" ';
-            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">';
-            $tabel .= '<option value=""></option>';
-            foreach ($list_sparepart as $value){
-                $tabel .= "<option value='".$value->id."' data-id='".$value->nama_produk."'>".$value->nama_produk."</option>";
-            }
-        $tabel .= '</select>';
-        $tabel .= '</td>';
-        $tabel .= '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td><input type="text" id="qty_item" name="qty" class="form-control myline"/></td>';
-        $tabel .= '<td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" '
-                . 'onkeyup="this.value = this.value.toUpperCase()"></td>';        
-        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
-                . '<i class="fa fa-plus"></i> Tambah </a></td>';
-        $tabel .= '</tr>';
+        // $tabel .= '<tr>';
+        // $tabel .= '<td style="text-align:center">'.$no.'</td>';
+        // $tabel .= '<td>';
+        // $tabel .= '<select id="barang_id" name="barang_id" class="form-control select2me myline" ';
+        //     $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">';
+        //     $tabel .= '<option value=""></option>';
+        //     foreach ($list_sparepart as $value){
+        //         $tabel .= "<option value='".$value->id."' data-id='".$value->nama_produk."'>".$value->nama_produk."</option>";
+        //     }
+        // $tabel .= '</select>';
+        // $tabel .= '</td>';
+        // $tabel .= '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>';
+        // $tabel .= '<td><input type="text" id="qty_item" name="qty" class="form-control myline"/></td>';
+        // $tabel .= '<td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" '
+        //         . 'onkeyup="this.value = this.value.toUpperCase()"></td>';        
+        // $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+        //         . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
+        //         . '<i class="fa fa-plus"></i> Tambah </a></td>';
+        // $tabel .= '</tr>';
 
         header('Content-Type: application/json');
         echo json_encode($tabel);  
@@ -1488,7 +1539,11 @@ class BeliSparePart extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $user_ppn = $this->session->userdata('user_ppn');
+        $id = $this->input->post('id');
         
+        $this->db->trans_start();
+
         $data = array(
                 'request_by'=>$this->input->post('request'),
                 'keterangan'=>$this->input->post('remarks'),
@@ -1497,11 +1552,38 @@ class BeliSparePart extends CI_Controller{
                 'modified_by'=> $user_id
             );
         
-        $this->db->where('id', $this->input->post('id'));
+        $this->db->where('id', $id);
         $this->db->update('t_spb_sparepart', $data);
-        
-        $this->session->set_flashdata('flash_msg', 'Data SPB Sparepart berhasil disimpan');
-        redirect('index.php/BeliSparePart/spb_list');
+
+        if($user_ppn==1){
+            $this->load->helper('target_url');
+
+            $url = target_url().'api/BeliSparepartAPI/numbering?id=SPB-SP&tgl='.$tgl_input;
+            $this->load->model('Model_beli_sparepart');
+            $data_id = array('id' => $id);
+            $data_post = array_merge($data, $data_id);
+            $data_post['data_detail'] = $this->Model_beli_sparepart->spb_detail_only($id)->result();
+            $data_post = json_encode($data_post);
+
+            $ch = curl_init(target_url().'api/BeliSparepartAPI/spb_detail');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $result = json_decode($response, true);
+            curl_close($ch);
+        }
+        // print_r($response);
+        // die();
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Data SPB Sparepart berhasil disimpan');
+            redirect('index.php/BeliSparePart/spb_list');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data SPB Sparepart GAGAL disimpan');
+            redirect('index.php/BeliSparePart/spb_list');
+        }
     }
 
     function view_spb(){
@@ -1616,18 +1698,20 @@ class BeliSparePart extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d');
+        $user_ppn = $this->session->userdata('user_ppn');
         $id = $this->input->post('id');
         
         $this->db->trans_start();
         
         #Update status SPB
-        $this->db->where('id', $id);
-        $this->db->update('t_spb_sparepart', array(
+        $data = array(
                         'status'=> 1,
                         'keterangan' => $this->input->post('remarks'),
                         'approved_at'=> $tanggal,
-                        'approved_by'=> $user_id
-        ));
+                        'approved_by'=> $user_id);
+
+        $this->db->where('id', $id);
+        $this->db->update('t_spb_sparepart', $data);
 
         $this->load->model('Model_beli_sparepart');
         $myDetail = $this->Model_beli_sparepart->load_detail_saved_item($id)->result(); 
@@ -1652,8 +1736,34 @@ class BeliSparePart extends CI_Controller{
                         'stok_netto'=> ($get_stok['stok_netto'] - $row->qty),
                         'modified'=> $tanggal,
                         'modified_by'=> $user_id
-        ));
+            ));
         }
+
+                if($user_ppn == 1){
+                $this->load->helper('target_url');
+                    $detail = array();
+
+                    $this->load->model('Model_beli_sparepart');
+                    $detail['tgl_input'] = $tgl_input;
+                    $detail['id'] = $id;
+                    $detail['header'] = $data;
+                    $detail['detail'] = $this->Model_beli_sparepart->load_detail_saved_item_only($id)->result_array();
+                    $detail_post = json_encode($detail);
+
+                    // print("<pre>".print_r($detail_post,true)."</pre>");
+                    // die();
+
+                    $ch2 = curl_init(target_url().'api/BeliSparepartAPI/spb_keluar');
+                    curl_setopt($ch2, CURLOPT_POST, true);
+                    curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                    curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_post);
+                    curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+                    $response2 = curl_exec($ch2);
+                    $result2 = json_decode($response2, true);
+                    curl_close($ch2);
+                    // print_r($response2);
+                    // die();
+                }
             
             if($this->db->trans_complete()){    
                 $this->session->set_flashdata('flash_msg', 'SPB sudah di-approve. Detail SPB sudah disimpan');            
@@ -1961,6 +2071,8 @@ class BeliSparePart extends CI_Controller{
 
             $this->load->model('Model_beli_sparepart');
             $data['header'] = $this->Model_beli_sparepart->list_detail_pembayaran($id)->row_array();
+            $data['kas'] = $this->Model_beli_sparepart->kas_keluar_terakhir($user_ppn)->row_array();
+            $data['bank'] = $this->Model_beli_sparepart->bank_keluar_terakhir($user_ppn)->row_array();
             $this->load->model('Model_finance');
             $data['bank_list'] = $this->Model_finance->bank_list($user_ppn)->result();
             $this->load->view('layout', $data);   
@@ -2061,6 +2173,7 @@ class BeliSparePart extends CI_Controller{
                     'no_giro'=>$this->input->post('nomor_giro'),
                     'id_bank'=>$this->input->post('bank_id'),
                     'id_vc'=>0,
+                    'kurs'=>$this->input->post('kurs'),
                     'currency'=>$this->input->post('currency'),
                     'nominal'=>str_replace('.', '', $this->input->post('nominal')),
                     'created_at'=>$tanggal,

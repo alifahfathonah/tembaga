@@ -38,15 +38,15 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Customer <font color="#f00">*</font>
+                            Supplier <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="customer_id" name="customer_id" class="form-control myline select2me" 
+                            <select id="supplier_id" name="supplier_id" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cp(this.value);">
                                 <option value=""></option>
                                 <?php
-                                    foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
+                                    foreach ($supplier_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->nama_supplier.'</option>';
                                     }
                                 ?>
                             </select>
@@ -147,8 +147,8 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#customer_id").val()) == ""){
-        $('#message').html("Silahkan pilih nama customer!");
+    }else if($.trim($("#supplier_id").val()) == ""){
+        $('#message').html("Silahkan pilih nama supplier!");
         $('.alert-danger').show(); 
     }else if($.trim($("#jenis_barang").val()) == ""){
         $('#message').html("Silahkan pilih jenis barang");

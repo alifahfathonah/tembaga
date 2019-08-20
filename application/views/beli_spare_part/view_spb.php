@@ -257,7 +257,7 @@
                 <div class="col-md-12">
                     <?php
                         if( ($group_id==1 || $hak_akses['approve_spb']==1) && $myData['status']=="0"){
-                            echo '<a href="javascript:;" class="btn green" onclick="approveData();"> '
+                            echo '<a href="javascript:;" class="btn green" id="approveData" onclick="approveData();"> '
                                 .'<i class="fa fa-check"></i> Approve </a> ';
                         }
                         if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="0"){
@@ -287,6 +287,7 @@
 function approveData(){
     var r=confirm("Anda yakin meng-approve permintaan barang ini?");
     if (r==true){
+        $('#approveData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').attr("action", "<?php echo base_url(); ?>index.php/BeliSparePart/approve_spb");  
         $('#formku').submit(); 
     }

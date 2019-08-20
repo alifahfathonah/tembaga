@@ -31,7 +31,6 @@
                    <tr >
                         <th>No</th>
                         <th>Bulan</th>
-                        <th>Jumlah <br>Item</th>
                         <th>Stok Bruto <br>Sebelum</th>
                         <th>Stok Netto <br>Sebelum</th>
                         <th>Bruto <br>Masuk</th>
@@ -53,7 +52,6 @@
                     <tr>
                         <td></td>
                         <td><?= $data['showdate'] ;?></td>
-                        <td><?= $data['jumlah'] ;?></td>
                         <td style="background-color: powderblue;"><?=number_format($arr['bruto_awal'][$no], 2, '.', ',');?></td>
                         <td style="background-color: powderblue;"><?=number_format($arr['netto_awal'][$no], 2, '.', ',');?></td>
                         <td><?= number_format($data['bruto_masuk'], 2, '.', ',') ;?></td>

@@ -4,6 +4,7 @@ if ( ! function_exists('target_url'))
 {
 	function target_url(){
 		$url = 'http://localhost/tembaga_resmi/index.php/';
+		// $url = 'http://kmp.tanghosting.net/index.php/';
 		return $url;
 	}
 
@@ -46,7 +47,7 @@ if ( ! function_exists('target_url'))
 				break;
 		}
 		
-		return $url;
+		// return $url;
 
 		// switch ($id) {
 		// 	case 1:
@@ -81,11 +82,11 @@ if ( ! function_exists('target_url'))
 		// 		$url = 'http://tmtu.kmprakasa.com/index.php/';
 		// 		break;
 			
-			// default:
-			// 	$url = '';
-			// 	break;
+		// 	default:
+		// 		$url = '';
+		// 		break;
 		// }
 		
-		// return $url;
+		return $url;
 	}
 }

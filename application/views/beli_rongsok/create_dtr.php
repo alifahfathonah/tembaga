@@ -342,9 +342,9 @@ function saveDetail(id){
                 $('#no_pallete_'+id).val(result['no_packing']);
             }
         });
-        $('#total_bruto').val(Number($('#total_bruto').val())+Number($('#bruto_'+id).val()));
-        $('#total_berat').val(Number($('#total_berat').val())+Number($('#berat_palette_'+id).val()));
-        $('#total_netto').val(Number($('#total_netto').val())+Number($('#netto_'+id).val()));
+        $('#total_bruto').val((Number($('#total_bruto').val())+Number($('#bruto_'+id).val())).toFixed(2));
+        $('#total_berat').val((Number($('#total_berat').val())+Number($('#berat_palette_'+id).val())).toFixed(2));
+        $('#total_netto').val((Number($('#total_netto').val())+Number($('#netto_'+id).val())).toFixed(2));
         $("#name_rongsok_"+id).attr('disabled','disabled');
         $("#save_"+id).hide();
         $('#qty_'+id).attr('readonly','readonly');

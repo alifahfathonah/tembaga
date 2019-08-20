@@ -62,7 +62,17 @@
                             
                             <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['id']; ?>">
                         </div>
-                    </div>  -->                   
+                    </div>  -->                     
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. SJ <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_sj" name="no_sj" placeholder="Nomor Surat Jalan ..."
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?= $header['no_sj'];?>">
+                        </div>
+                    </div> 
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
@@ -315,7 +325,7 @@ function saveDetail(id){
                 '<input type="hidden" id="fg_id_'+new_id+'" name="myDetails['+new_id+'][fg_id]" value="">'+
                 '<td><select id="name_rongsok_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom_po(this.value,'+new_id+');">'+
                     '<option value=""></option>'+
-                    '<?php foreach($list_fg_on_po as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}?>'+
+                    '<?php foreach($list_fg_on_po as $v){ print('<option value="'.$v->id.'">('.$v->kode.') '.$v->jenis_barang.'</option>');}?>'+
                 '</select>'+
                 '</td>'+
                 '<td><input type="text" id="uom_'+new_id+'" name="myDetails['+new_id+'][uom]" class="form-control myline" readonly="readonly"></td>'+

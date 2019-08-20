@@ -308,12 +308,12 @@
                             <span class="arrow "></span>
                             </a>
                             <ul class="sub-menu">
-                                <li>
+                               <!--  <li>
                                     <a href="#">
                                     <i class="fa fa-file-word-o"></i>
                                     Under Construction </a>
-                                </li>
-                            <!-- <?php if($group_id==1 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
+                                </li> -->
+                            <?php if($group_id==1 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Tolling/spb_list">
                                     <i class="fa fa-file-word-o"></i>
@@ -347,10 +347,16 @@
                                 </li>
                             <?php } ?>
                                 <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/voucher_list">
+                                        <i class="fa fa-usd"></i>
+                                        Voucher List
+                                    </a>
+                                </li>
+                                <li>
                                     <a href="<?php echo base_url(); ?>index.php/Tolling/cek_balance">
                                     <i class="fa fa-truck"></i>
                                     Cek Balance </a>
-                                </li> -->
+                                </li>
                             </ul>
                         </li>
                     </ul>
@@ -630,6 +636,11 @@
                                 <span class="arrow "></span>
                                 </a>
                                 <ul class="sub-menu">
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangFG/kartu_stok_index">
+                                        <i class="fa fa-search"></i>
+                                        Kartu Stok FG </a>
+                                    </li>
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangFG/laporan_list">
                                         <i class="fa fa-briefcase"></i>
@@ -1090,24 +1101,28 @@
                                     <i class="fa fa-search"></i> Laporan Penjualan </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_jb/" target="_blank">
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/laporan_penjualan_per_jb/">
+                                    <i class="fa fa-search"></i> Laporan Penjualan per Jenis Barang </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_jb/">
                                     <i class="fa fa-print"></i> Rekap per Jenis Barang Gabungan</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_jb2/" target="_blank">
-                                    <i class="fa fa-print"></i> Rekap per Jenis Barang KMP</a>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_jb2/">
+                                    <i class="fa fa-print"></i> Rekap per Jenis Barang KKH</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_customer/" target="_blank">
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_customer/">
                                     <i class="fa fa-print"></i> Rekap per Customer Gabungan</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_customer2/" target="_blank">
-                                    <i class="fa fa-print"></i> Rekap per Customer KMP</a>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_customer2/">
+                                    <i class="fa fa-print"></i> Rekap per Customer KKH</a>
                                 </li>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_piutang/" target="_blank">
-                                    <i class="fa fa-print"></i> Penjualan Piutang</a>
+                                    <i class="fa fa-print"></i> Penjualan Piutang Belum Lunas</a>
                                 </li>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/search_penerimaan/">

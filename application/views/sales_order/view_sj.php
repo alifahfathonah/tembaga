@@ -265,6 +265,7 @@
                                             $bruto = 0;
                                             $berat = 0;
                                             $netto = 0;
+                                            $no = 1;
                                         }else{
                                             echo '</tr>';
                                         }

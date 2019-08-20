@@ -71,10 +71,10 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        Customer
+                                        Supplier
                                     </div>
                                     <div class="col-md-8">
-                                        : <?php echo $header_po['nama_customer']; ?>
+                                        : <?php echo $header_po['nama_supplier']; ?>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -135,9 +135,9 @@
                                         echo '<td style="text-align:center;">'.$no.'</td>';
                                         echo '<td>'.$row->jenis_barang.'</td>';
                                         echo '<td>'.$row->uom.'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($row->amount,0,',', '.').'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($row->qty,0,',', '.').'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($row->total_amount,0,',', '.').'</td>';
+                                        echo '<td style="text-align:right;">'.number_format($row->amount,2,',', '.').'</td>';
+                                        echo '<td style="text-align:right;">'.number_format($row->qty,2,',', '.').'</td>';
+                                        echo '<td style="text-align:right;">'.number_format($row->total_amount,2,',', '.').'</td>';
                                         echo '</tr>';
                                         $qty += $row->qty;
                                         $total += $row->total_amount;
@@ -147,10 +147,10 @@
                                     <tr>
                                         <td style="text-align:right;" colspan="4"><strong>Total</strong></td>
                                         <td style="text-align:right;">
-                                            <strong><?php echo number_format($qty,0,',','.'); ?></strong>
+                                            <strong><?php echo number_format($qty,2,',','.'); ?></strong>
                                         </td>
                                         <td style="text-align:right;">
-                                            <strong><?php echo number_format($total,0,',','.'); ?></strong>
+                                            <strong><?php echo number_format($total,2,',','.'); ?></strong>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -193,10 +193,10 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="col-md-5">
-                                        Customer
+                                        Supplier
                                     </div>
                                     <div class="col-md-7">
-                                        : <?php echo $row->nama_customer; ?>
+                                        : <?php echo $row->nama_supplier; ?>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -218,7 +218,6 @@
                                     <th>UOM</th>
                                     <th>Bruto (Kg)</th>
                                     <th>Netto (Kg)</th>
-                                    <th>No. Bobbin</th>
                                     <th>No. Packing</th>                    
                                 </tr>
                                 </thead>
@@ -232,9 +231,8 @@
                                         echo '<td style="text-align:center;">'.$no.'</td>';
                                         echo '<td>'.$value->jenis_barang.'</td>';
                                         echo '<td>'.$value->uom.'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($value->bruto,0,',', '.').'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($value->netto,0,',', '.').'</td>';
-                                        echo '<td>'.$value->no_bobbin.'</td>';
+                                        echo '<td style="text-align:right;">'.number_format($value->bruto,2,',', '.').'</td>';
+                                        echo '<td style="text-align:right;">'.number_format($value->netto,2,',', '.').'</td>';
                                         echo '<td>'.$value->no_packing.'</td>';
                                         echo '</tr>';
                                         $bruto += $value->bruto;
@@ -243,12 +241,12 @@
                                     }
                                     ?>
                                     <tr>
-                                        <td style="text-align:right;" colspan="4"><strong>Total (Kg) </strong></td>
+                                        <td style="text-align:right;" colspan="3"><strong>Total (Kg) </strong></td>
                                         <td style="text-align:right;">
-                                            <strong><?php echo number_format($bruto,0,',','.'); ?></strong>
+                                            <strong><?php echo number_format($bruto,2,',','.'); ?></strong>
                                         </td>
                                         <td style="text-align:right;">
-                                            <strong><?php echo number_format($netto,0,',','.'); ?></strong>
+                                            <strong><?php echo number_format($netto,2,',','.'); ?></strong>
                                         </td>
                                         <td>&nbsp;</td>
                                     </tr>
@@ -312,10 +310,10 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="col-md-5">
-                                        Customer
+                                        Supplier
                                     </div>
                                     <div class="col-md-7">
-                                        : <?php echo $row->nama_customer; ?>
+                                        : <?php echo $row->nama_supplier; ?>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -338,7 +336,6 @@
                                     <th>UOM</th>
                                     <th>Bruto (Kg)</th>
                                     <th>Netto (Kg)</th>
-                                    <th>No. Bobbin</th>
                                     <th>No. Packing</th>                    
                                 </tr>
                                 </thead>
@@ -352,9 +349,8 @@
                                         echo '<td style="text-align:center;">'.$no.'</td>';
                                         echo '<td>'.$value->jenis_barang.'</td>';
                                         echo '<td>'.$value->uom.'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($value->bruto,0,',', '.').'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($value->netto,0,',', '.').'</td>';
-                                        echo '<td>'.$value->no_bobbin.'</td>';
+                                        echo '<td style="text-align:right;">'.number_format($value->bruto,2,',', '.').'</td>';
+                                        echo '<td style="text-align:right;">'.number_format($value->netto,2,',', '.').'</td>';
                                         echo '<td>'.$value->no_packing.'</td>';
                                         echo '</tr>';
                                         $bruto += $value->bruto;
@@ -365,10 +361,10 @@
                                     <tr>
                                         <td style="text-align:right;" colspan="3"><strong>Total (Kg) </strong></td>
                                         <td style="text-align:right;">
-                                            <strong><?php echo number_format($bruto,0,',','.'); ?></strong>
+                                            <strong><?php echo number_format($bruto,2,',','.'); ?></strong>
                                         </td>
                                         <td style="text-align:right;">
-                                            <strong><?php echo number_format($netto,0,',','.'); ?></strong>
+                                            <strong><?php echo number_format($netto,2,',','.'); ?></strong>
                                         </td>
                                         <td colspan="2">&nbsp;</td>
                                     </tr>
@@ -492,6 +488,4 @@ function rejectData(){
         $('#frmReject').submit(); 
     }
 }
-
-
 </script>

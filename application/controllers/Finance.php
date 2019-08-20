@@ -189,7 +189,7 @@ class Finance extends CI_Controller{
         }
 
         if(($this->input->post('jenis_id') != 'Cek')||($this->input->post('jenis_id') != 'Cek Mundur')){
-            $data = array(
+            $dataf = array(
                 'jenis_trx'=>0,
                 'nomor'=> $code,
                 'flag_ppn'=> $user_ppn,
@@ -203,8 +203,33 @@ class Finance extends CI_Controller{
                 'created_at'=> $tanggal,
                 'created_by'=> $user_id
             );
-            $this->db->insert('f_kas', $data);
+            $this->db->insert('f_kas', $dataf);
+            $f_kas_insert_id = $this->db->insert_id();
         }
+
+            if($user_ppn==1){
+                $this->load->helper('target_url');
+
+                $this->load->model('Model_beli_rongsok');
+
+                $data_post['fum'] = array_merge($data, array('reff1'=>$insert_id));
+                $data_post['f_kas'] = array_merge($dataf, array('reff1'=>$f_kas_insert_id));
+
+                $detail_post = json_encode($data_post);
+                // print_r($detail_post);
+                // die();
+
+                $ch = curl_init(target_url().'api/FinanceAPI/um');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
 
         if($this->db->trans_complete()){
             redirect('index.php/Finance/');  
@@ -216,10 +241,28 @@ class Finance extends CI_Controller{
 
     function delete_um(){
         $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
         $this->db->trans_start();
         if(!empty($id)){
             $this->db->delete('f_uang_masuk', ['id' => $id]);
             $this->db->delete('f_kas', ['id_um' => $id]);
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+                $url = target_url().'api/FinanceAPI/um_del/id/'.$id;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                $result = curl_exec($ch);
+                $response = json_decode($result);
+                curl_close($ch);
+                // print_r($result);
+                // die();
+            }
         }
 
         if ($this->db->trans_complete()) {
@@ -309,7 +352,9 @@ class Finance extends CI_Controller{
                 'tanggal'=>$tgl_input,
                 'nominal'=>str_replace('.', '', $this->input->post('nominal_baru')),
                 'status'=>0,
-                'tgl_cair'=>$this->input->post('tanggal_cek_baru'),
+                'bank_pembayaran'=>$this->input->post('nama_bank'),
+                'nomor_cek'=>$this->input->post('nomor_cek'),
+                'tgl_cair'=>date('Y-m-d', strtotime($this->input->post('tanggal_cek_baru'))),
                 'modified_at'=>$tanggal,
                 'modified_by'=>$user_id,
                 'update_remarks'=>$this->input->post('update_remarks')
@@ -338,7 +383,7 @@ class Finance extends CI_Controller{
         $this->db->where('id', $id);
         if($this->db->update('f_uang_masuk', $data)){
             $this->session->set_flashdata('flash_msg', 'Uang Masuk berhasil di update');
-            redirect('index.php/Finance');
+            redirect('index.php/Finance/view_um/'.$id);
         }else{
             $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
         }             
@@ -1454,6 +1499,7 @@ class Finance extends CI_Controller{
 
     function delete_invoice(){
         $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
         $this->db->trans_start();
         if(!empty($id)){
 
@@ -1470,6 +1516,23 @@ class Finance extends CI_Controller{
 
             $this->db->delete('f_invoice', ['id' => $id]);
             $this->db->delete('f_invoice_detail', ['id_invoice' => $id]);
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+                $url = target_url().'api/FinanceAPI/inv_del/id/'.$id;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                $result = curl_exec($ch);
+                $response = json_decode($result);
+                curl_close($ch);
+                // print_r($result);
+                // die();
+            }
         }
 
         if($this->db->trans_complete()) {
@@ -1502,7 +1565,7 @@ class Finance extends CI_Controller{
             'term_of_payment' => $this->input->post('term_of_payment'),
             'tanggal' => $tgl_input,
             'tgl_jatuh_tempo' => $tgl_jatuh_tempo,
-            'keterangan' => $this->input->post('remarks'),
+            'keterangan' => nl2br($this->input->post('remarks')),
             'diskon' => $diskon,
             'add_cost' => $cost,
             'materai' => $materai,
@@ -1851,7 +1914,7 @@ class Finance extends CI_Controller{
     function print_um_match(){
         $id = $this->uri->segment(3);
         if($id){       
-            $this->load->helper('terbilang_helper');
+            $this->load->helper('terbilang_koma_helper');
             $this->load->helper('tanggal_indo');
             $this->load->model('Model_finance');
             $data['header'] = $this->Model_finance->matching_header_um_print($id)->row_array();
@@ -2199,7 +2262,7 @@ class Finance extends CI_Controller{
                 }
             $tabel .= '</td>';
             $tabel .= '<td style="text-align:right;">'.$row->currency.' '.number_format($row->nominal,0,',', '.').'</td>';
-            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="instantADDUM('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addUM"><i class="fa fa-plus"></i> Tambah </a></td>';
+            $tabel .= '<td style="text-align:center"><button href="javascript:;" class="btn btn-xs btn-circle yellow-gold addUM" onclick="this.disabled=true; instantADDUM('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addUM"><i class="fa fa-plus"></i> Tambah</button></td>';
             $tabel .= '</tr>';            
             $no++;
             $total_nominal += $row->nominal;
@@ -2635,6 +2698,22 @@ class Finance extends CI_Controller{
         $this->load->view('layout', $data);   
     }
 
+    function laporan_penjualan_per_jb(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/laporan_penjualan_per_jb";
+        $this->load->model('Model_sales_order');
+
+        $this->load->view('layout', $data);   
+    }
+
     function print_laporan_penjualan(){
             $module_name = $this->uri->segment(1);
             $ppn = $this->session->userdata('user_ppn');
@@ -2655,9 +2734,34 @@ class Finance extends CI_Controller{
             $this->load->view('finance/print_laporan_penjualan', $data);
     }
 
+    function search_penjualan_customer(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');   
+        $ppn = $this->session->userdata('user_ppn');
+
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/search_penjualan_customer";
+
+        $this->load->model('Model_finance');
+        $data['customer_list'] = $this->Model_finance->customer_list($ppn)->result();
+
+        $this->load->view('layout', $data);   
+    }
+
     function print_penjualan_customer(){
             $module_name = $this->uri->segment(1);
             $ppn = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+
+            // $l = $_GET['laporan'];
+            $s = date('Y-m-d', strtotime($_GET['ts']));
+            $e = date('Y-m-d', strtotime($_GET['te']));
 
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -2673,13 +2777,45 @@ class Finance extends CI_Controller{
             }
 
             $this->load->model('Model_finance');
-            $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer($c)->result();
+            // if($l==0){
+            //     $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer_all($s,$e,$c)->result();
+            // }else{
+            //     $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer($s,$e,$c,$l)->result();
+            // }
+
+            
+                $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer_all($s,$e,$c)->result();
             $this->load->view('finance/print_penjualan_customer2', $data);
+    }
+
+    function search_penjualan_customer2(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');   
+        $ppn = $this->session->userdata('user_ppn');
+
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/search_penjualan_customer2";
+
+        $this->load->model('Model_finance');
+        $data['customer_list'] = $this->Model_finance->customer_list($ppn)->result();
+
+        $this->load->view('layout', $data);   
     }
 
     function print_penjualan_customer2(){
             $module_name = $this->uri->segment(1);
             $ppn = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+
+            // $l = $_GET['laporan'];
+            $s = date('Y-m-d', strtotime($_GET['ts']));
+            $e = date('Y-m-d', strtotime($_GET['te']));
 
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -2695,13 +2831,38 @@ class Finance extends CI_Controller{
             }
 
             $this->load->model('Model_finance');
-            $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer2($c)->result();
+            // if($l==0){
+            //     $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer2_all($s,$e,$c)->result();
+            // }else{
+            //     $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer2($s,$e,$c,$l)->result();
+            // }
+                $data['detailLaporan'] = $this->Model_finance->print_penjualan_customer2_all($s,$e,$c)->result();
             $this->load->view('finance/print_penjualan_customer2', $data);
+    }
+
+    function search_penjualan_jb(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/search_penjualan_jb";
+        $this->load->model('Model_sales_order');
+
+        $this->load->view('layout', $data);   
     }
 
     function print_penjualan_jb(){
             $module_name = $this->uri->segment(1);
             $ppn = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+
+            $s = date('Y-m-d', strtotime($_GET['ts']));
+            $e = date('Y-m-d', strtotime($_GET['te']));
 
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -2717,13 +2878,34 @@ class Finance extends CI_Controller{
             }else{
                 $c = 'CV';
             }
-            $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb($c)->result();
+
+            $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb($s,$e,$c)->result();
             $this->load->view('finance/print_penjualan_jb', $data);
+    }
+
+    function search_penjualan_jb2(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/search_penjualan_jb2";
+        $this->load->model('Model_sales_order');
+
+        $this->load->view('layout', $data);   
     }
 
     function print_penjualan_jb2(){
             $module_name = $this->uri->segment(1);
             $ppn = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+
+            $s = date('Y-m-d', strtotime($_GET['ts']));
+            $e = date('Y-m-d', strtotime($_GET['te']));
 
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -2739,7 +2921,7 @@ class Finance extends CI_Controller{
             }
 
             $this->load->model('Model_finance');
-            $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb2($c)->result();
+            $data['detailLaporan'] = $this->Model_finance->print_penjualan_jb2($s,$e,$c)->result();
             $this->load->view('finance/print_penjualan_jb2', $data);
     }
 
@@ -2769,6 +2951,32 @@ class Finance extends CI_Controller{
             $this->load->view('finance/print_laporan_penjualan', $data);
     }
 
+    function print_query_penjualan_jb(){
+            $module_name = $this->uri->segment(1);
+            $this->load->helper('tanggal_indo');
+            $l = $_GET['laporan'];
+            $start = date('Y-m-d', strtotime($_GET['ts']));
+            $end = date('Y-m-d', strtotime($_GET['te']));
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_finance');
+            if($l == 1){
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_penjualan_jb($start,$end,0)->result();
+            }elseif ($l == 2) {
+                $data['detailLaporan'] = $this->Model_finance->query_penjualan_jb($start,$end,'CV')->result();
+            }elseif ($l == 3) {
+                $data['detailLaporan'] = $this->Model_finance->query_penjualan_jb($start,$end,'KKH')->result();
+            }
+            $this->load->view('finance/print_laporan_penjualan_jb', $data);
+    }
+
     function print_penjualan_piutang(){
             $module_name = $this->uri->segment(1);
             $user_ppn    = $this->session->userdata('user_ppn');
@@ -2784,7 +2992,11 @@ class Finance extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $this->load->model('Model_finance');
+            if($user_ppn==1){
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_kmp($tanggal,$user_ppn)->result();
+            }else{
                 $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang($tanggal,$user_ppn)->result();
+            }
             $this->load->view('finance/print_laporan_piutang', $data);
     }
 

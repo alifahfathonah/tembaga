@@ -44,7 +44,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal"
-                                class="form-control myline input-small" style="margin-bottom:5px; float: left;" 
+                                class="form-control myline input-small" style="margin-bottom:5px; float:left" 
                                 value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
@@ -60,25 +60,23 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Catatan
+                            No. Surat Jalan
                         </div>
                         <div class="col-md-8">
-                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px" readonly><?php echo  $header['remarks']; ?></textarea>                           
+                            <input type="text" id="no_sj" name="no_sj" 
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_sj']; ?>">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Nama Penimbang
+                            Catatan
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['penimbang']; ?>">
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
+                                class="form-control myline" style="margin-bottom:5px"><?php echo  $header['remarks']; ?></textarea>                           
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
-                    
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-6">
@@ -100,7 +98,17 @@
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
                                    class="form-control myline" style="margin-bottom:5px" value="<?= (($this->session->userdata('user_ppn') == 1)? $header['pic'] : $header['pic_kh']) ?>">
                         </div>
-                    </div>                    
+                    </div>       
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nama Penimbang
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $header['penimbang']; ?>">
+                        </div>
+                    </div>             
                     <div class="row">
                         <div class="col-md-4">
                             Jenis Packing <font color="#f00">*</font>

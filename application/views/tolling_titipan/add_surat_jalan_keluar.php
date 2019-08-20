@@ -36,7 +36,7 @@
                             <!-- <input type="text" id="no_surat_jalan" name="no_surat_jalan" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="Auto generate"> -->
-                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" class="form-control myline" style="margin-bottom:5px" >
+                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()">
                         </div>
                     </div>
                     <div class="row">
@@ -51,16 +51,16 @@
                     </div> 
                     <div class="row">
                         <div class="col-md-4">
-                            Customer <font color="#f00">*</font>
+                            Supplier <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
+                            <select id="supplier_id" name="supplier_id" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
                                 onclick="get_alamat(this.value);">
                                 <option value=""></option>
                                 <?php
-                                    foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
+                                    foreach ($supplier_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->nama_supplier.'</option>';
                                     }
                                 ?>
                             </select>
@@ -183,10 +183,10 @@ function simpanData(){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#no_surat_jalan").val()) == ""){
-        $('#message').html("Silahkan isi Nomor SUrat Jalan");
+        $('#message').html("Silahkan isi Nomor Surat Jalan");
         $('.alert-danger').show();
-    }else if($.trim($("#m_customer_id").val()) == ""){
-        $('#message').html("Silahkan pilih customer");
+    }else if($.trim($("#supplier_id").val()) == ""){
+        $('#message').html("Silahkan pilih supplier");
         $('.alert-danger').show(); 
     }else if($.trim($("#no_spb").val()) == ""){
         $('#message').html("Silahkan pilih no. SPB");
@@ -212,7 +212,7 @@ function get_type_kendaraan(id){
 function get_alamat(id){
     $.ajax({
         type: "POST",
-        url: "<?php echo base_url('index.php/Tolling/get_alamat'); ?>",
+        url: "<?php echo base_url('index.php/Tolling/get_alamat_supplier'); ?>",
         data: {id: id},
         cache: false,
         success: function(result) {

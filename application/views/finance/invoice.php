@@ -68,7 +68,7 @@
                            echo (($data->flag_ppn==1)? '<td><i class="fa fa-check"></i> Yes</td>': '<td><i class="fa fa-times"></i> No</td>');
                         }
                         ?>
-                        <td><?php echo $data->keterangan;?></td>
+                        <td><?php echo substr($data->keterangan, 0, 30).' ...'; ?></td>
                         <td><?= ($data->flag_matching > 0) ? '<div style="background-color:green; color:#fff; padding:3px">Sudah Matching</div>' : '<div style="background-color:darkkhaki; padding:3px">Belum Matching</div>';?></td>
                         <td style="text-align:center"> 
                             <?php

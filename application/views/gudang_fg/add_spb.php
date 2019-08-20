@@ -69,6 +69,22 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
+                            Jenis SPB
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis_spb" name="jenis_spb" placeholder="Silahkan pilih..."
+                                class="form-control myline select2me" style="margin-bottom:5px;">
+                                <option></option>
+                                <option value="0">SDM</option>
+                                <option value="5">Kirim Rongsok</option>
+                                <option value="6">SO</option>
+                                <option value="7">Retur</option>
+                                <option value="8">Repacking</option>
+                            </select> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">

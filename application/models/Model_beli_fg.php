@@ -15,7 +15,7 @@ class Model_beli_fg extends CI_Model
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='FG' and po.supplier_id > 0 and po.flag_ppn = ".$user_ppn."
+                Where po.jenis_po='FG' and po.supplier_id > 0 and po.flag_ppn = ".$user_ppn." and po.flag_tolling = 0
                 Order By po.id Desc");
 		return $data;
 	}
@@ -33,7 +33,7 @@ class Model_beli_fg extends CI_Model
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='FG' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH)  and po.flag_ppn = ".$user_ppn."
+                Where po.jenis_po='FG' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH) and po.flag_tolling = 0 and po.flag_ppn = ".$user_ppn."
                 Order By po.id Desc");
         return $data;
     }
@@ -120,7 +120,7 @@ class Model_beli_fg extends CI_Model
     function get_po_list($user_ppn){
     	$data = $this->db->query("Select po.id, po.no_po, po.jenis_po, s.nama_supplier From po 
             Left join supplier s on s.id = po.supplier_id
-            Where po.jenis_po= 'FG' And po.status != 1 And po.customer_id = 0 And po.flag_ppn = ".$user_ppn);
+            Where po.jenis_po= 'FG' And po.status != 1 And po.flag_tolling = 0 And po.flag_ppn = ".$user_ppn);
     	return $data;
     }
 
@@ -142,7 +142,7 @@ class Model_beli_fg extends CI_Model
 
     function show_header_dtbj($id){
         $data = $this->db->query("Select dtbj.*, 
-                    po.no_po,
+                    po.no_po, po.tanggal as tgl_po,
                     mjp.jenis_packing as nama_jenis_packing,
                     spl.nama_supplier,
                     usr.realname As penimbang,

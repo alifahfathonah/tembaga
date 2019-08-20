@@ -9,7 +9,7 @@
           <td align="center">
             <!-- <h4>Laporan sisa Sales Order per <?= date("M Y", strtotime($this->uri->segment(3))) ?></h4> -->
             <?=($this->session->userdata('user_ppn')==1)? '<h3>PT. KAWAT MAS PRAKASA</h3>' : '';?>
-            <h4>Rekap Penjualan Ranking Customer <?= date("M Y") ?></h4>
+            <h4>Rekap Penjualan Ranking Customer<br>Per Tanggal : <?php echo " <i>".tanggal_indo(date("Y-m-d", strtotime($_GET['ts']))).' s/d '.tanggal_indo(date("Y-m-d", strtotime($_GET['te'])))."</i>";?></h4>
           </td>
         </tr>
       </table>
@@ -52,7 +52,7 @@
                 <?php echo ($last_series==$row->kode_customer) ? '<td style="border-left:1px solid #000">' : '<td style="border-top: 1px solid;border-left: 1px solid;">'.$row->kode_customer ; ?></td>
                 <?php echo ($last_series==$row->kode_customer) ? '<td style="border-left:1px solid #000">' : '<td style="border-top: 1px solid;border-left: 1px solid;">'.$row->customer; ?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto,2,',','.');?></td>
-                <td style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->total_harga,2,',','.');?></td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->total_harga,2,',','.');?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?= ($row->flag_tolling==0) ? 'SO Biasa' : 'SO Tolling'; ?></td>
         <?php 
           // ($last_series==$row->flag_tolling)?'':$no++;

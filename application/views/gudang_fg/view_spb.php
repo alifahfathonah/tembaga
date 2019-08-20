@@ -107,6 +107,28 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Jenis SPB
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php
+                                if($myData['jenis_spb']==0){
+                                    echo 'SDM';
+                                }else if($myData['jenis_spb']==5){
+                                    echo 'Kirim Rongsok';
+                                }else if($myData['jenis_spb']==6){
+                                    echo 'SO';
+                                }else if($myData['jenis_spb']==7){
+                                    echo 'Retur';
+                                }else if($myData['jenis_spb']==8){
+                                    echo 'Repacking';
+                                }
+                               ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">

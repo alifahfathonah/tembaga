@@ -35,8 +35,8 @@
     foreach ($detailLaporan as $row){
         echo '<tr>';
         echo '<td style="text-align:center">'.$no.'</td>';
-        echo '<td>'.$row->kode_rongsok.'</td>';
-        echo '<td>'.$row->nama_item.'</td>';
+        echo '<td>'.$row->kode.'</td>';
+        echo '<td>'.$row->jenis_barang.'</td>';
         echo '<td>'.$row->uom.'</td>';
         $awal = $row->netto_masuk_before - $row->netto_keluar_before;
         echo '<td>'.number_format($awal,2,',','.').'</td>';

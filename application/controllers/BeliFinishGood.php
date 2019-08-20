@@ -90,6 +90,7 @@ class BeliFinishGood extends CI_Controller{
             'no_po'=> $code,
             'tanggal'=> $tgl_input,
             'flag_ppn'=> $user_ppn,
+            'flag_tolling'=> 0,
             'ppn'=> $this->input->post('ppn'),
             'currency'=> $this->input->post('currency'),
             'diskon'=> $this->input->post('diskon'),
@@ -336,6 +337,7 @@ class BeliFinishGood extends CI_Controller{
         
         $data = array(
                 'status'=> 1,
+                'flag_pelunasan'=> 1,
                 'modified'=> $tanggal,
                 'modified_by'=>$user_id,
                 'remarks'=>$this->input->post('reject_remarks')
@@ -372,11 +374,27 @@ class BeliFinishGood extends CI_Controller{
     }
 
     function delete_po(){
-        ## BELOM ADA API
         $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
         $this->db->trans_start();
         if(!empty($id)){
             $this->db->delete('po', ['id' => $id]);
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $url = target_url().'api/BeliFinishGoodAPI/delete_po?id='.$id;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
         }
 
         if ($this->db->trans_complete()) {
@@ -627,6 +645,7 @@ class BeliFinishGood extends CI_Controller{
 
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('dtbj', array(
+            'no_sj'=>strtoupper($this->input->post('no_sj')),
             'remarks'=>$this->input->post('remarks'),
             'supplier_id'=>$this->input->post('supplier_id'),
             'modified'=>$tanggal,
@@ -1173,12 +1192,12 @@ class BeliFinishGood extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('VFG', $tgl_input);
-        if(($nilai_po-($nilai_dp+$amount))<0){
+        if(($nilai_po-($nilai_dp+$amount))>0){
             $jenis_voucher = 'DP';
         }else{
             $jenis_voucher = 'Pelunasan';
             $this->db->where('id', $id);
-            $this->db->update('po', array('flag_pelunasan'=>1,'status'=>4));
+            $this->db->update('po', array('status'=>4));
         } 
 
         if($code){ 
@@ -1324,23 +1343,23 @@ class BeliFinishGood extends CI_Controller{
             $this->db->insert('voucher', $data_v);
             $id_vc = $this->db->insert_id();
 
-            // if($ppn==1){
-            //     $this->load->helper('target_url');
+            if($ppn==1){
+                $this->load->helper('target_url');
                 
-            //     $data_post['voucher'] = array_merge($data_v, array('reff1' => $id_vc));
-            //     $data_post['f_kas'] = array_merge($data_f, array('reff1' => $fk_id));
-            //     $data_post['update_po'] = $update_po;
-            //     $detail_post = json_encode($data_post);
+                $data_post['voucher'] = array_merge($data_v, array('reff1' => $id_vc));
+                $data_post['f_kas'] = array_merge($data_f, array('reff1' => $fk_id));
+                $data_post['update_po'] = $update_po;
+                $detail_post = json_encode($data_post);
 
-            //     $ch = curl_init(target_url().'api/BeliRongsokAPI/voucher');
-            //     curl_setopt($ch, CURLOPT_POST, true);
-            //     curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-            //     curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
-            //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            //     $response = curl_exec($ch);
-            //     $result = json_decode($response, true);
-            //     curl_close($ch);
-            // }
+                $ch = curl_init(target_url().'api/BeliRongsokAPI/voucher');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
             
             if($this->db->trans_complete()){  
                 $this->session->set_flashdata('flash_msg', 'Voucher pembayaran Finish Good berhasil di-create dengan nomor : '.$code);
@@ -1365,11 +1384,12 @@ class BeliFinishGood extends CI_Controller{
         }
         $data['group_id']  = $group_id;
 
-        $data['content']= "beli_fg/voucher_list";
         $this->load->model('Model_beli_fg');
         if($user_ppn==1){
+            $data['content']= "beli_fg/voucher_list_ppn";
             $data['list_data'] = $this->Model_beli_fg->voucher_list_ppn($user_ppn)->result();
         }else{
+            $data['content']= "beli_fg/voucher_list";
             $data['list_data'] = $this->Model_beli_fg->voucher_list($user_ppn)->result();
         }
 

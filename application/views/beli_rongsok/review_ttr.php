@@ -36,6 +36,8 @@
                             <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_dtr']; ?>">
+
+                            <input type="hidden" id="dtr_type" name="dtr_type" value="<?=$header['type'];?>">
                         </div>
                     </div>
                     <div class="row">

@@ -117,6 +117,9 @@ class R_PurchaseOrder extends CI_Controller{
         $result = json_decode($response, true);
         curl_close($ch);
 
+        // print_r($response);
+        // die();
+
         log_message('debug', print_r($result,1));
 
         // $this->db->where('id', $this->input->post('r_invoice_id'));
@@ -154,6 +157,8 @@ class R_PurchaseOrder extends CI_Controller{
         $response2 = curl_exec($ch2);
         $result2 = json_decode($response2, true);
         curl_close($ch2);
+        // print_r($response2);
+        // die();
 
         log_message('debug', print_r($result2,1));
 

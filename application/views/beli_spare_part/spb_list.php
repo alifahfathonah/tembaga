@@ -90,12 +90,12 @@
                                
                             <?php
                                 }
-                                #if($group_id==1 || $hak_akses['edit_spb']==1 && $hak_akses['status']!=1 ){
+                                if(($group_id==1 || $hak_akses['edit_spb']==1) && $data->status!=1 ){
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/BeliSparePart/edit_spb/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
                             <?php   
-                                #}
+                                }
                                 if($group_id==1 || $hak_akses['print_spb']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliSparePart/print_spb/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';

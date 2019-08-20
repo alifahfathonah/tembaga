@@ -15,7 +15,7 @@ class Model_beli_wip extends CI_Model
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='WIP' And po.flag_ppn = ".$user_ppn."
+                Where po.jenis_po='WIP' And po.flag_ppn = ".$user_ppn." and po.flag_tolling = 0
                 Order By po.id Desc");
 		return $data;
 	}
@@ -33,7 +33,7 @@ class Model_beli_wip extends CI_Model
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='WIP' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH) And po.flag_ppn = ".$user_ppn."
+                Where po.jenis_po='WIP' and po.tanggal < DATE_ADD(NOW(), INTERVAL -2 MONTH) And po.flag_ppn = ".$user_ppn." and po.flag_tolling = 0
                 Order By po.id Desc");
         return $data;
     }

@@ -168,6 +168,26 @@
                             <input type="text" id="materai" name="materai" class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['materai']; ?>">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            Currency
+                        </div>
+                        <div class="col-md-4">
+                            <select id="currency" name="currency" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cur(this.value);">
+                                <option value="IDR" <?=($header['currency']=='IDR')? 'selected':'';?>>IDR</option>
+                                <option value="USD" <?=($header['currency']=='USD')? 'selected':'';?>>USD</option>
+                            </select>
+                        </div>
+                        <div id="show_kurs">
+                        <div class="col-md-2">
+                            Kurs
+                        </div>
+                        <div class="col-md-4">
+                            <input type="number" id="kurs" name="kurs" class="form-control myline" value="<?=$header['kurs'];?>">
+                        </div>
+                        </div>
+                    </div>
                 </div>              
             </div>
             <div class="row">
@@ -195,7 +215,7 @@
                                     echo '<td>'.$row->uom.'</td>';
                                     echo '<td>';
                                     if($header['lpb_dibayar']==0){
-                                    echo '<input type="text" id="amount_'.$no.'" name="details['.$no.'][amount]"  onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id, '.$no.');" value="'.number_format($row->amount,0,'.', ',').'">';
+                                    echo '<input type="text" id="amount_'.$no.'" name="details['.$no.'][amount]" onkeyup="getComa(this.value, this.id, '.$no.');" value="'.number_format($row->amount,2,'.', ',').'">';
                                     }else{
                                     echo number_format($row->amount,2,',','.');
                                     }
@@ -206,7 +226,7 @@
                                     echo '<td>'.$row->qty.'</td>';
                                     }
                                     if($header['lpb_dibayar']==0){
-                                    echo '<td><input type="text" id="total_amount_'.$no.'" class="form-control" name="details['.$no.'][total_amount]" value="'.number_format($row->total_amount,0,'.', ',').'" readonly></td>';
+                                    echo '<td><input type="text" id="total_amount_'.$no.'" class="form-control" name="details['.$no.'][total_amount]" value="'.number_format($row->total_amount,2,'.', ',').'" readonly></td>';
                                     }else{
                                     echo '<td>'.$row->total_amount.'</td>';
                                     }
@@ -241,11 +261,13 @@
     </div>
 </div> 
 <script>
-function myCurrency(evt) {
-    var charCode = (evt.which) ? evt.which : event.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 95 || charCode > 105))
-        return false;
-    return true;
+function get_cur(id){
+    if(id=='USD'){
+        $('#show_kurs').show();
+    }else if(id=='IDR'){
+        $('#show_kurs').hide();
+        $('#kurs').val(1);
+    }
 }
 
 function getComa(value, id, no){

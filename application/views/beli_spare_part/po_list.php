@@ -314,7 +314,7 @@
                         <td style="text-align:center">
                             <?php
                                 if($data->flag_dp > 0){
-                                    echo '<small style="color:green"><i>Sudah ada DP</i></small>';
+                                    echo '<small style="color:green"><i>Sudah ada DP</i></small><br>';
                                 }
                                 if($data->flag_pelunasan==1 && $data->ready_to_lpb==0){
                                     echo '<small style="color:green"><i>Sudah Lunas</i></small>';

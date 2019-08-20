@@ -191,7 +191,7 @@
                             Catatan
                         </div>
                         <div class="col-md-8">
-                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px" readonly><?php echo $header['keterangan']; ?></textarea>                           
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()" class="form-control myline" style="margin-bottom:5px" readonly><?php echo strip_tags($header['keterangan']); ?></textarea>                           
                         </div>
                     </div>
                     <?php if($this->session->userdata('user_ppn')==1){?>
@@ -393,7 +393,7 @@
                         <a href="<?php echo base_url('index.php/Finance/invoice'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                     <?php if($header['flag_matching'] == 0){ ?>
-                        <a href="<?php echo base_url(); ?>index.php/Finance/delete_invoice/<?php echo $header['id']; ?>/KK" class="btn red" onclick="return confirm('Anda yakin menghapus transaksi ini?');"><i class="fa fa-trash-o"></i> Delete 
+                        <a href="<?php echo base_url(); ?>index.php/Finance/delete_invoice/<?php echo $header['id']; ?>" class="btn red" onclick="return confirm('Anda yakin menghapus transaksi ini?');"><i class="fa fa-trash-o"></i> Delete 
                             </a>
                     <?php } ?>
         <?php

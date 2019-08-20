@@ -60,25 +60,23 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Catatan
+                            No. Surat Jalan
                         </div>
                         <div class="col-md-8">
-                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px" readonly><?php echo  $header['remarks']; ?></textarea>                           
+                            <input type="text" id="no_sj" name="no_sj" 
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_sj']; ?>">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Nama Penimbang
+                            Catatan
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['penimbang']; ?>">
+                            <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
+                                class="form-control myline" style="margin-bottom:5px"><?php echo  $header['remarks']; ?></textarea>                           
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
-                    
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-6">
@@ -100,7 +98,17 @@
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
                                    class="form-control myline" style="margin-bottom:5px" value="<?= (($this->session->userdata('user_ppn') == 1)? $header['pic'] : $header['pic_kh']) ?>">
                         </div>
-                    </div>                    
+                    </div>       
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nama Penimbang
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $header['penimbang']; ?>">
+                        </div>
+                    </div>             
                     <div class="row">
                         <div class="col-md-4">
                             Jenis Packing <font color="#f00">*</font>
@@ -138,6 +146,7 @@
                                 <th width="20%">Nama Item Retur</th>
                                 <th>No. Packing</th>
                                 <th>Bruto (Kg)</th>
+                                <th>Berat (Kg)</th>
                                 <th>Netto (Kg)</th>
                                 <th>ID Bobbin / Keranjang</th>
                                 <th>Keterangan</th>
@@ -160,10 +169,11 @@
                                 </td>
                                 <td><input type="text" id="no_packing" name="no_packing" class="form-control myline" readonly="readonly" value="Auto"></td>
                                 <td><input type="text" id="bruto" name="bruto" class="form-control myline"></td>
+                                <td><input type="text" id="berat" name="berat" class="form-control myline" readonly="readonly"></td>
                                 <td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"/></td>
                                 <td><input type="text" id="no_bobbin" name="no_bobbin" class="form-control myline" onchange="get_bobbin(this.value)" onkeyup="this.value = this.value.toUpperCase()"/><input type="hidden" name="id_bobbin" id="id_bobbin"></td>
                                 <!-- <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen"> <i class="fa fa-dashboard"></i> Timbang </a></td> -->
-                                <td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
+                                <td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value=this.value.toUpperCase()"></td>
                                 <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
                             </tr>
                         </table>
@@ -209,6 +219,7 @@ function get_bobbin(id){
             if(result){
                 $('#berat_bobbin').val(result['berat']);
                 $('#pemilik').val(result['nama_owner']);
+                $('#berat').val(result['berat']);
                 $('#id_bobbin').val(result['id']);
                 const netto = ($('#bruto').val() - result['berat']);
                 $('#netto').val(Math.round(netto*100)/100);
@@ -303,6 +314,7 @@ function saveDetail(){
                 jenis_barang_id:$('#jenis_barang_id').val(),
                 qty:$('#qty').val(),
                 bruto:$('#bruto').val(),
+                berat:$('#berat').val(),
                 netto:$('#netto').val(),
                 no_bobbin:$('#no_bobbin').val(),
                 id_bobbin:$('#id_bobbin').val(),
@@ -313,6 +325,7 @@ function saveDetail(){
                     $('#jenis_barang_id').select2('val','');
                     $('#qty').val('');
                     $('#bruto').val('');
+                    $('#berat').val('');
                     $('#netto').val('');
                     $('#no_bobbin').val('');
                     $('#id_bobbin').val('');

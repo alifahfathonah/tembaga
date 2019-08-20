@@ -49,3 +49,46 @@ edit nomor bk bm (done)
 create voucher kalo masih 0 terus di input create voucher. status berubah jadi sudah dibayar (done)
 
 SPB scan gaboleh beda ukuran
+
+ubahin data nilai INV dan detailnya di KMP1 yang nomor 
+0707 (done)
+0712 (done)
+0774 (done)
+
+masih ada materai di laporan penjualan(done)
+
+spb fg global. untuk kirim rongsok.(done) 
+
+retur sj belum insert berat(done)
+
+create voucher rsk cek lagi(done)
+
+matching voucher ke klik 2x(done)
+
+print laporan fg masih ke rongsok. print rongsok error(done)
+
+edit customer di matching invoice
+
+produksi fg dan po show 1 bulan terakhir aja(done)
+
+bp berat packing nya otomatis sesuai yg dipilih
+
+laporan piutan gaada sj(done)
+
+repacking tandain
+
+saldo harian di laporan sisa so masih salah(done)
+
+di CREATE DTBJ KERANGJNA DAN BOBBIN DIBUKA AJA NO PACKING NYA, BIAR BISA DITAMBAHIN(done)
+
+di CREATE DTBJ TAMBAHIN no sj dari supplier dan tgl PO(done)
+
+so tambahin pilihan export atau lokal. kalau export gaada ppn samsekali
+
+edit jenis barang di so
+
+edit bank di uang masuk (susah nanti di pajaknya edit)
+
+tanggal cek mundur cek lagi kayaknya ga ke save(DONE)
+
+view data faktur all di edit lagi view nya biar laporan (done)

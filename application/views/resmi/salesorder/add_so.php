@@ -28,6 +28,24 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
+                            No. SO KMP Terakhir
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_so_kmp" name="no_so_kmp" maxlength="25" 
+                                class="form-control" style="margin-bottom:5px" readonly value="<?=$no_so_kmp['no_sales_order'];?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. SO CV Terakhir
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_so_cv" name="no_so_cv" maxlength="25" 
+                                class="form-control" style="margin-bottom:5px" readonly value="<?=$no_so_cv['no_so'];?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             No. Sales Order <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -82,7 +100,7 @@
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                            <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                                 <i class="fa fa-floppy-o"></i> Input Details Sales Order </a>
                         </div>    
                     </div>
@@ -160,6 +178,7 @@ function simpanData(){
         $('#message').html("Silahkan pilih marketing!");
         $('.alert-danger').show();
     }else{   
+        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').submit(); 
     };
 };

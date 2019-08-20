@@ -112,7 +112,7 @@
                                     <option value=""></option>
                                     <?php foreach ($list_rongsok as $value){ ?>
                                             <option value='<?=$value->id;?>'>
-                                                <?=$value->nama_item;?>
+                                                <?='('.$value->kode_rongsok.') '.$value->nama_item;?>
                                             </option>
                                     <?php } ?>
                                 </select>

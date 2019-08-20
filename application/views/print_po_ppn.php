@@ -3,11 +3,18 @@
         <title></title>
         <meta charset="utf-8" />
     </head>
-                <?php
+<?php
+
 $no = 1;
 $idx = 0;
 $total = 0;
 $total_harga = 0;
+
+    if($header['currency']=='IDR'){
+        $c = 'Rp. ';
+    }else{
+        $c = 'US$ ';
+    }
 // for ($i = 0; $i < 35; $i++) {
     foreach ($details as $key => $v) {
         if (($idx % 10) == 0) {
@@ -99,8 +106,8 @@ $total_harga = 0;
                         <td align="center"><?=$no?>.</td>
                         <td><?=$v->nama_item?></td>
                         <td align="center"><?=number_format($v->qty, 2, ".", ",") . " " . $v->uom?></td>
-                        <td align="right"><?="Rp " . number_format($v->amount, 2, ".", ",")?></td>
-                        <td align="right"><?="Rp " . number_format($v->total_amount, 2, ".", ",")?></td>
+                        <td align="right"><?=$c . number_format($v->amount, 2, ".", ",")?></td>
+                        <td align="right"><?=$c . number_format($v->total_amount, 2, ".", ",")?></td>
                     </tr>
                 <?php
     $total += $v->qty;
@@ -117,15 +124,24 @@ $total_harga = 0;
     if (($idx % 10) == 0 || $idx == $rows) {?>
                     <tr>
                         <td></td>
-                        <td style="text-align: right;">DISC : &nbsp; &nbsp;<?=$header['diskon'];?> %</td>
+                        <td style="text-align: center;">DISC : &nbsp; &nbsp;<?=$header['diskon'];?> %</td>
                         <td>PPN  : &nbsp; &nbsp;<?=($header['ppn'] == 1) ? '10%' : '0%';?></td>
                         <td><?php echo ($header['materai']==0)? '' : 'Materai : '.number_format($header['materai'],0,',','.');?></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <?php if($header['currency']=='USD'){ ?>
+                        <td style="text-align: center;">KURS : &nbsp; Rp. &nbsp;<?=number_format($header['kurs'],2,',','.');?></td>
+                        <?php }else{ ?>
+                        <td></td>
+                        <?php } ?>
+                        <td colspan="2"></td>
                     </tr>
                 <tr>
                     <td style="border-top: 1px solid;" colspan="2" align="right"><b>TOTAL</b></td>
                     <td style="border-top: 1px solid;" align="center"><b> <?= $idx==$rows? number_format($total, 2, ".", ",") : '' ?></b></td>
                     <td style="border-top: 1px solid;" ></td>
-                    <td style="border-top: 1px solid;" align="right"><b><?= $idx==$rows? "Rp " . number_format($total_harga, 2, ".", ",") : '' ?></b></td>
+                    <td style="border-top: 1px solid;" align="right"><b><?= $idx==$rows? $c . number_format($total_harga, 2, ".", ",") : '' ?></b></td>
                 </tr>
                 <tr><!--
                     <td></td>
@@ -137,7 +153,7 @@ $total_harga = 0;
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="20%" style="border-bottom: 1px solid;">Total Harga</td>
-                <td rowspan="2">: <?= $idx==$rows? 'Rp. ' . number_format($total_amount, 2, '.', ',') : "" ?></td>
+                <td rowspan="2">: <?= $idx==$rows? $c . number_format($total_amount, 2, '.', ',') : "" ?> <?php if($header['currency']=='USD'){ ?> = <?= $idx==$rows? 'Rp. ' . number_format($total_amount*$header['kurs'], 2, '.', ','): ""; }?></td>
             </tr>
             <tr>
                 <td>Total Value</td>

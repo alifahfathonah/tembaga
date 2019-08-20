@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Retur 
             <i class="fa fa-angle-right"></i>  
-            <a href="<?php echo base_url('index.php/Retur/edit'); ?>"> Edit Data Retur Rongsok</a> 
+            <a href="<?php echo base_url('index.php/Retur/edit'); ?>"> Edit Data Retur </a> 
         </h5>          
     </div>
 </div>
@@ -44,11 +44,11 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal"
-                                class="form-control myline input-small" style="margin-bottom:5px; float:left;" 
+                                class="form-control myline input-small" style="margin-bottom:5px; float:left" 
                                 value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
-                    <!-- <div class="row">
+                    <div class="row">
                         <div class="col-md-4">
                             Jenis Barang <font color="#f00">*</font>
                         </div>
@@ -57,41 +57,29 @@
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['jenis_barang']; ?>">
                         </div>
-                    </div> -->
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Surat Jalan
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_sj" name="no_sj" 
+                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['no_sj']; ?>">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">
                             <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px" readonly><?php echo  $header['remarks']; ?></textarea>                           
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Jenis Barang
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['jenis_barang']; ?>">
+                                class="form-control myline" style="margin-bottom:5px"><?php echo  $header['remarks']; ?></textarea>                           
                         </div>
                     </div>
                     <div class="row">&nbsp;</div>
-                    
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-4">
-                            Nama Penimbang
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['penimbang']; ?>">
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Customer <font color="#f00">*</font>
@@ -109,6 +97,26 @@
                         <div class="col-md-8">
                             <input type="text" id="contact_person" name="contact_person" readonly="readonly"
                                    class="form-control myline" style="margin-bottom:5px" value="<?= (($this->session->userdata('user_ppn') == 1)? $header['pic'] : $header['pic_kh']) ?>">
+                        </div>
+                    </div>       
+                    <div class="row">
+                        <div class="col-md-4">
+                            Nama Penimbang
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $header['penimbang']; ?>">
+                        </div>
+                    </div>             
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Packing <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jenis_packing_id" name="jenis_packing_id" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['jenis_packing']; ?>">
                         </div>
                     </div>
                     <div class="row">

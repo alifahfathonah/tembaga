@@ -87,8 +87,7 @@
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-book"></i> View &nbsp; </a>';
                                 }                                                      
                                 if($group_id==1 || $hak_akses['print_retur']==1){
-                                    echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Retur/print/'.$data->id.'" 
-                                        style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
+                                    echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Retur/print/'.$data->id.'" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }
                                 if(($group_id==1 || $hak_akses['create_invoice']==1) && $data->jenis_retur==1 && $data->status==1 && $data->flag_taken==0){
                                     echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/Retur/add_invoice/'.$data->id.'" 
@@ -96,6 +95,9 @@
                                 }
                                 if(($group_id==1 || $hak_akses['edit']==1) && $data->status==0){
                                      echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/Retur/edit/'.$data->id.'" style="margin-bottom:4px"><i class="fa fa-edit"></i> Edit &nbsp;</a> ';
+                                }
+                                if(($group_id==1 || $hak_akses['delete']==1) && $data->status!=1){
+                                     echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/Retur/delete/'.$data->id.'" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash"></i> Delete &nbsp;</a> ';
                                 }
                             ?>
                         </td>

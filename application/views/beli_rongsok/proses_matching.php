@@ -126,9 +126,9 @@
                                         echo '<td style="text-align:center;">'.$no.'</td>';
                                         echo '<td>'.$row->nama_item.'</td>';
                                         echo '<td>'.$row->uom.'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($row->amount,0,',', '.').'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($row->qty,0,',', '.').'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($row->total_amount,0,',', '.').'</td>';
+                                        echo '<td style="text-align:right;">'.number_format($row->amount,2,',', '.').'</td>';
+                                        echo '<td style="text-align:right;">'.number_format($row->qty,2,',', '.').'</td>';
+                                        echo '<td style="text-align:right;">'.number_format($row->total_amount,2,',', '.').'</td>';
                                         echo '</tr>';
                                         $netto += $row->qty;
                                         $total += $row->total_amount;
@@ -138,10 +138,10 @@
                                     <tr>
                                         <td style="text-align:right;" colspan="4"><strong>Total Harga (Rp) </strong></td>
                                         <td style="text-align:right;">
-                                            <strong><?php echo number_format($netto,0,',','.'); ?></strong>
+                                            <strong><?php echo number_format($netto,2,',','.'); ?></strong>
                                         </td>
                                         <td style="text-align:right;">
-                                            <strong><?php echo number_format($total,0,',','.'); ?></strong>
+                                            <strong><?php echo number_format($total,2,',','.'); ?></strong>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -231,7 +231,7 @@
                                         echo '<td style="text-align:center;">'.$no.'</td>';
                                         echo '<td>'.$value->nama_item.'</td>';
                                         echo '<td>'.$value->uom.'</td>';
-                                        echo '<td style="text-align:right;">'.number_format($value->qty,0,',', '.').'</td>';
+                                        echo '<td style="text-align:right;">'.number_format($value->qty,2,',', '.').'</td>';
                                         echo '<td style="text-align:right;">'.$value->bruto.'</td>';
                                         echo '<td style="text-align:right;">'.$value->netto.'</td>';
                                         echo '<td>'.$value->no_pallete.'</td>';
@@ -244,10 +244,10 @@
                                     <tr>
                                         <td style="text-align:right;" colspan="4"><strong>Total (Kg) </strong></td>
                                         <td style="text-align:right;">
-                                            <strong><?php echo number_format($bruto,0,',','.'); ?></strong>
+                                            <strong><?php echo number_format($bruto,2,',','.'); ?></strong>
                                         </td>
                                         <td style="text-align:right;">
-                                            <strong><?php echo number_format($netto,0,',','.'); ?></strong>
+                                            <strong><?php echo number_format($netto,2,',','.'); ?></strong>
                                         </td>
                                         <td>&nbsp;</td>
                                     </tr>
@@ -341,8 +341,8 @@
                                         echo '<td>'.$value->nama_item.'</td>';
                                         echo '<td>'.$value->uom.'</td>';
                                         echo '<td style="text-align:right;">'.number_format($value->qty,0,',', '.').'</td>';
-                                        echo '<td style="text-align:right;">'.$value->bruto.'</td>';
-                                        echo '<td style="text-align:right;">'.$value->netto.'</td>';
+                                        echo '<td style="text-align:right;">'.number_format($value->bruto,2,',','.').'</td>';
+                                        echo '<td style="text-align:right;">'.number_format($value->netto,2,',','.').'</td>';
                                         echo '<td>'.$value->no_pallete.'</td>';
                                         echo '</tr>';
                                         $bruto += $value->bruto;
@@ -353,10 +353,10 @@
                                     <tr>
                                         <td style="text-align:right;" colspan="4"><strong>Total (Kg) </strong></td>
                                         <td style="text-align:right;">
-                                            <strong><?php echo number_format($bruto,0,',','.'); ?></strong>
+                                            <strong><?php echo number_format($bruto,2,',','.'); ?></strong>
                                         </td>
                                         <td style="text-align:right;">
-                                            <strong><?php echo number_format($netto,0,',','.'); ?></strong>
+                                            <strong><?php echo number_format($netto,2,',','.'); ?></strong>
                                         </td>
                                         <td>&nbsp;</td>
                                     </tr>

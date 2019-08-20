@@ -91,6 +91,7 @@ class BeliWIP extends CI_Controller{
             'no_po'=> $code,
             'tanggal'=> $tgl_input,
             'flag_ppn'=> $user_ppn,
+            'flag_tolling'=> 0,
             'ppn'=> $this->input->post('ppn'),
             'currency'=> $this->input->post('currency'),
             'diskon'=> $this->input->post('diskon'),
@@ -298,10 +299,27 @@ class BeliWIP extends CI_Controller{
 
     function delete_po(){
         ## BELOM ADA API
+        $user_ppn = $this->session->userdata('user_ppn');
         $id = $this->uri->segment(3);
         $this->db->trans_start();
         if(!empty($id)){
             $this->db->delete('po', ['id' => $id]);
+
+             if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $url = target_url().'api/BeliFinishGoodAPI/delete_po?id='.$id;
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
         }
 
         if ($this->db->trans_complete()) {
@@ -318,6 +336,7 @@ class BeliWIP extends CI_Controller{
         
         $data = array(
                 'status'=> 1,
+                'flag_pelunasan'=> 1,
                 'modified'=> $tanggal,
                 'modified_by'=>$user_id,
                 'remarks'=>$this->input->post('reject_remarks')
@@ -884,14 +903,12 @@ class BeliWIP extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('VWIP', $tgl_input);
-        if($nilai_po-($nilai_dp+$amount)>=0){
+        if(($nilai_po-($nilai_dp+$amount))>0){
+            $jenis_voucher = 'DP';
+        }else{
             $jenis_voucher = 'Pelunasan';
             $this->db->where('id', $id);
-            $this->db->update('po', array('flag_pelunasan'=>1,'status'=>4));
-        }else{
-            $jenis_voucher = 'DP';
-            $this->db->where('id', $id);
-            $this->db->update('po', array('flag_dp'=>1));
+            $this->db->update('po', array('status'=>4));
         } 
 
         if($code){ 
@@ -931,7 +948,7 @@ class BeliWIP extends CI_Controller{
         $nilai_po  = str_replace(',', '', $this->input->post('nilai_po'));
         $jumlah_dibayar  = str_replace(',', '', $this->input->post('jumlah_dibayar'));
         $amount  = str_replace(',', '', $this->input->post('amount'));
-        if($nilai_po-($jumlah_dibayar+$amount)<0){
+        if($nilai_po-($jumlah_dibayar+$amount)>0){
             $jenis_voucher = 'Parsial';
         }else{
             $jenis_voucher = 'Pelunasan';
@@ -1051,8 +1068,10 @@ class BeliWIP extends CI_Controller{
         $data['content']= "beli_wip/voucher_list";
         $this->load->model('Model_beli_wip');
         if($user_ppn==1){
+            $data['content']= "beli_wip/voucher_list_ppn";
             $data['list_data'] = $this->Model_beli_wip->voucher_list_ppn($user_ppn)->result();
         }else{
+            $data['content']= "beli_wip/voucher_list";
             $data['list_data'] = $this->Model_beli_wip->voucher_list($user_ppn)->result();
         }
 
