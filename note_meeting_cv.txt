@@ -79,16 +79,16 @@ repacking tandain
 
 saldo harian di laporan sisa so masih salah(done)
 
-di CREATE DTBJ KERANGJNA DAN BOBBIN DIBUKA AJA NO PACKING NYA, BIAR BISA DITAMBAHIN
+di CREATE DTBJ KERANGJNA DAN BOBBIN DIBUKA AJA NO PACKING NYA, BIAR BISA DITAMBAHIN(done)
 
-di CREATE DTBJ TAMBAHIN no sj dari supplier dan tgl PO
+di CREATE DTBJ TAMBAHIN no sj dari supplier dan tgl PO(done)
 
 so tambahin pilihan export atau lokal. kalau export gaada ppn samsekali
 
 edit jenis barang di so
 
-edit bank di uang masuk
+edit bank di uang masuk (susah nanti di pajaknya edit)
 
 tanggal cek mundur cek lagi kayaknya ga ke save(DONE)
 
-view data faktur all di edit lagi view nya biar laporan 
+view data faktur all di edit lagi view nya biar laporan (done)

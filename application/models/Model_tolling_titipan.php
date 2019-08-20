@@ -386,7 +386,7 @@ class Model_tolling_titipan extends CI_Model{
     }
     
     function show_header_sj($id){
-        $data = $this->db->query("Select tsj.*, cust.id as id_customer, cust.nama_customer, s.nama_supplier, COALESCE(cust.alamat,s.alamat) as alamat, so.tanggal as tanggal_so, 
+        $data = $this->db->query("Select tsj.*, COALESCE(cust.id,s.id) as id_customer, COALESCE(cust.nama_customer,s.nama_supplier) as nama_customer, COALESCE(cust.alamat,s.alamat) as alamat, so.tanggal as tanggal_so, 
                     COALESCE(tsf.no_spb, tsw.no_spb_wip, spb.no_spb, tsa.no_spb_ampas) as nomor_spb,
                     COALESCE(tsf.status, tsw.status, spb.status, tsa.status) as status_spb, 
                     tso.no_spb, so.no_sales_order, COALESCE(po.no_po,tso.no_po) as no_po,

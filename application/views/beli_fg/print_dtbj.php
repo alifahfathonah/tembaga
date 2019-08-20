@@ -8,7 +8,27 @@
         <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWAT MAS PRAKASA<br>'; }?>DATA TIMBANG BARANG JADI (DTBJ)</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
-                <td width="40%">
+                <td width="50%">
+                    <table border="0" cellpadding="2" cellspacing="0" width="100%">
+                        <tr>
+                            <td>Supplier</td>
+                            <td>: <?php echo $header['nama_supplier']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>No. SJ</td>
+                            <td>: <?php echo $header['no_sj']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>Jenis Barang</td>
+                            <td>: Finish Good</td>
+                        </tr>
+                        <tr>
+                            <td>Catatan</td>
+                            <td>: <?php echo $header['remarks']; ?></td>
+                        </tr>
+                    </table>
+                </td>
+                <td width="50%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>No. DTBJ</td>
@@ -23,30 +43,12 @@
                             <td>: <?php echo $header['no_po']; ?></td>
                         </tr>
                         <tr>
-                            <td>Catatan</td>
-                            <td>: <?php echo $header['remarks']; ?></td>
-                        </tr>
-                    </table>
-                </td>
-                <td>&nbsp;</td>
-                <td width="40%">
-                    <table border="0" cellpadding="2" cellspacing="0" width="100%">
-                        <tr>
-                            <td>Supplier</td>
-                            <td>: <?php echo $header['nama_supplier']; ?></td>
-                        </tr>
-                        <tr>
-                            <td>Jenis Barang</td>
-                            <td>: Finish Good</td>
-                        </tr>
-                        <tr>
-                            <td>Penimbang</td>
-                            <td>: <?php echo $header['penimbang']; ?></td>
+                            <td>Tgl. PO</td>
+                            <td>: <?php echo date('d-m-Y', strtotime($header['tgl_po'])); ?></td>
                         </tr>
                     </table>
                 </td>
             </tr>
-            <tr><td colspan="3">&nbsp;</td></tr>
             <tr><td colspan="3">
                     <table border="0" cellpadding="4" cellspacing="0" width="100%">
                         <tr>

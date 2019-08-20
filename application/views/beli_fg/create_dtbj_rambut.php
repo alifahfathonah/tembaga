@@ -62,7 +62,17 @@
                             
                             <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['id']; ?>">
                         </div>
-                    </div>  -->                   
+                    </div>  -->                     
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. SJ <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_sj" name="no_sj" placeholder="Nomor Surat Jalan ..."
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?= $header['no_sj'];?>">
+                        </div>
+                    </div> 
                     <div class="row">
                         <div class="col-md-4">
                             Catatan

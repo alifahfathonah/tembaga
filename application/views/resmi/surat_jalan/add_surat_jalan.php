@@ -359,7 +359,7 @@
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                            <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                                 <i class="fa fa-floppy-o"></i> Input Details </a>
                         </div>    
                     </div>
@@ -456,6 +456,7 @@ function simpanData(){
         $('#message').html("Silahkan pilih jenis barang!");
         $('.alert-danger').show();
     }else{     
+        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').submit(); 
     };
 };

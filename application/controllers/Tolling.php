@@ -868,6 +868,79 @@ class Tolling extends CI_Controller{
        // echo json_encode($return_data);
     }
 
+    function approve_ttr_resmi(){
+        $ttr_id = $this->input->post('header_id');
+        $tanggal = date('Y-m-d h:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('Ym', strtotime($this->input->post('tanggal')));
+        $user_id = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+
+        $this->db->trans_start();
+
+        $no_ttr = 'TTR-KMP.'.$tgl_code.'.'.$this->input->post('nomor_ttr');
+        $count = $this->db->query("Select count(id) as count from ttr where no_ttr = '".$no_ttr."'")->row_array();
+            if($count['count'] > 0){
+                $this->session->set_flashdata('flash_msg', 'Nomor TTR sudah Ada. Please try again!');
+                redirect('index.php/BeliRongsok/review_ttr/'.$ttr_id);
+            }
+        #Update status TTR
+            if($this->input->post('dtr_type')==1){
+                $status = 2;
+            }else{
+                $status = 1;
+            }
+
+            $this->db->where('id',$ttr_id);
+            $result = $this->db->update('ttr', array(
+                    'no_ttr' => $no_ttr,
+                    'tanggal' => $tgl_input,
+                    'no_sj' => $this->input->post('no_sj'),
+                    'jmlh_afkiran' => $this->input->post('jml_afkir'),
+                    'jmlh_pengepakan' => $this->input->post('jml_packing'),
+                    'jmlh_lain'=> $this->input->post("jml_lain"),
+                    'ttr_status'=>$status,
+                    'tgl_approve'=>$tanggal,
+                    'approved_by'=>$user_id));
+
+            if($user_ppn==1){
+                $this->load->helper('target_url');
+
+                $this->load->model('Model_beli_rongsok');
+
+                $data_post['master'] = $this->Model_beli_rongsok->ttr_dtr_only($ttr_id)->row_array();
+                $data_post['detail'] = $this->Model_beli_rongsok->ttr_dtr_detail_only($ttr_id)->result();
+
+                $detail_post = json_encode($data_post);
+                // print_r($detail_post);
+                // die();
+                $ch = curl_init(target_url().'api/TollingAPI/dtr');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
+
+        // #Update Stok Rongsok Tersedia
+        //     $this->load->model('Model_beli_rongsok');
+        //     $dtr_list = $this->Model_beli_rongsok->show_detail_dtr_by_ttr($ttr_id)->result();
+        //     foreach ($dtr_list as $k => $v) {
+        //         $this->Model_beli_rongsok->update_stok_tersedia($v->rongsok_id,$v->netto);
+        //     }
+            
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'TTR berhasil di-create dengan nomor : '.$no_ttr);                 
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create TTR, silahkan coba kembali!');
+        }
+        redirect('index.php/Tolling/ttr_list');
+    }
+
     function print_so(){
         $id = $this->uri->segment(3);
         if($id){        

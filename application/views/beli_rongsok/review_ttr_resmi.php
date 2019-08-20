@@ -134,6 +134,8 @@
                             <input type="text" id="supplier" name="supplier" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $header['nama_supplier']; ?>">
+
+                            <input type="hidden" id="id_customer" name="id_customer" value="<?php echo $header['id_customer']; ?>">
                         </div>
                     </div> 
                     <div class="row">
@@ -289,7 +291,11 @@ function approveData(){
         $('#approveData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#message').html("");
         $('.alert-danger').hide();
-        $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/BeliRongsok/approve_ttr_resmi");
+        if($('#id_customer').val() > 0){
+            $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/Tolling/approve_ttr_resmi");
+        }else{
+            $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/BeliRongsok/approve_ttr_resmi");
+        }
         $('#frmReject').submit(); 
     }
 }

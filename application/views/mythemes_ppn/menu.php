@@ -594,6 +594,11 @@
                                 </a>
                                 <ul class="sub-menu">
                                     <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangFG/kartu_stok_index">
+                                        <i class="fa fa-search"></i>
+                                        Kartu Stok FG </a>
+                                    </li>
+                                    <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangFG/laporan_list">
                                         <i class="fa fa-briefcase"></i>
                                         Laporan FG </a>

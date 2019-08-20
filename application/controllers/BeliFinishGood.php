@@ -645,6 +645,7 @@ class BeliFinishGood extends CI_Controller{
 
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('dtbj', array(
+            'no_sj'=>strtoupper($this->input->post('no_sj')),
             'remarks'=>$this->input->post('remarks'),
             'supplier_id'=>$this->input->post('supplier_id'),
             'modified'=>$tanggal,
