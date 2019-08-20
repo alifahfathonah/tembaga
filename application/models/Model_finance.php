@@ -970,4 +970,358 @@ class Model_finance extends CI_Model{
     //         ");
     //     return $data;
     // }
+
+    function print_laporan_pembelian($s, $e, $ppn){
+        if ($ppn == 2) {
+            $data = $this->db->query("
+                    SELECT
+                        t.tanggal AS tgl_ttr,
+                        t.no_ttr AS no_ttr,
+                    CASE
+                            
+                            WHEN dd.po_detail_id > 0 THEN
+                            'PO' 
+                            WHEN dd.po_detail_id = 0 
+                            AND d.so_id > 0 THEN
+                                'Tolling' ELSE 'Lain2' 
+                                END AS sumber,
+                        CASE
+                                
+                                WHEN dd.po_detail_id > 0 THEN
+                                p.no_po 
+                                WHEN dd.po_detail_id = 0 
+                                AND d.so_id > 0 THEN
+                                    so.no_sales_order ELSE '-' 
+                                    END AS no_doc_sumber,
+                            CASE
+                                    
+                                    WHEN dd.po_detail_id > 0 THEN
+                                    p.tanggal ELSE so.tanggal 
+                                END AS tgl_doc,
+                            CASE
+                                    
+                                    WHEN dd.po_detail_id > 0 THEN
+                                    s.kode_supplier 
+                                    WHEN dd.po_detail_id = 0 
+                                    AND d.so_id > 0 THEN
+                                        mc.kode_customer ELSE '-' 
+                                        END AS kode_sup_cust,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        s.nama_supplier 
+                                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                                        mc.nama_customer_kh 
+                                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                                        mc.nama_customer ELSE '-' 
+                                    END AS nama_sup_cust,
+                                    r.kode_rongsok AS kode_rongsok,
+                                    r.nama_item AS nama_item,
+                                    td.bruto AS bruto,
+                                    td.netto AS netto,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        pd.amount ELSE 0 
+                                    END AS amount,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        ( td.netto * pd.amount ) ELSE 0 
+                                    END AS total_amount,
+                                    t.jmlh_afkiran AS jmlh_afkiran,
+                                    t.jmlh_lain AS jmlh_lain,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        p.flag_ppn 
+                                        WHEN dd.po_detail_id = 0 
+                                        AND d.so_id > 0 THEN
+                                            so.flag_ppn ELSE '-' 
+                                            END AS flag_ppn 
+                                    FROM
+                                        ttr_detail td
+                                        LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+                                        LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+                                        LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+                                        LEFT JOIN po_detail pd ON ( ( dd.po_detail_id > 0 ) AND ( pd.id = dd.po_detail_id ) )
+                                        LEFT JOIN po p ON ( ( p.id = pd.po_id ) AND ( dd.po_detail_id > 0 ) )
+                                        LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+                                        LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+                                        LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
+                                        LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
+                                    WHERE
+                                        ( t.ttr_status = 1 ) 
+                                    AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
+                                    AND t.tanggal BETWEEN '".$s."' and '".$e."' 
+                                    ORDER BY sumber, kode_rongsok, no_ttr, tgl_ttr
+                ");
+        } else {
+            $data = $this->db->query("
+                    SELECT
+                        t.tanggal AS tgl_ttr,
+                        t.no_ttr AS no_ttr,
+                    CASE
+                            
+                            WHEN dd.po_detail_id > 0 THEN
+                            'PO' 
+                            WHEN dd.po_detail_id = 0 
+                            AND d.so_id > 0 THEN
+                                'Tolling' ELSE 'Lain2' 
+                                END AS sumber,
+                        CASE
+                                
+                                WHEN dd.po_detail_id > 0 THEN
+                                p.no_po 
+                                WHEN dd.po_detail_id = 0 
+                                AND d.so_id > 0 THEN
+                                    so.no_sales_order ELSE '-' 
+                                    END AS no_doc_sumber,
+                            CASE
+                                    
+                                    WHEN dd.po_detail_id > 0 THEN
+                                    p.tanggal ELSE so.tanggal 
+                                END AS tgl_doc,
+                            CASE
+                                    
+                                    WHEN dd.po_detail_id > 0 THEN
+                                    s.kode_supplier 
+                                    WHEN dd.po_detail_id = 0 
+                                    AND d.so_id > 0 THEN
+                                        mc.kode_customer ELSE '-' 
+                                        END AS kode_sup_cust,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        s.nama_supplier 
+                                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                                        mc.nama_customer_kh 
+                                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                                        mc.nama_customer ELSE '-' 
+                                    END AS nama_sup_cust,
+                                    r.kode_rongsok AS kode_rongsok,
+                                    r.nama_item AS nama_item,
+                                    td.bruto AS bruto,
+                                    td.netto AS netto,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        pd.amount ELSE 0 
+                                    END AS amount,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        ( td.netto * pd.amount ) ELSE 0 
+                                    END AS total_amount,
+                                    t.jmlh_afkiran AS jmlh_afkiran,
+                                    t.jmlh_lain AS jmlh_lain,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        p.flag_ppn 
+                                        WHEN dd.po_detail_id = 0 
+                                        AND d.so_id > 0 THEN
+                                            so.flag_ppn ELSE '-' 
+                                            END AS flag_ppn 
+                                    FROM
+                                        ttr_detail td
+                                        LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+                                        LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+                                        LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+                                        LEFT JOIN po_detail pd ON ( ( dd.po_detail_id > 0 ) AND ( pd.id = dd.po_detail_id ) )
+                                        LEFT JOIN po p ON ( ( p.id = pd.po_id ) AND ( dd.po_detail_id > 0 ) )
+                                        LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+                                        LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+                                        LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
+                                        LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
+                                    WHERE
+                                        ( t.ttr_status = 1 ) 
+                                    AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
+                                    AND t.tanggal BETWEEN '".$s."' and '".$e."'
+                                    AND (p.flag_ppn = ".$ppn." OR so.flag_ppn = ".$ppn.") 
+                                    ORDER BY sumber, kode_rongsok, no_ttr, tgl_ttr
+                ");
+        }
+        return $data;
+    }
+
+    function rangking_pemasukan_rongsok($s, $e, $ppn){
+        if ($ppn == 2) {
+            $data = $this->db->query("
+                SELECT MONTH
+                    ( t.tanggal ) AS bulan,
+                CASE
+                        WHEN dd.po_detail_id > 0 THEN
+                        'PO' 
+                        WHEN dd.po_detail_id = 0 
+                        AND d.so_id > 0 THEN
+                            'Tolling' ELSE 'Lain2' 
+                            END AS sumber,
+                    CASE    
+                            WHEN dd.po_detail_id > 0 THEN
+                            s.kode_supplier 
+                            WHEN dd.po_detail_id = 0 
+                            AND d.so_id > 0 THEN
+                                mc.kode_customer ELSE '-' 
+                                END AS kode_sup_cust,
+                        CASE        
+                                WHEN dd.po_detail_id > 0 THEN
+                                s.nama_supplier 
+                                WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                                mc.nama_customer_kh 
+                                WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                                mc.nama_customer ELSE '-' 
+                            END AS nama_sup_cust,
+                            sum( td.netto ) AS netto,
+                            sum( CASE WHEN dd.po_detail_id > 0 THEN ( td.netto * pd.amount ) ELSE 0 END ) AS total_amount,
+                            sum( CASE WHEN dd.po_detail_id > 0 THEN ( td.netto * pd.amount ) / td.netto ELSE 0 END ) AS rata2 
+                        FROM
+                            ttr_detail td
+                            LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+                            LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+                            LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+                            LEFT JOIN po_detail pd ON ( ( dd.po_detail_id > 0 ) AND ( pd.id = dd.po_detail_id ) )
+                            LEFT JOIN po p ON ( ( p.id = pd.po_id ) AND ( dd.po_detail_id > 0 ) )
+                            LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+                            LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+                            LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
+                            LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
+                        WHERE
+                            ( t.ttr_status = 1 ) 
+                            AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
+                            AND t.tanggal BETWEEN '".$s."' AND '".$e."' 
+                        GROUP BY
+                            bulan,
+                        sumber,
+                    kode_sup_cust
+                    ORDER BY sumber, netto DESC;
+                ");
+        } else {
+            $data = $this->db->query("
+                SELECT MONTH
+                    ( t.tanggal ) AS bulan,
+                CASE
+                        WHEN dd.po_detail_id > 0 THEN
+                        'PO' 
+                        WHEN dd.po_detail_id = 0 
+                        AND d.so_id > 0 THEN
+                            'Tolling' ELSE 'Lain2' 
+                            END AS sumber,
+                    CASE    
+                            WHEN dd.po_detail_id > 0 THEN
+                            s.kode_supplier 
+                            WHEN dd.po_detail_id = 0 
+                            AND d.so_id > 0 THEN
+                                mc.kode_customer ELSE '-' 
+                                END AS kode_sup_cust,
+                        CASE        
+                                WHEN dd.po_detail_id > 0 THEN
+                                s.nama_supplier 
+                                WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                                mc.nama_customer_kh 
+                                WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                                mc.nama_customer ELSE '-' 
+                            END AS nama_sup_cust,
+                            sum( td.netto ) AS netto,
+                            sum( CASE WHEN dd.po_detail_id > 0 THEN ( td.netto * pd.amount ) ELSE 0 END ) AS total_amount,
+                            round(sum( CASE WHEN dd.po_detail_id > 0 THEN ( td.netto * pd.amount ) ELSE 0 END ) / sum( td.netto ),2) AS rata2
+                        FROM
+                            ttr_detail td
+                            LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+                            LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+                            LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+                            LEFT JOIN po_detail pd ON ( ( dd.po_detail_id > 0 ) AND ( pd.id = dd.po_detail_id ) )
+                            LEFT JOIN po p ON ( ( p.id = pd.po_id ) AND ( dd.po_detail_id > 0 ) )
+                            LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+                            LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+                            LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
+                            LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
+                        WHERE
+                            ( t.ttr_status = 1 ) 
+                            AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
+                            AND t.tanggal BETWEEN '".$s."' AND '".$e."'
+                            AND (so.flag_ppn = ".$ppn." OR p.flag_ppn = ".$ppn.")
+                        GROUP BY
+                            bulan,
+                        sumber,
+                    kode_sup_cust
+                    ORDER BY sumber, netto DESC;
+                ");
+        }
+
+        return $data;
+    }
+
+    function header_daftar_pembelian_rongsok($s, $e, $ppn) {
+        if ($ppn == 2) {
+            $data = $this->db->query("
+                SELECT DISTINCT
+                CASE
+                    WHEN
+                        dd.po_detail_id > 0 THEN
+                            s.nama_supplier 
+                            WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                            mc.nama_customer_kh 
+                            WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                            mc.nama_customer ELSE '-' 
+                        END AS nama_sup_cust,
+                        r.kode_rongsok AS kode_rongsok,
+                        sum( td.netto ) AS netto 
+                    FROM
+                        ttr_detail td
+                        LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+                        LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+                        LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+                        LEFT JOIN po_detail pd ON ( ( dd.po_detail_id > 0 ) AND ( pd.id = dd.po_detail_id ) )
+                        LEFT JOIN po p ON ( ( p.id = pd.po_id ) AND ( dd.po_detail_id > 0 ) )
+                        LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+                        LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+                        LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
+                        LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
+                    WHERE
+                        ( t.ttr_status = 1 ) 
+                        AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
+                        AND t.tanggal BETWEEN '".$s."' AND '".$e."'
+                    GROUP BY
+                    kode_rongsok
+                    ORDER BY kode_rongsok;
+            ");
+        } else {
+            $data = $this->db->query("
+                SELECT DISTINCT
+                CASE
+                    WHEN
+                        dd.po_detail_id > 0 THEN
+                            s.nama_supplier 
+                            WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                            mc.nama_customer_kh 
+                            WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                            mc.nama_customer ELSE '-' 
+                        END AS nama_sup_cust,
+                        r.kode_rongsok AS kode_rongsok,
+                        sum( td.netto ) AS netto 
+                    FROM
+                        ttr_detail td
+                        LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+                        LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+                        LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+                        LEFT JOIN po_detail pd ON ( ( dd.po_detail_id > 0 ) AND ( pd.id = dd.po_detail_id ) )
+                        LEFT JOIN po p ON ( ( p.id = pd.po_id ) AND ( dd.po_detail_id > 0 ) )
+                        LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+                        LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+                        LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
+                        LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
+                    WHERE
+                        ( t.ttr_status = 1 ) 
+                        AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
+                        AND t.tanggal BETWEEN '".$s."' AND '".$e."'
+                        AND so.flag_ppn = ".$ppn." OR p.flag_ppn = ".$ppn."
+                    GROUP BY
+                    kode_rongsok
+                    ORDER BY kode_rongsok;
+            ");
+        }
+
+        return $data;
+    }
 }
