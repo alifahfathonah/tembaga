@@ -3243,4 +3243,139 @@ class Finance extends CI_Controller{
         $data['bank_list'] = $this->Model_finance->bank_list($ppn)->result();
         $this->load->view('layout', $data); 
     }
+
+    function laporan_pembelian(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/laporan_pembelian";
+        $this->load->model('Model_sales_order');
+
+        $this->load->view('layout', $data);  
+    }
+
+    function print_query_pembelian(){
+        $module_name = $this->uri->segment(1);
+        $this->load->helper('tanggal_indo');
+        $l = $_GET['laporan'];
+        $start = date('Y-m-d', strtotime($_GET['ts']));
+        $end = date('Y-m-d', strtotime($_GET['te']));
+
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $this->load->model('Model_finance');
+        if($l == 1){
+            $data['detailLaporan'] = $this->Model_finance->print_laporan_pembelian($start,$end,0)->result();
+        }elseif ($l == 2) {
+            $data['detailLaporan'] = $this->Model_finance->print_laporan_pembelian($start,$end,2)->result();
+        }elseif ($l == 3) {
+            $data['detailLaporan'] = $this->Model_finance->print_laporan_pembelian($start,$end,1)->result();
+        }
+        $this->load->view('finance/print_laporan_pembelian', $data);
+    }
+
+    function rangking_rongsok(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/rangking_rongsok";
+        $this->load->model('Model_sales_order');
+
+        $this->load->view('layout', $data);  
+    }
+
+    function print_rangking_rongsok(){
+        $module_name = $this->uri->segment(1);
+        $this->load->helper('tanggal_indo');
+        $l = $_GET['laporan'];
+        $start = date('Y-m-d', strtotime($_GET['ts']));
+        $end = date('Y-m-d', strtotime($_GET['te']));
+
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $this->load->model('Model_finance');
+        if($l == 1){
+            $data['detailLaporan'] = $this->Model_finance->rangking_pemasukan_rongsok($start,$end,0)->result();
+        }elseif ($l == 2) {
+            $data['detailLaporan'] = $this->Model_finance->rangking_pemasukan_rongsok($start,$end,2)->result();
+        }elseif ($l == 3) {
+            $data['detailLaporan'] = $this->Model_finance->rangking_pemasukan_rongsok($start,$end,1)->result();
+        }
+        $this->load->view('finance/print_rangking_rongsok', $data);
+    }
+
+    function daftar_pembelian_rongsok(){
+        /*
+        * MASIH DIKERJAIN
+        */
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/daftar_pembelian_rongsok";
+        $this->load->model('Model_sales_order');
+
+        $this->load->view('layout', $data);  
+    }
+
+    function print_daftar_pembelian_rongsok(){
+        /*
+        * MASIH DIKERJAIN
+        */
+        $module_name = $this->uri->segment(1);
+        $this->load->helper('tanggal_indo');
+        $l = $_GET['laporan'];
+        $start = date('Y-m-d', strtotime($_GET['ts']));
+        $end = date('Y-m-d', strtotime($_GET['te']));
+
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $this->load->model('Model_finance');
+        if($l == 1){
+            $data['header'] = $this->Model_finance->header_daftar_pembelian_rongsok($start, $end, 0);
+            $data['detailLaporan'] = $this->Model_finance->rangking_pemasukan_rongsok($start,$end,0)->result();
+        }elseif ($l == 2) {
+            $data['header'] = $this->Model_finance->header_daftar_pembelian_rongsok($start, $end, 2);
+            $data['detailLaporan'] = $this->Model_finance->rangking_pemasukan_rongsok($start,$end,2)->result();
+        }elseif ($l == 3) {
+            $data['header'] = $this->Model_finance->header_daftar_pembelian_rongsok($start, $end, 1);
+            $data['detailLaporan'] = $this->Model_finance->rangking_pemasukan_rongsok($start,$end,1)->result();
+        }
+        $this->load->view('finance/print_rangking_rongsok', $data);
+    }
 }

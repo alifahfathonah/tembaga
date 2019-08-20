@@ -972,6 +972,14 @@
                                     <i class="fa fa-search"></i> Laporan Penjualan per Jenis Barang </a>
                                 </li>
                                 <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/laporan_pembelian/">
+                                    <i class="fa fa-search"></i> Laporan Pembelian </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/rangking_rongsok/">
+                                    <i class="fa fa-search"></i> Rangking Pemasukan Rongsok </a>
+                                </li>
+                                <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_jb/">
                                     <i class="fa fa-print"></i> Rekap per Jenis Barang</a>
                                 </li>

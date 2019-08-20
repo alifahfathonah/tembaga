@@ -5,6 +5,7 @@
         <style type="text/css">
             body{
                 font-family: "Times New Roman", Times, serif;
+                /*font-size: 16px;*/
             }
 
             @media print{
