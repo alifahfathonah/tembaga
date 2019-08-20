@@ -843,11 +843,10 @@ class Model_tolling_titipan extends CI_Model{
     }
 
     function list_item_sjk_wip($id){
-        $data = $this->db->query("select tsj.id, tgw.id as id_gudang, tgw.qty, tgw.berat, tgw.jenis_barang_id, jb.jenis_barang, jb.kode, jb.uom 
-                from t_surat_jalan tsj
-                left join t_gudang_wip tgw on tgw.t_spb_wip_id = tsj.spb_id
+        $data = $this->db->query("select tgw.id as id_gudang, tgw.qty, tgw.berat, tgw.jenis_barang_id, jb.jenis_barang, jb.kode, jb.uom 
+                from t_gudang_wip tgw
                 left join jenis_barang jb on jb.id = tgw.jenis_barang_id
-                where tsj.spb_id =".$id." and flag_taken = 0");
+                where tgw.t_spb_wip_id =".$id." and flag_taken = 0");
         return $data;
     }
 
@@ -966,6 +965,36 @@ class Model_tolling_titipan extends CI_Model{
 
     function load_bpb_wip_detail_only($id){
         $data = $this->db->query("select * from t_bpb_wip_detail where bpb_wip_id =".$id);
+        return $data;
+    }
+
+    function spb_fg($id){
+        $data = $this->db->query("Select * from t_spb_fg where id=".$id);
+        return $data;
+    }
+
+    function spb_detail_fg($id){
+        $data = $this->db->query("Select * from t_spb_fg_detail where t_spb_fg_id=".$id);
+        return $data;
+    }
+
+    function spb_wip($id){
+        $data = $this->db->query("Select * from t_spb_wip where id=".$id);
+        return $data;
+    }
+
+    function spb_detail_wip($id){
+        $data = $this->db->query("Select * from t_spb_wip_detail where t_spb_wip_id=".$id);
+        return $data;
+    }
+
+    function spb_rsk($id){
+        $data = $this->db->query("Select * from spb where id=".$id);
+        return $data;
+    }
+
+    function spb_detail_rsk($id){
+        $data = $this->db->query("Select * from spb_detail where spb_id=".$id);
         return $data;
     }
 }

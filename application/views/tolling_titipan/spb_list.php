@@ -90,10 +90,14 @@
                         <td style="text-align:center">
                             <?php
                                 if($data->status==0){
-                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Approval</div>';
+                                    echo '<div style="background-color:darkkhaki; padding:3px">Waiting Review</div>';
                                 }else if($data->status==1){
                                     echo '<div style="background-color:green; padding:3px; color:white">Approved</div>';
                                 }else if($data->status==2){
+                                    echo '<div style="background-color:green; color:#fff; padding:3px">Finished</div>';
+                                }else if($data->status==3){
+                                    echo '<div style="background-color:blue; color:#fff; padding:3px">Waiting Approval</div>';
+                                }else if($data->status==4){
                                     echo '<div style="background-color:orange; color:#fff; padding:3px">Belum Dipenuhi Semua</div>';
                                 }else if($data->status==9){
                                     echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';

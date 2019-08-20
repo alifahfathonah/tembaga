@@ -196,7 +196,7 @@
                                 echo '<tr id="row_'.$no.'">'.
                                     '<td style="text-align: center;">'.$no.'</td>'.
                                     '<td>('.$row->kode.') '.$row->jenis_barang.'</td>'.
-                                    '<input type="hidden" name="details['.$no.'][id_barang]" id="id_barang_'.$no.'" value="'.$row->id.'">'.
+                                    '<input type="hidden" name="details['.$no.'][id_barang]" id="id_barang_'.$no.'" value="'.$row->gudang_id.'">'.
                                     '<input type="hidden" id="jenis_barang_id_'.$no.'" name="details['.$no.'][jenis_barang_id]" value="'.$row->jenis_barang_id.'" data-id="'.$row->ukuran.'">'.
                                     '<td><input type="text" id="barang_alias_'.$no.'" name="details['.$no.'][barang_alias]" class="form-control myline" placeholder="Nama Barang Alias ..." onkeyup="this.value = this.value.toUpperCase()"></td>'.
                                     '<td><input type="text" class="form-control myline" style="margin-bottom:5px" id="no_packing_'.$no.'" name="details['.$no.'][no_packing]" value="'.$row->no_packing.'" data-id="'.$row->ukuran.'" readonly="readonly">'.
@@ -248,7 +248,7 @@
                                 echo '<tr id="row_'.$no.'">'.
                                     '<td style="text-align: center;">'.$no.'</td>'.
                                     '<td>('.$row->kode.')'.$row->jenis_barang.'</td>'.
-                                    '<input type="hidden" name="details['.$no.'][id_barang]" id="id_barang_'.$no.'" value="'.$row->id.'">'.
+                                    '<input type="hidden" name="details['.$no.'][id_barang]" id="id_barang_'.$no.'" value="'.$row->id_gudang.'">'.
                                     '<input type="hidden" id="jenis_barang_id_'.$no.'" name="details['.$no.'][jenis_barang_id]" value="'.$row->jenis_barang_id.'">'.
                                     '<td><input type="text" id="barang_alias_'.$no.'" name="details['.$no.'][barang_alias]" class="form-control myline" placeholder="Nama Barang Alias ..." onkeyup="this.value = this.value.toUpperCase()"></td>'.
                                     '<td><input type="text" id="uom_'.$no.'" name="details['.$no.'][uom]" class="form-control myline" readonly="readonly" value="'.$row->uom.'"></td>'.
@@ -265,7 +265,7 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="3" style="text-align: right;"><strong>Total</strong></td>
+                                    <td colspan="4" style="text-align: right;"><strong>Total</strong></td>
                                     <td><input type="text" class="form-control" style="margin-bottom: 5px" id="bruto" value="<?=$qty;?>" readonly="readonly"></td>
                                     <td><input type="text" class="form-control" style="margin-bottom: 5px" id="netto" value="<?=$netto;?>" readonly="readonly"></td>
                                     <td></td>

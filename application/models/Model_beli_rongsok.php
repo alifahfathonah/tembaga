@@ -687,7 +687,7 @@ class Model_beli_rongsok extends CI_Model{
     }
 
     function ttr_dtr_only($id){
-        $data = $this->db->query("select ttr.id, ttr.no_ttr, ttr.dtr_id, dtr.no_dtr, ttr.tanggal as tgl_ttr, dtr.tanggal as tgl_dtr, ttr.no_sj, ttr.jmlh_afkiran, ttr.jmlh_pengepakan, ttr.jmlh_lain, ttr.remarks as remarks_ttr, dtr.remarks as remarks_dtr, ttr.ttr_status as ttr_status, dtr.status as dtr_status, dtr.po_id, po.status as po_status, dtr.supplier_id, dtr.jenis_barang
+        $data = $this->db->query("select ttr.id, ttr.no_ttr, ttr.dtr_id, dtr.no_dtr, ttr.tanggal as tgl_ttr, dtr.tanggal as tgl_dtr, ttr.no_sj, ttr.jmlh_afkiran, ttr.jmlh_pengepakan, ttr.jmlh_lain, ttr.remarks as remarks_ttr, dtr.remarks as remarks_dtr, ttr.ttr_status as ttr_status, dtr.status as dtr_status, dtr.po_id, dtr.so_id, po.status as po_status, dtr.supplier_id, dtr.customer_id, dtr.jenis_barang
                 from ttr
                 left join dtr on dtr.id = ttr.dtr_id
                 left join po on po.id = dtr.po_id

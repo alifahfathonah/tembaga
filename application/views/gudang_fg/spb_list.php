@@ -66,6 +66,8 @@
                             <?php
                                 if($data->jenis_spb==0){
                                     echo 'SDM';
+                                }else if($data->jenis_spb==4){
+                                    echo 'Tolling';
                                 }else if($data->jenis_spb==5){
                                     echo 'Kirim Rongsok';
                                 }else if($data->jenis_spb==6){

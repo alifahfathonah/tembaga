@@ -2174,6 +2174,7 @@ class Tolling extends CI_Controller{
         $sjid = $this->input->post('id');
         $spbid = $this->input->post('spb_id');
         $user_id  = $this->session->userdata('user_id');
+        $user_ppn  = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d');
         $custid = $this->input->post('id_customer');
@@ -2246,7 +2247,7 @@ class Tolling extends CI_Controller{
             $this->db->insert('m_bobbin_peminjaman', array(
                 'no_surat_peminjaman' => $code,
                 'id_surat_jalan' => $sjid,
-                'id_customer' => $custid,
+                'supplier_id' => $this->input->post('supplier_id'),
                 'status' => 0,
                 'created_by' => $user_id,
                 'created_at' => $tanggal
@@ -2257,7 +2258,7 @@ class Tolling extends CI_Controller{
             foreach ($query as $row) {
                 $this->db->where('nomor_bobbin', $row->nomor_bobbin);
                 $this->db->update('m_bobbin', array(
-                    'borrowed_by' => $custid,
+                    'borrowed_by_supplier' => $custid,
                     'status' => 2
                 ));
 
@@ -2277,13 +2278,47 @@ class Tolling extends CI_Controller{
         $this->db->where('id', $sjid);
         $this->db->update('t_surat_jalan', $data);
 
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+                    $this->load->model('Model_sales_order');
+                    $this->load->model('Model_tolling_titipan');
+                    $data_post['tsj'] = $this->Model_sales_order->tsj_header_only($sjid)->row_array();
+
+                if($jenis == 'FG'){
+                    $data_post['spb'] = $this->Model_tolling_titipan->spb_fg($spbid)->row_array();
+                    $data_post['spb_detail'] = $this->Model_tolling_titipan->spb_detail_fg($spbid)->result();
+                    $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang($sjid)->result();
+                }elseif($jenis == 'WIP'){
+                    $data_post['spb'] = $this->Model_tolling_titipan->spb_wip($spbid)->row_array();
+                    $data_post['spb_detail'] = $this->Model_tolling_titipan->spb_detail_wip($spbid)->result();
+                    $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang_wip($sjid)->result();
+                }elseif($jenis == 'RONGSOK'){
+                    $data_post['spb'] = $this->Model_tolling_titipan->spb_rsk($spbid)->row_array();
+                    $data_post['spb_detail'] = $this->Model_tolling_titipan->spb_detail_rsk($spbid)->result();
+                    $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang_rsk($sjid)->result();
+                }
+                    $post = json_encode($data_post);
+                // print_r($post);
+                // die();
+                $ch = curl_init(target_url().'api/TollingAPI/sj_keluar');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
+
         if($this->db->trans_complete()){    
             $this->session->set_flashdata('flash_msg', 'Surat jalan sudah di-approve. Detail Surat jalan sudah disimpan');            
         }else{
             $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Surat Jalan, silahkan coba kembali!');
         }             
-        
-       redirect('index.php/Tolling/surat_jalan_keluar');
+
+        redirect('index.php/Tolling/surat_jalan_keluar');
     }
 
     function reject_surat_jalan(){
@@ -3229,6 +3264,7 @@ class Tolling extends CI_Controller{
                 $data = array(
                     'no_spb'=> $code,
                     'tanggal'=> $tgl_input,
+                    'jenis_spb'=> 4,
                     'flag_tolling'=> 1,
                     'keterangan'=>$this->input->post('remarks'),
                     'created_at'=> $tanggal,
@@ -3275,7 +3311,7 @@ class Tolling extends CI_Controller{
                     'no_spb'=> $code,
                     'tanggal'=> $tgl_input,
                     'jenis_barang'=>1,
-                    'jenis_spb'=> 6,//JENIS SPB SO
+                    'jenis_spb'=> 4,//JENIS SPB TOLLING
                     'flag_tolling'=> 1,
                     'jumlah'=> $this->input->post('jumlah_rsk'),
                     'remarks'=>$this->input->post('remarks'),

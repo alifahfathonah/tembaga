@@ -73,6 +73,8 @@
                                 $flag_produksi = 'ROLLING';
                             }else if($data->flag_produksi==3){
                                 $flag_produksi = 'CUCI';
+                            }else if($data->flag_produksi==4){
+                                $flag_produksi = 'Tolling';
                             }else if($data->flag_produksi==5){
                                 $flag_produksi = 'KIRIM KE RONGSOK';
                             }else if($data->flag_produksi==6){
