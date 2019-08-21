@@ -99,4 +99,4 @@ edit no.po dan edit ppn di po *hanya kmp
 
 spb wip kirim rongsok otomatis jika udah approve wip aja
 
-no cek dan tgl jt tambahin di laporan cheque
+no cek dan tgl jt tambahin di laporan cheque(done)

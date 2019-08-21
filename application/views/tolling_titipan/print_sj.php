@@ -37,7 +37,7 @@
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Times New Roman">
             <tr>
                 <td width="60%">
-                    <table border="0" cellpadding="2" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="2" cellspacing="0" width="100%" style="font-size: 18px;">
                         <tr>
                             <td>No. Surat Jalan</td>
                             <td>: <?php echo $header['no_surat_jalan']; ?></td>
@@ -64,7 +64,7 @@
                 </td>
                 <td>&nbsp;</td>
                 <td width="40%">
-                    <table border="0" cellpadding="2" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="2" cellspacing="0" width="100%" style="font-size: 18px;">
                         <tr>
                             <td>Tanggal SJ</td>
                             <td>: <?php echo tanggal_indo($header['tanggal']); ?></td>

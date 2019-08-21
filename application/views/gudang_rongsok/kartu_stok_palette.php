@@ -1,17 +1,18 @@
- <h3 align="center"><b> Kartu Stok FG <?php echo " <i>".$start.' s/d '.$end."</i>";?></b></h3>
+ <h3 align="center"><b> Kartu Stok Rongsok <?php echo " <i>".$start.' s/d '.$end."</i>";?></b></h3>
  <table width="100%" >
     <tr>
-        <td width="33%"><b>Nama Barang : </b><?=$jb['jenis_barang'];?></td>
+        <td width="33%"><b>Nama Barang : </b><?=$rongsok['nama_item'];?></td>
         <td width="34%" align="center"><b>Per Tanggal : <?=$end;?></b></td>
-        <td width="33%"><b>Kode : </b><?=$jb['kode'];?></td>
+        <td width="33%"><b>Kode Rongsok : </b><?=$rongsok['kode_rongsok'];?></td>
     </tr>
  </table>
 <table width="100%" class="table table-striped table-bordered table-hover" id="sample_6" style="font-size:12px;">
     <thead>
         <th style="width:40px">No</th>
         <th>Tanggal</th>
-        <th>Nomor</th>
+        <th>Nomor TTR</th>     
         <th>Keterangan</th>
+        <th>Supplier/Customer</th> 
         <th>Masuk</th>
         <th>Keluar</th>
         <th>Sisa</th>
@@ -36,8 +37,9 @@
         echo '<tr>';
         echo '<td style="text-align:center">'.$no.'</td>';
         echo '<td>'.$row->tanggal_masuk.$row->tanggal_keluar.'</td>';
+        echo '<td>'.$row->no_pallete.'</td>';
         echo '<td>'.$row->nomor.'</td>';
-        echo '<td>'.$row->keterangan.'</td>';
+        echo '<td>'.$row->nama.'</td>';
         echo '<td>'.number_format($row->netto_masuk,2,',','.').'</td>';
         echo '<td>'.number_format($row->netto_keluar,2,',','.').'</td>';
         $sisa_now = $sisa + $row->netto_masuk - $row->netto_keluar;
@@ -50,7 +52,7 @@
     }
     ?>
     <tr>
-        <td colspan="4"></td>
+        <td colspan="5"></td>
         <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($masuk,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($keluar,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($sisa,2,',','.');?></td>

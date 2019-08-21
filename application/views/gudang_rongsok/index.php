@@ -26,13 +26,24 @@
                             Nama Item Rongsok <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="rongsok_id" name="rongsok_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,1);">
+                            <select id="rongsok_id" name="rongsok_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
                                     <option value=""></option>
                                     <?php foreach ($list_rongsok as $value){ ?>
                                             <option value='<?=$value->id;?>'>
                                                 <?=$value->nama_item.' ('.$value->kode_rongsok.') ';?>
                                             </option>
                                     <?php } ?>
+                                </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Bentuk Laporan <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="bl" name="bl" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                    <option value="0">Global</option>
+                                    <option value="1">Per Palette</option>
                                 </select>
                         </div>
                     </div>
@@ -79,9 +90,10 @@ function simpanData(){
         $('.alert-danger').show(); 
     }else{ 
         var r=$('#rongsok_id').val();
+        var bl=$('#bl').val();
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/GudangRongsok/kartu_stok?r='+r+'&ts='+s+'&te='+e,'_blank');
+        window.open('<?php echo base_url();?>index.php/GudangRongsok/kartu_stok?r='+r+'&ts='+s+'&te='+e+'&bl='+bl,'_blank');
     };
 };
 </script>

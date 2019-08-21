@@ -945,7 +945,7 @@ class Model_finance extends CI_Model{
     }
 
     function trx_cm($s,$e,$id,$ppn){
-        return $this->db->query("select fk.id, fk.tanggal, fk.flag_ppn, fk.nomor, fk.jenis_trx, (fk.nominal*fk.kurs) as nominal, COALESCE(mc.nama_customer,'') as nama_customer, b.nama_bank from f_kas fk 
+        return $this->db->query("select fk.id, fk.tanggal, fk.flag_ppn, fk.nomor, fk.jenis_trx, (fk.nominal*fk.kurs) as nominal, COALESCE(mc.nama_customer,'') as nama_customer, b.nama_bank, fum.nomor_cek, fum.tgl_cair from f_kas fk 
             left join bank b on b.id = fk.id_bank
             left join f_uang_masuk fum on fum.id = fk.id_um
             left join m_customers mc on mc.id = fum.m_customer_id

@@ -746,6 +746,31 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
 
+    function show_kartu_stok_palette($start,$end,$id_barang){
+        $data = $this->db->query("(SELECT
+                    t.no_ttr, p.no_po as nomor, dd.id, dd.rongsok_id, dd.no_pallete, s.nama_supplier as nama, r.nama_item, dd.netto as netto_masuk, 0 as netto_keluar, dd.tanggal_masuk, dd.tanggal_keluar = null as tanggal_keluar, dd.tanggal_masuk as tanggal
+                FROM
+                    dtr_detail dd 
+                    left join dtr d on d.id = dd.dtr_id
+                    left join ttr t on t.dtr_id = dd.dtr_id
+                    left join po p on p.id = d.po_id
+                    left join supplier s on s.id = d.supplier_id
+                    left join rongsok r on r.id = dd.rongsok_id
+                    where t.ttr_status = 1 and dd.rongsok_id ='".$id_barang."' and dd.tanggal_masuk >= '".$start."' and dd.tanggal_masuk <= '".$end."')
+                UNION ALL
+                (SELECT 
+                    t.no_ttr, so.no_sales_order as nomor, dtd.id, dtd.rongsok_id, dtd.no_pallete, mc.nama_customer as nama, rsk.nama_item, 0 as netto_masuk, dtd.netto as netto_keluar, dtd.tanggal_masuk = null, dtd.tanggal_keluar, dtd.tanggal_keluar as tanggal
+                FROM
+                    dtr_detail dtd 
+                    left join dtr on dtr.id = dtd.dtr_id
+                    left join ttr t on t.dtr_id = dtd.dtr_id
+                    left join sales_order so on so.id = dtd.so_id
+                    left join m_customers mc on mc.id = so.m_customer_id
+                    left join rongsok rsk on rsk.id = dtd.rongsok_id
+                    where dtd.rongsok_id ='".$id_barang."' and dtd.tanggal_keluar >= '".$start."' and dtd.tanggal_keluar <= '".$end."') Order By tanggal, tanggal_keluar asc");
+        return $data;
+    }
+
     function get_stok_before($start,$rongsok_id){
         $data = $this->db->query("select DATE_FORMAT(d.tanggal,'%M %Y') as showdate, 
             EXTRACT(YEAR_MONTH from d.tanggal) as tanggal, count(dd.id) as jumlah, sum(bruto) as bruto_masuk, sum(netto) as netto_masuk,

@@ -12,6 +12,8 @@
         <th>Tanggal</th>
         <th>Nomor Bukti</th>
         <th>Nama Customer</th>  
+        <th>Nomor Cek</th>
+        <th>Tanggal JT</th>
         <th>Nominal</th>
     </thead>
     <tbody>
@@ -24,6 +26,8 @@
         echo '<td style="border-bottom:1px solid #000;">'.$row->tanggal.'</td>';
         echo '<td style="border-bottom:1px solid #000;">'.$row->nomor.'</td>';
         echo '<td style="border-bottom:1px solid #000;">'.$row->nama_customer.'</td>';
+        echo '<td style="border-bottom:1px solid #000;">'.$row->nomor_cek.'</td>';
+        echo '<td style="border-bottom:1px solid #000;">'.$row->tgl_cair.'</td>';
         echo '<td style="text-align:right; border-bottom:1px solid #000;">'.number_format($row->nominal,2,',','.').'</td>';
         echo '</tr>';
         $no++;
@@ -31,7 +35,7 @@
     }
     ?>
     <tr>
-        <td colspan="4"></td>
+        <td colspan="6"></td>
         <td style="text-align:right; border-bottom:1px solid #000; border-top:1px solid #000"><strong><?=number_format($nominal,2,',','.');?></strong></td>
     </tr>
     </tbody>
