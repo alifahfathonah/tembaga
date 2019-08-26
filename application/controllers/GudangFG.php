@@ -813,6 +813,7 @@ class GudangFG extends CI_Controller{
 
         $a = $count + 6;
         $ukuran = $this->input->post('ukuran');
+        $ukuran = substr($ukuran, 0,3);
         $no_packing = $tgl_code.$first.$ukuran.substr($code,$a,4);
         
         $this->db->insert('produksi_fg_detail', array(

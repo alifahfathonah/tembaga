@@ -172,6 +172,7 @@
                                 ?>
                             </select>
                         </div>
+                        <input type="hidden" name="idkmp" value="<?=$header['idkmp'];?>">
                     </div>                    
                     <div class="row">
                         <div class="col-md-4">

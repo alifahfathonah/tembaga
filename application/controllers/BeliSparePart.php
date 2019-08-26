@@ -1274,10 +1274,10 @@ class BeliSparePart extends CI_Controller{
             $this->load->model('Model_beli_sparepart');
             if($user_ppn==1){
                 $data['header'] = $this->Model_beli_sparepart->show_header_voucher($id)->row_array();
-                $data['list_data'] = $this->Model_beli_sparepart->show_detail_voucher_sp($data['header']['vk_id'])->result();
+                $data['list_data'] = $this->Model_beli_sparepart->show_detail_voucher_sp($data['header']['id'])->result();
             }else{
                 $data['header'] = $this->Model_beli_sparepart->show_header_voucher($id)->row_array();
-                $data['list_data'] = $this->Model_beli_sparepart->show_detail_voucher_sp($data['header']['vk_id'])->result();
+                $data['list_data'] = $this->Model_beli_sparepart->show_detail_voucher_sp($data['header']['id'])->result();
             }
             $total = 0;
             foreach ($data['list_data'] as $row) {
@@ -2182,6 +2182,12 @@ class BeliSparePart extends CI_Controller{
                 $this->db->insert('f_kas', $data_vk);
                 $f_kas = $this->db->insert_id();
 
+                //UPDATE ID_FK TAMBAHAN
+
+                $detail['v_tambahan'] = $this->Model_beli_sparepart->load_voucher_tambahan($id)->result();
+                $this->db->where('vk_id', $id);
+                $this->db->update('voucher', array('id_fk'=> $f_kas, 'vk_id'=> 0));
+
                 $data_v = array(
                         'no_voucher'=> $code,
                         'tanggal'=> $tgl_input,
@@ -2212,6 +2218,9 @@ class BeliSparePart extends CI_Controller{
                 $detail['lpb_detail'] = $this->Model_beli_sparepart->load_detail_lpb_only($this->input->post('id'))->result();
                 $detail_post = json_encode($detail);
 
+                // print_r($detail_post);
+                // die();
+
                 $ch3 = curl_init(target_url().'api/BeliSparepartAPI/vk_detail');
                 curl_setopt($ch3, CURLOPT_POST, true);
                 curl_setopt($ch3, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
@@ -2220,6 +2229,8 @@ class BeliSparePart extends CI_Controller{
                 $response3 = curl_exec($ch3);
                 $result3 = json_decode($response3, true);
                 curl_close($ch3);
+                // print_r($response3);
+                // die();
             }
 
         if($this->db->trans_complete()){
@@ -2287,6 +2298,36 @@ class BeliSparePart extends CI_Controller{
         echo json_encode($tabel); 
     }
 
+    function load_detail_tambahan(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $total = 0;
+        $no    = 1;
+        $this->load->model('Model_beli_sparepart');
+        $myDetail = $this->Model_beli_sparepart->load_voucher_tambahan($id)->result();
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->keterangan.'</td>';
+            $tabel .= '<td>'.number_format($row->amount,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail_tambahan('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a></td>';
+            $tabel .= '</tr>';            
+            $no++;
+            $total += $row->amount;
+        }
+        $tabel .= '<tr>';
+        $tabel .= '<td style="text-align:right" colspan="2"><strong>Total </strong></td>';
+        $tabel .= '<td><input type="text" id="total_voucher" name="total_voucher" style="background-color: green; color: white;" class="form-control" data-myvalue="'.$total.'" value="'.number_format($total,0,',','.').'" readonly="readonly"></td>';
+        $tabel .= '<td></td>';
+        $tabel .= '<tr>';
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
     function get_lpb_list(){ 
         $this->load->model('Model_beli_sparepart');
         $user_ppn = $this->session->userdata('user_ppn');
@@ -2343,6 +2384,68 @@ class BeliSparePart extends CI_Controller{
         );
         $this->db->where('id', $this->input->post('id'));
         if($this->db->update('lpb', $data)){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menghapus pemenuhan SPB FG! Silahkan coba kembali";
+        }           
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
+
+    function save_detail_tambahan(){
+        $return_data = array();
+        $ppn       = $this->session->userdata('user_ppn');
+        $tanggal = date("Y-m-d");
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $user_id  = $this->session->userdata('user_id');
+        $nominal  = str_replace(',', '', $this->input->post('nominal'));
+        
+        $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+        if($ppn==1){
+            $code = $this->Model_m_numberings->getNumbering('VSP-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('VSP', $tgl_input); 
+        }
+
+            $this->db->insert('voucher', array(
+                'no_voucher'=>$code,
+                'tanggal'=>$tgl_input,
+                'jenis_voucher'=>'Manual',
+                'flag_ppn'=>$ppn,
+                'status'=>1,
+                'po_id'=>0,
+                'vk_id'=>$this->input->post('id'),
+                'supplier_id'=>$this->input->post('supplier_id'),
+                'jenis_barang'=>'SPARE PART',
+                'amount'=>$nominal,
+                'keterangan'=>$this->input->post('keterangan'),
+                'created'=> $tanggal,
+                'created_by'=> $user_id
+            ));
+
+        if($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item barang! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function delete_detail_tambahan(){
+        $id = $this->input->post('id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $return_data = array();
+
+        $this->db->trans_start();
+        
+        $this->db->where('id',$id);
+        $this->db->delete('voucher');
+
+        if($this->db->trans_complete()){
             $return_data['message_type']= "sukses";
         }else{
             $return_data['message_type']= "error";

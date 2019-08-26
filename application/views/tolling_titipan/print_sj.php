@@ -28,9 +28,9 @@
                 <td colspan="3"><p align="center" style="font-size:20px;"><strong><u>
                     <?php
                     if($header['status']==1){
-                        echo 'PACKING LIST TOLLING';
+                        echo 'PACKING LIST';
                     }else{
-                        echo 'PACKING LIST TOLLING SEMENTARA';
+                        echo 'PACKING LIST SEMENTARA';
                     }?></u></strong></p></td>
             </tr>
         </table>

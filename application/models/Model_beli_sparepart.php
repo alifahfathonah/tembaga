@@ -261,7 +261,7 @@ class Model_beli_sparepart extends CI_Model{
     // }
 
     function voucher_list_ppn($user_ppn){
-        $data = $this->db->query("Select voucher.no_voucher, voucher.tanggal, voucher.jenis_voucher, voucher.keterangan, v.no_vk, s.nama_supplier, fk.nomor, v.id
+        $data = $this->db->query("Select voucher.no_voucher, voucher.tanggal, voucher.jenis_voucher, voucher.keterangan, v.no_vk, s.nama_supplier, fk.nomor, v.id, fk.id as id_fk
                 From f_vk v 
                     Left Join supplier s On (s.id = v.supplier_id)
                     Left Join voucher On (voucher.vk_id = v.id)
@@ -271,6 +271,18 @@ class Model_beli_sparepart extends CI_Model{
                 Order By fk.nomor desc");
         return $data;
     }
+
+    // function voucher_list_ppn($user_ppn){
+    //     $data = $this->db->query("Select voucher.no_voucher, voucher.tanggal, voucher.jenis_voucher, voucher.keterangan, v.no_vk, s.nama_supplier, fk.nomor, fk.id
+    //             From f_vk v 
+    //                 Left Join supplier s On (s.id = v.supplier_id)
+    //                 Left Join voucher On (voucher.vk_id = v.id)
+    //                 Left Join po On (voucher.po_id = po.id) 
+    //                 Left Join f_kas fk On (fk.id = voucher.id_fk)
+    //             Where voucher.jenis_barang='SPARE PART' and po.flag_ppn = ".$user_ppn." or v.flag_ppn =".$user_ppn."
+    //             Order By fk.nomor desc");
+    //     return $data;
+    // }
 
     function voucher_list($user_ppn){
         $data = $this->db->query("Select voucher.*, v.no_vk, s.nama_supplier
@@ -480,10 +492,10 @@ class Model_beli_sparepart extends CI_Model{
 
     function get_data_lpb($id){
         $data = $this->db->query("select lpb.id, if(po.materai=0,'',CONCAT('Materai ',po.materai))as remarks, po.no_po, po.ppn, po.currency,
-                (select if(po.diskon=0,if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount)),if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount))*(100-po.diskon)/100)+po.materai from lpb_detail ld
+                round((select if(po.diskon=0,if(p.ppn=1,sum(ld.qty*pd.amount)*110/100,sum(ld.qty*pd.amount)),if(p.ppn=1,sum(ld.qty*pd.amount)*110/100,sum(ld.qty*pd.amount))*(100-po.diskon)/100)+po.materai from lpb_detail ld
                  left join po_detail pd on pd.id = ld.po_detail_id
                  left join po p on p.id = pd.po_id
-                 where ld.lpb_id=lpb.id) as amount          
+                 where ld.lpb_id=lpb.id),0) as amount          
             from lpb
             left join po on po.id = lpb.po_id
             where lpb.id =".$id);
@@ -499,6 +511,11 @@ class Model_beli_sparepart extends CI_Model{
             from lpb
             left join po on po.id = lpb.po_id
             where lpb.vk_id =".$id);
+        return $data;
+    }
+
+    function load_voucher_tambahan($id){
+        $data = $this->db->query("select * from voucher where vk_id =".$id);
         return $data;
     }
 
@@ -532,30 +549,54 @@ class Model_beli_sparepart extends CI_Model{
     //     return $data;
     // }
 
+    // function show_header_voucher($id){
+    //     $data = $this->db->query("select v.*, fk.tgl_jatuh_tempo, fk.no_giro, b.no_acc, b.nama_bank, s.nama_supplier, p.no_po, pmb.no_pembayaran, u.realname as pic, fk.nomor
+    //             from f_vk fvk
+    //             left join voucher v on (v.vk_id = fvk.id)
+    //             left join f_kas fk on (fk.id = v.id_fk)
+    //             left join bank b on (b.id = fk.id_bank)
+    //             left join po p on (p.id = v.po_id)
+    //             left join supplier s on (s.id = v.supplier_id)
+    //             left join f_pembayaran pmb on (pmb.id = v.pembayaran_id)
+    //             left join users u on (u.id = v.created_by)
+    //             where fvk.id =".$id);
+    //     return $data;
+    // }
+
     function show_header_voucher($id){
-        $data = $this->db->query("select v.*, fk.tgl_jatuh_tempo, fk.no_giro, b.no_acc, b.nama_bank, s.nama_supplier, p.no_po, pmb.no_pembayaran, u.realname as pic, fk.nomor
-                from f_vk fvk
-                left join voucher v on (v.vk_id = fvk.id)
-                left join f_kas fk on (fk.id = v.id_fk)
+        $data = $this->db->query("select fk.id, fk.tanggal, fk.keterangan, fk.tgl_jatuh_tempo, fk.no_giro, b.no_acc, b.nama_bank, fk.nomor, s.nama_supplier
+                from f_kas fk
+                left join voucher v on v.id_fk = fk.id
+                left join supplier s on s.id = v.supplier_id
                 left join bank b on (b.id = fk.id_bank)
-                left join po p on (p.id = v.po_id)
-                left join supplier s on (s.id = v.supplier_id)
-                left join f_pembayaran pmb on (pmb.id = v.pembayaran_id)
-                left join users u on (u.id = v.created_by)
-                where fvk.id =".$id);
+                where fk.id =".$id);
         return $data;
     }
 
+    // function show_detail_voucher_sp($id){
+    //     $data = $this->db->query("select lpb.no_bpb, if(po.materai=0,'',CONCAT('Materai ',po.materai)) as remarks, po.no_po,
+    //         (select if(po.diskon=0,if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount)),if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount))*(100-po.diskon)/100)+po.materai from lpb_detail ld
+    //              left join po_detail pd on pd.id = ld.po_detail_id
+    //              left join po p on p.id = pd.po_id
+    //              where ld.lpb_id=lpb.id) as amount     
+    //         from lpb
+    //         left join po on po.id = lpb.po_id
+    //         left join voucher v on v.vk_id = lpb.vk_id
+    //         where lpb.vk_id =".$id);
+    //     return $data;
+    // }
+
     function show_detail_voucher_sp($id){
-        $data = $this->db->query("select lpb.no_bpb, if(po.materai=0,'',CONCAT('Materai ',po.materai)) as remarks, po.no_po,
-            (select if(po.diskon=0,if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount)),if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount))*(100-po.diskon)/100)+po.materai from lpb_detail ld
+        $data = $this->db->query("select COALESCE(lpb.no_bpb,v.keterangan) as no_bpb, if(po.materai=0,'',CONCAT('Materai ',po.materai)) as remarks, po.no_po,
+            COALESCE((select if(po.diskon=0,if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount)),if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount))*(100-po.diskon)/100)+po.materai from lpb_detail ld
                  left join po_detail pd on pd.id = ld.po_detail_id
                  left join po p on p.id = pd.po_id
-                 where ld.lpb_id=lpb.id) as amount     
-            from lpb
+                 where ld.lpb_id=lpb.id),v.amount) as amount     
+            from f_kas fk
+            left join voucher v on v.id_fk = fk.id
+            left join lpb on (v.vk_id != 0 and lpb.vk_id = v.vk_id)
             left join po on po.id = lpb.po_id
-            left join voucher v on v.vk_id = lpb.vk_id
-            where lpb.vk_id =".$id);
+            where fk.id =".$id);
         return $data;
     }
 

@@ -80,7 +80,7 @@ class Model_purchase_order extends CI_Model{
 	}
 
 	function show_header_po($id){
-		$data = $this->db->query("select rpo.*, c.nama_cv, c.pic, c.alamat, rso.id as so_id, rso.no_so
+		$data = $this->db->query("select rpo.*, c.nama_cv, c.pic, c.alamat, rso.id as so_id, rso.no_so, c.idkmp
 			from r_t_po rpo
 			left join m_cv c on (rpo.cv_id = c.id)
 			left join r_t_so  rso on (rso.po_id = rpo.id)

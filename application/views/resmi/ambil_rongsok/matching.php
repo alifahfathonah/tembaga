@@ -2,11 +2,11 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Tolling
+            <i class="fa fa-angle-right"></i> Pembelian 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Tolling'); ?>"> Tolling Ke Customer </a> 
+            <a href="<?php echo base_url('index.php/R_Rongsok'); ?>"> Pembelian Rongsok </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Tolling/matching'); ?>"> Matching PO - DTT </a> 
+            <a href="<?php echo base_url('index.php/R_Rongsok/matching'); ?>"> Matching PO - DTR </a> 
         </h5>          
     </div>
 </div>
@@ -14,7 +14,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['matching']==1) ){
+            if( ($group_id==16)||($hak_akses['matching']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -37,13 +37,13 @@
             <div class="col-md-1">
                 No. PO <font color="#f00">*</font>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <select id="po_id" name="po_id" class="form-control myline select2me" 
-                    data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                    data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
                     <option value=""></option>
                     <?php
                         foreach ($po_list as $row){
-                            echo '<option value="'.$row->id.'">'.$row->no_po.'('.$row->nama_supplier.')</option>';
+                            echo '<option value="'.$row->id.'">'.$row->no_po.' ('.$row->nama_supplier.')</option>';
                         }
                     ?>
                 </select>
@@ -71,11 +71,10 @@ function simpanData(){
         $('#message').html("Silahkan pilih nomor PO!");
         $('.alert-danger').show(); 
     }else{ 
-        window.location.replace("<?php echo base_url(); ?>index.php/Tolling/proses_matching/"+ $("#po_id").val()); 
+        window.location.replace("<?php echo base_url(); ?>index.php/R_Rongsok/proses_matching/"+ $("#po_id").val()); 
     };
 };
 </script>
-
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>

@@ -42,11 +42,30 @@
                     </a>
                 </li>
                 <?php } if($group_id==9 || (isset($akses_menu['R_Rongsok']) && $akses_menu['R_Rongsok']==1)){ ?>
-                <li <?php if ($module_name=="Rongsok") echo 'class="start active open"'; ?>>
-                    <a href="<?php echo base_url(); ?>index.php/R_Rongsok">
-                        <i class="fa fa-trash"></i>
-                        <span class="title">AMBIL RONGSOK</span>
+                <li <?php if ($module_name=="R_Rongsok") echo 'class="start active open"'; ?>>
+                    <a href="javascript:;">
+                    <i class="fa fa-cogs"></i>
+                    <span class="title">KMP Pajak</span>
+                    <span class="arrow "></span>
                     </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/R_Rongsok/po_list">
+                            <i class="fa fa-file-word-o"></i>
+                            PO List </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/R_Rongsok/matching">
+                            <i class="fa fa-chain"></i>
+                            Matching PO - DTR</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/R_Rongsok">
+                            <i class="fa fa-trash"></i>
+                                <span class="title">AMBIL RONGSOK</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <?php } if($group_id==9 || (isset($akses_menu['R_SuratJalan']) && $akses_menu['R_SuratJalan']==1)){ ?>
                 <li <?php if ($module_name=="SuratJalan") echo 'class="start active open"'; ?>>

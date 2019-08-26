@@ -180,10 +180,40 @@
                 </div>
             </div>
             <hr class="divider"/>
+            <hr class="divider"/>
+    <!-- TAMBAHAN -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 align="center" style="font-weight: bold;">Tambahan / Pembulatan</h4>
+                    <div class="table-scrollable">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <th>No</th>
+                                <th style="width: 20%;">Keterangan</th>
+                                <th>Nominal</th>
+                                <th>Actions</th>
+                            </thead>
+                            <tbody>
+                                <tbody id="boxVoucherTambahan">
+
+                                </tbody>
+                            <tr>
+                                <td style="text-align:center"><i class="fa fa-plus"></i></td>
+                                <td><input type="text" id="keterangan2" name="keterangan2" class="form-control myline" placeholder="Keterangan ..."></td>
+                                <td><input type="text" id="nominal_add2" name="nominal_add2" class="form-control myline" onkeyup="getComa(this.value, this.id);" placeholder="Nominal ..."></td>
+                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail_tambahan();" style="margin-top:5px" id="btnSaveTambahan"><i class="fa fa-plus"></i> Tambah </a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <hr class="divider"/>
         <div class="row">
             <div class="col-md-12">
                 <div class="alert alert-danger display-hide">
                     <button class="close" data-close="alert"></button>
+
                     <span id="message">&nbsp;</span>
                 </div>
             </div>
@@ -392,7 +422,19 @@ function loadDetail_lpb(id){
         data:"id="+ id,
         success:function(result){
             $('#boxDetailLPB').html(result);
-            $('#nominal').val($('#total_lpb').val());
+            $('#nominal').val(numberWithCommas(Number($('#total_lpb').attr("data-myvalue"))+Number($('#total_voucher').attr("data-myvalue"))));
+        }
+    });
+}
+
+function loadDetail_tambahan(id){
+    $.ajax({
+        type:"POST",
+        url:'<?php echo base_url('index.php/BeliSparePart/load_detail_tambahan'); ?>',
+        data:"id="+ id,
+        success:function(result){
+            $('#boxVoucherTambahan').html(result);
+            $('#nominal').val(numberWithCommas(Number($('#total_lpb').attr("data-myvalue"))+Number($('#total_voucher').attr("data-myvalue"))));
         }
     });
 }
@@ -471,6 +513,63 @@ function get_currency(id){
         $('#currency').val('IDR');
     }
 }
+
+function saveDetail_tambahan(){
+    if($.trim($("#keterangan2").val()) == ""){
+        $('#message').html("Silahkan isi Keterangan!");
+        $('.alert-danger').show();
+    }else if($.trim($("#nominal_add2").val()) == ""){
+        $('#message').html("Silahkan isi Nominal!");
+        $('.alert-danger').show();
+    }else{
+        $.ajax({
+            type:"POST",
+            url:'<?php echo base_url('index.php/BeliSparePart/save_detail_tambahan'); ?>',
+            data:{
+                id:$('#id').val(),
+                supplier_id:$('#supplier_id').val(),
+                tanggal:$('#tanggal').val(),
+                keterangan:$('#keterangan2').val(),
+                nominal:$('#nominal_add2').val()
+            },
+            success:function(result){
+                if(result['message_type']=="sukses"){
+                    loadDetail_tambahan(<?php echo $header['id'];?>);
+                    $("#keterangan2").val('');
+                    $("#nominal_add2").val('');
+                    $('#message').html("");
+                    $('.alert-danger').hide();
+                }else{
+                    $('#message').html(result['message']);
+                    $('.alert-danger').show(); 
+                }            
+            }
+        });
+    }
+}
+
+function hapusDetail_tambahan(id){
+    var r=confirm("Anda yakin menghapus item ini?");
+    if (r==true){
+        $.ajax({
+            type:"POST",
+            url:'<?php echo base_url('index.php/BeliSparePart/delete_detail_tambahan'); ?>',
+            data:"id="+ id,
+            success:function(result){
+                if(result['message_type']=="sukses"){
+                    loadDetail_tambahan(<?php echo $header['id'];?>);
+                }else{
+                    alert(result['message']);
+                }     
+            }
+        });
+    }
+}
+
+function getComa(value, id){
+    angka = value.toString().replace(/\,/g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+}
 </script>
 
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
@@ -498,6 +597,7 @@ $(function(){
         dateFormat: 'dd-mm-yy'
     });
 
+    loadDetail_tambahan(<?php echo $header['id']; ?>);
     loadDetail_lpb(<?php echo $header['id']; ?>);
     load_lpb();
 });

@@ -46,7 +46,7 @@ class Model_so extends CI_Model{
 	function show_header_so($id){
 		$data = $this->db->query("select rso.*, 
 			rpo.no_po, rpo.id as po_id, 
-			c.nama_cv, c.pic, c.alamat,
+			c.nama_cv, c.pic, c.alamat, c.idkmp,
             cs.nama_customer, cs.pic as pic_cs, cs.alamat as alamat_cs, cs.telepon as telepon_cs,
 			u.realname as nama_marketing 
 			from r_t_so rso

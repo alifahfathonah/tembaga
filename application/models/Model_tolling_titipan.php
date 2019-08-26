@@ -506,7 +506,9 @@ class Model_tolling_titipan extends CI_Model{
     }
 
     function get_po_list($user_ppn){
-        $data = $this->db->query("select * from po where flag_tolling = 1 and status != 1 and po.ppn = ".$user_ppn);
+        $data = $this->db->query("select po.*, s.nama_supplier from po 
+            left join supplier s on s.id = po.supplier_id
+            where flag_tolling = 1 and status != 1 and po.ppn = ".$user_ppn);
         return $data;
     }
 

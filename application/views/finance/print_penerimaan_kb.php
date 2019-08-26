@@ -21,12 +21,12 @@
     $nominal = 0;
     foreach ($detailLaporan as $row){
         echo '<tr>';
-        echo '<td style="text-align:center; border-bottom:1px solid #000;">'.$no.'</td>';
-        echo '<td style="border-bottom:1px solid #000;">'.$row->tanggal.'</td>';
-        echo '<td style="border-bottom:1px solid #000;">'.$row->nomor.'</td>';
-        echo '<td style="border-bottom:1px solid #000;">'.$row->nama_customer.'</td>';
-        echo '<td style="border-bottom:1px solid #000;">'.$row->nama_bank.'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000;">'.number_format($row->nominal,2,',','.').'</td>';
+        echo '<td style="text-align:center; border-bottom:1px solid #000; border-right: 1px solid #000;">'.$no.'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-right: 1px solid #000;">'.$row->tanggal.'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-right: 1px solid #000;">'.$row->nomor.'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-right: 1px solid #000;">'.$row->nama_customer.'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-right: 1px solid #000;">'.$row->nama_bank.'</td>';
+        echo '<td style="text-align:right; border-bottom:1px solid #000; border-right: 1px solid #000;">'.number_format($row->nominal,2,',','.').'</td>';
         echo '</tr>';
         $no++;
         $nominal += $row->nominal;

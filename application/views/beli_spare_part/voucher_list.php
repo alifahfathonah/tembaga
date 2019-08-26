@@ -59,10 +59,10 @@
                             echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/BeliSparePart/matching_voucher/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit &nbsp; </a>';
                             echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/BeliSparePart/delete_matching_voucher/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-trash"></i> Hapus &nbsp; </a>';
                             }else{
-                        ?>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" target="_blank" href="<?php echo base_url(); ?>index.php/BeliSparePart/print_voucher/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
-                        <?php }
-                            } ?>
+                            echo '<a class="btn btn-circle btn-xs blue-ebonyclay" target="_blank" href="'.base_url().'index.php/BeliSparePart/print_voucher/'.$data->id_fk.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>';
+                            }
+                        }else{?>
+                        <a class="btn btn-circle btn-xs blue-ebonyclay" target="_blank" href="<?php echo base_url(); ?>index.php/BeliSparePart/print_voucher/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>  <?php } ?>
                         </td>
                     </tr>
                     <?php

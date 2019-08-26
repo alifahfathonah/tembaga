@@ -243,7 +243,7 @@ class R_Rongsok extends CI_Controller{
             'dtr_id' => $this->input->post('dtr_asli_id'),
             'dtr_asli_id'=>$this->input->post('dtr_detail_id'),
             'rongsok_id'=>$this->input->post('id_barang'),
-            'bruto'=>$this->input->post('bruto'),
+            'bruto'=>$this->input->post('netto'),
             'netto'=>$this->input->post('netto'),
             'netto_resmi'=>$this->input->post('netto'),
             'no_pallete' => $no_pallete,
@@ -448,5 +448,346 @@ class R_Rongsok extends CI_Controller{
 
         header('Content-Type: application/json');
         echo json_encode($tabel);
+    }
+
+    /***************** PO LIST *******************/
+
+    function po_list(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "resmi/ambil_rongsok/po_list";
+        $this->load->model('Model_beli_rongsok');
+        $this->load->model('Model_beli_sparepart');
+        $data['list_data'] = $this->Model_beli_rongsok->po_list(1)->result();
+        $data['bank_list'] = $this->Model_beli_sparepart->bank(1)->result();
+
+        $this->load->view('layout', $data);
+    }
+    
+    function add_po(){
+        $module_name = $this->uri->segment(1);
+        $data['user_ppn'] = $this->session->userdata('user_ppn');
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "resmi/ambil_rongsok/add_po";
+        
+        $this->load->model('Model_beli_sparepart');
+        $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
+        $data['no'] = $this->Model_beli_sparepart->get_last_po('Rongsok')->row_array();
+        $this->load->view('layout', $data);
+    }
+
+    function save_po(){
+        $user_id   = $this->session->userdata('user_id');
+        $tanggal   = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
+        $user_ppn  = 1;
+        
+        $this->db->trans_start();
+        $code = 'PO-KMP.'.$tgl_po.'.'.$this->input->post('no_po');
+
+        $data = array(
+            'no_po'=> $code,
+            'tanggal'=> $tgl_input,
+            'flag_ppn'=> $user_ppn,
+            'flag_tolling'=> 0,
+            'type'=> 1,
+            'ppn'=> $this->input->post('ppn'),
+            'diskon'=>str_replace('.', '', $this->input->post('diskon')),
+            'materai'=>$this->input->post('materai'),
+            'currency'=> $this->input->post('currency'),
+            'kurs'=> $this->input->post('kurs'),
+            'supplier_id'=>$this->input->post('supplier_id'),
+            'remarks'=> $this->input->post('remarks'),
+            'term_of_payment'=>$this->input->post('term_of_payment'),
+            'jenis_po'=>'Rongsok',
+            'created'=> $tanggal,
+            'created_by'=> $user_id,
+            'modified'=> $tanggal,
+            'modified_by'=> $user_id
+        );
+        $this->db->insert('po', $data);
+        $po_id = $this->db->insert_id();
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $data_id = array('reff1' => $po_id);
+                $data_post = array_merge($data, $data_id);
+
+                $data_post = http_build_query($data_post);
+
+                $ch = curl_init(target_url().'api/BeliRongsokAPI/po');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+            }
+
+        if($this->db->trans_complete()){
+            redirect('index.php/R_Rongsok/edit_po/'.$po_id);  
+        }else{
+            $this->session->set_flashdata('flash_msg', 'PO rongsok gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/R_Rongsok');  
+        }            
+    }    
+
+    function edit_po(){
+        $module_name = $this->uri->segment(1);
+        $data['user_ppn'] = $this->session->userdata('user_ppn');
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "resmi/ambil_rongsok/edit";
+            $this->load->model('Model_beli_rongsok');
+            $data['header'] = $this->Model_beli_rongsok->show_header_po($id)->row_array();  
+            if($data['header']['status']==0){    
+                $this->load->model('Model_rongsok');
+                $data['list_rongsok'] = $this->Model_rongsok->list_data()->result();
+                $data['count'] = $this->Model_beli_rongsok->count_po_detail($id)->row_array();
+            }else{
+                $data['count'] = $this->Model_beli_rongsok->count_po_detail($id)->row_array();
+                $data['list_data'] = $this->Model_beli_rongsok->load_detail($id)->result();
+                $data['list_detail'] = $this->Model_beli_rongsok->show_data_po($id)->result();
+            }
+
+            $this->load->model('Model_beli_sparepart');
+            $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/BeliRongsok');
+        }
+    }
+
+    function update(){
+        $tanggal  = date('Y-m-d h:m:s');
+        
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $data = array(
+                'tanggal'=> $tgl_input,
+                'supplier_id'=>$this->input->post('supplier_id'),
+                'remarks'=> $this->input->post('remarks'),
+                'term_of_payment'=>$this->input->post('term_of_payment'),
+                'modified'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+        
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('po', $data);
+
+            $this->load->helper('target_url');
+            
+            $data_post['master'] = $data;
+            $data_post['po_id'] = $this->input->post('id');
+
+            $this->load->model('Model_beli_rongsok');
+            $data_post['details'] = $this->Model_beli_rongsok->load_detail_only($this->input->post('id'))->result();
+
+            $detail_post = json_encode($data_post);
+
+            $ch = curl_init(target_url().'api/BeliRongsokAPI/po_detail');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $result = json_decode($response, true);
+            curl_close($ch);
+        
+        $this->session->set_flashdata('flash_msg', 'Data PO rongsok berhasil disimpan');
+        redirect('index.php/R_Rongsok/po_list');
+    }
+
+    function matching(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');       
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "resmi/ambil_rongsok/matching";
+        $this->load->model('Model_beli_rongsok');
+        $data['po_list'] = $this->Model_beli_rongsok->get_po_list(1)->result();
+
+        $this->load->view('layout', $data);
+    }
+    
+    function proses_matching(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');  
+        $user_ppn    = 1;
+
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $po_id = $this->uri->segment(3);
+        
+        $data['content']= "resmi/ambil_rongsok/proses_matching";
+        $this->load->model('Model_beli_rongsok');
+        $data['header_po']  = $this->Model_beli_rongsok->show_header_po($po_id)->row_array();
+        $data['details_po'] = $this->Model_beli_rongsok->show_detail_po($po_id)->result();
+
+        $dtr_app = $this->Model_beli_rongsok->get_dtr_approve($po_id)->result();
+        foreach ($dtr_app as $index=>$row){
+            $dtr_app[$index]->details = $this->Model_beli_rongsok->show_detail_dtr($row->id)->result();
+        }
+        $data['dtr_app'] = $dtr_app;
+        $sp_id = $data['header_po']['supplier_id'];
+        $dtr = $this->Model_beli_rongsok->get_dtr($sp_id,$user_ppn)->result();
+        foreach ($dtr as $index=>$row){
+            $dtr[$index]->details = $this->Model_beli_rongsok->show_detail_dtr($row->id)->result();
+        }
+        $data['dtr'] = $dtr;
+        $this->load->view('layout', $data);
+    }
+    
+    function approve(){
+        $dtr_id = $this->input->post('dtr_id');
+        $po_id = $this->input->post('po_id');
+        $user_id  = $this->session->userdata('user_id');
+        $tgl_code = date('Ym', strtotime($this->input->post('tanggal')));
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $return_data = array();
+        
+            $this->db->trans_start();       
+
+            #Update status DTR
+            $this->db->where('id', $dtr_id);
+            $this->db->update('dtr', array(
+                    'po_id'=>$po_id,
+                    'status'=>1,
+                    'approved'=>$tanggal,
+                    'approved_by'=>$user_id));
+            
+            $no_ttr = 'TTR-KMP.'.$tgl_code.'.'.$this->input->post('nomor_ttr');
+            #Create TTR
+            $data = array(
+                    'no_ttr'=> $no_ttr,
+                    'no_sj' => $this->input->post('no_sj'),
+                    'jmlh_afkiran' => 0,
+                    'jmlh_pengepakan' => 0,
+                    'jmlh_lain'=> 0,
+                    'tanggal'=> $tgl_input,
+                    'dtr_id'=> $dtr_id,
+                    'ttr_status' => 2,
+                    'created'=> $tanggal,
+                    'created_by'=> $user_id,
+                    'modified'=> $tanggal,
+                    'modified_by'=> $user_id
+            );
+            $this->db->insert('ttr', $data);
+            $ttr_id = $this->db->insert_id();
+            
+            $this->load->model('Model_beli_rongsok');
+            $details = $this->Model_beli_rongsok->show_detail_dtr($dtr_id)->result();
+            foreach ($details as $row){
+                $this->db->insert('ttr_detail', array(
+                    'ttr_id'=>$ttr_id,
+                    'dtr_detail_id'=>$row->id,
+                    'rongsok_id'=>$row->rongsok_id,
+                    'qty'=>$row->qty,
+                    'bruto'=>$row->bruto,
+                    'netto'=>$row->netto,
+                    'line_remarks'=>$row->line_remarks,
+                    'created'=>$tanggal,
+                    'created_by'=> $user_id,
+                    'modified'=> $tanggal,
+                    'modified_by'=> $user_id
+                ));
+            }
+                
+                #update po_detail_id di dtr_detail
+                $po_dtr_check_update = $this->Model_beli_rongsok->check_to_update($po_id)->result();
+                foreach ($po_dtr_check_update as $u) {
+                    $this->db->where('id',$u->dtr_detail_id );
+                    $this->db->update('dtr_detail',array(
+                                    'po_detail_id'=>$u->id));
+                }
+
+                #update status PO, jika DTR sudah mencukupi
+                $po_dtr_list = $this->Model_beli_rongsok->check_po_dtr($po_id)->result();
+                foreach ($po_dtr_list as $v) {
+                    #penghitungan +- 10 % PO ke DTR
+                    // if(((int)$v->tot_netto) >= (0.9*((int)$v->qty))){
+                    //     #update po_detail flag_dtr
+                    //     $this->Model_beli_rongsok->update_flag_dtr_po_detail($po_id);
+                    // }
+                    // $total_qty += $v->qty;
+                        if(((int)$v->tot_netto) >= (0.9*((int)$v->tot_qty))){
+                            $this->db->where('id',$po_id);
+                            $this->db->update('po',array(
+                                            'status'=>3,
+                                            'flag_pelunasan'=>0));
+                        }else {
+                            $this->db->where('id',$po_id);
+                            $this->db->update('po',array(
+                                            'status'=>2));
+                        }
+                }
+
+                $this->load->helper('target_url');
+
+                $this->load->model('Model_beli_rongsok');
+
+                $data_post['master'] = $this->Model_beli_rongsok->ttr_dtr_only($ttr_id)->row_array();
+                $data_post['detail'] = $this->Model_beli_rongsok->ttr_dtr_detail_only($ttr_id)->result();
+
+                $detail_post = json_encode($data_post);
+                // print_r($detail_post);
+                // die();
+                $ch = curl_init(target_url().'api/BeliRongsokAPI/dtr');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+
+        if($this->db->trans_complete()){
+            redirect('index.php/R_Rongsok/proses_matching/'.$this->input->post('po_id'));
+            // $return_data['type_message']= "sukses";
+            // $return_data['message'] = "TTR sudah diberikan ke bagian gudang";
+            // $return_data['message']= "TTR berhasil di-create dengan nomor : ".$code;                 
+        }else{
+            redirect('index.php/R_Rongsok/proses_matching/'.$this->input->post('po_id'));
+        }
+       // header('Content-Type: application/json');
+       // echo json_encode($return_data);
     }
 }

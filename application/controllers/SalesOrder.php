@@ -447,6 +447,8 @@ class SalesOrder extends CI_Controller{
                 $this->db->insert('t_spb_ampas', $dataC);
                 $insert_id = $this->db->insert_id();
             }else if($category == 'LAIN'){
+                $dataC = null;
+                $reff_spb = null;
                 $insert_id = '0';
                 $tgl_po = '0000-00-00';
             }
@@ -491,7 +493,9 @@ class SalesOrder extends CI_Controller{
                 $data_post['category'] = $category;
                 $data_post['so'] = array_merge($data, $reff_so);
                 $data_post['tso'] = array_merge($t_data, $reff_tso);
-                $data_post['spb'] = array_merge($dataC, $reff_spb);
+                if($category!='LAIN'){
+                    $data_post['spb'] = array_merge($dataC, $reff_spb);
+                }
 
                 $post = json_encode($data_post);
 

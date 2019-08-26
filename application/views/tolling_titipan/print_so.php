@@ -159,10 +159,10 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td style="text-align: center"><strong><?php echo ($this->session->userdata('user_ppn')==0) ? 'Frans. Tj' : 'Tjan Lin Oy';?></strong></td>
+                            <td style="text-align: center"><strong><?php echo ($this->session->userdata('user_ppn')==0) ? 'Tjan' : 'Tjan Lin Oy';?></strong></td>
                             <td></td>
                             <td></td>
-                            <td style="text-align: center"><strong><?php echo ($this->session->userdata('user_ppn')==0) ? 'Lia' : 'War';?></strong></td>
+                            <td style="text-align: center"><strong><?php echo ($this->session->userdata('user_ppn')==0) ? 'Yeni' : 'War';?></strong></td>
                         </tr>
                     </table>
                 </td>

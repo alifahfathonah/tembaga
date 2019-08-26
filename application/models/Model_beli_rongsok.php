@@ -825,6 +825,17 @@ class Model_beli_rongsok extends CI_Model{
             order by dd.rongsok_id, dd.tanggal_keluar asc");
         return $data;
     }
+
+// LIST DTR UNTUK SPB MATCHING
+    function list_dtr(){
+        $data = $this->db->query("select dtr.*, r.nama_item, (select SUM(netto) from dtr_detail where dtr_detail.dtr_id = dtr.id and flag_resmi = 0) as netto, dtrd.berat_palette, dtrd.no_pallete, dtrd.line_remarks
+            from dtr 
+            left join dtr_detail dtrd on (dtr.id = dtrd.dtr_id)
+            left join rongsok r on (dtrd.rongsok_id = r.id)
+            where dtr.status = 1 and dtr.flag_taken = 0 and type = 0 group by dtr.no_dtr
+            order by dtr.tanggal asc");
+        return $data;
+    }
 }
 
 /** CREATE VIEW STOK_RONGSOK 

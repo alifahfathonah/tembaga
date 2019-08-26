@@ -959,8 +959,18 @@ class Model_finance extends CI_Model{
     }
 
     function trx_keluar_masuk($s,$e,$id){
-        return $this->db->query("select * from f_kas where tanggal BETWEEN '".$s."' and '".$e."' and id_bank =".$id."
-            order by tanggal, nomor asc
+        return $this->db->query("select fk.*, COALESCE(NULLIF(fk.keterangan,''),mc.nama_customer,(CASE WHEN COALESCE(mc.nama_customer, s.nama_supplier) IS NOT NULL
+            THEN
+                CONCAT_WS(' ','PEMB.',COALESCE(mc.nama_customer, s.nama_supplier))
+            ELSE
+                nm_cost
+            END)) as keterangan from f_kas fk
+            left join voucher v on fk.jenis_trx = 1 and v.id_fk = fk.id 
+            left join supplier s on s.id = v.supplier_id
+            left join f_uang_masuk fum on fk.jenis_trx = 0 and fum.id = fk.id_um
+            left join m_customers mc on mc.id = fum.m_customer_id
+            where fk.tanggal BETWEEN '".$s."' and '".$e."' and fk.id_bank =".$id."
+            order by fk.tanggal, fk.nomor asc
             ");
     }
     // function print_penjualan_customer($ppn){
