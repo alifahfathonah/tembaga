@@ -11,10 +11,30 @@
 			</td>
 		</tr>
 	</table>
-	<table width="100%" cellpadding="2" cellspacing="0" style="font-size: 13px;">
+	<table width="100%" cellpadding="2" cellspacing="0" style="font-size: 13px; border-collapse: collapse;" border="1">
 		<thead>
-			
+			<tr>
+				<td>No</td>
+				<td>Keterangan</td>
+			<?php foreach($header as $h){ ?>
+				<td><?= $h->kode_rongsok ?></td>
+			<?php } ?>
+			</tr>
 		</thead>
+		<tbody>
+		<?php
+			$no = 1;
+			foreach ($detailLaporan as $key => $row) {
+		?>
+			<tr>
+				<td><?= $no; ?></td>
+				<td><?= $row['nama_sup_cust']; ?></td>
+			</tr>
+		<?php 
+				$no++;
+			}
+		?>
+		</tbody>
 	</table>
 </body>
 </html>
