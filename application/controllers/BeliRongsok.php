@@ -134,7 +134,7 @@ class BeliRongsok extends CI_Controller{
             'tanggal'=> $tgl_input,
             'flag_ppn'=> $user_ppn,
             'flag_tolling'=> 0,
-            'type'=> $this->input->post('type'),
+            'type'=> 0,
             'ppn'=> $this->input->post('ppn'),
             'diskon'=>str_replace('.', '', $this->input->post('diskon')),
             'materai'=>$this->input->post('materai'),
@@ -547,6 +547,23 @@ class BeliRongsok extends CI_Controller{
         echo json_encode($data);
     }
 
+    function get_no_po(){
+        $tgl_code = date('Ym', strtotime($this->input->post('tanggal')));
+
+        $code_po = 'PO-KMP.'.$tgl_code.'.'.$this->input->post('no_po');
+        // print_r($code_po);
+        // die();
+        $count = $this->db->query("select count(id) as count from po where no_po ='".$code_po."'")->row_array();
+        // print_r($count);die();
+        if($count['count']>0){
+            $data['type'] = 'duplicate';
+        }else{
+            $data['type'] = 'sukses';
+        }
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+
     function save_voucher_pembayaran(){
         $ppn = $this->session->userdata('user_ppn');
         $user_id  = $this->session->userdata('user_id');
@@ -680,6 +697,20 @@ class BeliRongsok extends CI_Controller{
         $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
         $code = 'DTR-KMP.'.$tgl_po.'.'.$this->input->post('id');
         $count = $this->db->query("select count(id) as count from dtr where no_dtr ='".$code."'")->row_array();
+        if($count['count']>0){
+            $data['type'] = 'duplicate';
+        }else{
+            $data['type'] = 'sukses';
+        }
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+
+    function get_no_ttr(){
+        $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
+        $code = 'TTR-KMP.'.$tgl_po.'.'.$this->input->post('no_ttr');
+
+        $count = $this->db->query("select count(id) as count from ttr where no_ttr ='".$code."'")->row_array();
         if($count['count']>0){
             $data['type'] = 'duplicate';
         }else{

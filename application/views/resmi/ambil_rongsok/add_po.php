@@ -4,9 +4,9 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Pembelian 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliRongsok'); ?>"> Pembelian Rongsok </a> 
+            <a href="<?php echo base_url('index.php/R_Rongsok'); ?>"> Pembelian Rongsok </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliRongsok/add'); ?>"> Input PO </a> 
+            <a href="<?php echo base_url('index.php/R_Rongsok/add_po'); ?>"> Input PO </a> 
         </h5>          
     </div>
 </div>
@@ -14,7 +14,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['add']==1) ){
+            if( ($group_id==16)||($hak_akses['add']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -25,7 +25,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/BeliRongsok/save'); ?>">                            
+              id="formku" action="<?php echo base_url('index.php/R_Rongsok/save_po'); ?>">                            
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
@@ -33,7 +33,7 @@
                             No. PO Terakhir <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_po" name="no_po" readonly="readonly"
+                            <input type="text" id="no_po_terakhir" name="no_po_terakhir" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px"
                                 value="<?=$no['no_po'];?>">
                         </div>
@@ -43,13 +43,7 @@
                             No. PO <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <?php if($this->session->userdata('user_ppn')==1){ ?>
                             <input type="text" id="no_po" name="no_po" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor PO ..." onkeyup="this.value = this.value.toUpperCase()">
-                            <?php }else{ ?>
-                            <input type="text" id="no_po" name="no_po" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px"
-                                value="Auto generate">
-                            <?php } ?>
                         </div>
                     </div>
                     <div class="row">
@@ -154,7 +148,6 @@
                             <input type="number" id="kurs" name="kurs" class="form-control myline" value="1" style="margin-bottom:5px">
                         </div>
                     </div>
-                    <?php if($this->session->userdata('user_ppn')==1){?>
                     <div class="row">
                         <div class="col-md-2">
                             PPN
@@ -166,11 +159,6 @@
                                 <option value="0">No</option>
                             </select>
                         </div>
-                    </div>
-                    <?php } else{ ?>
-                        <input type="hidden" id="ppn" name="ppn" value="0">
-                        <input type="hidden" id="type" name="type" value="0">
-                    <?php } ?>
                     </div>
                 </div>              
             </div>
@@ -204,8 +192,26 @@ function simpanData(){
         $('#message').html("Term of payment harus diisi!");
         $('.alert-danger').show(); 
     }else{
-        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
-        $('#formku').submit(); 
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url('index.php/BeliRongsok/get_no_po'); ?>",
+            data: {
+                no_po: $('#no_po').val(),
+                tanggal: $('#tanggal').val()
+            },
+            cache: false,
+            success: function(result) {
+                var res = result['type'];
+                // console.log(res);
+                if(res=='duplicate'){
+                    $('#message').html("Nomor PO sudah ada, tolong coba lagi!");
+                    $('.alert-danger').show(); 
+                }else{
+                    $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+                    $('#formku').submit(); 
+                }
+            }
+        });
     };
 };
 
@@ -253,4 +259,3 @@ $(function(){
     });       
 });
 </script>
-      

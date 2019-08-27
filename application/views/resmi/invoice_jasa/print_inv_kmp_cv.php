@@ -98,7 +98,7 @@
                             <td colspan="4" rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nama Item</strong></td>
                             <td rowspan="2"  style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Qty</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Netto</strong></td>
-                            <td rowspan="2" colspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Harga</strong></td>
+                            <td rowspan="2" colspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;" width="15%"><strong>Harga</strong></td>
                             <td rowspan="2" colspan="2" style="text-align:center; border:1px solid #000"><strong>Total Harga</strong></td>
                         </tr>
                                 <tr>
@@ -177,7 +177,7 @@
                         <tr>
                             <td colspan="2" style="border-left: 1px solid #000;">Terbilang</td>
                             <td>:</td>
-                            <td colspan="5" rowspan="3" style="vertical-align: top">** <?php echo ucwords(number_to_words_d($total_bersih, $c)); ?> **</td>
+                            <td colspan="5" rowspan="3" style="vertical-align: top">** <?php echo ucwords(number_to_words_d($total_bersih, 'IDR')); ?> **</td>
                             <td colspan="3"  style="border-right: 1px solid #000;">Tangerang, <?=tanggal_indo($header['tanggal']);?></td>
                         </tr>
                         <tr>
@@ -219,5 +219,3 @@
     <body onLoad="window.print()">
     </body>
 </html>
-        
-        

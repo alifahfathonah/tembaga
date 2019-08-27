@@ -687,7 +687,7 @@ class Model_beli_rongsok extends CI_Model{
     }
 
     function ttr_dtr_only($id){
-        $data = $this->db->query("select ttr.id, ttr.no_ttr, ttr.dtr_id, dtr.no_dtr, ttr.tanggal as tgl_ttr, dtr.tanggal as tgl_dtr, ttr.no_sj, ttr.jmlh_afkiran, ttr.jmlh_pengepakan, ttr.jmlh_lain, ttr.remarks as remarks_ttr, dtr.remarks as remarks_dtr, ttr.ttr_status as ttr_status, dtr.status as dtr_status, dtr.po_id, po.status as po_status, dtr.supplier_id, dtr.jenis_barang
+        $data = $this->db->query("select ttr.id, ttr.no_ttr, ttr.dtr_id, dtr.no_dtr, ttr.tanggal as tgl_ttr, dtr.tanggal as tgl_dtr, ttr.no_sj, ttr.jmlh_afkiran, ttr.jmlh_pengepakan, ttr.jmlh_lain, ttr.remarks as remarks_ttr, dtr.remarks as remarks_dtr, ttr.ttr_status as ttr_status, dtr.status as dtr_status, dtr.po_id, dtr.so_id, po.status as po_status, dtr.supplier_id, dtr.customer_id, dtr.jenis_barang
                 from ttr
                 left join dtr on dtr.id = ttr.dtr_id
                 left join po on po.id = dtr.po_id
@@ -746,6 +746,31 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
 
+    function show_kartu_stok_palette($start,$end,$id_barang){
+        $data = $this->db->query("(SELECT
+                    t.no_ttr, p.no_po as nomor, dd.id, dd.rongsok_id, dd.no_pallete, s.nama_supplier as nama, r.nama_item, dd.netto as netto_masuk, 0 as netto_keluar, dd.tanggal_masuk, dd.tanggal_keluar = null as tanggal_keluar, dd.tanggal_masuk as tanggal
+                FROM
+                    dtr_detail dd 
+                    left join dtr d on d.id = dd.dtr_id
+                    left join ttr t on t.dtr_id = dd.dtr_id
+                    left join po p on p.id = d.po_id
+                    left join supplier s on s.id = d.supplier_id
+                    left join rongsok r on r.id = dd.rongsok_id
+                    where t.ttr_status = 1 and dd.rongsok_id ='".$id_barang."' and dd.tanggal_masuk >= '".$start."' and dd.tanggal_masuk <= '".$end."')
+                UNION ALL
+                (SELECT 
+                    t.no_ttr, so.no_sales_order as nomor, dtd.id, dtd.rongsok_id, dtd.no_pallete, mc.nama_customer as nama, rsk.nama_item, 0 as netto_masuk, dtd.netto as netto_keluar, dtd.tanggal_masuk = null, dtd.tanggal_keluar, dtd.tanggal_keluar as tanggal
+                FROM
+                    dtr_detail dtd 
+                    left join dtr on dtr.id = dtd.dtr_id
+                    left join ttr t on t.dtr_id = dtd.dtr_id
+                    left join sales_order so on so.id = dtd.so_id
+                    left join m_customers mc on mc.id = so.m_customer_id
+                    left join rongsok rsk on rsk.id = dtd.rongsok_id
+                    where dtd.rongsok_id ='".$id_barang."' and dtd.tanggal_keluar >= '".$start."' and dtd.tanggal_keluar <= '".$end."') Order By tanggal, tanggal_keluar asc");
+        return $data;
+    }
+
     function get_stok_before($start,$rongsok_id){
         $data = $this->db->query("select DATE_FORMAT(d.tanggal,'%M %Y') as showdate, 
             EXTRACT(YEAR_MONTH from d.tanggal) as tanggal, count(dd.id) as jumlah, sum(bruto) as bruto_masuk, sum(netto) as netto_masuk,
@@ -798,6 +823,17 @@ class Model_beli_rongsok extends CI_Model{
             where tso.jenis_barang = 'RONGSOK' and sdf.id is not null and dd.tanggal_keluar between '".$s."' and '".$e."'
             group by dd.rongsok_id, dd.tanggal_keluar
             order by dd.rongsok_id, dd.tanggal_keluar asc");
+        return $data;
+    }
+
+// LIST DTR UNTUK SPB MATCHING
+    function list_dtr(){
+        $data = $this->db->query("select dtr.*, r.nama_item, (select SUM(netto) from dtr_detail where dtr_detail.dtr_id = dtr.id and flag_resmi = 0) as netto, dtrd.berat_palette, dtrd.no_pallete, dtrd.line_remarks
+            from dtr 
+            left join dtr_detail dtrd on (dtr.id = dtrd.dtr_id)
+            left join rongsok r on (dtrd.rongsok_id = r.id)
+            where dtr.status = 1 and dtr.flag_taken = 0 and type = 0 group by dtr.no_dtr
+            order by dtr.tanggal asc");
         return $data;
     }
 }

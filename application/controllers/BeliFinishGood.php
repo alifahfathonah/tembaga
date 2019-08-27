@@ -204,6 +204,7 @@ class BeliFinishGood extends CI_Controller{
 
         $a = $count + 6;
         $ukuran = $this->input->post('ukuran');
+        $ukuran = substr($ukuran, 0,3);
         $data['no_packing'] = $tgl_code.$first.$ukuran.substr($code,$a,4);
 
         header('Content-Type: application/json');

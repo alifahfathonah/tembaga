@@ -282,11 +282,16 @@ class GudangRongsok extends CI_Controller{
         $data['rongsok'] = $this->Model_beli_rongsok->show_data_rongsok_detail($rongsok_id)->row_array();
         $data['start'] = $start;
         $data['end'] = $end;
+        
+        $data['stok_before'] = $this->Model_beli_rongsok->get_stok_before($start,$rongsok_id)->row_array();
 
-            $data['stok_before'] = $this->Model_beli_rongsok->get_stok_before($start,$rongsok_id)->row_array();
+        if($_GET['bl']==0){
             $data['detailLaporan'] = $this->Model_beli_rongsok->show_kartu_stok($start,$end,$rongsok_id)->result();
-
             $this->load->view('gudang_rongsok/kartu_stok', $data);
+        }else{
+            $data['detailLaporan'] = $this->Model_beli_rongsok->show_kartu_stok_palette($start,$end,$rongsok_id)->result();
+            $this->load->view('gudang_rongsok/kartu_stok_palette', $data);
+        }
     }
 
     function print_laporan_bulanan(){

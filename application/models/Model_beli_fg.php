@@ -166,11 +166,13 @@ class Model_beli_fg extends CI_Model
     }
 
     function show_detail_dtbj_harga($id){
-        $data = $this->db->query("Select dtbjd.*, jb.jenis_barang, jb.uom, pd.amount
+        $data = $this->db->query("Select dtbjd.id, sum(dtbjd.bruto) as bruto, sum(dtbjd.netto) as netto, jb.jenis_barang, jb.uom, pd.amount
                     From dtbj_detail dtbjd 
                         Left Join po_detail pd on pd.id = dtbjd.po_detail_id
                         Left Join jenis_barang jb On (dtbjd.jenis_barang_id = jb.id) 
-                    Where dtbjd.dtbj_id=".$id);
+                    Where dtbjd.dtbj_id=".$id."
+                    group by dtbjd.jenis_barang_id
+                    ");
         return $data;
     }
 

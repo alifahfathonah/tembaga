@@ -3263,6 +3263,7 @@ class Finance extends CI_Controller{
     function print_query_pembelian(){
         $module_name = $this->uri->segment(1);
         $this->load->helper('tanggal_indo');
+        $j = $_GET['jenis'];
         $l = $_GET['laporan'];
         $start = date('Y-m-d', strtotime($_GET['ts']));
         $end = date('Y-m-d', strtotime($_GET['te']));
@@ -3276,14 +3277,25 @@ class Finance extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $this->load->model('Model_finance');
-        if($l == 1){
-            $data['detailLaporan'] = $this->Model_finance->print_laporan_pembelian($start,$end,0)->result();
-        }elseif ($l == 2) {
-            $data['detailLaporan'] = $this->Model_finance->print_laporan_pembelian($start,$end,2)->result();
-        }elseif ($l == 3) {
-            $data['detailLaporan'] = $this->Model_finance->print_laporan_pembelian($start,$end,1)->result();
-        }
+        if($j==0){
+            if($l == 1){
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_pembelian($start,$end,0)->result();
+            }elseif ($l == 2) {
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_pembelian($start,$end,2)->result();
+            }elseif ($l == 3) {
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_pembelian($start,$end,1)->result();
+            }
         $this->load->view('finance/print_laporan_pembelian', $data);
+        }elseif($j==1){
+            if($l == 1){
+                $data['detailLaporan'] = $this->Model_finance->laporan_pembelian_rsk($start,$end,0)->result();
+            }elseif ($l == 2) {
+                $data['detailLaporan'] = $this->Model_finance->laporan_pembelian_rsk($start,$end,2)->result();
+            }elseif ($l == 3) {
+                $data['detailLaporan'] = $this->Model_finance->laporan_pembelian_rsk($start,$end,1)->result();
+            }
+        $this->load->view('finance/print_laporan_pembelian_rsk', $data);
+        }
     }
 
     function rangking_rongsok(){

@@ -137,6 +137,7 @@
                                 class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_cv'];?>" readonly="readonly">
 
                             <input type="hidden" name="customer_id" value="<?php echo $header['cv_id'];?>">
+                            <input type="hidden" name="idkmp" value="<?php echo $header['idkmp'];?>">
                         </div>
                     </div>
                     <div class="row">

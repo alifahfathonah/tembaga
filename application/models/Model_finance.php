@@ -945,7 +945,7 @@ class Model_finance extends CI_Model{
     }
 
     function trx_cm($s,$e,$id,$ppn){
-        return $this->db->query("select fk.id, fk.tanggal, fk.flag_ppn, fk.nomor, fk.jenis_trx, (fk.nominal*fk.kurs) as nominal, COALESCE(mc.nama_customer,'') as nama_customer, b.nama_bank from f_kas fk 
+        return $this->db->query("select fk.id, fk.tanggal, fk.flag_ppn, fk.nomor, fk.jenis_trx, (fk.nominal*fk.kurs) as nominal, COALESCE(mc.nama_customer,'') as nama_customer, b.nama_bank, fum.nomor_cek, fum.tgl_cair from f_kas fk 
             left join bank b on b.id = fk.id_bank
             left join f_uang_masuk fum on fum.id = fk.id_um
             left join m_customers mc on mc.id = fum.m_customer_id
@@ -959,8 +959,18 @@ class Model_finance extends CI_Model{
     }
 
     function trx_keluar_masuk($s,$e,$id){
-        return $this->db->query("select * from f_kas where tanggal BETWEEN '".$s."' and '".$e."' and id_bank =".$id."
-            order by tanggal, nomor asc
+        return $this->db->query("select fk.*, COALESCE(NULLIF(fk.keterangan,''),mc.nama_customer,(CASE WHEN COALESCE(mc.nama_customer, s.nama_supplier) IS NOT NULL
+            THEN
+                CONCAT_WS(' ','PEMB.',COALESCE(mc.nama_customer, s.nama_supplier))
+            ELSE
+                nm_cost
+            END)) as keterangan from f_kas fk
+            left join voucher v on fk.jenis_trx = 1 and v.id_fk = fk.id 
+            left join supplier s on s.id = v.supplier_id
+            left join f_uang_masuk fum on fk.jenis_trx = 0 and fum.id = fk.id_um
+            left join m_customers mc on mc.id = fum.m_customer_id
+            where fk.tanggal BETWEEN '".$s."' and '".$e."' and fk.id_bank =".$id."
+            order by fk.tanggal, fk.nomor asc
             ");
     }
     // function print_penjualan_customer($ppn){
@@ -1141,6 +1151,108 @@ class Model_finance extends CI_Model{
                                     AND (p.flag_ppn = ".$ppn." OR so.flag_ppn = ".$ppn.") 
                                     ORDER BY sumber, kode_rongsok, no_ttr, tgl_ttr
                 ");
+        }
+        return $data;
+    }
+
+    function laporan_pembelian_rsk($s, $e, $ppn){
+        if ($ppn == 2) {
+            $data = $this->db->query("SELECT
+            CASE
+                WHEN
+                    dd.po_detail_id > 0 THEN
+                        s.nama_supplier 
+                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                        mc.nama_customer_kh 
+                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                        mc.nama_customer ELSE '-' 
+                    END AS nama_sup_cust,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0001' then td.netto  else 0 end),0),null) as AB1,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0002' then td.netto  else 0 end),0),null) as AB2,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01AR001' then td.netto  else 0 end),0),null) as AR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0002' then td.netto  else 0 end),0),null) as TR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BB001' then td.netto  else 0 end),0),null) as BB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0001' then td.netto  else 0 end),0),null) as BC,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0003' then td.netto  else 0 end),0),null) as CT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BL001' then td.netto  else 0 end),0),null) as BL,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0003' then td.netto  else 0 end),0),null) as DH,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PB001' then td.netto  else 0 end),0),null) as PB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PR001' then td.netto  else 0 end),0),null) as PRT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01DD001' then td.netto  else 0 end),0),null) as DD,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0002' then td.netto  else 0 end),0),null) as DB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0004' then td.netto  else 0 end),0),null) as DK,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '02I0001' then td.netto  else 0 end),0),null) as IR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto  else 0 end),0),null) as LT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto  else 0 end),0),null) as SC,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto  else 0 end),0),null) as SCJ,
+                    sum( td.netto ) AS total
+                FROM
+                    ttr_detail td
+                    LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+                    LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+                    LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+                    LEFT JOIN po_detail pd ON ( ( dd.po_detail_id > 0 ) AND ( pd.id = dd.po_detail_id ) )
+                    LEFT JOIN po p ON ( ( p.id = pd.po_id ) AND ( dd.po_detail_id > 0 ) )
+                    LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+                    LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+                    LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
+                    LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
+                WHERE
+                    ( t.ttr_status = 1 ) 
+                    AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
+                    AND t.tanggal BETWEEN '".$s."' and '".$e."'
+                GROUP BY
+                nama_sup_cust
+                    order by total desc");
+        }else{
+        $data = $this->db->query("SELECT
+            CASE
+                WHEN
+                    dd.po_detail_id > 0 THEN
+                        s.nama_supplier 
+                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                        mc.nama_customer_kh 
+                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                        mc.nama_customer ELSE '-' 
+                    END AS nama_sup_cust,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0001' then td.netto  else 0 end),0),null) as AB1,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0002' then td.netto  else 0 end),0),null) as AB2,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01AR001' then td.netto  else 0 end),0),null) as AR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0002' then td.netto  else 0 end),0),null) as TR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BB001' then td.netto  else 0 end),0),null) as BB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0001' then td.netto  else 0 end),0),null) as BC,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0003' then td.netto  else 0 end),0),null) as CT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BL001' then td.netto  else 0 end),0),null) as BL,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0003' then td.netto  else 0 end),0),null) as DH,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PB001' then td.netto  else 0 end),0),null) as PB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PR001' then td.netto  else 0 end),0),null) as PRT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01DD001' then td.netto  else 0 end),0),null) as DD,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0002' then td.netto  else 0 end),0),null) as DB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0004' then td.netto  else 0 end),0),null) as DK,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '02I0001' then td.netto  else 0 end),0),null) as IR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto  else 0 end),0),null) as LT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto  else 0 end),0),null) as SC,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto  else 0 end),0),null) as SCJ,
+                    sum( td.netto ) AS total
+                FROM
+                    ttr_detail td
+                    LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+                    LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+                    LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+                    LEFT JOIN po_detail pd ON ( ( dd.po_detail_id > 0 ) AND ( pd.id = dd.po_detail_id ) )
+                    LEFT JOIN po p ON ( ( p.id = pd.po_id ) AND ( dd.po_detail_id > 0 ) )
+                    LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+                    LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+                    LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
+                    LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
+                WHERE
+                    ( t.ttr_status = 1 ) 
+                    AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
+                    AND t.tanggal BETWEEN '".$s."' and '".$e."'
+                    AND (p.flag_ppn = ".$ppn." OR so.flag_ppn = ".$ppn.") 
+                GROUP BY
+                nama_sup_cust
+                    order by total desc");
         }
         return $data;
     }

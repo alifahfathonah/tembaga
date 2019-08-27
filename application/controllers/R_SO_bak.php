@@ -101,8 +101,9 @@ class R_SO extends CI_Controller{
                 'flag_so' => $so_id
             ));
             
+            $detail = [];
             $loop = $this->db->get_where('r_t_po_detail', array('po_id'=>$this->input->post('po_id')))->result();
-            foreach ($loop as $row) {
+            foreach ($loop as $i => $row) {
                 $data_sod = array(
                     'so_id' => $so_id,
                     'po_detail_id' => $row->id,
@@ -111,8 +112,11 @@ class R_SO extends CI_Controller{
                     'amount' => $row->amount,
                     'total_amount' => $row->total_amount
                 );
-
                 $this->db->insert('r_t_so_detail', $data_sod);
+                $id_detail = $this->db->insert_id();
+
+                $arr_merge = array('reff2' => $id_detail);
+                $detail[$i] = array_merge($data_sod, $arr_merge);
             }
 
                 //API START//
@@ -122,17 +126,23 @@ class R_SO extends CI_Controller{
                     left join sales_order so on so.id = fi.id_sales_order
                     left join t_sales_order tso on tso.id = so.id
                     left join t_spb_fg tsf on tsf.id = tso.no_spb"
-                );
+                )->row_array();
+
+                // generate nomor SPB untuk pajak
+                $this->load->model('Model_m_numberings');
+                $num = $this->Model_m_numberings->getNumbering('SPB-T', $tgl_input); 
 
                 $this->load->helper('target_url');
 
-                $reff_so = array('reff2' => $so_id);
-                $data['header']  = array_merge($so_old, $reff_so);
+                $reff_so = array('reff2' => $so_id, 'no_po'=>$this->input->post('no_po'), 'idkmp'=>$this->input->post('idkmp'));
+                $data_post['nomor_spb'] = $num;
+                $data_post['header'] = array_merge($t_data, $reff_so);
+                $data_post['detail'] = $detail;
 
                 $post = json_encode($data_post);
 
-                print_r($post);
-                die();
+                // print_r($post);
+                // die();
                 $ch = curl_init(target_url().'api/ReffAPI/so');
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
@@ -328,6 +338,7 @@ class R_SO extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
         
+        $this->db->trans_start();
         $data = array(
                 'no_so' => $this->input->post('no_so'),
                 'tanggal'=> $tgl_input,
@@ -335,6 +346,7 @@ class R_SO extends CI_Controller{
                 'cv_id'=>$this->input->post('m_customer_id'),
                 'po_id'=>$this->input->post('po_id'),
                 'tgl_po'=>$tgl_po,
+                'term_of_payment'=>$this->input->post('term_of_payment'),
                 'remarks'=>$this->input->post('remarks'),
                 'modified_at'=> $tanggal,
                 'modified_by'=> $user_id
@@ -342,9 +354,39 @@ class R_SO extends CI_Controller{
         
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('r_t_so', $data);
+
+                //API START//
+
+                $this->load->helper('target_url');
+
+                $myDetails = $this->Model_so->load_detail_so($this->input->post('id'))->result();
+                $data_post['header'] = array_merge($data, array('reff2' => $this->input->post('id')));
+                $data_post['detail'] = $myDetails;
+
+                $post = json_encode($data_post);
+
+                // print_r($post);
+                // die();
+                $ch = curl_init(target_url().'api/ReffAPI/so_update');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+
+                //API END//
         
-        $this->session->set_flashdata('flash_msg', 'Data sales order jasa berhasil disimpan');
-        redirect('index.php/R_SO');
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Data sales order jasa berhasil disimpan');
+            redirect('index.php/R_SO');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data sales order jasa gagal disimpan');
+            redirect('index.php/R_SO');
+        }
     }
 
     function get_so(){

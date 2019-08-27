@@ -178,8 +178,9 @@ class R_SuratJalan extends CI_Controller{
             $this->load->model('Model_so');
             $get_po = $this->input->post('get_po');
             $list_so = $this->Model_so->list_detail_so($get_po)->result();
+            $data_detail = [];
             // print_r($list_so); die();
-            foreach ($list_so as $row) {
+            foreach ($list_so as $i => $row) {
                 $detail = array(
                     'sj_resmi_id' => $sjr_id,
                     'so_detail_id' => $row->so_detail,
@@ -191,7 +192,36 @@ class R_SuratJalan extends CI_Controller{
                     'line_remarks' => $row->line_remarks
                 );
                 $this->db->insert('r_t_surat_jalan_detail', $detail);
+                $id_detail = $this->db->insert_id();
+                $arr_merge = array('reff2' => $id_detail);
+                $data_detail[$i] = array_merge($detail, $arr_merge);
             }
+
+                //API START//
+                $this->load->helper('target_url');
+
+                $reff_so = array('reff2' => $sjr_id, 'idkmp'=>$this->input->post('idkmp'));
+
+                $data_post['header'] = array_merge($data, $reff_so);
+                $data_post['detail'] = $data_detail;
+                $data_post['gudang'] = $get_r_gudang_fg;
+
+                $post = json_encode($data_post);
+
+                // print_r($post);
+                // die();
+                $ch = curl_init(target_url().'api/ReffAPI/so');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+
+                //API END//
         }else if($jenis == 'po'){
             $data = array(
                 'no_sj_resmi'=> $this->input->post('no_surat_jalan'),

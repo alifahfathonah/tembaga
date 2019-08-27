@@ -96,6 +96,14 @@
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
                                 value="<?php echo date('d-m-Y', strtotime($header['tgl_po'])); ?>" readonly="readonly">
                         </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-4">
+                            Term of Payment <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="term_of_payment" name="term_of_payment" class="form-control myline" style="margin-bottom: 5px;" onkeyup="this.value = this.value.toUpperCase()" value="<?=$header['term_of_payment'];?>">
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
