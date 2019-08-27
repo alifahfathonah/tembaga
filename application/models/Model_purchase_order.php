@@ -54,9 +54,9 @@ class Model_purchase_order extends CI_Model{
 		return $data;
 	}
 
-	function customer_list(){
+	function customer_list($reff_cv){
 		$this->db->order_by('nama_customer','ASC');
-		$data = $this->db->get('m_customers_cv');
+		$data = $this->db->get_where('m_customers_cv', ['reff_cv' => $reff_cv]);
 		return $data;
 	}
 

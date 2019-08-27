@@ -333,6 +333,7 @@ class R_PurchaseOrder extends CI_Controller{
     function add_po_fcustomer(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
+        $reff_cv   = $this->session->userdata('cv_id');
         $group_id = $this->session->userdata('group_id');        
         if($group_id != 1){
             $this->load->model('Model_modules');
@@ -343,7 +344,7 @@ class R_PurchaseOrder extends CI_Controller{
 
         $data['content']= "resmi/purchase_order/add_po_fcustomer";
         $data['header'] = $this->Model_purchase_order->invoice_list($id)->row_array();
-        $data['cust_list'] = $this->Model_purchase_order->customer_list()->result();
+        $data['cust_list'] = $this->Model_purchase_order->customer_list($reff_cv)->result();
 
         $this->load->view('layout', $data);
     }
