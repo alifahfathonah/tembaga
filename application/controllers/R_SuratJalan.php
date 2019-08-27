@@ -208,8 +208,8 @@ class R_SuratJalan extends CI_Controller{
 
                 $post = json_encode($data_post);
 
-                print_r($post);
-                die();
+                // print_r($post);
+                // die();
                 $ch = curl_init(target_url().'api/ReffAPI/so');
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));

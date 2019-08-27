@@ -25,6 +25,17 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
+                           Jenis Laporan <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis" name="jenis" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                    <option value="0">Laporan Detail</option>
+                                    <option value="1">Laporan Global per Tipe</option>
+                                </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                            Laporan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -78,10 +89,11 @@ function simpanData(){
         $('#message').html("Silahkan pilih nama supplier!");
         $('.alert-danger').show();
     }else{     
+        var j=$('#jenis').val();
         var l=$('#laporan').val();
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/Finance/print_query_pembelian?laporan='+l+'&ts='+s+'&te='+e,'_blank');
+        window.open('<?php echo base_url();?>index.php/Finance/print_query_pembelian?jenis='+j+'&laporan='+l+'&ts='+s+'&te='+e,'_blank');
     };
 };
 </script>

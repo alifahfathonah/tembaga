@@ -2,16 +2,16 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <a href="<?php echo base_url('index.php/R_Matching'); ?>"><i class="fa fa-angle-right"></i> Matching Invoice</a>
+            <a href="<?php echo base_url('index.php/R_Matching'); ?>"><i class="fa fa-angle-right"></i> Create DTR</a>
             <i class="fa fa-angle-right"></i> 
-            Edit Invoice 
+            Edit DTR 
         </h5>          
     </div>
 </div>
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12">
-        <h3 align="center"><b> Matching Invoice</b></h3>
+        <h3 align="center"><b> Create DTR</b></h3>
         <hr class="divider" />
         <div class="row">
             <div class="col-md-12">

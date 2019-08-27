@@ -103,8 +103,8 @@ no cek dan tgl jt tambahin di laporan cheque(done)
 
 print dtbj di global in. tampilin nya jadi nama barang, qty, dan bruto, netto
 
-pembulatan di vk sparepart.
+pembulatan di vk sparepart.(done)
 
 KMP K
 
-r_t_surat_jalan savesuratjalan masih di die();
+r_t_surat_jalan savesuratjalan masih di die();(done)
