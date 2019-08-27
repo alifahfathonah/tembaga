@@ -482,6 +482,7 @@ class R_PurchaseOrder extends CI_Controller{
         $module_name = $this->uri->segment(1);
         $data['user_ppn'] = $this->session->userdata('user_ppn');
         $id = $this->uri->segment(3);
+        $reff_cv   = $this->session->userdata('cv_id');
         if($id){
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -497,7 +498,7 @@ class R_PurchaseOrder extends CI_Controller{
             $data['myDetail'] = $this->Model_purchase_order->load_detail_po($id)->result();
             $data['list_fg'] = $this->Model_beli_fg->list_fg()->result();
 
-            $data['cust_list'] = $this->Model_purchase_order->customer_list()->result();
+            $data['cust_list'] = $this->Model_purchase_order->customer_list($reff_cv)->result();
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/R_PurchaseOrder');
