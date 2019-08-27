@@ -141,7 +141,7 @@ class R_SO extends CI_Controller{
 
                 $post = json_encode($data_post);
 
-                // echo"<pre>";print_r($data_post);echo "</pre>";
+                // print_r($post);
                 // die();
                 $ch = curl_init(target_url().'api/ReffAPI/so');
                 curl_setopt($ch, CURLOPT_POST, true);

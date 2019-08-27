@@ -87,7 +87,7 @@ class Model_so extends CI_Model{
 	 //        left join r_t_po rtp on rtp.f_invoice_id = fid.id_invoice
 		// 	where rtp.id ='.$id);
 		$data = $this->db->query("select tsjd.*, COALESCE(NULLIF(tsjd.jenis_barang_alias,0),tsjd.jenis_barang_id) as jenis_barang_ida,
-			(select rtsd.id from r_t_so_detail rtsd left join r_t_so rts on rts.id = rtsd.so_id where rts.po_id = rtp.id and rtsd.jenis_barang_id = tsjd.jenis_barang_id) as so_detail 
+			(select rtsd.id from r_t_so_detail rtsd left join r_t_so rts on rts.id = rtsd.so_id where rts.po_id = rtp.id and rtsd.jenis_barang_id = tsjd.jenis_barang_id and rts.jenis_so = 'SO KMP') as so_detail 
 			from t_surat_jalan_detail tsjd 
 			left join f_invoice fi on fi.id_surat_jalan = tsjd.t_sj_id
 		    left join r_t_po rtp on rtp.f_invoice_id = fi.id
@@ -104,7 +104,8 @@ class Model_so extends CI_Model{
 	function get_r_gudang_fg($id){
 		$data = $this->db->query("select rtg.* from r_t_so rts
 			left join r_t_po rtp on rtp.id = rts.po_id
-			left join r_t_gudang_fg rtg on rtg.f_invoice_id = rtp.f_invoice_id
+			left join r_t_invoice rti on rti.r_po_id = rtp.id
+			left join r_t_gudang_fg rtg on rtg.f_invoice_id = rti.id
 			where rts.id = ".$id);
 		return $data;
 	}
