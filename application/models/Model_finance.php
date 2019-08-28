@@ -1155,6 +1155,38 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function laporan_pembelian_ingot_rendah($s, $e, $ppn){
+        if ($ppn == 2) {
+                $data = $this->db->query("
+                    SELECT dd.rongsok_id,r.kode_rongsok, r.nama_item, t.no_ttr, t.tanggal, '-' as supplier, '-' as sumber 
+                    ,dd.netto, 0 amount, 0 total_amount
+                    from 
+                    dtr_detail dd
+                    left join dtr d on d.id = dd.dtr_id
+                    left join ttr t on t.dtr_id = d.id 
+                    left join rongsok r on r.id = dd.rongsok_id
+                    where
+                    r.kode_rongsok =  '02I0001'
+                    and t.ttr_status = 1
+                    AND t.tanggal BETWEEN '".$s."' and '".$e."'");
+            }else{
+                $data = $this->db->query("
+                    SELECT dd.rongsok_id,r.kode_rongsok, r.nama_item, t.no_ttr, t.tanggal, '-' as supplier, '-' as sumber 
+                    ,dd.netto, 0 amount, 0 total_amount
+                    from 
+                    dtr_detail dd
+                    left join dtr d on d.id = dd.dtr_id
+                    left join ttr t on t.dtr_id = d.id 
+                    left join rongsok r on r.id = dd.rongsok_id
+                    where
+                    r.kode_rongsok =  '02I0001'
+                    and t.ttr_status = 1
+                    AND t.tanggal BETWEEN '".$s."' and '".$e."'
+                    AND d.flag_ppn = ".$ppn);
+            }
+            return $data;
+    }
+
     function laporan_pembelian_rsk($s, $e, $ppn){
         if ($ppn == 2) {
             $data = $this->db->query("SELECT
@@ -1253,6 +1285,80 @@ class Model_finance extends CI_Model{
                 GROUP BY
                 nama_sup_cust
                     order by total desc");
+        }
+        return $data;
+    }
+
+    function laporan_pembelian_rsk_ingot_rendah($s, $e, $ppn){
+        if ($ppn == 2) {
+            $data = $this->db->query("
+                SELECT
+                    r.nama_item as supplier,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0001' then td.netto  else 0 end),0),null) as AB1,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0002' then td.netto  else 0 end),0),null) as AB2,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01AR001' then td.netto  else 0 end),0),null) as AR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0002' then td.netto  else 0 end),0),null) as TR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BB001' then td.netto  else 0 end),0),null) as BB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0001' then td.netto  else 0 end),0),null) as BC,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0003' then td.netto  else 0 end),0),null) as CT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BL001' then td.netto  else 0 end),0),null) as BL,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0003' then td.netto  else 0 end),0),null) as DH,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PB001' then td.netto  else 0 end),0),null) as PB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PR001' then td.netto  else 0 end),0),null) as PRT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01DD001' then td.netto  else 0 end),0),null) as DD,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0002' then td.netto  else 0 end),0),null) as DB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0004' then td.netto  else 0 end),0),null) as DK,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '02I0001' then td.netto  else 0 end),0),null) as IR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto  else 0 end),0),null) as LT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto  else 0 end),0),null) as SC,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto  else 0 end),0),null) as SCJ,
+                    sum( td.netto ) AS TOTAL
+                    from 
+            dtr_detail dd
+            left join dtr d on d.id = dd.dtr_id
+            left join rongsok r on r.id = dd.rongsok_id
+            left join ttr t on t.dtr_id = d.id
+            left join ttr_detail td on td.dtr_detail_id = dd.id
+            where  
+            t.ttr_status = 1
+              AND t.tanggal BETWEEN '".$s."' and '".$e."'
+             and r.kode_rongsok =  '02I0001'
+            group by supplier;");
+        }else{
+        $data = $this->db->query("
+            SELECT
+                    r.nama_item as supplier,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0001' then td.netto  else 0 end),0),null) as AB1,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0002' then td.netto  else 0 end),0),null) as AB2,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01AR001' then td.netto  else 0 end),0),null) as AR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0002' then td.netto  else 0 end),0),null) as TR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BB001' then td.netto  else 0 end),0),null) as BB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0001' then td.netto  else 0 end),0),null) as BC,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0003' then td.netto  else 0 end),0),null) as CT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BL001' then td.netto  else 0 end),0),null) as BL,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0003' then td.netto  else 0 end),0),null) as DH,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PB001' then td.netto  else 0 end),0),null) as PB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PR001' then td.netto  else 0 end),0),null) as PRT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01DD001' then td.netto  else 0 end),0),null) as DD,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0002' then td.netto  else 0 end),0),null) as DB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0004' then td.netto  else 0 end),0),null) as DK,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '02I0001' then td.netto  else 0 end),0),null) as IR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto  else 0 end),0),null) as LT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto  else 0 end),0),null) as SC,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto  else 0 end),0),null) as SCJ,
+                    sum( td.netto ) AS TOTAL
+                    from 
+            dtr_detail dd
+            left join dtr d on d.id = dd.dtr_id
+            left join rongsok r on r.id = dd.rongsok_id
+            left join ttr t on t.dtr_id = d.id
+            left join ttr_detail td on td.dtr_detail_id = dd.id
+            where  
+            t.ttr_status = 1
+              AND t.tanggal BETWEEN '".$s."' and '".$e."'
+             and r.kode_rongsok =  '02I0001'
+            AND d.flag_ppn = ".$ppn." 
+            group by supplier;");
         }
         return $data;
     }
@@ -1371,8 +1477,10 @@ class Model_finance extends CI_Model{
                 from 
                 dtr_detail dd
                 left join dtr d on d.id = dd.dtr_id
+                left join ttr t on t.dtr_id = d.id
                 left join rongsok r on r.id = dd.rongsok_id
                 where  d.tanggal BETWEEN '".$s."' AND '".$e."'
+                and t.ttr_status = 1
                 and r.kode_rongsok =  '02I0001'
                 group by sumber, supplier, flag_ppn
                 ");
@@ -1382,8 +1490,10 @@ class Model_finance extends CI_Model{
                 from 
                 dtr_detail dd
                 left join dtr d on d.id = dd.dtr_id
+                left join ttr t on t.dtr_id = d.id
                 left join rongsok r on r.id = dd.rongsok_id
                 where  d.tanggal BETWEEN '".$s."' AND '".$e."'
+                and t.ttr_status = 1
                 and d.flag_ppn = ".$ppn."
                 and r.kode_rongsok =  '02I0001'
                 group by sumber, supplier, flag_ppn

@@ -65,24 +65,24 @@
 			<tr>
 				<td style=" border-right: 1px solid #000; border-bottom: 1px solid;"><?= $no;?></td>
 				<td style=" border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->nama_sup_cust; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->AB1; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->AB2; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->AR; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->TR; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->BB; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->BC; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->CT; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->BL; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->DH; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->PB; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->PRT; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->DD; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->DB; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->DK; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->IR; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->LT; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->SC; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=$row->SCJ; ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->AB1 == null)? '' : number_format($row->AB1,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->AB2 == null)? '' : number_format($row->AB2,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->AR == null)? '' : number_format($row->AR,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->TR == null)? '' : number_format($row->TR,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->BB == null)? '' : number_format($row->BB,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->BC == null)? '' : number_format($row->BC,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->CT == null)? '' : number_format($row->CT,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->BL == null)? '' : number_format($row->BL,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->DH == null)? '' : number_format($row->DH,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->PB == null)? '' : number_format($row->PB,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->PRT == null)? '' : number_format($row->PRT,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->DD == null)? '' : number_format($row->DD,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->DB == null)? '' : number_format($row->DB,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->DK == null)? '' : number_format($row->DK,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->IR == null)? '' : number_format($row->IR,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->LT == null)? '' : number_format($row->LT,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->SC == null)? '' : number_format($row->SC,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($row->SCJ == null)? '' : number_format($row->SCJ,2,'.',','); ?></td>
 				<td align="right" style=" border-right: 1px solid #000; border-bottom: 1px solid;"><?= number_format($row->total,2,'.',','); ?></td>
 			</tr>
 		<?php
@@ -105,7 +105,35 @@
 				$SC += $row->SC;
 				$SCJ += $row->SCJ;
 				$total += $row->total;
-			} 
+			}
+
+			foreach ($ingotRendah as $key => $value) {
+		?>
+			<tr>
+				<td style=" border-right: 1px solid #000; border-bottom: 1px solid;"><?= $no+1;?></td>
+				<td style=" border-right: 1px solid #000; border-bottom: 1px solid;"><?=$value->supplier; ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->AB1 == null)? '' : number_format($value->AB1,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->AB2 == null)? '' : number_format($value->AB2,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->AR == null)? '' : number_format($value->AR,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->TR == null)? '' : number_format($value->TR,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->BB == null)? '' : number_format($value->BB,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->BC == null)? '' : number_format($value->BC,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->CT == null)? '' : number_format($value->CT,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->BL == null)? '' : number_format($value->BL,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->DH == null)? '' : number_format($value->DH,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->PB == null)? '' : number_format($value->PB,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->PRT == null)? '' : number_format($value->PRT,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->DD == null)? '' : number_format($value->DD,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->DB == null)? '' : number_format($value->DB,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->DK == null)? '' : number_format($value->DK,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->IR == null)? '' : number_format($value->IR,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->LT == null)? '' : number_format($value->LT,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->SC == null)? '' : number_format($value->SC,2,'.',','); ?></td>
+				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->SCJ == null)? '' : number_format($value->SCJ,2,'.',','); ?></td>
+				<td align="right" style=" border-right: 1px solid #000; border-bottom: 1px solid;"><?= number_format($value->TOTAL,2,'.',','); ?></td>
+			</tr>
+		<?php
+			 } 
 		?>
 			<tr>
 				<th colspan="2" style=" border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"></th>
