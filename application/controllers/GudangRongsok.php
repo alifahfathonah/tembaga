@@ -262,6 +262,28 @@ class GudangRongsok extends CI_Controller{
         }
     }
 
+    function print_gudang_rongsok(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $this->load->helper('tanggal_indo');
+
+            $this->load->model('Model_beli_rongsok');
+            $data['rongsok'] = $this->Model_beli_rongsok->show_data_rongsok_detail($id)->row_array();
+            $data['detailLaporan'] = $this->Model_beli_rongsok->view_gudang_rongsok($id)->result();
+            $this->load->view("gudang_rongsok/print_gudang_rongsok", $data);
+        }else{
+            redirect('index.php/GudangRongsok/gudang_rongsok');
+        }
+    }
+
     function kartu_stok(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');

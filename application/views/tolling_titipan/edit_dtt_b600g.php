@@ -51,6 +51,16 @@
                                 value="<?php echo date('Y-m-d'); ?>" readonly="readonly">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No Surat Jalan
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_sj" name="no_sj" 
+                                class="form-control myline" style="margin-bottom:5px"
+                                value="<?php echo $header['no_sj'];?>">
+                        </div>
+                    </div>
                     <!-- <div class="row">
                         <div class="col-md-4">
                             No. PO 
@@ -193,9 +203,9 @@
             <div class="row">
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                        <i class="fa fa-floppy-o"></i> Create DTBJ </a>
+                        <i class="fa fa-floppy-o"></i> Create Details </a>
 
-                    <a href="<?php echo base_url('index.php/BeliFinishGood/dtbj_list'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/Tolling/dtt_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>

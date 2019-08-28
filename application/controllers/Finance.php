@@ -1548,9 +1548,9 @@ class Finance extends CI_Controller{
         $tgl_jatuh_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jatuh_tempo')));
         $tanggal   = date('Y-m-d h:m:s');
         $total = $this->input->post('total');
-        $diskon = str_replace('.', '', $this->input->post('diskon'));
-        $cost = str_replace('.', '', $this->input->post('cost'));
-        $materai = str_replace('.', '', $this->input->post('materai'));
+        $diskon = str_replace(',', '', $this->input->post('diskon'));
+        $cost = str_replace(',', '', $this->input->post('cost'));
+        $materai = str_replace(',', '', $this->input->post('materai'));
         if ($this->input->post('flag_ppn') == 1) {
             $update_total = ($total - $diskon - $cost - $materai) * 10 / 100;
         } else {
@@ -1558,7 +1558,7 @@ class Finance extends CI_Controller{
         }
      
         $this->db->trans_start();
-        
+        // echo $total;die();
         $data = [
             'no_invoice' => $this->input->post('no_invoice'),
             'bank_id' => $this->input->post('bank_id'),

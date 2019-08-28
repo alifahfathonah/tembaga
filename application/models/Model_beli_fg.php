@@ -142,7 +142,7 @@ class Model_beli_fg extends CI_Model
 
     function show_header_dtbj($id){
         $data = $this->db->query("Select dtbj.*, 
-                    po.no_po, po.tanggal as tgl_po,
+                    po.no_po, po.tanggal as tgl_po, po.ppn,
                     mjp.jenis_packing as nama_jenis_packing,
                     spl.nama_supplier,
                     usr.realname As penimbang,

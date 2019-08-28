@@ -94,6 +94,15 @@
                             </select>   
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Surat Jalan
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_sj" name="no_sj"
+                                class="form-control myline" style="margin-bottom:5px">
+                        </div>
+                    </div>
                     <div class="row hidden" id="show_packing">
                         <div class="col-md-4">
                             Jenis Packing<font color="#f00">*</font>

@@ -1159,6 +1159,32 @@ class Tolling extends CI_Controller{
             redirect('index.php'); 
         }
     }
+
+    function print_dtt_global(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_tolling_titipan');
+            $data['header']  = $this->Model_tolling_titipan->show_header_dtt($id)->row_array();
+            $data['details'] = $this->Model_tolling_titipan->show_detail_dtt_harga($id)->result();
+
+            $this->load->view('tolling_titipan/print_dtt_global', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
+
+    function print_dtt_harga(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_tolling_titipan');
+            $data['header']  = $this->Model_tolling_titipan->show_header_dtt($id)->row_array();
+            $data['details'] = $this->Model_tolling_titipan->show_detail_dtt_harga($id)->result();
+
+            $this->load->view('tolling_titipan/print_dtt_harga', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
     
     function view_dtr(){
         $module_name = $this->uri->segment(1);
@@ -3017,6 +3043,7 @@ class Tolling extends CI_Controller{
                 'no_dtt'=> $code,
                 'flag_ppn'=>$user_ppn,
                 'tanggal'=> $tgl_input,
+                'no_sj'=>$this->input->post('no_sj'),
                 'supplier_id'=>$this->input->post('supplier_id'),
                 'jenis_barang'=>$this->input->post('jenis_barang'),
                 'jenis_packing'=>$this->input->post('packing'),
@@ -3081,6 +3108,74 @@ class Tolling extends CI_Controller{
         }
     }
 
+    function edit_dtt_header(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_tolling_titipan');
+            $this->load->model('Model_gudang_fg');
+            $data['header'] = $this->Model_tolling_titipan->show_header_dtt($id)->row_array();
+            $data['details'] = $this->Model_tolling_titipan->show_detail_dtt($id)->result();
+            $data['content']= "tolling_titipan/edit_dtt_header";
+
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/Tolling');
+        }
+    }
+
+    function update_dtt_header(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $this->db->trans_start();
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('dtt', array(
+                    'tanggal'=>$tgl_input,
+                    'no_sj'=>$this->input->post('no_sj'),
+                    'remarks'=>$this->input->post('remarks'),
+                    'modified'=>$tanggal,
+                    'modified_by'=>$user_id
+        ));
+
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'DTT berhasil diupdate...');                 
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat updates DTT, silahkan coba kembali!');
+        }
+        redirect('index.php/Tolling/edit_dtt_header/'.$this->input->post('id'));
+    }
+
+    function delete_dtt(){
+        $user_id  = $this->session->userdata('user_id');
+        $id = $this->uri->segment(3);
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $this->db->trans_start();
+        $this->db->where('id',$id);
+        $this->db->delete('dtt');
+
+        $this->db->where('dtt_id',$id);
+        $this->db->delete('dtt_detail');
+
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'DTT berhasil dihapus...');                 
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat delete DTT, silahkan coba kembali!');
+        }
+        redirect('index.php/Tolling/dtt_list/');
+    }
+
     function delete_detail_rambut(){
         $id = $this->input->post('id');
         $return_data = array();
@@ -3135,6 +3230,12 @@ class Tolling extends CI_Controller{
         $dtt_id = $this->input->post('id');
 
         $this->db->trans_start();
+
+        $this->db->where('id', $dtt_id);
+        $this->db->update('dtt', array(
+            'tanggal'=>$this->input->post('tanggal'),
+            'no_sj'=>$this->input->post('no_sj')
+        ));
 
         $details = $this->input->post('myDetails');
         foreach ($details as $row){

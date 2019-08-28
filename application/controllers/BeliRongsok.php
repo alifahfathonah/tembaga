@@ -254,6 +254,48 @@ class BeliRongsok extends CI_Controller{
         $this->session->set_flashdata('flash_msg', 'Data PO rongsok berhasil disimpan');
         redirect('index.php/BeliRongsok');
     }
+
+    function update_po(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $data = array(
+                'no_po'=>strtoupper($this->input->post('no_po')),
+                'tanggal'=> $tgl_input,
+                'remarks'=> $this->input->post('remarks'),
+                'term_of_payment'=>$this->input->post('term_of_payment'),
+                'ppn'=>$this->input->post('ppn'),
+                'modified'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+        
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('po', $data);
+
+        if($this->session->userdata('user_ppn')==1){
+            $this->load->helper('target_url');
+            
+            $data_post['master'] = $data;
+            $data_post['po_id'] = $this->input->post('id');
+
+            $detail_post = json_encode($data_post);
+
+            $ch = curl_init(target_url().'api/BeliRongsokAPI/po_update');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $result = json_decode($response, true);
+            curl_close($ch);
+            // print_r($response);die();
+        }
+        
+        $this->session->set_flashdata('flash_msg', 'Data PO rongsok berhasil disimpan');
+        redirect('index.php/BeliRongsok/edit/'.$this->input->post('id'));
+    }
     
     function load_detail(){
         $id = $this->input->post('id');

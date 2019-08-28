@@ -79,9 +79,21 @@
                         </td>                        
                         <td style="text-align:center"> 
                             <?php
+                                if(($group_id==1 || $hak_akses['edit']==1) && $data->jumlah_item == 0 ){
+                                echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/Tolling/edit_dtt/'.$data->id.'" style="margin-bottom:4px">&nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>';
+                                }else{
+                                echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/Tolling/edit_dtt_header/'.$data->id.'" style="margin-bottom:4px">&nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>';
+                                }
+                                if(($group_id==1 || $hak_akses['delete']==1) && $data->status != 1){
+                                echo '<a href="'.base_url().'index.php/Tolling/delete_dtt/'.$data->id.'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete </a>';
+                                }
                                 if($group_id==1 || $hak_akses['print_dtr']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Tolling/print_dtt/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
+                                }
+                                echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Tolling/print_dtt_global/'.$data->id.'" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print Global&nbsp; </a> ';
+                                if($data->po_id>0){
+                                    echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Tolling/print_dtt_harga/'.$data->id.'" style="margin-bottom:4px" target="_blank">&nbsp;<i class="fa fa-print"></i>Print (Harga)&nbsp; </a> ';
                                 }
                             ?>
                         </td>

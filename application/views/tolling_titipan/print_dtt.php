@@ -5,18 +5,22 @@
     </head>
     <body class="margin-left:40px;">
         <p>&nbsp;</p>
-        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWAT MAS PRAKASA<br>'; }?>DATA TIMBANG BARANG JADI (DTBJ)</h3>
+        <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWAT MAS PRAKASA<br>'; }?>DATA TIMBANG BARANG</h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
-                            <td>No. DTBJ</td>
+                            <td>No. DTT</td>
                             <td>: <?php echo $header['no_dtt']; ?></td>
                         </tr>
                         <tr>
                             <td>Tanggal</td>
                             <td>: <?php echo date('d-m-Y', strtotime($header['tanggal'])); ?></td>
+                        </tr>
+                        <tr>
+                            <td>No. SJ</td>
+                            <td>: <?php echo $header['no_sj']; ?></td>
                         </tr>
                         <tr>
                             <td>Catatan</td>
@@ -95,7 +99,37 @@
                     </table>
                 </td>
             </tr>
-            
+            <tr><td colspan="3">
+                    <table width="100%" align="center" border="0">
+                        <tr>
+                            <td style="text-align:center">
+                                Diterima Oleh :<br>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p>(Istadi)</p>
+                            </td>
+                            <td style="text-align:center">
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p></p>
+                            </td>
+                            <td style="text-align:center">
+                                Bagian Gudang,<br>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p>______________</p>
+                            </td>
+                            <td style="text-align:center">
+                                Mengetahui :<br>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                (LINDA)
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
         </table>
 	<body onLoad="window.print()">
     </body>

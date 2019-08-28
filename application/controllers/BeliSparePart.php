@@ -2243,6 +2243,29 @@ class BeliSparePart extends CI_Controller{
         echo json_encode($return_data); 
     }
 
+//PENDING
+    // function delete_lpb(){
+    //     $id = $this->input->post('id');
+    //     $user_id  = $this->session->userdata('user_id');
+    //     $tanggal  = date('Y-m-d h:m:s');
+    //     $return_data = array();
+
+    //     $data = array(
+    //         'vk_id'=>0,
+    //         'modified'=>$tanggal,
+    //         'modified_by'=>$user_id
+    //     );
+    //     $this->db->where('id', $this->input->post('id'));
+    //     if($this->db->update('lpb', $data)){
+    //         $return_data['message_type']= "sukses";
+    //     }else{
+    //         $return_data['message_type']= "error";
+    //         $return_data['message']= "Gagal menghapus pemenuhan SPB FG! Silahkan coba kembali";
+    //     }           
+    //     header('Content-Type: application/json');
+    //     echo json_encode($return_data);
+    // }
+
     function lpb_list(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');

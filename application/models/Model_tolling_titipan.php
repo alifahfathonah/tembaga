@@ -549,6 +549,17 @@ class Model_tolling_titipan extends CI_Model{
         return $data;
     }
 
+    function show_detail_dtt_harga($id){
+        $data = $this->db->query("Select dttd.id, sum(dttd.bruto) as bruto, sum(dttd.netto) as netto, jb.jenis_barang, jb.uom, pd.amount
+                    From dtt_detail dttd 
+                        Left Join po_detail pd on pd.id = dttd.po_detail_id
+                        Left Join jenis_barang jb On (dttd.jenis_barang_id = jb.id) 
+                    Where dttd.dtt_id=".$id."
+                    group by dttd.jenis_barang_id
+                    ");
+        return $data;
+    }
+
     function get_dtt($id,$jenis){
         $data = $this->db->query("Select dtt.*,  
                     s.nama_supplier,

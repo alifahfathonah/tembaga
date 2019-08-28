@@ -18,16 +18,16 @@
                             <td>&nbsp;</td>
                         </tr>
                         <tr>
-                            <td>Nama Supplier</td>
-                            <td>: <?php echo $header['nama_supplier'] ?></td>
+                            <td>Bank</td>
+                            <td>: <?php echo $header['nama_bank'];?></td>
+                        </tr>
+                        <tr>
+                            <td>Dibayar Kepada</td>
+                            <td>: <?php echo $header['nama_customer'];?></td>
                         </tr>
                         <tr>
                             <td valign="top">Sejumlah</td>
-                            <td>: **<?php echo ucwords(number_to_words_d($total,$header['currency'])); ?>**</td>
-                        </tr>
-                        <tr>
-                            <td>Catatan</td>
-                            <td>: <?php echo $header['keterangan'];?></td>
+                            <td>: **<?php echo ucwords(number_to_words_d($total, $header['currency'])); ?>**</td>
                         </tr>
                     </table>
                 </td>
@@ -44,19 +44,19 @@
                         </tr>
                         <tr>
                             <td>Tgl Bukti</td>
-                            <td>: <?php echo $header['tanggal'];?></td>
+                            <td>: <?php echo tanggal_indo($header['tanggal']);?></td>
                         </tr>
                         <tr>
                             <td>Tgl Jth Tmp</td>
-                            <td>: <?php echo $header['tgl_jatuh_tempo'];?></td>
-                        </tr>
-                        <tr>
-                            <td>Bank</td>
-                            <td>: <?php echo $header['nama_bank'];?></td>
+                            <td>: <?php echo tanggal_indo($header['tgl_jatuh_tempo']);?></td>
                         </tr>
                         <tr>
                             <td>Cek / Giro</td>
                             <td>: <?php echo $header['no_giro'];?></td>
+                        </tr>
+                        <tr>
+                            <td>Kurs</td>
+                            <td>: <?php echo number_format($header['kurs'],2,',','.');?></td>
                         </tr>
                     </table>
                 </td>
