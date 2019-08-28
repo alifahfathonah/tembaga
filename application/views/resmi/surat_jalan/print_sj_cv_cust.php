@@ -46,12 +46,12 @@
             </tr>
         </table>
         <br>
-        <table border="1" cellpadding="5" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif;">
+        <table border="0" cellpadding="5" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif;">
             <thead>
-                <th>No</th>
-                <th>Nama Barang</th>
-                <th width="20%">Quantity</th>
-                <th>Keterangan</th>
+                <th style="border-top: 1px solid; border-bottom: 1px solid; border-left: 1px solid;">No</th>
+                <th style="border-top: 1px solid; border-bottom: 1px solid; border-left: 1px solid;">Nama Barang</th>
+                <th style="border-top: 1px solid; border-bottom: 1px solid; border-left: 1px solid;" width="20%">Quantity</th>
+                <th style="border-top: 1px solid; border-bottom: 1px solid; border-left: 1px solid; border-right: 1px solid;">Keterangan</th>
             </thead>
             <tbody>
                 <?php
@@ -60,10 +60,10 @@
                     foreach ($list_sj_detail as $v) { 
                 ?>
                     <tr>
-                        <td align="center"><?= $no ?></td>
-                        <td><?= $v->jenis_barang ?></td>
-                        <td align="center"><?= number_format($v->total_netto,2,".",",")." ".$v->uom ?></td>
-                        <td><?= $header_cv_cs['no_po'] ?></td>
+                        <td style="border-bottom: 1px solid; border-left: 1px solid;" align="center"><?= $no ?></td>
+                        <td style="border-bottom: 1px solid; border-left: 1px solid;"><?= $v->jenis_barang ?></td>
+                        <td style="border-bottom: 1px solid; border-left: 1px solid;" align="center"><?= number_format($v->total_netto,2,".",",")." ".$v->uom ?></td>
+                        <td style="border-bottom: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?= $header_cv_cs['no_po'] ?></td>
                     </tr>
                 <?php
                         $total += $v->total_netto;
@@ -71,9 +71,9 @@
                     } 
                 ?>
                 <tr>
-                    <td colspan="2" align="right"><b>TOTAL</b></td>
-                    <td align="center"><b><?= number_format($total,2,".",",")." ".$v->uom ?></b></td>
-                    <td></td>
+                    <td style="border-left: 1px solid; border-bottom: 1px solid;" colspan="2" align="right"><b>TOTAL</b></td>
+                    <td style="border-left: 1px solid; border-bottom: 1px solid;" align="center"><b><?= number_format($total,2,".",",")." ".$v->uom ?></b></td>
+                    <td style="border-left: 1px solid; border-bottom: 1px solid; border-right: 1px solid;"></td>
                 </tr>
             </tbody>
         </table>
