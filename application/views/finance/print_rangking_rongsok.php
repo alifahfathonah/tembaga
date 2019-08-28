@@ -25,6 +25,15 @@
 		<tbody>
 		<?php 
 			$no = 1;
+			$grand_grand_netto = 0;
+			$grand_grand_amount = 0;
+			$grand_grand_rata = 0;
+			$ingot_netto = 0;
+			$ingot_amount = 0;
+			$ingot_rata = 0;
+			$grand_netto = 0;
+			$grand_amount = 0;
+			$grand_rata = 0;
 			$total_netto = 0;
 			$total_amount = 0;
 			$total_rata = 0;
@@ -60,6 +69,9 @@
 			$total_netto += $row->netto;
 			$total_amount += $row->total_amount;
 			$total_rata += $row->rata2;
+			$grand_netto += $row->netto;
+			$grand_amount += $row->total_amount;
+			$grand_rata += $row->rata2;
 			$no++;
 			}
 
@@ -70,6 +82,44 @@
 					<td align='right'><b>".number_format($total_amount,2,'.',',')."</b></td>
 					<td align='right'><b>".number_format($total_rata,2,'.',',')."</b></td>
 				</tr>";
+
+			echo 
+				"<tr>
+					<td align='right' colspan='3'><b>Grand Total</b></td>
+					<td align='right'><b>".number_format($grand_netto,2,'.',',')."</b></td>
+					<td align='right'><b>".number_format($grand_amount,2,'.',',')."</b></td>
+					<td align='right'><b>".number_format($grand_rata,2,'.',',')."</b></td>
+				</tr>";
+
+			$no = 1;
+			foreach ($ingotRendah as $key => $v) {
+				echo 
+					"<tr>
+						<td align='center'>".$no."</td>
+						<td align='center'>".$v->sumber."</td>
+						<td>".$v->supplier."</td>
+						<td align='right'>".number_format($v->netto,2,'.',',')."</td>
+						<td align='right'>".number_format($v->total,2,'.',',')."</td>
+						<td align='right'>".number_format($v->rata2,2,'.',',')."</td>
+					</tr>";
+
+				$ingot_netto += $v->netto;
+				$ingot_amount += $v->total;
+				$ingot_rata += $v->rata2;
+			}
+
+			$grand_grand_netto = $grand_netto + $ingot_netto;
+			$grand_grand_amount = $grand_amount + $ingot_amount;
+			$grand_grand_rata = $grand_rata + $ingot_rata;
+
+			echo 
+				"<tr>
+					<td align='right' colspan='3'><b>Grand Total</b></td>
+					<td align='right'><b>".number_format($grand_grand_netto,2,'.',',')."</b></td>
+					<td align='right'><b>".number_format($grand_grand_amount,2,'.',',')."</b></td>
+					<td align='right'><b>".number_format($grand_grand_rata,2,'.',',')."</b></td>
+				</tr>";
+
 		?>
 		</tbody>
 	</table>

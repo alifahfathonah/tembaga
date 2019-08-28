@@ -31,8 +31,12 @@
 			$last_sumber = '';
 			$grand_total = 0;
 			$total_netto = 0;
+			$netto_seluruh = 0;
+			$total_amount_seluruh = 0;
 			$grand_total_sumber = 0;
 			$grand_netto_sumber = 0;
+			$grand_grand_total = 0;
+			$grand_grand_netto = 0;
 			foreach ($detailLaporan as $key => $row) {
 				if ($last_series != '') {
 					if ($last_series != $row->kode_rongsok) {
@@ -102,6 +106,8 @@
 				$last_sumber = $row->sumber;
 				$grand_netto_sumber += $row->netto;
 				$grand_total_sumber += $row->total_amount;
+				$netto_seluruh += $row->netto;
+				$total_amount_seluruh += $row->total_amount;
 			} 
 			echo 
 				"<tr>
@@ -117,6 +123,55 @@
 					<td align='right' style='border-top: 1px solid;'><b>".number_format($grand_netto_sumber,2,'.',',')."</b></td>
 					<td></td>
 					<td align='right' style='border-top: 1px solid;'><b>".number_format($grand_total_sumber,2,'.',',')."</b></td>
+				</tr>";
+
+			$last_ingot = '';
+			$netto_ingot = 0;
+			$amount_ingot = 0;
+			$total_amount_ingot = 0;
+			foreach ($ingotRendah as $key => $ir) {
+				if ($last_ingot == '') {
+					echo 
+						"<tr>
+							<td colspan='9'><b><u>".$ir->kode_rongsok."</u></b></td>
+						</tr>";
+				}
+				echo 
+					"<tr>
+						<td>".$ir->kode_rongsok."</td>
+						<td>".$ir->nama_item."</td>
+						<td>".$ir->no_ttr."</td>
+						<td>".$ir->tanggal."</td>
+						<td>".$ir->supplier."</td>
+						<td>".$ir->sumber."</td>
+						<td align='right'>".number_format($ir->netto,2,'.',',')."</td>
+						<td align='right'>".number_format($ir->amount,2,'.',',')."</td>
+						<td align='right'>".number_format($ir->total_amount,2,'.',',')."</td>
+					</tr>";
+				$last_ingot = $ir->kode_rongsok;
+				$netto_ingot += $ir->netto;
+				$total_amount_ingot += $ir->total_amount;
+			}
+
+			$grand_grand_netto = $netto_ingot + $netto_seluruh;
+			$grand_grand_total = $total_amount_ingot + $total_amount_seluruh;
+
+			echo 
+				"<tr>
+					<td colspan='5'></td>
+					<td><b>Total</b></td>
+					<td align='right' style='border-top: 1px solid;'><b>".number_format($netto_ingot,2,'.',',')."</b></td>
+					<td></td>
+					<td align='right' style='border-top: 1px solid;'><b>".number_format($total_amount_ingot,2,'.',',')."</b></td>
+				</tr>";
+
+			echo 
+				"<tr>
+					<td colspan='5'></td>
+					<td><b>Grand Total</b></td>
+					<td align='right' style='border-top: 1px solid;'><b>".number_format($grand_grand_netto,2,'.',',')."</b></td>
+					<td></td>
+					<td align='right' style='border-top: 1px solid;'><b>".number_format($grand_grand_total,2,'.',',')."</b></td>
 				</tr>";
 		?>
 		</tbody>
