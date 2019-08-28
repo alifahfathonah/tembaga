@@ -333,6 +333,7 @@ class R_PurchaseOrder extends CI_Controller{
     function add_po_fcustomer(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
+        $reff_cv   = $this->session->userdata('cv_id');
         $group_id = $this->session->userdata('group_id');        
         if($group_id != 1){
             $this->load->model('Model_modules');
@@ -343,7 +344,7 @@ class R_PurchaseOrder extends CI_Controller{
 
         $data['content']= "resmi/purchase_order/add_po_fcustomer";
         $data['header'] = $this->Model_purchase_order->invoice_list($id)->row_array();
-        $data['cust_list'] = $this->Model_purchase_order->customer_list()->result();
+        $data['cust_list'] = $this->Model_purchase_order->customer_list($reff_cv)->result();
 
         $this->load->view('layout', $data);
     }
@@ -481,6 +482,7 @@ class R_PurchaseOrder extends CI_Controller{
         $module_name = $this->uri->segment(1);
         $data['user_ppn'] = $this->session->userdata('user_ppn');
         $id = $this->uri->segment(3);
+        $reff_cv   = $this->session->userdata('cv_id');
         if($id){
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -496,7 +498,7 @@ class R_PurchaseOrder extends CI_Controller{
             $data['myDetail'] = $this->Model_purchase_order->load_detail_po($id)->result();
             $data['list_fg'] = $this->Model_beli_fg->list_fg()->result();
 
-            $data['cust_list'] = $this->Model_purchase_order->customer_list()->result();
+            $data['cust_list'] = $this->Model_purchase_order->customer_list($reff_cv)->result();
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/R_PurchaseOrder');
@@ -640,6 +642,7 @@ class R_PurchaseOrder extends CI_Controller{
 
     function print_po(){
         $id = $this->uri->segment(3);
+        $this->load->helper('tanggal_indo');
         if($id){        
             $data['header']  = $this->Model_purchase_order->show_header_print_po($id)->row_array();
             $data['details'] = $this->Model_purchase_order->load_detail_po($id)->result();

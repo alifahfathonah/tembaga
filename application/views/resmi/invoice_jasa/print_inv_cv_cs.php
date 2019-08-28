@@ -17,7 +17,7 @@
                         </tr>
                         <tr>
                             <td>Tanggal</td>
-                            <td>: <?= $header['tanggal'] ?></td>
+                            <td>: <?= tanggal_indo($header['tanggal']) ?></td>
                         </tr> 
                         <tr>
                             <td>Customer</td>
@@ -43,7 +43,7 @@
                         </tr>
                         <tr>
                             <td>Tanggal Jatuh Tempo</td>
-                            <td>: <?= $header['jatuh_tempo'] ?></td>
+                            <td>: <?= tanggal_indo($header['jatuh_tempo']) ?></td>
                         </tr>
                         <tr rowspan="2">
                             <td colspan="2">&nbsp;</td>

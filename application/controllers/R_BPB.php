@@ -413,6 +413,7 @@ class R_BPB extends CI_Controller{
 
     function print_bpb(){
         $id = $this->uri->segment(3);
+            $this->load->helper('tanggal_indo');
 
         if(isset($id)){
             $this->load->model('Model_surat_jalan');

@@ -141,7 +141,7 @@ class R_SO extends CI_Controller{
 
                 $post = json_encode($data_post);
 
-                // print_r($post);
+                // echo"<pre>";print_r($data_post);echo "</pre>";
                 // die();
                 $ch = curl_init(target_url().'api/ReffAPI/so');
                 curl_setopt($ch, CURLOPT_POST, true);
@@ -168,7 +168,6 @@ class R_SO extends CI_Controller{
     function edit_so(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
-        $reff_cv = $this->session->userdata('cv_id');
         if($id){
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -187,7 +186,7 @@ class R_SO extends CI_Controller{
                 $data['customer_list'] = $this->Model_matching->cv_list()->result();
             }else if($data['jenis_so'] == 'SO CV'){
                 $this->load->model('Model_purchase_order'); 
-                $data['customer_list'] = $this->Model_purchase_order->customer_list($reff_cv)->result();
+                $data['customer_list'] = $this->Model_purchase_order->customer_list()->result();
             }
             $data['marketing_list'] = $this->Model_sales_order->marketing_list()->result();
             $data['jenis_barang'] = $this->Model_so->jenis_barang_list()->result();

@@ -618,6 +618,7 @@ class R_SuratJalan extends CI_Controller{
     function edit_surat_jalan(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
+        $reff_cv = $this->session->userdata('cv_id');
         if($id){
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -633,13 +634,13 @@ class R_SuratJalan extends CI_Controller{
             if($data['header']['r_invoice_id']>0){
                 $this->load->model('Model_matching');
                 $this->load->model('Model_purchase_order');
-                $data['customer_list'] = $this->Model_purchase_order->customer_list()->result();
+                $data['customer_list'] = $this->Model_purchase_order->customer_list($reff_cv)->result();
                 $data['cv_list'] = $this->Model_purchase_order->cv_list()->result();
                 $data['po_list'] = $this->Model_matching->po_free_edit($id)->result();
             }else{
                 $this->load->model('Model_purchase_order');
                 $data['cv_list'] = $this->Model_purchase_order->cv_list()->result();
-                $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+                $data['customer_list'] = $this->Model_sales_order->customer_list($reff_cv)->result();
             }
             $this->load->model('Model_so');
             $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();

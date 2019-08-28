@@ -151,7 +151,7 @@
                         </tr>
                         <tr>
                             <td>Tanggal</td>
-                            <td>: <?php echo date('d-m-Y', strtotime($header['tanggal'])); ?></td>
+                            <td>: <?php echo tanggal_indo($header['tanggal']); ?></td>
                         </tr>
                         <tr>
                             <td>No. PO</td>

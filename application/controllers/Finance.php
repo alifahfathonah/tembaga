@@ -3379,15 +3379,16 @@ class Finance extends CI_Controller{
 
         $this->load->model('Model_finance');
         if($l == 1){
-            $data['header'] = $this->Model_finance->header_daftar_pembelian_rongsok($start, $end, 0);
-            $data['detailLaporan'] = $this->Model_finance->rangking_pemasukan_rongsok($start,$end,0)->result();
+            $data['header'] = $this->Model_finance->header_daftar_pembelian_rongsok($start, $end, 0)->result();
+            $data['detailLaporan'] = $this->Model_finance->detail_daftar_pembelian_rongsok($start,$end,0)->result_array();
+            // echo "<pre>";print_r($data['detailLaporan']);echo "</pre>"; die();
         }elseif ($l == 2) {
-            $data['header'] = $this->Model_finance->header_daftar_pembelian_rongsok($start, $end, 2);
-            $data['detailLaporan'] = $this->Model_finance->rangking_pemasukan_rongsok($start,$end,2)->result();
+            $data['header'] = $this->Model_finance->header_daftar_pembelian_rongsok($start, $end, 2)->result();
+            $data['detailLaporan'] = $this->Model_finance->detail_daftar_pembelian_rongsok($start,$end,2)->result();
         }elseif ($l == 3) {
-            $data['header'] = $this->Model_finance->header_daftar_pembelian_rongsok($start, $end, 1);
-            $data['detailLaporan'] = $this->Model_finance->rangking_pemasukan_rongsok($start,$end,1)->result();
+            $data['header'] = $this->Model_finance->header_daftar_pembelian_rongsok($start, $end, 1)->result();
+            $data['detailLaporan'] = $this->Model_finance->detail_daftar_pembelian_rongsok($start,$end,1)->result();
         }
-        $this->load->view('finance/print_rangking_rongsok', $data);
+        $this->load->view('finance/print_daftar_pembelian_rongsok', $data);
     }
 }
