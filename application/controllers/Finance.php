@@ -3332,10 +3332,13 @@ class Finance extends CI_Controller{
         $this->load->model('Model_finance');
         if($l == 1){
             $data['detailLaporan'] = $this->Model_finance->rangking_pemasukan_rongsok($start,$end,0)->result();
+            $data['ingotRendah'] = $this->Model_finance->rangking_pemasukan_ingot_rendah($start, $end, 0)->result();
         }elseif ($l == 2) {
             $data['detailLaporan'] = $this->Model_finance->rangking_pemasukan_rongsok($start,$end,2)->result();
+            $data['ingotRendah'] = $this->Model_finance->rangking_pemasukan_ingot_rendah($start, $end, 2)->result();
         }elseif ($l == 3) {
             $data['detailLaporan'] = $this->Model_finance->rangking_pemasukan_rongsok($start,$end,1)->result();
+            $data['ingotRendah'] = $this->Model_finance->rangking_pemasukan_ingot_rendah($start, $end, 1)->result();
         }
         $this->load->view('finance/print_rangking_rongsok', $data);
     }

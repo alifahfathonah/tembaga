@@ -1364,6 +1364,35 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function rangking_pemasukan_ingot_rendah($s, $e, $ppn){
+        if ($ppn == 2) {
+            $data = $this->db->query("
+                SELECT ' - ' as sumber, r.nama_item as supplier, d.flag_ppn, sum(dd.netto) netto, 0 total, 0 rata2
+                from 
+                dtr_detail dd
+                left join dtr d on d.id = dd.dtr_id
+                left join rongsok r on r.id = dd.rongsok_id
+                where  d.tanggal BETWEEN '".$s."' AND '".$e."'
+                and r.kode_rongsok =  '02I0001'
+                group by sumber, supplier, flag_ppn
+                ");
+        } else {
+            $data = $this->db->query("
+                SELECT ' - ' as sumber, r.nama_item as supplier, d.flag_ppn, sum(dd.netto) netto, 0 total, 0 rata2
+                from 
+                dtr_detail dd
+                left join dtr d on d.id = dd.dtr_id
+                left join rongsok r on r.id = dd.rongsok_id
+                where  d.tanggal BETWEEN '".$s."' AND '".$e."'
+                and d.flag_ppn = ".$ppn."
+                and r.kode_rongsok =  '02I0001'
+                group by sumber, supplier, flag_ppn
+                ");
+        }
+
+        return $data;
+    }
+
     function header_daftar_pembelian_rongsok($s, $e, $ppn) {
         if ($ppn == 2) {
             $data = $this->db->query("
