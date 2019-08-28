@@ -85,7 +85,7 @@
                                 //         style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
                                 // }
                                 if(($group_id==1 || $hak_akses['edit']==1)){
-                                echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliWip/edit_dtwip/'.$data->id.'" style="margin-bottom:4px">&nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>';
+                                echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliWIP/edit_dtwip/'.$data->id.'" style="margin-bottom:4px">&nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>';
                                 }
                                 if($group_id==1 || $hak_akses['print_dtwip']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliWIP/print_dtwip/'.$data->id.'" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';

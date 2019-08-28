@@ -114,3 +114,7 @@ print gudang rongsok per item(done)
 usd masih aneh invoice nya, cek lagi
 
 DELETE LPB, BENERIN INVENTORY KALO MAU
+
+spb kirim rongsok cek lagi, masih sering keinput 2x
+
+edit kurs di invoice(done)

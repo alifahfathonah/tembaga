@@ -953,8 +953,7 @@ class Model_finance extends CI_Model{
     }
 
     function saldo_awal($s,$id){
-        return $this->db->query("select *, sum(nominal) as nominal from f_kas where tanggal < '".$s."' and id_bank =".$id."
-            order by tanggal, nomor asc
+        return $this->db->query("select jenis_trx, sum(CASE WHEN jenis_trx = 0 THEN nominal ELSE 0 END) as saldo_masuk, sum(CASE WHEN jenis_trx = 1 THEN nominal ELSE 0 END) as saldo_keluar from f_kas where tanggal < '".$s."' and id_bank =".$id."
             ");
     }
 

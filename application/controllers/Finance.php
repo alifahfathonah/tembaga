@@ -1566,6 +1566,7 @@ class Finance extends CI_Controller{
             'tanggal' => $tgl_input,
             'tgl_jatuh_tempo' => $tgl_jatuh_tempo,
             'keterangan' => nl2br($this->input->post('remarks')),
+            'kurs'=>$this->input->post('kurs'),
             'diskon' => $diskon,
             'add_cost' => $cost,
             'materai' => $materai,

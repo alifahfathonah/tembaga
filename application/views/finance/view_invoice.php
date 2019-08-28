@@ -425,6 +425,7 @@
         $('#remarks').removeAttr('readonly');
         $('#bank_id').removeAttr('disabled');
         $('#nama_direktur').removeAttr('readonly');
+        $('#kurs').removeAttr('readonly');
 
         $('#lblMaterai').hide();
         $('#lblCost').hide();
