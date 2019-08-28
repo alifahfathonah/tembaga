@@ -56,7 +56,7 @@
                         </tr>
                         <tr>
                             <td style="border-bottom: 1px solid;">Tanggal</td>
-                            <td rowspan="2" valign="middle">: <?= date("d/m/Y", strtotime($header['tanggal'])) ?></td>
+                            <td rowspan="2" valign="middle">: <?= tanggal_indo($header['tanggal']) ?></td>
                         </tr>
                         <tr>
                             <td>Date</td>
@@ -178,7 +178,7 @@
             </tr>
             <tr>
                 <td><u>Tanggal Kirim</u><br>Shipment Date</td>
-                <td>: <?= date("d/m/Y", strtotime($header['tanggal_kirim'])) ?></td>
+                <td>: <?= tanggal_indo($header['tanggal_kirim']) ?></td>
                 <td></td>
             </tr>
         </table>

@@ -642,6 +642,7 @@ class R_PurchaseOrder extends CI_Controller{
 
     function print_po(){
         $id = $this->uri->segment(3);
+        $this->load->helper('tanggal_indo');
         if($id){        
             $data['header']  = $this->Model_purchase_order->show_header_print_po($id)->row_array();
             $data['details'] = $this->Model_purchase_order->load_detail_po($id)->result();

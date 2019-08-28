@@ -31,7 +31,7 @@
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
                             <td>Tanggal</td>
-                            <td>: <?= $header_cv_cs['tanggal'] ?></td>
+                            <td>: <?= tanggal_indo($header_cv_cs['tanggal']) ?></td>
                         </tr>
                         <tr>
                             <td>Customer</td>

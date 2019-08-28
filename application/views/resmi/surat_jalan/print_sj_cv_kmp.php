@@ -17,7 +17,7 @@
                         </tr>
                         <tr>
                             <td>Tanggal</td>
-                            <td>: <?= $header['tanggal'] ?></td>
+                            <td>: <?= tanggal_indo($header['tanggal']) ?></td>
                         </tr>
                         <tr>
                             <td>No. PO</td>
