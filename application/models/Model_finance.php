@@ -1286,7 +1286,7 @@ class Model_finance extends CI_Model{
                             END AS nama_sup_cust,
                             sum( td.netto ) AS netto,
                             sum( CASE WHEN dd.po_detail_id > 0 THEN ( td.netto * pd.amount ) ELSE 0 END ) AS total_amount,
-                            sum( CASE WHEN dd.po_detail_id > 0 THEN ( td.netto * pd.amount ) / td.netto ELSE 0 END ) AS rata2 
+                            round(sum( CASE WHEN dd.po_detail_id > 0 THEN ( td.netto * pd.amount ) ELSE 0 END ) / sum( td.netto ),2) AS rata2
                         FROM
                             ttr_detail td
                             LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
