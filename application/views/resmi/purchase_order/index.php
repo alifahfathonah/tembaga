@@ -93,7 +93,7 @@
                                 }if( ($group_id==9 || $hak_akses['edit']==1) && $data->status != 1 && $data->jenis_po == 'PO CUSTOMER KE CV' ){
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/R_PurchaseOrder/edit_po_fcustomer/<?php echo $data->id; ?>" style="margin-bottom:4px">
-                                &nbsp; <i class="fa fa-edit"></i> Edit FC &nbsp; </a>
+                                &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                             <?php
                                 }if($group_id==9 || $group_id==14 || $group_id==16 || $hak_akses['print']==1){
                             ?>
