@@ -85,13 +85,17 @@
                             <!-- <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/R_SuratJalan/add_surat_jalan/po/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-truck"></i> Create SJ &nbsp; </a> -->
                             <?php
-                                }if( ($group_id==9 || $hak_akses['edit']==1) && $data->status != 1 ){
+                                }if( ($group_id==9 || $hak_akses['edit']==1) && $data->status != 1 && $data->jenis_po == 'PO CV KE KMP' ){
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/R_PurchaseOrder/edit_po/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                             <?php
-                                }
-                                if($group_id==9 || $group_id==14 || $group_id==16 || $hak_akses['print']==1){
+                                }if( ($group_id==9 || $hak_akses['edit']==1) && $data->status != 1 && $data->jenis_po == 'PO CUSTOMER KE CV' ){
+                            ?>
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/R_PurchaseOrder/edit_po_fcustomer/<?php echo $data->id; ?>" style="margin-bottom:4px">
+                                &nbsp; <i class="fa fa-edit"></i> Edit FC &nbsp; </a>
+                            <?php
+                                }if($group_id==9 || $group_id==14 || $group_id==16 || $hak_akses['print']==1){
                             ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/R_PurchaseOrder/view_po/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa fa-file-text-o"></i> View &nbsp; </a>
