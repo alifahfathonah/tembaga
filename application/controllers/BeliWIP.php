@@ -84,7 +84,7 @@ class BeliWIP extends CI_Controller{
                 redirect('index.php/BeliWIP/add');
             }
         }else{
-            $code = $this->Model_m_numberings->getNumbering('POW-KMP', $tgl_input);
+            $code = $this->Model_m_numberings->getNumbering('POWIP', $tgl_input);
         }
 
         $data = array(

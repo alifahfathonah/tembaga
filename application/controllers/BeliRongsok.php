@@ -1081,6 +1081,40 @@ class BeliRongsok extends CI_Controller{
        // echo json_encode($return_data);
     }
     
+    function proses_matching_rsk(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');  
+        $user_ppn    = $this->session->userdata('user_ppn');
+
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $po_id = $this->uri->segment(3);
+        
+        $data['content']= "tolling_titipan/proses_matching_rsk";
+        $this->load->model('Model_tolling_titipan');
+        $this->load->model('Model_beli_rongsok');
+        $data['header_po'] = $this->Model_tolling_titipan->show_header_po($po_id)->row_array();
+        $data['details_po'] = $this->Model_beli_rongsok->show_detail_po($po_id)->result();
+
+        $dtr_app = $this->Model_beli_rongsok->get_dtr_approve($po_id)->result();
+        foreach ($dtr_app as $index=>$row){
+            $dtr_app[$index]->details = $this->Model_beli_rongsok->show_detail_dtr($row->id)->result();
+        }
+        $data['dtr_app'] = $dtr_app;
+        $sp_id = $data['header_po']['supplier_id'];
+        $dtr = $this->Model_tolling_titipan->get_matching_dtr($sp_id,$user_ppn)->result();
+        foreach ($dtr as $index=>$row){
+            $dtr[$index]->details = $this->Model_beli_rongsok->show_detail_dtr($row->id)->result();
+        }
+        $data['dtr'] = $dtr;
+        $this->load->view('layout', $data);
+    }
+    
     function approve_ttr_resmi(){
         $ttr_id = $this->input->post('header_id');
         $tanggal = date('Y-m-d h:i:s');

@@ -1543,6 +1543,7 @@ class Finance extends CI_Controller{
 
     function update_invoice(){
         $user_id   = $this->session->userdata('user_id');
+        $user_ppn  = $this->session->userdata('user_ppn');
         $return_data = array();
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_jatuh_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jatuh_tempo')));
@@ -1551,7 +1552,7 @@ class Finance extends CI_Controller{
         $diskon = str_replace(',', '', $this->input->post('diskon'));
         $cost = str_replace(',', '', $this->input->post('cost'));
         $materai = str_replace(',', '', $this->input->post('materai'));
-        if ($this->input->post('flag_ppn') == 1) {
+        if ($this->input->post('flag_ppn') == 1 && $this->input->post('currency')=='IDR') {
             $update_total = ($total - $diskon - $cost - $materai) * 10 / 100;
         } else {
             $update_total = $total - $diskon - $cost - $materai;
@@ -1566,7 +1567,7 @@ class Finance extends CI_Controller{
             'tanggal' => $tgl_input,
             'tgl_jatuh_tempo' => $tgl_jatuh_tempo,
             'keterangan' => nl2br($this->input->post('remarks')),
-            'kurs'=>$this->input->post('kurs'),
+            'kurs'=> $this->input->post('kurs'),
             'diskon' => $diskon,
             'add_cost' => $cost,
             'materai' => $materai,
@@ -1575,6 +1576,30 @@ class Finance extends CI_Controller{
         ];
 
         $this->db->update('f_invoice', $data, ['id' => $this->input->post('id')]);
+
+            if($user_ppn==1){
+                $this->load->helper('target_url');
+
+                $this->load->model('Model_beli_rongsok');
+
+                $data_post['id'] = $this->input->post('id');                
+                $data_post['master'] = $data;
+
+                $detail_post = json_encode($data_post);
+                // print_r($detail_post);
+                // die();
+
+                $ch = curl_init(target_url().'api/FinanceAPI/inv_update');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
 
         if($this->db->trans_complete()){
             redirect($_SERVER['HTTP_REFERER']);

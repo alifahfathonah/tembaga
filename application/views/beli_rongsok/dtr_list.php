@@ -87,9 +87,11 @@
                                     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliRongsok/edit_dtr/'.$data->id.'" 
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit &nbsp; </a> ';
                                 }
-                                if ($data->status==0 && ((($data->supplier_id==0 || strpos($data->kode_supplier, '999') !== false) && $data->customer_id==0) || ($data->customer_id > 0 && $data->retur_id > 0)) ){
-                                    echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliRongsok/proses_dtr/'.$data->id.'" 
-                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
+                                // if ($data->status==0 && ((($data->supplier_id==0 || strpos($data->kode_supplier, '999') !== false) && $data->customer_id==0) || ($data->customer_id > 0 && $data->retur_id > 0)) ){
+                                //     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliRongsok/proses_dtr/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
+                                // }
+                                if ($data->status==0 && (($data->customer_id==0) || ($data->customer_id > 0 && $data->retur_id > 0)) ){
+                                    echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliRongsok/proses_dtr/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
                                 }
                                 if($group_id==1 || $hak_akses['print_dtr']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliRongsok/print_dtr/'.$data->id.'" 

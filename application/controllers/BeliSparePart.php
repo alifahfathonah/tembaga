@@ -689,6 +689,7 @@ class BeliSparePart extends CI_Controller{
 
     function update_po(){
         $user_id  = $this->session->userdata('user_id');
+        $user_ppn  = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
@@ -719,6 +720,32 @@ class BeliSparePart extends CI_Controller{
                         'total_amount'=>str_replace(',', '', $row['total_amount'])
                     ));
             }
+
+            if($user_ppn==1){
+                $this->load->helper('target_url');
+
+                $this->load->model('Model_beli_rongsok');
+
+                $data_post['id'] = $this->input->post('id');                
+                $data_post['master'] = $data;
+                $data_post['detail'] = $details;
+
+                $detail_post = json_encode($data_post);
+                // print_r($detail_post);
+                // die();
+
+                $ch = curl_init(target_url().'api/BeliSparepartAPI/po_update');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
+
         if($this->db->trans_complete()){
             $this->session->set_flashdata('flash_msg', 'Data PO Sparepart berhasil disimpan');
             redirect('index.php/BeliSparePart/view_po/'.$this->input->post('id'));

@@ -253,7 +253,7 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th style="width:40px">No</th>
-                                <th>Nama Item Finish Good</th>
+                                <th>Nama Item <?=$header['jenis_po'];?></th>
                                 <th>Unit of Measure</th>
                                 <th>Harga (<?=$header['currency'];?>)</th>
                                 <th>Jumlah</th>
@@ -292,9 +292,52 @@
                 <div class="col-md-12">
                     <div class="table-scrollable">
                         <table class="table table-bordered table-striped table-hover">
+                        <?php if($header['jenis_po']=='Rongsok'){ ?>
                             <thead>
                                 <th style="width:40px">No</th>
-                                <th>Nama Item Finish Good</th>
+                                <th>Nama Item Rongsok</th>
+                                <th>Unit of Measure</th>
+                                <th>Jumlah</th>
+                                <th>Bruto</th>
+                                <th>Netto</th>
+                                <th>Jumlah TTR</th>
+                            </thead>
+                            <tbody>
+                            <?php 
+                                $no = 0;
+                                $qty = 0;
+                                $bruto = 0;
+                                $netto = 0;
+                                $ttr = 0;
+                                foreach ($list_detail as $row){
+                                $no++;
+                            echo '<tr>';
+                            echo '<td style="text-align:center">'.$no.'</td>';
+                            echo '<td>'.$row->nama_item.'</td>';
+                            echo '<td>'.$row->uom.'</td>';
+                            echo '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
+                            echo '<td style="text-align:right">'.number_format($row->bruto,0,',','.').'</td>';
+                            echo '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
+                            echo '<td>'.$row->jml_ttr.'</td>';
+                            echo '</tr>';
+                            $qty += $row->qty;
+                            $bruto += $row->bruto;
+                            $netto += $row->netto;
+                            $ttr += $row->jml_ttr;                            
+                            }
+                            ?>
+                            </tbody>
+                            <tr>
+                                <td colspan="3" style="text-align: right; font-weight: bold;">Total</td>
+                                <td><?=$qty;?></td>
+                                <td><?=number_format($bruto,0,',','.');?></td>
+                                <td style="background-color: green; color: white;"><?=number_format($netto,0,',','.');?></td>
+                                <td><?=$ttr;?></td>
+                            </tr>
+                        <?php }else{ ?>
+                            <thead>
+                                <th style="width:40px">No</th>
+                                <th>Nama Item <?=$header['jenis_po'];?></th>
                                 <th>Unit of Measure</th>
                                 <th>Bruto</th>
                                 <th>Netto</th>
@@ -328,6 +371,7 @@
                                 <td style="text-align: right;background-color: green; color: white;"><?=number_format($netto,0,',','.');?></td>
                                 <td style="text-align: right;background-color: green; color: white;"><?=number_format($jumlah,0,',','.');?></td>
                             </tr>
+                        <?php } ?>
                         </table>
                     </div>
                 </div>
@@ -395,7 +439,11 @@ function simpanData(){
 function loadDetail(id){
     $.ajax({
         type:"POST",
+        <?php if($header['jenis_po']=='Rongsok'){ ?>
+        url:'<?php echo base_url('index.php/BeliRongsok/load_detail'); ?>',
+        <?php }else{ ?>
         url:'<?php echo base_url('index.php/BeliFinishGood/load_detail'); ?>',
+        <?php } ?>
         data:"id="+ id,
         success:function(result){
             $('#boxDetail').html(result);
@@ -410,10 +458,14 @@ function loadDetail(id){
 
 function get_uom(id){
     $.ajax({
+        <?php if($header['jenis_po']=='Rongsok'){ ?>
+        url: "<?php echo base_url('index.php/BeliRongsok/get_uom_po'); ?>",
+        data: {iditem: id},
+        <?php }else{ ?>
         url: "<?php echo base_url('index.php/BeliFinishGood/get_uom'); ?>",
-        async: false,
-        type: "POST",
         data: "id="+id,
+        <?php } ?>
+        type: "POST",
         dataType: "json",
         success: function(result) {
             $('#uom').val(result['uom']);
@@ -431,10 +483,17 @@ function saveDetail(){
     }else{
         $.ajax({
             type:"POST",
+            <?php if($header['jenis_po']=='Rongsok'){ ?>
+            url:'<?php echo base_url('index.php/BeliRongsok/save_detail'); ?>',
+            data:{
+                id:$('#id').val(),
+                rongsok_id:$('#fg_id').val(),
+            <?php }else{ ?>
             url:'<?php echo base_url('index.php/BeliFinishGood/save_detail'); ?>',
             data:{
                 id:$('#id').val(),
                 fg_id:$('#fg_id').val(),
+            <?php } ?>
                 harga:$('#harga').val(),
                 qty:$('#qty').val(),
                 total_harga:$('#total_harga').val()

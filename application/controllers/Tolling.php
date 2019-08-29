@@ -492,6 +492,7 @@ class Tolling extends CI_Controller{
         $data['content']= "tolling_titipan/matching";
         $this->load->model('Model_tolling_titipan');
         $data['po_list'] = $this->Model_tolling_titipan->get_po_list($user_ppn)->result();
+        $data['po_list_rsk'] = $this->Model_tolling_titipan->get_po_list_rsk($user_ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -693,6 +694,99 @@ class Tolling extends CI_Controller{
             $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTT, silahkan coba kembali!');
         }
         // redirect('index.php/Tolling/dtt_list');
+    }
+
+    function proses_matching_rsk(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');  
+        $user_ppn    = $this->session->userdata('user_ppn');
+
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $po_id = $this->uri->segment(3);
+        
+        $data['content']= "tolling_titipan/proses_matching_rsk";
+        $this->load->model('Model_tolling_titipan');
+        $this->load->model('Model_beli_rongsok');
+        $data['header_po'] = $this->Model_tolling_titipan->show_header_po($po_id)->row_array();
+        $data['details_po'] = $this->Model_beli_rongsok->show_detail_po($po_id)->result();
+
+        $dtr_app = $this->Model_beli_rongsok->get_dtr_approve($po_id)->result();
+        foreach ($dtr_app as $index=>$row){
+            $dtr_app[$index]->details = $this->Model_beli_rongsok->show_detail_dtr($row->id)->result();
+        }
+        $data['dtr_app'] = $dtr_app;
+        $sp_id = $data['header_po']['supplier_id'];
+        $dtr = $this->Model_tolling_titipan->get_matching_dtr($sp_id,$user_ppn)->result();
+        foreach ($dtr as $index=>$row){
+            $dtr[$index]->details = $this->Model_beli_rongsok->show_detail_dtr($row->id)->result();
+        }
+        $data['dtr'] = $dtr;
+        $this->load->view('layout', $data);
+    }
+
+    function approve_matching_rsk(){
+        $dtr_id = $this->input->post('dtr_id');
+        $po_id = $this->input->post('po_id');
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $return_data = array();
+        
+            $this->db->trans_start();       
+
+            $this->load->model('Model_beli_rongsok');
+            #Update status DTR
+            $this->db->where('id', $dtr_id);
+            $this->db->update('dtr', array(
+                    'po_id'=>$po_id,
+                    'approved'=>$tanggal,
+                    'approved_by'=>$user_id));
+                
+                #update po_detail_id di dtr_detail
+                $po_dtr_check_update = $this->Model_beli_rongsok->check_to_update($po_id)->result();
+                foreach ($po_dtr_check_update as $u) {
+                    $this->db->where('id',$u->dtr_detail_id );
+                    $this->db->update('dtr_detail',array(
+                                    'po_detail_id'=>$u->id));
+                }
+
+                #update status PO, jika DTR sudah mencukupi
+                $po_dtr_list = $this->Model_beli_rongsok->check_po_dtr($po_id)->result();
+                foreach ($po_dtr_list as $v) {
+                    #penghitungan +- 10 % PO ke DTR
+                    // if(((int)$v->tot_netto) >= (0.9*((int)$v->qty))){
+                    //     #update po_detail flag_dtr
+                    //     $this->Model_beli_rongsok->update_flag_dtr_po_detail($po_id);
+                    // }
+                    // $total_qty += $v->qty;
+                        if(((int)$v->tot_netto) >= (0.9*((int)$v->tot_qty))){
+                            $this->db->where('id',$po_id);
+                            $this->db->update('po',array(
+                                            'status'=>3,
+                                            'flag_pelunasan'=>0));
+                        }else {
+                            $this->db->where('id',$po_id);
+                            $this->db->update('po',array(
+                                            'status'=>2));
+                        }
+                }
+
+        if($this->db->trans_complete()){
+            redirect('index.php/Tolling/proses_matching_rsk/'.$this->input->post('po_id'));
+            // $return_data['type_message']= "sukses";
+            // $return_data['message'] = "TTR sudah diberikan ke bagian gudang";
+            // $return_data['message']= "TTR berhasil di-create dengan nomor : ".$code;                 
+        }else{
+            redirect('index.php/Tolling/proses_matching_rsk/'.$this->input->post('po_id'));
+        }
+       // header('Content-Type: application/json');
+       // echo json_encode($return_data);
     }
 
     function delete_po(){
@@ -2798,7 +2892,14 @@ class Tolling extends CI_Controller{
         $this->db->trans_start();
         if($user_ppn == 0){
             $this->load->model('Model_m_numberings');
-            $code = $this->Model_m_numberings->getNumbering('PO-T', $tgl_input); 
+            if($this->input->post('jenis_barang')=='FG'){
+                $num = 'POFG';
+            }elseif($this->input->post('jenis_barang')=='WIP'){
+                $num = 'POWIP';
+            }elseif($this->input->post('jenis_barang')=='Rongsok'){
+                $num = 'PO';
+            }
+            $code = $this->Model_m_numberings->getNumbering($num, $tgl_input); 
         }else{
             $code = 'PO-KMP.'.$tgl_po.'.'.$this->input->post('no_po');
             $count = $this->db->query("Select count(id) as count from po where no_po = '".$code."'")->row_array();
@@ -2880,6 +2981,8 @@ class Tolling extends CI_Controller{
                 $data['list_barang'] = $this->Model_tolling_titipan->jenis_barang($jenis)->result();
             }elseif($jenis=='WIP'){
                 $data['list_barang'] = $this->Model_tolling_titipan->jenis_barang($jenis)->result();
+            }else{
+                $data['list_barang'] = $this->Model_tolling_titipan->jenis_barang_rsk()->result();
             }
 
             if($data['header']['status']==0){
@@ -2887,7 +2990,11 @@ class Tolling extends CI_Controller{
             }else{
                 $data['count'] = $this->Model_beli_rongsok->count_po_detail($id)->row_array();
                 $data['list_data'] = $this->Model_tolling_titipan->load_detail_po($id)->result();
-                $data['list_detail'] = $this->Model_tolling_titipan->show_data_po($id)->result();
+                if($jenis=='Rongsok'){
+                    $data['list_detail'] = $this->Model_beli_rongsok->show_data_po($id)->result();
+                }else{
+                    $data['list_detail'] = $this->Model_tolling_titipan->show_data_po($id)->result();
+                }
             }
 
             $this->load->model('Model_beli_sparepart');

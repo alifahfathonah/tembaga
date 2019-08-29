@@ -95,7 +95,7 @@ view data faktur all di edit lagi view nya biar laporan (done)
 
 kartu stok rongsok per palet(done)
 
-edit no.po dan edit ppn di po *hanya kmp
+edit no.po dan edit ppn di po *hanya kmp(done)
 
 spb wip kirim rongsok otomatis jika udah approve wip aja
 
@@ -111,10 +111,8 @@ r_t_surat_jalan savesuratjalan masih di die();(done)
 
 print gudang rongsok per item(done)
 
-usd masih aneh invoice nya, cek lagi
+usd masih aneh invoice nya, cek lagi(done)
 
 DELETE LPB, BENERIN INVENTORY KALO MAU
-
-spb kirim rongsok cek lagi, masih sering keinput 2x
 
 edit kurs di invoice(done)
