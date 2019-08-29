@@ -107,6 +107,8 @@
 				$total += $row->total;
 			}
 
+			$total2 = 0;
+
 			foreach ($ingotRendah as $key => $value) {
 		?>
 			<tr>
@@ -133,7 +135,8 @@
 				<td align="right" style=" border-right: 1px solid #000; border-bottom: 1px solid;"><?= number_format($value->TOTAL,2,'.',','); ?></td>
 			</tr>
 		<?php
-			 } 
+				$total2 += $value->TOTAL;
+			} 
 		?>
 			<tr>
 				<th colspan="2" style=" border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"></th>
@@ -155,7 +158,7 @@
                 <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($LT,2,',','.');?></th>
                 <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($SC,2,',','.');?></th>
                 <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($SCJ,2,',','.');?></th>
-                <th style="text-align: right; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($total,2,',','.');?></th>
+                <th style="text-align: right; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($total + $total2,2,',','.');?></th>
             </tr>
 		</tbody>
 	</table>
