@@ -108,6 +108,7 @@
 			}
 
 			$total2 = 0;
+			$new_ir = 0;
 
 			foreach ($ingotRendah as $key => $value) {
 		?>
@@ -136,7 +137,9 @@
 			</tr>
 		<?php
 				$total2 += $value->TOTAL;
+				$new_ir += $value->IR;
 			} 
+				$IR += $new_ir;
 		?>
 			<tr>
 				<th colspan="2" style=" border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"></th>
