@@ -15,10 +15,10 @@
                             <td>No. Invoice</td>
                             <td>: <?= $header['no_invoice_jasa'] ?></td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <td>Tanggal</td>
                             <td>: <?= tanggal_indo($header['tanggal']) ?></td>
-                        </tr> 
+                        </tr>  -->
                         <tr>
                             <td>Customer</td>
                             <td>: <?= $header['nama_customer'] ?></td>
@@ -98,7 +98,7 @@
                     dananya.
                 </td>
                 <td width="15%" align="center"></td>
-                <td valign="top">Hormat Kami,</td>
+                <td valign="top">Jakarta, <?= tanggal_indo($header['tanggal']) ?></td>
             </tr>
         </table>
         <p>&nbsp;</p>
