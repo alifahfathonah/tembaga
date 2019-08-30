@@ -101,12 +101,21 @@ class Model_so extends CI_Model{
 		return $data;
 	}
 
+	// function get_r_gudang_fg($id){
+	// 	$data = $this->db->query("select rtg.* from r_t_so rts
+	// 		left join r_t_po rtp on rtp.id = rts.po_id
+	// 		left join r_t_invoice rti on rti.r_po_id = rtp.id
+	// 		left join r_t_gudang_fg rtg on rtg.f_invoice_id = rti.id
+	// 		where rts.id = ".$id);
+	// 	return $data;
+	// }
+
 	function get_r_gudang_fg($id){
-		$data = $this->db->query("select rtg.* from r_t_so rts
-			left join r_t_po rtp on rtp.id = rts.po_id
-			left join r_t_invoice rti on rti.r_po_id = rtp.id
-			left join r_t_gudang_fg rtg on rtg.f_invoice_id = rti.id
-			where rts.id = ".$id);
+		$data = $this->db->query("select rtg.* from r_t_gudang_fg rtg
+			left join r_t_invoice rti on rti.id = rtg.f_invoice_id
+		    left join r_t_po rtp on rtp.f_invoice_id = rti.invoice_id
+		    left join r_t_so rts on rts.po_id = rtp.id
+				where rts.id =".$id);
 		return $data;
 	}
 

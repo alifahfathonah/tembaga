@@ -182,7 +182,7 @@
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Create DTR </a>
 
-                    <a href="<?php echo base_url('index.php/BeliRongsok'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/BeliRongsok/dtr_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>

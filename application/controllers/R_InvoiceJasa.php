@@ -107,7 +107,9 @@ class R_InvoiceJasa extends CI_Controller{
             // $list_sj = $this->Model_invoice_jasa->list_sj_so($this->input->post('id_sj'))->result();
             //$list_sj = $this->Model_invoice_jasa->list_sj_so_v2($this->input->post('id_sj'),$get_po['id'])->result();
             $list_sj = $this->Model_invoice_jasa->list_sj_so($this->input->post('id_sj'))->result();
-            foreach ($list_sj as $row) {
+            $nilai_invoice = 0;
+            $data_detail = [];
+            foreach ($list_sj as $i => $row) {
             	$total_amount = $row->netto * $row->amount;
                 $detail = array(
                     'inv_jasa_id' => $inv_jasa_id,
@@ -121,8 +123,45 @@ class R_InvoiceJasa extends CI_Controller{
                     'total_amount' => $total_amount,
                     'line_remarks' => $row->line_remarks
                 );
+                $nilai_invoice += $total_amount;
                 $this->db->insert('r_t_inv_jasa_detail', $detail);
+                $id_detail = $this->db->insert_id();
+                $data_detail[$i] = array_merge($detail, array('reff2'=>$id_detail));
             }
+
+            $total_invoice = ($nilai_invoice-str_replace(',', '', $this->input->post('diskon'))-str_replace(',', '', $this->input->post('add_cost')))*110/100 + str_replace(',', '', $this->input->post('materai'));
+            
+            $total_invoice = round($total_invoice,0);
+
+            $this->db->where('id', $inv_jasa_id);
+            $this->db->update('r_t_inv_jasa', array(
+                'nilai_invoice' => $total_invoice
+            ));
+
+             //API START//
+                $this->load->helper('target_url');
+
+                $reff_inv = array('reff2' => $inv_jasa_id, 'idkmp'=>$this->input->post('idkmp'), 'nilai_invoice'=>$total_invoice);
+                // $data_post['nomor_spb'] = $num;
+                $data_post['header'] = array_merge($data, $reff_inv);
+                $data_post['detail'] = $data_detail;
+
+                $post = json_encode($data_post);
+
+                // print_r($post);
+                // die();
+                $ch = curl_init(target_url().'api/ReffAPI/inv');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+
+            //API END//
 
             if($this->db->trans_complete()){
                 redirect('index.php/R_InvoiceJasa/edit_inv_jasa/'.$inv_jasa_id);  
@@ -161,19 +200,17 @@ class R_InvoiceJasa extends CI_Controller{
         $user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $tgl_jth_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jth_tempo')));   
-        $nilai_invoice = 0;
-        $total = str_replace(',', '', $this->input->post('total'));
+        $tgl_jth_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jth_tempo')));
         $diskon = str_replace(',', '', $this->input->post('diskon'));
         $cost = str_replace(',', '', $this->input->post('add_cost'));
         $materai = str_replace(',', '', $this->input->post('materai'));
-        $nilai_invoice = (($total - $diskon - $cost) * 110 / 100) + $materai;
 
         $this->db->trans_start();
         $jenis = $this->input->jenis_barang;
 
             $details = $this->input->post('details');
 
+            $total = 0;
             foreach ($details as $v) {
                 
                 $data = array(
@@ -188,9 +225,13 @@ class R_InvoiceJasa extends CI_Controller{
                         'modified_at'=> $tanggal,
                         'modified_by'=> $user_id
                     );
+                $total += str_replace(',', '', $v['total_amount']);
                 $this->db->where('id', $v['id']);
                 $this->db->update('r_t_inv_jasa_detail', $data);
             }
+
+            $nilai_invoice = (($total - $diskon - $cost) * 110 / 100) + $materai;
+            // echo $nilai_invoice;die();
 
             // $this->db->delete('r_t_inv_jasa_detail', ['inv_jasa_id' => $this->input->post('id')]);
             // foreach ($details as $v) {
@@ -212,26 +253,45 @@ class R_InvoiceJasa extends CI_Controller{
             //     $nilai_invoice += (int)$total_amount;
             // }
 
-        $data = array(
-                'no_invoice_jasa'=> $this->input->post('no_inv_jasa'),
-                'nilai_invoice'=> $nilai_invoice,
-                'tanggal'=> $tgl_input,
-                'term_of_payment' => $this->input->post('term_of_payment'),
-                'jatuh_tempo' => $tgl_jth_tempo,
-                'bank_id' => $this->input->post('bank_id'),
-                'nama_direktur' => $this->input->post('nama_direktur'),
-                'diskon' => $diskon,
-                'cost' => $cost,
-                'materai' => $materai,
-                'remarks'=>$this->input->post('remarks'),
-                'modified_at'=> $tanggal,
-                'modified_by'=> $user_id
-            );
-        $this->db->where('id',$this->input->post('id'));
-        $this->db->update('r_t_inv_jasa', $data);
+            $data = array(
+                    'no_invoice_jasa'=> $this->input->post('no_inv_jasa'),
+                    'nilai_invoice'=> $nilai_invoice,
+                    'tanggal'=> $tgl_input,
+                    'term_of_payment' => $this->input->post('term_of_payment'),
+                    'jatuh_tempo' => $tgl_jth_tempo,
+                    'bank_id' => $this->input->post('bank_id'),
+                    'nama_direktur' => $this->input->post('nama_direktur'),
+                    'diskon' => $diskon,
+                    'cost' => $cost,
+                    'materai' => $materai,
+                    'remarks'=>$this->input->post('remarks'),
+                    'modified_at'=> $tanggal,
+                    'modified_by'=> $user_id
+                );
+            $this->db->where('id',$this->input->post('id'));
+            $this->db->update('r_t_inv_jasa', $data);
+
+                $data_post['id'] = $this->input->post('id');                
+                $data_post['master'] = $data;
+                $data_post['detail'] = $details;
+
+                $detail_post = json_encode($data_post);
+                // print_r($detail_post);
+                // die();
+
+                $ch = curl_init(target_url().'api/ReffAPI/inv_update');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
 
         if($this->db->trans_complete()){
-            redirect(base_url('index.php/R_InvoiceJasa/'));
+            redirect(base_url('index.php/R_InvoiceJasa/edit_inv_jasa/'.$this->input->post('id')));
         }else{
             $this->session->set_flashdata('flash_msg', 'Surat Jalan gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/R_InvoiceJasa/edit_inv_jasa/'.$this->input->post('id'));  

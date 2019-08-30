@@ -207,7 +207,8 @@ class Model_pengiriman_ampas extends CI_Model{
             from t_bpb_ampas tba
             left join t_hasil_wip thw on (tba.hasil_masak_id = thw.id)
             left join t_hasil_masak thm on (thm.id = thw.hasil_masak_id)
-            left join produksi_ingot pi on (thm.id_produksi = pi.id)");
+            left join produksi_ingot pi on (thm.id_produksi = pi.id)
+            order by tba.no_bpb desc");
         return $data;
     }
 
@@ -286,6 +287,10 @@ class Model_pengiriman_ampas extends CI_Model{
                 from t_spb_ampas tsa
                 where tsa.id =".$id);
         return $data;
+    }
+
+    function list_spb_kirim(){
+        return $this->db->query("select id, no_spb_ampas from t_spb_ampas where flag_tolling = 0");
     }
 }
 

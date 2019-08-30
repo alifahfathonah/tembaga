@@ -50,15 +50,15 @@
                     </div> 
                     <div class="row">
                         <div class="col-md-4">
-                            Jenis Barang <font color="#f00">*</font>
+                            No. SPB <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                 <option value=""></option>
                                 <?php
-                                    foreach ($jenis_barang_list as $row){
-                                        echo '<option value="'.$row->jenis_barang.'">'.$row->jenis_barang.'</option>';
+                                    foreach ($list_spb as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->no_spb_ampas.'</option>';
                                     }
                                 ?>
                             </select>
@@ -74,8 +74,8 @@
                                 onclick="get_alamat(this.value);">
                                 <option value=""></option>
                                 <?php
-                                    foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
+                                    foreach ($supplier_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->nama_supplier.'</option>';
                                     }
                                 ?>
                             </select>
@@ -223,6 +223,15 @@ function get_alamat(id){
         } 
     });
 
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url('index.php/Tolling/get_po_tolling'); ?>",
+        data: {id: id},
+        cache: false,
+        success: function(result) {
+            $("#po_id").html(result);           
+        } 
+    });
 }
 </script>
 

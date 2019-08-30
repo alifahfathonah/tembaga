@@ -415,9 +415,10 @@ class PengirimanAmpas extends CI_Controller{
         $data['po_list'] = $this->Model_pengiriman_ampas->get_po_list()->result();
         
         $this->load->model('Model_tolling_titipan');
-        $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
+        $this->load->model('Model_beli_sparepart');
+        $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
 
-        $data['jenis_barang_list'] = $this->Model_tolling_titipan->jenis_barang_list()->result();
+        $data['list_spb'] = $this->Model_pengiriman_ampas->list_spb_kirim()->result();
         $data['kendaraan_list'] = $this->Model_tolling_titipan->kendaraan_list()->result();
         $this->load->view('layout', $data);
     }
@@ -997,7 +998,7 @@ class PengirimanAmpas extends CI_Controller{
         $bpb_id = $this->input->post('id');
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $return_data = array();
         
         $this->db->trans_start();       

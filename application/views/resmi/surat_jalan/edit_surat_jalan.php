@@ -281,6 +281,16 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Jenis SJ <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jenis_surat_jalan" name="jenis_surat_jalan" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['jenis_surat_jalan']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Type Kendaraan
                         </div>
                         <div class="col-md-8">

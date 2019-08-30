@@ -218,8 +218,8 @@ class R_SuratJalan extends CI_Controller{
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
-                print_r($response);
-                die();
+                // print_r($response);
+                // die();
 
                 //API END//
         }else if($jenis == 'po'){
@@ -813,6 +813,23 @@ class R_SuratJalan extends CI_Controller{
         $this->db->where('id',$this->input->post('id'));
         $this->db->update('r_t_surat_jalan', $data);
 
+        // echo $this->input->post('jenis_surat_jalan');die();
+    if($this->input->post('jenis_surat_jalan')=='SURAT JALAN KMP KE CV'){
+        $data_post = array_merge($data, array('reff2'=>$this->input->post('id')));
+
+        $post = json_encode($data_post);
+        // print_r($post);die();
+        $ch = curl_init(target_url().'api/ReffAPI/sj_update');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        $result = json_decode($response, true);
+        curl_close($ch);
+        // print_r($response);
+        // die();
+    }else{
         $tanggal_bpb = date('Y-m-d', strtotime($this->input->post('tanggal_bpb')));
         $data_bpb = array(
                 'no_bpb'=> $this->input->post('no_bpb'),
@@ -925,6 +942,7 @@ class R_SuratJalan extends CI_Controller{
         } else {
             log_message('debug', 'failed update delete');
         }
+    }
 
         if($this->db->trans_complete()){
             redirect(base_url('index.php/R_SuratJalan/'));

@@ -1,4 +1,4 @@
- <h3 align="center"><b> Laporan Transaksi</b></h3>
+ <h3 align="center"><b> LAPORAN <?=$bank['nama_bank'];?></b></h3>
  <table width="100%" >
     <tr>
         <td width="33%"></td>
@@ -8,13 +8,13 @@
  </table>
 <table width="100%" cellpadding="2" style="font-size: 13px;">
     <thead>
-        <th style="width:40px">No</th>
-        <th>Tanggal</th>
-        <th>Nomor Bukti</th>
-        <th>Keterangan</th>  
-        <th>Kredit</th>
-        <th>Debit</th>
-        <th>Saldo</th>
+        <th style="width:40px;border-bottom:1px solid #000; border-right: 1px solid #000; border-top:1px solid #000;">No</th>
+        <th style="border-bottom:1px solid #000; border-right: 1px solid #000; border-top:1px solid #000;">Tanggal</th>
+        <th style="border-bottom:1px solid #000; border-right: 1px solid #000; border-top:1px solid #000;">Nomor Bukti</th>
+        <th style="border-bottom:1px solid #000; border-right: 1px solid #000; border-top:1px solid #000;">Keterangan</th>  
+        <th style="border-bottom:1px solid #000; border-right: 1px solid #000; border-top:1px solid #000;">Kredit</th>
+        <th style="border-bottom:1px solid #000; border-right: 1px solid #000; border-top:1px solid #000;">Debit</th>
+        <th style="border-bottom:1px solid #000; border-right: 1px solid #000; border-top:1px solid #000;">Saldo</th>
     </thead>
     <tbody>
     <?php

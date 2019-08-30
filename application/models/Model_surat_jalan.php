@@ -92,7 +92,7 @@ class Model_surat_jalan extends CI_Model{
 	// }
 
 	function show_header_sj($id){
-		$data = $this->db->query("select sjr.*, c.id as id_customer, coalesce(c.nama_customer, cv.nama_cv) as nama_customer, coalesce(c.alamat, cv.alamat) as alamat, tri.no_invoice_resmi, ts.no_so, ts.tanggal as tgl_so, coalesce(tp.no_po,tpo.no_po) as no_po, tpo.tanggal as tgl_po, bpb.id as bpb_id, bpb.no_bpb, bpb.tanggal as tanggal_bpb
+		$data = $this->db->query("select sjr.*, c.id as id_customer, coalesce(c.nama_customer, cv.nama_cv) as nama_customer, coalesce(c.alamat, cv.alamat) as alamat, tri.no_invoice_resmi, ts.no_so, ts.tanggal as tgl_so, coalesce(tp.no_po,tpo.no_po) as no_po, tpo.tanggal as tgl_po, bpb.id as bpb_id, bpb.no_bpb, bpb.tanggal as tanggal_bpb, jenis_surat_jalan, cv.idkmp
 			from r_t_surat_jalan sjr
 			left join r_t_invoice tri on (tri.id = sjr.r_invoice_id)
             left join r_t_so ts on (ts.id = sjr.r_so_id)

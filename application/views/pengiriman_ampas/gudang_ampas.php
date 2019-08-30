@@ -54,7 +54,7 @@
                         <td><?=$data->nama_item;?></td>
                         <td style="background-color: "><?php echo $data->no_produksi; ?></td>
                         <td style="text-align:center;"><?php echo $data->berat ?></td>
-                        <td><?php echo date('d-m-Y', strtotime($data->created_at)); ?></td>    
+                        <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>    
                     </tr>
                     <?php
                         }

@@ -159,7 +159,7 @@
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                            <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                                 <i class="fa fa-floppy-o"></i> Input Details </a>
                         </div>    
                     </div>
@@ -175,6 +175,7 @@
                                 class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['nama_customer'];?>" readonly="readonly">
 
                             <input type="hidden" name="customer_id" value="<?php echo $header['m_cv_id'];?>">
+                            <input type="hidden" name="idkmp" value="<?php echo $header['idkmp'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -250,6 +251,7 @@ function simpanData(){
         $('#message').html("Silahkan isi Tanggal Jatuh Tempo!");
         $('.alert-danger').show();
     }else{     
+        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').submit(); 
     };
 };

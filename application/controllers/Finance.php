@@ -3185,6 +3185,7 @@ class Finance extends CI_Controller{
 
             $this->load->model('Model_finance');
 
+                $data['bank'] = $this->Model_finance->get_bank_list($l)->row_array();
                 $data['saldo_awal'] = $this->Model_finance->saldo_awal($start,$l)->row_array();
                 $data['detailLaporan'] = $this->Model_finance->trx_keluar_masuk($start,$end,$l)->result();
             $this->load->view('finance/print_trx', $data);

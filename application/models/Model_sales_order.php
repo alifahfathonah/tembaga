@@ -877,7 +877,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function get_last_so_cv(){
-        return $this->db->query("select no_so from r_t_so order by no_so desc limit 1");
+        return $this->db->query("select no_so from r_t_so where jenis_so = 'SO KMP' order by no_so desc limit 1");
     }
 
     // Select tsjd.*, tsod.nama_barang_alias, COALESCE(tsod.nama_barang_alias, jb.jenis_barang,r.nama_item) as jenis_barang , COALESCE(jb.kode,r.kode_rongsok) as kode from t_surat_jalan_detail tsjd

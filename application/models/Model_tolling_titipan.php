@@ -422,7 +422,7 @@ class Model_tolling_titipan extends CI_Model{
                 left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
                 left join jenis_barang jb on tsj.jenis_barang != 'RONGSOK' and tsj.jenis_barang != 'AMPAS' and jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
                 left join rongsok r on tsj.jenis_barang = 'RONGSOK' and r.id = tsjd.jenis_barang_id
-                left join rongsok ra on tsj.jenis_barang = 'AMPAS' and r.id = tsjd.jenis_barang_id
+                left join rongsok ra on tsj.jenis_barang = 'AMPAS' and ra.id = tsjd.jenis_barang_id
                 left join t_gudang_fg tgf on tsj.jenis_barang = 'FG' and tgf.id = tsjd.gudang_id
                 left join m_bobbin mb on tgf.bobbin_id>0 and mb.id = tgf.bobbin_id
                 left join jenis_barang jb1 on tsj.jenis_barang != 'RONGSOK' and jb1.id = tsjd.jenis_barang_id
@@ -935,7 +935,7 @@ class Model_tolling_titipan extends CI_Model{
     }
 
     function get_po_tolling($id, $user_ppn){
-        $data = $this->db->query("select id, no_po from po where supplier_id =".$id." and status != 1 and po.flag_ppn = ".$user_ppn);
+        $data = $this->db->query("select id, no_po from po where supplier_id =".$id." and status != 1 and po.flag_tolling = 1 and po.flag_ppn = ".$user_ppn);
         return $data;
     }
 
