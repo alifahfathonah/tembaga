@@ -93,18 +93,26 @@ tanggal cek mundur cek lagi kayaknya ga ke save(DONE)
 
 view data faktur all di edit lagi view nya biar laporan (done)
 
-kartu stok rongsok per palet
+kartu stok rongsok per palet(done)
 
-edit no.po dan edit ppn di po *hanya kmp
+edit no.po dan edit ppn di po *hanya kmp(done)
 
 spb wip kirim rongsok otomatis jika udah approve wip aja
 
 no cek dan tgl jt tambahin di laporan cheque(done)
 
-print dtbj di global in. tampilin nya jadi nama barang, qty, dan bruto, netto
+print dtbj di global in. tampilin nya jadi nama barang, qty, dan bruto, netto(done)
 
 pembulatan di vk sparepart.(done)
 
 KMP K
 
 r_t_surat_jalan savesuratjalan masih di die();(done)
+
+print gudang rongsok per item(done)
+
+usd masih aneh invoice nya, cek lagi(done)
+
+DELETE LPB, BENERIN INVENTORY KALO MAU
+
+edit kurs di invoice(done)

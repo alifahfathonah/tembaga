@@ -28,6 +28,28 @@ class GudangFG extends CI_Controller{
         $this->load->view('layout', $data);  
     }
 
+    function print_gudang_fg(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $this->load->helper('tanggal_indo');
+
+            $this->load->model('Model_gudang_fg');
+            $data['jb'] = $this->Model_gudang_fg->show_data_barang($id)->row_array();
+            $data['detailLaporan'] = $this->Model_gudang_fg->view_gudang_fg($id)->result();
+            $this->load->view("gudang_fg/print_gudang_fg", $data);
+        }else{
+            redirect('index.php/GudangFG/index');
+        }
+    }
+
     function view_gudang_fg(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);

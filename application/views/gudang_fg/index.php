@@ -58,7 +58,9 @@
                         <td style="background-color: green; color: white;">
                             <?= number_format($data->total_netto,2,',','.') ?>
                         </td>
-                        <td><a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangFG/view_gudang_fg/<?php echo $data->jenis_barang_id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                        <td>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangFG/view_gudang_fg/<?php echo $data->jenis_barang_id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangFG/print_gudang_fg/<?php echo $data->jenis_barang_id; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                         </td>
                     </tr>
                     <?php } ?>

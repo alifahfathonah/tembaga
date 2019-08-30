@@ -210,7 +210,7 @@ class R_SuratJalan extends CI_Controller{
 
                 // print_r($post);
                 // die();
-                $ch = curl_init(target_url().'api/ReffAPI/so');
+                $ch = curl_init(target_url().'api/ReffAPI/sj');
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
@@ -218,8 +218,8 @@ class R_SuratJalan extends CI_Controller{
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
-                // print_r($response);
-                // die();
+                print_r($response);
+                die();
 
                 //API END//
         }else if($jenis == 'po'){

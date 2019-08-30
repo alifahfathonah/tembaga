@@ -400,7 +400,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">                        
-                        <button type="button" class="btn blue" onClick="saveVoucher();">Simpan</button>
+                        <button type="button" class="btn blue" id="saveVoucher" onClick="saveVoucher();">Simpan</button>
                         <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
                     </div>
                 </div>
@@ -508,8 +508,12 @@
                             <?php
                                 if($data->tot_voucher>0){print('Ada <b>'.$data->tot_voucher.'</b> Voucher<br/>');}
                                 if( ($group_id==1 || $hak_akses['create_voucher_dp']==1) && $data->flag_pelunasan==0 && ($data->status!=1 || $data->status!=4)){
-                                    echo '<a class="btn btn-circle btn-xs green" href="javascript:;" onclick="createVoucher('.$data->id.');"
+                                    if($data->jenis_po=='Rongsok'){
+                                        echo '<a class="btn btn-circle btn-xs green" href="javascript:;" onclick="createVoucherRsk('.$data->id.');" style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Create &nbsp; </a>';
+                                    }else{
+                                        echo '<a class="btn btn-circle btn-xs green" href="javascript:;" onclick="createVoucher('.$data->id.');"
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Create &nbsp; </a>';
+                                    }
                                 }
                                 if($data->status==4 || $data->status==1){
                                     echo '<small style="color:green"><i>Sudah Lunas</i></small>';
@@ -530,10 +534,13 @@
                             <?php
                                 }
                                 if($group_id==1 || $hak_akses['print_po']==1){
+                                    if($data->jenis_po=='Rongsok'){
                             ?>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/BeliFinishGood/print_po/<?php echo $data->id; ?>" 
-                                style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/BeliRongsok/print_po/<?php echo $data->id; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
+                                <?php }else{ ?>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/BeliFinishGood/print_po/<?php echo $data->id; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
+                                    }
                                 }
                             ?>
                         </td>
@@ -596,6 +603,41 @@ function get_currency(id){
     }
 }
 
+function createVoucherRsk(id){
+    $.ajax({
+        url: "<?php echo base_url('index.php/BeliRongsok/create_voucher'); ?>",
+        type: "POST",
+        data : {id: id},
+        success: function (result){
+            $('#no_po').val(result['no_po']);
+            $('#tanggal_po').val(result['tanggal']);
+            $('#nama_supplier').val(result['nama_supplier']);
+            $('#supplier_id').val(result['supplier_id']);
+            $('#diskon').val(result['diskon']);
+            $('#materai').val(result['materai']);
+            $('#amount').val('0');
+            $('#nilai_po').val(result['nilai_po']);
+            // $('#terbilang').val(result['terbilang']);
+            $('#jenis_barang').val(result['jenis_po']);
+            $('#nilai_dp').val(result['nilai_dp']);
+            $('#nilai_ppn').val(result['nilai_ppn']);
+            $('#nilai_before_ppn').val(result['nilai_before_ppn']);
+            $('#currency_po').val(result['currency']);
+            $('#kurs_po').val(result['kurs']);
+            $('#amount').val(result['sisa']);
+            $('#keterangan').val('');
+            $('#status_vc').val(result['status']);
+            $('#id').val(result['id']);
+            
+            $('#message').html("");
+            $('.alert-danger').hide(); 
+            
+            $("#myModal").find('.modal-title').text('Create Voucher');
+            $("#myModal").modal('show',{backdrop: 'true'});
+        }
+    });
+}
+
 function createVoucher(id){
     $.ajax({
         url: "<?php echo base_url('index.php/Tolling/create_voucher'); ?>",
@@ -641,6 +683,7 @@ function saveVoucher(){
     }else{    
         $('#message').html("");
         $('.alert-danger').hide();
+        $('#saveVoucher').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Tolling/save_voucher");
         $('#formku').submit(); 
     };

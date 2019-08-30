@@ -134,7 +134,7 @@ class Model_beli_wip extends CI_Model
 
     function show_header_dtwip($id){
         $data = $this->db->query("Select dtwip.*, 
-                    po.no_po,
+                    po.no_po, po.ppn,
                     spl.nama_supplier,
                     usr.realname As penimbang,
                     rjct.realname As rejected_name

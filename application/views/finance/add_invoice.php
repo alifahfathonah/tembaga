@@ -137,7 +137,7 @@
                             Kurs
                         </div>
                         <div class="col-md-4">
-                            <input type="text" id="kurs" name="kurs" class="form-control myline" readonly="readonly">
+                            <input type="text" id="kurs" name="kurs" class="form-control myline">
                         </div>
                         </div>
                         <input type="hidden" name="nama_direktur" value="0">

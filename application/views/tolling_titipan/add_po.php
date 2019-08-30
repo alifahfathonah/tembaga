@@ -101,9 +101,10 @@
                         <div class="col-md-8">
                             <select id="jenis_barang" name="jenis_barang" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                 <option value=""></option>
-                                <option value="WIP">WIP</option>
                                 <option value="FG">Finish Good</option>
-                            </select>   
+                                <option value="WIP">WIP</option>
+                                <option value="Rongsok">Rongsok</option>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -166,16 +167,7 @@
                                 <option value="0">No</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            Jenis
-                        </div>
-                        <div class="col-md-4">
-                            <select id="type" name="type" class="form-control myline" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                <option value="0">KMP</option>
-                                <option value="1">Bodong</option>
-                            </select>
-                        </div>
+                        <input type="hidden" name="type" value="0">
                     </div>
                     <?php } else{ ?>
                         <input type="hidden" id="ppn" name="ppn" value="0">

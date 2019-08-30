@@ -646,9 +646,10 @@ class BeliFinishGood extends CI_Controller{
 
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('dtbj', array(
+            'tanggal'=>$tgl_input,
             'no_sj'=>strtoupper($this->input->post('no_sj')),
             'remarks'=>$this->input->post('remarks'),
-            'supplier_id'=>$this->input->post('supplier_id'),
+            // 'supplier_id'=>$this->input->post('supplier_id'),
             'modified'=>$tanggal,
             'modified_by'=>$user_id
         ));
@@ -796,28 +797,29 @@ class BeliFinishGood extends CI_Controller{
         header('Content-Type: application/json');
         echo json_encode($return_data);
     }
-    // function edit_dtbj(){
-    //     $module_name = $this->uri->segment(1);
-    //     $id = $this->uri->segment(3);
-    //     if($id){
-    //         $group_id    = $this->session->userdata('group_id');        
-    //         if($group_id != 1){
-    //             $this->load->model('Model_modules');
-    //             $roles = $this->Model_modules->get_akses($module_name, $group_id);
-    //             $data['hak_akses'] = $roles;
-    //         }
-    //         $data['group_id']  = $group_id;
+    
+    function edit_dtbj(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
 
-    //         $data['content']= "beli_fg/edit_dtbj";
-    //         $this->load->model('Model_beli_fg');
-    //         $data['header']  = $this->Model_beli_fg->show_header_dtbj($id)->row_array(); 
-    //         $data['details'] = $this->Model_beli_fg->show_detail_dtbj($id)->result();
+            $data['content']= "beli_fg/edit_dtbj";
+            $this->load->model('Model_beli_fg');
+            $data['header']  = $this->Model_beli_fg->show_header_dtbj($id)->row_array(); 
+            $data['details'] = $this->Model_beli_fg->show_detail_dtbj($id)->result();
             
-    //         $this->load->view('layout', $data);   
-    //     }else{
-    //         redirect('index.php/BeliFinishGood');
-    //     }
-    // }
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/BeliFinishGood');
+        }
+    }
 
     function matching(){
         $module_name = $this->uri->segment(1);
@@ -1410,6 +1412,19 @@ class BeliFinishGood extends CI_Controller{
         }
     }
 
+    function print_dtbj_global(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_beli_fg');
+            $data['header']  = $this->Model_beli_fg->show_header_dtbj($id)->row_array();
+            $data['details'] = $this->Model_beli_fg->show_detail_dtbj_harga($id)->result();
+
+            $this->load->view('beli_fg/print_dtbj_global', $data);
+        }else{
+            redirect('BeliFinishGood/index.php'); 
+        }
+    }
+
     function print_dtbj_harga(){
         $id = $this->uri->segment(3);
         if($id){        
@@ -1427,6 +1442,7 @@ class BeliFinishGood extends CI_Controller{
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
         $user_ppn = $this->session->userdata('user_ppn');
+        $this->load->helper('tanggal_indo');
         if($id){
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){

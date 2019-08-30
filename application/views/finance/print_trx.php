@@ -21,7 +21,7 @@
     $nominal = 0;
     $kredit = 0;
     $debit = 0;
-    $saldo_awal = $saldo_awal['nominal'];
+    $saldo_awal = $saldo_awal['saldo_masuk'] - $saldo_awal['saldo_keluar'];
         echo '<tr>';
         echo '<td style="text-align:center; border-bottom:1px solid #000; border-right: 1px solid #000;"><strong>+</strong></td>';
         echo '<td style="border-bottom:1px solid #000; border-right: 1px solid #000;"></td>';

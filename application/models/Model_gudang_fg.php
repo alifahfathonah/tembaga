@@ -278,7 +278,7 @@ class Model_gudang_fg extends CI_Model{
 
 
     function show_data_barang($id){
-        $data = $this->db->query("select jb.uom
+        $data = $this->db->query("select jb.jenis_barang, jb.kode, jb.uom
                 from jenis_barang jb 
                 where jb.id = ".$id
                 );

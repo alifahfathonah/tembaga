@@ -23,8 +23,8 @@
                             <td>: <?php echo $header['no_po']; ?></td>
                         </tr>
                         <tr>
-                            <td>Catatan</td>
-                            <td>: <?php echo $header['remarks']; ?></td>
+                            <td>No. SJ</td>
+                            <td>: <?php echo $header['no_sj']; ?></td>
                         </tr>
                     </table>
                 </td>
@@ -42,6 +42,10 @@
                         <tr>
                             <td>Penimbang</td>
                             <td>: <?php echo $header['penimbang']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>Catatan</td>
+                            <td>: <?php echo $header['remarks']; ?></td>
                         </tr>
                     </table>
                 </td>
@@ -85,6 +89,37 @@
                             <td colspan="4" style="text-align:right"><strong>Total (Kg) </strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000"><strong><?php echo number_format($berat,0,',', '.'); ?></strong></td>
                             <td>&nbsp;</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr><td colspan="3">
+                    <table width="100%" align="center" border="0">
+                        <tr>
+                            <td style="text-align:center">
+                                Diterima Oleh :<br>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p>(Istadi)</p>
+                            </td>
+                            <td style="text-align:center">
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p></p>
+                            </td>
+                            <td style="text-align:center">
+                                Bagian Gudang,<br>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p>______________</p>
+                            </td>
+                            <td style="text-align:center">
+                                Mengetahui :<br>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                (LINDA)
+                            </td>
                         </tr>
                     </table>
                 </td>

@@ -508,7 +508,14 @@ class Model_tolling_titipan extends CI_Model{
     function get_po_list($user_ppn){
         $data = $this->db->query("select po.*, s.nama_supplier from po 
             left join supplier s on s.id = po.supplier_id
-            where flag_tolling = 1 and status != 1 and po.ppn = ".$user_ppn);
+            where flag_tolling = 1 and status != 1 and po.jenis_po != 'Rongsok' and po.ppn = ".$user_ppn);
+        return $data;
+    }
+
+    function get_po_list_rsk($user_ppn){
+        $data = $this->db->query("select po.*, s.nama_supplier from po 
+            left join supplier s on s.id = po.supplier_id
+            where flag_tolling = 1 and status != 1 and po.jenis_po = 'Rongsok' and po.ppn = ".$user_ppn);
         return $data;
     }
 
@@ -541,11 +548,38 @@ class Model_tolling_titipan extends CI_Model{
         return $data;
     }
 
+    function get_matching_dtr($sp_id,$flag_ppn){
+        $data = $this->db->query("Select dtr.*,  
+                    spl.nama_supplier,
+                    usr.realname As penimbang,
+                    app.realname As approved_name,
+                    rjct.realname As rejected_name,
+                (Select count(dtrd.id)As jumlah_item From dtr_detail dtrd Where dtrd.dtr_id = dtr.id)As jumlah_item
+                From dtr
+                    Left Join supplier spl On (dtr.supplier_id = spl.id) 
+                    Left Join users usr On (dtr.created_by = usr.id) 
+                    Left Join users app On (dtr.approved_by = app.id) 
+                    Left Join users rjct On (dtr.rejected_by = rjct.id) 
+                Where dtr.supplier_id=".$sp_id." and status = 1 and po_id = 0 and dtr.flag_ppn=".$flag_ppn);
+        return $data;
+    }
+
     function show_detail_dtt($id){
         $data = $this->db->query("Select dttd.*, jb.jenis_barang, jb.uom
                     From dtt_detail dttd 
                         Left Join jenis_barang jb On (dttd.jenis_barang_id = jb.id) 
                     Where dttd.dtt_id=".$id);
+        return $data;
+    }
+
+    function show_detail_dtt_harga($id){
+        $data = $this->db->query("Select dttd.id, sum(dttd.bruto) as bruto, sum(dttd.netto) as netto, jb.jenis_barang, jb.uom, pd.amount
+                    From dtt_detail dttd 
+                        Left Join po_detail pd on pd.id = dttd.po_detail_id
+                        Left Join jenis_barang jb On (dttd.jenis_barang_id = jb.id) 
+                    Where dttd.dtt_id=".$id."
+                    group by dttd.jenis_barang_id
+                    ");
         return $data;
     }
 

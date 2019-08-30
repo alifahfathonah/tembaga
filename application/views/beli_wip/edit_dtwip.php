@@ -35,9 +35,9 @@
                             Tanggal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="tanggal" name="tanggal" readonly="readonly"
+                            <input type="text" id="tanggal" name="tanggal"
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
+                                value="<?php echo date('Y-m-d', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -51,7 +51,19 @@
                             
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
-                    </div>                    
+                    </div>   
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Surat Jalan 
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_sj" name="no_sj" placeholder="No Surat Jalan ..."
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['no_sj']; ?>">
+
+                            <input type="hidden" id="status" name="status" value="<?php echo $header['status']; ?>">
+                        </div>
+                    </div>                        
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
@@ -131,6 +143,7 @@
                             <tbody>
                             <?php
                                 $no = 1;
+                            if($header['status']!=1){
                                 foreach ($details as $row){
                                     echo '<tr>';
                                     echo '<td style="text-align:center">'.$no.'</td>';
@@ -158,6 +171,18 @@
                                     echo '</tr>';
                                     $no++;
                                 }
+                            }else{
+                                foreach ($details as $row){
+                                    echo '<tr>';
+                                    echo '<td style="text-align:center">'.$no.'</td>';
+                                    echo '<td>'.$row->jenis_barang.'</td>';
+                                    echo '<td>'.$row->uom.'</td>';
+                                    echo '<td>'.$row->qty.'</td>';
+                                    echo '<td>'.number_format($row->berat,0,',','.').'</td>';
+                                    echo '<td>'.$row->line_remarks.'</td>';
+                                    $no++;
+                                }
+                            }
                             ?>
                             </tbody>
                         </table>
@@ -203,5 +228,21 @@ function getComa(value, id){
 function simpanData(){
     $('#formku').submit(); 
 };
+</script>
+<link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+<script>
+$(function(){        
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yy-mm-dd'
+    });
+});
 </script>
       

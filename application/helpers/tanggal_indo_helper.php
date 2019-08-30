@@ -16,7 +16,11 @@ if ( ! function_exists('tanggal_indo'))
 					'November',
 					'Desember'
 				);
+		if($tanggal != 0){
 		$split = explode('-', $tanggal);
 		return $split[2] . '-' . $bulan[ (int)$split[1] ] . '-' . $split[0];
+		}else{
+		return '-';
+		}
 	}
 }

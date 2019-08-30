@@ -14,10 +14,29 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='Rongsok' and po.tanggal >= NOW()-INTERVAL 2 MONTH and po.flag_ppn = ".$ppn." and po.flag_tolling = 0
+                Where po.jenis_po='Rongsok' and po.flag_ppn = ".$ppn." and po.flag_tolling = 0
                 Order By po.id Desc");
         return $data;
     }
+
+    // function po_list($ppn){
+    //     $data = $this->db->query("Select po.*, 
+    //                 bsp.no_pengajuan, bsp.tgl_pengajuan,
+    //                 usr.realname As created_name,
+    //                 spl.nama_supplier, spl.pic,
+    //                 spl.id as supplier_id,
+    //             (Select count(id)As jumlah_item From po_detail pd Where pd.po_id = po.id)As jumlah_item,
+    //             (Select count(id)As tot_voucher From voucher vc Where vc.po_id = po.id)As tot_voucher,
+    //             (Select count(pd.id)As ready_to_dtr From po_detail pd Where 
+    //                 pd.po_id = po.id And pd.flag_dtr=1)As ready_to_dtr
+    //             From po 
+    //                 Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
+    //                 Left Join supplier spl On (po.supplier_id = spl.id) 
+    //                 Left Join users usr On (bsp.created_by = usr.id) 
+    //             Where po.jenis_po='Rongsok' and po.tanggal >= NOW()-INTERVAL 2 MONTH and po.flag_ppn = ".$ppn." and po.flag_tolling = 0
+    //             Order By po.id Desc");
+    //     return $data;
+    // }
 
     function po_list_outdated($user_ppn){
         $data = $this->db->query("Select po.*, 
@@ -734,15 +753,17 @@ class Model_beli_rongsok extends CI_Model{
                     where t.ttr_status = 1 and dd.rongsok_id ='".$id_barang."' and dd.tanggal_masuk >= '".$start."' and dd.tanggal_masuk <= '".$end."' group by dd.dtr_id)
                 UNION ALL
                 (SELECT 
-                    t.no_ttr, so.no_sales_order as nomor, dtd.id, dtd.rongsok_id, dtd.no_pallete, mc.nama_customer as nama, rsk.nama_item, 0 as netto_masuk, sum(dtd.netto) as netto_keluar, dtd.tanggal_masuk = null, dtd.tanggal_keluar, dtd.tanggal_keluar as tanggal
+                    spb.no_spb as no_ttr, COALESCE(so.no_sales_order,spb.remarks) as nomor, dtd.id, dtd.rongsok_id, dtd.no_pallete, mc.nama_customer as nama, rsk.nama_item, 0 as netto_masuk, sum(dtd.netto) as netto_keluar, dtd.tanggal_masuk = null, dtd.tanggal_keluar, dtd.tanggal_keluar as tanggal
                 FROM
                     dtr_detail dtd 
                     left join dtr on dtr.id = dtd.dtr_id
                     left join ttr t on t.dtr_id = dtd.dtr_id
                     left join sales_order so on so.id = dtd.so_id
+                    left join spb_detail_fulfilment sdf on sdf.dtr_detail_id = dtd.id
+                    left join spb on spb.id = sdf.spb_id
                     left join m_customers mc on mc.id = so.m_customer_id
                     left join rongsok rsk on rsk.id = dtd.rongsok_id
-                    where dtd.rongsok_id ='".$id_barang."' and dtd.tanggal_keluar >= '".$start."' and dtd.tanggal_keluar <= '".$end."' group by dtd.dtr_id) Order By tanggal, tanggal_keluar asc");
+                    where dtd.rongsok_id ='".$id_barang."' and dtd.flag_taken = 1 and dtd.tanggal_keluar >= '".$start."' and dtd.tanggal_keluar <= '".$end."' group by sdf.spb_id, dtd.tanggal_keluar) Order By tanggal, tanggal_keluar asc");
         return $data;
     }
 
@@ -759,12 +780,14 @@ class Model_beli_rongsok extends CI_Model{
                     where t.ttr_status = 1 and dd.rongsok_id ='".$id_barang."' and dd.tanggal_masuk >= '".$start."' and dd.tanggal_masuk <= '".$end."')
                 UNION ALL
                 (SELECT 
-                    t.no_ttr, so.no_sales_order as nomor, dtd.id, dtd.rongsok_id, dtd.no_pallete, mc.nama_customer as nama, rsk.nama_item, 0 as netto_masuk, dtd.netto as netto_keluar, dtd.tanggal_masuk = null, dtd.tanggal_keluar, dtd.tanggal_keluar as tanggal
+                    spb.no_spb as no_ttr, COALESCE(so.no_sales_order,spb.no_spb) as nomor, dtd.id, dtd.rongsok_id, dtd.no_pallete, COALESCE(mc.nama_customer,spb.remarks) as nama, rsk.nama_item, 0 as netto_masuk, dtd.netto as netto_keluar, dtd.tanggal_masuk = null, dtd.tanggal_keluar, dtd.tanggal_keluar as tanggal
                 FROM
                     dtr_detail dtd 
                     left join dtr on dtr.id = dtd.dtr_id
                     left join ttr t on t.dtr_id = dtd.dtr_id
                     left join sales_order so on so.id = dtd.so_id
+                    left join spb_detail_fulfilment sdf on sdf.dtr_detail_id = dtd.id
+                    left join spb on spb.id = sdf.spb_id
                     left join m_customers mc on mc.id = so.m_customer_id
                     left join rongsok rsk on rsk.id = dtd.rongsok_id
                     where dtd.rongsok_id ='".$id_barang."' and dtd.tanggal_keluar >= '".$start."' and dtd.tanggal_keluar <= '".$end."') Order By tanggal, tanggal_keluar asc");

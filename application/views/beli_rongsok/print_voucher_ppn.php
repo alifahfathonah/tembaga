@@ -44,11 +44,11 @@
                         </tr>
                         <tr>
                             <td>Tgl Bukti</td>
-                            <td>: <?php echo $header['tanggal'];?></td>
+                            <td>: <?php echo tanggal_indo($header['tanggal']);?></td>
                         </tr>
                         <tr>
                             <td>Tgl Jth Tmp</td>
-                            <td>: <?php echo $header['tgl_jatuh_tempo'];?></td>
+                            <td>: <?php echo tanggal_indo($header['tgl_jatuh_tempo']);?></td>
                         </tr>
                         <tr>
                             <td>Cek / Giro</td>

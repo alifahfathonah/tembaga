@@ -84,7 +84,7 @@ class BeliWIP extends CI_Controller{
                 redirect('index.php/BeliWIP/add');
             }
         }else{
-            $code = $this->Model_m_numberings->getNumbering('POW-KMP', $tgl_input);
+            $code = $this->Model_m_numberings->getNumbering('POWIP', $tgl_input);
         }
 
         $data = array(
@@ -527,25 +527,38 @@ class BeliWIP extends CI_Controller{
     function update_dtwip(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
-        $this->db->where('id', $this->input->post('id'));
-        $this->db->update('dtwip', array(
-                    'status'=>0,
-                    'remarks'=>$this->input->post('remarks'),
-                    'modified'=>$tanggal,
-                    'modified_by'=>$user_id
-        ));
-        
-        $details = $this->input->post('myDetails');
-        foreach($details as $row){
-            $this->db->where('id', $row['id']);
-            $this->db->update('dtwip_detail', array(
-                'qty'=>str_replace('.','', $row['qty']),
-                'berat'=>str_replace('.','', $row['berat']),
-                'line_remarks'=>$row['line_remarks'],
-                'tanggal_masuk'=>$tgl_input
+        if($this->input->post('status')!=1){
+            $this->db->where('id', $this->input->post('id'));
+            $this->db->update('dtwip', array(
+                        'status'=>0,
+                        'tanggal'=>$tgl_input,
+                        'no_sj'=>$this->input->post('no_sj'),
+                        'remarks'=>$this->input->post('remarks'),
+                        'modified'=>$tanggal,
+                        'modified_by'=>$user_id
+            ));
+            
+            $details = $this->input->post('myDetails');
+            foreach($details as $row){
+                $this->db->where('id', $row['id']);
+                $this->db->update('dtwip_detail', array(
+                    'qty'=>str_replace('.','', $row['qty']),
+                    'berat'=>str_replace('.','', $row['berat']),
+                    'line_remarks'=>$row['line_remarks'],
+                    'tanggal_masuk'=>$tgl_input
+                ));
+            }
+        }else{
+            $this->db->where('id', $this->input->post('id'));
+            $this->db->update('dtwip', array(
+                        'tanggal'=>$tgl_input,
+                        'no_sj'=>$this->input->post('no_sj'),
+                        'remarks'=>$this->input->post('remarks'),
+                        'modified'=>$tanggal,
+                        'modified_by'=>$user_id
             ));
         }
         
@@ -871,9 +884,9 @@ class BeliWIP extends CI_Controller{
         $this->load->model('Model_beli_wip');
         $data = $this->Model_beli_wip->voucher_po_wip($id)->row_array();
         if($data['ppn']==1){
-            $data['nilai_before_ppn'] = number_format($data['nilai_po'],0,',','.');
+            $data['nilai_before_ppn'] = number_format($data['nilai_po'],0,'.',',');
             $nilai_po = $data['nilai_po']*110/100;
-            $data['nilai_ppn'] = number_format($data['nilai_po']*10/100,0,',','.');
+            $data['nilai_ppn'] = number_format($data['nilai_po']*10/100,0,'.',',');
         }else{
             $nilai_po = $data['nilai_po'];
             $data['nilai_ppn'] = 0;
@@ -881,9 +894,9 @@ class BeliWIP extends CI_Controller{
 
         $terbilang = $nilai_po;
         $sisa = $nilai_po - $data['nilai_dp'];
-        $data['nilai_po'] = number_format($nilai_po,0,',','.');
-        $data['nilai_dp'] = number_format($data['nilai_dp'],0,',','.');
-        $data['sisa']     = number_format($sisa,0,',','.');
+        $data['nilai_po'] = number_format($nilai_po,0,'.',',');
+        $data['nilai_dp'] = number_format($data['nilai_dp'],0,'.',',');
+        $data['sisa']     = number_format($sisa,0,'.',',');
         // $nilai_po = $data['nilai_po'];
         $data['terbilang'] = ucwords(number_to_words($terbilang));
         
@@ -979,7 +992,7 @@ class BeliWIP extends CI_Controller{
                 'tgl_jatuh_tempo'=>$this->input->post('tanggal_jatuh'),
                 'no_giro'=>$this->input->post('nomor_giro'),
                 'id_bank'=>$this->input->post('bank_id'),
-                'id_vc'=>$id_vc,
+                'id_vc'=>0,
                 'currency'=>$this->input->post('currency'),
                 'nominal'=>str_replace(',', '', $amount),
                 'created_at'=>$tanggal,
@@ -1082,6 +1095,7 @@ class BeliWIP extends CI_Controller{
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
         $user_ppn = $this->session->userdata('user_ppn');
+        $this->load->helper('tanggal_indo');
         if($id){
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){

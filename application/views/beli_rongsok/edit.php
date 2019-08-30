@@ -80,7 +80,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
+                                class="form-control myline input-small" style="margin-bottom:5px; float: left;" 
                                 value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
@@ -100,7 +100,7 @@
                             ?>
                             <input type="text" id="term_of_payment" name="term_of_payment" 
                                 class="form-control myline" style="margin-bottom:5px"
-                                value="<?php echo $header['term_of_payment']; ?>" readonly="readonly">
+                                value="<?php echo $header['term_of_payment']; ?>" readonly="readonly" onkeyup="this.value = this.value.toUpperCase()">
                             <?php
                             }
                             ?>
@@ -154,25 +154,30 @@
                                    class="form-control myline" style="margin-bottom:5px" value="<?php echo $header['pic']; ?>">
                         </div>
                     </div>                 
+                    
+                    <?php if($this->session->userdata('user_ppn')==1){?>
+                    <div class="row">
+                        <div class="col-md-2">
+                            PPN
+                        </div>
+                        <div class="col-md-4">
+                            <select id="ppn" name="ppn" class="form-control myline" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" disabled>
+                                <option value="1" <?=($header['ppn']==1)? 'selected':'';?>>Yes</option>
+                                <option value="0" <?=($header['ppn']==0)? 'selected':'';?>>No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <?php } else{ ?>
                     <div class="row">
                         <div class="col-md-4">
                             PPN
                         </div>
                         <div class="col-md-8">
-                <?php
-                if($header['ppn'] == 0){
-                ?>
                             <input type="text" id="ppn" name="ppn" readonly="readonly" class="form-control myline" style="margin-bottom:5px" value="0">
-                        
-                <?php                
-                }else{
-                ?>
-                            <input type="text" id="ppn" name="ppn" readonly="readonly" class="form-control myline" style="margin-bottom:5px" value="PPN 10%">
-                <?php
-                }
-                ?>
                         </div>
                     </div>
+                    <?php } ?>
                     <div class="row">
                         <div class="col-md-2">
                             Currency
@@ -348,7 +353,14 @@
                     <?php
                         if( ($group_id==1)||($hak_akses['close_po']==1) ){
                             echo '<a href="javascript:;" class="btn red-sunglo" onclick="showRejectBox();"> 
-                                <i class="fa fa-lock"></i> Close PO </a>';
+                                <i class="fa fa-lock"></i> Close PO </a> ';
+                        }
+                        if( ($group_id==1 || $hak_akses['edit_sj']==1) && $header['status']!=1){
+                            echo '<a href="javascript:;" class="btn blue" onclick="editData();" id="btnEdit">' 
+                                .'<i class="fa fa-pencil"></i> Edit </a>';
+
+                            echo '<a href="javascript:;" class="btn blue" style="display: none;" onclick="updateData();" id="btnUpdate">'
+                                .'<i class="fa fa-floppy-o"></i> Simpan </a>';
                         }
                     ?>
                     <a href="<?php echo base_url('index.php/BeliRongsok'); ?>" class="btn blue-hoki"> 
@@ -372,6 +384,26 @@
     </div>
 </div> 
 <script>
+function editData(){
+    $('#no_po').removeAttr('readonly');
+    $('#tanggal').removeAttr('readonly');
+    $('#term_of_payment').removeAttr('readonly');
+    $('#ppn').prop("disabled", false)
+
+    $('#closePO').hide();
+    $('#btnUpdate').show();
+    $('#btnEdit').hide();
+}
+
+function updateData(){
+    var r=confirm("Anda yakin menyimpan surat jalan ini?");
+    if(r == true){
+        $('#btnSimpan').text('Please Wait ...').prop("onclick", null).off("click");
+        $('#formku').attr("action", "<?php echo base_url('index.php/BeliRongsok/update_po'); ?>");
+        $('#formku').submit(); 
+    }
+}
+
 function getComa(value, id){
     angka = value.toString().replace(/\,/g, "");
     $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -534,7 +566,7 @@ function rejectData(){
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
 $(function(){        
-    $("#tgl_spare_part").datepicker({
+    $("#tanggal").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,
