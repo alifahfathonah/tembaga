@@ -38,6 +38,7 @@
                                 value="<?php echo $header['no_dtr']; ?>">
 
                             <input type="hidden" id="dtr_type" name="dtr_type" value="<?=$header['type'];?>">
+                            <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -68,7 +69,7 @@
                             <input type="text" id="no_po" name="no_po" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_po']; ?>">
-                            <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
+                            <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['po_id']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -90,6 +91,7 @@
                             <input type="text" id="supplier" name="supplier" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $header['nama_supplier']; ?>">
+                            <input type="hidden" id="flag_gudang" name="flag_gudang" value="<?php echo $header['flag_gudang']; ?>">
                         </div>
                     </div> 
                     <div class="row">
@@ -223,6 +225,8 @@ function approveTTR(id_ttr){
             type: "POST",
             data : {
                 id: id_ttr,
+                po_id: $('#po_id').val(),
+                flag_gudang: $('#flag_gudang').val(),
                 no_sj: $('#no_sj').val(),
                 jumlah_afkir: jumlah_afkir,
                 jumlah_packing: jumlah_packing,

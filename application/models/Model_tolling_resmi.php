@@ -12,8 +12,9 @@ class Model_tolling_resmi extends CI_Model{
 	}
 
     function add_tolling($id){
-        $data = $this->db->query("select tsj.id, tsj.no_sj_resmi, tsj.r_invoice_id, cv.id as customer_id, cv.nama_cv as nama_customer from r_t_surat_jalan tsj
+        $data = $this->db->query("select tsj.id, tsj.tanggal, tsj.no_sj_resmi, tsj.r_invoice_id, cv.id as customer_id, cv.idkmp, cv.nama_cv as nama_customer, rtp.flag_so as id_so, rtp.no_po from r_t_surat_jalan tsj
             left join r_t_bpb bpb on bpb.id = tsj.r_bpb_id
+            left join r_t_po rtp on rtp.id = tsj.r_po_id
             left join m_cv cv on cv.id = bpb.reff_cv where tsj.id =".$id);
         return $data;
     }
@@ -47,6 +48,13 @@ class Model_tolling_resmi extends CI_Model{
 	        left join r_t_invoice ti on ti.id = tsj.r_invoice_id
 	        left join m_cv cv on cv.id = rd.customer_id
 	        where rd.id =".$id);
+        return $data;
+    }
+
+    function show_tolling_dtr($id){
+        $data = $this->db->query("select rd.no_dtr_resmi as no_dtr, rd.tanggal, '' as no_po, cv.nama_cv as nama_supplier, '' as remarks, 'RONGSOK' as jenis_barang, '' as penimbang from r_dtr rd
+            left join m_cv cv on cv.id = rd.customer_id
+            where rd.id=".$id);
         return $data;
     }
 

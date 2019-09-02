@@ -36,24 +36,23 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            No. Surat Jalan Rongsok <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="sj_id" name="sj_id" maxlength="50"
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['no_sj_resmi'];?>">
-
-                            <input type="hidden" id="sj_id" name="sj_id" value="<?php echo $header['id'];?>">
-                            <input type="hidden" id="r_invoice_id" name="r_invoice_id" value="<?php echo $header['r_invoice_id'];?>">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
                             Nama Customer
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="nama_customer" name="nama_customer" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['nama_customer'];?>">
                             <input type="hidden" id="customer_id" name="customer_id" value="<?php echo $header['customer_id'];?>">
+                            <input type="hidden" id="idkmp" name="idkmp" value="<?php echo $header['idkmp'];?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            PIC
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_pembuat" name="nama_pembuat" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $this->session->userdata('realname'); ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -79,12 +78,34 @@
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
-                            PIC
+                            No PO
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_pembuat" name="nama_pembuat" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $this->session->userdata('realname'); ?>">
+                            <input type="text" id="no_po" name="no_po" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['no_po'];?>">
+                            <input type="hidden" id="id_so" name="id_so" value="<?php echo $header['id_so'];?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Surat Jalan Rongsok <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_sj" name="no_sj" maxlength="50"
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?php echo $header['no_sj_resmi'];?>">
+
+                            <input type="hidden" id="sj_id" name="sj_id" value="<?php echo $header['id'];?>">
+                            <input type="hidden" id="r_invoice_id" name="r_invoice_id" value="<?php echo $header['r_invoice_id'];?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal Surat Jalan
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tgl_sj" name="tgl_sj" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>" readonly>
                         </div>
                     </div>
                     <div class="row">
@@ -98,7 +119,6 @@
                     </div>
                 </div>    
             </div>
-        </form>
         <div class="portlet box blue-ebonyclay">
                 <div class="portlet-title">
                     <div class="caption">
@@ -124,6 +144,7 @@
                             <?php 
                             $no = 1;
                             $total = 0;
+                            $total_berat = 0;
                             foreach ($myDetail as $row){ 
                                 $berat_palette = $row->bruto - $row->netto;
                             ?>
@@ -137,6 +158,7 @@
                                 <td><?=$row->line_remarks;?></td>
                                 </tr>
                             <?php
+                                $total_berat += $berat_palette;
                                 $total += $row->netto;
                                 $no++;
                             }
@@ -144,13 +166,16 @@
                             <tr>
                             <td colspan="3" style="text-align:right"><strong>Total (Kg) </strong></td>
                             <td style="text-align:right; background-color:green; color:white"><strong><?=$total;?></strong></td>
-                            <td colspan="3"></td>
+                            <td style="text-align:right; background-color:green; color:white"><strong><?=$total_berat;?></strong></td>
+                            <input type="hidden" name="total_berat" value="<?=$total_berat;?>">
+                            <td colspan="2"></td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+        </form>
         <?php
             }else{
         ?>

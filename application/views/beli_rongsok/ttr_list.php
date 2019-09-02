@@ -48,9 +48,6 @@
                     <th>Status</th>
                     <th>Bruto (Kg)</th>
                     <th>Netto (Kg)</th>
-                    <th>Jmlh <br>Afkiran</th>
-                    <th>Jmlh <br>Pengepakan</th>
-                    <th>Jmlh <br>Lain-lain</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -81,9 +78,6 @@
                         }?></td>
                         <td style="text-align:right"><?php echo number_format($data->bruto,2,'.',','); ?></td>
                         <td style="text-align:right"><?php echo number_format($data->netto,2,'.',','); ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->jmlh_afkiran,2,'.',','); ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->jmlh_pengepakan,2,'.',','); ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->jmlh_lain,2,'.',','); ?></td>
                         <td style="text-align:center"> 
                             <?php                                
                                 if($data->ttr_status==0){

@@ -1200,7 +1200,12 @@ class BeliRongsok extends CI_Controller{
         if($user_ppn==1){
             $code = $this->Model_m_numberings->getNumbering('TTR-KMP', $tanggal);
         }else{
-            $code = $this->Model_m_numberings->getNumbering('TTR', $tanggal);
+            if($this->input->post('flag_gudang') > 0){
+                $num = 'TTR';
+            }else{
+                $num = 'BPB-R';
+            }
+            $code = $this->Model_m_numberings->getNumbering($num, $tanggal);
         }
 
         #Update status TTR

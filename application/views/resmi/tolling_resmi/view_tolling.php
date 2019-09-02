@@ -70,12 +70,12 @@
                     </div> 
                     <div class="row">
                         <div class="col-md-4">
-                            Jenis Barang
+                            Tanggal
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['jenis_barang']; ?>">
+                            <input type="text" id="tanggal" name="tanggal" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>" readonly>
                         </div>
                     </div>
                 </div>              
@@ -84,7 +84,7 @@
             <div class="portlet box blue-ebonyclay">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-file-word-o"></i>Data <input type="text" name="no_dtr_r" id="no_dtr_r" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo $header['no_dtr_resmi'];?>" style="color: black; margin-bottom: 5px;" placeholder="No. DTR" />
+                            <i class="fa fa-file-word-o"></i>DTR-KMP.<?=date('Ym', strtotime($header['tanggal']));?>.<input type="text" name="no_dtr_r" id="no_dtr_r" onkeyup="this.value = this.value.toUpperCase()" value="<?php echo substr($header['no_dtr_resmi'],-4);?>" style="color: black; margin-bottom: 5px;" placeholder="No. DTR" />
                         </div>
                         <div class="tools">    
                         
@@ -139,7 +139,7 @@
                 <div class="portlet box blue-ebonyclay">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-file-word-o"></i>Data <input type="text" name="no_ttr_r" id="no_ttr_r" onkeyup="this.value=this.value.toUpperCase()" value="<?php echo $header['no_ttr_resmi'];?>" style="color: black; margin-bottom: 5px;" placeholder="No. TTR">
+                            <i class="fa fa-file-word-o"></i>TTR-KMP.<?=date('Ym', strtotime($header['tanggal']));?>.<input type="text" name="no_ttr_r" id="no_ttr_r" onkeyup="this.value=this.value.toUpperCase()" value="<?php echo substr($header['no_ttr_resmi'], -4);?>" style="color: black; margin-bottom: 5px;" placeholder="No. TTR">
                         </div>
                         <div class="tools">    
                         
