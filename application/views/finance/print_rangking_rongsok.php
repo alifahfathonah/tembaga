@@ -68,10 +68,12 @@
 			$last_series = $row->sumber;
 			$total_netto += $row->netto;
 			$total_amount += $row->total_amount;
-			$total_rata += $row->rata2;
+			// $total_rata += $row->rata2;
+			$total_rata = $total_amount / $total_netto;
 			$grand_netto += $row->netto;
 			$grand_amount += $row->total_amount;
-			$grand_rata += $row->rata2;
+			// $grand_rata += $row->rata2;
+			$grand_rata = $grand_amount / $grand_netto;
 			$no++;
 			}
 
@@ -105,12 +107,14 @@
 
 				$ingot_netto += $v->netto;
 				$ingot_amount += $v->total;
-				$ingot_rata += $v->rata2;
+				// $ingot_rata += $v->rata2;
+				$ingot_rata = $ingot_amount / $ingot_netto;
 			}
 
 			$grand_grand_netto = $grand_netto + $ingot_netto;
 			$grand_grand_amount = $grand_amount + $ingot_amount;
-			$grand_grand_rata = $grand_rata + $ingot_rata;
+			// $grand_grand_rata = $grand_rata + $ingot_rata;
+			$grand_grand_rata = $grand_grand_amount / $grand_grand_netto;
 
 			echo 
 				"<tr>
