@@ -4,7 +4,6 @@
         <meta charset="utf-8" />
     </head>
     <body class="margin-left:40px;">
-        <p>&nbsp;</p>
         <h3><u><?= $header['nama_cv'] ?></u></h3>
         <h3 align="center"><u>INVOICE</u></h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
@@ -45,9 +44,9 @@
                             <td>Tanggal Jatuh Tempo</td>
                             <td>: <?= tanggal_indo($header['jatuh_tempo']) ?></td>
                         </tr>
-                        <tr rowspan="2">
+                        <!-- <tr rowspan="2">
                             <td colspan="2">&nbsp;</td>
-                        </tr>
+                        </tr> -->
                     </table>
                 </td>
             </tr>
