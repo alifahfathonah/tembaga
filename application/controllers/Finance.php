@@ -152,11 +152,12 @@ class Finance extends CI_Controller{
             }
         }
 
-        if($user_ppn == 1){
+        // if($user_ppn == 1){
+        //     $code = $num.'.'.$tgl_um.'.'.$this->input->post('no_uang_masuk');
+        // }else{
+        //     $code = $this->Model_m_numberings->getNumbering($num);
+        // }
             $code = $num.'.'.$tgl_um.'.'.$this->input->post('no_uang_masuk');
-        }else{
-            $code = $this->Model_m_numberings->getNumbering($num);
-        }
 
         $data = array(
             'no_uang_masuk'=> $code,
@@ -347,6 +348,8 @@ class Finance extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal_baru')));
         $tanggal  = date('Y-m-d h:m:s');
         $jenis = $this->input->post('jenis1');
+
+        $this->db->trans_start();
         if($jenis=="Cek Mundur"){
             $data = array(
                 'tanggal'=>$tgl_input,
@@ -369,19 +372,32 @@ class Finance extends CI_Controller{
                 'modified_by'=>$user_id,
                 'update_remarks'=>$this->input->post('update_remarks')
             );
-        }else if($jenis=="Giro"){
+        }else{
             $data = array(
+                'no_uang_masuk'=>$this->input->post('no_um'),
+                'keterangan'=>$this->input->post('remarks'),
                 'tanggal'=>$tgl_input,
                 'nominal'=>str_replace('.', '', $this->input->post('nominal_baru')),
-                'status'=>0,
                 'rekening_pembayaran'=>$this->input->post('nomor'),
                 'modified_at'=>$tanggal,
                 'modified_by'=>$user_id,
                 'update_remarks'=>$this->input->post('update_remarks')
             );
+
+            $data_f = array(
+                'nomor'=> $this->input->post('no_um'),
+                'tanggal'=> $tgl_input,
+                'keterangan'=> $this->input->post('remarks'),
+                'nominal'=>str_replace('.', '', $this->input->post('nominal_baru'))
+            );
+
+            $this->db->where('id_um', $id);
+            $this->db->update('f_kas', $data_f);
         }
         $this->db->where('id', $id);
-        if($this->db->update('f_uang_masuk', $data)){
+        $this->db->update('f_uang_masuk', $data);
+
+        if($this->db->trans_complete()){
             $this->session->set_flashdata('flash_msg', 'Uang Masuk berhasil di update');
             redirect('index.php/Finance/view_um/'.$id);
         }else{
@@ -864,6 +880,7 @@ class Finance extends CI_Controller{
             $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'green" onclick="editDetail('.$no.');" style="margin-top:5px" id="btnEdit_'.$no.'"> '
                     . '<i class="fa fa-edit"></i> Edit &nbsp; </a>';
+            $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle red" onclick="delete_uk('.$row->id.');" style="margin-top:5px;" id="btnDeleteUK_'.$no.'"> <i class="fa fa-trash"></i> Delete </a>';
             $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'green-seagreen" onclick="updateDetail('.$no.');" style="margin-top:5px; display:none" id="btnUpdate_'.$no.'"> '
                     . '<i class="fa fa-floppy-o"></i> Update </a></td>';
@@ -898,9 +915,34 @@ class Finance extends CI_Controller{
         echo json_encode($return_data); 
     }
 
+    function delete_detail_uk(){
+        $id = $this->input->post('id');
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $return_data = array();
+        $this->db->trans_start();
+        $data = array(
+                'pembayaran_id'=>0,
+                'modified'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+        
+        $this->db->where('id', $id);
+        $this->db->delete('f_kas');
+        if($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menghapus pemenuhan SPB FG! Silahkan coba kembali";
+        }           
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
+
     function save_detail_uk(){
         $return_data = array();
         $tgl_input = date("Y-m-d");
+        $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
         
@@ -918,8 +960,9 @@ class Finance extends CI_Controller{
             }
         }
 
-        $this->load->model('Model_m_numberings');
-        $code_um = $this->Model_m_numberings->getNumbering($num);
+        // $this->load->model('Model_m_numberings');
+        // $code_um = $this->Model_m_numberings->getNumbering($num);
+        $code_um = $num.'.'.$tgl_code.'.'.$this->input->post('no_uk');
 
         $data = array(
                     'jenis_trx'=>1,

@@ -31,7 +31,7 @@ class Model_voucher_cost extends CI_Model{
                     Left Join cost On (voucher.cost_id = cost.id)
                     Left Join m_customers mc ON (voucher.customer_id = mc.id)
                     Left join supplier supp on (voucher.supplier_id = supp.id)
-                Where voucher.jenis_voucher='Manual' and voucher.flag_ppn =".$ppn."
+                Where voucher.jenis_voucher='Manual' and voucher.flag_ppn =".$ppn." and status = 0
                 Order By voucher.no_voucher");
         return $data;
     }
@@ -115,6 +115,15 @@ class Model_voucher_cost extends CI_Model{
         $data = $this->db->query("select fk.id, v.id as id_vc, v.po_id FROM f_kas fk
                 left join voucher v on v.id_fk = fk.id
                 WHERE fk.id =".$id." limit 1");
+        return $data;
+    }
+
+    function list_data_voucher($ppn){
+        $data = $this->db->query("Select v.*, po.no_po, coalesce(s.nama_supplier, mc.nama_customer)as nama from voucher v
+            left join supplier s on s.id = v.supplier_id
+            left join m_customers mc on mc.id = v.customer_id
+            left join po on po.id = v.po_id
+            where v.pembayaran_id = 0 and v.status = 0 and v.flag_ppn =".$ppn);
         return $data;
     }
 }

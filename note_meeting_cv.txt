@@ -105,8 +105,6 @@ print dtbj di global in. tampilin nya jadi nama barang, qty, dan bruto, netto(do
 
 pembulatan di vk sparepart.(done)
 
-KMP K
-
 r_t_surat_jalan savesuratjalan masih di die();(done)
 
 print gudang rongsok per item(done)
@@ -118,3 +116,19 @@ DELETE LPB, BENERIN INVENTORY KALO MAU
 edit kurs di invoice(done)
 
 edit produksi fg bobin | id bobbin nya, jadi nanti berat palete berubah dan netto nya berubah
+
+nomor bm-bk-km-kk manual yang kkh *urgent (done)
+
+penomoran nya beda tiap cv
+
+bayar po cv bisa banyak banyak
+
+po ada potongan 2% pph ( (nilai_po * 110) + (nilai_po *2%))
+
+login cv yansen, fani, jatmi
+
+print cek masuk yg belum di matching(belum cair) (done)
+
+laporan bank/kas keluar/masuk dibenerin print nya (detail kecilin sama header gede in) (done)
+
+edit keterangan bk dan bm (done)

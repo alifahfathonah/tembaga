@@ -40,6 +40,8 @@
                                     <input type="hidden" id="nomor_cek_baru" name="nomor_cek">
                                     <input type="hidden" id="nomor" name="nomor">
                                     <input type="hidden" id="jenis1" name="jenis1">
+                                    <input type="hidden" id="remarks_baru" name="remarks">
+                                    <input type="hidden" id="no_um_baru" name="no_um">
                                 </div>
                             </div>                           
                         </form>
@@ -308,7 +310,7 @@
                             echo '<a href="javascript:;" class="btn green" id="editDataCekMundur" onclick="editDataCekMundur();"> 
                         <i class="fa fa-pencil"></i> Edit Cek Mundur </a>';
                         }
-                    if( ($group_id==1 || $hak_akses['edit_um']==1) && ($myData['jenis_pembayaran']=='Cek' || $myData['jenis_pembayaran']=='Giro') && $myData['status']!=1){
+                    if( ($group_id==1 || $hak_akses['edit_um']==1) && ($myData['jenis_pembayaran']!='Cek Mundur' && $myData['flag_matching']==0)){
                             echo '<a href="javascript:;" class="btn green" id="editData" onclick="editData();"> 
                         <i class="fa fa-pencil"></i> Edit </a>';
                         }
@@ -397,6 +399,8 @@ function editDataCekMundur(){
 function editData(){
     $("#editData").hide();
     $("#nominal").prop('readonly', false);
+    $("#no_um").attr('readonly', false);
+    $("#remarks").attr("readonly", false);
     $("#tanggal").attr("readonly", false);
     $("#tanggal").datepicker({
         showOn: "button",
@@ -423,6 +427,8 @@ function showUpdateBox(){
     }else{
         if (r==true){
             $('#headers_id').val($('#id').val());
+            $('#no_um_baru').val($('#no_um').val());
+            $('#remarks_baru').val($('#remarks').val());
             $('#tanggal_baru').val($('#tanggal').val());
             $('#jenis1').val($('#jenis').val());
             $('#nominal_baru').val($('#nominal').val());

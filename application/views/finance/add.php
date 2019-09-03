@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Finance
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Finance'); ?>"> Data Uang Masuk </a>
+            <a href="<?php echo base_url('index.php/Finance'); ?>"> Data Cek Masuk </a>
         </h4>          
     </div>
 </div>
@@ -27,7 +27,7 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            No. Uang Masuk
+                            No. Cek Masuk
                         </div>
                         <div class="col-md-8">
                             <?php if($this->session->userdata('user_ppn')==1){ ?>

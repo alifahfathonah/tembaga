@@ -220,6 +220,10 @@ class R_SuratJalan extends CI_Controller{
                 curl_close($ch);
                 // print_r($response);
                 // die();
+                if($result['status']==true){
+                    $this->db->where('id', $sjr_id);
+                    $this->db->update('r_t_surat_jalan', array('api'=>1));
+                }
 
                 //API END//
         }else if($jenis == 'po'){

@@ -10,7 +10,7 @@
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12"> 
-        <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
+        <!-- <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -56,7 +56,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <?php
             if( ($group_id==1)||($hak_akses['index']==1) ){
@@ -111,7 +111,7 @@
                         <td><?php echo $data->currency; ?></td>
                         <td style="text-align:right"><?php echo number_format($data->nominal,2,',','.'); ?></td>
                         <td style="text-align:center">
-                            <a class="btn btn-circle btn-xs blue" style="margin-bottom:4px" onclick="editData(<?=$data->id;?>)">
+                            <a class="btn btn-circle btn-xs blue" style="margin-bottom:4px" href="<?php echo base_url(); ?>index.php/VoucherCost/edit_uk/<?php echo $data->id; ?>/BK">
                                 <i class="fa fa-pencil"></i> Edit 
                             </a>                      
                             <?php 
@@ -150,23 +150,23 @@
     </div>
 </div> 
 <script>
-function editData(id){
-    dsState = "Edit";
-    $.ajax({
-        url: "<?php echo base_url('index.php/VoucherCost/get_voucher'); ?>",
-        type: "POST",
-        data : {id: id},
-        success: function (result){
-            $('#id').val(result['id']);
-            $('#no_voucher').val(result['nomor']);
-            $('#tanggal').val(result['tanggal']);
-            $('#bank_id').val(result['id_bank']);
+// function editData(id){
+//     dsState = "Edit";
+//     $.ajax({
+//         url: "<?php echo base_url('index.php/VoucherCost/get_voucher'); ?>",
+//         type: "POST",
+//         data : {id: id},
+//         success: function (result){
+//             $('#id').val(result['id']);
+//             $('#no_voucher').val(result['nomor']);
+//             $('#tanggal').val(result['tanggal']);
+//             $('#bank_id').val(result['id_bank']);
             
-            $("#myModal").find('.modal-title').text('Edit Voucher');
-            $("#myModal").modal('show',{backdrop: 'true'});           
-        }
-    });
-}
+//             $("#myModal").find('.modal-title').text('Edit Voucher');
+//             $("#myModal").modal('show',{backdrop: 'true'});           
+//         }
+//     });
+// }
 
 function simpandata(){
     if($.trim($("#no_voucher").val()) == ""){

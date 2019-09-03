@@ -2143,6 +2143,20 @@ class GudangFG extends CI_Controller{
         $this->load->view('gudang_fg/print_stok_fg', $data);
     }
 
+    function laporan_pemasukan_harian(){
+        $module_name = $this->uri->segment(1);
+            $group_id    = $this->session->userdata('group_id');
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['content']= "gudang_fg/laporan_pemasukan_harian";
+
+            $this->load->view('layout', $data);
+    }
+
     function laporan_pemasukan(){
         $module_name = $this->uri->segment(1);
             $group_id    = $this->session->userdata('group_id');
@@ -2157,12 +2171,23 @@ class GudangFG extends CI_Controller{
             $this->load->view('layout', $data);
     }
 
-    function print_laporan_pemasukan(){
+    function print_laporan_pemasukan_harian(){
 
         $tgl_input = date('Y-m-d', strtotime($_GET['ts']));
         $this->load->helper('tanggal_indo');  
         $this->load->model('Model_gudang_fg');
-        $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($tgl_input)->result();
+        $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan_harian($tgl_input)->result();
+
+        $this->load->view('gudang_fg/print_laporan_pemasukan_harian', $data);
+    }
+
+    function print_laporan_pemasukan(){
+
+        $s = date('Y-m-d', strtotime($_GET['ts']));
+        $e = date('Y-m-d', strtotime($_GET['te']));
+        $this->load->helper('tanggal_indo');  
+        $this->load->model('Model_gudang_fg');
+        $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e)->result();
 
         $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
     }

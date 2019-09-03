@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Finance
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Finance'); ?>"> Data Uang Masuk </a>
+            <a href="<?php echo base_url('index.php/Finance'); ?>"> Data Cek Masuk </a>
         </h4>          
     </div>
 </div>
@@ -59,7 +59,7 @@
                 <?php
                     if( ($group_id==1)||($hak_akses['add_um']==1) ){
                 ?>
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Finance/add"> <i class="fa fa-plus"></i> Input Uang Masuk</a>
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Finance/add"> <i class="fa fa-plus"></i> Input Cek Masuk</a>
                 <?php } ?>
                 </div>               
             </div>

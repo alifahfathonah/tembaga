@@ -8,7 +8,7 @@
  </table>
 <table width="100%" cellpadding="2" style="font-size: 13px;">
     <thead>
-        <th style="width:40px">No</th>
+        <th>No</th>
         <th>Tanggal</th>
         <th>Nomor Bukti</th>
         <th>Nama Customer</th>

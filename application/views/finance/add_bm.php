@@ -30,11 +30,7 @@
                             No. Uang Masuk
                         </div>
                         <div class="col-md-8">
-                            <?php if($this->session->userdata('user_ppn')==1){ ?>
                             <input type="text" name="no_uang_masuk" id="no_uang_masuk" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor Uang Masuk ..." onkeyup="this.value = this.value.toUpperCase()">
-                            <?php }else{ ?>
-                            <input type="text" name="no_uang_masuk" id="no_uang_masuk" class="form-control myline" style="margin-bottom: 5px;" readonly value="Auto Generate">
-                            <?php } ?>
                         </div>
                     </div>
                 </div>

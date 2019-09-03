@@ -6,9 +6,9 @@
         <td width="33%"></td>
     </tr>
  </table>
-<table width="100%" cellpadding="2" style="font-size: 13px;">
+<table width="100%" cellpadding="2" style="font-size: 12px;">
     <thead>
-        <th style="width:40px;border-bottom:1px solid #000; border-right: 1px solid #000; border-top:1px solid #000;">No</th>
+        <th style="border-bottom:1px solid #000; border-right: 1px solid #000; border-top:1px solid #000;">No</th>
         <th style="border-bottom:1px solid #000; border-right: 1px solid #000; border-top:1px solid #000;">Tanggal</th>
         <th style="border-bottom:1px solid #000; border-right: 1px solid #000; border-top:1px solid #000;">Nomor Bukti</th>
         <th style="border-bottom:1px solid #000; border-right: 1px solid #000; border-top:1px solid #000;">Keterangan</th>  

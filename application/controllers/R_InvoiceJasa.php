@@ -161,6 +161,11 @@ class R_InvoiceJasa extends CI_Controller{
                 // print_r($response);
                 // die();
 
+                if($result['status']==true){
+                    $this->db->where('id', $inv_jasa_id);
+                    $this->db->update('r_t_inv_jasa', array('api'=>1));
+                }
+
             //API END//
 
             if($this->db->trans_complete()){

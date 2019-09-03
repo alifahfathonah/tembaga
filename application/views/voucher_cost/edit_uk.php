@@ -21,8 +21,13 @@
                 </div>
             </div>
         </div>
+        <?php if($header['currency']=='IDR'){
+            $c = 'Rp. ';
+        }else{
+            $c = '$ ';
+        }?>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/VoucherCost/save_uk'); ?>">  
+              id="formku" action="<?php echo base_url('index.php/VoucherCost/update_uk'); ?>">  
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -30,7 +35,9 @@
                             No. Uang Keluar <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_uk" name="no_uk" class="form-control myline" style="margin-bottom:5px" placeholder="Nomor Uang Keluar..." onkeyup="this.value = this.value.toUpperCase()">
+                            <input type="text" id="no_uk" name="no_uk" class="form-control myline" style="margin-bottom:5px" placeholder="Nomor Uang Keluar..." value="<?=$header['nomor'];?>" onkeyup="this.value = this.value.toUpperCase()">
+
+                            <input type="hidden" name="id" value="<?=$header['id'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -40,7 +47,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('Y-m-d'); ?>">
+                                value="<?php echo $header['tanggal'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -50,7 +57,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tgl_jatuh" name="tgl_jatuh" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('Y-m-d'); ?>">
+                                value="<?php echo $header['tgl_jatuh_tempo'];?>">
                         </div>
                     </div>
                     <!-- <div class="row">
@@ -78,7 +85,7 @@
                                 <option value=""></option>
                                 <?php
                                     foreach ($bank_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->kode_bank.' ('.$row->nomor_rekening.')</option>';
+                                        echo '<option value="'.$row->id.'" '.(($header['id_bank']==$row->id)? 'selected':'').'>'.$row->kode_bank.' ('.$row->nomor_rekening.')</option>';
                                     }
                                 ?>
                             </select>
@@ -89,7 +96,7 @@
                             Nomor Giro
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nomor_giro" name="nomor_giro" class="form-control myline" value="" placeholder="Nomor Giro..." style="margin-bottom:5px">
+                            <input type="text" id="nomor_giro" name="nomor_giro" class="form-control myline" value="" placeholder="Nomor Giro..." style="margin-bottom:5px" value="<?=$header['no_giro'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -98,8 +105,8 @@
                         </div>
                         <div class="col-md-8">
                             <select id="currency" name="currency" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cur(this.value);">
-                            <option value="IDR">IDR</option>
-                            <option value="USD">USD</option>
+                            <option value="IDR" <?=($header['currency']=='IDR')? 'selected':'';?>>IDR</option>
+                            <option value="USD" <?=($header['currency']=='USD')? 'selected':'';?>>USD</option>
                             </select>         
                         </div>
                     </div>
@@ -108,7 +115,7 @@
                             Kurs
                         </div>
                         <div class="col-md-8">
-                            <input type="number" id="kurs" name="kurs" class="form-control myline" value="1" style="margin-bottom:5px">
+                            <input type="number" id="kurs" name="kurs" class="form-control myline" value="<?php echo $header['kurs'];?>" style="margin-bottom:5px">
                         </div>
                     </div>
                 </div>              
@@ -120,47 +127,42 @@
                         <table class="table table-bordered table-striped table-hover" id="tabel_dtr">
                             <thead>
                                 <th style="width:40px">No</th>
-                                <th>Nama Group Cost</th>
                                 <th>Nama Cost</th>
                                 <th>Keterangan</th>
                                 <th>Nominal</th>
-                                <th>Action</th>
                             </thead>
                             <tbody id="boxDetail">
+                            
+                            <?php 
+                            $no = 0;
+                            $total_vc = 0;
+                                foreach ($list_detail as $row){
+                                    $no++;
+                            ?>
                             <tr>
-                                <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
-                                <td>
-                                    <select id="group_cost_id_1" name="myDetails[1][group_cost_id]" class="form-control select2me myline"  data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cost(this.value,1);">
-                                        <option value=""></option>
-                                        <?php foreach ($list_group_cost as $value){ ?>
-                                                <option value='<?=$value->id;?>'>
-                                                    <?=$value->nama_group_cost;?>
-                                                </option>
-                                        <?php } ?>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select id="cost_id_1" name="myDetails[1][cost_id]" class="form-control myline select2me" 
-                                        data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
-                                        <option value=""></option>
-                                    </select>
-                                    <input type="text" id="nm_cost_1" name="myDetails[1][nm_cost]" style="margin-bottom:5px" class="form-control myline hidden" disabled="disabled" placeholder="Nama Cost" onkeyup="this.value = this.value.toUpperCase()">
-                                </td>
-                                <td><input type="text" id="line_remarks_1" name="myDetails[1][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
-                                <td><input type="text" id="nominal_1" name="myDetails[1][nominal]" class="form-control myline" onkeyup="getComa(this.value, this.id);"></td>
-                                <td style="text-align:center">
-                                    <a id="save_1" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(1);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
-                                    <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
-                                </td>
+                                <td style="text-align:center"><?php echo $no; ?></td>
+                                <?php 
+                                echo '<input type="hidden" name="details['.$no.'][id_detail]" value="'.$row->id.'">'; 
+                                if($row->nm_cost==null){
+                                    echo '<input type="hidden" name="details['.$no.'][nm_cost]" value="'.$row->nm_cost.'">';
+                                    echo '<td>'.$row->nama.'</td>';
+                                    echo '<td><input type="text" class="form-control myline" name="details['.$no.'][keterangan]" value="'.$row->keterangan.'"></td>';
+                                }else{
+                                    echo '<td><input type="text" class="form-control myline" name="details['.$no.'][nm_cost]" value="'.$row->nama.'"></td>';
+                                    echo '<td><input type="text" class="form-control myline" name="details['.$no.'][keterangan]" value="'.$row->no_po.$row->keterangan.'"></td>';
+                                };?>
+                                <td style="text-align:center"><?='<input text="text" id="amount_'.$no.'" class="form-control myline" onkeyup="getComa(this.value, this.id);" name="details['.$no.'][amount]" value="'.number_format($row->amount,2,'.', ',').'">';?></td>
+                            <?php
+                                $total_vc += $row->amount;
+                            }
+                            if($header['currency']=='USD'){
+                                $convert = $header['kurs']*$total_vc;
+                            ?>
+                                <td>Rp. <?=number_format($convert,2,',','.');?></td>
                             </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="4" style="text-align: right;"><strong>Total :</strong></td>
-                                    <td><input type="text" id="total_nominal" name="total_nominal" class="form-control" readonly="readonly"></td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
+                            <?php
+                                }
+                            ?>
                         </table>
                     </div>
                 </div>
@@ -171,8 +173,13 @@
                     <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
 
+                    <?php if($this->uri->segment(4)=='KK'){ ?>
                     <a href="<?php echo base_url('index.php/VoucherCost/kas_keluar'); ?>" class="btn blue-hoki">
                         <i class="fa fa-angle-left"></i> Kembali </a>
+                    <?php }else{ ?>
+                    <a href="<?php echo base_url('index.php/VoucherCost/bank_keluar'); ?>" class="btn blue-hoki">
+                        <i class="fa fa-angle-left"></i> Kembali </a>
+                    <?php } ?>
                 </div>    
             </div>
         </form>
@@ -237,9 +244,6 @@ function simpanData(){
     }else if($.trim($("#bank_id").val()) == ""){
         $('#message').html("Bank Belum Dipilih!");
         $('.alert-danger').show();
-    }else if($.trim($("#total_nominal").val()) == ""){
-        $('#message').html("Nominal harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show();
     }else{   
         $.ajax({
             type: "POST",
@@ -265,65 +269,6 @@ function simpanData(){
         });
     };
 };
-
-function saveDetail(id){
-    if($.trim($("#group_cost_id_"+id).val()) == ""){
-        $('#message').html("Silahkan pilih nama item rongsok!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#nominal_"+id).val()) == "" || 0){
-        $('#message').html("Jumlah bruto tidak boleh kosong!");
-        $('.alert-danger').show(); 
-    }else{
-        nominal = $('#nominal_'+id).val().toString().replace(/\,/g, "");
-        total_nominal = $('#total_nominal').val().toString().replace(/\,/g, "");
-        total_harga = Number(total_nominal) + Number(nominal); 
-        total_harga = total_harga.toFixed(2);
-        $('#total_nominal').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $("#save_"+id).hide();
-        $('#group_cost_id_'+id).attr('readonly','readonly');
-        $('#cost_id_'+id).attr('readonly','readonly');
-        $('#nm_cost_'+id).attr('readonly','readonly');
-        $('#line_remarks_'+id).attr('readonly','readonly');
-        $('#nominal_'+id).attr('readonly','readonly');
-        $("#delete_"+id).removeClass('disabled');
-        var new_id = id+1; 
-        $("#tabel_dtr>tbody").append(
-            '<tr>'+
-                '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
-                '<td><select id="group_cost_id_'+new_id+'" name="myDetails['+new_id+'][group_cost_id]" class="form-control select2me myline"  data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_cost(this.value,'+new_id+');">'+
-                    '<option value=""></option>'+
-                    '<?php foreach($list_group_cost as $v){ print('<option value="'.$v->id.'">'.$v->nama_group_cost.'</option>');}?>'+
-                '</select>'+
-                '</td>'+
-                '<td><select id="cost_id_'+new_id+'" name="myDetails['+new_id+'][cost_id]" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">'+
-                    '<option value=""></option>'+
-                    '</select>'+
-                    '<input type="text" id="nm_cost_'+new_id+'" name="myDetails['+new_id+'][nm_cost]" style="margin-bottom:5px" class="form-control myline hidden" disabled="disabled" placeholder="Nama Cost" onkeyup="this.value = this.value.toUpperCase()">'+
-                '</td>'+
-                '<td><input type="text" id="line_remarks_'+new_id+'" name="myDetails['+new_id+'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'+
-                '<td><input type="text" id="nominal_'+new_id+'" name="myDetails['+new_id+'][nominal]" class="form-control myline" onkeyup="getComa(this.value, this.id);"></td>'+
-                '<td style="text-align:center"><a id="save_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail('+new_id+');" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>'+
-                    '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>'+
-                ' <a id="print_'+new_id+'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('+new_id+');" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>'+
-                '</td>'+
-            '</tr>'
-        );
-        $('#group_cost_id_'+new_id).select2();
-        $('#cost_id_'+new_id).select2();
-    }
-}
-
-function deleteDetail(id){
-    var r=confirm("Anda yakin menghapus item rongsok ini?");
-    if (r==true){
-        nominal = $('#nominal_'+id).val().toString().replace(/\,/g, "");
-        total_nominal = $('#total_nominal').val().toString().replace(/\,/g, "");
-        total_harga = Number(total_nominal) - Number(nominal); 
-        total_harga = total_harga.toFixed(2);
-        $('#total_nominal').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#no_tabel_'+id).closest('tr').remove();
-        }
-}
 </script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>

@@ -231,7 +231,7 @@
                             <div id="add_uk">
                             <tr>
                                 <td style="text-align:center"><i class="fa fa-plus"></i></td>
-                                <td><input type="text" class="form-control myline" readonly="readonly" value="Auto Generated" readonly="readonly"></td>
+                                <td><input type="text" id="no_uk" name="no_uk" class="form-control myline" placeholder="Nomor Uang Keluar ..."></td>
                                 <td>
                                     <select id="bank_id" name="bank_id" class="form-control myline select2me" 
                                     data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="get_currency(this.value);">
@@ -554,8 +554,11 @@ function loadDetail_uk(id){
 }
 
 function saveDetail_uk(){
-    if($.trim($("#bank_id").val()) == ""){
-        $('#message').html("Silahkan pilih jenis barang!");
+    if($.trim($("#no_uk").val()) == ""){
+        $('#message').html("Silahkan isi Nomor Uang Keluar!");
+        $('.alert-danger').show();
+    }else if($.trim($("#bank_id").val()) == ""){
+        $('#message').html("Silahkan pilih bank!");
         $('.alert-danger').show();
     }else if($.trim($("#nominal").val()) == ""){
         $('#message').html("Silahkan pilih jenis barang!");
@@ -566,14 +569,17 @@ function saveDetail_uk(){
             url:'<?php echo base_url('index.php/Finance/save_detail_uk'); ?>',
             data:{
                 id:$('#id').val(),
+                no_uk:$('#no_uk').val(),
                 bank_id:$('#bank_id').val(),
                 nomor_giro:$('#nomor_giro').val(),
                 currency:$('#currency').val(),
-                nominal:$('#nominal').val()
+                nominal:$('#nominal').val(),
+                tanggal:$('#tanggal').val()
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail_uk(<?php echo $header['id'];?>);
+                    $('#no_uk').val('');
                     $('#bank_id').select2("val", "");
                     $('#nomor_giro').val('');
                     $('#currency').val('');
@@ -587,6 +593,25 @@ function saveDetail_uk(){
             }
         });
     }
+}
+
+function delete_uk(id){
+    $.ajax({
+        type:"POST",
+        url:'<?php echo base_url('index.php/Finance/delete_detail_uk'); ?>',
+        data:{
+            id:id
+        },
+        success:function(result){
+            if(result['message_type']=="sukses"){
+                loadDetail_uk(<?php echo $header['id'];?>);
+                $('.alert-danger').hide(); 
+            }else{
+                $('#message').html(result['message']);
+                $('.alert-danger').show(); 
+            }            
+        }
+    });
 }
 
 function get_currency(id){

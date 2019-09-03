@@ -594,11 +594,20 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
         return $data;
     }
 
-    function print_laporan_pemasukan($tgl){
+    function print_laporan_pemasukan_harian($tgl){
         $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
             where tanggal_masuk = '".$tgl."'
             order by jb.ukuran, jb.jenis_barang
+            ");
+        return $data;
+    }
+
+    function print_laporan_pemasukan($s,$e){
+        $data = $this->db->query("select tgf.tanggal_masuk as tanggal, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            where tanggal_masuk between '".$s."' and '".$e."' group by tgf.jenis_barang_id, tgf.tanggal_masuk
+            order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
             ");
         return $data;
     }

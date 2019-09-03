@@ -657,6 +657,11 @@
                                         Stok Harian FG </a>
                                     </li>
                                     <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangFG/laporan_pemasukan_harian">
+                                        <i class="fa fa-briefcase"></i>
+                                        Pemasukan FG Harian</a>
+                                    </li>
+                                    <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangFG/laporan_pemasukan">
                                         <i class="fa fa-briefcase"></i>
                                         Pemasukan FG </a>
@@ -1182,6 +1187,19 @@
                                 <i class="fa fa-left">-</i>
                                 Bank Keluar
                             </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">
+                            <i class="fa fa-book"></i>
+                            <span class="title">Laporan</span>
+                            <span class="arrow "></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/VoucherCost/print_voucher_sisa" target="_blank">
+                                    <i class="fa fa-print"></i> Print Voucher Belum Dibayar </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </li>

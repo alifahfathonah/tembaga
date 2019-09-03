@@ -25,20 +25,10 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            Tanggal Awal <font color="#f00">*</font>
+                            Tanggal<font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tgl_start" name="tgl_start" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Tanggal Akhir <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="tgl_end" name="tgl_end" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
                                 value="<?php echo date('d-m-Y'); ?>">
                         </div>
@@ -56,15 +46,11 @@
 <script type="text/javascript">
 function simpanData(){
     if($.trim($("#tgl_start").val()) == ""){
-        $('#message').html("Tanggal Awal harus diisi, tidak boleh kosong!");
+        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show();
-    }else if($.trim($("#tgl_end").val()) == ""){
-        $('#message').html("Tanggal Akhir harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show();
-    }else{   
+    }else{     
         var s=$('#tgl_start').val();
-        var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/GudangFG/print_laporan_pemasukan?ts='+s+'&te='+e,'_blank');
+        window.open('<?php echo base_url();?>index.php/GudangFG/print_laporan_pemasukan_harian?ts='+s,'_blank');
     };
 };
 </script>
@@ -74,15 +60,6 @@ function simpanData(){
 <script>
 $(function(){        
     $("#tgl_start").datepicker({
-        showOn: "button",
-        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
-        buttonImageOnly: true,
-        buttonText: "Select date",
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'dd-mm-yy'
-    }); 
-    $("#tgl_end").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,

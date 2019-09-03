@@ -552,11 +552,15 @@ class VoucherCost extends CI_Controller{
                 $num = 'BK';
             }
         }
-        if($user_ppn == 1){
+        // if($user_ppn == 1){
+        //     $code_um = $num.'.'.$tgl_code.'.'.$this->input->post('no_uk');
+        // }else{
+        //     $code_um = $this->Model_m_numberings->getNumbering($num);
+        // }
+
+
             $code_um = $num.'.'.$tgl_code.'.'.$this->input->post('no_uk');
-        }else{
-            $code_um = $this->Model_m_numberings->getNumbering($num);
-        }
+
 
         if($code_um){
                 $data = array(
@@ -691,7 +695,34 @@ class VoucherCost extends CI_Controller{
         echo json_encode($data);       
     }
 
-    function update(){
+    function edit_uk(){
+        $module_name = $this->uri->segment(1);
+        $id          = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn    = $this->session->userdata('user_ppn');
+        if($id){
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "voucher_cost/edit_uk";
+            $this->load->model('Model_voucher_cost');
+            $data['list_data'] = $this->Model_voucher_cost->list_data_kk($ppn)->result();
+            // $data['list_group_cost'] = $this->Model_voucher_cost->list_group_cost()->result();
+            $this->load->model('Model_finance');
+            $data['header'] = $this->Model_finance->show_header_voucher_ppn($id)->row_array();
+            $data['list_detail'] = $this->Model_finance->show_detail_voucher_ppn($id)->result();
+            $data['bank_list'] = $this->Model_finance->bank_list($ppn)->result();
+            $this->load->view('layout', $data);
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Gagal!');    
+        }
+    }
+
+    function update_uk(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');
@@ -699,15 +730,25 @@ class VoucherCost extends CI_Controller{
 
         $this->db->trans_start();
 
+            $details = $this->input->post('details');
+            $total = 0;
+            foreach ($details as $v) {
+                $this->db->where('id', $v['id_detail']);
+                $this->db->update('voucher', array(
+                    'tanggal' => $this->input->post('tanggal'),
+                    'nm_cost' => $v['nm_cost'],
+                    'keterangan' => $v['keterangan'],
+                    'amount' => str_replace(',', '', $v['amount'])
+                ));
+                $total += str_replace(',', '', $v['amount']);
+            }
+
             $this->db->where('id', $this->input->post('id'));
             $this->db->update('f_kas', array(
-                'nomor' => $this->input->post('no_voucher'),
-                'tanggal' => $this->input->post('tanggal')
-            ));
-
-            $this->db->where('id_fk', $this->input->post('id'));
-            $this->db->update('voucher', array(
-                'tanggal' => $this->input->post('tanggal')
+                'nomor' => $this->input->post('no_uk'),
+                'tanggal' => $this->input->post('tanggal'),
+                'tgl_jatuh_tempo' => $this->input->post('tgl_jatuh'),
+                'nominal' => $total
             ));
 
         if($this->db->trans_complete()){
@@ -721,5 +762,24 @@ class VoucherCost extends CI_Controller{
         } else {
             redirect('index.php/VoucherCost/bank_keluar');
         }
+    }
+
+    function print_voucher_sisa(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
+        $this->load->helper('tanggal_indo');
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+
+            $this->load->model('Model_voucher_cost');
+            $data['list_data'] = $this->Model_voucher_cost->list_data_voucher($user_ppn)->result();
+
+            $this->load->view('voucher_cost/print_voucher_sisa', $data);
     }
 }
