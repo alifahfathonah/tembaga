@@ -2,12 +2,22 @@
     <head>
         <title></title>
         <meta charset="utf-8" />
+        <style type="text/css">
+            body{
+                font-family:Times New Roman;
+            }
+
+            @media print{
+                body{
+                    font-family:Times New Roman;
+                }
+            }
+        </style>
     </head>
     <body class="margin-left:40px;">
-        <p>&nbsp;</p>
         <h3><u><?= $header['nama_cv'] ?></u></h3>
         <h3 align="center"><u>SALES ORDER</u></h3>
-        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
+        <table border="0" cellpadding="2" cellspacing="0" width="900px">
             <tr>
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
@@ -49,7 +59,7 @@
             </tr>
         </table>
         <br>
-        <table border="1" cellpadding="5" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif;">
+        <table border="1" cellpadding="5" cellspacing="0" width="900px">
             <thead>
                 <th>No</th>
                 <th>Nama Barang</th>
@@ -85,7 +95,7 @@
             </tbody>
         </table>
         <br>
-        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
+        <table border="0" cellpadding="2" cellspacing="0" width="900px">
             <tr>
                 <td>Disetujui Oleh,</td>
                 <td width="60%" align="center"></td>
