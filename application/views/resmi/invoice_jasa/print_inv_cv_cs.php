@@ -2,11 +2,18 @@
     <head>
         <title></title>
         <meta charset="utf-8" />
+        <style type="text/css">
+            @media print{
+                body{
+                    font-family:Times New Roman;
+                }
+            }
+        </style>
     </head>
     <body class="margin-left:40px;">
         <h3><u><?= $header['nama_cv'] ?></u></h3>
         <h3 align="center"><u>INVOICE</u></h3>
-        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
+        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Times New Roman;">
             <tr>
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
@@ -31,7 +38,7 @@
                 </td>
                 <td>&nbsp;</td>
                 <td width="40%">
-                    <table border="0" cellpadding="2" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="2" cellspacing="0" width="100%" style="font-family:Times New Roman;">
                         <tr>
                             <td>No. PO</td>
                             <td>: <?= $header['no_po2'] ?></td>
@@ -52,14 +59,14 @@
             </tr>
         </table>
         <br>
-        <table border="1" cellpadding="5" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif;">
+        <table border="1" cellpadding="5" cellspacing="0" width="900px" style="font-family:Times New Roman;">
             <thead>
                 <th>No</th>
                 <th>Nama Barang</th>
                 <th width="20%">Quantity</th>
                 <th>Harga Satuan</th>
                 <th>Harga Jual</th>
-                <th>Keterangan</th>
+                <!-- <th>Keterangan</th> -->
             </thead>
             <tbody>
                 <?php
@@ -71,9 +78,21 @@
                         <td align="center"><?= $no ?></td>
                         <td><?= $v->jenis_barang ?><br>(Ongkos Kerja)</td>
                         <td align="center"><?= number_format($v->sum_netto,2,".",",")." ".$v->uom ?></td>
-                        <td align="right"><?= "Rp ".number_format($v->amount,2,".",",") ?></td>
-                        <td align="right"><?= "Rp ".number_format($v->sum_total_amount,2,".",",") ?></td>
-                        <td></td>
+                        <td align="right">
+                            <table width="100%">
+                                <tr>
+                                    <td>Rp</td>
+                                    <td align="right"><?= number_format($v->amount,2,".",",") ?></td>
+                                </tr>
+                            </table></td>
+                        <td align="right">
+                            <table width="100%">
+                                <tr>
+                                    <td>Rp</td>
+                                    <td align="right"><?= number_format($v->sum_total_amount,2,".",",") ?></td>
+                                </tr>
+                            </table></td>
+                        <!-- <td></td> -->
                     </tr>
                 <?php
                         $total_jual += $v->sum_total_amount;
@@ -82,14 +101,57 @@
                     $total_amount = $total_jual;
                 ?>
                 <tr>
-                    <td colspan="4" align="right"><b>TOTAL</b></td>
-                    <td align="right"><b><?= "Rp ".number_format($total_amount,2,".",",") ?></b></td>
-                    <td></td>
+                    <td colspan="4"><b>Jumlah Harga Jual</b></td>
+                    <td align="right">
+                        <table width="100%">
+                            <tr>
+                                <td><b>Rp</b></td>
+                                <td align="right"><b><?= number_format($total_amount,2,".",",") ?></b></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <!-- <td></td> -->
+                </tr>
+                <tr>
+                    <td colspan="4"><b>Dikurangi Potongan Harga</b></td>
+                    <td align="right">
+                        <table width="100%">
+                            <tr>
+                                <td><b>Rp</b></td>
+                                <td align="right"><b><?= number_format($header['diskon'],2,".",",") ?></b></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <!-- <td></td> -->
+                </tr>
+                <tr>
+                    <td colspan="4"><b>Uang muka yang diterima</b></td>
+                    <td align="right">
+                        <table width="100%">
+                            <tr>
+                                <td><b>Rp</b></td>
+                                <td align="right"><b><?= number_format(0,2,".",",") ?></b></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <!-- <td></td> -->
+                </tr>
+                <tr>
+                    <td colspan="4"><b>T o t a l</b></td>
+                    <td align="right">
+                        <table width="100%">
+                            <tr>
+                                <td><b>Rp</b></td>
+                                <td align="right"><b><?= number_format($total_amount,2,".",",") ?></b></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <!-- <td></td> -->
                 </tr>
             </tbody>
         </table>
         <br>
-        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
+        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Times New Roman;">
             <tr>
                 <td>
                     Catatan:<br>Pembayaran dengan Cheque/Giro dianggap lunas<br>

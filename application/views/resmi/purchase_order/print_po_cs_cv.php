@@ -2,10 +2,21 @@
     <head>
         <title></title>
         <meta charset="utf-8" />
+        <style type="text/css">
+            body{
+                font-family:Times New Roman;
+            }
+
+            @media print{
+                body{
+                    font-family:Times New Roman;
+                }
+            }
+        </style>
     </head>
     <body class="margin-left:40px;">
         <h3 align="center"><u>PURCHASE ORDER</u></h3>
-        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
+        <table border="0" cellpadding="2" cellspacing="0" width="900px">
             <tr>
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
@@ -41,7 +52,7 @@
             <br>
             Bersama surat ini, saya ingin mengajukan pesanan sebagai berikut :
         </p>
-        <table border="1" cellpadding="5" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif;">
+        <table border="1" cellpadding="5" cellspacing="0" width="900px">
             <thead>
                 <th>No</th>
                 <th>Jenis Barang</th>
@@ -85,7 +96,7 @@
         Tanggal Kirim : <?= tanggal_indo($header['tanggal_kirim']) ?>
         <br>
         <p>Demikian PO ini saya sampaikan, atas perhatian dan kerja samanya saya ucapkan terima kasih.</p>
-        <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
+        <table border="0" cellpadding="2" cellspacing="0" width="900px">
             <tr>
                 <td>Hormat Saya,</td>
             </tr>
