@@ -36,6 +36,10 @@
                             <td>: <?php echo $header['nama_supplier']; ?></td>
                         </tr>
                         <tr>
+                            <td>No. PO</td>
+                            <td>: <?php echo $header['no_po']; ?></td>
+                        </tr>
+                        <tr>
                             <td>Jenis Barang</td>
                             <td>: Finish Good</td>
                         </tr>

@@ -167,7 +167,7 @@ class Model_pengiriman_ampas extends CI_Model{
 
     function show_detail_spb($id){
         $data = $this->db->query("Select tsad.*, r.nama_item,
-                    (select sum(berat_masuk - berat_keluar) from stok_ampas) as stok
+                    (select sum(berat_masuk - berat_keluar) from stok_ampas where rongsok_id = tsad.jenis_barang_id) as stok
                     From t_spb_ampas_detail tsad 
                         Left Join rongsok r On (r.id = tsad.jenis_barang_id)
                     Where tsad.t_spb_ampas_id=".$id);

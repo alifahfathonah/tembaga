@@ -14,24 +14,25 @@ class Model_surat_jalan extends CI_Model{
 		return $data;
 	}
 
-	function list_sj_cv($reff_cv){
+	function list_sj_cv($reff_cv,$jb){
 		$data = $this->db->query("select tsj.*, cs.nama_customer, ti.no_invoice_resmi as no_reff, 
 			(select count(tsjd.id) from r_t_surat_jalan_detail tsjd where tsjd.sj_resmi_id = tsj.id) as jumlah_item
 			from r_t_surat_jalan tsj
 			left join r_t_invoice ti on ti.id = tsj.r_invoice_id
 			left join m_customers_cv cs on cs.id = tsj.m_customer_id
-			where tsj.reff_cv = ".$reff_cv." 
+			where tsj.reff_cv = ".$reff_cv." and tsj.jenis_barang = '".$jb."'
 			order by tsj.no_sj_resmi desc");
     	return $data;
 	}
 
-	function list_sj_so(){
-		$data = $this->db->query("select tsj.*, mc.nama_cv as nama_customer, ts.no_so as no_reff, 
+	function list_sj_so($jb){
+		$data = $this->db->query("select tsj.*, mc.nama_cv as nama_customer, coalesce(ts.no_so,rtp.no_po) as no_reff, 
 			(select count(tsjd.id) from r_t_surat_jalan_detail tsjd where tsjd.sj_resmi_id = tsj.id) as jumlah_item
 			from r_t_surat_jalan tsj
+            left join r_t_po rtp on rtp.id = tsj.r_po_id
         	left join r_t_so ts on ts.id = tsj.r_so_id
     		left join m_cv mc on mc.id = tsj.m_cv_id
-			where tsj.jenis_surat_jalan NOT LIKE '%CUSTOMER%' 
+			where tsj.jenis_surat_jalan NOT LIKE '%CUSTOMER%' and tsj.jenis_barang = '".$jb."'
 			order by tsj.no_sj_resmi desc");
 		return $data;
 	}

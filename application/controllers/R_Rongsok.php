@@ -622,7 +622,7 @@ class R_Rongsok extends CI_Controller{
 
     function update(){
         $tanggal  = date('Y-m-d h:m:s');
-        
+        $user_id  = $this->session->userdata('user_id');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $data = array(
@@ -655,6 +655,7 @@ class R_Rongsok extends CI_Controller{
             $response = curl_exec($ch);
             $result = json_decode($response, true);
             curl_close($ch);
+            // print_r($response);die();
         
         $this->session->set_flashdata('flash_msg', 'Data PO rongsok berhasil disimpan');
         redirect('index.php/R_Rongsok/po_list');
@@ -883,5 +884,21 @@ class R_Rongsok extends CI_Controller{
         }           
         header('Content-Type: application/json');
         echo json_encode($return_data);
+    }
+
+    function ttr_list(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $this->load->model('Model_matching');
+        $data['group_id']  = $group_id;
+        $data['list_data'] = $this->Model_r_rongsok->ttr_list()->result();
+        $data['content']= "resmi/ambil_rongsok/ttr_list";
+
+        $this->load->view('layout', $data);
     }
 }

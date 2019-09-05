@@ -258,7 +258,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <h4 align="center">SPB WIP yang Sudah Di Penuhi</h4>
+                            <h4 align="center">SPB Ampas yang Sudah Di Penuhi</h4>
                                 <div class="table-scrollable">
                                     <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
                                         <thead>
@@ -267,6 +267,7 @@
                                             <th>UOM</th>
                                             <th>Berat (kg)</th>
                                             <th>Keterangan</th>
+                                            <th>Status</th>
                                         </thead>
                                         <tbody>
                                             <?php $no=1; $qty = 0; $berat = 0; foreach($detailFulfilment as $v) { ?>
@@ -276,6 +277,13 @@
                                                 <td><?=$v->uom;?></td>
                                                 <td><?=$v->berat;?></td>
                                                 <td><?=$v->keterangan;?></td>
+                                                <?php if($v->flag_taken==1){
+                                                    $stat = '<td style="background-color: green; color: white">Sudah di Kirim</td>';
+                                                }else{
+                                                    $stat = '<td>Belum Dikirim</td>';
+                                                }
+                                                echo $stat;
+                                                ?>
                                             </tr>
                                             <?php 
                                             $no++; 
@@ -359,7 +367,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <h4 align="center">SPB WIP yang Di Penuhi</h4>
+                            <h4 align="center">SPB Ampas yang Di Penuhi</h4>
                                 <div class="table-scrollable">
                                     <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
                                         <thead>
@@ -368,6 +376,7 @@
                                             <th>UOM</th>
                                             <th>Berat (kg)</th>
                                             <th>Keterangan</th>
+                                            <th>Status</th>
                                         </thead>
                                         <tbody>
                                             <?php $no=1; $qty = 0; $berat = 0; foreach($detailFulfilment as $v) { ?>
@@ -377,6 +386,13 @@
                                                 <td><?=$v->uom;?></td>
                                                 <td><?=$v->berat;?></td>
                                                 <td><?=$v->keterangan;?></td>
+                                                <?php if($v->flag_taken==1){
+                                                    $stat = '<td style="background-color: green; color: white">Sudah di Kirim</td>';
+                                                }else{
+                                                    $stat = '<td>Belum Dikirim</td>';
+                                                }
+                                                echo $stat;
+                                                ?>
                                             </tr>
                                             <?php 
                                             $no++; 

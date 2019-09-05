@@ -61,7 +61,7 @@ class Model_voucher_cost extends CI_Model{
                 cost.nama_cost,
                 mc.nama_customer,
                 supp.nama_supplier,
-                COALESCE(nm_cost, mc.nama_customer, supp.nama_supplier) as nama_trx
+                COALESCE(NULLIF(nm_cost,''), mc.nama_customer, supp.nama_supplier) as nama_trx
                 From f_kas fk
                     Left Join voucher On (voucher.id_fk = fk.id)
                     Left Join group_cost gc On (voucher.group_cost_id = gc.id) 

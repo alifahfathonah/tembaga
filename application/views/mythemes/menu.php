@@ -132,6 +132,11 @@
                                     <i class="fa fa-file-powerpoint-o"></i>
                                     TTR List </a>
                                 </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/BeliRongsok/bpb_list">
+                                    <i class="fa fa-file-powerpoint-o"></i>
+                                    BPB-R List </a>
+                                </li>
                                 <?php } if($group_id==1 || (isset($akses_menu['voucher_list']) && $akses_menu['voucher_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliRongsok/voucher_list">
@@ -1053,6 +1058,11 @@
                             Cek Masuk </a>
                         </li>
                         <li>
+                            <a href="<?php echo base_url(); ?>index.php/Finance">
+                            <i class="fa fa-file-o"></i>
+                            Kas Masuk </a>
+                        </li>
+                        <li>
                             <a href="<?php echo base_url(); ?>index.php/Finance/bank_masuk">
                             <i class="fa fa-file-o"></i>
                             Bank Masuk </a>
@@ -1101,6 +1111,10 @@
                             <span class="arrow "></span>
                             </a>
                             <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/laporan_sj/">
+                                    <i class="fa fa-search"></i> Laporan Surat Jalan </a>
+                                </li>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/laporan_penjualan_gabungan/">
                                     <i class="fa fa-search"></i> Laporan Penjualan </a>

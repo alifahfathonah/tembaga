@@ -729,11 +729,12 @@ class Model_tolling_titipan extends CI_Model{
 
      function show_header_dtt($id){
         $data = $this->db->query("Select dtt.*, 
-                    s.nama_supplier,
+                    s.nama_supplier, po.no_po,
                     usr.realname As penimbang,
                     rjct.realname As rejected_name,
                     mjp.jenis_packing As nama_jenis_packing
                     From dtt
+                        Left join po on (po.id = dtt.po_id)
                         Left Join supplier s On (s.id = dtt.supplier_id) 
                         Left Join users usr On (dtt.created_by = usr.id) 
                         Left Join users rjct On (dtt.rejected_by = rjct.id) 

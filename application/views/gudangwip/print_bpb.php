@@ -16,7 +16,7 @@
                         </tr>
                         <tr>
                             <td>Tanggal</td>
-                            <td>: <?php echo tanggal_indo(date('Y-m-d', strtotime($header['created']))); ?></td>
+                            <td>: <?php echo tanggal_indo(date('Y-m-d', strtotime($header['tanggal']))); ?></td>
                         </tr>
                     </table>
                 </td>

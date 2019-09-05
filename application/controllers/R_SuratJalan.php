@@ -16,6 +16,7 @@ class R_SuratJalan extends CI_Controller{
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
         $reff_cv = $this->session->userdata('cv_id');
+        // echo $reff_cv;die();
         if($group_id != 9){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -25,9 +26,32 @@ class R_SuratJalan extends CI_Controller{
 
         $data['content']= "resmi/surat_jalan/index";
         if($group_id == 14 || $group_id == 15){
-            $data['list_sj']= $this->Model_surat_jalan->list_sj_cv($reff_cv)->result();
+            $data['list_sj']= $this->Model_surat_jalan->list_sj_cv($reff_cv,'RONGSOK')->result();
         }else if($group_id == 16){
-            $data['list_sj']= $this->Model_surat_jalan->list_sj_so()->result();
+            $data['list_sj']= $this->Model_surat_jalan->list_sj_so('RONGSOK')->result();
+        }else{
+            $data['list_sj']= $this->Model_surat_jalan->list_sj()->result();
+        }
+        $this->load->view('layout', $data);
+    }
+
+    function fg(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        $reff_cv = $this->session->userdata('cv_id');
+        // echo $reff_cv;die();
+        if($group_id != 9){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "resmi/surat_jalan/index";
+        if($group_id == 14 || $group_id == 15){
+            $data['list_sj']= $this->Model_surat_jalan->list_sj_cv($reff_cv,'FG')->result();
+        }else if($group_id == 16){
+            $data['list_sj']= $this->Model_surat_jalan->list_sj_so('FG')->result();
         }else{
             $data['list_sj']= $this->Model_surat_jalan->list_sj()->result();
         }

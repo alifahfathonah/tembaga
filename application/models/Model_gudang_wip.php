@@ -112,7 +112,7 @@ class Model_gudang_wip extends CI_Model{
     }
 
     function jenis_barang_list_by_spb($id){
-        $data = $this->db->query("select jb.jenis_barang, jb.id
+        $data = $this->db->query("select jb.jenis_barang, jb.id, jb.kode
                 from t_spb_wip_detail tswd
                 left join jenis_barang jb on (jb.id = tswd.jenis_barang_id )
                 where t_spb_wip_id =".$id
@@ -121,7 +121,7 @@ class Model_gudang_wip extends CI_Model{
     }
 
     function jenis_barang_list(){
-        $data = $this->db->query("select jb.jenis_barang, jb.id
+        $data = $this->db->query("select jb.jenis_barang, jb.kode, jb.uom, jb.id
                 from jenis_barang jb
                 where category='WIP'"
                 );
@@ -129,7 +129,7 @@ class Model_gudang_wip extends CI_Model{
     }
 
     function jenis_barang_spb($id){
-        $data = $this->db->query("select jb.jenis_barang, jb.id
+        $data = $this->db->query("select jb.jenis_barang, jb.kode, jb.uom, jb.id
                 from jenis_barang jb
                 where id=".$id);
         return $data;
@@ -138,7 +138,7 @@ class Model_gudang_wip extends CI_Model{
     function jenis_barang_spb_cuci(){
         $data = $this->db->query("select jb.jenis_barang, jb.id
                 from jenis_barang jb
-                where id in (6,656)");
+                where id in (6, 656, 667, 668)");
         return $data;
     }
 
@@ -156,7 +156,7 @@ class Model_gudang_wip extends CI_Model{
     }
     
     function show_detail_spb($id){
-        $data = $this->db->query("Select tswd.*, jb.jenis_barang,
+        $data = $this->db->query("Select tswd.*, jb.jenis_barang, jb.kode,
                     (select total_qty_out from stok_wip sw where sw.jenis_barang_id= tswd.jenis_barang_id)as total_qty_out,
                     (select total_qty_in from stok_wip sw where sw.jenis_barang_id= tswd.jenis_barang_id)as total_qty_in,
                     (select total_berat_out from stok_wip sw where sw.jenis_barang_id= tswd.jenis_barang_id)as total_berat_out,
@@ -168,7 +168,7 @@ class Model_gudang_wip extends CI_Model{
     }
 
     function show_detail_wip_fulfilment($id){
-       $data = $this->db->query("select tgw.*, jb.jenis_barang 
+       $data = $this->db->query("select tgw.*, jb.jenis_barang, jb.kode 
                 from t_gudang_wip tgw
                 left join jenis_barang jb on (jb.id = tgw.jenis_barang_id)
                 left join t_spb_wip_detail tswd on (tswd.id = tgw.t_spb_wip_detail_id)
@@ -179,7 +179,7 @@ class Model_gudang_wip extends CI_Model{
     }
 
     function show_detail_spb_fulfilment($id){
-        $data = $this->db->query("select tswf.*, jb.jenis_barang, jb.uom from t_spb_wip_fulfilment tswf
+        $data = $this->db->query("select tswf.*, jb.jenis_barang, jb.kode, jb.uom from t_spb_wip_fulfilment tswf
                 left join jenis_barang jb on jb.id = tswf.jenis_barang_id
                 where tswf.approved_by = 0 and tswf.t_spb_wip_id =".$id);
         return $data;

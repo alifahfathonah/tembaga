@@ -3,7 +3,7 @@ class Model_finance extends CI_Model{
     function list_data($ppn){
         $data = $this->db->query("Select fum.*, mc.nama_customer From f_uang_masuk fum
             left join m_customers mc on mc.id = fum.m_customer_id
-            where fum.flag_ppn =".$ppn."
+            where fum.flag_ppn =".$ppn." and fum.rekening_tujuan < 4 and (fum.jenis_pembayaran != 'Cek' and fum.jenis_pembayaran != 'Cek Mundur')
             Order By id desc");
         return $data;
     }
@@ -26,7 +26,7 @@ class Model_finance extends CI_Model{
     function list_data_bm($ppn){
         $data = $this->db->query("Select fum.*, mc.nama_customer From f_uang_masuk fum
             left join m_customers mc on mc.id = fum.m_customer_id
-            where fum.flag_ppn =".$ppn." and (fum.jenis_pembayaran != 'Cek' and fum.jenis_pembayaran != 'Cek Mundur')
+            where fum.flag_ppn =".$ppn." and fum.rekening_tujuan > 4 and (fum.jenis_pembayaran != 'Cek' and fum.jenis_pembayaran != 'Cek Mundur')
             Order By id desc");
         return $data;
     }
@@ -254,13 +254,14 @@ class Model_finance extends CI_Model{
         $data = $this->db->query("select tsjd.t_sj_id, sum(tsjd.qty) as qty, sum(tsjd.bruto) as bruto, 
             (case when tsjd.jenis_barang_alias = 0 then tsjd.jenis_barang_id else tsjd.jenis_barang_alias end) as jbid,
             round(sum(case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end),3) as netto,
-            COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom) as uom,
+            COALESCE(jb.jenis_barang,r.nama_item,r2.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom,r2.uom) as uom,
             (select tsod.amount from t_sales_order_detail tsod left join t_sales_order tso on tso.id = tsod.t_so_id where tso.so_id = tsj.sales_order_id and tsod.jenis_barang_id = case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)as amount 
             from t_surat_jalan_detail tsjd 
             left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id 
             left join t_sales_order tso on tso.so_id = tsj.sales_order_id
-            left join jenis_barang jb on tso.jenis_barang != 'RONGSOK' and jb.id = (case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
+            left join jenis_barang jb on tso.jenis_barang != 'RONGSOK' and tso.jenis_barang != 'AMPAS' and jb.id = (case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
             left join rongsok r on tso.jenis_barang = 'RONGSOK' and r.id=tsjd.jenis_barang_id
+            left join rongsok r2 on tso.jenis_barang = 'AMPAS' and r2.id=tsjd.jenis_barang_id
             where tsjd.t_sj_id =".$id." group by jbid");
         return $data;
     }
@@ -301,12 +302,13 @@ class Model_finance extends CI_Model{
     }
 
     function show_detail_invoice($id){
-        $data = $this->db->query("select fid.*, COALESCE(NULLIF((select nama_barang_alias from t_sales_order_detail tsod where tsod.jenis_barang_id = fid.jenis_barang_id and tsod.t_so_id = tso.id),''),jb.jenis_barang,r.nama_item,s.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom,s.uom) as uom
+        $data = $this->db->query("select fid.*, COALESCE(NULLIF((select nama_barang_alias from t_sales_order_detail tsod where tsod.jenis_barang_id = fid.jenis_barang_id and tsod.t_so_id = tso.id),''),jb.jenis_barang,r.nama_item,r2.nama_item,s.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom,s.uom,r2.uom) as uom
         from f_invoice_detail fid
         left join f_invoice fi on fi.id = fid.id_invoice
         left join t_sales_order tso on tso.so_id=fi.id_sales_order
-        left join jenis_barang jb on tso.jenis_barang != 'RONGSOK' and tso.jenis_barang != 'LAIN' and jb.id = fid.jenis_barang_id
+        left join jenis_barang jb on tso.jenis_barang != 'RONGSOK' and tso.jenis_barang != 'LAIN' and tso.jenis_barang != 'AMPAS' and jb.id = fid.jenis_barang_id
         left join rongsok r on tso.jenis_barang = 'RONGSOK' and r.id = fid.jenis_barang_id
+        left join rongsok r2 on tso.jenis_barang = 'AMPAS' and r2.id = fid.jenis_barang_id
         left join sparepart s on tso.jenis_barang = 'LAIN' and s.id = fid.jenis_barang_id
         where fid.id_invoice =".$id);
         return $data;
@@ -695,6 +697,29 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function print_laporan_sj($s,$e,$ppn){
+        $data = $this->db->query("select COALESCE(r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as jenis_barang, COALESCE(r.kode_rongsok,r2.kode_rongsok,sp.alias,jb.kode) as kode_barang, COALESCE(r.uom,r2.uom,sp.uom,jb.uom) as uom, sum(tsjd.bruto) as bruto, sum(tsjd.netto) as netto, tsj.tanggal from t_surat_jalan_detail tsjd 
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
+            left join rongsok r on (tsj.jenis_barang = 'RONGSOK' and r.id = tsjd.jenis_barang_id)
+            left join rongsok r2 on (tsj.jenis_barang = 'AMPAS' and r2.id = tsjd.jenis_barang_id)
+            left join sparepart sp on (tsj.jenis_barang = 'LAIN' and sp.id = tsjd.jenis_barang_id)
+            left join jenis_barang jb on (jb.id = tsjd.jenis_barang_id)
+            left join sales_order so on so.id = tsj.sales_order_id
+            where so.flag_ppn=".$ppn." and tsj.tanggal between '".$s."' and '".$e."' group by tsjd.jenis_barang_id, tsj.tanggal order by kode_barang, tanggal");
+        return $data;
+    }
+
+    function print_laporan_sj_all($s,$e){
+        $data = $this->db->query("select COALESCE(r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as jenis_barang, COALESCE(r.kode_rongsok,r2.kode_rongsok,sp.alias,jb.kode) as kode_barang, COALESCE(r.uom,r2.uom,sp.uom,jb.uom) as uom, sum(tsjd.bruto) as bruto, sum(tsjd.netto) as netto, tsj.tanggal from t_surat_jalan_detail tsjd 
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
+            left join rongsok r on (tsj.jenis_barang = 'RONGSOK' and r.id = tsjd.jenis_barang_id)
+            left join rongsok r2 on (tsj.jenis_barang = 'AMPAS' and r2.id = tsjd.jenis_barang_id)
+            left join sparepart sp on (tsj.jenis_barang = 'LAIN' and sp.id = tsjd.jenis_barang_id)
+            left join jenis_barang jb on (jb.id = tsjd.jenis_barang_id)
+            where tsj.tanggal between '".$s."' and '".$e."' group by tsjd.jenis_barang_id, tsj.tanggal order by kode_barang, tanggal");
+        return $data;
+    }
+
     function print_laporan_penjualan($s,$e,$ppn){
         $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn=1,(((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100),0)) as nilai_ppn from v_data_faktur_all v 
             where v.flag_ppn =".$ppn." and (v.tanggal BETWEEN '".$s."' AND '".$e."')
@@ -969,7 +994,7 @@ class Model_finance extends CI_Model{
             left join f_uang_masuk fum on fk.jenis_trx = 0 and fum.id = fk.id_um
             left join m_customers mc on mc.id = fum.m_customer_id
             where fk.tanggal BETWEEN '".$s."' and '".$e."' and fk.id_bank =".$id."
-            order by fk.tanggal, fk.nomor asc
+            order by fk.tanggal, fk.jenis_trx, fk.nomor asc
             ");
     }
     // function print_penjualan_customer($ppn){

@@ -917,7 +917,12 @@
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/Finance">
                             <i class="fa fa-file-word-o"></i>
-                            Uang Masuk </a>
+                            Kas Masuk </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/Finance/bank_masuk">
+                            <i class="fa fa-file-word-o"></i>
+                            Bank Masuk </a>
                         </li>
                     <?php } if($group_id==1 || (isset($akses_menu['matching']) && $akses_menu['matching']==1)){ ?>
                         <li>
@@ -963,6 +968,10 @@
                             <span class="arrow "></span>
                             </a>
                             <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/laporan_sj/">
+                                    <i class="fa fa-search"></i> Laporan Surat Jalan </a>
+                                </li>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/laporan_penjualan_gabungan/">
                                     <i class="fa fa-search"></i> Laporan Penjualan </a>

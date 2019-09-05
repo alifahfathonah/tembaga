@@ -1498,6 +1498,10 @@ class Finance extends CI_Controller{
                 curl_close($ch);
                 // print_r($response);
                 // die();
+                if($result['status']==true){
+                    $this->db->where('id',$id_new);
+                    $this->db->update('f_invoice', array('api'=>1));
+                }
             }
 
         if($this->db->trans_complete()){
@@ -2735,7 +2739,7 @@ class Finance extends CI_Controller{
         }            
     }
 
-    function laporan_penjualan(){
+    function laporan_sj(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
         $group_id    = $this->session->userdata('group_id');        
@@ -2745,7 +2749,7 @@ class Finance extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
-        $data['content']= "finance/laporan_penjualan";
+        $data['content']= "finance/laporan_sj";
         $this->load->model('Model_sales_order');
 
         $this->load->view('layout', $data);   
@@ -2801,6 +2805,31 @@ class Finance extends CI_Controller{
             $this->load->model('Model_finance');
             $data['detailLaporan'] = $this->Model_finance->print_laporan_penjualan($start,$end,$ppn)->result();
             $this->load->view('finance/print_laporan_penjualan', $data);
+    }
+
+    function print_laporan_sj(){
+            $module_name = $this->uri->segment(1);
+            $ppn = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+            $start = date('Y-m-d', strtotime($_GET['ts']));
+            $end = date('Y-m-d', strtotime($_GET['te']));
+            $l = $_GET['l'];
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_finance');
+            if($l == 2){
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_sj_all($start,$end)->result();
+            }else{
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_sj($start,$end,$l)->result();
+            }
+            $this->load->view('finance/print_laporan_sj', $data);
     }
 
     function search_penjualan_customer(){

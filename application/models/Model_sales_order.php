@@ -253,7 +253,7 @@ class Model_sales_order extends CI_Model{
             left join t_sales_order tso on tso.id = tsod.t_so_id
             left join t_spb_ampas_fulfilment tsa on tsa.t_spb_ampas_id = tso.no_spb
             left join rongsok r on r.id = tsa.jenis_barang_id
-            where tso.so_id=".$soid);
+            where tso.so_id=".$soid," where flag_taken = 0");
         return $data;
     }
 
@@ -580,7 +580,7 @@ class Model_sales_order extends CI_Model{
                 tsjd.id as id_sj_d, tsjd.t_sj_id, tsjd.jenis_barang_id as sj_jb, tsjd.jenis_barang_alias, tsjd.qty as jb_qty, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks,
                 tgf.*, 
                 tbf.no_bpb_fg, tbf.tanggal as tgl_bpb, tbf.jenis_barang_id as jb_bpb, tbf.keterangan as ket_bpb,
-                tbfd.id as id_bpb_d, tbfd.jenis_barang_id as jbd, tbfd.no_produksi, tbfd.berat_bobbin,
+                tbfd.id as id_bpb_d, tbfd.jenis_barang_id as jbd, tbfd.no_produksi, tgf.berat_bobbin,
                 pf.id as id_prd, pf.no_laporan_produksi, pf.tanggal as tgl_prd, pf.flag_result, pf.remarks as remarks_prd, pf.jenis_barang_id as jb_prd, pf.jenis_packing_id
                 from t_surat_jalan_detail tsjd
                 left join t_gudang_fg tgf on tgf.id = tsjd.gudang_id
