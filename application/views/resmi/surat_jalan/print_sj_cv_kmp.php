@@ -22,6 +22,10 @@
                 <td width="40%">
                     <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
+                            <td>No. Surat Jalan</td>
+                            <td>: <?= $header['no_sj_resmi'] ?></td>
+                        </tr>
+                        <tr>
                             <td>No. BPB</td>
                             <td>: <?= $header['no_bpb'] ?></td>
                         </tr>
@@ -32,10 +36,6 @@
                         <tr>
                             <td>No. Order</td>
                             <td>: <?= $header['no_po'] ?></td>
-                        </tr>
-                        <tr>
-                            <td>No. Surat Jalan</td>
-                            <td>: <?= $header['no_sj_resmi'] ?></td>
                         </tr>
                         
                     </table>
