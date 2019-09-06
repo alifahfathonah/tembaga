@@ -58,6 +58,15 @@ class Model_tolling_resmi extends CI_Model{
         return $data;
     }
 
+    function show_tolling_ttr($id){
+        $data = $this->db->query("select rt.no_ttr_resmi as no_ttr, rt.tanggal, '' as no_po, rd.no_dtr_resmi as no_dtr, rtsj.no_sj_resmi as no_sj, cv.nama_cv as nama_supplier, '' as remarks, 'RONGSOK' as jenis_barang, '' as penimbang, (select sum(bruto) - sum(netto) from r_ttr_detail rtd where rtd.r_ttr_id = rt.id)as jmlh_pengepakan, 0 as jmlh_afkiran, 0 as jmlh_lain from r_ttr rt
+            left join r_dtr rd on rd.id = rt.r_dtr_id
+            left join r_t_surat_jalan rtsj on rtsj.id = rd.sj_id
+            left join m_cv cv on cv.id = rt.customer_id
+            where rt.id=".$id);
+        return $data;
+    }
+
     function show_dtr_detail($id){
     	$data = $this->db->query("select dd.*, rsk.nama_item, rsk.uom from r_dtr_detail dd
     		left join rongsok rsk on rsk.id = dd.rongsok_id
@@ -66,9 +75,9 @@ class Model_tolling_resmi extends CI_Model{
     }
 
     function show_ttr_detail($id){
-    	$data = $this->db->query("select * from r_ttr_detail td
+    	$data = $this->db->query("select rsk.nama_item, rsk.uom, count(td.id) as qty, sum(td.bruto) as bruto, sum(td.netto) as netto, '' as line_remarks from r_ttr_detail td
     		left join rongsok rsk on rsk.id = td.rongsok_id
-    		where r_ttr_id =".$id);
+    		where r_ttr_id =".$id." group by td.rongsok_id");
     	return $data;
     }
 }

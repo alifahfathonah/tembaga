@@ -868,6 +868,168 @@ class BeliSparePart extends CI_Controller{
         }
     }
     
+    // function save_lpb(){
+    //     $user_id  = $this->session->userdata('user_id');
+    //     $tanggal  = date('Y-m-d h:m:s');
+    //     $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+    //     $tgl_bpb = date('Ym', strtotime($this->input->post('tanggal')));
+    //     $user_ppn = $this->session->userdata('user_ppn');
+
+    //     $this->db->trans_start();
+    //     $this->load->model('Model_m_numberings');
+    //     if($user_ppn==1){
+    //         $code = 'BPB-KMP.'.$tgl_bpb.'.'.$this->input->post('no_bpb');
+    //     }else{
+    //         $code = $this->Model_m_numberings->getNumbering('BPB', $tgl_input);
+    //     }
+
+    //     if($code){        
+    //         $data = array(
+    //                     'no_bpb'=> $code,
+    //                     'tanggal'=> $tgl_input,
+    //                     'po_id'=> $this->input->post('po_id'),
+    //                     'remarks'=> $this->input->post('remarks'),
+    //                     'pengirim'=> $this->input->post('pengirim'),
+    //                     'created'=> $tanggal,
+    //                     'created_by'=> $user_id,
+    //                     'modified'=> $tanggal,
+    //                     'modified_by'=> $user_id
+    //                 );
+    //         $this->db->insert('lpb', $data);
+    //         $lpb_id = $this->db->insert_id();
+
+    //         $details = $this->input->post('myDetails');
+    //         foreach ($details as $row){
+    //             if(isset($row['check']) && $row['check']==1){
+    //                 $this->db->insert('lpb_detail', array(
+    //                     'lpb_id'=>$lpb_id,
+    //                     'po_detail_id'=>$row['po_detail_id'],
+    //                     'sparepart_id'=>$row['sparepart_id'],
+    //                     'qty'=>str_replace('.', '', $row['qty']),
+    //                     'line_remarks'=>str_replace('.', '', $row['line_remarks'])
+    //                 ));
+                    
+    //                 $this->db->where('id', $row['po_detail_id']);
+
+    //                 if($row['qty'] >= $row['qty_full']){
+    //                     $flag_lpb = 1;
+    //                 } else {
+    //                     $flag_lpb = 0;
+    //                 }
+
+    //                 $this->db->update('po_detail', array('flag_lpb'=>$flag_lpb));
+                    
+    //                 #Update Stok Rongsok
+    //                 $this->load->model('Model_beli_rongsok');
+    //                 $get_stok = $this->Model_beli_rongsok->cek_stok($row['alias'], 'SPARE PART')->row_array(); 
+    //                 if($get_stok){
+    //                     $stok_id  = $get_stok['id'];            
+    //                     $this->db->where('id', $stok_id);
+    //                     $this->db->update('t_inventory', array(
+    //                             'stok_bruto'=>($get_stok['stok_bruto']+ $row['qty']), 
+    //                             'stok_netto'=>($get_stok['stok_netto']+ $row['qty']), 
+    //                             'modified'=>$tanggal, 
+    //                             'modified_by'=>$user_id));
+    //                 }else{
+    //                     $this->db->insert('t_inventory', array(
+    //                             'kode'=>$row['alias'],
+    //                             'nama_produk'=>$row['nama_item'],
+    //                             'jenis_item'=>'SPARE PART',
+    //                             'stok_bruto'=>$row['qty'], 
+    //                             'stok_netto'=>$row['qty'], 
+    //                             'created'=>$tanggal, 
+    //                             'created_by'=>$user_id,
+    //                             'modified'=>$tanggal, 
+    //                             'modified_by'=>$user_id));
+
+    //                     $stok_id = $this->db->insert_id();
+    //                 }
+
+    //                 #Save data ke tabel t_inventory_detail
+    //                 $this->db->insert('t_inventory_detail', array(
+    //                     't_inventory_id'=>$stok_id,
+    //                     'tanggal'=>$tgl_input,
+    //                     'bruto_masuk'=>$row['qty'],
+    //                     'netto_masuk'=>$row['qty'],
+    //                     'remarks'=>'Pembelian spare part',
+    //                 ));
+    //             }
+    //         }
+
+    //         $this->load->model('Model_beli_sparepart');
+    //         $get_status = $this->Model_beli_sparepart->po_list_cek($this->input->post('po_id'))->row_array();
+
+    //         if($get_status['ready_to_lpb'] == 0){           
+    //                     $this->db->where('id', $get_status['id']);
+    //                     $this->db->update('po', array(
+    //                             'status'=>3,
+    //                             'flag_pelunasan'=>0,
+    //                             'modified'=>$tanggal, 
+    //                             'modified_by'=>$user_id));
+    //         }else{
+    //                     #Update status PO
+    //                     $this->db->where('id', $this->input->post('po_id'));
+    //                     $this->db->update('po', array(
+    //                         'status'=>2,
+    //                         'flag_pelunasan'=>0,
+    //                         'modified'=>$tanggal, 
+    //                         'modified_by'=>$user_id));
+    //         }
+
+
+    //         /** API **/
+    //         if($this->session->userdata('user_ppn')==1){
+    //             $this->load->helper('target_url');
+
+    //             $data_id = array('reff1' => $lpb_id, 'po_old' => $this->input->post('po_id'));
+    //             $data_post = array_merge($data, $data_id);
+    //             $ch = curl_init(target_url().'api/BeliSparepartAPI/bpb');
+    //             curl_setopt($ch, CURLOPT_POST, true);
+    //             curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+    //             curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+    //             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    //             $response = curl_exec($ch);
+    //             $result = json_decode($response, true);
+    //             curl_close($ch);
+
+    //             if($result['id'] > 0){
+    //                 $detail = array();
+
+    //                 $this->load->model('Model_beli_sparepart');
+    //                 $detail['tgl_input'] = $tgl_input;
+    //                 $detail['po_id'] = $result['po_id'];
+    //                 $detail['lpb_id'] = $result['id'];
+    //                 $detail['flag_lpb'] = $flag_lpb;
+    //                 $detail['lpb_detail'] = $this->Model_beli_sparepart->show_detail_po_lpb_only($lpb_id)->result_array();
+    //                 $detail_post = json_encode($detail);
+
+    //                 // print("<pre>".print_r($detail_post,true)."</pre>");
+    //                 // die();
+
+    //                 $ch2 = curl_init(target_url().'api/BeliSparepartAPI/bpb_detail');
+    //                 curl_setopt($ch2, CURLOPT_POST, true);
+    //                 curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+    //                 curl_setopt($ch2, CURLOPT_POSTFIELDS, $detail_post);
+    //                 curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+    //                 $response2 = curl_exec($ch2);
+    //                 $result2 = json_decode($response2, true);
+    //                 curl_close($ch2);
+    //             }
+    //         }
+                    
+    //         if($this->db->trans_complete()){    
+    //             $this->session->set_flashdata('flash_msg', 'Bukti penerimaan barang berhasil di-create dengan nomor : '.$code);                 
+    //         }else{
+    //             $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create bukti penerimaan barang, silahkan coba kembali!');
+    //         }
+    //         redirect('index.php/BeliSparePart/po_list');           
+    //     }else{
+    //         $this->session->set_flashdata('flash_msg', 'Pembuatan bukti penerimaan barang gagal, penomoran belum disetup!');
+    //         redirect('index.php/BeliSparePart/po_list');
+    //     }
+    // }
+
+    // SPAREPART REWORK, TINGGAL API AJA
     function save_lpb(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
@@ -898,17 +1060,20 @@ class BeliSparePart extends CI_Controller{
             $this->db->insert('lpb', $data);
             $lpb_id = $this->db->insert_id();
 
+            $detail_push = [];
             $details = $this->input->post('myDetails');
-            foreach ($details as $row){
+            foreach ($details as $k => $row){
                 if(isset($row['check']) && $row['check']==1){
-                    $this->db->insert('lpb_detail', array(
+                    $data_lpb_detail = array(
                         'lpb_id'=>$lpb_id,
                         'po_detail_id'=>$row['po_detail_id'],
                         'sparepart_id'=>$row['sparepart_id'],
                         'qty'=>str_replace('.', '', $row['qty']),
                         'line_remarks'=>str_replace('.', '', $row['line_remarks'])
-                    ));
-                    
+                    );
+                    $this->db->insert('lpb_detail', $data_lpb_detail);
+                    $lpb_detail_id = $this->db->insert_id();
+
                     $this->db->where('id', $row['po_detail_id']);
 
                     if($row['qty'] >= $row['qty_full']){
@@ -918,41 +1083,23 @@ class BeliSparePart extends CI_Controller{
                     }
 
                     $this->db->update('po_detail', array('flag_lpb'=>$flag_lpb));
-                    
-                    #Update Stok Rongsok
-                    $this->load->model('Model_beli_rongsok');
-                    $get_stok = $this->Model_beli_rongsok->cek_stok($row['alias'], 'SPARE PART')->row_array(); 
-                    if($get_stok){
-                        $stok_id  = $get_stok['id'];            
-                        $this->db->where('id', $stok_id);
-                        $this->db->update('t_inventory', array(
-                                'stok_bruto'=>($get_stok['stok_bruto']+ $row['qty']), 
-                                'stok_netto'=>($get_stok['stok_netto']+ $row['qty']), 
-                                'modified'=>$tanggal, 
-                                'modified_by'=>$user_id));
-                    }else{
-                        $this->db->insert('t_inventory', array(
-                                'kode'=>$row['alias'],
-                                'nama_produk'=>$row['nama_item'],
-                                'jenis_item'=>'SPARE PART',
-                                'stok_bruto'=>$row['qty'], 
-                                'stok_netto'=>$row['qty'], 
-                                'created'=>$tanggal, 
-                                'created_by'=>$user_id,
-                                'modified'=>$tanggal, 
-                                'modified_by'=>$user_id));
 
-                        $stok_id = $this->db->insert_id();
-                    }
-
-                    #Save data ke tabel t_inventory_detail
-                    $this->db->insert('t_inventory_detail', array(
-                        't_inventory_id'=>$stok_id,
+                    #Save data ke gudang sp
+                    $this->db->insert('t_gudang_sp', array(
                         'tanggal'=>$tgl_input,
-                        'bruto_masuk'=>$row['qty'],
-                        'netto_masuk'=>$row['qty'],
-                        'remarks'=>'Pembelian spare part',
+                        'flag_ppn'=>$user_ppn,
+                        'flag_taken'=>0,
+                        'sparepart_id'=>$row['sparepart_id'],
+                        't_spb_id'=>0,
+                        't_spb_detail_id'=>0,
+                        'lpb_detail_id'=>$lpb_detail_id,
+                        'qty'=>$row['qty'],
+                        'amount'=>$row['amount'],
+                        'remarks'=>'Pembelian',
                     ));
+                    $gudang_id = $this->db->insert_id();
+                    $detail_id = array('lpb_detail_id'=>$lpb_detail_id, 'gudang_id'=>$gudang_id,'amount'=>$row['amount']);
+                    $detail_push[$k] = array_merge($detail_id, $data_lpb_detail);
                 }
             }
 
@@ -976,6 +1123,8 @@ class BeliSparePart extends CI_Controller{
                             'modified_by'=>$user_id));
             }
 
+            // print("<pre>".print_r($detail_push,true)."</pre>");
+            //         die();
 
             /** API **/
             if($this->session->userdata('user_ppn')==1){
@@ -1000,7 +1149,8 @@ class BeliSparePart extends CI_Controller{
                     $detail['po_id'] = $result['po_id'];
                     $detail['lpb_id'] = $result['id'];
                     $detail['flag_lpb'] = $flag_lpb;
-                    $detail['lpb_detail'] = $this->Model_beli_sparepart->show_detail_po_lpb_only($lpb_id)->result_array();
+                    // $detail['lpb_detail'] = $this->Model_beli_sparepart->show_detail_po_lpb_only($lpb_id)->result_array();
+                    $detail['lpb_detail'] = $detail_push;
                     $detail_post = json_encode($detail);
 
                     // print("<pre>".print_r($detail_post,true)."</pre>");
@@ -1014,6 +1164,13 @@ class BeliSparePart extends CI_Controller{
                     $response2 = curl_exec($ch2);
                     $result2 = json_decode($response2, true);
                     curl_close($ch2);
+                    // print_r($response2);
+                    // die();
+
+                    if($result['status']==true){
+                        $this->db->where('id',$lpb_id);
+                        $this->db->update('lpb', array('api'=>1));
+                    }
                 }
             }
                     
@@ -1448,7 +1605,7 @@ class BeliSparePart extends CI_Controller{
             $this->load->model('Model_beli_sparepart');
             $data['header'] = $this->Model_beli_sparepart->show_header_spb($id)->row_array();
             $data['details'] = $this->Model_beli_sparepart->show_detail_spb($id)->result();
-            $data['list_sparepart'] = $this->Model_beli_sparepart->jenis_barang_spb()->result();
+            $data['list_sparepart'] = $this->Model_beli_sparepart->stok_sp()->result();
     
             $this->load->view('layout', $data);   
         }else{
@@ -1468,7 +1625,7 @@ class BeliSparePart extends CI_Controller{
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
-            $tabel .= '<td>'.$row->nama_produk.'</td>';
+            $tabel .= '<td>'.$row->nama_item.'</td>';
             $tabel .= '<td>'.$row->uom.'</td>';
             $tabel .= '<td>'.$row->qty.'</td>';
             $tabel .= '<td>'.$row->keterangan.'</td>';
@@ -1521,7 +1678,7 @@ class BeliSparePart extends CI_Controller{
             'qty'=>$this->input->post('qty'),
             'uom'=>$this->input->post('uom'),
             'tanggal' => $tgl_input,
-            'jenis_inventory_id'=>$this->input->post('barang_id'),
+            'sparepart_id'=>$this->input->post('barang_id'),
             'keterangan'=>$this->input->post('line_remarks')
         ))){
             $return_data['message_type']= "sukses";
@@ -1585,13 +1742,15 @@ class BeliSparePart extends CI_Controller{
         if($user_ppn==1){
             $this->load->helper('target_url');
 
-            $url = target_url().'api/BeliSparepartAPI/numbering?id=SPB-SP&tgl='.$tgl_input;
+            // $url = target_url().'api/BeliSparepartAPI/numbering?id=SPB-SP&tgl='.$tgl_input;
             $this->load->model('Model_beli_sparepart');
             $data_id = array('id' => $id);
             $data_post = array_merge($data, $data_id);
             $data_post['data_detail'] = $this->Model_beli_sparepart->spb_detail_only($id)->result();
             $data_post = json_encode($data_post);
 
+            // print_r($data_post);
+            // die();
             $ch = curl_init(target_url().'api/BeliSparepartAPI/spb_detail');
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
@@ -1651,7 +1810,7 @@ class BeliSparePart extends CI_Controller{
         foreach ($myDetail as $row){
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
-            $tabel .= '<td>'.$row->nama_produk.'</td>';
+            $tabel .= '<td>'.$row->nama_item.'</td>';
             $tabel .= '<td>'.$row->uom.'</td>';
             $tabel .= '<td>'.$row->qty.'</td>';
             $tabel .= '<td>'.$row->keterangan.'</td>';
@@ -1678,7 +1837,7 @@ class BeliSparePart extends CI_Controller{
         $return_data = array();
         $data = array(
                 't_spb_sparepart_id'=> $id,
-                'jenis_inventory_id'=> $inventory_id,
+                'sparepart_id'=> $inventory_id,
                 'qty'=> $qty,
                 'uom'=> $uom,
                 'keterangan'=> $keterangan,
@@ -1724,7 +1883,7 @@ class BeliSparePart extends CI_Controller{
     function approve_spb(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
         $id = $this->input->post('id');
         
@@ -1743,26 +1902,18 @@ class BeliSparePart extends CI_Controller{
         $this->load->model('Model_beli_sparepart');
         $myDetail = $this->Model_beli_sparepart->load_detail_saved_item($id)->result(); 
         foreach ($myDetail as $row){
-            $iv_id = $row->jenis_inventory_id;
             #Insert t_inventory_detail based on foreach
-            $this->db->insert('t_inventory_detail', array(
-                        't_inventory_id'=> $iv_id,
-                        'tanggal'=> $tanggal,
-                        'bruto_masuk'=> 0,
-                        'netto_masuk'=> 0,
-                        'bruto_keluar'=> $row->qty,
-                        'netto_keluar'=> $row->qty,
-                        'remarks'=>'SPB Sparepart'
-            ));
-
-            $get_stok = $this->Model_beli_sparepart->get_stok($iv_id)->row_array();
-            #update t_inventory stok_bruto dan stok_netto
-            $this->db->where('id', $iv_id);
-            $this->db->update('t_inventory', array(
-                        'stok_bruto'=> ($get_stok['stok_bruto'] - $row->qty),
-                        'stok_netto'=> ($get_stok['stok_netto'] - $row->qty),
-                        'modified'=> $tanggal,
-                        'modified_by'=> $user_id
+            $this->db->insert('t_gudang_sp', array(
+                        'sparepart_id'=> $row->sparepart_id,
+                        'tanggal'=> $tgl_input,
+                        't_spb_id'=>$id,
+                        't_spb_keluar_id'=> $row->id,
+                        'lpb_detail_id'=> 0,
+                        'qty'=> $row->qty,
+                        'amount'=> 0,
+                        'remarks'=> $row->keterangan,
+                        'created_by'=>$user_id,
+                        'created_on'=>$tanggal
             ));
         }
 

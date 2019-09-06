@@ -30,6 +30,18 @@
                     <div class="row">
                             <?php if($jenis == 'so'){ ?>
                         <div class="col-md-4">
+                            No. SJ Terakhir KMP
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?=$sj['no_surat_jalan'];?>">
+                        </div>
+                        <div class="col-md-4">
+                            No. SJ Terakhir CV
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?=$sjr['no_sj_resmi'];?>">
+                        </div>
+                        <div class="col-md-4">
                             No. Surat Jalan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">

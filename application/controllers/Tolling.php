@@ -1638,7 +1638,7 @@ class Tolling extends CI_Controller{
         $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
         $this->load->model('Model_sales_order');
         $data['sj'] = $this->Model_sales_order->get_last_sj($user_ppn)->row_array();
-        $data['sjr'] = $this->Model_sales_order->get_last_sj_cv($user_ppn)->row_array();
+        $data['sjr'] = $this->Model_sales_order->get_last_sj_cv()->row_array();
         $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
         $this->load->view('layout', $data);
     }

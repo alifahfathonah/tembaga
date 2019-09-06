@@ -100,14 +100,13 @@
                             </tbody>
                             <tr>
                                 <td style="text-align:center"><strong>+</strong></td>
-                                <td>
-                                <select id="barang_id" name="barang_id" class="form-control select2me myline" 
-                                    data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
+                                <td><select id="barang_id" name="barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
                                     <option value=""></option>
-                                    <?php
-                                    foreach ($list_sparepart as $value){
-                                        echo "<option value='".$value->id."' data-id='".$value->nama_produk."'>".$value->nama_produk."</option>";
-                                    } ?>
+                                    <?php foreach ($list_sparepart as $value){ ?>
+                                            <option value='<?=$value->sparepart_id;?>'>
+                                                <?='('.$value->alias.') '.$value->nama_item;?>
+                                            </option>
+                                    <?php } ?>
                                 </select>
                                 </td>
                                 <td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>
@@ -167,18 +166,19 @@ function loadDetail(id){
 }
 
 function get_uom(id){
-    if(''!=id){
-    data = $('#barang_id').find(':selected').attr('data-id');
-    console.log(data);
-    $.ajax({
-        url: "<?php echo base_url('index.php/BeliSparePart/get_uom_spb'); ?>",
-        type: "POST",
-        data: "id="+data,
-        dataType: "json",
-        success: function(result) {
-            $('#uom').val(result['uom']);
-        }
-    });
+    // var idpo = $('#po_id').val();
+    // console.log(id);
+    console.log(id);
+    if(id !=''){
+        $.ajax({
+            url: "<?php echo base_url('index.php/BeliSparePart/get_uom_spb'); ?>",
+            type: "POST",
+            data: {id: id},
+            dataType: "json",
+            success: function(result) {
+                $('#uom').val(result['uom']);
+            }
+        });
     }
 }
 

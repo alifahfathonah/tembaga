@@ -325,29 +325,32 @@ class Model_beli_sparepart extends CI_Model{
     }
 
     function show_detail_spb_list($id){
-        $data = $this->db->query("Select tssd.*, ti.nama_produk,
-                    (select total_bruto_masuk from stok_sparepart ss where ss.id= tssd.jenis_inventory_id)as total_bruto_masuk,
-                    (select total_netto_masuk from stok_sparepart ss where ss.id= tssd.jenis_inventory_id)as total_netto_masuk,
-                    (select total_bruto_keluar from stok_sparepart ss where ss.id= tssd.jenis_inventory_id)as total_bruto_keluar,
-                    (select total_netto_keluar from stok_sparepart ss where ss.id= tssd.jenis_inventory_id)as total_netto_keluar,
-                    (select stok_bruto from stok_sparepart ss where ss.id= tssd.jenis_inventory_id) as stok_bruto,
-                    (select stok_netto from stok_sparepart ss where ss.id= tssd.jenis_inventory_id) as stok_netto
+        $data = $this->db->query("Select tssd.*, s.nama_item,
+                    (select total_qty_in from stok_sp ss where ss.sparepart_id= tssd.sparepart_id)as total_qty_in,
+                    (select total_qty_out from stok_sp ss where ss.sparepart_id= tssd.sparepart_id)as total_qty_out
                     From t_spb_sparepart_detail tssd 
-                        Left Join t_inventory ti On (ti.id = tssd.jenis_inventory_id)
+                        Left Join sparepart s On (s.id = tssd.sparepart_id)
                     Where tssd.t_spb_sparepart_id=".$id);
         return $data;
+    }
+
+    function stok_sp(){
+        return $this->db->query('
+            select ss.*, sp.alias from stok_sp ss
+            left join sparepart sp on sp.id = ss.sparepart_id
+            ');
     }
 
     function show_detail_spb($id){
         $data = $this->db->query("Select tssd.*, ti.nama_produk
                     From t_spb_sparepart_detail tssd 
-                        Left Join t_inventory ti On (ti.id = tssd.jenis_inventory_id)
+                        Left Join t_inventory ti On (ti.id = tssd.sparepart_id)
                     Where tssd.t_spb_sparepart_id=".$id);
         return $data;
     }
 
     function show_detail_spb_fulfilment($id){
-        $data = $this->db->query("select tsdk.*, ti.nama_produk from t_spb_sparepart_detail_keluar tsdk left join t_inventory ti on ti.id = tsdk.jenis_inventory_id
+        $data = $this->db->query("select tsdk.*, ti.nama_produk from t_spb_sparepart_detail_keluar tsdk left join t_inventory ti on ti.id = tsdk.sparepart_id
             where tsdk.t_spb_sparepart_id = ".$id);
         return $data;
     }
@@ -359,9 +362,9 @@ class Model_beli_sparepart extends CI_Model{
     }
 
     function load_detail_spb($id){
-        $data = $this->db->query("Select tssd.*, ti.nama_produk
+        $data = $this->db->query("Select tssd.*, s.nama_item
                 From t_spb_sparepart_detail tssd 
-                Left Join t_inventory ti On(ti.id = tssd.jenis_inventory_id) 
+                left join sparepart s On(s.id = tssd.sparepart_id) 
                 Where tssd.t_spb_sparepart_id=".$id);
         return $data;
     }
@@ -369,15 +372,15 @@ class Model_beli_sparepart extends CI_Model{
     function show_data_barang($id){
         $data = $this->db->query("select sp.uom
                 from sparepart sp 
-                where sp.nama_item = '".$id."'"
+                where sp.id = '".$id."'"
                 );
         return $data;
     }
 
     function jenis_barang_list_by_spb($id){
-        $data = $this->db->query("select ti.id, ti.nama_produk
+        $data = $this->db->query("select s.id, s.nama_item
                 from t_spb_sparepart_detail tssd
-                left join t_inventory ti on (ti.id = tssd.jenis_inventory_id )
+                left join sparepart s on (s.id = tssd.sparepart_id )
                 where t_spb_sparepart_id =".$id
                 );
         return $data;
@@ -393,14 +396,16 @@ class Model_beli_sparepart extends CI_Model{
     }
 
     function load_detail_saved_item($id){
-        $data = $this->db->query("select tsdk.*, ti.nama_produk from t_spb_sparepart_detail_keluar tsdk
-            left join t_inventory ti on ti.id = tsdk.jenis_inventory_id
+        $data = $this->db->query("select tsdk.*, s.nama_item from t_spb_sparepart_detail_keluar tsdk
+            left join sparepart s on s.id = tsdk.sparepart_id
             where t_spb_sparepart_id =".$id);
         return $data;
     }
 
     function load_detail_saved_item_only($id){
-        $data = $this->db->query("select * from t_spb_sparepart_detail_keluar where t_spb_sparepart_id=".$id);
+        $data = $this->db->query("select tsdk.*, tgs.id as id_gudang from t_spb_sparepart_detail_keluar tsdk 
+            left join t_gudang_sp tgs on tgs.t_spb_keluar_id = tsdk.id
+            where tsdk.t_spb_sparepart_id=".$id);
         return $data;
     }
 
@@ -640,4 +645,16 @@ class Model_beli_sparepart extends CI_Model{
     LEFT join t_inventory_detail tid on (tid.t_inventory_id = ti.id)
     WHERE ti.jenis_item = "SPARE PART"
     GROUP BY ti.id
+    */
+    
+    /*
+    CARA MEMBUAT VIEW STOK SPAREPART AFTER REWORK !!! 
+    
+    CREATE OR REPLACE VIEW stok_sp(sparepart_id, nama_item,total_qty_in,total_qty_out)
+    AS SELECT tsp.sparepart_id, sp.nama_item,
+    sum(CASE WHEN jenis_trx = 0 THEN qty ELSE 0 END),
+    sum(CASE WHEN jenis_trx = 1 THEN qty ELSE 0 END)
+    from t_gudang_sp tsp
+    LEFT join sparepart sp on (sp.id = tsp.sparepart_id)
+    GROUP by tsp.sparepart_id
     */

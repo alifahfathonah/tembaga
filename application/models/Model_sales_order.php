@@ -634,7 +634,7 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
-    function get_last_sj_cv($ppn){
+    function get_last_sj_cv(){
         $data = $this->db->query("select no_sj_resmi from r_t_surat_jalan tsj where tsj.jenis_surat_jalan = 'SURAT JALAN KMP KE CV' order by no_sj_resmi desc limit 1");
         return $data;
     }

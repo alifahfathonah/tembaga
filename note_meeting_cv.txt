@@ -136,3 +136,5 @@ edit keterangan bk dan bm (done)
 laporan pengeluaran surat jalan per jenis barang per tgl
 
 dtt belum ada no po saat di print (done)
+
+dtbj dtr dtwip tambahin dpp, nilai total sebelum dikali ppn

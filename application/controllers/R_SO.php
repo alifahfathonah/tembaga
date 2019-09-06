@@ -151,6 +151,10 @@ class R_SO extends CI_Controller{
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
+                if($result['status']==true){
+                    $this->db->where('id',$so_id);
+                    $this->db->update('r_t_so', array('api'=>1));
+                }
                 // print_r($response);
                 // die();
 

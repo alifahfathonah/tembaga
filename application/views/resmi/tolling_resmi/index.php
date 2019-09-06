@@ -56,7 +56,8 @@
                         <td><?php echo $row->tanggal; ?></td>
                         <td>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/R_TollingResmi/view_tolling/<?php echo $row->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_TollingResmi/print_dtr/<?php echo $row->id; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp;</a>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_TollingResmi/print_dtr/<?php echo $row->id; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print DTR &nbsp;</a>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/R_TollingResmi/print_ttr/<?php echo $row->id; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print TTR&nbsp;</a>
                         </td>
                     </tr>
                     <?php

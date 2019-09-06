@@ -1037,7 +1037,7 @@ class SalesOrder extends CI_Controller{
         
         $this->load->model('Model_sales_order');
         $data['sj'] = $this->Model_sales_order->get_last_sj($user_ppn)->row_array();
-        $data['sjr'] = $this->Model_sales_order->get_last_sj_cv($user_ppn)->row_array();
+        $data['sjr'] = $this->Model_sales_order->get_last_sj_cv()->row_array();
         $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
         //$data['jenis_barang_list'] = $this->Model_sales_order->jenis_barang_list()->result();
         $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();

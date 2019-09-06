@@ -84,6 +84,9 @@ class R_SuratJalan extends CI_Controller{
             $this->load->model('Model_so');
             $this->load->model('Model_matching');
             $data['header'] = $this->Model_so->show_header_so($id)->row_array();
+            $this->load->model('Model_sales_order');
+            $data['sj'] = $this->Model_sales_order->get_last_sj(1)->row_array();
+            $data['sjr'] = $this->Model_sales_order->get_last_sj_cv()->row_array();
             $data['customer_list'] = $this->Model_matching->cv_list()->result();
         }else if($jenis == 'po'){
             $this->load->model('Model_purchase_order');

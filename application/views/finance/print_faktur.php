@@ -103,7 +103,7 @@
                             <td rowspan="2"  style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Qty</strong></td>
                             <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Netto</strong></td>
                             <td rowspan="2" colspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;" width="15%"><strong>Harga</strong></td>
-                            <td rowspan="2" colspan="2" style="text-align:center; border:1px solid #000"><strong>Total Harga</strong></td>
+                            <td rowspan="2" colspan="2" style="text-align:center; border:1px solid #000" width="20%"><strong>Total Harga</strong></td>
                         </tr>
                                 <tr>
                                 </tr>

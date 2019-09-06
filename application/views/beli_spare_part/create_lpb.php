@@ -156,6 +156,7 @@
                                             . 'readonly="readonly"></td>';          
                                     echo '<td><input type="text" id="qty_'.$no.'" name="myDetails['.$no.'][qty]" class="form-control myline" onchange="check_qty('.$no.')"></td>';
                                     echo '<input type="hidden" id="qty_asli_'.$no.'" name="myDetails['.$no.'][qty_asli]" class="form-control myline" readonly="readonly" value="'.$row->qty.'">';
+                                    echo '<input type="hidden" id="amount_'.$no.'" name="myDetails['.$no.'][amount]" class="form-control myline" readonly="readonly" value="'.$row->amount.'">';
                                     echo '<td><input type="text" data-id="'.$no.'" id="qty_full_'.$no.'" name="myDetails['.$no.'][qty_full]" class="form-control myline likesAjax" readonly="readonly"></td>';
                                     echo '<td><input type="text" name="myDetails['.$no.'][line_remarks]" '
                                             . 'class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';

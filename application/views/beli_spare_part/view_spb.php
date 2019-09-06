@@ -160,15 +160,16 @@
                                         <?php
                                             $no = 1;
                                             foreach ($myDetail as $row){
-                                            $status = (($row->stok_netto > 0)) ? 1 : 0;
+                                            $stok = $row->total_qty_in - $row->total_qty_out;
+                                            $status = (($stok > 0)) ? 1 : 0;
                                             ($status) ? $stat = '<div style="background:green;color:white;"><span class="fa fa-check"></span> OK </div>' : $stat = '<div style="background:red;color:white;"> <span class="fa fa-times"></span> NOK</div>';
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
-                                                echo '<td>'.$row->nama_produk.'</td>';
+                                                echo '<td>'.$row->nama_item.'</td>';
                                                 echo '<td>'.$row->qty.' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
                                                 echo '<td>'.$stat.'</td>';
-                                                echo '<td>'.$row->stok_netto.'</td>';
+                                                echo '<td>'.$stok.'</td>';
                                                 echo '</tr>';
                                                 $no++;
                                             }
@@ -202,7 +203,7 @@
                                                 <td><select id="barang_1" class="form-control" placeholder="pilih jenis barang" name="details[1][jenis_barang]" onchange="get_uom(this.value)">
                                                     <option value=""></option>
                                                     <?php foreach($list_barang as $v){
-                                                        echo '<option value="'.$v->id.'" data-id="'.$v->nama_produk.'">'.$v->nama_produk.'</option>';
+                                                        echo '<option value="'.$v->id.'">'.$v->nama_item.'</option>';
                                                     } ?>
                                                 </select>
                                                 </td>
@@ -330,13 +331,11 @@ function check_duplicate(){
 }
 
 function get_uom(id){
-    data = $('#barang_1').find(':selected').attr('data-id');
-    console.log('masuk = '+data);
     $.ajax({
         url: "<?php echo base_url('index.php/BeliSparePart/get_uom_spb'); ?>",
         async: false,
         type: "POST",
-        data: "id="+data,
+        data: "id="+id,
         dataType: "json",
         success: function(result) {
             $('#uom_1').val(result['uom']);
