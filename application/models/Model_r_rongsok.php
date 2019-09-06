@@ -26,4 +26,22 @@ class Model_r_rongsok extends CI_Model{
                     Where dtrd.dtr_id=".$id);
         return $data;
     }
+
+    function ttr_list(){
+        $data = $this->db->query("Select ttr.*, 
+                    dtr.no_dtr,
+                    dtr.tanggal as tgl_dtr,
+                    po.no_po, 
+                    spl.nama_supplier,
+                (Select count(ttrd.id) From ttr_detail ttrd Where ttrd.ttr_id = ttr.id)As jumlah_item,
+                (Select Sum(ttrd.bruto) From ttr_detail ttrd Where ttrd.ttr_id = ttr.id)As bruto, 
+                (Select Sum(ttrd.netto) From ttr_detail ttrd Where ttrd.ttr_id = ttr.id)As netto
+                From ttr 
+                    Left Join dtr On (dtr.id = ttr.dtr_id) 
+                    Left Join po On (po.id = dtr.po_id) 
+                    Left Join supplier spl On (po.supplier_id = spl.id)
+                Where dtr.flag_ppn=1 and (dtr.po_id > 0 or so_id > 0)
+                Order By ttr.id Desc");
+        return $data;
+    }
 }

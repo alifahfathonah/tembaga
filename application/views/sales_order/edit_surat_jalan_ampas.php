@@ -179,6 +179,7 @@
                             <thead>
                                 <th>No</th>
                                 <th style="width: 20%">Nama Item</th>
+                                <th style="width: 20%">Nama Item Alias</th>
                                 <th>Bruto</th>
                                 <th>Netto</th>
                                 <th>Keterangan</th>
@@ -191,6 +192,14 @@
                                     '<input type="hidden" name="details['.$no.'][id_barang]" id="id_barang_'.$no.'" value="'.$row->id.'">'.
                                     '<td><input type="text" id="nama_barang_'.$no.'" name="details['.$no.'][nama_barang]" class="form-control myline" readonly="readonly" value="'.$row->jenis_barang.'"></td>'.
                                     '<input type="hidden" id="jenis_barang_id_'.$no.'" name="details['.$no.'][jenis_barang_id]" value="'.$row->jenis_barang_id.'">'.
+                                    '<td>'.
+                                        '<select id="barang_alias_id_'.$no.'" name="details['.$no.'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                            <option value="0"></option>';
+                                            foreach ($jenis_barang as $value){
+                                            echo '<option value='.$value->id.'>'.$value->jenis_barang.'</option>';
+                                        }
+                                        echo '</select>'.
+                                    '</td>'.
                                     '<td><input type="text" id="bruto_'.$no.'" name="details['.$no.'][bruto]" class="form-control myline" value="'.number_format($row->berat,0,',','.').'" onkeyup="getComa_a(this.value, this.id,'.$no.');"></td>'.
                                     '<td><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" class="form-control myline" value="'.number_format($row->berat,0,',','.').'" onkeyup="getComa_a(this.value, this.id,'.$no.');"></td>'.
                                     '<td><input type="text" id="line_remarks_'.$no.'" name="details['.$no.'][line_remarks]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>'.

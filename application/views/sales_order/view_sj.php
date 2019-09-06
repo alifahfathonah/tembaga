@@ -455,8 +455,8 @@
                                     <td><?php echo $row->no_packing; ?></td>
                                     <td><?php echo $row->jenis_barang; ?></td>
                                     <td><?php echo $row->uom; ?></td>
-                                    <td><?php echo $row->bruto; ?></td>
-                                    <td><?php echo $row->netto; ?></td>
+                                    <td><?php echo number_format($row->bruto,2,',','.'); ?></td>
+                                    <td><?php echo number_format($row->netto,2,',','.'); ?></td>
                                     <td><?php echo ($row->bruto - $row->netto); ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
                                 </tr>

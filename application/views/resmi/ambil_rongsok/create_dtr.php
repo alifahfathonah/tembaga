@@ -15,14 +15,6 @@
         <hr class="divider" />
         <div class="row">
             <div class="col-md-12">
-                <div class="alert alert-danger <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
-                    <button class="close" data-close="alert"></button>
-                    <span id="msg_sukses"><?php echo $this->session->flashdata('flash_msg'); ?></span>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
                 <div class="alert alert-danger display-hide">
                     <button class="close" data-close="alert"></button>
                     <span id="message">&nbsp;</span>
@@ -179,6 +171,24 @@ function get_uom_po(id){
             }
         });
     }
+}
+
+function simpanData(){
+    if($.trim($("#tanggal").val()) == ""){
+        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else if($("#no_dtr").val() == ""){
+        $('#message').html("Supplier harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else if($.trim($("#supplier_id").val()) == ""){
+        $('#message').html("Supplier harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else{
+        $('#message').html("");
+        $('.alert-danger').hide(); 
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/R_Rongsok/update_dtr"); 
+        $('#formku').submit();
+    };
 }
 
 function saveDetail(id){

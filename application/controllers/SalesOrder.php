@@ -180,7 +180,7 @@ class SalesOrder extends CI_Controller{
         $netto = 0;
         
         $this->load->model('Model_sales_order');  
-        if($jenis == 'RONGSOK'){
+        if($jenis == 'RONGSOK' || $jenis == 'AMPAS'){
         $myDetail = $this->Model_sales_order->load_detail_so_rongsok($id)->result();
         }else if($jenis == 'LAIN'){
         $myDetail = $this->Model_sales_order->load_detail_so_sp($id)->result();
@@ -245,7 +245,7 @@ class SalesOrder extends CI_Controller{
         $netto = 0;
         $tabel = "";
         $this->load->model('Model_sales_order'); 
-        if($jenis == 'RONGSOK'){
+        if($jenis == 'RONGSOK' || 'AMPAS'){
             $myDetail = $this->Model_sales_order->load_detail_so_rongsok($id)->result();
         }else{
             $myDetail = $this->Model_sales_order->load_detail_so($id)->result();
@@ -511,6 +511,11 @@ class SalesOrder extends CI_Controller{
                 curl_close($ch);
                 // print_r($response);
                 // die();
+
+                if($result['status']==true){
+                    $this->db->where('id',$so_id);
+                    $this->db->update('sales_order', array('api'=>1));
+                }
             }
 
             if($this->db->trans_complete()){
@@ -598,12 +603,14 @@ class SalesOrder extends CI_Controller{
             $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
             // $data['marketing_list'] = $this->Model_sales_order->marketing_list()->result();
             $jenis = $data['header']['jenis_barang'];
-            if($jenis == 'RONGSOK'){
+            // echo $jenis;die();
+            if($jenis == 'RONGSOK' || $jenis == 'AMPAS'){
             $data['list_barang'] = $this->Model_sales_order->list_barang_so_rongsok()->result();
             }else if($jenis == 'LAIN'){
             $data['list_barang'] =  $this->Model_sales_order->list_barang_sp()->result();
             }else{
             $data['list_barang'] = $this->Model_sales_order->list_barang_so($jenis)->result();
+            // print_r($data['list_barang']);die();
             }
             $this->load->view('layout', $data);   
         }else{
@@ -1280,6 +1287,21 @@ class SalesOrder extends CI_Controller{
                         'created_by'=>$user_id,
                         'created_at'=>$tanggal
                     ));
+                }else if($jenis=='AMPAS'){
+                    $this->db->insert('t_surat_jalan_detail', array(
+                        't_sj_id'=>$this->input->post('id'),
+                        'gudang_id'=>$v['id_barang'],
+                        'jenis_barang_id'=>$v['jenis_barang_id'],
+                        'jenis_barang_alias'=>$v['barang_alias_id'],
+                        'no_packing'=>'',
+                        'qty'=>'1',
+                        'bruto'=>str_replace('.', '', $v['bruto']),
+                        'berat'=>0,
+                        'netto'=>str_replace('.', '', $v['netto']),
+                        'nomor_bobbin'=>0,
+                        'created_by'=>$user_id,
+                        'created_at'=>$tanggal
+                    ));
                 }else if($jenis=='LAIN'){
                     $this->db->insert('t_surat_jalan_detail', array(
                         't_sj_id'=>$this->input->post('id'),
@@ -1450,6 +1472,11 @@ class SalesOrder extends CI_Controller{
                 $this->db->where('id', $row->gudang_id);
                 $this->db->update('dtr_detail', array('so_id' => $so_id));
             }
+        } else if ($jenis == 'AMPAS'){
+            foreach ($loop as $row) {
+                $this->db->where('id', $row->gudang_id);
+                $this->db->update('t_spb_ampas_fulfilment', array('flag_taken' => 1));
+            }
         }
 
         #cek jika surat jalan sudah di kirim semua atau belum
@@ -1544,6 +1571,10 @@ class SalesOrder extends CI_Controller{
                 curl_close($ch);
                 // print_r($response);
                 // die();
+                if($result['status']==true){
+                    $this->db->where('id',$this->input->post('id'));
+                    $this->db->update('t_surat_jalan', array('api'=>1));
+                }
             }
 
         if($this->db->trans_complete()){    

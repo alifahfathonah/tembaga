@@ -199,7 +199,7 @@
                                 <th>Qty</th>
                                 <th>Netto (Kg)</th>
                         <?php
-                        } else if($header['jenis_barang'] == 'FG' || $header['jenis_barang'] == 'AMPAS'){
+                        } else if($header['jenis_barang'] == 'FG'){
                         ?>
                                 <th>Netto (Kg)</th>
                         <?php
@@ -232,7 +232,7 @@
         if($header['jenis_barang'] == 'WIP'){
                     echo '<td><input type="text" id="qty_1" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="5" value="0"></td>'.
                         '<td><input type="text" id="netto_1" name="netto" class="form-control myline" maxlength="10" value="0" onkeyup="hitungSubTotal_a(1)"></td>';  
-        } else if($header['jenis_barang'] == 'FG' || $header['jenis_barang'] == 'AMPAS') {
+        } else if($header['jenis_barang'] == 'FG') {
                     echo '<input type="hidden" id="qty_1" name="qty" class="form-control myline" onkeydown="return myCurrency(event);" maxlength="10" value="0">'.
                         '<input type="hidden" id="bruto" name="bruto" class="form-control myline" maxlength="10" value="0">'.
                         '<td><input type="text" id="netto_1" name="netto" class="form-control myline" maxlength="10" value="0" onkeyup="hitungSubTotal_a(1)"></td>';
@@ -275,7 +275,7 @@
                                 <th>Qty</th>
                                 <th>Netto (Kg)</th>
                         <?php
-                        } else if($header['jenis_barang'] == 'FG' || $header['jenis_barang'] == 'AMPAS'){
+                        } else if($header['jenis_barang'] == 'FG'){
                         ?>
                                 <th>Netto (Kg)</th>
                         <?php
@@ -386,7 +386,7 @@ function getComa_a(value, id, no){
 }
 
 function hitungSubTotal_a(id){
-    if($('#jenis_barang').val() == 'FG' || $('#jenis_barang').val() == 'AMPAS' || $('#jenis_barang').val() == 'WIP'){
+    if($('#jenis_barang').val() == 'FG' || $('#jenis_barang').val() == 'WIP'){
         harga = $('#amount_'+id).val().toString().replace(/\,/g, "");
         netto = $('#netto_'+id).val().toString().replace(/\,/g, "");
         total_harga = Number(harga)* Number(netto);

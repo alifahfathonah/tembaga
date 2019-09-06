@@ -178,7 +178,7 @@
                                             ($status) ? $stat = '<div style="background:green;color:white;"><span class="fa fa-check"></span> OK </div>' : $stat = '<div style="background:red;color:white;"> <span class="fa fa-times"></span> NOK</div>';
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
-                                                echo '<td>'.$row->jenis_barang.'</td>';
+                                                echo '<td>'.$row->kode.' | '.$row->jenis_barang.'</td>';
                                                 echo '<td>'.$row->qty.' '.$row->uom.'</td>';
                                                 echo '<td>'.number_format($row->berat,2,',','.').'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
@@ -222,7 +222,7 @@
                                             <?php $no=1; $qty=0; $berat=0; foreach($detailSPB as $v) { ?>
                                             <tr>
                                                 <td><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
-                                                <td><?=$v->jenis_barang;?></td>
+                                                <td><?=$v->kode.' | '.$v->jenis_barang;?></td>
                                                 <td><?=$v->uom;?></td>
                                                 <td><?=$v->qty;?></td>
                                                 <td><?=number_format($v->berat,2,',','.');?></td>
@@ -258,9 +258,9 @@
                                 <div class="table-scrollable">
                                     <table class="table table-bordered table-striped table-hover" id="tabel_barang">
                                         <thead>
-                                            <th style="width:40px">No</th>
-                                            <th>Nama Barang</th>
-                                            <th>UOM</th>
+                                            <th>No</th>
+                                            <th width="30%">Nama Barang</th>
+                                            <th width="10%">UOM</th>
                                             <th>Quantity</th>
                                             <th>Berat (kg)</th>
                                             <th>Keterangan</th>
@@ -272,7 +272,7 @@
                                                 <td><select id="barang_1" class="form-control select2me myline" placeholder="pilih jenis barang" name="details[1][jenis_barang]" onchange="getBarang(1)">
                                                     <option value=""></option>
                                                     <?php foreach($list_barang as $v){
-                                                        echo '<option value="'.$v->id.'">'.$v->jenis_barang.'</option>';
+                                                        echo '<option value="'.$v->id.'">'.$v->kode.' | '.$v->jenis_barang.'</option>';
                                                     } ?>
                                                 </select>
                                                 <input type="hidden" name="details[1][id_barang]" id="barang_id_1">
@@ -317,7 +317,7 @@
                                             <?php $no=1; foreach($detailSPB as $v) { ?>
                                             <tr>
                                                 <td><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
-                                                <td><?=$v->jenis_barang;?></td>
+                                                <td><?=$v->kode.' | '.$v->jenis_barang;?></td>
                                                 <td><?=$v->uom;?></td>
                                                 <td><?=$v->qty;?></td>
                                                 <td><?=$v->berat;?></td>
@@ -344,9 +344,9 @@
                                 <div class="table-scrollable">
                                     <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
                                         <thead>
-                                            <th style="width:40px">No</th>
-                                            <th>Nama Barang</th>
-                                            <th>UOM</th>
+                                            <th>No</th>
+                                            <th width="30%">Nama Barang</th>
+                                            <th width="10%">UOM</th>
                                             <th>Quantity</th>
                                             <th>Berat (kg)</th>
                                             <th>Keterangan</th>
@@ -356,7 +356,7 @@
                                             foreach($detailFulfilment as $v) { ?>
                                             <tr>
                                                 <td><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
-                                                <td><?=$v->jenis_barang;?></td>
+                                                <td><?=$v->kode.' | '.$v->jenis_barang;?></td>
                                                 <td><?=$v->uom;?></td>
                                                 <td><?=$v->qty;?></td>
                                                 <td><?=number_format($v->berat,2,',','.');?></td>
@@ -393,7 +393,7 @@
                                             <?php $no=1; $qty = 0; $berat = 0; foreach($detailSPB as $v) { ?>
                                             <tr>
                                                 <td><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
-                                                <td><?=$v->jenis_barang;?></td>
+                                                <td><?=$v->kode.' | '.$v->jenis_barang;?></td>
                                                 <td><?=$v->uom;?></td>
                                                 <td><?=$v->qty;?></td>
                                                 <td><?=$v->berat;?></td>
@@ -572,7 +572,7 @@ function getBarang(id){
                         // console.log(result['id']);
                         $("#uom_"+id).val(result['uom']);
                         // $("#btn_"+id).removeClass('disabled');
-                        $("#barang_"+id).attr('disabled','disabled');
+                        // $("#barang_"+id).attr('disabled','disabled');
     
                         // create_new_input(id);
                     } else {
@@ -596,11 +596,12 @@ function create_new_input(id){
        var new_id = id+1;
        $("#qty").val(Number($('#qty').val())+Number($('#qty_'+id).val()));
        $("#berat").val(Number($('#berat').val())+Number($('#berat_'+id).val()));
+       $("#barang_"+id).attr('disabled','disabled');
        $("#qty_"+id).attr("readonly", true);
        $("#berat_"+id).attr("readonly", true);
        $('#btn_'+id).removeClass('disabled');
        $('#btn_add_'+id).attr('disabled','disabled').hide();
-        $("#tabel_barang>tbody").append('<tr><td><div id="no_tabel_'+new_id+'">'+new_id+'</div><input id="spb_id_'+new_id+'" name="details['+new_id+'][spb_detail_id]" type="hidden"></td><td><select id="barang_'+new_id+'" class="form-control" placeholder="pilih jenis barang" name="details['+new_id+'][jenis_barang]" onchange="getBarang('+new_id+')"><option value=""></option><?php foreach($list_barang as $v){ print('<option value="'.$v->id.'">'.$v->jenis_barang.'</option>');}?></select><input name="details['+new_id+'][id_barang]" id="barang_id_'+new_id+'" type="hidden"></td><td><input id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly" type="text"></td><td><input id="qty_'+new_id+'" name="details['+new_id+'][qty]" class="form-control myline" type="text"></td><td><input id="berat_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline" type="text"></td><td><input id="keterangan_'+new_id+'" name="details['+new_id+'][keterangan]" class="form-control myline" type="text" onkeyup="this.value = this.value.toUpperCase()"></td><td style="text-align:center"><a id="btn_add_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle green" onclick="create_new_input('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Add </a><a id="btn_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td></tr>');
+        $("#tabel_barang>tbody").append('<tr><td><div id="no_tabel_'+new_id+'">'+new_id+'</div><input id="spb_id_'+new_id+'" name="details['+new_id+'][spb_detail_id]" type="hidden"></td><td><select id="barang_'+new_id+'" class="form-control" placeholder="pilih jenis barang" name="details['+new_id+'][jenis_barang]" onchange="getBarang('+new_id+')"><option value=""></option><?php foreach($list_barang as $v){ print('<option value="'.$v->id.'">'.$v->kode.' | '.$v->jenis_barang.'</option>');}?></select><input name="details['+new_id+'][id_barang]" id="barang_id_'+new_id+'" type="hidden"></td><td><input id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly" type="text"></td><td><input id="qty_'+new_id+'" name="details['+new_id+'][qty]" class="form-control myline" type="text"></td><td><input id="berat_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline" type="text"></td><td><input id="keterangan_'+new_id+'" name="details['+new_id+'][keterangan]" class="form-control myline" type="text" onkeyup="this.value = this.value.toUpperCase()"></td><td style="text-align:center"><a id="btn_add_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle green" onclick="create_new_input('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Add </a><a id="btn_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td></tr>');
         $('#barang_'+new_id).select2();
     }
 }

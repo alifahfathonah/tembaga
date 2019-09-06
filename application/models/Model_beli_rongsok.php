@@ -314,6 +314,24 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
     
+    // function ttr_list($user_ppn){
+    //     $data = $this->db->query("Select ttr.*, 
+    //                 dtr.no_dtr,
+    //                 dtr.tanggal as tgl_dtr,
+    //                 po.no_po, 
+    //                 spl.nama_supplier,
+    //             (Select count(ttrd.id) From ttr_detail ttrd Where ttrd.ttr_id = ttr.id)As jumlah_item,
+    //             (Select Sum(ttrd.bruto) From ttr_detail ttrd Where ttrd.ttr_id = ttr.id)As bruto, 
+    //             (Select Sum(ttrd.netto) From ttr_detail ttrd Where ttrd.ttr_id = ttr.id)As netto
+    //             From ttr 
+    //                 Left Join dtr On (dtr.id = ttr.dtr_id) 
+    //                 Left Join po On (po.id = dtr.po_id) 
+    //                 Left Join supplier spl On (po.supplier_id = spl.id)
+    //             Where dtr.flag_ppn = ".$user_ppn." or (dtr.po_id = 0 and dtr.customer_id = 0 and dtr.flag_ppn= ".$user_ppn.") or (dtr.flag_ppn=".$user_ppn." and dtr.retur_id > 0)
+    //             Order By ttr.id Desc");
+    //     return $data;
+    // }
+
     function ttr_list($user_ppn){
         $data = $this->db->query("Select ttr.*, 
                     dtr.no_dtr,
@@ -327,7 +345,25 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join dtr On (dtr.id = ttr.dtr_id) 
                     Left Join po On (po.id = dtr.po_id) 
                     Left Join supplier spl On (po.supplier_id = spl.id)
-                Where dtr.flag_ppn = ".$user_ppn." or (dtr.po_id = 0 and dtr.customer_id = 0 and dtr.flag_ppn= ".$user_ppn.") or (dtr.flag_ppn=".$user_ppn." and dtr.retur_id > 0)
+                Where dtr.flag_ppn=".$user_ppn." and (dtr.po_id > 0 or so_id > 0)
+                Order By ttr.id Desc");
+        return $data;
+    }
+
+    function bpb_list($user_ppn){
+        $data = $this->db->query("Select ttr.*, 
+                    dtr.no_dtr,
+                    dtr.tanggal as tgl_dtr,
+                    po.no_po, 
+                    spl.nama_supplier,
+                (Select count(ttrd.id) From ttr_detail ttrd Where ttrd.ttr_id = ttr.id)As jumlah_item,
+                (Select Sum(ttrd.bruto) From ttr_detail ttrd Where ttrd.ttr_id = ttr.id)As bruto, 
+                (Select Sum(ttrd.netto) From ttr_detail ttrd Where ttrd.ttr_id = ttr.id)As netto
+                From ttr 
+                    Left Join dtr On (dtr.id = ttr.dtr_id) 
+                    Left Join po On (po.id = dtr.po_id) 
+                    Left Join supplier spl On (po.supplier_id = spl.id)
+                Where dtr.flag_ppn=".$user_ppn." and dtr.po_id = 0 and dtr.so_id = 0
                 Order By ttr.id Desc");
         return $data;
     }

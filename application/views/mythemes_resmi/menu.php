@@ -62,17 +62,42 @@
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/R_Rongsok">
                             <i class="fa fa-trash"></i>
-                                <span class="title">AMBIL RONGSOK</span>
+                                <span class="title">DTR List</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/R_Rongsok/ttr_list">
+                            <i class="fa fa-trash"></i>
+                                <span class="title">TTR List</span>
                             </a>
                         </li>
                     </ul>
                 </li>
                 <?php } if($group_id==9 || (isset($akses_menu['R_SuratJalan']) && $akses_menu['R_SuratJalan']==1)){ ?>
-                <li <?php if ($module_name=="SuratJalan") echo 'class="start active open"'; ?>>
+                <!-- <li <?php if ($module_name=="SuratJalan") echo 'class="start active open"'; ?>>
                     <a href="<?php echo base_url(); ?>index.php/R_SuratJalan">
                         <i class="fa fa-truck"></i>
                         <span class="title">SURAT JALAN</span>
                     </a>
+                </li> -->
+                <li <?php if ($module_name=="SuratJalan") echo 'class="start active open"'; ?>>
+                    <a href="javascript:;">
+                        <i class="fa fa-truck"></i>
+                        <span class="title">SURAT JALAN</span>
+                        <span class="arrow "></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/R_SuratJalan">
+                            <i class="fa fa-file-word-o"></i>
+                            Rongsok </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/R_SuratJalan/fg">
+                            <i class="fa fa-file-word-o"></i>
+                            FG </a>
+                        </li>
+                    </ul>
                 </li>
                 <?php } if($group_id==9 || (isset($akses_menu['R_BPB']) && $akses_menu['R_BPB']==1)){ ?>
                 <li <?php if ($module_name=="BPB") echo 'class="start active open"'; ?>>

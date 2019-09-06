@@ -75,8 +75,15 @@
                             </div>
                         </div>
                     </div>
-                        <form class="eventInsForm" method="post" target="_self" name="frmApprove" 
-                              id="frmApprove">                            
+                        <form class="eventInsForm" method="post" target="_self" name="frmApprove" id="frmApprove">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    No DTR<font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="nomor_dtr" name="nomor_dtr" class="form-control myline" style="margin-bottom:5px" readonly>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-4">
                                     No TTR<font color="#f00">*</font>
@@ -339,6 +346,7 @@
                                     </div>
                                     <div class="col-md-8">
                                         : <div style="color:red; display: inline"><?php echo $row->no_dtr; ?></div>
+                                        <input type="hidden" id="no_dtr_<?=$row->id;?>" value="<?=$row->no_dtr;?>">
                                     </div>
                                 </div>
                                 <div class="row">
@@ -466,6 +474,7 @@
 function approve(id){
         $('#dtr_id_header').val(id);
         $('#po_id_header').val($('#po_id').val());
+        $('#nomor_dtr').val($('#no_dtr_'+id).val());
         $('#message').html("");
         $('.alert-danger').hide();
         
