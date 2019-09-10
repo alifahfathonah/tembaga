@@ -341,6 +341,14 @@
                     <div class="row">
                         <div class="col-md-12">
                             <h4 align="center">Pemenuhan SPB WIP</h4>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    Tanggal Keluar <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="tanggal_keluar" name="tanggal_keluar" class="form-control myline input-small" style="margin-bottom:5px; float: left;" value="<?php echo date('d-m-Y'); ?>">
+                                </div>
+                            </div>
                                 <div class="table-scrollable">
                                     <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
                                         <thead>
@@ -614,6 +622,20 @@ function hapusDetail(id){
         $('#no_tabel_'+id).closest('tr').remove();
     }
 }
-
 </script>
-      
+<link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+<script type="text/javascript">
+$(function(){        
+    $("#tanggal_keluar").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });       
+});
+</script>

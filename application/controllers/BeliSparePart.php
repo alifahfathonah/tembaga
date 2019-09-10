@@ -1091,11 +1091,13 @@ class BeliSparePart extends CI_Controller{
                         'flag_taken'=>0,
                         'sparepart_id'=>$row['sparepart_id'],
                         't_spb_id'=>0,
-                        't_spb_detail_id'=>0,
+                        't_spb_keluar_id'=>0,
                         'lpb_detail_id'=>$lpb_detail_id,
                         'qty'=>$row['qty'],
                         'amount'=>$row['amount'],
                         'remarks'=>'Pembelian',
+                        'created_by'=>$user_id,
+                        'created_on'=>$tanggal
                     ));
                     $gudang_id = $this->db->insert_id();
                     $detail_id = array('lpb_detail_id'=>$lpb_detail_id, 'gudang_id'=>$gudang_id,'amount'=>$row['amount']);

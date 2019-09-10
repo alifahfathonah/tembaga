@@ -936,37 +936,78 @@ class Model_finance extends CI_Model{
             where fk.tanggal BETWEEN '".$s."' and '".$e."' and id_bank >= 5 and fk.flag_ppn =".$ppn." and jenis_trx=".$id." and fum.rekening_tujuan != 0 order by fk.tanggal");
     }
 
+    // function trx_keluar_kas($s,$e,$id,$ppn){
+    //     return $this->db->query("select fk.id, fk.tanggal, fk.flag_ppn, fk.nomor, fk.jenis_trx, (v.amount*fk.kurs) as nominal,
+    //     (CASE WHEN COALESCE(mc.nama_customer, s.nama_supplier) IS NOT NULL
+    //         THEN
+    //             CONCAT_WS(' ','PEMB.',COALESCE(mc.nama_customer, s.nama_supplier))
+    //         ELSE
+    //             nm_cost
+    //         END) as keterangan, b.nama_bank from f_kas fk 
+    //         left join bank b on b.id = fk.id_bank
+    //         left join voucher v on fk.id = v.id_fk
+    //         left join m_customers mc on mc.id = v.customer_id
+    //         left join supplier s on s.id = v.supplier_id
+    //         where fk.tanggal BETWEEN '".$s."' and '".$e."' and id_bank < 5 and fk.flag_ppn =".$ppn." and jenis_trx=".$id."
+    //         group by fk.id order by fk.tanggal, fk.nomor
+    //         ");
+    // }
+
     function trx_keluar_kas($s,$e,$id,$ppn){
-        return $this->db->query("select fk.id, fk.tanggal, fk.flag_ppn, fk.nomor, fk.jenis_trx, (fk.nominal*fk.kurs) as nominal,
-        (CASE WHEN COALESCE(mc.nama_customer, s.nama_supplier) IS NOT NULL
+        return $this->db->query("select fk.id, fk.tanggal, fk.flag_ppn, fk.nomor, fk.jenis_trx, 
+            (CASE WHEN v.vk_id > 0 
+            THEN (select
+                round((select if(po.diskon=0,if(p.ppn=1,sum(ld.qty*pd.amount)*110/100,sum(ld.qty*pd.amount)),if(p.ppn=1,sum(ld.qty*pd.amount)*110/100,sum(ld.qty*pd.amount))*(100-po.diskon)/100)+po.materai from lpb_detail ld
+                 left join po_detail pd on pd.id = ld.po_detail_id
+                 left join po p on p.id = pd.po_id
+                 where ld.lpb_id=lpb2.id),0)         
+            from lpb lpb2
+            left join po on po.id = lpb2.po_id
+            where lpb2.id = lpb.id)
+            ELSE (v.amount*fk.kurs) END) as nominal,
+            (CASE WHEN COALESCE(mc.nama_customer, s.nama_supplier) IS NOT NULL
             THEN
-                CONCAT_WS(' ','PEMB.',COALESCE(mc.nama_customer, s.nama_supplier))
+                CONCAT_WS(' ','PEMB.',COALESCE(mc.nama_customer, s.nama_supplier),COALESCE(lpb.no_bpb,v.keterangan))
             ELSE
                 nm_cost
-            END) as keterangan, b.nama_bank from f_kas fk 
+            END) as keterangan, b.nama_bank
+            from voucher v
+            left join f_kas fk on fk.id = v.id_fk
             left join bank b on b.id = fk.id_bank
-            left join voucher v on fk.id = v.id_fk
             left join m_customers mc on mc.id = v.customer_id
             left join supplier s on s.id = v.supplier_id
+            left join lpb on v.vk_id > 0 and lpb.vk_id = v.vk_id
             where fk.tanggal BETWEEN '".$s."' and '".$e."' and id_bank < 5 and fk.flag_ppn =".$ppn." and jenis_trx=".$id."
-            group by fk.id order by fk.tanggal
+            order by fk.tanggal, fk.nomor
             ");
     }
 
     function trx_keluar_bank($s,$e,$id,$ppn){
-        return $this->db->query("select fk.id, fk.tanggal, fk.flag_ppn, fk.nomor, fk.jenis_trx, (fk.nominal*fk.kurs) as nominal,
-        (CASE WHEN COALESCE(mc.nama_customer, s.nama_supplier) IS NOT NULL
+        return $this->db->query("select fk.id, fk.tanggal, fk.flag_ppn, fk.nomor, fk.jenis_trx, 
+            (CASE WHEN v.vk_id > 0 
+            THEN (select
+                round((select if(po.diskon=0,if(p.ppn=1,sum(ld.qty*pd.amount)*110/100,sum(ld.qty*pd.amount)),if(p.ppn=1,sum(ld.qty*pd.amount)*110/100,sum(ld.qty*pd.amount))*(100-po.diskon)/100)+po.materai from lpb_detail ld
+                 left join po_detail pd on pd.id = ld.po_detail_id
+                 left join po p on p.id = pd.po_id
+                 where ld.lpb_id=lpb2.id),0)         
+            from lpb lpb2
+            left join po on po.id = lpb2.po_id
+            where lpb2.id = lpb.id)
+            ELSE (v.amount*fk.kurs) END) as nominal,
+            (CASE WHEN COALESCE(mc.nama_customer, s.nama_supplier) IS NOT NULL
             THEN
-                CONCAT_WS(' ','PEMB.',COALESCE(mc.nama_customer, s.nama_supplier),nm_cost)
+                CONCAT_WS(' ','PEMB.',COALESCE(mc.nama_customer, s.nama_supplier),COALESCE(lpb.no_bpb,v.keterangan))
             ELSE
                 nm_cost
-            END) as keterangan, b.nama_bank from f_kas fk 
+            END) as keterangan, b.nama_bank
+            from voucher v
+            left join f_kas fk on fk.id = v.id_fk
             left join bank b on b.id = fk.id_bank
-            left join voucher v on fk.id = v.id_fk
             left join m_customers mc on mc.id = v.customer_id
             left join supplier s on s.id = v.supplier_id
+            left join lpb on v.vk_id > 0 and lpb.vk_id = v.vk_id
             where fk.tanggal BETWEEN '".$s."' and '".$e."' and id_bank >= 5 and fk.flag_ppn =".$ppn." and jenis_trx=".$id."
-            group by fk.id order by fk.tanggal, fk.nomor");
+            order by fk.tanggal, fk.nomor");
     }
 
     function trx_cm($s,$e,$id,$ppn){
@@ -983,7 +1024,7 @@ class Model_finance extends CI_Model{
     }
 
     function trx_keluar_masuk($s,$e,$id){
-        return $this->db->query("select fk.*, COALESCE(NULLIF(fk.keterangan,''),mc.nama_customer,(CASE WHEN COALESCE(mc.nama_customer, s.nama_supplier) IS NOT NULL
+        return $this->db->query("select fk.nomor, fk.tanggal, COALESCE(v.amount,fk.nominal) as nominal, fk.jenis_trx, COALESCE(v.nm_cost,NULLIF(fk.keterangan,''),mc.nama_customer,(CASE WHEN COALESCE(mc.nama_customer, s.nama_supplier) IS NOT NULL
             THEN
                 CONCAT_WS(' ','PEMB.',COALESCE(mc.nama_customer, s.nama_supplier))
             ELSE

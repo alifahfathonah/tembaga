@@ -245,7 +245,7 @@ class SalesOrder extends CI_Controller{
         $netto = 0;
         $tabel = "";
         $this->load->model('Model_sales_order'); 
-        if($jenis == 'RONGSOK' || 'AMPAS'){
+        if($jenis == 'RONGSOK' || $jenis == 'AMPAS'){
             $myDetail = $this->Model_sales_order->load_detail_so_rongsok($id)->result();
         }else{
             $myDetail = $this->Model_sales_order->load_detail_so($id)->result();

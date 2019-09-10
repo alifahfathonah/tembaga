@@ -313,6 +313,14 @@
                     <div class="row">
                         <div class="col-md-12">
                             <h4 align="center">Pemenuhan SPB</h4>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    Tanggal Keluar <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="tanggal_keluar" name="tanggal_keluar" class="form-control myline input-small" style="margin-bottom:5px; float: left;" value="<?php echo date('d-m-Y'); ?>">
+                                </div>
+                            </div>
                                 <div class="table-scrollable">
                                     <table class="table table-bordered table-striped table-hover">
                                         <thead>

@@ -374,7 +374,7 @@ class Model_beli_rongsok extends CI_Model{
                     dtr.po_id,
                     dtr.tanggal as tgl_dtr,
                     dtr.type,
-                    po.no_po,
+                    po.no_po, po.ppn,
                     COALESCE(mc.id,0) as id_customer,
                     po.tanggal as tanggal_po,
                     COALESCE(spl.nama_supplier,mc.nama_customer) as nama_supplier,

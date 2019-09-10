@@ -203,13 +203,6 @@
                                                 <input type="hidden" name="details[1][id_barang]" id="barang_id_1">
                                                 </td>
                                                 <td><input type="text" id="uom" name="details[1][uom]" class="form-control myline" readonly="readonly"></td>
-                                            <!--    <td><input type="text" id="qty_1" name="details[1][qty]" class="form-control myline"/></td>-->
-                                            <!--    <td><select id="no_packing_1" class="form-control" placeholder="pilih nomor packing" name="details[1][no_packing]">
-                                                    <option value=""></option>
-                                                    <?php// foreach($no_packing as $v){
-                                                        //echo '<option value="'.$v->id.'">'.$v->no_packing.'</option>';
-                                                    } ?>
-                                                </select>-->
                                                 </td>
                                                 <td><input type="text" id="berat" name="details[1][berat]" class="form-control myline" onkeyup="getComa(this.value, this.id);"/></td>
                                                 <td><input type="text" id="keterangan_1" name="details[1][keterangan]" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>

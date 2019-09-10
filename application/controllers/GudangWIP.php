@@ -1447,6 +1447,7 @@ class GudangWIP extends CI_Controller{
 
     function approve_spb(){
         $user_id  = $this->session->userdata('user_id');
+        $tanggal_keluar = date('Y-m-d', strtotime($this->input->post('tanggal_keluar')));
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d');
         $spb_id = $this->input->post('id');
@@ -1464,7 +1465,7 @@ class GudangWIP extends CI_Controller{
             $this->db->insert('t_gudang_wip', array(
                             'jenis_trx' => 1,
                             'flag_taken' => 0,
-                            'tanggal' => $tgl_input,
+                            'tanggal' => $tanggal_keluar,
                             'jenis_barang_id' => $v->jenis_barang_id,
                             't_spb_wip_id'=> $spb_id,
                             't_spb_wip_detail_id'=> $v->t_spb_wip_detail_id,
@@ -1472,7 +1473,8 @@ class GudangWIP extends CI_Controller{
                             'uom' => $v->uom,
                             'berat' => $v->berat,
                             'keterangan' => $v->keterangan,
-                            'created_by' => $user_id
+                            'created_by' => $user_id,
+                            'created_on' => $tanggal
                         ));
         }
  

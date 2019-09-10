@@ -25,8 +25,7 @@
                 <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Nama Barang</th>
                 <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Netto</th>
                 <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Total Harga</th>
-                <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Tipe SO</th>
-                <th style="text-align: center; border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">Penjualan</th>
+                <th style="text-align: center; border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">Tipe SO</th>
            </tr>
          </thead>
          <tbody>
@@ -47,8 +46,7 @@
                 <td style="border-top: 1px solid; border-left: 1px solid;"><?= $row->nama_barang ?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto,2) ?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->total_harga,2) ?></td>
-                <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= ($row->flag_tolling==0) ? 'SO Biasa' : 'SO Tolling'; ?></td>
-                <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?= $row->PENJUALAN;?></td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?= ($row->flag_tolling==0) ? 'SO Biasa' : 'SO Tolling'; ?></td>
         <?php $no++;
           $last_series = $row->no_sales_order;
           } ?>

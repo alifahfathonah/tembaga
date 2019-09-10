@@ -777,5 +777,4 @@ $(function(){
     });       
 });
 </script>
-</script>
       
