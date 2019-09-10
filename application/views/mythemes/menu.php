@@ -1131,6 +1131,10 @@
                                     <a href="<?php echo base_url(); ?>index.php/Finance/rangking_rongsok/">
                                     <i class="fa fa-search"></i> Rangking Pemasukan Rongsok </a>
                                 </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/laporan_bahan_pembantu/">
+                                    <i class="fa fa-search"></i> Laporan Bahan Pembantu dan Pelumas </a>
+                                </li>
                                 <!-- <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/daftar_pembelian_rongsok/">
                                     <i class="fa fa-search"></i> Daftar Pembelian Rongsok </a>

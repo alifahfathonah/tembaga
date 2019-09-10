@@ -3449,9 +3449,6 @@ class Finance extends CI_Controller{
     }
 
     function daftar_pembelian_rongsok(){
-        /*
-        * MASIH DIKERJAIN
-        */
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
         $group_id    = $this->session->userdata('group_id');        
@@ -3468,9 +3465,6 @@ class Finance extends CI_Controller{
     }
 
     function print_daftar_pembelian_rongsok(){
-        /*
-        * MASIH DIKERJAIN
-        */
         $module_name = $this->uri->segment(1);
         $this->load->helper('tanggal_indo');
         $l = $_GET['laporan'];
@@ -3498,5 +3492,59 @@ class Finance extends CI_Controller{
             $data['detailLaporan'] = $this->Model_finance->detail_daftar_pembelian_rongsok($start,$end,1)->result();
         }
         $this->load->view('finance/print_daftar_pembelian_rongsok', $data);
+    }
+
+    function laporan_bahan_pembantu(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/laporan_bahan_pembantu";
+        $this->load->model('Model_sales_order');
+
+        $this->load->view('layout', $data);  
+    }
+
+    function print_laporan_bahan_pembantu(){
+        $module_name = $this->uri->segment(1);
+        $this->load->helper('tanggal_indo');
+        $bulan = $_GET['b'];
+        $tahun = $_GET['t'];
+        $tgl1 = date('Ym', strtotime($tahun.'-'.$bulan));
+        $tgl = date('Y-m', strtotime($tahun.'-'.$bulan));
+        $datestring=$tgl.' first day of last month';
+        $dt=date_create($datestring);
+        $tgl2 = $dt->format('Ym');
+
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $this->load->model('Model_finance');
+        $data['detailLaporan'] = $this->Model_finance->detail_daftar_bahan_pembantu($tgl1, $tgl2)->result();
+        // echo "<pre>";print_r($data);echo "</pre>"; die();
+        if ($data['detailLaporan'] !== null) {
+            $this->db->delete('t_sparepart_saldo', ['bulan' => $tgl1]);
+            foreach ($data['detailLaporan'] as $row) {
+                $this->db->insert('t_sparepart_saldo', [
+                    'bulan' => $tgl1,
+                    'sparepart_id' => $row->sparepart_id,
+                    'qty' => $row->qty_keluar,
+                    'amount' => $row->rata2,
+                    'total_amount' => $row->amount_keluar,
+                ]);
+            }
+        }
+
+        $this->load->view('finance/print_laporan_bahan_pembantu', $data);
     }
 }
