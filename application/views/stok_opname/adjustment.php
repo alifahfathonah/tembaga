@@ -261,9 +261,9 @@ function saveDetail(id){
     if($.trim($("#name_rongsok_"+id).val()) == ""){
         $('#message').html("Silahkan pilih nama item finish good!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#bruto_"+id).val()) == ("" || 0)){
-        $('#message').html("Jumlah bruto tidak boleh kosong!");
-        $('.alert-danger').show(); 
+    // }else if($.trim($("#bruto_"+id).val()) == ("" || 0)){
+    //     $('#message').html("Jumlah bruto tidak boleh kosong!");
+    //     $('.alert-danger').show(); 
     }else if($.trim($("#netto_"+id).val()) == ("" || 0)){
         $('#message').html("Jumlah netto tidak boleh kosong!");
         $('.alert-danger').show(); 
