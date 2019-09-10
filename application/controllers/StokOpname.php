@@ -380,6 +380,7 @@ class StokOpname extends CI_Controller{
         
         $this->db->trans_start();
         $details = $this->input->post('myDetails');
+        // echo "<pre>"; print_r($details); echo "</pre>"; die();
         foreach ($details as $row){
             if($row['fg_id']!=0){
                 $this->db->insert('t_gudang_fg', array(
@@ -408,6 +409,8 @@ class StokOpname extends CI_Controller{
         // $this->session->set_flashdata('flash_msg', 'Voucher cost berhasil di-create dengan nomor : '.$code);
 
         if ($this->db->trans_complete()) {
+
+            $this->session->set_flashdata('flash_msg', 'Adjusment berhasil disimpan.');
             redirect('index.php/StokOpname/');
         }
     }
