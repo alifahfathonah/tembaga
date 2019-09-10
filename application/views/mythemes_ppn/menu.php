@@ -989,6 +989,10 @@
                                     <i class="fa fa-search"></i> Rangking Pemasukan Rongsok </a>
                                 </li>
                                 <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/laporan_bahan_pembantu/">
+                                    <i class="fa fa-search"></i> Laporan Bahan Pembantu dan Pelumas </a>
+                                </li>
+                                <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_jb/">
                                     <i class="fa fa-print"></i> Rekap per Jenis Barang</a>
                                 </li>
