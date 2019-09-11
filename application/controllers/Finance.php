@@ -362,7 +362,7 @@ class Finance extends CI_Controller{
         if($jenis=="Cek Mundur"){
             $data = array(
                 'tanggal'=>$tgl_input,
-                'nominal'=>str_replace('.', '', $this->input->post('nominal_baru')),
+                'nominal'=>str_replace(',', '', $this->input->post('nominal_baru')),
                 'status'=>0,
                 'bank_pembayaran'=>$this->input->post('nama_bank'),
                 'nomor_cek'=>$this->input->post('nomor_cek'),
@@ -374,7 +374,7 @@ class Finance extends CI_Controller{
         }else if($jenis=="Cek"){
             $data = array(
                 'tanggal'=>$tgl_input,
-                'nominal'=>str_replace('.', '', $this->input->post('nominal_baru')),
+                'nominal'=>str_replace(',', '', $this->input->post('nominal_baru')),
                 'status'=>0,
                 'nomor_cek'=>$this->input->post('nomor'),
                 'modified_at'=>$tanggal,
@@ -386,7 +386,7 @@ class Finance extends CI_Controller{
                 'no_uang_masuk'=>$this->input->post('no_um'),
                 'keterangan'=>$this->input->post('remarks'),
                 'tanggal'=>$tgl_input,
-                'nominal'=>str_replace('.', '', $this->input->post('nominal_baru')),
+                'nominal'=>str_replace(',', '', $this->input->post('nominal_baru')),
                 'rekening_pembayaran'=>$this->input->post('nomor'),
                 'modified_at'=>$tanggal,
                 'modified_by'=>$user_id,
@@ -397,7 +397,7 @@ class Finance extends CI_Controller{
                 'nomor'=> $this->input->post('no_um'),
                 'tanggal'=> $tgl_input,
                 'keterangan'=> $this->input->post('remarks'),
-                'nominal'=>str_replace('.', '', $this->input->post('nominal_baru'))
+                'nominal'=>str_replace(',', '', $this->input->post('nominal_baru'))
             );
 
             $this->db->where('id_um', $id);
@@ -3550,6 +3550,8 @@ class Finance extends CI_Controller{
         $datestring=$tgl.' first day of last month';
         $dt=date_create($datestring);
         $tgl2 = $dt->format('Ym');
+
+        $data['periode'] = bulan_indo($bulan).' '.$tahun;
 
         $group_id    = $this->session->userdata('group_id');        
         if($group_id != 1){

@@ -1724,13 +1724,13 @@ class Model_finance extends CI_Model{
                      sum(x.qty_keluar)*round((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk)),2)  amount_keluar,
                      (sum(x.saldo_qty)+sum(x.qty_masuk)-sum(x.qty_keluar)) qty_sisa,
                      (sum(x.saldo_amount)+ sum(x.amount_masuk)-
-                     sum(x.qty_keluar)*round((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk)),2))  amount_sisa
+                     sum(x.qty_keluar)*round((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk)),2))  amount_sisa, x.uom
                 FROM
                 (
                     SELECT 
                         t.sparepart_id, EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) bulan, s.alias, s.nama_item, 0 saldo_qty, 0 saldo_amount,
                         case when t.jenis_trx=0 then t.qty else 0 end  qty_masuk, case when t.jenis_trx=0 then t.qty*t.amount else 0 end amount_masuk
-                        , case when t.jenis_trx=1 then t.qty else 0 end  qty_keluar, case when t.jenis_trx=1 then t.qty*t.amount else 0 end amount_keluar
+                        , case when t.jenis_trx=1 then t.qty else 0 end  qty_keluar, case when t.jenis_trx=1 then t.qty*t.amount else 0 end amount_keluar, s.uom
                     FROM 
                     t_gudang_sp t
                     LEFT JOIN sparepart s ON s.id = t.sparepart_id
@@ -1738,7 +1738,7 @@ class Model_finance extends CI_Model{
                     and EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) = '".$tgl1."'
                     -- group by bulan, alias, nama_item
                     union all
-                    select t2.sparepart_id,  case when right(t2.bulan,2)=12 then t2.bulan+101 else t2.bulan+1 end , s2.alias, s2.nama_item, t2.qty saldo_qty, t2.total_amount saldo_amount, 0 qty_masuk, 0 amount_masuk, 0 qty_keluar, 0 amount_keluar  
+                    select t2.sparepart_id,  case when right(t2.bulan,2)=12 then t2.bulan+101 else t2.bulan+1 end , s2.alias, s2.nama_item, t2.qty saldo_qty, t2.total_amount saldo_amount, 0 qty_masuk, 0 amount_masuk, 0 qty_keluar, 0 amount_keluar, s2.uom  
                     FROM t_sparepart_saldo t2
                     LEFT JOIN sparepart s2 ON s2.id = t2.sparepart_id
                     WHERE t2.bulan='".$tgl2."'

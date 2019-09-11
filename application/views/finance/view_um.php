@@ -168,7 +168,7 @@
                             Nominal (<?php echo $myData['currency'];?>)
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nominal" name="nominal" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id)" class="form-control myline" style="margin-bottom:5px" value="<?php echo number_format($myData['nominal'],0,',','.');?>" readonly="readonly">
+                            <input type="text" id="nominal" name="nominal" onkeyup="getComa(this.value, this.id)" class="form-control myline" style="margin-bottom:5px" value="<?php echo number_format($myData['nominal'],0,'.',',');?>" readonly="readonly">
                         </div>
                     </div>
             <?php if($myData['jenis_pembayaran']!='Cash'){ 
@@ -489,8 +489,8 @@ function myCurrency(evt) {
 }
 
 function getComa(value, id){
-    angka = value.toString().replace(/\./g, "");
-    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+    angka = value.toString().replace(/\,/g, "");
+    $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     hitungSubTotal();
 }
 </script>
