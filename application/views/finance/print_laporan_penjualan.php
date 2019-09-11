@@ -26,8 +26,7 @@
                 <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Nilai Invoice</th>
                 <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Nilai PPN</th>
                 <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Total Harga</th>
-                <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Tipe SO</th>
-                <th style="text-align: center; border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">Penjualan</th>
+                <th style="text-align: center; border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">Tipe SO</th>
            </tr>
          </thead>
          <tbody>
@@ -75,8 +74,7 @@
                 <td style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->total_harga-$row->materai,2,',','.');?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->nilai_ppn,2,',','.');?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($total_harga,2,',','.');?></td>
-                <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= ($row->flag_tolling==0) ? 'SO Biasa' : 'SO Tolling'; ?></td>
-                <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?= $row->PENJUALAN;?></td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?= ($row->flag_tolling==0) ? 'SO Biasa' : 'SO Tolling'; ?></td>
         <?php 
           ($last_series==$row->kode_customer)?'':$no++;
           $last_tolling = $row->flag_tolling;
@@ -97,7 +95,7 @@
             <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;"><?=number_format($ni,2,',','.');?></td>
             <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;"><?=number_format($np,2,',','.');?></td>
             <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;"><?=number_format($nt,2,',','.');?></td>
-            <td colspan="2" align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid; border-right: 1px solid;"></td>
+            <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid; border-right: 1px solid;"></td>
           </tr>
           <tr>
             <td colspan="7" style="text-align: right; border-top: 5px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Grand Total</strong></td>
@@ -106,7 +104,7 @@
             <td align="right" style="border-top: 5px solid;border-bottom:1px solid; border-left: 1px solid;"><?=number_format($nilai_invoice,2,',','.');?></td>
             <td align="right" style="border-top: 5px solid;border-bottom:1px solid; border-left: 1px solid;"><?=number_format($nilai_ppn,2,',','.');?></td>
             <td align="right" style="border-top: 5px solid;border-bottom:1px solid; border-left: 1px solid;"><?=number_format($nilai_total,2,',','.');?></td>
-            <td colspan="2" align="right" style="border-top: 5px solid;border-bottom:1px solid; border-left: 1px solid; border-right: 1px solid;"></td>
+            <td align="right" style="border-top: 5px solid;border-bottom:1px solid; border-left: 1px solid; border-right: 1px solid;"></td>
           </tr>
         </tbody>   
       </table>

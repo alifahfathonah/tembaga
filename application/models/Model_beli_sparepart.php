@@ -541,6 +541,53 @@ class Model_beli_sparepart extends CI_Model{
         return $data;
     }
 
+    function query1(){
+        $data = $this->db->query("select 
+            EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) bulan, s.alias, s.nama_item, 0 saldo_qty, 0 saldo_amount,
+            case when t.jenis_trx=0 then sum(t.qty) end  qty_masuk, case when t.jenis_trx=0 then sum(t.qty*t.amount) end amount_masuk
+            , case when t.jenis_trx=1 then sum(t.qty) end  qty_keluar, case when t.jenis_trx=1 then sum(t.qty*t.amount) end amount_keluar
+            from 
+            t_gudang_sp t
+            left join sparepart s on s.id = t.sparepart_id
+            where 
+            -- s.sparepart_group in (6,7) and 
+            EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) = 201907");
+        return $data;
+    }
+
+    function query2(){
+        $data = $this->db->query("select
+            x.bulan, x.alias kode, x.nama_item, sum(x.saldo_qty) saldo_qty, round(sum(x.saldo_amount),2) saldo_amount,
+            sum(x.qty_masuk) qty_masuk, round(sum(x.amount_masuk),2) amount_masuk, sum(x.qty_keluar) qty_keluar,
+            round((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk)),2) rata2,
+             sum(x.qty_keluar)*round((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk)),2)  amount_keluar,
+             (sum(x.saldo_qty)+sum(x.qty_masuk)-sum(x.qty_keluar)) qty_sisa,
+             (sum(x.saldo_amount)+ sum(x.amount_masuk)-
+             sum(x.qty_keluar)*round((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk)),2))  amount_sisa
+            from
+            (
+            select 
+            EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) bulan, s.alias, s.nama_item, 0 saldo_qty, 0 saldo_amount,
+            case when t.jenis_trx=0 then t.qty else 0 end  qty_masuk, case when t.jenis_trx=0 then t.qty*t.amount else 0 end amount_masuk
+            , case when t.jenis_trx=1 then t.qty else 0 end  qty_keluar, case when t.jenis_trx=1 then t.qty*t.amount else 0 end amount_keluar
+            from 
+            t_gudang_sp t
+            left join sparepart s on s.id = t.sparepart_id
+            where s.sparepart_group in (6,7)
+            and EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) = 201908
+            -- group by bulan, alias, nama_item
+            union all
+            select  case when right(t2.bulan,2)=12 then t2.bulan+101 else t2.bulan+1 end , s2.alias, s2.nama_item, t2.qty saldo_qty, t2.total_amount saldo_amount, 0 qty_masuk, 0 amount_masuk, 0 qty_keluar, 0 amount_keluar  
+            from t_sparepart_saldo t2
+            left join sparepart s2 on s2.id = t2.sparepart_id
+            where t2.bulan=201907
+            )
+            x
+            group by bulan, kode, nama_item
+            order by 1");
+        return $data;
+    }
+
     // function show_header_voucher($id){
     //     $data = $this->db->query("select v.*, fk.tgl_jatuh_tempo, fk.no_giro, b.no_acc, b.nama_bank, s.nama_supplier, p.no_po, pmb.no_pembayaran, u.realname as pic, fk.nomor
     //         from voucher v 

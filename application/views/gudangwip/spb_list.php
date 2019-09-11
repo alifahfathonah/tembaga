@@ -83,6 +83,8 @@
                                 $flag_produksi = 'Retur';
                             }else if($data->flag_produksi==8){
                                 $flag_produksi = 'Repacking';
+                            }else{
+                                $flag_produksi = 'CUCI';
                             } ?>
                         <td><?=$flag_produksi;?></td>
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>

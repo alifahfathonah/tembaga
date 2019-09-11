@@ -779,6 +779,7 @@ class Ingot extends CI_Controller{
             $data_dtr = array(
                         'no_dtr'=> $code_dtr,
                         'tanggal'=> $tgl_prd,
+                        'supplier_id'=> 96,//APOLLO
                         'prd_id'=> $id_hasil_wip,
                         'jenis_barang'=> 'RONGSOK',
                         'remarks'=> 'SISA PRODUKSI INGOT',

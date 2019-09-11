@@ -121,7 +121,7 @@ nomor bm-bk-km-kk manual yang kkh *urgent (done)
 
 penomoran nya beda tiap cv
 
-bayar po cv bisa banyak banyak
+bayar po cv bisa banyak banyak(done)
 
 po ada potongan 2% pph ( (nilai_po * 110) + (nilai_po *2%))
 
@@ -133,8 +133,10 @@ laporan bank/kas keluar/masuk dibenerin print nya (detail kecilin sama header ge
 
 edit keterangan bk dan bm (done)
 
-laporan pengeluaran surat jalan per jenis barang per tgl
+laporan pengeluaran surat jalan per jenis barang per tgl(done)
 
 dtt belum ada no po saat di print (done)
 
-dtbj dtr dtwip tambahin dpp, nilai total sebelum dikali ppn
+dtbj dtr dtwip tambahin dpp, nilai total sebelum dikali ppn (done)
+
+laporan trx kas masih salah cek lagi
