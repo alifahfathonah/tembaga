@@ -3521,6 +3521,8 @@ class Finance extends CI_Controller{
         $dt=date_create($datestring);
         $tgl2 = $dt->format('Ym');
 
+        $data['periode'] = bulan_indo($bulan).' '.$tahun;
+
         $group_id    = $this->session->userdata('group_id');        
         if($group_id != 1){
             $this->load->model('Model_modules');
