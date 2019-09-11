@@ -133,7 +133,7 @@ class Model_finance extends CI_Model{
     }
 
     function list_data_pembayaran(){
-        $data = $this->db->query("select * from f_pembayaran");
+        $data = $this->db->query("select fp.*, COALESCE((select count(id) from voucher where pembayaran_id = fp.id),0) as jumlah_voucher, COALESCE((select count(id) from f_pembayaran_detail where id_pembayaran = fp.id and voucher_id = 0),0) as jumlah_um from f_pembayaran fp order by fp.no_pembayaran desc");
         return $data;
     }
 
@@ -171,7 +171,8 @@ class Model_finance extends CI_Model{
     }
 
     function list_data_um($ppn){
-        $data = $this->db->query("Select fum.* from f_uang_masuk fum
+        $data = $this->db->query("Select fum.id, fum.no_uang_masuk, COALESCE(NULLIF(fum.nomor_cek,''), mc.nama_customer) as nomor_cek from f_uang_masuk fum
+                left join m_customers mc on mc.id = fum.m_customer_id
                 left join f_pembayaran_detail fpd on fpd.um_id = fum.id 
                 where fpd.um_id is null and fum.status = 0 and fum.flag_ppn=".$ppn);
         return $data;
@@ -1024,7 +1025,7 @@ class Model_finance extends CI_Model{
     }
 
     function trx_keluar_masuk($s,$e,$id){
-        return $this->db->query("select fk.nomor, fk.tanggal, COALESCE(v.amount,fk.nominal) as nominal, fk.jenis_trx, COALESCE(v.nm_cost,NULLIF(fk.keterangan,''),mc.nama_customer,(CASE WHEN COALESCE(mc.nama_customer, s.nama_supplier) IS NOT NULL
+        return $this->db->query("select fk.nomor, fk.tanggal, COALESCE(v.amount,fk.nominal) as nominal, fk.jenis_trx, COALESCE(NULLIF(v.nm_cost,''),NULLIF(fk.keterangan,''),mc.nama_customer,(CASE WHEN COALESCE(mc.nama_customer, s.nama_supplier) IS NOT NULL
             THEN
                 CONCAT_WS(' ','PEMB.',COALESCE(mc.nama_customer, s.nama_supplier))
             ELSE

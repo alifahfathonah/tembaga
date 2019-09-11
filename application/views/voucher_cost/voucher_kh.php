@@ -248,29 +248,35 @@ function simpandatakh(){
         $('#message').html("Silahkan pilih nama cost!");
         $('.alert-danger').show();
     }else{
-        $.ajax({
-            type: "POST",
-            url: "<?php echo base_url('index.php/BeliRongsok/get_no_uang_keluar'); ?>",
-            data: {
-                no_uk: $('#no_uk').val(),
-                tanggal: $('#tanggal').val(),
-                bank_id: $('#bank_id').val()
-            },
-            cache: false,
-            success: function(result) {
-                var res = result['type'];
-                if(res=='duplicate'){
-                    $('#message').html("Nomor Uang Keluar sudah ada, tolong coba lagi!");
-                    $('.alert-danger').show();
-                }else{
+        // $.ajax({
+        //     type: "POST",
+        //     url: "<?php echo base_url('index.php/BeliRongsok/get_no_uang_keluar'); ?>",
+        //     data: {
+        //         no_uk: $('#no_uk').val(),
+        //         tanggal: $('#tanggal').val(),
+        //         bank_id: $('#bank_id').val()
+        //     },
+        //     cache: false,
+        //     success: function(result) {
+        //         var res = result['type'];
+        //         if(res=='duplicate'){
+        //             $('#message').html("Nomor Uang Keluar sudah ada, tolong coba lagi!");
+        //             $('.alert-danger').show();
+        //         }else{
+        //             $('#simpandata').text('Please Wait ...').prop("onclick", null).off("click");
+        //             $('#message').html("");
+        //             $('.alert-danger').hide();
+        //             $('#formku').attr("action", "<?php echo base_url(); ?>index.php/VoucherCost/save");
+        //             $('#formku').submit(); 
+        //         }
+        //     }
+        // }); 
+
                     $('#simpandata').text('Please Wait ...').prop("onclick", null).off("click");
                     $('#message').html("");
                     $('.alert-danger').hide();
-                    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/VoucherCost/save");
-                    $('#formku').submit(); 
-                }
-            }
-        });                                 
+                    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/VoucherCost/save_kh");
+                    $('#formku').submit();                                 
     };
 };
 

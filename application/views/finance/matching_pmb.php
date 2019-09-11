@@ -14,14 +14,6 @@
         <?php
             if( ($group_id==1)||($hak_akses['add_spb']==1) ){
         ?>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="alert alert-danger display-hide">
-                    <button class="close" data-close="alert"></button>
-                    <span id="message">&nbsp;</span>
-                </div>
-            </div>
-        </div>
         <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -62,8 +54,7 @@
                             Nomor Pembayaran<font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_pmb" name="no_pmb" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
+                            <input type="text" id="no_pmb" name="no_pmb" class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_pembayaran']; ?>">
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
@@ -137,6 +128,14 @@
                 </div>
                 <?php } ?>
             </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger display-hide">
+                    <button class="close" data-close="alert"></button>
+                    <span id="message">&nbsp;</span>
+                </div>
+            </div>
+        </div>
             <hr class="divider"/>
     <!-- VOUCHER -->
             <div class="row">
@@ -183,7 +182,7 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead>
                                 <th>No</th>
-                                <th>No. Uang Masuk</th>
+                                <th width="25%">No. Cek Masuk</th>
                                 <th>Jenis Pembayaran</th>
                                 <th>Bank Pembayaran</th>
                                 <th>Nomor Cek/Rekening</th>
@@ -197,14 +196,15 @@
                             <tr>
                                 <td style="text-align:center"><i class="fa fa-plus"></i></td>
                                 <td>
-                                <select id="um_id" name="um_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_data_um(this.value);">
-                                </select>
+                                    <select id="um_id" name="um_id" class="form-control select2me myline"  style="margin-bottom:5px;" onchange="get_data_um(this.value);">
+                                    </select>
+                                    <input type="hidden" id="id_um" name="id_um">
                                 </td>
                                 <td><input type="text" id="jenis_pembayaran" name="jenis_voucher" class="form-control myline" readonly="readonly"></td>
                                 <td><input type="text" id="bank_pembayaran" name="bank_pembayaran" class="form-control myline" readonly="readonly"></td>
                                 <td><input type="text" id="nomor" name="nomor" class="form-control myline" readonly="readonly"></td>
                                 <td colspan="2"><input type="text" id="amount_um" name="amount_um" class="form-control myline" readonly="readonly"/></td>
-                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail_um();" style="margin-top:7px" id="btnSaveDetail"> <i class="fa fa-plus"></i> Tambah </a></td>
+                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail_um();" style="margin-top:7px" id="btnSaveDetail_um"> <i class="fa fa-plus"></i> Tambah </a></td>
                             </tr>
                         </table>
                     </div>
@@ -247,7 +247,7 @@
                                 <td><input type="type" id="currency" name="currency" class="form-control myline" readonly="readonly"></td>
                                 <td><input type="text" id="nominal" name="nominal" class="form-control myline" style="margin-bottom:5px" 
                                         onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
-                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail_uk();" style="margin-top:7px" id="btnSaveDetail"> <i class="fa fa-plus"></i> Tambah </a></td>
+                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail_uk();" style="margin-top:7px" id="btnSaveDetail_uk"> <i class="fa fa-plus"></i> Tambah </a></td>
                             </tr>
                             </div>
                         </table>
@@ -298,6 +298,7 @@
     </div>
 </div> 
 <script>
+var myRequest;
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
@@ -463,10 +464,12 @@ function get_data_um(id){
         data: "id="+id,
         dataType: "json",
         success: function(result) {
+            $('#id_um').val(result['id']);
             $('#jenis_pembayaran').val(result['jenis_pembayaran']);
             $('#bank_pembayaran').val(result['bank_pembayaran']);
             $('#nomor').val(result['nomor_cek']+result['rekening_pembayaran']);
             $('#amount_um').val(result['currency']+' '+numberWithCommas(result['nominal']));
+            myRequest=null;
         }
     });
     }
@@ -489,11 +492,14 @@ function loadDetail_um(id){
 }
 
 function saveDetail_um(){
-    if($.trim($("#um_id").val()) == ""){
-        $('#message').html("Silahkan pilih jenis barang!");
+    if(myRequest){
+        console.log('here');
+        return;
+    }else if($.trim($("#id_um").val()) == ""){
+        $('#message').html("Silahkan pilih Cek Masuk!");
         $('.alert-danger').show();
     }else{
-        $.ajax({
+        myRequest = $.ajax({
             type:"POST",
             url:'<?php echo base_url('index.php/Finance/save_detail_um'); ?>',
             data:{
@@ -509,10 +515,12 @@ function saveDetail_um(){
                     $('#nomor').val('');
                     $('#amount_um').val('');
                     $('#message').html("");
-                    $('.alert-danger').hide(); 
+                    $('.alert-danger').hide();
+                    myRequest=null;
                 }else{
                     $('#message').html(result['message']);
                     $('.alert-danger').show(); 
+                    myRequest=null;
                 }            
             }
         });

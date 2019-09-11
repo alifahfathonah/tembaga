@@ -42,7 +42,8 @@
                     <th style="width:50px;">No</th>
                     <th>No. Pembayaran</th> 
                     <th>Tanggal</th> 
-                    <th>Keterangan</th>
+                    <th>Jmlh Voucher</th>
+                    <th>Jmlh Cek</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -57,7 +58,8 @@
                         <td style="text-align:center"><?php echo $no; ?></td>
                         <td><?php echo $data->no_pembayaran; ?></td>
                         <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <td><?php echo $data->keterangan; ?></td>
+                        <td style="text-align:center"><?php echo $data->jumlah_voucher; ?></td>
+                        <td style="text-align:center"><?php echo $data->jumlah_um; ?></td>
                         <td style="text-align:center">
                             <?php
                                 if($data->status==0){
@@ -79,8 +81,10 @@
                         ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/view_pmb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
                         <?php } if($data->status==0 || $data->status==3){ ?>
-                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/Finance/matching_pmb/<?php echo $data->id; ?>"
-                               style="margin-bottom:4px"> &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/Finance/matching_pmb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
+                            <?php if($data->jumlah_voucher == 0 && $data->jumlah_um == 0){ ?>
+                            <a href="<?php echo base_url(); ?>index.php/Finance/delete_pmb/<?php echo $data->id; ?>" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus transaksi ini?');"><i class="fa fa-trash-o"></i> Delete </a>
+                            <?php } ?>
                         <?php } ?>
                         </td>
                     </tr>

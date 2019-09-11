@@ -31,9 +31,7 @@
                             No. Pembayaran <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_pembayaran" name="no_pembayaran" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="Auto generate">
+                            <input type="text" id="no_pembayaran" name="no_pembayaran" class="form-control myline" style="margin-bottom:5px" placeholder="Nomor Pembayaran...">
                         </div>
                     </div>
                     <div class="row">

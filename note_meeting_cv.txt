@@ -119,7 +119,7 @@ edit produksi fg bobin | id bobbin nya, jadi nanti berat palete berubah dan nett
 
 nomor bm-bk-km-kk manual yang kkh *urgent (done)
 
-penomoran nya beda tiap cv
+penomoran nya beda tiap cv (done)
 
 bayar po cv bisa banyak banyak(done)
 
@@ -139,4 +139,4 @@ dtt belum ada no po saat di print (done)
 
 dtbj dtr dtwip tambahin dpp, nilai total sebelum dikali ppn (done)
 
-laporan trx kas masih salah cek lagi
+laporan trx kas masih salah cek lagi (done)

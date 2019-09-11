@@ -134,7 +134,7 @@ class Finance extends CI_Controller{
                 $num = 'CM-KMP';
             }else{
                 $num = 'CM';
-            }
+            }$code = $this->Model_m_numberings->getNumbering($num);
         }else{
             $status = 1;
             if($user_ppn == 1){
@@ -150,6 +150,7 @@ class Finance extends CI_Controller{
                     $num = 'BM';
                 }
             }
+            $code = $num.'.'.$tgl_um.'.'.$this->input->post('no_uang_masuk');
         }
 
         // if($user_ppn == 1){
@@ -157,7 +158,7 @@ class Finance extends CI_Controller{
         // }else{
         //     $code = $this->Model_m_numberings->getNumbering($num);
         // }
-            $code = $num.'.'.$tgl_um.'.'.$this->input->post('no_uang_masuk');
+            // $code = $num.'.'.$tgl_um.'.'.$this->input->post('no_uang_masuk');
 
         $data = array(
             'no_uang_masuk'=> $code,
@@ -233,7 +234,15 @@ class Finance extends CI_Controller{
             }
 
         if($this->db->trans_complete()){
-            redirect('index.php/Finance/');  
+            if(($this->input->post('jenis_id') == 'Cek')||($this->input->post('jenis_id') == 'Cek Mundur')){
+                redirect('index.php/Finance/cek_masuk');
+            }else{
+                if($this->input->post('bank_id')<=3){
+                    redirect('index.php/Finance');
+                }else{
+                    redirect('index.php/Finance/bank_masuk');
+                }
+            }
         }else{
             $this->session->set_flashdata('flash_msg', 'Uang Masuk gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/Finance');  
@@ -574,15 +583,15 @@ class Finance extends CI_Controller{
         $user_id   = $this->session->userdata('user_id');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_code = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
 
         $this->db->trans_start();
-        $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('PMB', $tgl_input);
+        $code = 'PMB.'.$tgl_code.'.'.$this->input->post('no_pembayaran');
 
         $data = array(
             'no_pembayaran'=> $code,
-            'tanggal'=> $this->input->post('tanggal'),
+            'tanggal'=> $tgl_input,
             'keterangan'=> $this->input->post('remarks'),
             'created_at'=> $tanggal,
             'created_by'=> $user_id
@@ -665,11 +674,11 @@ class Finance extends CI_Controller{
         $this->load->model('Model_finance');
         $user_ppn = $this->session->userdata('user_ppn');
         $data = $this->Model_finance->list_data_um($user_ppn)->result();
-        $arr_so[] = "Silahkan pilih....";
+        $arr_um[] = "Silahkan pilih....";
         foreach ($data as $row) {
-            $arr_so[$row->id] = $row->nomor_cek.' ('.$row->no_uang_masuk.')';
+            $arr_um[$row->id] = $row->nomor_cek.' ('.$row->no_uang_masuk.')';
         } 
-        print form_dropdown('vc_id', $arr_so);
+        print form_dropdown('um_id', $arr_um);
     }
 
     function get_data_voucher(){
@@ -810,12 +819,17 @@ class Finance extends CI_Controller{
     function save_detail_um(){
         $return_data = array();
         $tgl_input = date("Y-m-d");
-        
-        $data = array(
-            'id_pembayaran'=>$this->input->post('id'),
-            'um_id'=>$this->input->post('um_id')
-        );
-        if($this->db->insert('f_pembayaran_detail', $data)){
+        $this->db->trans_start();
+        if($this->input->post('um_id')!=0){
+            $data = array(
+                'id_pembayaran'=>$this->input->post('id'),
+                'um_id'=>$this->input->post('um_id')
+            );
+            $this->db->insert('f_pembayaran_detail', $data);
+        }else{
+            echo 'die';
+        }
+        if($this->db->trans_complete()){
             $return_data['message_type']= "sukses";
         }else{
             $return_data['message_type']= "error";
@@ -1020,6 +1034,7 @@ class Finance extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $data = array(
+            'no_pembayaran'=>$this->input->post('no_pmb'),
             'tanggal'=>$tgl_input,
             'keterangan'=>$this->input->post('remarks'),
             'modified_at'=>$tanggal,
@@ -1034,6 +1049,21 @@ class Finance extends CI_Controller{
         } 
         header('Content-Type: application/json');
         echo json_encode($return_data); 
+    }
+
+    function delete_pmb(){
+        $return_data = array();
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $this->db->where('id', $this->uri->segment(3));
+        if($this->db->delete('f_pembayaran')){
+            redirect(base_url('index.php/Finance/pembayaran'));
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Uang Masuk gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/Finance');  
+        }
     }
 
     function matching_pmb(){
