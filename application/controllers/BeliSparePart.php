@@ -2131,7 +2131,7 @@ class BeliSparePart extends CI_Controller{
         $data['content']   = "beli_spare_part/gudang_sparepart";
         
         $this->load->model('Model_beli_sparepart');
-        $data['list_data'] = $this->Model_beli_sparepart->gudang_sp_list()->result();
+        $data['list_data'] = $this->Model_beli_sparepart->stok_sp()->result();
         
         $this->load->view('layout', $data);
     }

@@ -24,8 +24,9 @@
        <tr >
             <th>No</th>
             <th>Item Sparepart</th>
-            <th>Stok Bruto</th>
-            <th>Stok Netto</th>
+            <th>Qty Masuk</th>
+            <th>Qty Keluar</th>
+            <th>Qty Stok</th>
        </tr>
      </thead>
      <tbody>
@@ -33,9 +34,10 @@
         foreach($list_data as $data) { ?>
         <tr>
             <td><?= $no; ?></td>
-            <td><?= $data->nama_produk; ?></td>
-            <td><?= $data->stok_bruto; ?></td>
-            <td><?= $data->stok_netto; ?></td>
+            <td><?= $data->nama_item; ?></td>
+            <td><?= $data->total_qty_in; ?></td>
+            <td><?= $data->total_qty_out; ?></td>
+            <td><?= $data->total_qty_in - $data->total_qty_out;?></td>
         </tr>    
     <?php } ?>
     
