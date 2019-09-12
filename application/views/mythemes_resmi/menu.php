@@ -134,6 +134,12 @@
                         <span class="title">INVOICE JASA</span>
                     </a>
                 </li>
+                <li>
+                    <a href="<?= base_url() ?>index.php/R_Sinkronisasi">
+                        <i class="fa fa-refresh"></i>
+                        <span class="title">SINKRONISASI</span>
+                    </a>
+                </li>
                 <?php } if($group_id==9 || $group_id==14){ ?>
                 <li <?php if($module_name=="MNumberings" || $module_name=="Apolo"
                         || $module_name=="MProvinces" || $module_name=="MCities" 
