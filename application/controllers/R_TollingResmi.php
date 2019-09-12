@@ -267,7 +267,7 @@ class R_TollingResmi extends CI_Controller{
             $data['header']  = $this->Model_tolling_resmi->show_tolling_ttr($id)->row_array();
             $data['details'] = $this->Model_tolling_resmi->show_ttr_detail($id)->result();
 
-            $this->load->view('print_ttr', $data);
+            $this->load->view('print_ttr_cv', $data);
         }else{
             redirect('index.php'); 
         }

@@ -134,6 +134,26 @@
                         <span class="title">INVOICE JASA</span>
                     </a>
                 </li>
+                <?php } if($group_id==9 || (isset($akses_menu['R_Sinkronisasi']) && $akses_menu['R_Sinkronisasi']==1)){ ?>
+                <li <?php if ($module_name=="R_Sinkronisasi") echo 'class="start active open"'; ?>>
+                    <a href="javascript:;">
+                        <i class="fa fa-refresh"></i>
+                        <span class="title">SINKRONISASI</span>
+                        <span class="arrow "></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/Sinkronisasi/finance_sync">
+                            <i class="fa fa-money"></i>
+                            Finance Sync </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/R_SuratJalan/fg">
+                            <i class="fa fa-file-word-o"></i>
+                            FG </a>
+                        </li>
+                    </ul>
+                </li>
                 <?php } if($group_id==9 || $group_id==14){ ?>
                 <li <?php if($module_name=="MNumberings" || $module_name=="Apolo"
                         || $module_name=="MProvinces" || $module_name=="MCities" 

@@ -123,7 +123,6 @@
             </tr>
             <tr>
                 <td colspan="3">
-                    <p>&nbsp;</p>
                     <table border="0" cellpadding="4" cellspacing="0" width="100%">
                         <tr>
                             <td></td>
@@ -132,12 +131,12 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td width="400px" style="text-align:center">Ditimbang Oleh </td>
-                            <td width="400px" style="text-align:center">Diterima Oleh </td>
+                            <td width="50%" style="text-align:center">Ditimbang Oleh </td>
+                            <td width="50%" style="text-align:center">Diterima Oleh </td>
                         </tr>
                         <tr>
-                            <td width="400px" style="text-align:center"></td>
-                            <td width="400px" style="text-align:center"></td>
+                            <td height="50px" width="50%" style="text-align:center"></td>
+                            <td height="50px" width="50%" style="text-align:center"></td>
                         </tr>
                         <tr>
                             <td style="text-align:center">(Gunawan) </td>

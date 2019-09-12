@@ -98,7 +98,7 @@ class SalesOrder extends CI_Controller{
         
             $this->load->model('Model_sales_order');
             $data['header']  = $this->Model_sales_order->show_header_so($id)->row_array();
-            if($data['header']['jenis_barang'] == 'RONGSOK'){
+            if($data['header']['jenis_barang'] == 'RONGSOK' || $data['header']['jenis_barang'] == 'AMPAS'){
             $data['detailSPB'] = $this->Model_sales_order->show_detail_spb_fulfilment_rsk($id)->result();
             $data['details'] = $this->Model_sales_order->show_detail_so_rsk($id)->result();
             // $data['detailSJ'] = $this->Model_sales_order->load_detail_view_sj_rsk($id)->result();
@@ -154,7 +154,7 @@ class SalesOrder extends CI_Controller{
         if($id){        
             $this->load->model('Model_sales_order');
             $data['header']  = $this->Model_sales_order->show_header_so($id)->row_array();
-            if($data['header']['jenis_barang']=='RONGSOK'){
+            if($data['header']['jenis_barang']=='RONGSOK' || $data['header']['jenis_barang']=='AMPAS'){
                 $data['details'] = $this->Model_sales_order->show_detail_so_rsk($id)->result();
             }else if($data['header']['jenis_barang']=='LAIN'){
                 $data['details'] = $this->Model_sales_order->show_detail_so_sp($id)->result();

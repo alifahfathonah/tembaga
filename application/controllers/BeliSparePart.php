@@ -1908,6 +1908,7 @@ class BeliSparePart extends CI_Controller{
             $this->db->insert('t_gudang_sp', array(
                         'sparepart_id'=> $row->sparepart_id,
                         'tanggal'=> $tgl_input,
+                        'jenis_trx'=>1,
                         't_spb_id'=>$id,
                         't_spb_keluar_id'=> $row->id,
                         'lpb_detail_id'=> 0,

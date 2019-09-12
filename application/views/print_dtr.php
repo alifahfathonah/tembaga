@@ -97,6 +97,23 @@
                     </table>
                 </td>
             </tr>
+            <tr><td colspan="3">
+                    <table border="0" width="100%">
+                        <tr>
+                            <td style="text-align:center">Ditimbang </td>
+                            <td style="text-align:center">Bagian Gudang</td>
+                        </tr>
+                        <tr style="height:35">
+                            <td style="text-align:center">&nbsp;</td>
+                            <td style="text-align:center">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">( Gunawan )</td>
+                            <td style="text-align:center">( Namin )</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
             
         </table>
 	<body onLoad="window.print()">

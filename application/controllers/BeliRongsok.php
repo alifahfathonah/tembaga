@@ -1754,7 +1754,7 @@ class BeliRongsok extends CI_Controller{
             $this->load->helper('tanggal_indo');
             $data['header']  = $this->Model_beli_rongsok->show_header_ttr($id)->row_array();
             $data['details'] = $this->Model_beli_rongsok->show_detail_ttr_group($id)->result();
-            if($this->session->userdata('user_ppn')==1){
+            if($this->session->userdata('user_ppn')>0){
                 $this->load->view('print_ttr_ppn', $data);
             }else{
                 $this->load->view('print_ttr', $data);

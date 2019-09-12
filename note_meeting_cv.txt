@@ -140,3 +140,7 @@ dtt belum ada no po saat di print (done)
 dtbj dtr dtwip tambahin dpp, nilai total sebelum dikali ppn (done)
 
 laporan trx kas masih salah cek lagi (done)
+
+edit barcode di bpb dan dtbj. utk yg keranjang sdm. karena sering ada yg sama
+
+edit po bodong jumlahnya aja

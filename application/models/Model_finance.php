@@ -1025,7 +1025,7 @@ class Model_finance extends CI_Model{
     }
 
     function trx_keluar_masuk($s,$e,$id){
-        return $this->db->query("select fk.nomor, fk.tanggal, COALESCE(v.amount,fk.nominal) as nominal, fk.jenis_trx, COALESCE(NULLIF(v.nm_cost,''),NULLIF(fk.keterangan,''),mc.nama_customer,(CASE WHEN COALESCE(mc.nama_customer, s.nama_supplier) IS NOT NULL
+        return $this->db->query("select fk.nomor, fk.tanggal, COALESCE(v.amount,fk.nominal) as nominal, fk.jenis_trx, COALESCE(NULLIF(v.nm_cost,''),NULLIF(fk.keterangan,''),(CASE WHEN COALESCE(mc.nama_customer, s.nama_supplier) IS NOT NULL
             THEN
                 CONCAT_WS(' ','PEMB.',COALESCE(mc.nama_customer, s.nama_supplier))
             ELSE

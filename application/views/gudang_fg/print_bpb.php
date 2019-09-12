@@ -17,23 +17,19 @@
                         <tr>
                             <td>Tanggal</td>
                             <td>: <?php echo tanggal_indo($header['tanggal']); ?></td>
-                        </tr>      
-                        <tr>
-                            <td>No. Produksi</td>
-                            <td>: <?php echo $header['no_laporan_produksi']; ?></td>
-                        </tr>           
+                        </tr>            
                     </table>
                 </td>
                 <td>&nbsp;</td>
                 <td width="40%">
-                    <table border="0" cellpadding="2" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="2" cellspacing="0" width="100%"> 
+                        <tr>
+                            <td>No. Produksi</td>
+                            <td>: <?php echo $header['no_laporan_produksi']; ?></td>
+                        </tr>    
                         <tr>
                             <td>Jenis Barang</td>
                             <td>: FINISH GOOD</td>
-                        </tr>
-                        <tr>
-                            <td>Pengirim</td>
-                            <td>: <?php echo $header['pengirim']; ?></td>
                         </tr>
                     </table>
                 </td>
@@ -101,25 +97,25 @@
                                 Diketahui,<br>
                                 <p>&nbsp;</p>
                                 <p>&nbsp;</p>
-                                <p>______________</p>
+                                <p>(______________)</p>
                             </td>
                             <td style="text-align:center">
                                 Diterima Gudang,<br>
                                 <p>&nbsp;</p>
                                 <p>&nbsp;</p>
-                                <p>______________</p>
+                                <p>(______________)</p>
                             </td>
                             <td style="text-align:center">
                                 Bagian QC,<br>
                                 <p>&nbsp;</p>
                                 <p>&nbsp;</p>
-                                <p>______________</p>
+                                <p>(______________)</p>
                             </td>
                             <td style="text-align:center">
                                 Yang Mengajukan,<br>
                                 <p>&nbsp;</p>
                                 <p>&nbsp;</p>
-                                <?php echo $header['pengirim']; ?>
+                                <p>(______________)</p>
                             </td>
                         </tr>
                     </table>

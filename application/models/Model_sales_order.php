@@ -560,8 +560,9 @@ class Model_sales_order extends CI_Model{
     }
 
     function tsj_header_only($id){
-        $data = $this->db->query("Select tsj.*, COALESCE(tsf.status, tsw.status, spb.status, tsa.status, 0) as status_spb from t_surat_jalan tsj
+        $data = $this->db->query("Select tsj.*, COALESCE(tsf.status, tsw.status, spb.status, tsa.status, 0) as status_spb, so.flag_sj, so.flag_invoice from t_surat_jalan tsj
             left join t_sales_order tso on tso.id =tsj.sales_order_id
+            left join sales_order so on so.id = tso.so_id
             left join t_spb_fg tsf on tso.jenis_barang = 'FG' and tsf.id = tso.no_spb
             left join t_spb_wip tsw on tso.jenis_barang = 'WIP' and tsw.id = tso.no_spb
             left join spb on tso.jenis_barang = 'RONGSOK' and spb.id = tso.no_spb
@@ -603,6 +604,11 @@ class Model_sales_order extends CI_Model{
         return $this->db->query("select tsjd.id as id_sj_d, tsjd.t_sj_id, tsjd.jenis_barang_id as sj_jb, tsjd.jenis_barang_alias, tsjd.qty as jb_qty, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, dd.*, td.id as id_ttr_detail from t_surat_jalan_detail tsjd
             left join dtr_detail dd on dd.id = tsjd.gudang_id
             left join ttr_detail td on td.dtr_detail_id = dd.id
+            where tsjd.t_sj_id=".$id);
+    }
+
+    function tsjd_get_gudang_lain($id){
+        return $this->db->query("select tsjd.id as id_sj_d, tsjd.t_sj_id, tsjd.jenis_barang_id as sj_jb, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty as jb_qty, tsjd.bruto, tsjd.berat, tsjd.netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks from t_surat_jalan_detail tsjd
             where tsjd.t_sj_id=".$id);
     }
 

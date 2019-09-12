@@ -350,7 +350,7 @@ class Model_beli_sparepart extends CI_Model{
     }
 
     function show_detail_spb_fulfilment($id){
-        $data = $this->db->query("select tsdk.*, ti.nama_produk from t_spb_sparepart_detail_keluar tsdk left join t_inventory ti on ti.id = tsdk.sparepart_id
+        $data = $this->db->query("select tsdk.*, s.nama_item as nama_produk from t_spb_sparepart_detail_keluar tsdk left join sparepart s on s.id = tsdk.sparepart_id
             where tsdk.t_spb_sparepart_id = ".$id);
         return $data;
     }

@@ -78,6 +78,7 @@ TRUNCATE `t_gudang_ampas`;
 TRUNCATE `t_gudang_bs`;
 TRUNCATE `t_gudang_fg`;
 TRUNCATE `t_gudang_keras`;
+TRUNCATE `t_gudang_sp`;
 TRUNCATE `t_gudang_wip`;
 TRUNCATE `t_hasil_masak`;
 TRUNCATE `t_hasil_wip`;
