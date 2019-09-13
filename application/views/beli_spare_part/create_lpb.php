@@ -72,6 +72,7 @@
                                 value="<?php echo $header['no_po']; ?>">
                             
                             <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['id']; ?>">
+                            <input type="hidden" id="kurs" name="kurs" value="<?php echo $header['kurs']; ?>">
                         </div>
                     </div>                    
                     <div class="row">

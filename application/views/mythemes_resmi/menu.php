@@ -142,18 +142,41 @@
                         <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/Sinkronisasi/finance_sync">
-                            <i class="fa fa-money"></i>
-                            Finance Sync </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/R_SuratJalan/fg">
-                            <i class="fa fa-file-word-o"></i>
-                            FG </a>
-                        </li>
+                    <li>
+                        <a href="javascript:;">
+                        <i class="fa fa-refresh"></i>
+                        <span class="title">Sync Intern</span>
+                        <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/Sinkronisasi/finance_sync">
+                                <i class="fa fa-money"></i>
+                                Finance Sync </a>
+                            </li>
+                            <!-- <li>
+                                <a href="<?php echo base_url(); ?>index.php/R_SuratJalan/fg">
+                                <i class="fa fa-file-word-o"></i>
+                                FG </a>
+                            </li> -->
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:;">
+                        <i class="fa fa-refresh"></i>
+                        <span class="title">Sync CV</span>
+                        <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="<?= base_url() ?>index.php/R_Sinkronisasi">
+                                    <i class="fa fa-refresh"></i>
+                                    <span class="title">SINKRONISASI</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     </ul>
-                </li>
                 <?php } if($group_id==9 || $group_id==14){ ?>
                 <li <?php if($module_name=="MNumberings" || $module_name=="Apolo"
                         || $module_name=="MProvinces" || $module_name=="MCities" 

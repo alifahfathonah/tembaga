@@ -60,7 +60,7 @@
                         <td style="text-align:center;"><?php echo $no; ?></td>
                         <td style="background-color: "><?php echo $data->no_bpb; ?></td>
                         <td><?php echo $data->no_produksi; ?></td>
-                        <td><?php echo date('d-m-Y', strtotime($data->created)); ?></td>
+                        <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td style="text-align:center">
                             <?php
                                 if($data->status==0){

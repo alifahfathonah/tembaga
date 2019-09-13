@@ -54,7 +54,7 @@ class Sinkronisasi extends CI_Controller{
                 // die();
                 if($result['status']==true){
                     foreach ($data_post as $v) {
-                        $this->db->where('id', $v->id);
+                        $this->db->where('id', $v['id']);
                         $this->db->update('sales_order', array(
                             'api'=>1
                         ));
@@ -108,7 +108,7 @@ class Sinkronisasi extends CI_Controller{
                 if($result['status']==true){
                     foreach ($loop as $v) {
                         $this->db->where('id', $v->id);
-                        $this->db->update('t_surat_jalan_detail', array(
+                        $this->db->update('t_surat_jalan', array(
                             'api'=>1
                         ));
                     }
@@ -130,14 +130,14 @@ class Sinkronisasi extends CI_Controller{
             $loop = $this->Model_sinkronisasi->inv()->result();
             foreach ($loop as $key => $v) {
                 $header= $this->Model_sinkronisasi->inv_header_only($v->id)->row_array();
-                $details= $this->Model_sinkronisasi->inv_detail_only($v->id)->row_array();
-                $post = array_merge($header, array('details'=>$details));
+                $details= $this->Model_sinkronisasi->inv_detail_only($v->id)->result();
+                $post[$key] = array_merge($header, array('details'=>$details));
             }
 
             $post = json_encode($post);
 
-                print_r($post);
-                die();
+                // print_r($post);
+                // die();
                 $ch = curl_init(target_url().'api/SinkronisasiAPI/inv');
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
@@ -146,16 +146,16 @@ class Sinkronisasi extends CI_Controller{
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
-                print_r($response);
-                die();
-                // if($result['status']==true){
-                //     foreach ($loop as $v) {
-                //         $this->db->where('id', $v->id);
-                //         $this->db->update('t_surat_jalan_detail', array(
-                //             'api'=>1
-                //         ));
-                //     }
-                // }
+                // print_r($response);
+                // die();
+                if($result['status']==true){
+                    foreach ($loop as $v) {
+                        $this->db->where('id', $v->id);
+                        $this->db->update('f_invoice', array(
+                            'api'=>1
+                        ));
+                    }
+                }
             if($this->db->trans_complete()){
                 $this->session->set_flashdata('flash_msg', 'Surat Jalan berhasil disimpan, silahkan dicoba kembali!');
                 redirect('index.php/Sinkronisasi/finance_sync');

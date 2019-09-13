@@ -249,11 +249,10 @@ class Model_sales_order extends CI_Model{
     }
 
     function list_item_sj_ampas($soid){
-        $data = $this->db->query("select tsa.*, r.nama_item as jenis_barang, r.uom from t_sales_order_detail tsod
-            left join t_sales_order tso on tso.id = tsod.t_so_id
+        $data = $this->db->query("select tsa.*, r.nama_item as jenis_barang, r.uom from t_sales_order tso
             left join t_spb_ampas_fulfilment tsa on tsa.t_spb_ampas_id = tso.no_spb
             left join rongsok r on r.id = tsa.jenis_barang_id
-            where tso.so_id=".$soid," where flag_taken = 0");
+            where tso.so_id=".$soid." and tsa.flag_taken = 0");
         return $data;
     }
 

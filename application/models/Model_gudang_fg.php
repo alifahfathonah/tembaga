@@ -445,7 +445,7 @@ class Model_gudang_fg extends CI_Model{
                     where tg.jenis_barang_id =".$id_barang." and tg.tanggal_masuk between '".$start."' and '".$end."' group by tanggal, nomor)
                 UNION ALL
                 (SELECT 
-                    tgf.id, tgf.jenis_barang_id, tgf.no_packing, jb.jenis_barang, 0 as netto_masuk, tgf.netto as netto_keluar, tgf.tanggal_masuk = null, tgf.tanggal_keluar, tgf.tanggal_keluar as tanggal, tsf.no_spb as nomor, tsf.keterangan
+                    tgf.id, tgf.jenis_barang_id, tgf.no_packing, jb.jenis_barang, 0 as netto_masuk, sum(tgf.netto) as netto_keluar, tgf.tanggal_masuk = null, tgf.tanggal_keluar, tgf.tanggal_keluar as tanggal, tsf.no_spb as nomor, tsf.keterangan
                 FROM t_gudang_fg tgf
                     left join t_spb_fg tsf on tsf.id = tgf.t_spb_fg_id
                     left join jenis_barang jb on jb.id = tgf.jenis_barang_id

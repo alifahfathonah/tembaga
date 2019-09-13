@@ -110,7 +110,7 @@ class Model_matching extends CI_Model{
     }
 
     function po_free_cv($reff_cv){
-        $data = $this->db->query("select * from r_t_po where flag_sj = 0 and flag_so = 0 and reff_cv = ".$reff_cv." and customer_id = 0");
+        $data = $this->db->query("select * from r_t_po where flag_sj = 0 and jenis_po = 'PO CV KE KMP' and reff_cv = ".$reff_cv." and customer_id = 0");
         return $data;
     }
 

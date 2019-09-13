@@ -1094,7 +1094,7 @@ class BeliSparePart extends CI_Controller{
                         't_spb_keluar_id'=>0,
                         'lpb_detail_id'=>$lpb_detail_id,
                         'qty'=>$row['qty'],
-                        'amount'=>$row['amount'],
+                        'amount'=>$row['amount']*$this->input->post('kurs'),
                         'remarks'=>'Pembelian',
                         'created_by'=>$user_id,
                         'created_on'=>$tanggal

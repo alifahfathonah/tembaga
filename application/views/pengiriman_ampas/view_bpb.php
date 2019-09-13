@@ -78,7 +78,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo date('d-m-Y', strtotime($header['created'])); ?>">
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -229,3 +229,16 @@ function rejectData(){
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+<script>
+$(function(){        
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yy-mm-dd'
+    });
+});
+</script>

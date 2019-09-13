@@ -1520,7 +1520,7 @@ class SalesOrder extends CI_Controller{
             ));
             $insert_id = $this->db->insert_id();
 
-            $query = $this->db->query('select *from t_surat_jalan_detail where t_sj_id = '.$sjid)->result();
+            $query = $this->db->query('select * from t_surat_jalan_detail where t_sj_id = '.$sjid)->result();
             foreach ($query as $row) {
                 if($row->nomor_bobbin!=''){
                     $this->db->where('nomor_bobbin', $row->nomor_bobbin);
@@ -1730,6 +1730,9 @@ class SalesOrder extends CI_Controller{
             }else if($jenis=='LAIN'){
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_lain($id)->result();
                 $this->load->view('sales_order/print_sj_lain', $data);
+            }else if($jenis=='AMPAS'){
+                $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id,$soid)->result();
+                $this->load->view('sales_order/print_sj_ampas', $data);
             }else{
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id,$soid)->result();
                 $this->load->view('sales_order/print_sj_rsk', $data);

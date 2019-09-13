@@ -24,16 +24,14 @@
                             <div class="caption">
                                 <i class="fa fa-beer"></i>Sinkronisasi SO -> SPB Header dan Detail
                             </div>
-                            <div class="tools">   
-                                <!-- <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="javascript:;" onclick="showModalAdd()">
-                                    <i class="fa fa-plus"></i> Tambah</a> -->
+                            <div class="tools">
                             </div>
                         </div>
                         <div class="portlet-body">
                             <p>Klik tombol di bawah ini untuk memulai sinkronisasi.</p>
                             <form method="post" action="<?php echo base_url('index.php/Sinkronisasi/sync_so'); ?>" id="formSync">
                                 <!-- <input type="submit" name="Submit" value="Submit"> -->
-                                <a href="javascript:;" onclick="sync()" id="btnSync" class="btn blue"><span class="fa fa-upload"></span> Sinkronisasi</a>
+                                <a href="javascript:;" onclick="sync_so();" id="btnSync" class="btn blue"><span class="fa fa-upload"></span> Sinkronisasi</a>
                             </form>
                         </div>
                     </div>
@@ -47,8 +45,6 @@
                                 <i class="fa fa-beer"></i>Sinkronisasi SJ -> Gudang -> Penerimaan
                             </div>
                             <div class="tools">   
-                                <!-- <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="javascript:;" onclick="showModalAdd()">
-                                    <i class="fa fa-plus"></i> Tambah</a> -->
                             </div>
                         </div>
                         <div class="portlet-body">
@@ -69,8 +65,6 @@
                                 <i class="fa fa-beer"></i>Sinkronisasi Invoice
                             </div>
                             <div class="tools">   
-                                <!-- <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="javascript:;" onclick="showModalAdd()">
-                                    <i class="fa fa-plus"></i> Tambah</a> -->
                             </div>
                         </div>
                         <div class="portlet-body">
@@ -83,25 +77,27 @@
                     </div>
                 </div>
             </div>
-            <script src="{{ asset('template/js/jquery-1.12.4.js') }}"></script>
-            <script src="{{ asset('template/js/jquery-ui.js') }}"></script>   
-            <script type="text/javascript">
-                function sync(){
-                    $('#formSync').submit();
-                    $('#btnSync').text('Please Wait ...').prop("onclick", null).off("click");
-                }
+<script>
+    function sync_so(){
+        $('#formSync').submit();
+        $('#btnSync').text('Please Wait ...').prop("onclick", null).off("click");
+    }
 
-                function sync_detail(){
-                    $('#formSyncDetail').submit();
-                    $('#btnSyncDetail').text('Please Wait ...').prop("onclick", null).off("click");
-                }
+    function sync_detail(){
+        $('#formSyncDetail').submit();
+        $('#btnSyncDetail').text('Please Wait ...').prop("onclick", null).off("click");
+    }
 
-                function sync_inv(){
-                    $('#formSyncInv').submit();
-                    $('#btnSyncInv').text('Please Wait ...').prop("onclick", null).off("click");
-                }
-
-                $(function(){
-                    window.setTimeout(function(){ $(".alert-success").hide(); }, 5000);
-                });
-            </script>
+    function sync_inv(){
+        $('#formSyncInv').submit();
+        $('#btnSyncInv').text('Please Wait ...').prop("onclick", null).off("click");
+    }
+</script>
+<link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>  
+<script>
+$(function(){
+    window.setTimeout(function(){ $(".alert-success").hide(); }, 5000);
+});
+</script>

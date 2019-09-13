@@ -18,14 +18,16 @@ class Model_sinkronisasi extends CI_Model{
 
     function inv(){
         return $this->db->query("select id from f_invoice
-            where flag_ppn = 1 and api = 0");
+            where flag_ppn = 1 and api = 0 and id_retur = 0");
     }
 
     function inv_header_only($id){
-        return $this->db->query("select * from f_invoice where id =".$id);
+        return $this->db->query("select fi.*, so.flag_invoice from f_invoice fi
+            left join sales_order so on so.id = fi.id_sales_order
+            where fi.id =".$id);
     }
 
     function inv_detail_only($id){
-        return $this->db->query("select * from f_invoice_detail id_invoice =".$id);
+        return $this->db->query("select * from f_invoice_detail where id_invoice =".$id);
     }
 }
