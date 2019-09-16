@@ -31,22 +31,82 @@
             </div>
         </div>
         
-        <div class="portlet box yellow-gold">
+        <!-- <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-beer"></i>Sinkronisasi Data
                 </div>
                 <div class="tools">   
-                    <!-- <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="javascript:;" onclick="showModalAdd()">
-                        <i class="fa fa-plus"></i> Tambah</a> -->
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="javascript:;" onclick="showModalAdd()">
+                        <i class="fa fa-plus"></i> Tambah</a>
                 </div>
             </div>
             <div class="portlet-body">
                 <p>Klik tombol di bawah ini untuk memulai sinkronisasi.</p>
                 <form method="post" action="<?= base_url() ?>index.php/R_Sinkronisasi/do_sinkronisasi_kmp1" id="formSync">
-                    <!-- <input type="submit" name="Submit" value="Submit"> -->
+                    <input type="submit" name="Submit" value="Submit">
                     <a href="javascript:;" onclick="sync_kmp1()" id="btnSync" class="btn blue"><span class="fa fa-upload"></span> Sinkronisasi</a>
                 </form>
+            </div>
+        </div> -->
+        <div class="row">                            
+            <div class="col-md-12"> 
+                <div class="portlet box grey-gallery">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-beer"></i>Sinkronisasi SO -> SPB Header dan Detail
+                        </div>
+                        <div class="tools">
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <p>Klik tombol di bawah ini untuk memulai sinkronisasi.</p>
+                        <form method="post" action="<?php echo base_url('index.php/R_Sinkronisasi/do_sync_so'); ?>" id="formSync">
+                            <!-- <input type="submit" name="Submit" value="Submit"> -->
+                            <a href="javascript:;" onclick="sync_so();" id="btnSync" class="btn blue"><span class="fa fa-upload"></span> Sinkronisasi</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">                            
+            <div class="col-md-12"> 
+                <div class="portlet box grey-gallery">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-beer"></i>Sinkronisasi SJ -> Gudang -> Penerimaan
+                        </div>
+                        <div class="tools">   
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <p>Klik tombol di bawah ini untuk memulai sinkronisasi.</p>
+                        <form method="post" action="<?php echo base_url('index.php/R_Sinkronisasi/do_sync_sj'); ?>" id="formSyncDetail">
+                            <!-- <input type="submit" name="Submit" value="Submit"> -->
+                            <a href="javascript:;" onclick="sync_sj()" id="btnSyncDetail" class="btn blue"><span class="fa fa-upload"></span> Sinkronisasi</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">                            
+            <div class="col-md-12"> 
+                <div class="portlet box grey-gallery">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-beer"></i>Sinkronisasi Invoice
+                        </div>
+                        <div class="tools">   
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <p>Klik tombol di bawah ini untuk memulai sinkronisasi.</p>
+                        <form method="post" action="<?php echo base_url('index.php/R_Sinkronisasi/do_sync_inv'); ?>" id="formSyncInv">
+                            <!-- <input type="submit" name="Submit" value="Submit"> -->
+                            <a href="javascript:;" onclick="sync_inv()" id="btnSyncInv" class="btn blue"><span class="fa fa-upload"></span> Sinkronisasi</a>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
         <?php
@@ -67,6 +127,20 @@
         $('#btnSync').text('Please Wait ...').prop("onclick", null).off("click");
     }
 
+    function sync_so(){
+        $('#formSync').submit();
+        $('#btnSync').text('Please Wait ...').prop("onclick", null).off("click");
+    }
+
+    function sync_sj(){
+        $('#formSyncDetail').submit();
+        $('#btnSyncDetail').text('Please Wait ...').prop("onclick", null).off("click");
+    }
+
+    function sync_inv(){
+        $('#formSyncInv').submit();
+        $('#btnSyncInv').text('Please Wait ...').prop("onclick", null).off("click");
+    }
 
 </script>
 
