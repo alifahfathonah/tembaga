@@ -25,6 +25,11 @@ class R_Sinkronisasi extends CI_Controller{
         }
         $data['group_id']  = $group_id;
         $data['content']= "resmi/sinkronisasi/index";
+
+        $data['count_so'] = $this->Model_r_sinkronisasi->count_so_kmp()->row_array();
+        $data['count_sj'] = $this->Model_r_sinkronisasi->count_sj_kmp()->row_array();
+        $data['count_inv'] = $this->Model_r_sinkronisasi->count_inv_kmp()->row_array();
+
         $this->load->view('layout', $data);
     }
 

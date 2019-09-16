@@ -54,7 +54,7 @@
                 <div class="portlet box grey-gallery">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-beer"></i>Sinkronisasi SO -> SPB Header dan Detail
+                            <i class="fa fa-beer"></i>Sinkronisasi SO -> SPB Header dan Detail <?= "(".$count_so['count_so']." Data belum disinkronisasi)" ?>
                         </div>
                         <div class="tools">
                         </div>
@@ -74,7 +74,7 @@
                 <div class="portlet box grey-gallery">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-beer"></i>Sinkronisasi SJ -> Gudang -> Penerimaan
+                            <i class="fa fa-beer"></i>Sinkronisasi SJ -> Gudang -> Penerimaan <?= "(".$count_sj['count_sj']." Data belum disinkronisasi)" ?>
                         </div>
                         <div class="tools">   
                         </div>
@@ -94,7 +94,7 @@
                 <div class="portlet box grey-gallery">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-beer"></i>Sinkronisasi Invoice
+                            <i class="fa fa-beer"></i>Sinkronisasi Invoice <?= "(".$count_inv['count_inv']." Data belum disinkronisasi)" ?>
                         </div>
                         <div class="tools">   
                         </div>
