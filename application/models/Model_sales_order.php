@@ -263,10 +263,11 @@ class Model_sales_order extends CI_Model{
     }
 
     function load_detail_only($id){
-        $data = $this->db->query("select tsod.*, COALESCE(jb.uom, jb2.uom, r.uom, r2.uom) as uom from t_sales_order_detail tsod
+        $data = $this->db->query("select tsod.*, COALESCE(jb.uom, jb2.uom, jb3.uom, r.uom, r2.uom) as uom from t_sales_order_detail tsod
             left join t_sales_order tso on tso.id = tsod.t_so_id
             left join jenis_barang jb on tso.jenis_barang = 'FG' and jb.id = tsod.jenis_barang_id
-            left join jenis_barang jb2 on  tso.jenis_barang = 'WIP' and jb2.id = tsod.jenis_barang_id
+            left join jenis_barang jb2 on tso.jenis_barang = 'WIP' and jb2.id = tsod.jenis_barang_id
+            left join sparepart jb3 on tso.jenis_barang = 'LAIN' and jb3.id = tsod.jenis_barang_id
             left join rongsok r on  tso.jenis_barang = 'RONGSOK' and r.id = tsod.jenis_barang_id
             left join rongsok r2 on  tso.jenis_barang = 'AMPAS' and r2.id = tsod.jenis_barang_id
             where t_so_id =".$id);

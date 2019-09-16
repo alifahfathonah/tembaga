@@ -7,7 +7,7 @@ class Model_sinkronisasi extends CI_Model{
                 left join t_spb_fg tsf on tso.jenis_barang = 'FG' and tsf.id=tso.no_spb
                 left join t_spb_wip tsw on tso.jenis_barang = 'WIP' and tsw.id=tso.no_spb
                 left join spb on tso.jenis_barang = 'RONGSOK' and spb.id = tso.no_spb
-                where so.flag_ppn = 1 and so.api = 0 and (select count(id) from t_sales_order_detail where t_so_id = so.id) > 0");
+                where so.flag_ppn = 1 and (select count(id) from t_sales_order_detail where t_so_id = so.id) > 0");
     }
 
     function sj(){

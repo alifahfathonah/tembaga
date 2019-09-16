@@ -30,7 +30,7 @@ class R_Sinkronisasi extends CI_Controller{
 
     public function do_sinkronisasi_kmp1() 
     {
-    	set_time_limit(300);
+    	// set_time_limit(600);
     	/*
     	* so dan spb
     	*/

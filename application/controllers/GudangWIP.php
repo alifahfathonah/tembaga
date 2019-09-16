@@ -1323,7 +1323,7 @@ class GudangWIP extends CI_Controller{
     function save_spb_fulfilment(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $spb_id = $this->input->post('id');
         
         $this->db->trans_start();
@@ -1364,7 +1364,7 @@ class GudangWIP extends CI_Controller{
     function input_ulang_spb(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $spb_id = $this->input->post('id');
         
         $this->db->trans_start();
@@ -1389,7 +1389,7 @@ class GudangWIP extends CI_Controller{
     function tambah_spb(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $spb_id = $this->input->post('id');
         
         $this->db->trans_start();
@@ -1414,7 +1414,7 @@ class GudangWIP extends CI_Controller{
     function reject_fulfilment(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $spb_id = $this->input->post('id');
 
         $this->db->trans_start();
@@ -1449,7 +1449,7 @@ class GudangWIP extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal_keluar = date('Y-m-d', strtotime($this->input->post('tanggal_keluar')));
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $spb_id = $this->input->post('id');
         
         $this->load->model('Model_gudang_wip');
