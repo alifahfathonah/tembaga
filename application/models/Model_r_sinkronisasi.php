@@ -1,6 +1,33 @@
 <?php
 class Model_r_sinkronisasi extends CI_Model{
 
+	function count_so_kmp() {
+		$data = $this->db->query('
+				SELECT COUNT(id) AS count_so
+				FROM r_t_so
+				WHERE jenis_so = "SO KMP" AND api = 0
+			');
+		return $data;
+	}
+
+	function count_sj_kmp() {
+		$data = $this->db->query('
+				SELECT COUNT(id) AS count_sj
+				FROM r_t_surat_jalan
+				WHERE jenis_surat_jalan = "SURAT JALAN KMP KE CV" AND api = 0
+			');
+		return $data;
+	}
+
+	function count_inv_kmp() {
+		$data = $this->db->query('
+				SELECT COUNT(id) AS count_inv
+				FROM r_t_inv_jasa
+				WHERE jenis_invoice = "INVOICE KMP KE CV" AND api = 0
+			');
+		return $data;
+	}
+
 	function get_so_kmp() {
 		$data = $this->db->query('
 				SELECT rso.*, rpo.no_po, cv.idkmp
