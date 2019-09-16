@@ -30,7 +30,7 @@ class R_Sinkronisasi extends CI_Controller{
 
     public function do_sinkronisasi_kmp1() 
     {
-    	set_time_limit(1800);
+    	// set_time_limit(1800);
     	/*
     	* so dan spb
     	*/
@@ -159,7 +159,7 @@ class R_Sinkronisasi extends CI_Controller{
     }
 
     function do_sync_so() {
-    	set_time_limit(600);
+    	// set_time_limit(600);
     	/*
     	* so dan spb
     	*/
@@ -207,7 +207,7 @@ class R_Sinkronisasi extends CI_Controller{
     }
 
     function do_sync_sj() {
-    	set_time_limit(600);
+    	// set_time_limit(600);
         /*
         * surat jalan
         */
@@ -255,7 +255,7 @@ class R_Sinkronisasi extends CI_Controller{
     }
 
     function do_sync_inv() {
-    	set_time_limit(600);
+    	// set_time_limit(600);
         /*
         * invoice
         */

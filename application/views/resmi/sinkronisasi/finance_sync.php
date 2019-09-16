@@ -33,6 +33,7 @@
                                 <!-- <input type="submit" name="Submit" value="Submit"> -->
                                 <a href="javascript:;" onclick="sync_so();" id="btnSync" class="btn blue"><span class="fa fa-upload"></span> Sinkronisasi</a>
                             </form>
+                            <?= $so['count'].' Data SO Belum di Kirim'; ?>
                         </div>
                     </div>
                 </div>
@@ -53,6 +54,7 @@
                                 <!-- <input type="submit" name="Submit" value="Submit"> -->
                                 <a href="javascript:;" onclick="sync_detail()" id="btnSyncDetail" class="btn blue"><span class="fa fa-upload"></span> Sinkronisasi</a>
                             </form>
+                            <?= $sj['count'].' Data SJ Belum di Kirim'; ?>
                         </div>
                     </div>
                 </div>
@@ -73,6 +75,7 @@
                                 <!-- <input type="submit" name="Submit" value="Submit"> -->
                                 <a href="javascript:;" onclick="sync_inv()" id="btnSyncInv" class="btn blue"><span class="fa fa-upload"></span> Sinkronisasi</a>
                             </form>
+                            <?= $inv['count'].' Data Invoice Belum di Kirim'; ?>
                         </div>
                     </div>
                 </div>

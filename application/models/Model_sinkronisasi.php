@@ -10,14 +10,29 @@ class Model_sinkronisasi extends CI_Model{
                 where so.flag_ppn = 1 and (select count(id) from t_sales_order_detail where t_so_id = so.id) > 0");
     }
 
+    function so_count(){
+        return $this->db->query("select count(so.id) as count from sales_order so
+                where so.flag_ppn = 1 and (select count(id) from t_sales_order_detail where t_so_id = so.id) > 0 and so.api = 0");
+    }
+
     function sj(){
         return $this->db->query("select tsj.id, tsj.jenis_barang from t_surat_jalan tsj
             left join sales_order so on so.id = tsj.sales_order_id
             where so.flag_ppn = 1 and tsj.status = 1 and tsj.api = 0");
     }
 
+    function sj_count(){
+        return $this->db->querY("select count(id) as count from t_surat_jalan
+            where so.flag_ppn = 1 and tsj.status = 1 and tsj.api = 0");
+    }
+
     function inv(){
         return $this->db->query("select id from f_invoice
+            where flag_ppn = 1 and id_surat_jalan > 0 and api = 0 and id_retur = 0");
+    }
+
+    function inv_count(){
+        return $this->db->querY("select count(id) as count from f_invoice
             where flag_ppn = 1 and id_surat_jalan > 0 and api = 0 and id_retur = 0");
     }
 
