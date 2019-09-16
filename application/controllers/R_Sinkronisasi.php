@@ -30,7 +30,7 @@ class R_Sinkronisasi extends CI_Controller{
 
     public function do_sinkronisasi_kmp1() 
     {
-    	// set_time_limit(600);
+    	set_time_limit(1800);
     	/*
     	* so dan spb
     	*/
@@ -64,12 +64,12 @@ class R_Sinkronisasi extends CI_Controller{
 	        curl_close($ch);
 
 	        if($result['status']==true){
-	        	$this->db->trans_begin();
+	        	$this->db->trans_start();
 	        	foreach ($so as $key => $value) {
 	        		$this->db->where('id', $value['id']);
 	        		$this->db->update('r_t_so', ['api' => 1]);
 	        	}
-	        	$this->db->trans_commit();
+	        	$this->db->trans_complete();
 	        }
     	}
 
@@ -106,12 +106,12 @@ class R_Sinkronisasi extends CI_Controller{
 	        // print_r($response);die();
 
 	        if($result['status']==true){
-	        	$this->db->trans_begin();
+	        	$this->db->trans_start();
 	        	foreach ($sj as $key => $value) {
 	        		$this->db->where('id', $value['id']);
 	        		$this->db->update('r_t_surat_jalan', ['api' => 1]);
 	        	}
-	        	$this->db->trans_commit();
+	        	$this->db->trans_complete();
 	        }
         }
 
@@ -144,12 +144,153 @@ class R_Sinkronisasi extends CI_Controller{
 	        curl_close($ch);
 	        // print_r($result);die();
 	        if($result['status']==true){
-	        	$this->db->trans_begin();
+	        	$this->db->trans_start();
 	        	foreach ($inv as $key => $value) {
 	        		$this->db->where('id', $value['id']);
 	        		$this->db->update('r_t_inv_jasa', ['api' => 1]);
 	        	}
-	        	$this->db->trans_commit();
+	        	$this->db->trans_complete();
+	        }
+        }
+
+
+        $this->session->set_flashdata('flash_msg', 'Sinkronisasi selesai.');
+        return redirect('index.php/R_Sinkronisasi/');
+    }
+
+    function do_sync_so() {
+    	set_time_limit(600);
+    	/*
+    	* so dan spb
+    	*/
+    	$so = $this->Model_r_sinkronisasi->get_so_kmp()->result_array();
+    	if (!empty($so)) {
+    		foreach ($so as $key => $row) {
+	    		$exp = explode(".", $row['no_so']);
+	    		$tgl_input = $exp[1];
+	    		$number = $exp[2];
+	    		$num = 'SPB-T.'.$tgl_input.'.'.$number;
+	    		$header[$key] = array_merge($so[$key], array('nomor_spb'=>$num));
+	    		// print_r($header[$key]);die();
+
+	    		$sod[$key] = $this->Model_r_sinkronisasi->get_so_detail_kmp($row['id'])->result_array();
+	    		$data[$key] = array_merge($header[$key], ['details'=>$sod[$key]]);
+	    	}
+
+	    	$json_so = json_encode($data);
+	    	// print_r($data); die();
+	    	// echo "<pre>"; print_r($json_so); echo "</pre>"; die();
+	    	$ch = curl_init();
+	        curl_setopt($ch, CURLOPT_URL, target_url().'api/ReffAPI/so_sync');
+	        curl_setopt($ch, CURLOPT_POST, true);
+	        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+	        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_so);
+	        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	        // curl_setopt($ch, CURLOPT_HEADER, 0);
+	        // curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+	        $response = curl_exec($ch);
+	        $result = json_decode($response, true);
+	        curl_close($ch);
+
+	        if($result['status']==true){
+	        	$this->db->trans_start();
+	        	foreach ($so as $key => $value) {
+	        		$this->db->where('id', $value['id']);
+	        		$this->db->update('r_t_so', ['api' => 1]);
+	        	}
+	        	$this->db->trans_complete();
+	        }
+    	}
+
+        $this->session->set_flashdata('flash_msg', 'Sinkronisasi selesai.');
+        return redirect('index.php/R_Sinkronisasi/');
+    }
+
+    function do_sync_sj() {
+    	set_time_limit(600);
+        /*
+        * surat jalan
+        */
+        $sj = $this->Model_r_sinkronisasi->get_sj_kmp()->result_array();
+        // print_r($sj);die();
+        if (!empty($sj)) {
+        	foreach ($sj as $key => $row) {
+	        	$header[$key] = $sj[$key];
+
+	        	$sjd[$key] = $this->Model_r_sinkronisasi->get_sj_detail_kmp($row['id'])->result_array();
+
+	        	$this->load->model('Model_so');
+	        	$gudang[$key] = $this->Model_so->get_r_gudang_fg($row['r_so_id'])->result_array();
+
+	        	$data[$key] = array_merge($header[$key], ['details' => $sjd[$key]], ['gudang' => $gudang[$key]]);
+	        }
+	        // print_r($data);die();
+	        $json_sj = json_encode($data);
+	        // echo "<pre>"; print_r($data); echo "</pre>"; die();
+	        $ch = curl_init();
+	        curl_setopt($ch, CURLOPT_URL, target_url().'api/ReffAPI/sj_sync');
+	        curl_setopt($ch, CURLOPT_POST, true);
+	        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+	        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_sj);
+	        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	        // curl_setopt($ch, CURLOPT_HEADER, 0);
+	        // curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+	        $response = curl_exec($ch);
+	        $result = json_decode($response, true);
+	        curl_close($ch);
+	        // print_r($response);die();
+
+	        if($result['status']==true){
+	        	$this->db->trans_start();
+	        	foreach ($sj as $key => $value) {
+	        		$this->db->where('id', $value['id']);
+	        		$this->db->update('r_t_surat_jalan', ['api' => 1]);
+	        	}
+	        	$this->db->trans_complete();
+	        }
+        }
+
+        $this->session->set_flashdata('flash_msg', 'Sinkronisasi selesai.');
+        return redirect('index.php/R_Sinkronisasi/');
+    }
+
+    function do_sync_inv() {
+    	set_time_limit(600);
+        /*
+        * invoice
+        */
+
+        $inv = $this->Model_r_sinkronisasi->get_inv_kmp()->result_array();
+        // print_r($inv);die();
+        if (!empty($inv)) {
+        	foreach ($inv as $key => $row) {
+        		$header[$key] = $inv[$key];
+
+        		$invd[$key] = $this->Model_r_sinkronisasi->get_inv_detail_kmp($row['id'])->result_array();
+        		$data[$key] = array_merge($header[$key], ['details' => $invd[$key]]);
+        	}
+
+        	$json_inv = json_encode($data);
+	        // echo "<pre>"; print_r($data); echo "</pre>"; die();
+	        $ch = curl_init();
+	        curl_setopt($ch, CURLOPT_URL, target_url().'api/ReffAPI/inv_sync');
+	        curl_setopt($ch, CURLOPT_POST, true);
+	        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+	        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_inv);
+	        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	        // curl_setopt($ch, CURLOPT_HEADER, 0);
+	        // curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+	        $response = curl_exec($ch);
+	        $result = json_decode($response, true);
+	        curl_close($ch);
+	        // print_r($result);die();
+	        if($result['status']==true){
+	        	$this->db->trans_start();
+	        	foreach ($inv as $key => $value) {
+	        		$this->db->where('id', $value['id']);
+	        		$this->db->update('r_t_inv_jasa', ['api' => 1]);
+	        	}
+	        	$this->db->trans_complete();
 	        }
         }
 
