@@ -64,12 +64,12 @@ class R_Sinkronisasi extends CI_Controller{
 	        curl_close($ch);
 
 	        if($result['status']==true){
-	        	$this->db->trans_start();
+	        	$this->db->trans_begin();
 	        	foreach ($so as $key => $value) {
 	        		$this->db->where('id', $value['id']);
 	        		$this->db->update('r_t_so', ['api' => 1]);
 	        	}
-	        	$this->db->trans_complete();
+	        	$this->db->trans_commit();
 	        }
     	}
 
@@ -106,12 +106,12 @@ class R_Sinkronisasi extends CI_Controller{
 	        // print_r($response);die();
 
 	        if($result['status']==true){
-	        	$this->db->trans_start();
+	        	$this->db->trans_begin();
 	        	foreach ($sj as $key => $value) {
 	        		$this->db->where('id', $value['id']);
 	        		$this->db->update('r_t_surat_jalan', ['api' => 1]);
 	        	}
-	        	$this->db->trans_complete();
+	        	$this->db->trans_commit();
 	        }
         }
 
@@ -144,12 +144,12 @@ class R_Sinkronisasi extends CI_Controller{
 	        curl_close($ch);
 	        // print_r($result);die();
 	        if($result['status']==true){
-	        	$this->db->trans_start();
+	        	$this->db->trans_begin();
 	        	foreach ($inv as $key => $value) {
 	        		$this->db->where('id', $value['id']);
 	        		$this->db->update('r_t_inv_jasa', ['api' => 1]);
 	        	}
-	        	$this->db->trans_complete();
+	        	$this->db->trans_commit();
 	        }
         }
 
