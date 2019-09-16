@@ -18,7 +18,7 @@ class Model_sinkronisasi extends CI_Model{
 
     function inv(){
         return $this->db->query("select id from f_invoice
-            where flag_ppn = 1 and api = 0 and id_retur = 0");
+            where flag_ppn = 1 and id_surat_jalan > 0 and api = 0 and id_retur = 0");
     }
 
     function inv_header_only($id){

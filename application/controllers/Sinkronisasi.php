@@ -146,8 +146,8 @@ class Sinkronisasi extends CI_Controller{
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
-                print_r($response);
-                die();
+                // print_r($response);
+                // die();
                 if($result['status']==true){
                     foreach ($loop as $v) {
                         $this->db->where('id', $v->id);
