@@ -2253,8 +2253,13 @@ class GudangFG extends CI_Controller{
             $data['stok_before'] = $this->Model_gudang_fg->show_kartu_stok_before($start,$end,$jb_id)->row_array();
 
         if($_GET['bl']==0){
-            $data['detailLaporan'] = $this->Model_gudang_fg->show_kartu_stok_detail($start,$end,$jb_id)->result();
-            $this->load->view('gudang_fg/kartu_stok', $data);
+            if($jb_id == 0){
+                $data['detailLaporan'] = $this->Model_gudang_fg->show_kartu_stok_all($start,$end)->result();
+                $this->load->view('gudang_fg/kartu_stok_all', $data);
+            }else{
+                $data['detailLaporan'] = $this->Model_gudang_fg->show_kartu_stok_detail($start,$end,$jb_id)->result();
+                $this->load->view('gudang_fg/kartu_stok', $data);
+            }
         }else{
             $data['detailLaporan'] = $this->Model_gudang_fg->show_kartu_stok_detail_packing($start,$end,$jb_id)->result();
             $this->load->view('gudang_fg/kartu_stok_packing', $data);

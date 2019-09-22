@@ -212,7 +212,7 @@ class R_Sinkronisasi extends CI_Controller{
     }
 
     function do_sync_sj() {
-    	// set_time_limit(600);
+    	set_time_limit(600);
         /*
         * surat jalan
         */
@@ -288,7 +288,7 @@ class R_Sinkronisasi extends CI_Controller{
 	        $response = curl_exec($ch);
 	        $result = json_decode($response, true);
 	        curl_close($ch);
-	        // print_r($result);die();
+	        // print_r($response);die();
 	        if($result['status']==true){
 	        	$this->db->trans_start();
 	        	foreach ($inv as $key => $value) {

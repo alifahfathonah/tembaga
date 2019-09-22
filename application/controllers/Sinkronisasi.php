@@ -24,8 +24,8 @@ class Sinkronisasi extends CI_Controller{
 
         $data['content']= "resmi/sinkronisasi/finance_sync";
         $data['so'] = $this->Model_sinkronisasi->so_count()->row_array();
-        $data['sj'] = $this->Model_sinkronisasi->so_count()->row_array();
-        $data['inv'] = $this->Model_sinkronisasi->so_count()->row_array();
+        $data['sj'] = $this->Model_sinkronisasi->sj_count()->row_array();
+        $data['inv'] = $this->Model_sinkronisasi->inv_count()->row_array();
         $this->load->model('Model_sinkronisasi');
         // $data['list_data'] = $this->Model_sinkronisasi->list_data()->result();
 

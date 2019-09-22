@@ -317,6 +317,34 @@ class Model_gudang_wip extends CI_Model{
                 where thw.id =".$id);
         return $data;
     }
+
+    function show_kartu_stok_before($s,$e,$jb){
+        return $this->db->query("select tgw.id, tgw.tanggal, jb.jenis_barang, jb.uom, 
+            sum(CASE WHEN tgw.jenis_trx = 0 THEN tgw.qty ELSE 0 END) as qty_in,
+            sum(CASE WHEN tgw.jenis_trx = 1 THEN tgw.qty ELSE 0 END) as qty_out,
+            sum(CASE WHEN tgw.jenis_trx = 0 THEN tgw.berat ELSE 0 END) as berat_in,
+            sum(CASE WHEN tgw.jenis_trx = 1 THEN tgw.berat ELSE 0 END) as berat_out
+            from t_gudang_wip tgw
+                left join jenis_barang jb on jb.id = tgw.jenis_barang_id
+                where tgw.jenis_barang_id =".$jb." and tgw.tanggal < '".$s."' group by tgw.jenis_barang_id
+            ");
+    }
+
+    function show_kartu_stok_detail($s,$e,$jb){
+        return $this->db->query("select tgw.id, tgw.tanggal, jb.jenis_barang, jb.uom, 
+            sum(CASE WHEN tgw.jenis_trx = 0 THEN tgw.qty ELSE 0 END) as qty_in,
+            sum(CASE WHEN tgw.jenis_trx = 1 THEN tgw.qty ELSE 0 END) as qty_out,
+            sum(CASE WHEN tgw.jenis_trx = 0 THEN tgw.berat ELSE 0 END) as berat_in,
+            sum(CASE WHEN tgw.jenis_trx = 1 THEN tgw.berat ELSE 0 END) as berat_out,
+            COALESCE(tbw.no_bpb, tsw.no_spb_wip) as nomor, COALESCE(thw.no_produksi_wip, tsw.keterangan) as keterangan from t_gudang_wip tgw
+                left join t_bpb_wip_detail tbwd on tbwd.id = tgw.t_bpb_wip_detail_id
+                left join t_bpb_wip tbw on tbw.id = tbwd.bpb_wip_id
+                left join t_hasil_wip thw on thw.id =  tgw.t_hasil_wip_id
+                left join t_spb_wip tsw on tsw.id = tgw.t_spb_wip_id
+                left join jenis_barang jb on jb.id = tgw.jenis_barang_id
+                where tgw.jenis_barang_id =".$jb." and tgw.tanggal between '".$s."' and '".$e."' group by tgw.tanggal, nomor
+            ");
+    }
     /*
     cara membuat view stok wip
     

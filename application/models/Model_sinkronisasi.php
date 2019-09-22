@@ -21,8 +21,42 @@ class Model_sinkronisasi extends CI_Model{
             where so.flag_ppn = 1 and tsj.status = 1 and tsj.api = 0");
     }
 
+    // function sj(){
+    //     return $this->db->query("select tsj.id, tsj.jenis_barang from t_surat_jalan tsj
+    //         left join sales_order so on so.id = tsj.sales_order_id
+    //         where tsj.id in (select id from t_surat_jalan
+    //             where right(no_surat_jalan,4) in
+    //             ('0817',
+    //             '0818',
+    //             '0819',
+    //             '0820',
+    //             '0821',
+    //             '0822',
+    //             '0823',
+    //             '0824',
+    //             '0825',
+    //             '0826',
+    //             '0827',
+    //             '0828',
+    //             '0829',
+    //             '0831',
+    //             '0833',
+    //             '0834',
+    //             '0835',
+    //             '0836',
+    //             '0837',
+    //             '0839',
+    //             '0840',
+    //             '0841',
+    //             '0842',
+    //             '0843',
+    //             '0845',
+    //             '0846'))");
+    // }
+
     function sj_count(){
-        return $this->db->querY("select count(id) as count from t_surat_jalan
+        return $this->db->querY("select count(tsj.id) as count from t_surat_jalan tsj
+            left join sales_order so on so.id = tsj.sales_order_id
             where so.flag_ppn = 1 and tsj.status = 1 and tsj.api = 0");
     }
 

@@ -85,7 +85,12 @@
                             <?php if($data->jumlah_voucher == 0 && $data->jumlah_um == 0){ ?>
                             <a href="<?php echo base_url(); ?>index.php/Finance/delete_pmb/<?php echo $data->id; ?>" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus transaksi ini?');"><i class="fa fa-trash-o"></i> Delete </a>
                             <?php } ?>
-                        <?php } ?>
+                        <?php } 
+                                if( ($data->status == 1) ){
+                            ?>
+                            <a href="<?php echo base_url(); ?>index.php/Finance/print_matching_pmb/<?php echo $data->id; ?>" 
+                               class="btn btn-circle btn-xs blue-ebonyclay" style="margin-bottom:4px" target="_blank"><i class="fa fa-print"></i> Print &nbsp; </a> 
+                            <?php }?>
                         </td>
                     </tr>
                     <?php

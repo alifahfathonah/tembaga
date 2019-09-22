@@ -463,6 +463,16 @@ class BeliFinishGood extends CI_Controller{
         $this->load->view('layout', $data);
     }
 
+    function delete_dtbj(){
+        $id = $this->uri->segment(3);
+        if(!empty($id)){
+            $this->db->where('id', $id);
+            $this->db->delete('dtbj');            
+        }
+        $this->session->set_flashdata('flash_msg', 'DTBJ berhasil dihapus');
+        redirect('index.php/BeliFinishGood/dtbj_list');
+    }
+
     function get_bobbin(){
         $id = $this->input->post('id');
         $jp = $this->input->post('jp');

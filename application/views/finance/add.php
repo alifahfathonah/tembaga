@@ -30,11 +30,7 @@
                             No. Cek Masuk
                         </div>
                         <div class="col-md-8">
-                            <?php if($this->session->userdata('user_ppn')==1){ ?>
                             <input type="text" name="no_uang_masuk" id="no_uang_masuk" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor Uang Masuk ..." onkeyup="this.value = this.value.toUpperCase()">
-                            <?php }else{ ?>
-                            <input type="text" name="no_uang_masuk" id="no_uang_masuk" class="form-control myline" style="margin-bottom: 5px;" readonly value="Auto Generate">
-                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -84,14 +80,7 @@
                             <select id="jenis_id" name="jenis_id" class="form-control myline select2me" 
                                 placeholder="Silahkan pilih Jenis Pembayaran ..." onchange="get_cek(this.value);" style="margin-bottom:5px">
                                 <option value="0"></option>
-                            <?php if($this->session->userdata('user_ppn')==1){?>
-                                <option value="Transfer">Transfer</option>
-                            <?php }else{?>
-                                <option value="Cek">Cek</option>
-                                <option value="Cek Mundur">Cek Mundur</option>
-                            <?php } ?>
                                 <option value="Lain-Lain">Lain-Lain</option>
-                                <option value="Giro">Giro</option>
                                 <option value="Cash">Cash</option>
                             </select>
                         </div>
@@ -288,7 +277,7 @@
 </div> 
 <script>
 function numberWithCommas(x) {
-     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 function simpanData(){

@@ -226,7 +226,9 @@
 function timbang_netto(id){
     const bruto = $('#bruto_'+id).val();
     const berat = $('#berat_bobbin_'+id).val();
-    $('#netto_'+id).val(bruto - berat);
+    const netto = bruto-berat;
+    const total_netto = netto.toFixed(2);
+    $('#netto_'+id).val(total_netto);
 }
 
 function simpanData(){
@@ -306,9 +308,9 @@ function saveDetail(id){
                 $('#no_packing_'+id).val(result['no_packing']);
             }
         });
-        $('#total_bruto').val(Number($('#total_bruto').val())+Number($('#bruto_'+id).val()));
-        $('#total_berat').val(Number($('#total_berat').val())+Number($('#berat_bobbin_'+id).val()));
-        $('#total_netto').val(Number($('#total_netto').val())+Number($('#netto_'+id).val()));
+        $('#total_bruto').val((Number($('#total_bruto').val())+Number($('#bruto_'+id).val())).toFixed(2));
+        $('#total_berat').val((Number($('#total_berat').val())+Number($('#berat_bobbin_'+id).val())).toFixed(2));
+        $('#total_netto').val((Number($('#total_netto').val())+Number($('#netto_'+id).val())).toFixed(2));
         $("#name_rongsok_"+id).attr('readonly','readonly');
         $("#timbang_"+id).attr('disabled','disabled');
         $("#netto_"+id).attr('readonly','readonly');

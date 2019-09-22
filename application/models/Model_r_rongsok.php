@@ -44,4 +44,20 @@ class Model_r_rongsok extends CI_Model{
                 Order By ttr.id Desc");
         return $data;
     }
+
+    function pindah_history(){
+        return $this->db->query("Select tp.*, jb.kode, jb.jenis_barang From t_pindah tp
+            left join jenis_barang jb on jb.id = tp.jenis_barang_id
+            ");
+    }
+
+    function show_header_pindah($id){
+        return $this->db->query("Select tp.*, jb.kode, jb.jenis_barang From t_pindah tp
+            left join jenis_barang jb on jb.id = tp.jenis_barang_id
+            where tp.id =".$id);
+    }
+
+    function get_list_pindah($id){
+        return $this->db->query("Select * from t_gudang_fg where flag_pindah =".$id);
+    }
 }

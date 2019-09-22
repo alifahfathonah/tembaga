@@ -96,7 +96,7 @@ class Model_beli_fg extends CI_Model
 	function dtbj_list($user_ppn){
 		$data = $this->db->query("Select dtbj.*, 
                     po.no_po, 
-                    spl.nama_supplier,
+                    spl.nama_supplier, spl.flag_gudang,
                     usr.realname As penimbang,
                 (Select count(dtbjd.id)As jumlah_item From dtbj_detail dtbjd Where dtbjd.dtbj_id = dtbj.id)As jumlah_item
                 From dtbj

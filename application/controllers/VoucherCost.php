@@ -501,7 +501,7 @@ class VoucherCost extends CI_Controller{
         if(!empty($id)){
             $this->load->model('Model_voucher_cost');
             $get = $this->Model_voucher_cost->get_f_kas($id)->row_array();
-            print_r($get);
+            // print_r($get);
             // die();
 
             $this->db->delete('voucher', ['id_fk' => $id]);

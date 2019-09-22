@@ -144,6 +144,24 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function header_pembayaran($id){
+        return $this->db->query("select fp.*, (select sum(amount) from voucher where pembayaran_id = fp.id) as total from f_pembayaran fp where fp.id =".$id);
+    }
+
+    function detail_pembayaran_um($id){
+        $data = $this->db->query("(select fum.no_uang_masuk, fum.nominal, COALESCE(mc.nama_customer,fum.keterangan) as keterangan, fum.rekening_pembayaran, fum.nomor_cek
+            from f_pembayaran_detail fpd
+            left join f_uang_masuk fum on fum.id = fpd.um_id
+            left join m_customers mc on mc.id = fum.m_customer_id
+            where fpd.id_pembayaran =".$id." and fpd.voucher_id = 0)
+            UNION ALL
+            (select COALESCE(fk.nomor,'Slip Setoran') as no_uang_masuk, fss.nominal*-1, COALESCE(fum.keterangan, 'Slip Setoran') as keterangan, '' as rekening_pembayaran, '' as nomor_cek from f_slip_setoran fss
+            left join f_kas fk on fk.id = fss.id_kas
+            left join f_uang_masuk fum on fum.id = fk.id_um
+            where fss.id_pembayaran =".$id.")");
+        return $data;
+    }
+
     function load_detail($id){
         $data = $this->db->query("select * from voucher where pembayaran_id = ".$id);
         return $data;
@@ -255,7 +273,7 @@ class Model_finance extends CI_Model{
         $data = $this->db->query("select tsjd.t_sj_id, sum(tsjd.qty) as qty, sum(tsjd.bruto) as bruto, 
             (case when tsjd.jenis_barang_alias = 0 then tsjd.jenis_barang_id else tsjd.jenis_barang_alias end) as jbid,
             round(sum(case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end),3) as netto,
-            COALESCE(jb.jenis_barang,r.nama_item,r2.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom,r2.uom) as uom,
+            COALESCE(jb.jenis_barang,r.nama_item,r2.nama_item,s.nama_item) as jenis_barang, COALESCE(jb.uom,r.uom,r2.uom,s.uom) as uom,
             (select tsod.amount from t_sales_order_detail tsod left join t_sales_order tso on tso.id = tsod.t_so_id where tso.so_id = tsj.sales_order_id and tsod.jenis_barang_id = case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)as amount 
             from t_surat_jalan_detail tsjd 
             left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id 
@@ -263,6 +281,7 @@ class Model_finance extends CI_Model{
             left join jenis_barang jb on tso.jenis_barang != 'RONGSOK' and tso.jenis_barang != 'AMPAS' and jb.id = (case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
             left join rongsok r on tso.jenis_barang = 'RONGSOK' and r.id=tsjd.jenis_barang_id
             left join rongsok r2 on tso.jenis_barang = 'AMPAS' and r2.id=tsjd.jenis_barang_id
+            left join sparepart s on tso.jenis_barang = 'LAIN' and s.id=tsjd.jenis_barang_id
             where tsjd.t_sj_id =".$id." group by jbid");
         return $data;
     }
@@ -1027,7 +1046,7 @@ class Model_finance extends CI_Model{
     function trx_keluar_masuk($s,$e,$id){
         return $this->db->query("select fk.nomor, fk.tanggal, COALESCE(v.amount,fk.nominal) as nominal, fk.jenis_trx, COALESCE(NULLIF(v.nm_cost,''),NULLIF(fk.keterangan,''),(CASE WHEN COALESCE(mc.nama_customer, s.nama_supplier) IS NOT NULL
             THEN
-                CONCAT_WS(' ','PEMB.',COALESCE(mc.nama_customer, s.nama_supplier))
+                CONCAT_WS(' ','PEMB.',COALESCE(mc.nama_customer, s.nama_supplier), v.keterangan)
             ELSE
                 nm_cost
             END)) as keterangan from f_kas fk
@@ -1749,4 +1768,12 @@ class Model_finance extends CI_Model{
             ");
         return $data;
     }
+
+    // VIEW MATCHING PEMBAYARAN
+    // select fp.id, fp.tanggal as tgl_matching, fp.no_pembayaran, COALESCE(v.tanggal,fum.tanggal) as tanggal, (CASE WHEN fpd.um_id=0 THEN 1 ELSE 0 END) as jenis_trx, COALESCE(v.no_voucher, fum.no_uang_masuk) as nomor, COALESCE(s.kode_supplier, mc.kode_customer) as kode, COALESCE(s.nama_supplier,mc.nama_customer) as nama, COALESCE(v.amount, fum.nominal) as amount from f_pembayaran_detail fpd
+    // left join f_pembayaran fp on fp.id = fpd.id_pembayaran
+    // left join voucher v on fpd.um_id = 0 and v.id = fpd.voucher_id
+    // left join f_uang_masuk fum on fpd.voucher_id = 0 and fum.id = fpd.um_id
+    // left join supplier s on s.id = v.supplier_id
+    // left join m_customers mc on mc.id = fum.m_customer_id
 }

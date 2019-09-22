@@ -657,7 +657,7 @@ class Retur extends CI_Controller{
 
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('TTR', $tgl_input); 
+        $code = $this->Model_m_numberings->getNumbering('BPB-R', $tgl_input); 
         
         if($code){        
             $data = array(

@@ -25,7 +25,7 @@ class Model_gudang_fg extends CI_Model{
     }
 
     function view_gudang_fg($id){
-        $data = $this->db->query("select tgf.*, jb.jenis_barang from t_gudang_fg tgf
+        $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
                 left join jenis_barang jb on jb.id = tgf.jenis_barang_id
                 where tgf.jenis_trx = 0 and tgf.jenis_barang_id =".$id);
         return $data;
@@ -422,16 +422,27 @@ class Model_gudang_fg extends CI_Model{
 
     function show_kartu_stok_before($start,$end,$id_barang){
         $data = $this->db->query("(SELECT
-                    tg.id, tg.jenis_barang_id, tg.no_packing, jb.jenis_barang, sum(tg.netto) as netto_masuk, 0 as netto_keluar, tg.tanggal_masuk, tg.tanggal_keluar = null as tanggal_keluar, tg.tanggal_masuk as tanggal
+                    tg.id, tg.jenis_barang_id, tg.no_packing, jb.jenis_barang, sum(tg.netto) as netto_masuk, 
+                    (SELECT sum(tgf.netto) FROM t_gudang_fg tgf
+                    where tgf.jenis_barang_id =".$id_barang." and tgf.tanggal_keluar <'".$start."' and tgf.tanggal_keluar != '0000-00-00') as netto_keluar, 
+                    tg.tanggal_masuk, tg.tanggal_keluar = null as tanggal_keluar, tg.tanggal_masuk as tanggal
                 FROM t_gudang_fg tg
                     left join jenis_barang jb on jb.id = tg.jenis_barang_id
                     where tg.jenis_barang_id =".$id_barang." and tg.tanggal_masuk < '".$start."')
-                UNION ALL
-                (SELECT 
-                    tgf.id, tgf.jenis_barang_id, tgf.no_packing, jb.jenis_barang, 0 as netto_masuk, sum(tgf.netto) as netto_keluar, tgf.tanggal_masuk = null, tgf.tanggal_keluar, tgf.tanggal_keluar as tanggal
+                    ");
+        return $data;
+    }
+
+    function show_kartu_stok_all($start,$end){
+        $data = $this->db->query("SELECT
+                    tg.id, tg.jenis_barang_id, jb.jenis_barang, jb.kode, sum(tg.netto) as netto_masuk, 
+                    (SELECT sum(tgf.netto) as netto_keluar
                 FROM t_gudang_fg tgf
-                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-                    where tgf.jenis_barang_id =".$id_barang." and tgf.tanggal_keluar <'".$start."') Order By tanggal asc
+                    where tgf.jenis_barang_id = tg.jenis_barang_id and tgf.tanggal_keluar between '".$start."' and '".$end."' group by tgf.jenis_barang_id) as netto_keluar
+                FROM t_gudang_fg tg
+                    left join t_bpb_fg tbf on tbf.id = tg.t_bpb_fg_id
+                    left join jenis_barang jb on jb.id = tg.jenis_barang_id
+                    where tg.tanggal_masuk between '".$start."' and '".$end."' group by tg.jenis_barang_id Order By jenis_barang asc
                     ");
         return $data;
     }
@@ -445,8 +456,10 @@ class Model_gudang_fg extends CI_Model{
                     where tg.jenis_barang_id =".$id_barang." and tg.tanggal_masuk between '".$start."' and '".$end."' group by tanggal, nomor)
                 UNION ALL
                 (SELECT 
-                    tgf.id, tgf.jenis_barang_id, tgf.no_packing, jb.jenis_barang, 0 as netto_masuk, sum(tgf.netto) as netto_keluar, tgf.tanggal_masuk = null, tgf.tanggal_keluar, tgf.tanggal_keluar as tanggal, tsf.no_spb as nomor, tsf.keterangan
+                    tgf.id, tgf.jenis_barang_id, tgf.no_packing, jb.jenis_barang, 0 as netto_masuk, sum(tgf.netto) as netto_keluar, tgf.tanggal_masuk = null, tgf.tanggal_keluar, tgf.tanggal_keluar as tanggal, COALESCE(tsj.no_surat_jalan,tsf.no_spb) as nomor, COALESCE(mc.nama_customer,tsf.keterangan) as keterangan
                 FROM t_gudang_fg tgf
+                    left join t_surat_jalan tsj on tsj.id = tgf.t_sj_id
+                    left join m_customers mc on mc.id = tsj.m_customer_id
                     left join t_spb_fg tsf on tsf.id = tgf.t_spb_fg_id
                     left join jenis_barang jb on jb.id = tgf.jenis_barang_id
                     where tgf.jenis_barang_id =".$id_barang." and tgf.tanggal_keluar between '".$start."' and '".$end."' group by tanggal, nomor) Order By tanggal asc

@@ -1691,4 +1691,56 @@ class GudangWIP extends CI_Controller{
         
         $this->load->view('layout', $data);  
     }
+
+    function kartu_stok_wip(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Gudang wip";
+        $data['content']   = "gudangwip/kartu_stok_index";
+
+        $this->load->model('Model_gudang_wip'); 
+        $data['list_fg'] = $this->Model_gudang_wip->jenis_barang_list()->result();
+
+        $this->load->view('layout', $data);  
+    }
+
+    function kartu_stok(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+
+        $jb_id = $_GET['r'];
+        $start = date('Y/m/d', strtotime($_GET['ts']));
+        $end = date('Y/m/d', strtotime($_GET['te']));
+        // echo $start;die();
+
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Gudang WIP";
+
+        $this->load->model('Model_beli_fg');
+        $data['jb'] = $this->Model_beli_fg->get_jb($jb_id)->row_array();
+        $data['start'] = $start;
+        $data['end'] = $end;
+
+            $this->load->model('Model_gudang_wip');
+            $data['stok_before'] = $this->Model_gudang_wip->show_kartu_stok_before($start,$end,$jb_id)->row_array();
+
+        if($_GET['bl']==0){
+            $data['detailLaporan'] = $this->Model_gudang_wip->show_kartu_stok_detail($start,$end,$jb_id)->result();
+            $this->load->view('gudangwip/kartu_stok', $data);
+        }else{
+            $data['detailLaporan'] = $this->Model_gudang_wip->show_kartu_stok_detail_packing($start,$end,$jb_id)->result();
+            $this->load->view('gudangwip/kartu_stok_packing', $data);
+        }
+    }
 }

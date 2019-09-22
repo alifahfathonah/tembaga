@@ -54,7 +54,7 @@ class Model_r_sinkronisasi extends CI_Model{
 				SELECT rsj.*, cv.idkmp
 				FROM r_t_surat_jalan rsj
 				LEFT JOIN m_cv cv ON rsj.m_cv_id = cv.id
-				WHERE rsj.jenis_surat_jalan = "SURAT JALAN KMP KE CV" AND rsj.api = 0
+				WHERE rsj.jenis_surat_jalan = "SURAT JALAN KMP KE CV" AND rsj.api = 0 limit 100
 			');
 		return $data;
 	}
@@ -73,7 +73,7 @@ class Model_r_sinkronisasi extends CI_Model{
 				SELECT ij.*, cv.idkmp
 				FROM r_t_inv_jasa ij
 				LEFT JOIN m_cv cv ON cv.id = ij.cv_id
-				WHERE ij.jenis_invoice = "INVOICE KMP KE CV" AND ij.api = 0
+				WHERE ij.jenis_invoice = "INVOICE KMP KE CV" AND ij.api = 0 limit 100
 			');
 		return $data;
 	}

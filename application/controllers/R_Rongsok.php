@@ -901,4 +901,119 @@ class R_Rongsok extends CI_Controller{
 
         $this->load->view('layout', $data);
     }
+
+    function ambil_packing(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $this->load->model('Model_gudang_fg');
+        $data['group_id']  = $group_id;
+        $data['list'] = $this->Model_r_rongsok->pindah_history()->result();
+        $data['list_jb'] = $this->Model_gudang_fg->barang_fg_list()->result();
+        $data['content']= "resmi/packing/index";
+
+        $this->load->view('layout', $data);
+    }
+
+    function create_pindah(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        // $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
+        $user_ppn = $this->session->userdata('user_ppn');
+
+        $this->db->trans_start();
+                $data = array(
+                        'tanggal'=> $tgl_input,
+                        'jenis_barang_id'=> $this->input->post('jenis_barang'),
+                        'created_at'=> $tanggal,
+                        'created_by'=> $user_id
+                    );
+                $this->db->insert('t_pindah', $data);
+                $id = $this->db->insert_id();
+
+        if($this->db->trans_complete()){
+            redirect('index.php/R_Rongsok/pilih_pindah/'.$id);  
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/R_Rongsok');  
+        } 
+    }
+
+    function pilih_pindah(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "resmi/packing/pindah";
+            $data['header']  = $this->Model_r_rongsok->show_header_pindah($id)->row_array(); 
+            $this->load->model('Model_gudang_fg');
+            $data['details'] = $this->Model_gudang_fg->view_gudang_fg($data['header']['jenis_barang_id'])->result();
+
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/bpb_list');
+        }
+    }
+
+    function simpan_pindah_data(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
+        $user_ppn = $this->session->userdata('user_ppn');
+
+        $this->db->trans_start();
+
+            $details = $this->input->post('myDetails');
+
+            foreach ($details as $row){
+                if(isset($row['check']) && $row['check']==1){
+                    $this->db->where('id', $row['id_detail']);
+                    $this->db->update('t_gudang_fg', array(
+                        'flag_pindah'=>$this->input->post('id')
+                    ));
+                }
+            }
+                //API
+                $this->load->helper('target_url');
+
+                $data_post['tanggal'] = $tgl_input;
+                $data_post['jb']      = $this->input->post('id_jenis_barang');
+                $data_post['details'] = $this->Model_r_rongsok->get_list_pindah($this->input->post('id'))->result_array();
+
+                $post = json_encode($data_post);
+                // print_r($post);
+                // die();
+                $ch = curl_init(target_url().'api/ReffAPI/bpb');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+
+                //API CLOSE
+
+        if($this->db->trans_complete()){
+            redirect('index.php/R_Rongsok/view_pindah/'.$id_dtr);  
+        }else{
+            $this->session->set_flashdata('flash_msg', 'DTR rongsok gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/R_Rongsok');  
+        } 
+    }
 }

@@ -71,6 +71,12 @@
                                 <span class="title">TTR List</span>
                             </a>
                         </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/R_Rongsok/ambil_packing">
+                            <i class="fa fa-level-up"></i>
+                                <span class="title">Pindah Packing</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <?php } if($group_id==9 || (isset($akses_menu['R_SuratJalan']) && $akses_menu['R_SuratJalan']==1)){ ?>

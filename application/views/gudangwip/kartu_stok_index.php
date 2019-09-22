@@ -2,9 +2,9 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Laporan FG
+            <i class="fa fa-angle-right"></i> Laporan WIP
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/GudangFG/index'); ?>">Gudang FG</a> 
+            <a href="<?php echo base_url('index.php/GudangWIP/index'); ?>">Gudang WIP</a> 
         </h5>          
     </div>
 </div>
@@ -29,7 +29,7 @@
                         </div>
                         <div class="col-md-8">
                             <select id="rongsok_id" name="rongsok_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,1);">
-                                    <option value="0">Semua Item</option>
+                                    <option value=""></option>
                                     <?php foreach ($list_fg as $value){ ?>
                                             <option value='<?=$value->id;?>'>
                                                 <?=' ('.$value->kode.') '.$value->jenis_barang;?>
@@ -45,7 +45,6 @@
                         <div class="col-md-8">
                             <select id="bl" name="bl" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
                                     <option value="0">Global</option>
-                                    <option value="1">Per Palette</option>
                                 </select>
                         </div>
                     </div>
@@ -95,7 +94,7 @@ function simpanData(){
         var bl=$('#bl').val();
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/GudangFG/kartu_stok?r='+r+'&ts='+s+'&te='+e+'&bl='+bl,'_blank');
+        window.open('<?php echo base_url();?>index.php/GudangWIP/kartu_stok?r='+r+'&ts='+s+'&te='+e+'&bl='+bl,'_blank');
     };
 };
 </script>

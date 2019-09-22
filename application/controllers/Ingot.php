@@ -1583,7 +1583,7 @@ class Ingot extends CI_Controller{
             $this->db->where('id',$get['dtr_detail_id']);
             $this->db->update('dtr_detail',array(
                             'flag_taken' => 0,
-                            'tanggal_keluar' => '0000-00-00'
+                            'tanggal_keluar' => null
                             ));
 
             $this->db->where('id', $id);

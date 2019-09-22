@@ -167,13 +167,16 @@
                                 //     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliFinishGood/proses_dtbj/'.$data->id.'" 
                                 //         style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
                                 // }
-                                if ($data->status==0 && $data->supplier_id==0 ){
+                                if ($data->status==0 && $data->jumlah_item != 0 && ($data->supplier_id==0 || $data->flag_gudang == 0)){
                                     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliFinishGood/proses_dtbj/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
                                 }
                                 if ($data->status==0 && $data->jumlah_item==0){
                                     echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/BeliFinishGood/create_dtbj/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit &nbsp;</a> ';
                                 }else{
                                     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliFinishGood/edit_dtbj/'.$data->id.'" style="margin-bottom:4px">&nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>';
+                                }
+                                if (($data->status==0 && $data->jumlah_item==0)|| $data->status==9){
+                                    echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/BeliFinishGood/delete_dtbj/'.$data->id.'" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"> &nbsp; <i class="fa fa-trash"></i> Delete &nbsp;</a> ';
                                 }
                                 if($group_id==1 || $hak_akses['print_dtbj']==1){
                                     echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/BeliFinishGood/view_dtbj/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-book"></i> View &nbsp;</a> ';

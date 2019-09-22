@@ -2380,7 +2380,7 @@ class BeliSparePart extends CI_Controller{
                         'vk_id'=> $this->input->post('id'),
                         'id_fk'=> $f_kas,
                         'keterangan'=> $this->input->post('remarks'),
-                        'amount'=> str_replace('.', '', $this->input->post('nominal')),
+                        'amount'=> str_replace('.', '', $this->input->post('total_lpb')),
                         'created'=> $tanggal,
                         'created_by'=> $user_id,
                         'modified'=> $tanggal,

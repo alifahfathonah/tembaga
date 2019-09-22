@@ -142,6 +142,7 @@
                     </table>
                 </td>
             </tr>
+            <!-- KATA BU LINGLING INI GAUSAH ADA
             <tr><td colspan="3">
                     <table border="0" width="100%">
                         <tr>
@@ -158,7 +159,7 @@
                         </tr>
                     </table>
                 </td>
-            </tr>
+            </tr> -->
         </table>
 	<body onLoad="window.print()">
     </body>

@@ -527,37 +527,52 @@
                         <span class="arrow "></span>
                         </a>
                         <ul class="sub-menu">
-                        <?php if($group_id==1 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
+                        <?php if($group_id==1 || $group_id == 21 || (isset($akses_menu['spb_list']) && $akses_menu['spb_list']==1)){ ?>
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangWIP/spb_list">
                                 <i class="fa fa-file-word-o"></i>
                                 SPB WIP </a>
                             </li>
-                        <?php } if($group_id==1 || (isset($akses_menu['bpb_list']) && $akses_menu['bpb_list']==1)){ ?>
+                        <?php } if($group_id==1 || $group_id == 21 || (isset($akses_menu['bpb_list']) && $akses_menu['bpb_list']==1)){ ?>
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangWIP/bpb_list">
                                 <i class="fa fa-file-excel-o"></i>
                                 BPB WIP </a>
                             </li>
-                        <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                        <?php } if($group_id==1 || $group_id == 21 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/GudangWIP">
                                 <i class="fa fa-cubes"></i>
                                 Gudang WIP </a>
-                            </li>                            
-                        <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
-                            <li>
-                                <a href="<?php echo base_url(); ?>index.php/GudangWIP/laporan_list">
-                                <i class="fa fa-briefcase"></i>
-                                Laporan WIP </a>
                             </li>
-                        <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                        <?php }  ?>
                             <li>
-                                <a href="<?php echo base_url(); ?>index.php/GudangWIP/stok_wip">
-                                <i class="fa fa-inbox"></i>
-                                Stok WIP </a>
+                                <a href="javascript:;">
+                                <i class="fa fa-book"></i>
+                                <span class="title">Laporan Gudang</span>
+                                <span class="arrow "></span>
+                                </a>
+                                <ul class="sub-menu">
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangWIP/kartu_stok_wip">
+                                        <i class="fa fa-search"></i>
+                                        Kartu Stok WIP </a>
+                                    </li>
+                                <?php if($group_id==1 || $group_id == 21 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangWIP/laporan_list">
+                                        <i class="fa fa-briefcase"></i>
+                                        Laporan WIP </a>
+                                    </li>
+                                <?php } if($group_id==1 || $group_id == 21 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangWIP/stok_wip">
+                                        <i class="fa fa-inbox"></i>
+                                        Stok WIP </a>
+                                    </li>
+                                <?php } ?>
+                                </ul>
                             </li>
-                        <?php } ?>
                         </ul>
                         </li>
 

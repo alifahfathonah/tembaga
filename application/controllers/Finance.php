@@ -212,8 +212,6 @@ class Finance extends CI_Controller{
             if($user_ppn==1){
                 $this->load->helper('target_url');
 
-                $this->load->model('Model_beli_rongsok');
-
                 $data_post['fum'] = array_merge($data, array('reff1'=>$insert_id));
                 $data_post['f_kas'] = array_merge($dataf, array('reff1'=>$f_kas_insert_id));
 
@@ -231,6 +229,10 @@ class Finance extends CI_Controller{
                 curl_close($ch);
                 // print_r($response);
                 // die();
+                if($result['status']==true){
+                    $this->db->where('id', $f_kas_insert_id);
+                    $this->db->update('f_kas', array('api'=>1));
+                }
             }
 
         if($this->db->trans_complete()){
@@ -353,6 +355,7 @@ class Finance extends CI_Controller{
 
     function update_um(){
         $user_id = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
         $id = $this->input->post('header_id');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal_baru')));
         $tanggal  = date('Y-m-d h:m:s');
@@ -371,6 +374,11 @@ class Finance extends CI_Controller{
                 'modified_by'=>$user_id,
                 'update_remarks'=>$this->input->post('update_remarks')
             );
+
+            $data_f = array(
+                'tanggal'=> $tgl_input,
+                'nominal'=>str_replace(',', '', $this->input->post('nominal_baru'))
+            );
         }else if($jenis=="Cek"){
             $data = array(
                 'tanggal'=>$tgl_input,
@@ -380,6 +388,11 @@ class Finance extends CI_Controller{
                 'modified_at'=>$tanggal,
                 'modified_by'=>$user_id,
                 'update_remarks'=>$this->input->post('update_remarks')
+            );
+
+            $data_f = array(
+                'tanggal'=> $tgl_input,
+                'nominal'=>str_replace(',', '', $this->input->post('nominal_baru'))
             );
         }else{
             $data = array(
@@ -399,19 +412,43 @@ class Finance extends CI_Controller{
                 'keterangan'=> $this->input->post('remarks'),
                 'nominal'=>str_replace(',', '', $this->input->post('nominal_baru'))
             );
-
-            $this->db->where('id_um', $id);
-            $this->db->update('f_kas', $data_f);
         }
+
+        $this->db->where('id_um', $id);
+        $this->db->update('f_kas', $data_f);
+
         $this->db->where('id', $id);
         $this->db->update('f_uang_masuk', $data);
+
+            if($user_ppn==1){
+                $this->load->helper('target_url');
+
+                $data_post['id'] = $id;
+                $data_post['fum'] = $data;
+                $data_post['f_kas'] = $data_f;
+
+                $detail_post = json_encode($data_post);
+                // print_r($detail_post);
+                // die();
+
+                $ch = curl_init(target_url().'api/FinanceAPI/um_update');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
 
         if($this->db->trans_complete()){
             $this->session->set_flashdata('flash_msg', 'Uang Masuk berhasil di update');
             redirect('index.php/Finance/view_um/'.$id);
         }else{
             $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
-        }             
+        }
     }
 
     function reject_um(){
@@ -640,7 +677,7 @@ class Finance extends CI_Controller{
             $tabel .= '<td>'.$row->jenis_voucher.'</td>';
             $tabel .= '<td>'.$row->jenis_barang.'</td>';
             $tabel .= '<td>'.number_format($row->amount,0,',','.').'</td>';
-            $tabel .= '<td>'.$row->keterangan.'</td>';
+            $tabel .= '<td>'.$row->nm_cost.' '.$row->keterangan.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail_vc('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
@@ -687,6 +724,7 @@ class Finance extends CI_Controller{
 
         $this->load->model('Model_finance');
         $voucher= $this->Model_finance->list_voucher($id)->row_array();
+        $voucher['amount'] =number_format($voucher['amount'],2,',','.');
 
         header('Content-Type: application/json');
         echo json_encode($voucher);
@@ -734,6 +772,22 @@ class Finance extends CI_Controller{
         }           
         header('Content-Type: application/json');
         echo json_encode($return_data);
+    }
+
+    function print_matching_pmb(){
+        $id = $this->uri->segment(3);
+        if($id){       
+            $this->load->helper('terbilang_helper');
+            $this->load->helper('tanggal_indo');
+            $this->load->model('Model_finance');
+            $data['header'] = $this->Model_finance->header_pembayaran($id)->row_array();
+            $data['details'] = $this->Model_finance->load_detail($id)->result();
+            $data['details_um'] = $this->Model_finance->detail_pembayaran_um($id)->result();
+
+            $this->load->view('finance/print_matching_pmb', $data);
+        }else{
+            redirect('index.php'); 
+        }
     }
 
     function add_detail_um(){
@@ -2711,23 +2765,37 @@ class Finance extends CI_Controller{
 
     function save_slip_setoran(){
         $user_id   = $this->session->userdata('user_id');
+        $user_ppn  = $this->session->userdata('user_ppn');
         $tanggal   = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
-
-        $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('BM');
+        $tgl_um = date('Y', strtotime($this->input->post('tanggal')));
+            if($user_ppn == 1){
+                if($this->input->post('bank_id')<=3){
+                    $num = 'KM-KMP';
+                }else{
+                    $num = 'BM-KMP';
+                }
+            }else{
+                if($this->input->post('bank_id')<=3){
+                    $num = 'KM';
+                }else{
+                    $num = 'BM';
+                }
+            }
+            $code = $num.'.'.$tgl_um.'.'.$this->input->post('no_uang_masuk');
 
         $data_um = array(
             'no_uang_masuk'=> $code,
             'm_customer_id'=> 0,
-            'tanggal'=> $this->input->post('tanggal'),
+            'tanggal'=> $tanggal,
             'status'=> 1,
             'flag_ppn'=> 0,
             'jenis_pembayaran'=> 'Setor Tunai',
             'rekening_tujuan'=> $this->input->post('bank_id'),
             'currency'=> 'IDR',
+            'kurs'=>1,
             'nominal'=> str_replace('.', '', $this->input->post('nominal')),
             'keterangan'=> 'Slip Setoran | '.$this->input->post('remarks'),
             'created_at'=> $tanggal,
@@ -2745,6 +2813,7 @@ class Finance extends CI_Controller{
             'id_bank'=> $this->input->post('bank_id'),
             'id_slip_setoran'=> $this->input->post('slip_id'),
             'currency'=> 'IDR',
+            'kurs'=>1,
             'nominal'=> str_replace('.', '', $this->input->post('nominal')),
             'keterangan'=> $this->input->post('remarks'),
             'created_at'=> $tanggal,

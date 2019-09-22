@@ -373,7 +373,7 @@ function get_data_vc(id){
                 $('#jenis_voucher').val(result['jenis_voucher']);
                 $('#jenis_barang').val(result['jenis_barang']);
                 $('#amount_vc').val(numberWithCommas(result['amount']));
-                $('#keterangan_vc').val(result['keterangan']);
+                $('#keterangan_vc').val(result['nm_cost']+result['keterangan']);
             }
         });
     }

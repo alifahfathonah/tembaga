@@ -28,6 +28,14 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
+                            No. Cek Masuk
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="no_uang_masuk" id="no_uang_masuk" class="form-control myline" style="margin-bottom:5px" onkeyup="this.value = this.value.toUpperCase()" placeholder="Nomor Uang Masuk ...">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Pilih Bank Tujuan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -136,7 +144,10 @@ function get_data(){
 }
 
 function simpanData(){
-    if($.trim($("#tanggal").val()) == ""){
+    if($.trim($("#no_uang_masuk").val()) == ""){
+        $('#message').html("Nomor Uang Masuk harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#bank_id").val()) == ""){

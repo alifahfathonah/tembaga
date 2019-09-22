@@ -814,6 +814,7 @@ class SalesOrder extends CI_Controller{
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
+                // print_r($response);die();
             }
 
         if($this->db->trans_complete()){
@@ -1460,7 +1461,7 @@ class SalesOrder extends CI_Controller{
         if ($jenis == 'FG') {
             foreach ($loop as $row) {
                 $this->db->where('id', $row->gudang_id);
-                $this->db->update('t_gudang_fg', array('flag_taken' => 1));
+                $this->db->update('t_gudang_fg', array('flag_taken' => 1, 't_sj_id'=> $sjid));
             }
         } else if ($jenis == 'WIP') {
             foreach ($loop as $row) {
@@ -1557,6 +1558,8 @@ class SalesOrder extends CI_Controller{
                     $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang_wip($sjid)->result();
                 }elseif($jenis == 'RONGSOK'){
                     $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang_rsk($sjid)->result();
+                }elseif ($jenis == 'LAIN'){
+                    $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang_lain($sjid)->result();
                 }
                     $post = json_encode($data_post);
                 // print_r($post);

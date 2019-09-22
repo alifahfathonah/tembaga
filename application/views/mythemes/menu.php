@@ -591,20 +591,33 @@
                                 Gudang WIP </a>
                             </li>
                         <?php }  ?>
-                            <!-- ambil produksi disini -->
-                        <?php if($group_id==1 || $group_id == 21 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                             <li>
-                                <a href="<?php echo base_url(); ?>index.php/GudangWIP/laporan_list">
-                                <i class="fa fa-briefcase"></i>
-                                Laporan WIP </a>
+                                <a href="javascript:;">
+                                <i class="fa fa-book"></i>
+                                <span class="title">Laporan Gudang</span>
+                                <span class="arrow "></span>
+                                </a>
+                                <ul class="sub-menu">
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangWIP/kartu_stok_wip">
+                                        <i class="fa fa-search"></i>
+                                        Kartu Stok WIP </a>
+                                    </li>
+                                <?php if($group_id==1 || $group_id == 21 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangWIP/laporan_list">
+                                        <i class="fa fa-briefcase"></i>
+                                        Laporan WIP </a>
+                                    </li>
+                                <?php } if($group_id==1 || $group_id == 21 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangWIP/stok_wip">
+                                        <i class="fa fa-inbox"></i>
+                                        Stok WIP </a>
+                                    </li>
+                                <?php } ?>
+                                </ul>
                             </li>
-                        <?php } if($group_id==1 || $group_id == 21 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
-                            <li>
-                                <a href="<?php echo base_url(); ?>index.php/GudangWIP/stok_wip">
-                                <i class="fa fa-inbox"></i>
-                                Stok WIP </a>
-                            </li>
-                        <?php } ?>
                         </ul>
                         </li>
 
