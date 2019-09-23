@@ -100,3 +100,13 @@ TRUNCATE `t_spb_wip_fulfilment`;
 TRUNCATE `t_surat_jalan`;
 TRUNCATE `t_surat_jalan_detail`;
 TRUNCATE `voucher`;
+
+
+
+
+update t_sj_id di t_gudang_fg
+UPDATE t_gudang_fg tgf LEFT JOIN (
+	SELECT tsjd.t_sj_id, tsjd.no_packing
+	FROM t_surat_jalan_detail tsjd
+) x ON tgf.no_packing = x.no_packing
+SET tgf.t_sj_id = x.t_sj_id;
