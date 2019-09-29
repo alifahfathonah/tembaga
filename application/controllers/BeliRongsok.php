@@ -721,6 +721,11 @@ class BeliRongsok extends CI_Controller{
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
+
+                if($result['status']==true){
+                    $this->db->where('id', $fk_id);
+                    $this->db->update('f_kas', array('api'=>1));
+                }
             }
 
             if($this->db->trans_complete()){  
@@ -1188,96 +1193,6 @@ class BeliRongsok extends CI_Controller{
         redirect('index.php/BeliRongsok/ttr_list');
     }
 
-    // public function approve_ttr(){
-    //     $ttr_id = $this->input->post('id');
-    //     $tanggal = date('Y-m-d h:i:s');
-    //     $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-    //     $user_id = $this->session->userdata('user_id');
-    //     $user_ppn = $this->session->userdata('user_ppn');
-
-    //     $this->db->trans_start();
-    //     $this->load->model('Model_m_numberings');
-    //     if($user_ppn==1){
-    //         // $code = $this->Model_m_numberings->getNumbering('TTR-KMP', $tgl_input);
-    //     }else{
-    //         if($this->input->post('flag_gudang') > 0){
-    //             $num = 'TTR';
-    //         }else{
-    //             $num = 'BPB-R';
-    //         }
-    //     }
-    //         $code = $this->Model_m_numberings->getNumbering($num, $tgl_input);
-
-    //     #Update status TTR
-    //         $this->db->where('id',$ttr_id);
-    //         $result = $this->db->update('ttr', array(
-    //                 'no_ttr' => $code,
-    //                 'no_sj' => $this->input->post('no_sj'),
-    //                 'tanggal' => $tgl_input,
-    //                 'jmlh_afkiran' => $this->input->post('jumlah_afkir'),
-    //                 'jmlh_pengepakan' => $this->input->post('jumlah_packing'),
-    //                 'jmlh_lain'=> $this->input->post("jumlah_lain"),
-    //                 'ttr_status'=>1,
-    //                 'tgl_approve'=>$tanggal,
-    //                 'approved_by'=>$user_id));
-
-    //     // #Update Stok Rongsok Tersedia
-    //     //     $this->load->model('Model_beli_rongsok');
-    //     //     $dtr_list = $this->Model_beli_rongsok->show_detail_dtr_by_ttr($ttr_id)->result();
-    //     //     foreach ($dtr_list as $k => $v) {
-    //     //         $this->Model_beli_rongsok->update_stok_tersedia($v->rongsok_id,$v->netto);
-    //     //     }
-        
-            
-    //     if($this->db->trans_complete()){
-    //         $message['status'] = '1';
-    //         $message['message'] = 'TTR berhasil diterima dengan no: '.$code;
-    //     }else{
-    //         $message['status'] = '0';
-    //         $message['message'] = 'Error terima TTR, silahkan coba lagi';
-    //     }
-            
-    //     header('Content-Type: application/json');
-    //     echo json_encode($message);
-        
-
-    //             #Update Stok Rongsok
-    //             /*
-    //             $get_stok = $this->Model_beli_rongsok->cek_stok($row->nama_item, 'RONGSOK')->row_array(); 
-    //             if($get_stok){
-    //                 $stok_id  = $get_stok['id'];            
-    //                 $this->db->where('id', $stok_id);
-    //                 $this->db->update('t_inventory', array(
-    //                         'stok_bruto'=>($get_stok['stok_bruto']+ $row->bruto), 
-    //                         'stok_netto'=>($get_stok['stok_netto']+ $row->netto), 
-    //                         'modified'=>$tanggal, 
-    //                         'modified_by'=>$user_id));
-    //             }else{
-    //                 $this->db->insert('t_inventory', array(
-    //                         'nama_produk'=>$row->nama_item,
-    //                         'jenis_item'=>'RONGSOK',
-    //                         'stok_bruto'=>$row->bruto, 
-    //                         'stok_netto'=>$row->netto, 
-    //                         'created'=>$tanggal, 
-    //                         'created_by'=>$user_id,
-    //                         'modified'=>$tanggal, 
-    //                         'modified_by'=>$user_id));
-                    
-    //                 $stok_id = $this->db->insert_id();
-    //             }
-                
-    //             #Save data ke tabel t_inventory_detail
-    //             $this->db->insert('t_inventory_detail', array(
-    //                 't_inventory_id'=>$stok_id,
-    //                 'tanggal'=>$tanggal,
-    //                 'bruto_masuk'=>$row->bruto,
-    //                 'netto_masuk'=>$row->netto,
-    //                 'remarks'=>'Pembelian rongsok',
-    //             ));
-                
-    //             */
-    // }
-
     function approve_ttr(){
         $ttr_id = $this->input->post('id');
         $tanggal = date('Y-m-d h:i:s');
@@ -1289,7 +1204,11 @@ class BeliRongsok extends CI_Controller{
         $this->load->model('Model_m_numberings');
 
             if($this->input->post('flag_gudang') > 0){
-                $num = 'TTR';
+                if($this->input->post('po_id') > 0 || $this->input->post('so_id') > 0){
+                    $num = 'TTR';
+                }else{
+                    $num = 'BPB-R';
+                }
             }else{
                 $num = 'BPB-R';
             }

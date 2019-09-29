@@ -27,7 +27,7 @@ class Model_surat_jalan extends CI_Model{
 
 	function list_sj_so($jb){
 		$data = $this->db->query("select tsj.*, mc.nama_cv as nama_customer, coalesce(ts.no_so,rtp.no_po) as no_reff, 
-			(select count(tsjd.id) from r_t_surat_jalan_detail tsjd where tsjd.sj_resmi_id = tsj.id) as jumlah_item
+			(select count(tsjd.id) from r_t_surat_jalan_detail tsjd where tsjd.sj_resmi_id = tsj.id) as jumlah_item, (select id from r_t_so where jenis_so = 'SO KMP' and po_id = tsj.r_po_id) as check_so_kmp
 			from r_t_surat_jalan tsj
             left join r_t_po rtp on rtp.id = tsj.r_po_id
         	left join r_t_so ts on ts.id = tsj.r_so_id

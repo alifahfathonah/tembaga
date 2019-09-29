@@ -158,7 +158,7 @@
                             <li>
                                 <a href="<?php echo base_url(); ?>index.php/Sinkronisasi/finance_sync">
                                 <i class="fa fa-money"></i>
-                                Finance Sync </a>
+                                Sync SO </a>
                             </li>
                             <!-- <li>
                                 <a href="<?php echo base_url(); ?>index.php/R_SuratJalan/fg">
@@ -177,7 +177,13 @@
                             <li>
                                 <a href="<?= base_url() ?>index.php/R_Sinkronisasi">
                                     <i class="fa fa-refresh"></i>
-                                    <span class="title">SINKRONISASI</span>
+                                    <span class="title">Sync SO</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?= base_url() ?>index.php/R_Sinkronisasi/tolling_sync">
+                                    <i class="fa fa-refresh"></i>
+                                    <span class="title">Sync Tolling</span>
                                 </a>
                             </li>
                         </ul>

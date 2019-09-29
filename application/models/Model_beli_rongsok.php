@@ -372,6 +372,7 @@ class Model_beli_rongsok extends CI_Model{
         $data = $this->db->query("Select ttr.*, 
                     dtr.no_dtr,
                     dtr.po_id,
+                    dtr.so_id,
                     dtr.tanggal as tgl_dtr,
                     dtr.type,
                     po.no_po, po.ppn,

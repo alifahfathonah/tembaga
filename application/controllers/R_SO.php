@@ -135,7 +135,7 @@ class R_SO extends CI_Controller{
                 $this->load->helper('target_url');
 
                 $reff_so = array('reff2' => $so_id, 'no_po'=>$this->input->post('no_po'), 'idkmp'=>$this->input->post('idkmp'));
-                $data_post['nomor_spb'] = $num;
+                $data_post['nomor_spb'] = 'SPB-T.'.$tgl_code.'.'.$this->input->post('no_so');
                 $data_post['header'] = array_merge($t_data, $reff_so);
                 $data_post['detail'] = $detail;
 

@@ -51,6 +51,12 @@ class Model_r_rongsok extends CI_Model{
             ");
     }
 
+    function view_pindah($id){
+        return $this->db->query("Select tgf.*, jb.jenis_barang, jb.uom from t_gudang_fg tgf 
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            where tgf.flag_pindah =".$id);
+    }
+
     function show_header_pindah($id){
         return $this->db->query("Select tp.*, jb.kode, jb.jenis_barang From t_pindah tp
             left join jenis_barang jb on jb.id = tp.jenis_barang_id

@@ -8,12 +8,8 @@
         <tr>
           <td colspan="2" align="center">
             <!-- <h4>Laporan sisa Sales Order per <?= date("M Y", strtotime($this->uri->segment(3))) ?></h4> -->
-            <h4>Laporan sisa Sales Order per <?=tanggal_indo(date("Y-m-d")); ?></h4>
+            <h4>Laporan Sales Order per <?=tanggal_indo(date("Y-m-d", strtotime($_GET['ts']))).' sampai '.tanggal_indo(date("Y-m-d", strtotime($_GET['te']))); ?></h4>
           </td>
-        </tr>
-        <tr>
-          <td>Netto Bulanan : <?=number_format($detailBulanan['netto'],2,',','.');?></td>
-          <td>Netto Harian : <?=number_format($detailHarian['netto'],2,',','.');?></td>
         </tr>
       </table>
       <table width="100%" cellpadding="1" cellspacing="0" style="font-size: 13px;">

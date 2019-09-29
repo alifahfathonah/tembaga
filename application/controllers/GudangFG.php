@@ -2249,18 +2249,26 @@ class GudangFG extends CI_Controller{
         $data['start'] = $start;
         $data['end'] = $end;
 
-            $this->load->model('Model_gudang_fg');
-            $data['stok_before'] = $this->Model_gudang_fg->show_kartu_stok_before($start,$end,$jb_id)->row_array();
+        $this->load->model('Model_gudang_fg');
 
         if($_GET['bl']==0){
             if($jb_id == 0){
-                $data['detailLaporan'] = $this->Model_gudang_fg->show_kartu_stok_all($start,$end)->result();
-                $this->load->view('gudang_fg/kartu_stok_all', $data);
+            $query = $this->Model_gudang_fg->jb_sisa_available($start,$end)->result();
+                foreach ($query as $key => $v) {
+                    if(($v->netto_masuk - $v->netto_keluar)>0){
+                        $data['loop'][$key]['stok_before'] = get_object_vars($v);
+                        $data['loop'][$key]['detailLaporan'] = $this->Model_gudang_fg->show_kartu_stok_detail($start,$end,$v->jenis_barang_id)->result();
+                    }
+                }
+                // print_r($data['loop']);die();
+            $this->load->view('gudang_fg/kartu_stok_all', $data);
             }else{
+                $data['stok_before'] = $this->Model_gudang_fg->show_kartu_stok_before($start,$end,$jb_id)->row_array();
                 $data['detailLaporan'] = $this->Model_gudang_fg->show_kartu_stok_detail($start,$end,$jb_id)->result();
                 $this->load->view('gudang_fg/kartu_stok', $data);
             }
         }else{
+            $data['stok_before'] = $this->Model_gudang_fg->show_kartu_stok_before($start,$end,$jb_id)->row_array();
             $data['detailLaporan'] = $this->Model_gudang_fg->show_kartu_stok_detail_packing($start,$end,$jb_id)->result();
             $this->load->view('gudang_fg/kartu_stok_packing', $data);
         }

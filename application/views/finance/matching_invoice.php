@@ -50,6 +50,7 @@
                                 </div>
                                 <div class="col-md-7">
                                     <input type="text" id="no_inv" name="no_inv" class="form-control myline" style="margin-bottom:5px" readonly="readonly">
+                                    <input type="hidden" id="inv_type" name="inv_type">
                                     <input type="hidden" id="inv_id" name="inv_id">
                                 </div>
                             </div>
@@ -402,7 +403,7 @@ function hitungSubTotalInv(){
     n2 = $('#nominal_bayar').val().toString().replace(/\,/g, "");
     n3 = $('#nominal_potongan').val().toString().replace(/\,/g, "");
     total_harga = Number(nominal_inv) - (Number(n1) + Number(n2) + Number(n3));
-    console.log(nominal_inv+' | '+n3+' | '+total_harga);
+    // console.log(nominal_inv+' | '+n3+' | '+total_harga);
     $('#sisa_invoice').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }
 
@@ -429,11 +430,14 @@ function list_inv(id_cust,id){
     });
 }
 
-function input_inv(id){
+function input_inv(id,type){
     $.ajax({
         url: "<?php echo base_url('index.php/Finance/get_data_inv'); ?>",
         type: "POST",
-        data: "id="+id,
+        data: {
+            id:id,
+            type:type
+        },
         dataType: "json",
         success: function(result){
             $("#InvModal").find('.modal-title').text('Input Invoice');
@@ -443,6 +447,7 @@ function input_inv(id){
             $("#id_modal_inv").val(<?php echo $header['id'];?>);
             $("#no_inv").val(result['no_invoice']);
             $("#inv_id").val(result['id']);
+            $("#inv_type").val(type);
             $("#nominal_inv").val(numberWithCommas(result['nilai_invoice']));
             $("#nominal_sdh_bayar").val(numberWithCommas(result['nilai_bayar']));
             $("#nominal_potongan").val(numberWithCommas(result['nilai_pembulatan']));
@@ -468,7 +473,8 @@ $('#tambah_inv').click(function(event) {
                nominal_sdh_bayar:$('#nominal_sdh_bayar').val(),
                nominal_bayar:$('#nominal_bayar').val(),
                nominal_potongan:$('#nominal_potongan').val(),
-               sisa_invoice:$('#sisa_invoice').val()
+               sisa_invoice:$('#sisa_invoice').val(),
+               inv_type:$('#inv_type').val()
             },
             type: "POST",
             success: function(result){
@@ -506,23 +512,25 @@ $('#tambah_inv').click(function(event) {
 // }
 
 function delInv(id,id_inv){
-    $.ajax({
-        type:"POST",
-        url:'<?php echo base_url('index.php/Finance/del_inv_match'); ?>',
-        data:{
-           id:id,
-           id_inv:id_inv
-        },
-        success:function(result){
-            if(result['message_type']=="sukses"){
-                list_inv(<?php echo $header['id_customer'].','.$header['id'];?>);
-                data_inv(<?php echo $header['id'];?>);
-            }else{
-                $('#message').html(result['message']);
-                $('.alert-danger').show(); 
-            }            
-        }
-    });
+    if(confirm('Anda yakin menghapus invoice ini?')){
+        $.ajax({
+            type:"POST",
+            url:'<?php echo base_url('index.php/Finance/del_inv_match'); ?>',
+            data:{
+               id:id,
+               id_inv:id_inv
+            },
+            success:function(result){
+                if(result['message_type']=="sukses"){
+                    list_inv(<?php echo $header['id_customer'].','.$header['id'];?>);
+                    data_inv(<?php echo $header['id'];?>);
+                }else{
+                    $('#message').html(result['message']);
+                    $('.alert-danger').show(); 
+                }            
+            }
+        });
+    }
 }
 
 function data_inv(id){
@@ -550,6 +558,7 @@ function view_inv(id){
             $("#tambah_inv").hide();
             $("#simpan_inv").show();
             $("#id_modal_inv").val(result['id']);
+            $("#inv_type").val(result['inv_type']);
             $("#no_inv").val(result['no_invoice']);
             $("#inv_id").val(result['id_inv']);
             $("#nominal_inv").val(numberWithCommas(result['nilai_invoice']));
@@ -567,6 +576,7 @@ $('#simpan_inv').click(function(event) {
         $('#message').html("Nominal di Bayar harus diisi, tidak boleh kosong!");
         $('.alert-danger').show();
     }else{
+        $(this).prop('disabled', true);
         $.ajax({// Run getUnlockedCall() and return values to form
             url: "<?php echo base_url('index.php/Finance/save_inv_match'); ?>",
             data:{
@@ -575,7 +585,8 @@ $('#simpan_inv').click(function(event) {
                nominal_sdh_bayar:$('#nominal_sdh_bayar').val(),
                nominal_bayar:$('#nominal_bayar').val(),
                nominal_potongan:$('#nominal_potongan').val(),
-               sisa_invoice:$('#sisa_invoice').val()
+               sisa_invoice:$('#sisa_invoice').val(),
+               inv_type:$('#inv_type').val()
             },
             type: "POST",
             success: function(result){
@@ -583,6 +594,7 @@ $('#simpan_inv').click(function(event) {
                     $("#InvModal").modal('hide'); 
                     list_inv(<?php echo $header['id_customer'].','.$header['id'];?>);
                     data_inv(<?php echo $header['id'];?>);
+                    $('#simpan_inv').prop('disabled', false);
                 } else {
                     $("#InvModal").modal('hide'); 
                 }

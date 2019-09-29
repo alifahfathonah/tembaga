@@ -212,7 +212,7 @@ class R_Sinkronisasi extends CI_Controller{
     }
 
     function do_sync_sj() {
-    	set_time_limit(600);
+    	// set_time_limit(600);
         /*
         * surat jalan
         */
@@ -302,5 +302,68 @@ class R_Sinkronisasi extends CI_Controller{
 
         $this->session->set_flashdata('flash_msg', 'Sinkronisasi selesai.');
         return redirect('index.php/R_Sinkronisasi/');
+    }
+
+    function tolling_sync(){
+    	$module_name = $this->uri->segment(1);
+        $po_id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "resmi/sinkronisasi/cv_tolling_sync";
+
+        $data['count_tolling'] = $this->Model_r_sinkronisasi->count_tolling_kmp()->row_array();
+
+        $this->load->view('layout', $data);
+    }
+
+    function do_sync_tolling() {
+    	// set_time_limit(600);
+        /*
+        * surat jalan
+        */
+        $tolling = $this->Model_r_sinkronisasi->get_tolling_kmp()->result_array();
+        // print_r($tolling);die();
+        if (!empty($tolling)) {
+        	foreach ($tolling as $key => $row) {
+	        	$header[$key] = $tolling[$key];
+
+	        	$sjd[$key] = $this->Model_r_sinkronisasi->get_tolling_detail_kmp($row['id'])->result_array();
+
+	        	$data[$key] = array_merge($header[$key], ['details' => $sjd[$key]]);
+	        }
+
+        	$json = json_encode($data);
+        	// print_r($json);die();
+
+	        $ch = curl_init();
+	        curl_setopt($ch, CURLOPT_URL, target_url().'api/ReffAPI/tolling_sync');
+	        curl_setopt($ch, CURLOPT_POST, true);
+	        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+	        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+	        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	        // curl_setopt($ch, CURLOPT_HEADER, 0);
+	        // curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+	        $response = curl_exec($ch);
+	        $result = json_decode($response, true);
+	        curl_close($ch);
+	        // print_r($response);die();
+	        if($result['status']==true){
+	        	$this->db->trans_start();
+	        	foreach ($tolling as $key => $value) {
+	        		$this->db->where('id', $value['sj_id']);
+	        		$this->db->update('r_t_surat_jalan', ['api' => 1]);
+	        	}
+	        	$this->db->trans_complete();
+	        }
+        }
+
+
+        $this->session->set_flashdata('flash_msg', 'Sinkronisasi selesai.');
+        return redirect('index.php/R_Sinkronisasi/tolling_sync');
     }
 }

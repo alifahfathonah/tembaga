@@ -371,7 +371,7 @@ class Model_sales_order extends CI_Model{
             left join spb on tso.jenis_barang='RONGSOK' and spb.id = tso.no_spb
             left join m_customers mc on mc.id = so.m_customer_id
             Where so.flag_tolling = 0 And so.flag_ppn = ".$user_ppn." And tso.no_spb > 0
-            order by so.tanggal desc");
+            order by so.no_sales_order desc");
         return $data;
     }
 
@@ -541,8 +541,11 @@ class Model_sales_order extends CI_Model{
     }
 
     function load_view_sjd($id){
-        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.berat, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jba.jenis_barang as jenis_barang_a, jb.uom, jb.kode, jba.kode as kode_alias
+        $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.berat, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jba.jenis_barang as jenis_barang_a, jb.uom, jb.kode, jba.kode as kode_alias, 
+            (select tsod.amount from t_sales_order_detail tsod 
+            where tsod.t_so_id = tsj.sales_order_id and tsod.jenis_barang_id = case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)as amount 
                 from t_surat_jalan_detail tsjd
+                left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
                 left join jenis_barang jb on jb.id= tsjd.jenis_barang_id
                 left join jenis_barang jba on tsjd.jenis_barang_alias != 0 and jba.id = tsjd.jenis_barang_alias
                 where tsjd.t_sj_id = ".$id);
@@ -578,7 +581,7 @@ class Model_sales_order extends CI_Model{
 
     function tsjd_get_gudang($id){
         $data = $this->db->query("Select 
-                tsjd.id as id_sj_d, tsjd.t_sj_id, tsjd.jenis_barang_id as sj_jb, tsjd.jenis_barang_alias, tsjd.qty as jb_qty, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks,
+                tsjd.id as id_sj_d, tsjd.t_sj_id, (case when tsjd.jenis_barang_alias = 0 then tsjd.jenis_barang_id else tsjd.jenis_barang_alias end) as sj_jb, tsjd.jenis_barang_alias, tsjd.qty as jb_qty, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks,
                 tgf.*, 
                 tbf.no_bpb_fg, tbf.tanggal as tgl_bpb, tbf.jenis_barang_id as jb_bpb, tbf.keterangan as ket_bpb,
                 tbfd.id as id_bpb_d, tbfd.jenis_barang_id as jbd, tbfd.no_produksi, tgf.berat_bobbin,

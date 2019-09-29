@@ -449,8 +449,9 @@ class Model_finance extends CI_Model{
 
     function matching_header_print($id){
         $data = $this->db->query("select fm.*, mc.nama_customer, mc.pic, mc.alamat, 
-            (select sum(fmd.inv_bayar+fi.nilai_pembulatan) from f_match_detail fmd 
-            left join f_invoice fi on fi.id = fmd.id_inv
+            (select sum(fmd.inv_bayar+COALESCE(fi.nilai_pembulatan,rti.nilai_pembulatan)) from f_match_detail fmd 
+            left join f_invoice fi on fmd.inv_type = 0 and fi.id = fmd.id_inv
+            left join r_t_inv_jasa rti on fmd.inv_type = 1 and rti.id = fmd.id_inv
             where fmd.id_match = fm.id) as total
             from f_match fm 
             left join m_customers mc on mc.id = fm.id_customer
@@ -460,9 +461,10 @@ class Model_finance extends CI_Model{
 
     function load_invoice_match_print($id){
         $data = $this->db->query("
-            (select fi.no_invoice as nomor, fmd.inv_bayar+fi.nilai_pembulatan as nominal, fi.tanggal
+            (select COALESCE(fi.no_invoice,rti.no_invoice_jasa) as nomor, fmd.inv_bayar+COALESCE(fi.nilai_pembulatan,rti.nilai_pembulatan) as nominal, COALESCE(fi.tanggal,rti.tanggal) as tanggal
             from f_match_detail fmd
-            left join f_invoice fi on fi.id = fmd.id_inv
+            left join f_invoice fi on fmd.inv_type = 0 and fi.id = fmd.id_inv
+            left join r_t_inv_jasa rti on fmd.inv_type = 1 and rti.id = fmd.id_inv
             where fmd.id_match =".$id." and fmd.id_um = 0 and biaya = 0)
                 UNION ALL
             (select 'SELISIH' as nomor, fi.nilai_pembulatan*-1 as nominal, '' as tanggal from f_match_detail fmd
@@ -485,9 +487,10 @@ class Model_finance extends CI_Model{
     }
 
     function load_invoice_print_um_match($id){
-        $data = $this->db->query("select fmd.*, fi.jenis_trx, fi.no_invoice, fi.nilai_bayar as total 
+        $data = $this->db->query("select fmd.*, COALESCE(fi.jenis_trx,0) as jenis_trx, COALESCE(fi.no_invoice,rti.no_invoice_jasa) as no_invoice, COALESCE(fi.nilai_bayar,rti.nilai_bayar) as total 
             from f_match_detail fmd
-            left join f_invoice fi on fi.id = fmd.id_inv
+            left join f_invoice fi on fmd.inv_type = 0 and fi.id = fmd.id_inv
+            left join r_t_inv_jasa rti on fmd.inv_type = 1 and rti.id = fmd.id_inv
             where fmd.id_match =".$id." and fmd.id_um = 0");
         return $data;
     }
@@ -500,7 +503,20 @@ class Model_finance extends CI_Model{
     }
 
     function load_invoice_full($id,$ppn,$idm){
-        $data = $this->db->query("select fi.*,(select count(id) from f_match_detail where id_inv = fi.id and id_match =".$idm.")as count, (fi.nilai_invoice-fi.nilai_bayar+fi.nilai_pembulatan) as total
+        $data = $this->db->query("(select fi.id, fi.jenis_trx, fi.no_invoice, 0 as inv_type, (select count(id) from f_match_detail where inv_type = 0 and id_inv = fi.id and id_match =".$idm.")as count, (fi.nilai_invoice-fi.nilai_bayar+fi.nilai_pembulatan) as total
+            from f_invoice fi 
+            where fi.id_customer =".$id." and fi.flag_ppn =".$ppn." and flag_matching = 0)
+            UNION ALL
+            (select rti.id, 0 as jenis_trx, rti.no_invoice_jasa as no_invoice, 1 as inv_type, (select count(id) from f_match_detail where inv_type = 1 and id_inv = rti.id and id_match =".$idm.") as count, (rti.nilai_invoice-rti.nilai_bayar+rti.nilai_pembulatan) as total
+            from r_t_inv_jasa rti 
+            left join m_cv cv on rti.cv_id = cv.id
+            where rti.jenis_invoice = 'INVOICE KMP KE CV' and cv.idkmp =".$id." and flag_matching = 0)
+            ");
+        return $data;
+    }
+
+    function load_invoice_full_kh($id,$ppn,$idm){
+        $data = $this->db->query("select fi.*, 0  as inv_type, (select count(id) from f_match_detail where id_inv = fi.id and id_match =".$idm.")as count, (fi.nilai_invoice-fi.nilai_bayar+fi.nilai_pembulatan) as total
             from f_invoice fi 
             where fi.id_customer =".$id." and fi.flag_ppn =".$ppn." and flag_matching = 0");
         return $data;
@@ -514,9 +530,10 @@ class Model_finance extends CI_Model{
     }
 
     function load_invoice_match($id){
-        $data = $this->db->query("select fmd.*, fi.jenis_trx, fi.no_invoice, fmd.inv_bayar as total
+        $data = $this->db->query("select fmd.*, COALESCE(fi.jenis_trx,0) as jenis_trx, COALESCE(fi.no_invoice,rti.no_invoice_jasa) as no_invoice, fmd.inv_bayar as total
             from f_match_detail fmd
-            left join f_invoice fi on fi.id = fmd.id_inv
+            left join f_invoice fi on fmd.inv_type = 0 and fi.id = fmd.id_inv
+            left join r_t_inv_jasa rti on fmd.inv_type = 1 and rti.id = fmd.id_inv
             where fmd.id_match =".$id." and fmd.id_inv != 0 and fmd.id_um = 0");
         return $data;
     }
@@ -577,9 +594,16 @@ class Model_finance extends CI_Model{
     }
 
     function get_data_inv($id){
-        $data = $this->db->query("select fi.*, (fi.nilai_invoice - fi.nilai_bayar + fi.nilai_pembulatan) as nominal
+        $data = $this->db->query("select fi.id, fi.no_invoice, fi.nilai_invoice, fi.nilai_bayar, fi.nilai_pembulatan, (fi.nilai_invoice - fi.nilai_bayar + fi.nilai_pembulatan) as nominal
             from f_invoice fi
             where fi.id =".$id);
+        return $data;
+    }
+
+    function get_data_inv2($id){
+        $data = $this->db->query("select rti.id, rti.no_invoice_jasa as no_invoice, rti.nilai_invoice, rti.nilai_bayar, rti.nilai_pembulatan, (rti.nilai_invoice - rti.nilai_bayar + rti.nilai_pembulatan) as nominal
+            from r_t_inv_jasa rti
+            where rti.id =".$id);
         return $data;
     }
 
@@ -695,8 +719,9 @@ class Model_finance extends CI_Model{
     }
 
     function view_inv_match($id){
-        $data = $this->db->query("Select fmd.*,COALESCE((select sum(fmd2.inv_bayar) from f_match_detail fmd2 where fmd2.id_inv = fi.id and fmd2.id != fmd.id),0) as nilai_sdh_bayar, fi.nilai_bayar, fi.nilai_invoice, fi.nilai_pembulatan, fi.no_invoice from f_match_detail fmd
-            left join f_invoice fi on fi.id = fmd.id_inv
+        $data = $this->db->query("Select fmd.*,COALESCE((select sum(fmd2.inv_bayar) from f_match_detail fmd2 where fmd2.id_inv = COALESCE(fi.id,rti.id) and fmd2.id != fmd.id),0) as nilai_sdh_bayar, COALESCE(fi.nilai_bayar, rti.nilai_bayar)as nilai_bayar, COALESCE(fi.nilai_invoice, rti.nilai_invoice) as nilai_invoice, COALESCE(fi.nilai_pembulatan,rti.nilai_pembulatan) as nilai_pembulatan, COALESCE(fi.no_invoice,rti.no_invoice_jasa) as no_invoice from f_match_detail fmd
+            left join f_invoice fi on inv_type = 0 and fi.id = fmd.id_inv
+            left join r_t_inv_jasa rti on inv_type = 1 and rti.id = fmd.id_inv
             where fmd.id =".$id);
         return $data;
     }
@@ -1067,7 +1092,7 @@ class Model_finance extends CI_Model{
     // }
 
     function print_laporan_pembelian($s, $e, $ppn){
-        if ($ppn == 2) {
+        if ($ppn == 3) {
             $data = $this->db->query("
                     SELECT
                         t.tanggal AS tgl_ttr,
@@ -1146,7 +1171,91 @@ class Model_finance extends CI_Model{
                                         LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
                                         LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
                                     WHERE
-                                        ( t.ttr_status = 1 ) 
+                                        ( t.ttr_status != 0 ) AND (d.type = 0)
+                                    AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
+                                    AND t.tanggal BETWEEN '".$s."' and '".$e."' 
+                                    ORDER BY sumber, kode_rongsok, no_ttr, tgl_ttr
+                ");
+        }elseif ($ppn == 2) {
+            $data = $this->db->query("
+                    SELECT
+                        t.tanggal AS tgl_ttr,
+                        t.no_ttr AS no_ttr,
+                    CASE
+                            
+                            WHEN dd.po_detail_id > 0 THEN
+                            'PO' 
+                            WHEN dd.po_detail_id = 0 
+                            AND d.so_id > 0 THEN
+                                'Tolling' ELSE 'Lain2' 
+                                END AS sumber,
+                        CASE
+                                
+                                WHEN dd.po_detail_id > 0 THEN
+                                p.no_po 
+                                WHEN dd.po_detail_id = 0 
+                                AND d.so_id > 0 THEN
+                                    so.no_sales_order ELSE '-' 
+                                    END AS no_doc_sumber,
+                            CASE
+                                    
+                                    WHEN dd.po_detail_id > 0 THEN
+                                    p.tanggal ELSE so.tanggal 
+                                END AS tgl_doc,
+                            CASE
+                                    
+                                    WHEN dd.po_detail_id > 0 THEN
+                                    s.kode_supplier 
+                                    WHEN dd.po_detail_id = 0 
+                                    AND d.so_id > 0 THEN
+                                        mc.kode_customer ELSE '-' 
+                                        END AS kode_sup_cust,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        s.nama_supplier 
+                                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                                        mc.nama_customer_kh 
+                                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                                        mc.nama_customer ELSE '-' 
+                                    END AS nama_sup_cust,
+                                    r.kode_rongsok AS kode_rongsok,
+                                    r.nama_item AS nama_item,
+                                    td.bruto AS bruto,
+                                    td.netto AS netto,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        pd.amount ELSE 0 
+                                    END AS amount,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        ( td.netto * pd.amount ) ELSE 0 
+                                    END AS total_amount,
+                                    t.jmlh_afkiran AS jmlh_afkiran,
+                                    t.jmlh_lain AS jmlh_lain,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        p.flag_ppn 
+                                        WHEN dd.po_detail_id = 0 
+                                        AND d.so_id > 0 THEN
+                                            so.flag_ppn ELSE '-' 
+                                            END AS flag_ppn 
+                                    FROM
+                                        ttr_detail td
+                                        LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+                                        LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+                                        LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+                                        LEFT JOIN po_detail pd ON ( ( dd.po_detail_id > 0 ) AND ( pd.id = dd.po_detail_id ) )
+                                        LEFT JOIN po p ON ( ( p.id = pd.po_id ) AND ( dd.po_detail_id > 0 ) )
+                                        LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+                                        LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+                                        LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
+                                        LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
+                                    WHERE
+                                        ( t.ttr_status != 0 ) 
                                     AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
                                     AND t.tanggal BETWEEN '".$s."' and '".$e."' 
                                     ORDER BY sumber, kode_rongsok, no_ttr, tgl_ttr
@@ -1230,7 +1339,7 @@ class Model_finance extends CI_Model{
                                         LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
                                         LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
                                     WHERE
-                                        ( t.ttr_status = 1 ) 
+                                        ( t.ttr_status != 0 ) 
                                     AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
                                     AND t.tanggal BETWEEN '".$s."' and '".$e."'
                                     AND (p.flag_ppn = ".$ppn." OR so.flag_ppn = ".$ppn.") 
@@ -1252,7 +1361,7 @@ class Model_finance extends CI_Model{
                     left join rongsok r on r.id = dd.rongsok_id
                     where
                     r.kode_rongsok =  '02I0001'
-                    and t.ttr_status = 1
+                    and t.ttr_status != 0
                     AND t.tanggal BETWEEN '".$s."' and '".$e."'");
             }else{
                 $data = $this->db->query("
@@ -1265,7 +1374,7 @@ class Model_finance extends CI_Model{
                     left join rongsok r on r.id = dd.rongsok_id
                     where
                     r.kode_rongsok =  '02I0001'
-                    and t.ttr_status = 1
+                    and t.ttr_status != 0
                     AND t.tanggal BETWEEN '".$s."' and '".$e."'
                     AND d.flag_ppn = ".$ppn);
             }
@@ -1273,7 +1382,7 @@ class Model_finance extends CI_Model{
     }
 
     function laporan_pembelian_rsk($s, $e, $ppn){
-        if ($ppn == 2) {
+        if ($ppn == 3) {
             $data = $this->db->query("SELECT
             CASE
                 WHEN
@@ -1315,7 +1424,55 @@ class Model_finance extends CI_Model{
                     LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
                     LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
                 WHERE
-                    ( t.ttr_status = 1 ) 
+                    ( t.ttr_status != 0 ) AND ( d.type = 0)
+                    AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
+                    AND t.tanggal BETWEEN '".$s."' and '".$e."'
+                GROUP BY
+                nama_sup_cust
+                    order by total desc");
+        }elseif ($ppn == 2) {
+            $data = $this->db->query("SELECT
+            CASE
+                WHEN
+                    dd.po_detail_id > 0 THEN
+                        s.nama_supplier 
+                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                        mc.nama_customer_kh 
+                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                        mc.nama_customer ELSE '-' 
+                    END AS nama_sup_cust,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0001' then td.netto  else 0 end),0),null) as AB1,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0002' then td.netto  else 0 end),0),null) as AB2,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01AR001' then td.netto  else 0 end),0),null) as AR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0002' then td.netto  else 0 end),0),null) as TR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BB001' then td.netto  else 0 end),0),null) as BB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0001' then td.netto  else 0 end),0),null) as BC,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0003' then td.netto  else 0 end),0),null) as CT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BL001' then td.netto  else 0 end),0),null) as BL,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0003' then td.netto  else 0 end),0),null) as DH,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PB001' then td.netto  else 0 end),0),null) as PB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PR001' then td.netto  else 0 end),0),null) as PRT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01DD001' then td.netto  else 0 end),0),null) as DD,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0002' then td.netto  else 0 end),0),null) as DB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0004' then td.netto  else 0 end),0),null) as DK,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '02I0001' then td.netto  else 0 end),0),null) as IR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto  else 0 end),0),null) as LT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto  else 0 end),0),null) as SC,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto  else 0 end),0),null) as SCJ,
+                    sum( td.netto ) AS total
+                FROM
+                    ttr_detail td
+                    LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+                    LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+                    LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+                    LEFT JOIN po_detail pd ON ( ( dd.po_detail_id > 0 ) AND ( pd.id = dd.po_detail_id ) )
+                    LEFT JOIN po p ON ( ( p.id = pd.po_id ) AND ( dd.po_detail_id > 0 ) )
+                    LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+                    LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+                    LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
+                    LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
+                WHERE
+                    ( t.ttr_status != 0 ) 
                     AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
                     AND t.tanggal BETWEEN '".$s."' and '".$e."'
                 GROUP BY
@@ -1363,7 +1520,7 @@ class Model_finance extends CI_Model{
                     LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
                     LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
                 WHERE
-                    ( t.ttr_status = 1 ) 
+                    ( t.ttr_status != 0 ) 
                     AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
                     AND t.tanggal BETWEEN '".$s."' and '".$e."'
                     AND (p.flag_ppn = ".$ppn." OR so.flag_ppn = ".$ppn.") 
@@ -1405,7 +1562,7 @@ class Model_finance extends CI_Model{
             left join ttr t on t.dtr_id = d.id
             left join ttr_detail td on td.dtr_detail_id = dd.id
             where  
-            t.ttr_status = 1
+            t.ttr_status != 0
               AND t.tanggal BETWEEN '".$s."' and '".$e."'
              and r.kode_rongsok =  '02I0001'
             group by supplier;");
@@ -1439,7 +1596,7 @@ class Model_finance extends CI_Model{
             left join ttr t on t.dtr_id = d.id
             left join ttr_detail td on td.dtr_detail_id = dd.id
             where  
-            t.ttr_status = 1
+            t.ttr_status != 0
               AND t.tanggal BETWEEN '".$s."' and '".$e."'
              and r.kode_rongsok =  '02I0001'
             AND d.flag_ppn = ".$ppn." 
@@ -1490,7 +1647,7 @@ class Model_finance extends CI_Model{
                             LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
                             LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
                         WHERE
-                            ( t.ttr_status = 1 ) 
+                            ( t.ttr_status != 0 ) 
                             AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
                             AND t.tanggal BETWEEN '".$s."' AND '".$e."' 
                         GROUP BY
@@ -1540,7 +1697,7 @@ class Model_finance extends CI_Model{
                             LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
                             LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
                         WHERE
-                            ( t.ttr_status = 1 ) 
+                            ( t.ttr_status != 0 ) 
                             AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
                             AND t.tanggal BETWEEN '".$s."' AND '".$e."'
                             AND (so.flag_ppn = ".$ppn." OR p.flag_ppn = ".$ppn.")
@@ -1565,7 +1722,7 @@ class Model_finance extends CI_Model{
                 left join ttr t on t.dtr_id = d.id
                 left join rongsok r on r.id = dd.rongsok_id
                 where  d.tanggal BETWEEN '".$s."' AND '".$e."'
-                and t.ttr_status = 1
+                and t.ttr_status != 0
                 and r.kode_rongsok =  '02I0001'
                 group by sumber, supplier, flag_ppn
                 ");
@@ -1578,7 +1735,7 @@ class Model_finance extends CI_Model{
                 left join ttr t on t.dtr_id = d.id
                 left join rongsok r on r.id = dd.rongsok_id
                 where  d.tanggal BETWEEN '".$s."' AND '".$e."'
-                and t.ttr_status = 1
+                and t.ttr_status != 0
                 and d.flag_ppn = ".$ppn."
                 and r.kode_rongsok =  '02I0001'
                 group by sumber, supplier, flag_ppn
@@ -1615,7 +1772,7 @@ class Model_finance extends CI_Model{
                         LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
                         LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
                     WHERE
-                        ( t.ttr_status = 1 ) 
+                        ( t.ttr_status != 0 ) 
                         AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
                         AND t.tanggal BETWEEN '".$s."' AND '".$e."'
                     GROUP BY
@@ -1648,7 +1805,7 @@ class Model_finance extends CI_Model{
                         LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
                         LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
                     WHERE
-                        ( t.ttr_status = 1 ) 
+                        ( t.ttr_status != 0 ) 
                         AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
                         AND t.tanggal BETWEEN '".$s."' AND '".$e."'
                         AND (so.flag_ppn = ".$ppn." OR p.flag_ppn = ".$ppn.")
@@ -1688,7 +1845,7 @@ class Model_finance extends CI_Model{
                         LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
                         LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
                     WHERE
-                        ( t.ttr_status = 1 ) 
+                        ( t.ttr_status != 0 ) 
                         AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
                         AND t.tanggal BETWEEN '".$s."' AND '".$e."' 
                     GROUP BY
@@ -1721,7 +1878,7 @@ class Model_finance extends CI_Model{
                         LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
                         LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
                     WHERE
-                        ( t.ttr_status = 1 ) 
+                        ( t.ttr_status != 0 ) 
                         AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
                         AND t.tanggal BETWEEN '".$s."' AND '".$e."'
                         AND (so.flag_ppn = ".$ppn." OR p.flag_ppn = ".$ppn.") 

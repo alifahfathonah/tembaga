@@ -18,7 +18,7 @@ class Model_sinkronisasi extends CI_Model{
     function sj(){
         return $this->db->query("select tsj.id, tsj.jenis_barang from t_surat_jalan tsj
             left join sales_order so on so.id = tsj.sales_order_id
-            where so.flag_ppn = 1 and tsj.status = 1 and tsj.api = 0");
+            where so.flag_ppn = 1 and tsj.status = 1 and tsj.api = 1");
     }
 
     // function sj(){

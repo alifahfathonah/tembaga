@@ -70,6 +70,7 @@
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_po']; ?>">
                             <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['po_id']; ?>">
+                            <input type="hidden" id="so_id" name="so_id" value="<?php echo $header['so_id']; ?>">
                         </div>
                     </div>
                     <div class="row">

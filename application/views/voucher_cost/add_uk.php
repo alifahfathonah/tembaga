@@ -168,8 +168,8 @@
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
-                    <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
-                        <i class="fa fa-floppy-o"></i> Simpan </a>
+                    <button href="javascript:;" class="btn green" id="simpanData"> 
+                        <i class="fa fa-floppy-o"></i> Simpan </button>
 
                     <a href="<?php echo base_url('index.php/VoucherCost/kas_keluar'); ?>" class="btn blue-hoki">
                         <i class="fa fa-angle-left"></i> Kembali </a>
@@ -226,45 +226,6 @@ function get_cost(id,row){
         });
     }
 }
-
-function simpanData(){
-    if($.trim($("#tanggal").val()) == ""){
-        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show(); 
-    }else if($("#no_uk").val() == ""){
-        $('#message').html("Supplier harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show();
-    }else if($.trim($("#bank_id").val()) == ""){
-        $('#message').html("Bank Belum Dipilih!");
-        $('.alert-danger').show();
-    }else if($.trim($("#total_nominal").val()) == ""){
-        $('#message').html("Nominal harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show();
-    }else{   
-        $.ajax({
-            type: "POST",
-            url: "<?php echo base_url('index.php/BeliRongsok/get_no_uang_keluar'); ?>",
-            data: {
-                no_uk: $('#no_uk').val(),
-                tanggal: $('#tanggal').val(),
-                bank_id: $('#bank_id').val()
-            },
-            cache: false,
-            success: function(result) {
-                var res = result['type'];
-                if(res=='duplicate'){
-                    $('#message').html("Nomor Uang Keluar sudah ada, tolong coba lagi!");
-                    $('.alert-danger').show();
-                }else{
-                    $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
-                    $('#message').html("");
-                    $('.alert-danger').hide(); 
-                    $('#formku').submit();
-                }
-            }
-        });
-    };
-};
 
 function saveDetail(id){
     if($.trim($("#group_cost_id_"+id).val()) == ""){
@@ -348,6 +309,51 @@ $(function(){
         changeMonth: true,
         changeYear: true,
         dateFormat: 'yy-mm-dd'
+    });
+
+    $('#simpanData').click(function(event) {
+        event.preventDefault(); /*  Stops default form submit on click */
+
+        if($.trim($("#tanggal").val()) == ""){
+            $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
+            $('.alert-danger').show(); 
+        }else if($("#no_uk").val() == ""){
+            $('#message').html("Supplier harus diisi, tidak boleh kosong!");
+            $('.alert-danger').show();
+        }else if($.trim($("#bank_id").val()) == ""){
+            $('#message').html("Bank Belum Dipilih!");
+            $('.alert-danger').show();
+        }else if($.trim($("#total_nominal").val()) == ""){
+            $('#message').html("Nominal harus diisi, tidak boleh kosong!");
+            $('.alert-danger').show();
+        }else{   
+            // console.log('b ajax');
+            $('#simpanData').prop('disabled',true);
+            $.ajax({
+                type: "POST",
+                url: "<?php echo base_url('index.php/BeliRongsok/get_no_uang_keluar'); ?>",
+                data: {
+                    no_uk: $('#no_uk').val(),
+                    tanggal: $('#tanggal').val(),
+                    bank_id: $('#bank_id').val()
+                },
+                cache: false,
+                success: function(result) {
+                    // console.log('a ajax');
+                    var res = result['type'];
+                    if(res=='duplicate'){
+                        $('#simpanData').prop('disabled',false);
+                        $('#message').html("Nomor Uang Keluar sudah ada, tolong coba lagi!");
+                        $('.alert-danger').show();
+                    }else{
+                        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+                        $('#message').html("");
+                        $('.alert-danger').hide(); 
+                        $('#formku').submit();
+                    }
+                }
+            });
+        }
     });
 });
 </script>

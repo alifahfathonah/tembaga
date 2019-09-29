@@ -145,6 +145,7 @@
                                     echo '<div style="background-color:red; color:#fff; padding:3px">Rejected</div>';
                                 }
                             ?>
+                            <input type="hidden" name="status_sj" value="<?php echo $header['status'];?>">
                             <input type="hidden" name="status_spb" value="<?php echo $header['status_spb'];?>">
                         </div>
                     </div>
@@ -270,6 +271,7 @@
                                     echo '<label class="lbl_alias">('.$row->kode_alias.') '.$row->jenis_barang_a.'</label>';
                                     } 
                                     echo '<input type="hidden" style="display: none;" class="id_tsj_detail" name="details['.$no.'][id_tsj_detail]" value="'.$row->id.'">';
+                                    echo '<input type="hidden" style="display: none;" class="harga_alias" value="'.$row->amount.'">';
                                     echo '<select class="jb_alias" name="details['.$no.'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px; display: none;">
                                             <option value="0" data-id="0">TIDAK ADA ALIAS</option>';
                                             foreach ($jenis_barang as $value){
@@ -350,15 +352,15 @@
                 <div class="col-md-12">
                     <?php
                         if( ($group_id==1 || $hak_akses['approve_sj']==1) && $header['status']=="0"){
-                            echo '<a href="javascript:;" class="btn green" onclick="approveData();"> '
+                            echo '<a href="javascript:;" class="btn green" id="approveData" onclick="approveData();"> '
                                 .'<i class="fa fa-check"></i> Approve </a> ';
                         }
                         if( ($group_id==1 || $hak_akses['reject_sj']==1) && $header['status']=="0"){
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
                         }
-                        if( ($group_id==1 || $hak_akses['edit_sj']==1) && $header['inv_id']==null){
-                            echo '<a href="javascript:;" class="btn blue" onclick="editData();" id="btnEdit">' 
+                        if( ($group_id==1 || $hak_akses['edit_sj']==1) && $header['status']==0){
+                            echo ' <a href="javascript:;" class="btn blue" onclick="editData();" id="btnEdit">' 
                                 .'<i class="fa fa-pencil"></i> Edit </a>';
 
                             echo '<a href="javascript:;" class="btn blue" style="display: none;" onclick="simpanData();" id="btnSimpan">'
@@ -413,11 +415,29 @@ function simpanData(){
 };
 
 function approveData(){
+<?php if($header['jenis_barang']=='FG'){ ?>
+    var reqlength = $('.harga_alias').length;
+    console.log(reqlength);
+    var value = $('.harga_alias').filter(function () {
+        return this.value != '';
+    });
+
+    if (value.length>=0 && (value.length !== reqlength)) {
+        alert('Masih ada item yang belum di alias kan');
+    } else {
+        var r=confirm("Anda yakin me-approve surat jalan ini?");
+        if(r == true){
+            $('#approveData').text('Please Wait ...').prop("onclick", null).off("click");
+            $('#formku').submit(); 
+        }
+    }
+<?php }else { ?>
     var r=confirm("Anda yakin me-approve surat jalan ini?");
     if(r == true){
-        
+        $('#approveData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').submit(); 
     }
+<?php } ?>
 };
 
 function showRejectBox(){

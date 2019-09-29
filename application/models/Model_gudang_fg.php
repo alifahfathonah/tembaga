@@ -420,9 +420,22 @@ class Model_gudang_fg extends CI_Model{
         return $data;
     }
 
+    function jb_sisa_available($start,$end){
+        $data = $this->db->query("(SELECT
+                    tg.jenis_barang_id, jb.jenis_barang, jb.kode, sum(tg.netto) as netto_masuk, 
+                    (SELECT sum(tgf.netto) FROM t_gudang_fg tgf
+                    where tgf.jenis_barang_id =tg.jenis_barang_id and tgf.tanggal_keluar <'".$start."' and tgf.tanggal_keluar != '0000-00-00') as netto_keluar, 
+                    tg.tanggal_masuk, tg.tanggal_keluar = null as tanggal_keluar, tg.tanggal_masuk as tanggal
+                FROM t_gudang_fg tg
+                    left join jenis_barang jb on jb.id = tg.jenis_barang_id
+                    where tg.tanggal_masuk < '".$start."'group by tg.jenis_barang_id order by jb.jenis_barang)
+                    ");
+        return $data;
+    }
+
     function show_kartu_stok_before($start,$end,$id_barang){
         $data = $this->db->query("(SELECT
-                    tg.id, tg.jenis_barang_id, tg.no_packing, jb.jenis_barang, sum(tg.netto) as netto_masuk, 
+                    tg.id, tg.jenis_barang_id, jb.jenis_barang, jb.kode, sum(tg.netto) as netto_masuk, 
                     (SELECT sum(tgf.netto) FROM t_gudang_fg tgf
                     where tgf.jenis_barang_id =".$id_barang." and tgf.tanggal_keluar <'".$start."' and tgf.tanggal_keluar != '0000-00-00') as netto_keluar, 
                     tg.tanggal_masuk, tg.tanggal_keluar = null as tanggal_keluar, tg.tanggal_masuk as tanggal

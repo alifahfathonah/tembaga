@@ -3,8 +3,8 @@
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/R_SuratJalan/'); ?>"> Sinkronisasi </a> 
-            <i class="fa fa-angle-right"></i> Sinkronisasi KMP 1
+            <a href="<?php echo base_url('index.php/R_SuratJalan/'); ?>"> Sinkronisasi KMP 1 </a> 
+            <i class="fa fa-angle-right"></i> Sinkronisasi SO KMP 1
         </h5>          
     </div>
 </div>

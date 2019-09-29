@@ -88,8 +88,9 @@ class R_Matching extends CI_Controller{
         $get_gudangfg_int = $this->Model_matching->get_gudangfg_int($this->input->post('invoice_id'))->result();
         foreach ($get_gudangfg_int as $v) {
             $ins_r_t_fg = array(
+                'id_gudang' => $v->id,
                 'f_invoice_id' => $id_new,
-                'jenis_barang_id' => $v->jenis_barang_id,
+                'jenis_barang_id' => $v->sj_jb,
                 'bruto' => $v->bruto,
                 'netto' => $v->netto,
                 'berat_bobbin' => $v->berat_bobbin,

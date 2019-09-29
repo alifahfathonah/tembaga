@@ -106,40 +106,6 @@
 				$SCJ += $row->SCJ;
 				$total += $row->total;
 			}
-
-			$total2 = 0;
-			$new_ir = 0;
-
-			foreach ($ingotRendah as $key => $value) {
-		?>
-			<tr>
-				<td style=" border-right: 1px solid #000; border-bottom: 1px solid;"><?= $no+1;?></td>
-				<td style=" border-right: 1px solid #000; border-bottom: 1px solid;"><?=$value->supplier; ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->AB1 == null)? '' : number_format($value->AB1,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->AB2 == null)? '' : number_format($value->AB2,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->AR == null)? '' : number_format($value->AR,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->TR == null)? '' : number_format($value->TR,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->BB == null)? '' : number_format($value->BB,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->BC == null)? '' : number_format($value->BC,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->CT == null)? '' : number_format($value->CT,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->BL == null)? '' : number_format($value->BL,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->DH == null)? '' : number_format($value->DH,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->PB == null)? '' : number_format($value->PB,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->PRT == null)? '' : number_format($value->PRT,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->DD == null)? '' : number_format($value->DD,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->DB == null)? '' : number_format($value->DB,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->DK == null)? '' : number_format($value->DK,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->IR == null)? '' : number_format($value->IR,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->LT == null)? '' : number_format($value->LT,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->SC == null)? '' : number_format($value->SC,2,'.',','); ?></td>
-				<td style=" text-align: right; border-right: 1px solid #000; border-bottom: 1px solid;"><?=($value->SCJ == null)? '' : number_format($value->SCJ,2,'.',','); ?></td>
-				<td align="right" style=" border-right: 1px solid #000; border-bottom: 1px solid;"><?= number_format($value->TOTAL,2,'.',','); ?></td>
-			</tr>
-		<?php
-				$total2 += $value->TOTAL;
-				$new_ir += $value->IR;
-			} 
-				$IR += $new_ir;
 		?>
 			<tr>
 				<th colspan="2" style=" border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"></th>
@@ -161,7 +127,7 @@
                 <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($LT,2,',','.');?></th>
                 <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($SC,2,',','.');?></th>
                 <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($SCJ,2,',','.');?></th>
-                <th style="text-align: right; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($total + $total2,2,',','.');?></th>
+                <th style="text-align: right; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($total,2,',','.');?></th>
             </tr>
 		</tbody>
 	</table>

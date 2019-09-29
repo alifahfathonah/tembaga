@@ -103,7 +103,11 @@ class Tolling extends CI_Controller{
             $this->db->insert('sales_order', $data);
             $so_id = $this->db->insert_id();
             if($this->input->post('jenis_barang') == 'FG'){
-            $num = $this->Model_m_numberings->getNumbering('SPB-FG', $tgl_input); 
+                if($user_ppn==1){
+                    $num = 'SPB-T.'.$tgl_so.'.'.$this->input->post('no_so');
+                }else{
+                    $num = $this->Model_m_numberings->getNumbering('SPB-FG', $tgl_input); 
+                }
                 $dataC = array(
                     'no_spb'=> $num,
                     'jenis_spb'=> 6,//JENIS SPB SO
@@ -115,7 +119,11 @@ class Tolling extends CI_Controller{
                 $this->db->insert('t_spb_fg', $dataC);
                 $insert_id = $this->db->insert_id();
             }else{
-            $num = $this->Model_m_numberings->getNumbering('SPB-WIP', $tgl_input);
+                if($user_ppn==1){
+                    $num = 'SPB-SO.'.$tgl_so.'.'.$this->input->post('no_so');
+                }else{
+                    $num = $this->Model_m_numberings->getNumbering('SPB-WIP', $tgl_input); 
+                }
                 $dataC = array(
                     'no_spb_wip'=> $num,
                     'tanggal'=> $tgl_input,
@@ -171,6 +179,10 @@ class Tolling extends CI_Controller{
                 curl_close($ch);
                 // print_r($response);
                 // die();
+                if($result['status']==true){
+                    $this->db->where('id', $so_id);
+                    $this->db->update('sales_order', array('api'=>1));
+                }
             }
 
             if($this->db->trans_complete()){
@@ -2081,7 +2093,7 @@ class Tolling extends CI_Controller{
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('t_surat_jalan', $data);
 
-            if($user_ppn == 1){
+            if($user_ppn == 1 && $this->input->post('status')==1){
                 $this->load->helper('target_url');
 
                     $data_post['id_sj'] = $this->input->post('id');
@@ -2281,6 +2293,10 @@ class Tolling extends CI_Controller{
                 curl_close($ch);
                 // print_r($response);
                 // die();
+                if($result['status']==true){
+                    $this->db->where('id',$this->input->post('id'));
+                    $this->db->update('t_surat_jalan', array('api'=>1));
+                }
             }
 
         if($this->db->trans_complete()){    
@@ -2319,7 +2335,7 @@ class Tolling extends CI_Controller{
         } else if ($jenis == 'RONGSOK'){
             foreach ($loop as $row) {
                 $this->db->where('id', $row->gudang_id);
-                $this->db->update('dtr_detail', array('flag_sj' => 1));
+                $this->db->update('dtr_detail', array('flag_sj' => $sjid));
             }
         } else if ($jenis == 'AMPAS'){
             foreach ($loop as $row) {

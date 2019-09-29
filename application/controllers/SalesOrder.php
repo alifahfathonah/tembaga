@@ -396,7 +396,11 @@ class SalesOrder extends CI_Controller{
             $category = $this->input->post('jenis_barang');
             
             if($category == 'FG'){
-                $num = $this->Model_m_numberings->getNumbering('SPB-FG', $tgl_input); 
+                if($user_ppn==1){
+                    $num = 'SPB-SO.'.$tgl_so.'.'.$this->input->post('no_so');
+                }else{
+                    $num = $this->Model_m_numberings->getNumbering('SPB-FG', $tgl_input); 
+                }
                 $dataC = array(
                     'no_spb'=> $num,
                     'jenis_spb'=> 6,//JENIS SPB SO
@@ -409,7 +413,11 @@ class SalesOrder extends CI_Controller{
                 $insert_id = $this->db->insert_id();
 
             }else if($category == 'WIP'){
-                $num = $this->Model_m_numberings->getNumbering('SPB-WIP', $tgl_input); 
+                if($user_ppn==1){
+                    $num = 'SPB-SO.'.$tgl_so.'.'.$this->input->post('no_so');
+                }else{
+                    $num = $this->Model_m_numberings->getNumbering('SPB-WIP', $tgl_input); 
+                }
                 $dataC = array(
                     'no_spb_wip'=> $num,
                     'tanggal'=> $tgl_input,
@@ -422,12 +430,16 @@ class SalesOrder extends CI_Controller{
                 $insert_id = $this->db->insert_id();
 
             }else if($category == 'RONGSOK'){
-                $num = $this->Model_m_numberings->getNumbering('SPB-RSK', $tgl_input);
+                if($user_ppn==1){
+                    $num = 'SPB-SO.'.$tgl_so.'.'.$this->input->post('no_so');
+                }else{
+                    $num = $this->Model_m_numberings->getNumbering('SPB-RSK', $tgl_input);
+                }
                 $dataC = array(
                     'no_spb'=> $num,
                     'jenis_spb'=> 6,//JENIS SPB SO
                     'jenis_barang'=> 1,
-                    'tanggal'=> $tanggal,
+                    'tanggal'=> $tgl_input,
                     'remarks'=> $code.' | '.$this->input->post('keterangan'),
                     'created'=> $tanggal,
                     'created_by'=> $user_id
@@ -435,7 +447,11 @@ class SalesOrder extends CI_Controller{
                 $this->db->insert('spb', $dataC);
                 $insert_id = $this->db->insert_id();
             }else if($category == 'AMPAS'){
-                $num = $this->Model_m_numberings->getNumbering('SPB-AMP', $tgl_input);
+                if($user_ppn==1){
+                    $num = 'SPB-SO.'.$tgl_so.'.'.$this->input->post('no_so');
+                }else{
+                    $num = $this->Model_m_numberings->getNumbering('SPB-AMP', $tgl_input);
+                }
                 $dataC = array(
                     'no_spb_ampas' => $num,
                     'jenis_spb'=> 6,//JENIS SPB SO
@@ -1417,7 +1433,7 @@ class SalesOrder extends CI_Controller{
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('t_surat_jalan', $data);
 
-            if($user_ppn == 1){
+            if($user_ppn == 1 && $this->input->post('status_sj') == 1){
                 $this->load->helper('target_url');
 
                     $data_post['id_sj'] = $this->input->post('id');
@@ -1471,7 +1487,7 @@ class SalesOrder extends CI_Controller{
         } else if ($jenis == 'RONGSOK'){
             foreach ($loop as $row) {
                 $this->db->where('id', $row->gudang_id);
-                $this->db->update('dtr_detail', array('so_id' => $so_id));
+                $this->db->update('dtr_detail', array('so_id' => $so_id, 'flag_sj' => $sjid));
             }
         } else if ($jenis == 'AMPAS'){
             foreach ($loop as $row) {
@@ -2152,6 +2168,8 @@ class SalesOrder extends CI_Controller{
     function print_so_bulan(){
             $module_name = $this->uri->segment(1);
             $ppn = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+
             $start = date('Y-m-d', strtotime($_GET['ts']));
             $end = date('Y-m-d', strtotime($_GET['te']));
 
@@ -2165,6 +2183,6 @@ class SalesOrder extends CI_Controller{
 
             $this->load->model('Model_sales_order');
             $data['detailLaporan'] = $this->Model_sales_order->laporan_per_sj_bulan($start,$end,$ppn)->result();
-            $this->load->view('sales_order/print_sisa_so', $data);
+            $this->load->view('sales_order/print_sisa_so_bulan', $data);
     }
 }

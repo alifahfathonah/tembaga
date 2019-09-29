@@ -773,6 +773,10 @@ class VoucherCost extends CI_Controller{
                 curl_close($ch);
                 // print_r($response);
                 // die();
+                if($result['status']==true){
+                    $this->db->where('id', $insert_id);
+                    $this->db->update('f_kas', array('api'=>1));
+                }
             }
         if($this->db->trans_complete()){
             if ($this->input->post('bank_id') <= 3) {

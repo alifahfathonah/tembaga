@@ -939,12 +939,6 @@
                             <i class="fa fa-file-word-o"></i>
                             Bank Masuk </a>
                         </li>
-                    <?php } if($group_id==1 || (isset($akses_menu['matching']) && $akses_menu['matching']==1)){ ?>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/Finance/pembayaran">
-                            <i class="fa fa-file-o"></i>
-                            Matching Pembayaran </a>
-                        </li>
                     <?php } if($group_id==1 || (isset($akses_menu['view_invoice']) && $akses_menu['view_invoice']==1)){ ?>
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/Finance/invoice">

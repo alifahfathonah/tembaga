@@ -55,7 +55,7 @@
                                 <div class="col-md-7">
                                     <input type="text" id="jenis_barang" name="jenis_barang" 
                                         class="form-control myline" style="margin-bottom:5px" 
-                                        readonly="readonly" value="">                                                                       
+                                        readonly="readonly" value="RONGSOK">                                                                       
                                 </div>
                             </div> 
                             <div class="row">
@@ -465,7 +465,6 @@
                     <th>No. PO</th>
                     <th>Tanggal</th>
                     <th>Supplier</th> 
-                    <th>Attention To</th>
                     <th>PPN</th> 
                     <th>Jumlah <br>Items</th>
                     <th>Status</th>
@@ -485,7 +484,6 @@
                         <td><?php echo $data->no_po; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->nama_supplier; ?></td>
-                        <td><?php echo $data->pic; ?></td>
                         <?php 
                            echo (($data->ppn==1)? '<td><i class="fa fa-check"></i> Yes</td>': '<td><i class="fa fa-times"></i> No</td>');
                         ?>

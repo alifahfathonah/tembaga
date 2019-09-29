@@ -28,6 +28,15 @@ class Model_r_sinkronisasi extends CI_Model{
 		return $data;
 	}
 
+	function count_tolling_kmp() {
+		$data = $this->db->query('
+				SELECT COUNT(id) AS count_sj
+				FROM r_t_surat_jalan
+				WHERE jenis_surat_jalan = "SURAT JALAN CV KE KMP" AND flag_tolling = 1
+			');
+		return $data;
+	}
+
 	function get_so_kmp() {
 		$data = $this->db->query('
 				SELECT rso.*, rpo.no_po, cv.idkmp
@@ -84,6 +93,25 @@ class Model_r_sinkronisasi extends CI_Model{
 				FROM r_t_inv_jasa_detail
 				WHERE inv_jasa_id = '.$id.'
 			');
+		return $data;
+	}
+
+	function get_tolling_kmp() {
+		$data = $this->db->query('
+				SELECT rd.*, rt.id as id_ttr, rt.no_ttr_resmi, rsj.no_sj_resmi, cv.idkmp, (select id from r_t_so where jenis_so = "SO KMP" and po_id = rsj.r_po_id) as so_id
+				FROM r_t_surat_jalan rsj
+				LEFT JOIN m_cv cv ON rsj.m_cv_id = cv.id
+				LEFT JOIN r_dtr rd ON rsj.id = rd.sj_id
+				LEFT JOIN r_ttr rt ON rd.id = rt.r_dtr_id
+				WHERE rsj.jenis_surat_jalan = "SURAT JALAN CV KE KMP" AND rsj.flag_tolling = 1 AND rsj.api = 1 limit 100
+			');
+		return $data;
+	}
+
+	function get_tolling_detail_kmp($id){
+		$data = $this->db->query("select rdd.*, rtd.id as ttr_detail_id from r_dtr_detail rdd
+			left join r_ttr_detail rtd on rtd.r_dtr_detail_id = rdd.id
+			where r_dtr_id = ".$id);
 		return $data;
 	}
 }

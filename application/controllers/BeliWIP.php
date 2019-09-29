@@ -994,6 +994,7 @@ class BeliWIP extends CI_Controller{
                 'id_bank'=>$this->input->post('bank_id'),
                 'id_vc'=>0,
                 'currency'=>$this->input->post('currency'),
+                'kurs'=>$this->input->post('kurs'),
                 'nominal'=>str_replace(',', '', $amount),
                 'created_at'=>$tanggal,
                 'created_by'=>$user_id
@@ -1037,23 +1038,28 @@ class BeliWIP extends CI_Controller{
             }
             $this->db->update('po', $update_po);
 
-            // if($ppn==1){
-            //     $this->load->helper('target_url');
+            if($ppn==1){
+                $this->load->helper('target_url');
                 
-            //     $data_post['voucher'] = array_merge($data_v, array('reff1' => $id_vc));
-            //     $data_post['f_kas'] = array_merge($data_f, array('reff1' => $fk_id));
-            //     $data_post['update_po'] = $update_po;
-            //     $detail_post = json_encode($data_post);
+                $data_post['voucher'] = array_merge($data_v, array('reff1' => $id_vc));
+                $data_post['f_kas'] = array_merge($data_f, array('reff1' => $fk_id));
+                $data_post['update_po'] = $update_po;
+                $detail_post = json_encode($data_post);
 
-            //     $ch = curl_init(target_url().'api/BeliWIPAPI/voucher');
-            //     curl_setopt($ch, CURLOPT_POST, true);
-            //     curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-            //     curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
-            //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            //     $response = curl_exec($ch);
-            //     $result = json_decode($response, true);
-            //     curl_close($ch);
-            // }
+                $ch = curl_init(target_url().'api/BeliWIPAPI/voucher');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+
+                if($result['status']==true){
+                    $this->db->where('id', $fk_id);
+                    $this->db->update('f_kas', array('api'=>1));
+                }
+            }
             
             if($this->db->trans_complete()){  
                 $this->session->set_flashdata('flash_msg', 'Voucher pembayaran WIP berhasil di-create dengan nomor : '.$code);

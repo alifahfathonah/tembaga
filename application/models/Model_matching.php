@@ -115,7 +115,7 @@ class Model_matching extends CI_Model{
     }
 
     function get_gudangfg_int($id){
-        $data = $this->db->query("select tgfg.* from t_surat_jalan_detail tsjd
+        $data = $this->db->query("select tgfg.*, (case when tsjd.jenis_barang_alias = 0 then tsjd.jenis_barang_id else tsjd.jenis_barang_alias end) as sj_jb from t_surat_jalan_detail tsjd
             left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
             left join f_invoice fi on fi.id = tsj.inv_id
             left join t_gudang_fg tgfg on tgfg.id = tsjd.gudang_id

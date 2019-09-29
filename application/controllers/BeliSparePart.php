@@ -2412,6 +2412,10 @@ class BeliSparePart extends CI_Controller{
                 curl_close($ch3);
                 // print_r($response3);
                 // die();
+                if($result3['status']==true){
+                    $this->db->where('id',$f_kas);
+                    $this->db->update('f_kas', array('api'=>1));
+                }
             }
 
         if($this->db->trans_complete()){

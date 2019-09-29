@@ -1372,6 +1372,11 @@ class BeliFinishGood extends CI_Controller{
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
+
+                if($result['status']==true){
+                    $this->db->where('id', $fk_id);
+                    $this->db->update('f_kas', array('api'=>1));
+                }
             }
             
             if($this->db->trans_complete()){  

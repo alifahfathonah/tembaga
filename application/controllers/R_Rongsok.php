@@ -717,7 +717,7 @@ class R_Rongsok extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tgl_code = date('Ym', strtotime($this->input->post('tanggal')));
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $return_data = array();
         
             $this->db->trans_start();       
@@ -1010,10 +1010,28 @@ class R_Rongsok extends CI_Controller{
                 //API CLOSE
 
         if($this->db->trans_complete()){
-            redirect('index.php/R_Rongsok/view_pindah/'.$id_dtr);  
+            redirect('index.php/R_Rongsok/view_pindah/'.$this->input->post('id'));  
         }else{
             $this->session->set_flashdata('flash_msg', 'DTR rongsok gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/R_Rongsok');  
         } 
+    }
+
+    function view_pindah(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $this->load->model('Model_matching');
+        $data['group_id']  = $group_id;
+        $data['header']  = $this->Model_r_rongsok->show_header_pindah($id)->row_array(); 
+        $data['list_data'] = $this->Model_r_rongsok->view_pindah($id)->result();
+        $data['content']= "resmi/packing/view_pindah";
+
+        $this->load->view('layout', $data);
     }
 }
