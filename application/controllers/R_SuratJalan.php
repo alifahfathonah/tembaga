@@ -399,7 +399,6 @@ class R_SuratJalan extends CI_Controller{
             log_message('debug', print_r($result2,1));
             
         } else if($jenis == 'sj_customer'){
-            
             $data = array(
                 'no_sj_resmi'=> $this->input->post('no_surat_jalan'),
                 // 'r_invoice_id'=>$this->input->post('id_invoice_resmi'),
@@ -428,10 +427,10 @@ class R_SuratJalan extends CI_Controller{
 
             $tanggal_bpb = date('Y-m-d', strtotime($this->input->post('tanggal_bpb')));
 
-            $po_id = $this->db->query("select sj.r_po_id from r_t_bpb bpb
-                left join r_t_surat_jalan sj on bpb.r_sj_id = sj.id
-                where bpb.r_po_id = ".$this->input->post('po_id'))->row_array();// PO CV KE KMP
-
+            // $po_id = $this->db->query("select sj.r_po_id from r_t_bpb bpb
+            //     left join r_t_surat_jalan sj on bpb.r_sj_id = sj.id
+            //     where bpb.r_po_id = ".$this->input->post('po_id'))->row_array();// PO CV KE KMP
+            $po_id = $this->db->query("SELECT flag_po_cv AS r_po_id FROM r_t_po WHERE id = ". $this->input->post('po_id'))->row_array(); // NEW 
             $data_bpb = array(
                 'no_bpb' => $this->input->post('no_bpb'),
                 'r_po_id' => $po_id['r_po_id'],
@@ -616,7 +615,6 @@ class R_SuratJalan extends CI_Controller{
             }
     }
 
-/** LANJUTIN NANTI YAAAAA, TINGGAL TEST DOANG SAMA API **/
     function delete_inv_cust(){
         $id = $this->uri->segment(3);
 
@@ -957,6 +955,7 @@ class R_SuratJalan extends CI_Controller{
             }
 
             $data_details = json_encode($update_details);
+            // echo "<pre>"; print_r($update_details); echo "</pre>"; die();
 
             log_message('debug', 'data details = '.print_r($data_details, 1));
 
