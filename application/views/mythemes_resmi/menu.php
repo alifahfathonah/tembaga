@@ -188,6 +188,21 @@
                             </li>
                         </ul>
                     </li>
+                    <li>
+                        <a href="javascript:;">
+                        <i class="fa fa-refresh"></i>
+                        <span class="title">Sync CV Individual</span>
+                        <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="<?= base_url() ?>index.php/R_Sync_Individual/PO">
+                                    <i class="fa fa-refresh"></i>
+                                    <span class="title">Sync PO</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     </ul>
                 <?php } if($group_id==9 || $group_id==14){ ?>
                 <li <?php if($module_name=="MNumberings" || $module_name=="Apolo"
