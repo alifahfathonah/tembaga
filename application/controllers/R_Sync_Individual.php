@@ -48,7 +48,7 @@ class R_Sync_Individual extends CI_Controller{
 	            'term_of_payment'=> $data_po['term_of_payment'],
 	        );
 
-	        $ch = curl_init(target_url_cv(1).'api/PurchaseOrderAPI/po');
+	        $ch = curl_init(target_url_cv($post['cv_id']).'api/PurchaseOrderAPI/po');
 	        curl_setopt($ch, CURLOPT_POST, true);
 	        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
 	        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_api);
@@ -66,7 +66,7 @@ class R_Sync_Individual extends CI_Controller{
 
 	        $post_api_detail = json_encode($data_po_detail);
 
-	        $ch2 = curl_init(target_url_cv(1).'api/PurchaseOrderAPI/po_detail');
+	        $ch2 = curl_init(target_url_cv($post['cv_id']).'api/PurchaseOrderAPI/po_detail');
 	        curl_setopt($ch2, CURLOPT_POST, true);
 	        curl_setopt($ch2, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
 	        curl_setopt($ch2, CURLOPT_POSTFIELDS, $post_api_detail);
