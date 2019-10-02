@@ -26,6 +26,31 @@ class Model_bpb extends CI_Model{
         return $data;
     }
 
+    function list_bpb_new($reff_cv = null, $jenis){
+        if ($reff_cv === null) {
+            $data = $this->db->query("select bpb.*, mc.nama_customer, coalesce(ts.no_so, tp.no_po) as no_reff, 
+            (select count(bpbd.id) from r_t_bpb_detail bpbd where bpbd.bpb_resmi_id = bpb.id) as jumlah_item
+            from r_t_bpb bpb
+            left join r_t_invoice ti on ti.id = bpb.r_invoice_id
+            left join r_t_so ts on ts.id = bpb.r_so_id
+            left join r_t_po tp on tp.id = bpb.r_po_id
+            left join m_customers_cv mc on mc.id = bpb.m_customer_id
+            order by bpb.no_bpb desc");
+        } else {
+            $data = $this->db->query("select bpb.*, mc.nama_customer, coalesce(ts.no_so, tp.no_po) as no_reff, 
+            (select count(bpbd.id) from r_t_bpb_detail bpbd where bpbd.bpb_resmi_id = bpb.id) as jumlah_item
+            from r_t_bpb bpb
+            left join r_t_invoice ti on ti.id = bpb.r_invoice_id
+            left join r_t_so ts on ts.id = bpb.r_so_id
+            left join r_t_po tp on tp.id = bpb.r_po_id
+            left join m_customers_cv mc on mc.id = bpb.m_customer_id
+            where bpb.reff_cv = ".$reff_cv." AND bpb.jenis_barang = '".$jenis."'
+            order by bpb.no_bpb desc");
+        }
+
+        return $data;
+    }
+
     function show_header_bpb($id){
         $data = $this->db->query("select bpb.*, cs.nama_customer, cs.alamat, cs.pic, ri.no_invoice_resmi, rpo.no_po from r_t_bpb bpb
             left join m_customers_cv cs on bpb.m_customer_id = cs.id

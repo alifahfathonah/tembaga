@@ -12,7 +12,7 @@ class R_BPB extends CI_Controller{
         $this->load->model('Model_surat_jalan');
     }
     
-    function index(){
+    function index($jenis){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');       
         $reff_cv = $this->session->userdata('cv_id'); 
@@ -32,7 +32,7 @@ class R_BPB extends CI_Controller{
         if ($group_id == 9) {
             $data['list_bpb']= $this->Model_bpb->list_bpb()->result();
         } else {
-            $data['list_bpb']= $this->Model_bpb->list_bpb($reff_cv)->result();
+            $data['list_bpb']= $this->Model_bpb->list_bpb_new($reff_cv, $jenis)->result();
         }
         // }
         $this->load->view('layout', $data);
@@ -337,7 +337,12 @@ class R_BPB extends CI_Controller{
         }
 
         if($this->db->trans_complete()){
-            redirect(base_url('index.php/R_BPB/'));
+            if ($this->input->post('jenis_barang' == 'FG')) {
+                redirect(base_url('index.php/R_BPB/index/FG'));
+            }else {
+                redirect(base_url('index.php/R_BPB/index/Rongsok'));
+            }
+            
         }else{
             $this->session->set_flashdata('flash_msg', 'Surat Jalan gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/R_SuratJalan/edit_surat_jalan/'.$this->input->post('id'));  

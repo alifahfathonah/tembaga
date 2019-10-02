@@ -259,7 +259,7 @@
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
-                    <a href="<?php echo base_url('index.php/R_BPB/'); ?>" class="btn blue-hoki"> 
+                    <a href="javascript:;" id="btnKembali" onclick="back()" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -279,6 +279,14 @@
     </div>
 </div> 
 <script>
+function back(){
+    jenis = $('#jenis_barang').val();
+    if (jenis == 'FG') {
+        window.location.href = '<?= base_url() ?>index.php/R_BPB/index/FG';
+    } else {
+        window.location.href = '<?= base_url() ?>index.php/R_BPB/index/Rongsok';
+    }
+}
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");

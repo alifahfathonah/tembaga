@@ -107,10 +107,21 @@
                 </li>
                 <?php } if($group_id==9 || (isset($akses_menu['R_BPB']) && $akses_menu['R_BPB']==1)){ ?>
                 <li <?php if ($module_name=="BPB") echo 'class="start active open"'; ?>>
-                    <a href="<?php echo base_url(); ?>index.php/R_BPB">
+                    <a href="javascript:;">
                         <i class="fa fa-file-text-o"></i>
                         <span class="title">BPB</span>
+                        <span class="arrow "></span>
                     </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/R_BPB/index/Rongsok">
+                            Rongsok </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/R_BPB/index/FG">
+                            FG </a>
+                        </li>
+                    </ul>
                 </li>
                 <?php } if($group_id==9 || (isset($akses_menu['R_TollingResmi']) && $akses_menu['R_TollingResmi']==1)){ ?>
                 <li <?php if ($module_name=="TollingResmi") echo 'class="start active open"'; ?>>
