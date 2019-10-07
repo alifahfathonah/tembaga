@@ -873,20 +873,31 @@ class Tolling extends CI_Controller{
         
         $data['content']= "tolling_titipan/matching_so";
         $this->load->model('Model_tolling_titipan');
+        $this->load->model('Model_beli_wip');
         $data['header_so']  = $this->Model_tolling_titipan->show_header_so($so_id)->row_array();
         $data['details_so'] = $this->Model_tolling_titipan->show_detail_so($so_id)->result();
 
         $dtr_app = $this->Model_tolling_titipan->get_dtr_approve($so_id)->result();
+        $dtwip_app = $this->Model_tolling_titipan->get_dtwip_approve($so_id)->result();
         foreach ($dtr_app as $index=>$row){
             $dtr_app[$index]->details = $this->Model_tolling_titipan->show_detail_dtr($row->id)->result();
         }
+        foreach ($dtwip_app as $index=>$row) {
+            $dtwip_app[$index]->details = $this->Model_tolling_titipan->show_detail_dtwip($row->id)->result();
+        }
         $data['dtr_app'] = $dtr_app;
+        $data['dtwip_app'] = $dtwip_app;
         $c_id = $data['header_so']['m_customer_id'];
         $dtr = $this->Model_tolling_titipan->get_dtr($c_id,$ppn)->result();
         foreach ($dtr as $index=>$row){
             $dtr[$index]->details = $this->Model_tolling_titipan->show_detail_dtr($row->id)->result();
         }
+        $dtwip = $this->Model_tolling_titipan->get_dtwip($c_id,$ppn)->result();
+        foreach ($dtwip as $index=>$row){
+            $dtwip[$index]->details = $this->Model_beli_wip->show_detail_dtwip($row->id)->result();
+        }
         $data['dtr'] = $dtr;
+        $data['dtwip'] = $dtwip;
         $this->load->view('layout', $data);
     }
 
@@ -959,6 +970,138 @@ class Tolling extends CI_Controller{
                                             'flag_tolling'=>1));
                         }
                 }
+
+        if($this->db->trans_complete()){  
+            // $this->session->set_flashdata('flash_msg', ' DTR Berhasil di Approve');      
+            // redirect('index.php/Tolling/proses_matching/'.$this->input->post('so_id'));    
+            redirect('index.php/Tolling/matching_so/'.$this->input->post('so_id'));
+        }else{
+            // $this->session->set_flashdata('flash_msg', ' DTR Gagal di Approve');    
+            // redirect('index.php/Tolling/proses_matching/'.$this->input->post('so_id'));
+            redirect('index.php/Tolling/matching_so/'.$this->input->post('so_id'));
+        }            
+        
+       // header('Content-Type: application/json');
+       // echo json_encode($return_data);
+    }
+
+    function approve_matching_dtwip(){
+        $dtwip_id = $this->input->post('dtwip_id');
+        $so_id = $this->input->post('so_id');
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn  = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d');
+        $return_data = array();
+        
+            $this->db->trans_start();       
+            #Update status DTwip
+            $this->db->where('id', $dtwip_id);
+            $this->db->update('dtwip', array(
+                    'so_id'=>$so_id,
+                    'status'=>1,
+                    'approved'=>$tanggal,
+                    'approved_by'=>$user_id));
+
+                #Create BPB WIP
+                $this->load->model('Model_m_numberings');
+                #insert t_bpb_wip
+                if($user_ppn==1){
+                    $code = $this->Model_m_numberings->getNumbering('BPB-KMP', $tgl_input);
+                }else{
+                    $code = $this->Model_m_numberings->getNumbering('BPB-WIP',$tgl_input);
+                }
+
+                $data_bpb = array(
+                        'no_bpb' => $code,
+                        'tanggal' => $tanggal,
+                        'flag_ppn' => $user_ppn,
+                        'created' => $tanggal,
+                        'created_by' => $user_id,
+                        'keterangan' => 'BARANG TOLLING WIP',
+                        'status' => 0
+                    );
+                $this->db->insert('t_bpb_wip',$data_bpb);
+                $id_bpb = $this->db->insert_id();
+
+            #insert t_bpb_detail
+            $details = $this->db->query("select dtwip_detail.*, jb.uom from dtwip_detail left join jenis_barang jb on (jb.id = dtwip_detail.jenis_barang_id) where dtwip_id = ".$dtwip_id)->result();
+
+            foreach ($details as $row){
+                    $this->db->insert('t_bpb_wip_detail', array(
+                        'bpb_wip_id' => $id_bpb,
+                        'created' => $tgl_input,
+                        'jenis_barang_id' => $row->jenis_barang_id,
+                        'qty' => $row->qty,
+                        'berat' => $row->berat,
+                        'uom' => $row->uom,
+                        'keterangan' => $row->line_remarks,
+                        'created_by' => $user_id
+                    ));
+            }
+            
+                $this->load->model('Model_tolling_titipan');
+            
+                #update status PO, jika DTR sudah mencukupi
+                $so_dtr_list = $this->Model_tolling_titipan->check_so_dtr($so_id)->result();
+                foreach ($so_dtr_list as $v) {
+                    #penghitungan +- 10 % PO ke DTR
+                    // if(((int)$v->tot_netto) >= (0.9*((int)$v->qty))){
+                    //     #update po_detail flag_dtr
+                    //     $this->Model_beli_rongsok->update_flag_dtr_po_detail($po_id);
+                    // }
+                    // $total_qty += $v->qty;
+                        $total = ((int)$v->tot_netto_dtr) + ((int)$v->tot_netto_dtwip);
+
+                        // echo $total;die();
+                        if(($total) >= (0.9*((int)$v->tot_qty))){
+                            $flag_tolling = 2;
+                        }else {
+                            $flag_tolling = 1;
+                        }
+                        $this->db->where('id',$so_id);
+                        $this->db->update('sales_order',array(
+                                            'flag_tolling'=>$flag_tolling));
+                }
+
+            if($user_ppn==1){
+                $this->load->helper('target_url');
+
+                $this->load->model('Model_beli_wip');
+
+                $data_post['flag_tolling'] = $flag_tolling;
+                $data_post['so_id'] = $so_id;
+
+                $data_post['dtwip'] = $this->Model_beli_wip->load_dtwip_only($dtwip_id)->row_array();
+                $data_post['details'] = $this->Model_beli_wip->load_dtwip_detail_only($dtwip_id)->result();
+
+                unset($data_bpb['flag_ppn']);
+                $data_id = array('reff1' => $id_bpb);
+                $data_post['data_bpb'] = array_merge($data_bpb, $data_id);
+                $data_post['details_bpb'] = $this->Model_beli_wip->load_bpb_detail_only($id_bpb)->result();
+
+                $detail_post = json_encode($data_post);
+                // print($detail_post);
+                // die();
+
+                $ch = curl_init(target_url().'api/TollingAPI/dtwip');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                if($result['status']==true){
+                    $this->db->where('id', $dtwip_id);
+                    $this->db->update('dtwip', array(
+                        'api'=>1
+                    ));
+                }
+                // print_r($response);
+                // die();
+            }
+            // die();
 
         if($this->db->trans_complete()){  
             // $this->session->set_flashdata('flash_msg', ' DTR Berhasil di Approve');      
@@ -4161,5 +4304,97 @@ class Tolling extends CI_Controller{
         
         $this->session->set_flashdata('flash_msg', 'Surat Jalan berhasil di open');
         redirect('index.php/Tolling/add_surat_jalan');
+    }
+
+    function dtwip_list(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');    
+        $user_ppn = $this->session->userdata('user_ppn');         
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "tolling_titipan/dtwip_list";
+        $this->load->model('Model_tolling_titipan');
+        $data['list_data'] = $this->Model_tolling_titipan->dtwip_list($user_ppn)->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function create_dtwip(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "tolling_titipan/create_dtwip";
+        $this->load->model('Model_beli_wip');
+        $data['list_wip_on_po'] = $this->Model_beli_wip->list_wip()->result();
+        
+        $this->load->model('Model_sales_order');
+        $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+        $this->load->view('layout', $data);   
+    }
+
+    function save_dtwip(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $user_ppn =  $this->session->userdata('user_ppn');
+
+        $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+        if($user_ppn == 1){
+            $code = $this->Model_m_numberings->getNumbering('DTWP-KMP', $tgl_input);
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('DTWIP', $tgl_input); 
+        }
+
+        if($code){        
+            $data = array(
+                        'no_dtwip'=> $code,
+                        'flag_ppn'=> $user_ppn,
+                        'tanggal'=> $tgl_input,
+                        'customer_id'=> $this->input->post('customer_id'),
+                        'jenis_barang'=> $this->input->post('jenis_barang'),
+                        'remarks'=> $this->input->post('remarks'),
+                        'created'=> $tanggal,
+                        'created_by'=> $user_id
+                    );
+            $this->db->insert('dtwip', $data);
+            $dtwip_id = $this->db->insert_id();
+            $details = $this->input->post('myDetails');
+            foreach ($details as $row){
+                if($row['wip_id']!=0){
+                    $this->db->insert('dtwip_detail', array(
+                        'dtwip_id'=>$dtwip_id,
+                        'jenis_barang_id'=>$row['wip_id'],
+                        'qty' => $row['qty'],
+                        'berat'=>$row['berat'],
+                        'line_remarks'=>$row['line_remarks'],
+                        'created'=>$tanggal,
+                        'created_by'=>$user_id,
+                        'tanggal_masuk'=>$tgl_input
+                    ));
+                }
+            }
+                    
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'DTWIP berhasil di-create dengan nomor : '.$code);                 
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTWIP, silahkan coba kembali!');
+            }
+            redirect('index.php/Tolling/dtwip_list');           
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Pembuatan DTWIP gagal, penomoran belum disetup!');
+            redirect('index.php/Tolling/dtwip_list');
+        }
     }
 }

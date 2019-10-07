@@ -77,6 +77,7 @@
                                 target="_blank" style="margin-bottom:4px"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/StokOpname/<?= ($jenis == 'FG')? 'print_stok_fg_per_tanggal_all' : '' ?>/<?php echo $data->id; ?>" 
                                 target="_blank" style="margin-bottom:4px"> &nbsp; <i class="fa fa-print"></i> Print Global &nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/StokOpname/search_fg/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa fa-search"></i> Filter &nbsp; </a>
                             <?php } ?>
                             <?php
                                 }

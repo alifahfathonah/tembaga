@@ -66,11 +66,14 @@
                         if($group_id==1 || $group_id==21 || $hak_akses['view_spb']==1){
                         ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangWIP/view_laporan/<?php echo $data['tanggal']; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangWIP/print_laporan_bulanan/<?php echo $data['tanggal']; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print &nbsp; </a>
                         <?php
                             }//if group
+                            $q = $arr['qty_awal'][$no] + ($data['qty_masuk'] - $data['qty_keluar']);
+                            $b = $arr['berat_awal'][$no] + ($data['berat_masuk'] - $data['berat_keluar']);
                             $no++;
-                        $arr['qty_awal'][$no] = $data['qty_masuk'] - $data['qty_keluar'];
-                        $arr['berat_awal'][$no] = $data['berat_masuk'] - $data['berat_keluar'];
+                        $arr['qty_awal'][$no] = $q;
+                        $arr['berat_awal'][$no] = $b;
                         }//foreach
                     echo '</tr>';
                     }//if ?>

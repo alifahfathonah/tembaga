@@ -278,16 +278,29 @@ class Model_gudang_wip extends CI_Model{
         return $data;
     }
 
-    function show_view_laporan($bulan,$tahun){
-        $data = $this->db->query("select jenis_barang_id, jb.jenis_barang, count(t_gudang_wip.id) as jumlah,
+    function show_view_laporan_before($bulan,$tahun){
+        $data = $this->db->query("select jenis_barang_id, jb.jenis_barang, jb.kode, jb.uom, count(t_gudang_wip.id) as jumlah,
                 sum(CASE WHEN jenis_trx = 0 THEN qty ELSE 0 END) as qty_masuk,
                 sum(CASE WHEN jenis_trx = 1 THEN qty ELSE 0 END) as qty_keluar,
                 sum(CASE WHEN jenis_trx = 0 THEN berat ELSE 0 END) as berat_masuk,
                 sum(CASE WHEN jenis_trx = 1 THEN berat ELSE 0 END) as berat_keluar
                 from t_gudang_wip
                 LEFT join jenis_barang jb on (jb.id = t_gudang_wip.jenis_barang_id)
-                Where month(t_gudang_wip.tanggal) =".$bulan." and year(t_gudang_wip.tanggal) =".$tahun."
+                Where t_gudang_wip.tanggal < '".$year."-".$month."-01'
                 GROUP by t_gudang_wip.jenis_barang_id");
+        return $data;
+    }
+
+    function show_view_laporan($bulan,$tahun){
+        $data = $this->db->query("select jenis_barang_id, jb.jenis_barang, jb.kode, jb.uom, count(tgw.id) as jumlah,
+                (select (sum(CASE WHEN jenis_trx = 0 THEN berat ELSE 0 END) - sum(CASE WHEN jenis_trx = 1 THEN berat ELSE 0 END))
+                from t_gudang_wip Where tanggal < '".$tahun."-".$bulan."-01' and jenis_barang_id = tgw.jenis_barang_id) as stok_awal,
+                sum(CASE WHEN jenis_trx = 0 THEN berat ELSE 0 END) as netto_masuk,
+                sum(CASE WHEN jenis_trx = 1 THEN berat ELSE 0 END) as netto_keluar
+                from t_gudang_wip tgw
+                LEFT join jenis_barang jb on (jb.id = tgw.jenis_barang_id)
+                Where month(tgw.tanggal) =".$bulan." and year(tgw.tanggal) =".$tahun."
+                GROUP by tgw.jenis_barang_id");
         return $data;
     }
 

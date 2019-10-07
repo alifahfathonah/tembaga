@@ -1684,7 +1684,8 @@ class Finance extends CI_Controller{
         $cost = str_replace(',', '', $this->input->post('cost'));
         $materai = str_replace(',', '', $this->input->post('materai'));
         if ($this->input->post('flag_ppn') == 1 && $this->input->post('currency')=='IDR') {
-            $update_total = ($total - $diskon - $cost - $materai) * 10 / 100;
+            $ppn = ($total - $diskon - $cost) * 10 / 100;
+            $update_total = $total + $ppn + $materai;
         } else {
             $update_total = $total - $diskon - $cost - $materai;
         }
@@ -3355,6 +3356,26 @@ class Finance extends CI_Controller{
             $this->load->view('finance/print_penerimaan_cm', $data);
     }
 
+    function cm_belum_cair(){
+            $module_name = $this->uri->segment(1);
+            $ppn         = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_finance');
+
+            $data['detailLaporan'] = $this->Model_finance->cm_belum_cair()->result();
+
+            $this->load->view('finance/cm_belum_cair', $data);
+    }
+
     function search_trx(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
@@ -3527,6 +3548,10 @@ class Finance extends CI_Controller{
             }elseif ($l == 3) {
                 $data['detailLaporan'] = $this->Model_finance->print_laporan_pembelian($start,$end,1)->result();
                 // $data['ingotRendah'] = $this->Model_finance->laporan_pembelian_ingot_rendah($start, $end, 1)->result();
+            }elseif ($l == 4) {
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_pembelian2($start,$end,2,$user_ppn)->result();
+            }elseif ($l == 5) {
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_pembelian2($start,$end,1,$user_ppn)->result();
             }
         $this->load->view('finance/print_laporan_pembelian', $data);
         }elseif($j==1){
@@ -3543,6 +3568,10 @@ class Finance extends CI_Controller{
             }elseif ($l == 3) {
                 $data['detailLaporan'] = $this->Model_finance->laporan_pembelian_rsk($start,$end,1)->result();
                 // $data['ingotRendah'] = $this->Model_finance->laporan_pembelian_rsk_ingot_rendah($start,$end,1)->result();
+            }elseif ($l == 5) {
+                $data['detailLaporan'] = $this->Model_finance->laporan_pembelian_rsk2($start,$end,3,$user_ppn)->result();
+            }elseif ($l == 4) {
+                $data['detailLaporan'] = $this->Model_finance->laporan_pembelian_rsk2($start,$end,1,$user_ppn)->result();
             }
         $this->load->view('finance/print_laporan_pembelian_rsk', $data);
         }
@@ -3582,13 +3611,13 @@ class Finance extends CI_Controller{
         $this->load->model('Model_finance');
         if($l == 1){
             $data['detailLaporan'] = $this->Model_finance->rangking_pemasukan_rongsok($start,$end,0)->result();
-            $data['ingotRendah'] = $this->Model_finance->rangking_pemasukan_ingot_rendah($start, $end, 0)->result();
+            // $data['ingotRendah'] = $this->Model_finance->rangking_pemasukan_ingot_rendah($start, $end, 0)->result();
         }elseif ($l == 2) {
             $data['detailLaporan'] = $this->Model_finance->rangking_pemasukan_rongsok($start,$end,2)->result();
-            $data['ingotRendah'] = $this->Model_finance->rangking_pemasukan_ingot_rendah($start, $end, 2)->result();
+            // $data['ingotRendah'] = $this->Model_finance->rangking_pemasukan_ingot_rendah($start, $end, 2)->result();
         }elseif ($l == 3) {
             $data['detailLaporan'] = $this->Model_finance->rangking_pemasukan_rongsok($start,$end,1)->result();
-            $data['ingotRendah'] = $this->Model_finance->rangking_pemasukan_ingot_rendah($start, $end, 1)->result();
+            // $data['ingotRendah'] = $this->Model_finance->rangking_pemasukan_ingot_rendah($start, $end, 1)->result();
         }
         $this->load->view('finance/print_rangking_rongsok', $data);
     }

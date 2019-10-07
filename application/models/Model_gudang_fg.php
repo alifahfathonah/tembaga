@@ -60,7 +60,7 @@ class Model_gudang_fg extends CI_Model{
     //     return $data;
     // } 
 
-    function bpb_list($ppn){
+    function bpb_list($ppn,$m,$y){
         $data = $this->db->query("Select bpbfg.*, jb.jenis_barang, COALESCE(pf.no_laporan_produksi,r.no_retur) as no_produksi, COALESCE(pf.jenis_packing_id,r.jenis_packing_id) as jenis_packing_id,
                     (select count(id) from t_bpb_fg_detail tbfd where tbfd.t_bpb_fg_id = bpbfg.id)as jumlah_item,
                     usr.realname As pengirim
@@ -70,7 +70,7 @@ class Model_gudang_fg extends CI_Model{
                     left join produksi_fg pf on (pf.id = bpbfg.produksi_fg_id)
                     left join retur r on (r.id = bpbfg.retur_id)
                     left join m_jenis_packing jp on (jp.id = pf.jenis_packing_id) or (jp.id = pf.jenis_packing_id)
-                Where bpbfg.flag_ppn =".$ppn."
+                Where bpbfg.flag_ppn =".$ppn." and month(bpbfg.tanggal) = ".$m." and year(bpbfg.tanggal) =".$y."
                 Order By bpbfg.id Desc");
         return $data;
     }
@@ -581,7 +581,7 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
     }
 
     function get_bobbin_g($id){
-        $data = $this->db->query("Select bobbin_size, keterangan from m_bobbin_size where jenis_packing_id =".$id);
+        $data = $this->db->query("Select bobbin_size, keterangan, berat from m_bobbin_size where jenis_packing_id =".$id);
         return $data;
     }
 

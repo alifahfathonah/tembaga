@@ -146,10 +146,67 @@ class Model_tolling_titipan extends CI_Model{
         return $data;
     }
 
+    function get_dtwip_approve($id){
+        $data = $this->db->query("Select dtwip.*,  
+                    spl.nama_customer,
+                    usr.realname As penimbang,
+                    app.realname As approved_name,
+                    rjct.realname As rejected_name,
+                (Select count(dtwipd.id)As jumlah_item From dtwip_detail dtwipd Where dtwipd.dtwip_id = dtwip.id)As jumlah_item
+                From dtwip
+                    Left Join m_customers spl On (dtwip.customer_id = spl.id) 
+                    Left Join users usr On (dtwip.created_by = usr.id) 
+                    Left Join users app On (dtwip.approved_by = app.id) 
+                    Left Join users rjct On (dtwip.rejected_by = rjct.id) 
+                Where dtwip.so_id=".$id);
+        return $data;
+    }
+
+    function get_dtwip($id,$ppn){
+        $data = $this->db->query("Select dtwip.*,  
+                    spl.nama_customer,
+                    usr.realname As penimbang,
+                    app.realname As approved_name,
+                    rjct.realname As rejected_name,
+                (Select count(dtwipd.id)As jumlah_item From dtwip_detail dtwipd Where dtwipd.dtwip_id = dtwip.id)As jumlah_item
+                From dtwip
+                    Left Join m_customers spl On (dtwip.customer_id = spl.id) 
+                    Left Join users usr On (dtwip.created_by = usr.id) 
+                    Left Join users app On (dtwip.approved_by = app.id) 
+                    Left Join users rjct On (dtwip.rejected_by = rjct.id) 
+                Where dtwip.customer_id=".$id." and status = 0 and dtwip.flag_ppn=".$ppn);
+        return $data;
+    }
+
+    function show_detail_dtwip($id){
+        $data = $this->db->query("Select dtwipd.*, jb.jenis_barang, jb.uom
+                    From dtwip_detail dtwipd 
+                        Left Join jenis_barang jb On (dtwipd.jenis_barang_id = jb.id) 
+                    Where dtwipd.dtwip_id=".$id);
+        return $data;
+    }
+
+    function dtwip_list($user_ppn){
+        $data = $this->db->query("Select dtwip.*, 
+                    so.no_sales_order, 
+                    spl.nama_customer,
+                    usr.realname As penimbang,
+                (Select count(dtwipd.id)As jumlah_item From dtwip_detail dtwipd Where dtwipd.dtwip_id = dtwip.id)As jumlah_item
+                From dtwip
+                    Left Join sales_order so On (dtwip.so_id > 0 and dtwip.so_id = so.id) 
+                    Left Join m_customers spl On (so.m_customer_id = spl.id) or (dtwip.customer_id = spl.id) 
+                    Left Join users usr On (dtwip.created_by = usr.id)
+                Where dtwip.customer_id > 0 and dtwip.flag_ppn=".$user_ppn."
+                Order By dtwip.id Desc");
+        return $data;
+    }
+
     function check_so_dtr($id){
         $data = $this->db->query("select so.id,
                 (select sum(ddtl.netto) from dtr_detail ddtl left join dtr on ddtl.dtr_id = dtr.id 
-                where dtr.so_id = so.id and dtr.status=1)as tot_netto,
+                where dtr.so_id = so.id and dtr.status=1)as tot_netto_dtr,
+                (select sum(ddwtl.berat) from dtwip_detail ddwtl left join dtwip on ddwtl.dtwip_id = dtwip.id 
+                where dtwip.so_id = so.id and dtwip.status=1)as tot_netto_dtwip,
                 (select sum(sod.netto) from t_sales_order_detail sod left join t_sales_order tso on tso.id = sod.t_so_id where tso.so_id = so.id) as tot_qty
                 from sales_order so
                 where so.id =".$id);

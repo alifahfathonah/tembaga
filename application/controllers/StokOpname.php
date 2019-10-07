@@ -304,6 +304,16 @@ class StokOpname extends CI_Controller{
         $this->load->view('stok_opname/print_stok_fg_per_tanggal_all', $data);
     }
 
+    function print_stok_fg_per_jb(){
+        $jb = $_GET['r'];
+        $id = $_GET['l'];
+        $this->load->helper('tanggal_indo');  
+        $this->load->model('Model_stok_opname');
+        $data['detailLaporan'] = $this->Model_stok_opname->print_stok_v2_jb($id,$jb)->result();
+        // print_r($data); die();
+        $this->load->view('stok_opname/print_stok_fg_per_tanggal', $data);
+    }
+
     function refreshData(){
         $id = $this->input->post('id');
 
@@ -682,5 +692,23 @@ class StokOpname extends CI_Controller{
         $data['detailLaporan'] = $this->Model_stok_opname->print_stok_rongsok()->result();
 
         $this->load->view('stok_opname/print_stok_rongsok', $data);
+    }
+
+    function search_fg(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Gudang Finishgood";
+        $data['content']   = "stok_opname/search_fg";
+
+        $this->load->model('Model_gudang_fg'); 
+        $data['list_fg'] = $this->Model_gudang_fg->barang_fg_list()->result();
+
+        $this->load->view('layout', $data);  
     }
 }

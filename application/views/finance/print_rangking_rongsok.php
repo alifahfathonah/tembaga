@@ -93,37 +93,6 @@
 					<td align='right'><b>".number_format($grand_rata,2,'.',',')."</b></td>
 				</tr>";
 
-			$no = 1;
-			foreach ($ingotRendah as $key => $v) {
-				echo 
-					"<tr>
-						<td align='center'>".$no."</td>
-						<td align='center'>".$v->sumber."</td>
-						<td>".$v->supplier."</td>
-						<td align='right'>".number_format($v->netto,2,'.',',')."</td>
-						<td align='right'>".number_format($v->total,2,'.',',')."</td>
-						<td align='right'>".number_format($v->rata2,2,'.',',')."</td>
-					</tr>";
-
-				$ingot_netto += $v->netto;
-				$ingot_amount += $v->total;
-				// $ingot_rata += $v->rata2;
-				$ingot_rata = $ingot_amount / $ingot_netto;
-			}
-
-			$grand_grand_netto = $grand_netto + $ingot_netto;
-			$grand_grand_amount = $grand_amount + $ingot_amount;
-			// $grand_grand_rata = $grand_rata + $ingot_rata;
-			$grand_grand_rata = $grand_grand_amount / $grand_grand_netto;
-
-			echo 
-				"<tr>
-					<td align='right' colspan='3'><b>Grand Total</b></td>
-					<td align='right'><b>".number_format($grand_grand_netto,2,'.',',')."</b></td>
-					<td align='right'><b>".number_format($grand_grand_amount,2,'.',',')."</b></td>
-					<td align='right'><b>".number_format($grand_grand_rata,2,'.',',')."</b></td>
-				</tr>";
-
 		?>
 		</tbody>
 	</table>

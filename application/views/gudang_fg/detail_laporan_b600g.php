@@ -115,7 +115,7 @@
                                 <?php 
                                 foreach($packing as $p){
                                 ?>
-                                <option value="<?=$p->bobbin_size;?>"><?=$p->bobbin_size.' ('.$p->keterangan.')';?> </option>
+                                <option value="<?=$p->bobbin_size;?>" data-berat="<?=$p->berat;?>"><?=$p->bobbin_size.' ('.$p->keterangan.')';?> </option>
                                 <?php } ?>    
                             </select> 
                             <input type="hidden" name="id_packing" id="id_packing">                       
@@ -133,12 +133,12 @@
                             <thead>
                                 <th>No</th>
                                 <th>No Produksi</th>
-                                <th>Bruto</th>
-                                <th>Berat Packing</th>
+                                <th width="20%">Bruto</th>
+                                <th width="10%">Berat</th>
                                 <th></th>
-                                <th>Netto (Kg)</th>
+                                <th width="20%">Netto (Kg)</th>
                                 <th>Nomor Packing / Barcode</th>
-                                <th width="20%">Actions</th>
+                                <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
 
@@ -147,7 +147,7 @@
                                 <td style="text-align:center"><i class="fa fa-plus"></td>
                                 <td><input type="text" id="no_produksi" name="no_produksi" class="form-control myline"></td>
                                 <td><input type="number" id="bruto" name="bruto" class="form-control myline"/></td>
-                                <td><input type="number" id="berat_bobbin" = name="berat_bobbin" class="form-control myline"/></td>
+                                <td><input type="text" value="Auto" id="berat_bobbin" name="berat_bobbin" class="form-control myline" readonly/></td>
                                 <td><a href="javascript:;" onclick="timbang_netto()" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>
                                 <td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"/></td>
                                 <td><input type="text" value="Auto" class="form-control myline" readonly="readonly"></td>
@@ -243,10 +243,17 @@
 <script>
 function timbang_netto(){
     var bruto = $("#bruto").val();
-    var berat_palette = $("#berat_bobbin").val();
-    var total_netto = bruto - berat_palette;
-    const total = total_netto.toFixed(2);
-    $("#netto").val(total);
+    // var berat_palette = $("#berat_bobbin").val();
+    var berat_palette = $('#no_packing').find(':selected').attr("data-berat");
+    if(berat_palette==null){
+        $('#message').html("Packing belum dipilih!");
+        $('.alert-danger').show(); 
+    }else{
+        $('#berat_bobbin').val(berat_palette);
+        var total_netto = bruto - berat_palette;
+        const total = total_netto.toFixed(2);
+        $("#netto").val(total);
+    }
 }
 
 function simpanData(){

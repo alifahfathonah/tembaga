@@ -1794,11 +1794,15 @@ class SalesOrder extends CI_Controller{
 
     function save_revisi_sj(){
         $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+
+        $this->db->trans_start();
         
+        $data_post = [];
         $details = $this->input->post('details');
-        foreach ($details as $v) {
+        foreach ($details as $key => $v) {
             if($v['netto_r']>0){
                 $bruto = $v['netto_r'] + $v['berat'];
                 $data = array(
@@ -1809,11 +1813,35 @@ class SalesOrder extends CI_Controller{
                     );
                 $this->db->where('id', $v['id']);
                 $this->db->update('t_surat_jalan_detail', $data);
+                $data_post[$key] = array_merge($v, array('bruto' => $bruto));
             }
         }
-        
-        $this->session->set_flashdata('flash_msg', 'Data sales order berhasil disimpan');
-        redirect('index.php/SalesOrder/surat_jalan');
+
+        if($user_ppn == 1){
+            $this->load->helper('target_url');
+
+            $post = json_encode($data_post);
+            // print_r($post);
+            // die();
+            $ch = curl_init(target_url().'api/SalesOrderAPI/sj_revisi');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $result = json_decode($response, true);
+            curl_close($ch);
+            // print_r($response);
+            // die();
+        }
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Data surat jalan berhasil disimpan');
+            redirect('index.php/SalesOrder/surat_jalan');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data surat jalan gagal disimpan');
+            redirect('index.php/SalesOrder/surat_jalan');
+        }
     }
 
     function print_barcode_fg(){

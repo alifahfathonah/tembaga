@@ -982,7 +982,8 @@ class GudangFG extends CI_Controller{
     function bpb_list(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');     
-        $user_ppn    = $this->session->userdata('user_ppn');   
+        $user_ppn    = $this->session->userdata('user_ppn');  
+        $tanggal = date('m-Y'); 
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -990,13 +991,39 @@ class GudangFG extends CI_Controller{
         }
         $data['group_id']  = $group_id;
 
+            $tgl=explode("-",$tanggal);
+            $tahun=$tgl[1];
+            $bulan=$tgl[0];
+
         $data['content']= "gudang_fg/bpb_list";
         $this->load->model('Model_gudang_fg');
-        $data['list_data'] = $this->Model_gudang_fg->bpb_list($user_ppn)->result();
+        $data['list_data'] = $this->Model_gudang_fg->bpb_list($user_ppn,$bulan,$tahun)->result();
 
         $this->load->view('layout', $data);
     }
 
+    function bpb_list_filter(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');     
+        $user_ppn    = $this->session->userdata('user_ppn');
+        $tanggal = $this->uri->segment(3);   
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+            $tgl=explode("-",$tanggal);
+            $tahun=$tgl[1];
+            $bulan=$tgl[0];
+
+        $data['content']= "gudang_fg/bpb_list";
+        $this->load->model('Model_gudang_fg');
+        $data['list_data'] = $this->Model_gudang_fg->bpb_list($user_ppn,$bulan,$tahun)->result();
+
+        $this->load->view('layout', $data);
+    }
 
     function send(){
         $module_name = $this->uri->segment(1);
@@ -1742,6 +1769,16 @@ class GudangFG extends CI_Controller{
         }else{
             redirect('index.php/GudangFG/spb_list');
         }
+    }
+
+    function delete_spb(){
+        $id = $this->uri->segment(3);
+        if(!empty($id)){
+            $this->db->where('id', $id);
+            $this->db->delete('t_spb_fg');            
+        }
+        $this->session->set_flashdata('flash_msg', 'Data SPB FG berhasil dihapus');
+        redirect('index.php/GudangFG/spb_list');
     }
 
     function view_spb(){

@@ -446,7 +446,7 @@ class Model_beli_rongsok extends CI_Model{
                 From voucher 
                     Left Join po On (voucher.po_id = po.id) 
                 Where voucher.jenis_barang='RONGSOK' And po.flag_ppn = ".$user_ppn."
-                Order By voucher.no_voucher");
+                Order By voucher.no_voucher desc");
         return $data;
     }
 

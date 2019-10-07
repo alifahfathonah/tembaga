@@ -640,7 +640,7 @@ class BeliSparePart extends CI_Controller{
         if($id){        
             $this->load->model('Model_beli_sparepart');
             $data['header']  = $this->Model_beli_sparepart->show_header_spb($id)->row_array();
-            $data['details'] = $this->Model_beli_sparepart->show_detail_spb($id)->result();
+            $data['details'] = $this->Model_beli_sparepart->show_detail_spb_fulfilment($id)->result();
 
             $this->load->view('beli_spare_part/print_spb', $data);
         }else{

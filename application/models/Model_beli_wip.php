@@ -79,7 +79,7 @@ class Model_beli_wip extends CI_Model
                     Left Join po On (dtwip.po_id > 0 and dtwip.po_id = po.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) or (dtwip.supplier_id = spl.id) 
                     Left Join users usr On (dtwip.created_by = usr.id)
-                Where dtwip.flag_ppn=".$user_ppn."
+                Where dtwip.flag_ppn=".$user_ppn." and dtwip.customer_id = 0
                 Order By dtwip.id Desc");
         return $data;
     }
@@ -135,12 +135,13 @@ class Model_beli_wip extends CI_Model
     function show_header_dtwip($id){
         $data = $this->db->query("Select dtwip.*, 
                     po.no_po, po.ppn,
-                    spl.nama_supplier,
+                    COALESCE(spl.nama_supplier,mc.nama_customer) as nama_supplier,
                     usr.realname As penimbang,
                     rjct.realname As rejected_name
                     From dtwip
                         Left Join po On (dtwip.po_id = po.id)
                         Left Join supplier spl On (dtwip.supplier_id = spl.id) 
+                        Left Join m_customers mc on (dtwip.customer_id = mc.id)
                         Left Join users usr On (dtwip.created_by = usr.id) 
                         Left Join users rjct On (dtwip.rejected_by = rjct.id) 
                     Where dtwip.id=".$id);

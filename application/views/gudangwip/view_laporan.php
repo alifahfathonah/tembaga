@@ -40,10 +40,8 @@
                             <th style="width:40px">No</th>
                             <th>Nama Item</th>
                             <th>Jumlah Item</th>
-                            <th>Qty Masuk</th>
-                            <th>Bruto Masuk</th>
-                            <th>Qty Keluar</th>
-                            <th>Bruto Keluar</th>
+                            <th>Netto Masuk</th>
+                            <th>Netto Keluar</th>
                             <th>Action</th>
                         </thead>
                         <tbody>
@@ -56,10 +54,8 @@
                             echo '<td style="text-align:center">'.$no.'</td>';
                             echo '<td>'.$row->jenis_barang.'</td>';
                             echo '<td>'.$row->jumlah.'</td>';
-                            echo '<td>'.number_format($row->qty_masuk, 2, '.', ',').'</td>';
-                            echo '<td>'.number_format($row->berat_masuk, 2, '.', ',').'</td>';
-                            echo '<td>'.number_format($row->qty_keluar, 2, '.', ',').'</td>';
-                            echo '<td>'.number_format($row->berat_keluar, 2, '.', ',').'</td>';
+                            echo '<td>'.number_format($row->netto_masuk, 2, '.', ',').'</td>';
+                            echo '<td>'.number_format($row->netto_keluar, 2, '.', ',').'</td>';
                             $no++;
                         ?>
                         <td><?php

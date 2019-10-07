@@ -31,7 +31,7 @@
                 echo '<td style="border-bottom:1px solid #000;">'.$row->no_pallete.'</td>';
                 echo '<td style="border-bottom:1px solid #000;">'.number_format($row->bruto,2,',','.').'</td>';
                 echo '<td style="border-bottom:1px solid #000;">'.number_format($row->berat_palette,2,',','.').'</td>';
-                echo '<td style="border-bottom:1px solid #000;">'.number_format($row->bruto,2,',','.').'</td>';
+                echo '<td style="border-bottom:1px solid #000;">'.number_format($row->netto,2,',','.').'</td>';
                 echo '</tr>';
                 $no++;
                 $bruto += $row->bruto;

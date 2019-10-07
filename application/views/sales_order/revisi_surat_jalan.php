@@ -212,6 +212,7 @@
                                 $no=1;
                                 foreach ($details as $row){
                                     echo '<input type="hidden" name="details['.$no.'][id]" value="'.$row->id.'">';
+                                    echo '<input type="hidden" name="details['.$no.'][gudang_id]" value="'.$row->gudang_id.'">';
                                 ?>
                                 <tr>
                                     <td><?=$no;?></td>

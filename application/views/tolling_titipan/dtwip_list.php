@@ -4,9 +4,9 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Pembelian 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliWIP'); ?>"> Pembelian WIP </a> 
+            <a href="<?php echo base_url('index.php/Tolling'); ?>"> Tolling </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliWIP/dtwip_list'); ?>"> DTWIP List </a> 
+            <a href="<?php echo base_url('index.php/Tolling/index'); ?>"> DTWIP List </a> 
         </h5>          
     </div>
 </div>
@@ -30,7 +30,7 @@
                     <i class="fa fa-beer"></i>Data Timbang WIP (DTWIP) List
                 </div>
                 <div class="tools">    
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/BeliWIP/create_dtwip"> <i class="fa fa-plus"></i> Create DTWIP</a>
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Tolling/create_dtwip"> <i class="fa fa-plus"></i> Create DTWIP</a>
                 </div>           
             </div>
             <div class="portlet-body">
@@ -40,7 +40,7 @@
                     <th style="width:50px;">No</th>
                     <th>No. DTWIP</th>
                     <th>Tanggal</th>
-                    <th>No. PO</th>
+                    <th>No. SO</th>
                     <th>Supplier</th>
                     <th>Penimbang</th>
                     <th>Jumlah <br>Items</th>
@@ -59,8 +59,8 @@
                         <td style="text-align:center;"><?php echo $no; ?></td>
                         <td style="background-color: "><?php echo $data->no_dtwip; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                        <td><?php echo $data->no_po; ?></td>
-                        <td><?php echo $data->nama_supplier; ?></td>
+                        <td><?php echo $data->no_sales_order; ?></td>
+                        <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->penimbang; ?></td>                        
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td><?php echo $data->remarks; ?></td>
@@ -92,9 +92,6 @@
                                     if($data->po_id>0){
                                         echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliWIP/print_dtwip_harga/'.$data->id.'" style="margin-bottom:4px" target="_blank">&nbsp;<i class="fa fa-print"></i> Print (Harga)</a> ';
                                     }
-                                }
-                                if(($group_id==1 || $hak_akses['proses_dtwip']==1) && $data->status == 0){
-                                    echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliWIP/proses_dtwip/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
                                 }
                             ?>
                         </td>

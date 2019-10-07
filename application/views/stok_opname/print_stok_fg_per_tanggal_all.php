@@ -32,7 +32,7 @@
                     <th rowspan="2">Kode</th>
                     <th rowspan="2">Nama Barang</th>
                     <!-- <th rowspan="2">UOM</th> -->
-                    <th colspan="3" style="border-bottom: 1px solid;">Berat</th>\
+                    <th colspan="3" style="border-bottom: 1px solid;">Berat</th>
                 </tr>
                 <tr>
                     <th>Bruto</th>

@@ -303,20 +303,20 @@
                                             <td>Diskon</td>
                                             <td>(<i class="fa fa-minus"></i>)
                                                 <label id="lblDiskon"><?=number_format($header['diskon'],0,',','.');?></label>
-                                                <input type="text" name="diskon" id="diskon" value="<?=number_format($header['diskon'],2,',','.');?>" style="display: none;"  onkeyup="getComa(this.value, this.id)"> 
+                                                <input type="text" name="diskon" id="diskon" value="<?=number_format($header['diskon'],2,'.',',');?>" style="display: none;"  onkeyup="getComa(this.value, this.id)"> 
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Biaya Tambahan</td>
                                             <td>(<i class="fa fa-minus"></i>)
                                                 <label id="lblCost"><?=number_format($header['add_cost'],0,',','.');?></label>
-                                                <input type="text" name="cost" id="cost" value="<?=number_format($header['add_cost'],2,',','.');?>" style="display: none;"  onkeyup="getComa(this.value, this.id)"></td>
+                                                <input type="text" name="cost" id="cost" value="<?=number_format($header['add_cost'],2,'.',',');?>" style="display: none;"  onkeyup="getComa(this.value, this.id)"></td>
                                         </tr>
                                         <tr>
                                             <td>Materai</td>
                                             <td>(<i class="fa fa-plus"></i>)
                                                 <label id="lblMaterai"><?=number_format($header['materai'],0,',','.');?></label>
-                                                <input type="text" name="materai" id="materai" value="<?=number_format($header['materai'],2,',','.');?>" style="display: none;"  onkeyup="getComa(this.value, this.id)"> </td>
+                                                <input type="text" name="materai" id="materai" value="<?=number_format($header['materai'],2,'.',',');?>" style="display: none;"  onkeyup="getComa(this.value, this.id)"> </td>
                                         </tr>
                                         <tr>
                                             <td>Pajak</td>
@@ -413,8 +413,8 @@
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script type="text/javascript">
     function getComa(value, id){
-        angka = value.toString().replace(/\./g, "");
-        $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+        angka = value.toString().replace(/\,/g, "");
+        $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     }
 
     function editData(){

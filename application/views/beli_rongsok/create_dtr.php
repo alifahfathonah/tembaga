@@ -231,7 +231,7 @@ function timbang_netto(id){
 
 // function timbang_netto(id){
 //     $.ajax({
-//         url: "http://192.168.1.152:10000/scaleload",
+//         url: "http://192.168.0.202:10000/scaleload",
 //         method: "POST",
 //         dataType: "json",
 //         success: function (result){

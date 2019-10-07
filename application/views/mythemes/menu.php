@@ -292,6 +292,12 @@
                                     <i class="fa fa-file-powerpoint-o"></i>
                                     TTR List </a>
                                 </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/BeliWIP/dtwip_list">
+                                        <i class="fa fa-file-text-o"></i>
+                                        DTWIP List
+                                    </a>
+                                </li>
                                 <!-- <li>
                                     <a href="<?php //echo base_url(); ?>index.php/Tolling/produksi_ampas">
                                     <i class="fa fa-trash"></i>
@@ -1187,6 +1193,10 @@
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/search_penerimaan_cm/">
                                     <i class="fa fa-money" style="color: orange;"></i> Rekap Penerimaan CM</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/cm_belum_cair/" target="_blank">
+                                    <i class="fa fa-money" style="color: orange;"></i> List CM Belum Cair</a>
                                 </li>
                             </ul>
                         </li>

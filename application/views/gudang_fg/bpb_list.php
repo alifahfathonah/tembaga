@@ -24,10 +24,38 @@
                 </div>
             </div>
         </div>
+    <div class="collapse well" id="form_filter" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="col-md-12">
+                            Tanggal 
+                            <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-12">
+                            <input type="text" id="tanggal_filter" name="tanggal_filter" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('m-Y'); ?>">
+                                    &nbsp; &nbsp; 
+                                    <a href="javascript:;" onclick="searchFilter()" class="btn green" >
+                                        <i class="fa fa-search"></i> Search 
+                                    </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-file-excel-o"></i>BPB FG List
+                </div>
+                <div class="tools">
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter">
+                        <i class="fa fa-search"></i> Filter Bulan
+                    </a>
                 </div>                
             </div>
             <div class="portlet-body">
@@ -114,6 +142,12 @@
         ?>
     </div>
 </div> 
+<script type="text/javascript">
+function searchFilter(){
+    var id=$('#tanggal_filter').val();
+    window.location = '<?php echo base_url('index.php/GudangFG/bpb_list_filter/');?>'+id;
+}
+</script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>

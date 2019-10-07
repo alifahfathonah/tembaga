@@ -809,7 +809,7 @@ class GudangWIP extends CI_Controller{
                     }
             }
 
-                if($user_ppn == 1 && strpos($this->input->post('remarks'), 'BARANG PO') !== false ){
+                if($user_ppn == 1){
                     $this->load->helper('target_url');
 
                     $data_post['bpb_id'] = $bpb_id;
@@ -1611,6 +1611,38 @@ class GudangWIP extends CI_Controller{
             $this->load->view('layout', $data);   
     }
 
+    function print_laporan_bulanan(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $this->load->helper('tanggal_indo');            
+            $items = strval($id);
+            $tgl=str_split($id,4);
+            $tahun=$tgl[0];
+            $bulan=$tgl[1];
+
+            $tgl = $tahun.'-'.$bulan.'-01';
+
+            $data['tgl'] = array(
+                'tahun' => $tahun,
+                'bulan' => $bulan
+            );
+
+            $this->load->model('Model_gudang_wip');
+            $data['detailLaporan'] = $this->Model_gudang_wip->show_view_laporan($bulan,$tahun)->result();
+            $this->load->view("gudangwip/print_laporan_bulanan", $data);
+        }else{
+            redirect('index.php/GudangWIP/laporan_list');
+        }
+    }
+
     function view_laporan(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
@@ -1635,6 +1667,7 @@ class GudangWIP extends CI_Controller{
 
             $data['content']= "gudangwip/view_laporan";
             $this->load->model('Model_gudang_wip');
+            // $data['detailLaporan'] = $this->Model_gudang_wip->show_view_laporan_before($bulan,$tahun)->result();
             $data['detailLaporan'] = $this->Model_gudang_wip->show_view_laporan($bulan,$tahun)->result();
             $this->load->view('layout', $data);   
         }else{

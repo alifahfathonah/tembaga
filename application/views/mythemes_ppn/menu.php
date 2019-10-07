@@ -275,6 +275,12 @@
                                     <i class="fa fa-file-powerpoint-o"></i>
                                     TTR List </a>
                                 </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/dtwip_list">
+                                        <i class="fa fa-file-text-o"></i>
+                                        DTWIP List
+                                    </a>
+                                </li>
                                 <!-- <li>
                                     <a href="<?php //echo base_url(); ?>index.php/Tolling/produksi_ampas">
                                     <i class="fa fa-trash"></i>

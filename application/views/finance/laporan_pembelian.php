@@ -46,6 +46,8 @@
                                     <option value="2">KMP + KH</option>
                                 <?php }else{ ?>
                                     <option value="3">KMP + CV</option>
+                                    <option value="4">Beli</option>
+                                    <option value="5">Tolling</option>
                                 <?php } ?>
                                 </select>
                         </div>
