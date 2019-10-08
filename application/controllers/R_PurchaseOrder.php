@@ -205,7 +205,7 @@ class R_PurchaseOrder extends CI_Controller{
         	$data['cv_list'] = $this->Model_purchase_order->cv_list()->result();
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/R_PurchaseOrder');
+            redirect('index.php/R_PurchaseOrder/index/CV');
         }
     }
 
@@ -327,7 +327,7 @@ class R_PurchaseOrder extends CI_Controller{
         }
 
         $this->session->set_flashdata('flash_msg', 'Data PO Jasa Finish Good berhasil disimpan');
-        redirect('index.php/R_PurchaseOrder');
+        redirect('index.php/R_PurchaseOrder/index/CV');
     }
 
     function add_po_fcustomer(){
@@ -501,7 +501,7 @@ class R_PurchaseOrder extends CI_Controller{
             $data['cust_list'] = $this->Model_purchase_order->customer_list($reff_cv)->result();
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/R_PurchaseOrder');
+            redirect('index.php/R_PurchaseOrder/index/Customer');
         }
     }
 
@@ -612,7 +612,7 @@ class R_PurchaseOrder extends CI_Controller{
         // $details_api = json_encode($this->input->post());
         
         $this->session->set_flashdata('flash_msg', 'Data PO Jasa Finish Good berhasil disimpan');
-        redirect('index.php/R_PurchaseOrder');
+        redirect('index.php/R_PurchaseOrder/index/Customer');
     }
 
     function view_po(){

@@ -160,9 +160,13 @@
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
-                        
+                    <?php if($group_id == 16){ ?>
                     <a href="<?php echo base_url('index.php/R_PurchaseOrder'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
+                    <?php } else { ?>                        
+                    <a href="<?php echo base_url('index.php/R_PurchaseOrder/index/CV'); ?>" class="btn blue-hoki"> 
+                        <i class="fa fa-angle-left"></i> Kembali </a>
+                    <?php } ?>
                 </div>    
             </div>
         </form>
