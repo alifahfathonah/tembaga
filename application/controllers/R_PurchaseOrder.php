@@ -12,7 +12,7 @@ class R_PurchaseOrder extends CI_Controller{
         $this->load->helper('target_url');
     }
 
-    function index(){
+    function index($jenis = null){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');   
         $reff_cv = $this->session->userdata('cv_id');     
@@ -27,7 +27,7 @@ class R_PurchaseOrder extends CI_Controller{
         if($group_id == 9){
             $data['list_data'] = $this->Model_purchase_order->po_list()->result();
         } else if($group_id == 14) {
-            $data['list_data'] = $this->Model_purchase_order->po_list_for_cv($reff_cv)->result();
+            $data['list_data'] = $this->Model_purchase_order->po_list_for_cv_new($reff_cv, $jenis)->result();
         } else if($group_id == 16) {
             $data['list_data'] = $this->Model_purchase_order->po_list_for_kmp()->result();
         }
@@ -205,7 +205,7 @@ class R_PurchaseOrder extends CI_Controller{
         	$data['cv_list'] = $this->Model_purchase_order->cv_list()->result();
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/R_PurchaseOrder');
+            redirect('index.php/R_PurchaseOrder/index/CV');
         }
     }
 
@@ -327,7 +327,7 @@ class R_PurchaseOrder extends CI_Controller{
         }
 
         $this->session->set_flashdata('flash_msg', 'Data PO Jasa Finish Good berhasil disimpan');
-        redirect('index.php/R_PurchaseOrder');
+        redirect('index.php/R_PurchaseOrder/index/CV');
     }
 
     function add_po_fcustomer(){
@@ -501,7 +501,7 @@ class R_PurchaseOrder extends CI_Controller{
             $data['cust_list'] = $this->Model_purchase_order->customer_list($reff_cv)->result();
             $this->load->view('layout', $data);   
         }else{
-            redirect('index.php/R_PurchaseOrder');
+            redirect('index.php/R_PurchaseOrder/index/Customer');
         }
     }
 
@@ -612,7 +612,7 @@ class R_PurchaseOrder extends CI_Controller{
         // $details_api = json_encode($this->input->post());
         
         $this->session->set_flashdata('flash_msg', 'Data PO Jasa Finish Good berhasil disimpan');
-        redirect('index.php/R_PurchaseOrder');
+        redirect('index.php/R_PurchaseOrder/index/Customer');
     }
 
     function view_po(){
