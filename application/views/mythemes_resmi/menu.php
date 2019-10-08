@@ -130,7 +130,27 @@
                         <span class="title">TOLLING TITIPAN</span>
                     </a>
                 </li>
-                <?php } if($group_id==9 || (isset($akses_menu['R_PurchaseOrder']) && $akses_menu['R_PurchaseOrder']==1)){ ?>
+                <?php } if($group_id==9 || $group_id == 14 /*|| (isset($akses_menu['R_PurchaseOrder']) && $akses_menu['R_PurchaseOrder']==1)*/){ ?>
+                <li <?php if ($module_name=="PurchaseOrder") echo 'class="start active open"'; ?>>
+                    <a href="javascript:;">
+                        <i class="fa fa-credit-card"></i>
+                        <span class="title">PURCHASE ORDER</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/R_PurchaseOrder/index/Customer">
+                                Customer
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/R_PurchaseOrder/index/CV">
+                                CV
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <?php } if($group_id==16 /*|| (isset($akses_menu['R_PurchaseOrder']) && $akses_menu['R_PurchaseOrder']==1)*/){ ?>
                 <li <?php if ($module_name=="PurchaseOrder") echo 'class="start active open"'; ?>>
                     <a href="<?php echo base_url(); ?>index.php/R_PurchaseOrder">
                         <i class="fa fa-credit-card"></i>

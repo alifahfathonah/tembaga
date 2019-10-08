@@ -12,7 +12,7 @@ class R_PurchaseOrder extends CI_Controller{
         $this->load->helper('target_url');
     }
 
-    function index(){
+    function index($jenis = null){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');   
         $reff_cv = $this->session->userdata('cv_id');     
@@ -27,7 +27,7 @@ class R_PurchaseOrder extends CI_Controller{
         if($group_id == 9){
             $data['list_data'] = $this->Model_purchase_order->po_list()->result();
         } else if($group_id == 14) {
-            $data['list_data'] = $this->Model_purchase_order->po_list_for_cv($reff_cv)->result();
+            $data['list_data'] = $this->Model_purchase_order->po_list_for_cv_new($reff_cv, $jenis)->result();
         } else if($group_id == 16) {
             $data['list_data'] = $this->Model_purchase_order->po_list_for_kmp()->result();
         }

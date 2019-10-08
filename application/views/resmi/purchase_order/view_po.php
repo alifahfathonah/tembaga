@@ -129,8 +129,18 @@
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
+                    <?php if($jenis_po == 'PO CV KE KMP' && $group_id == 16){ ?>
                     <a href="<?php echo base_url('index.php/R_PurchaseOrder'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
+                    <?php } ?>
+                    <?php if($jenis_po == 'PO CV KE KMP' && $group_id == 14){ ?>
+                    <a href="<?php echo base_url('index.php/R_PurchaseOrder/index/CV'); ?>" class="btn blue-hoki"> 
+                        <i class="fa fa-angle-left"></i> Kembali </a>
+                    <?php } ?>
+                    <?php if($jenis_po == 'PO CUSTOMER KE CV' && $group_id == 14){ ?>
+                    <a href="<?php echo base_url('index.php/R_PurchaseOrder/index/Customer'); ?>" class="btn blue-hoki"> 
+                        <i class="fa fa-angle-left"></i> Kembali </a>
+                    <?php } ?>
                 </div>    
             </div>
             
