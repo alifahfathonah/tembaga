@@ -195,11 +195,11 @@ class GudangFG extends CI_Controller{
             //     $data['content'] = "gudang_fg/detail_laporan_roll";
             //     $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('ROLL')->row_array();
             //     $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result(); 
-            } else if ($packing['packing'] == 'KARDUS') {
+            } else if ($packing['packing'] == ('KARDUS' || 'KERANJANG SDM')) {
                 $data['content'] = "gudang_fg/detail_laporan_rambut";
                 $data['packing'] =  $this->Model_gudang_fg->get_bobbin_g($packing['id'])->result();
                 $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result();
-            } else if ($packing['packing'] == ('BOBBIN PLASTIK' || 'KERANJANG SDM')) {
+            } else if ($packing['packing'] == 'BOBBIN PLASTIK') {
                 $data['content'] = "gudang_fg/detail_laporan_b600g";
                 $data['packing'] = $this->Model_gudang_fg->get_bobbin_g($packing['id'])->result();
                 $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result();
@@ -432,7 +432,7 @@ class GudangFG extends CI_Controller{
         $tabel .= '<td style="text-align:center">'.$no.'</td>';
         $tabel .= '<td><input type="text" id="nomor_produksi" name="nomor_produksi" class="form-control myline"></td>';
         $tabel .= '<td><input type="text" id="no_packing" value="Auto" name="no_packing" class="form-control myline" readonly="readonly"></td>';
-        $tabel .= '<td><a href="javascript:;" onclick="timbang(this)" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>';
+        $tabel .= '<td><a href="javascript:;" onclick="timbang()" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>';
         $tabel .= '<td><input type="text" id="bruto" name="bruto" class="form-control myline"/></td>';
         $tabel .= '<td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"/></td>';
         $tabel .= '<td><input type="text" id="no_bobbin" name="no_bobbin" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" onchange="get_bobbin(this.value)"/><input type="hidden" name="id_bobbin" id="id_bobbin"></td>';
@@ -1862,6 +1862,7 @@ class GudangFG extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $data = array(
+                'tanggal'=> $tgl_input,
                 'jenis_spb'=> $this->input->post('jenis_spb'),
                 'keterangan'=>$this->input->post('remarks'),
                 'modified_at'=> $tanggal,

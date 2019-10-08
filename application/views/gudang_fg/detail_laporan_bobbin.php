@@ -217,6 +217,17 @@ function simpanData(){
     };
 };
 
+function timbang(){
+    $.ajax({
+        url: "http://192.168.0.201:10000/scaleload",
+        method: "POST",
+        dataType: "json",
+        success: function (result){
+            $('#bruto').val(result['nett']);
+        }
+    });
+}
+
 function loadDetail(id){
     $.ajax({
         type:"POST",

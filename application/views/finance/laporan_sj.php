@@ -29,10 +29,13 @@
                         </div>
                         <div class="col-md-8">
                             <select id="laporan" name="laporan" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
-                                    <option value=""></option>
-                                    <option value="0">KH</option>
+                                    <option value=""></option> 
+                                    <?php if($this->session->userdata('user_ppn')==1){ ?>
                                     <option value="1">KMP</option>
+                                    <?php }else{ ?>
+                                    <option value="0">KH</option>
                                     <option value="2">KMP + KH</option>
+                                    <?php } ?>
                                 </select>
                         </div>
                     </div>

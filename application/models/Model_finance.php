@@ -503,11 +503,11 @@ class Model_finance extends CI_Model{
     }
 
     function load_invoice_full($id,$ppn,$idm){
-        $data = $this->db->query("(select fi.id, fi.jenis_trx, fi.no_invoice, 0 as inv_type, (select count(id) from f_match_detail where inv_type = 0 and id_inv = fi.id and id_match =".$idm.")as count, (fi.nilai_invoice-fi.nilai_bayar+fi.nilai_pembulatan) as total
+        $data = $this->db->query("(select fi.id, fi.jenis_trx, fi.no_invoice, 0 as inv_type, (select count(id) from f_match_detail where inv_type = 0 and id_inv = fi.id and id_match =".$idm.")as count, (fi.nilai_invoice-fi.nilai_bayar-fi.nilai_pembulatan) as total
             from f_invoice fi 
             where fi.id_customer =".$id." and fi.flag_ppn =".$ppn." and flag_matching = 0)
             UNION ALL
-            (select rti.id, 0 as jenis_trx, rti.no_invoice_jasa as no_invoice, 1 as inv_type, (select count(id) from f_match_detail where inv_type = 1 and id_inv = rti.id and id_match =".$idm.") as count, (rti.nilai_invoice-rti.nilai_bayar+rti.nilai_pembulatan) as total
+            (select rti.id, 0 as jenis_trx, rti.no_invoice_jasa as no_invoice, 1 as inv_type, (select count(id) from f_match_detail where inv_type = 1 and id_inv = rti.id and id_match =".$idm.") as count, (rti.nilai_invoice-rti.nilai_bayar-rti.nilai_pembulatan) as total
             from r_t_inv_jasa rti 
             left join m_cv cv on rti.cv_id = cv.id
             where rti.jenis_invoice = 'INVOICE KMP KE CV' and cv.idkmp =".$id." and flag_matching = 0)
@@ -516,7 +516,7 @@ class Model_finance extends CI_Model{
     }
 
     function load_invoice_full_kh($id,$ppn,$idm){
-        $data = $this->db->query("select fi.*, 0  as inv_type, (select count(id) from f_match_detail where id_inv = fi.id and id_match =".$idm.")as count, (fi.nilai_invoice-fi.nilai_bayar+fi.nilai_pembulatan) as total
+        $data = $this->db->query("select fi.*, 0  as inv_type, (select count(id) from f_match_detail where id_inv = fi.id and id_match =".$idm.")as count, (fi.nilai_invoice-fi.nilai_bayar-fi.nilai_pembulatan) as total
             from f_invoice fi 
             where fi.id_customer =".$id." and fi.flag_ppn =".$ppn." and flag_matching = 0");
         return $data;
@@ -594,14 +594,14 @@ class Model_finance extends CI_Model{
     }
 
     function get_data_inv($id){
-        $data = $this->db->query("select fi.id, fi.no_invoice, fi.nilai_invoice, fi.nilai_bayar, fi.nilai_pembulatan, (fi.nilai_invoice - fi.nilai_bayar + fi.nilai_pembulatan) as nominal
+        $data = $this->db->query("select fi.id, fi.no_invoice, fi.nilai_invoice, fi.nilai_bayar, fi.nilai_pembulatan, (fi.nilai_invoice - fi.nilai_bayar - fi.nilai_pembulatan) as nominal
             from f_invoice fi
             where fi.id =".$id);
         return $data;
     }
 
     function get_data_inv2($id){
-        $data = $this->db->query("select rti.id, rti.no_invoice_jasa as no_invoice, rti.nilai_invoice, rti.nilai_bayar, rti.nilai_pembulatan, (rti.nilai_invoice - rti.nilai_bayar + rti.nilai_pembulatan) as nominal
+        $data = $this->db->query("select rti.id, rti.no_invoice_jasa as no_invoice, rti.nilai_invoice, rti.nilai_bayar, rti.nilai_pembulatan, (rti.nilai_invoice - rti.nilai_bayar - rti.nilai_pembulatan) as nominal
             from r_t_inv_jasa rti
             where rti.id =".$id);
         return $data;
