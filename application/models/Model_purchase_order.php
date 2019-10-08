@@ -21,7 +21,7 @@ class Model_purchase_order extends CI_Model{
 	}
 
 	function po_list_for_cv_new($reff_cv, $jenis){
-		if ($jenis == 'CV') {
+		if ($jenis == 'Supplier') {
 			$data = $this->db->query("select rpo.*, coalesce(cs.nama_customer,c.nama_cv) as nama_cv, coalesce(cs.pic, c.pic) as pic, (select count(tpd.id) from r_t_po_detail tpd where tpd.po_id = rpo.id)as jumlah_item
 			from r_t_po rpo
 			left join m_customers_cv cs on (rpo.customer_id = cs.id)

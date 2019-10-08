@@ -164,7 +164,7 @@
                     <a href="<?php echo base_url('index.php/R_PurchaseOrder'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                     <?php } else { ?>                        
-                    <a href="<?php echo base_url('index.php/R_PurchaseOrder/index/CV'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/R_PurchaseOrder/index/Supplier'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                     <?php } ?>
                 </div>    

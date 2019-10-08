@@ -144,8 +144,8 @@
                             </a>
                         </li>
                         <li>
-                            <a href="<?php echo base_url(); ?>index.php/R_PurchaseOrder/index/CV">
-                                CV
+                            <a href="<?php echo base_url(); ?>index.php/R_PurchaseOrder/index/Supplier">
+                                Supplier
                             </a>
                         </li>
                     </ul>
