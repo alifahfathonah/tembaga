@@ -46,12 +46,18 @@
                 </td>
             </tr>
         </table>
-        <hr>
-        <p>
+        <!-- <hr> -->
+        <table width="100%">
+            <tr>
+                <td style="border-top: 1px solid;">&nbsp;</td>
+            </tr>
+        </table>
+        <!-- <p> -->
             Dengan Hormat,<br>
             <br>
-            Bersama surat ini, saya ingin mengajukan pesanan sebagai berikut :
-        </p>
+            Bersama surat ini, saya ingin mengajukan pesanan sebagai berikut :<br>
+            <br>
+        <!-- </p> -->
         <table border="0" cellpadding="5" cellspacing="0" width="900px">
             <thead>
                 <th style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;">No</th>
