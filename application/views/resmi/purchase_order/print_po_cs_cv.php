@@ -52,13 +52,13 @@
             <br>
             Bersama surat ini, saya ingin mengajukan pesanan sebagai berikut :
         </p>
-        <table border="1" cellpadding="5" cellspacing="0" width="900px">
+        <table border="0" cellpadding="5" cellspacing="0" width="900px">
             <thead>
-                <th>No</th>
-                <th>Jenis Barang</th>
-                <th width="20%">Quantity</th>
-                <th>Harga</th>
-                <th>Sub Total</th>
+                <th style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;">No</th>
+                <th style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;">Jenis Barang</th>
+                <th style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;" width="20%">Quantity</th>
+                <th style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;">Harga</th>
+                <th style="border-top: 1px solid; border-left: 1px; border-left: 1px solid; border-right: 1px solid;">Sub Total</th>
             </thead>
             <tbody>
                 <?php
@@ -68,11 +68,11 @@
                     foreach ($details as $v) { 
                 ?>
                     <tr>
-                        <td align="center"><?= $no ?></td>
-                        <td>Jasa Tolling <?= $v->jenis_barang ?></td>
-                        <td align="center"><?= number_format($v->netto,2,".",",")." ".$v->uom ?></td>
-                        <td align="right"><?= "Rp ".number_format($v->amount,2,".",",") ?></td>
-                        <td align="right"><?= "Rp ".number_format($v->total_amount,2,".",",") ?></td>
+                        <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;" align="center"><?= $no ?></td>
+                        <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;">Jasa Tolling <?= $v->jenis_barang ?></td>
+                        <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;" align="center"><?= number_format($v->netto,2,".",",")." ".$v->uom ?></td>
+                        <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;" align="right"><?= "Rp ".number_format($v->amount,2,".",",") ?></td>
+                        <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid; border-right: 1px solid;" align="right"><?= "Rp ".number_format($v->total_amount,2,".",",") ?></td>
                     </tr>
                 <?php
                         $total += $v->netto;
@@ -81,10 +81,10 @@
                     } 
                 ?>
                 <tr>
-                    <td colspan="2" align="right"><b>TOTAL</b></td>
-                    <td align="center"><b><?= number_format($total,2,".",",")." ".$v->uom ?></b></td>
-                    <td></td>
-                    <td align="right"><?= "Rp ".number_format($total_harga,2,".",",") ?></td>
+                    <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid; border-bottom: 1px solid;" colspan="2" align="right"><b>TOTAL</b></td>
+                    <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid; border-bottom: 1px solid;" align="center"><b><?= number_format($total,2,".",",")." ".$v->uom ?></b></td>
+                    <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid; border-bottom: 1px solid;"></td>
+                    <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid; border-bottom: 1px solid; border-right: 1px solid;" align="right"><?= "Rp ".number_format($total_harga,2,".",",") ?></td>
                 </tr>
                 <tr><!-- 
                     <td></td>
