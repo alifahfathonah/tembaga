@@ -156,7 +156,7 @@ class Model_ingot extends CI_Model{
     }
     
     function show_detail_spb_fulfilment_approved($id){
-        $data = $this->db->query("Select rsk.nama_item, rsk.uom, rsk.kode_rongsok, spdf.id, dtrd.no_pallete,dtrd.netto, COALESCE(NULLIF(dtrd.so_id,0),dtrd.retur_id) as so_id, sr.stok_netto as stok, dtrd.line_remarks
+        $data = $this->db->query("Select dtrd.id as id_detail, rsk.nama_item, rsk.uom, rsk.kode_rongsok, spdf.id, dtrd.no_pallete, dtrd.netto, COALESCE(NULLIF(dtrd.so_id,0),dtrd.retur_id) as so_id, sr.stok_netto as stok, dtrd.line_remarks, dtrd.tanggal_keluar
                     From spb_detail_fulfilment spdf 
                         left join dtr_detail dtrd on (dtrd.id = spdf.dtr_detail_id)
                         Left Join rongsok rsk On (dtrd.rongsok_id = rsk.id)

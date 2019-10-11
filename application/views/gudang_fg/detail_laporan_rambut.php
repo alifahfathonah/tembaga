@@ -155,7 +155,7 @@
                                 </td>
                                 <td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"/></td>
                                 <td><input type="text" id="no_barcode" name="no_barcode" class="form-control myline" readonly="readonly"></td>
-                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="myRequest=null; saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
+                                <td style="text-align:center"><button href="javascript:;" class="btn btn-xs btn-circle yellow-gold" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </button></td>
                             </tr>
                         </table>
                     </div>
@@ -355,70 +355,70 @@ function updateDetail(id){
     }
 }
 
-function saveDetail(){
-    console.log('test');
-    console.log(myRequest);
-    if(myRequest){
-        myRequest.abort();
-        $('#no_produksi').val('');
-        $('#bruto').val('');
-        $('#berat_bobbin').val('');
-        $('#netto').val('');
-        $('#no_barcode').val('');
-        $('#message').html("");
-        $('.alert-danger').hide();
-        $('#no_produksi').focus();
-        console.log('masuk sini');
-    }else if($.trim($("#netto").val()) == ""){
-        $('#message').html("Silahkan isi netto barang!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#no_packing").val()) == ""){
-        $('#message').html("Silahkan pilih packing barang!");
-        $('.alert-danger').show(); 
-    }else{
-        // $('#btnSaveDetail').text('Please Wait ...').prop("onclick", null).off("click");
-        $('#btnSaveDetail').text('Please Wait ...');
-        console.log('testinsinde');
-        myRequest = $.ajax({
-            type:"POST",
-            url:'<?php echo base_url('index.php/GudangFG/save_detail_rambut'); ?>',
-            dataType: 'json',
-            data:{
-                id:$('#id').val(),
-                tanggal: $('#tanggal').val(),
-                no_produksi: $('#no_produksi').val(),
-                bruto:$('#bruto').val(),
-                netto: $('#netto').val(),
-                ukuran: $('#ukuran').val(),
-                berat_bobbin: $('#berat_bobbin').val(),
-                no_packing: $('#no_packing').val(),
-                no_barcode: $('#no_barcode').val(),
-                id_packing: $('#id_packing').val()
-            },
-            success:function(result){
-                if(result['message_type']=="sukses"){
-                    loadDetail($('#id').val());
-                    // $('#btnSaveDetail').text('Tambah ').prop("onclick", "myRequest=null; saveDetail();").on("click");
-                    $('#btnSaveDetail').text(' Tambah')
-                    $('#no_produksi').val('');
-                    $('#bruto').val('');
-                    $('#berat_bobbin').val('');
-                    $('#netto').val('');
-                    $('#no_barcode').val('');
-                    $('#message').html("");
-                    $('.alert-danger').hide();
-                    $('#no_produksi').focus();
-                    // myRequest = 1; 
-                    // console.log('dalem'+myRequest);
-                    console.log(result['message_type']);
-                }else{
-                    $('#message').html(result['message']);
-                    $('.alert-danger').show(); 
-                }            
-            }
-        });
-    }
-}
+// function saveDetail(){
+//     console.log('test');
+//     console.log(myRequest);
+//     if(myRequest){
+//         myRequest.abort();
+//         $('#no_produksi').val('');
+//         $('#bruto').val('');
+//         $('#berat_bobbin').val('');
+//         $('#netto').val('');
+//         $('#no_barcode').val('');
+//         $('#message').html("");
+//         $('.alert-danger').hide();
+//         $('#no_produksi').focus();
+//         console.log('masuk sini');
+//     }else if($.trim($("#netto").val()) == ""){
+//         $('#message').html("Silahkan isi netto barang!");
+//         $('.alert-danger').show(); 
+//     }else if($.trim($("#no_packing").val()) == ""){
+//         $('#message').html("Silahkan pilih packing barang!");
+//         $('.alert-danger').show(); 
+//     }else{
+//         // $('#btnSaveDetail').text('Please Wait ...').prop("onclick", null).off("click");
+//         $('#btnSaveDetail').text('Please Wait ...');
+//         console.log('testinsinde');
+//         myRequest = $.ajax({
+//             type:"POST",
+//             url:'<?php echo base_url('index.php/GudangFG/save_detail_rambut'); ?>',
+//             dataType: 'json',
+//             data:{
+//                 id:$('#id').val(),
+//                 tanggal: $('#tanggal').val(),
+//                 no_produksi: $('#no_produksi').val(),
+//                 bruto:$('#bruto').val(),
+//                 netto: $('#netto').val(),
+//                 ukuran: $('#ukuran').val(),
+//                 berat_bobbin: $('#berat_bobbin').val(),
+//                 no_packing: $('#no_packing').val(),
+//                 no_barcode: $('#no_barcode').val(),
+//                 id_packing: $('#id_packing').val()
+//             },
+//             success:function(result){
+//                 if(result['message_type']=="sukses"){
+//                     loadDetail($('#id').val());
+//                     // $('#btnSaveDetail').text('Tambah ').prop("onclick", "myRequest=null; saveDetail();").on("click");
+//                     $('#btnSaveDetail').text(' Tambah')
+//                     $('#no_produksi').val('');
+//                     $('#bruto').val('');
+//                     $('#berat_bobbin').val('');
+//                     $('#netto').val('');
+//                     $('#no_barcode').val('');
+//                     $('#message').html("");
+//                     $('.alert-danger').hide();
+//                     $('#no_produksi').focus();
+//                     // myRequest = 1; 
+//                     // console.log('dalem'+myRequest);
+//                     console.log(result['message_type']);
+//                 }else{
+//                     $('#message').html(result['message']);
+//                     $('.alert-danger').show(); 
+//                 }            
+//             }
+//         });
+//     }
+// }
 
 function hapusDetail(id){
     var r=confirm("Anda yakin menghapus item barang ini?");
@@ -447,5 +447,58 @@ function printBarcode(id){
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>    
+$('#btnSaveDetail').click(function(event) {
+    event.preventDefault(); /*  Stops default form submit on click */
+
+    if($.trim($("#netto").val()) == ""){
+        $('#message').html("Silahkan isi netto barang!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#no_packing").val()) == ""){
+        $('#message').html("Silahkan pilih packing barang!");
+        $('.alert-danger').show(); 
+    }else{
+        // $('#btnSaveDetail').text('Please Wait ...').prop("onclick", null).off("click");
+        $('#btnSaveDetail').prop('disabled',true);
+        $('#btnSaveDetail').text('Please Wait ...');
+        $.ajax({
+            type:"POST",
+            url:'<?php echo base_url('index.php/GudangFG/save_detail_rambut'); ?>',
+            dataType: 'json',
+            data:{
+                id:$('#id').val(),
+                tanggal: $('#tanggal').val(),
+                no_produksi: $('#no_produksi').val(),
+                bruto:$('#bruto').val(),
+                netto: $('#netto').val(),
+                ukuran: $('#ukuran').val(),
+                berat_bobbin: $('#berat_bobbin').val(),
+                no_packing: $('#no_packing').val(),
+                no_barcode: $('#no_barcode').val(),
+                id_packing: $('#id_packing').val()
+            },
+            success:function(result){
+                if(result['message_type']=="sukses"){
+                    loadDetail($('#id').val());
+                    $('#btnSaveDetail').prop('disabled',false);
+                    // $('#btnSaveDetail').text('Tambah ').prop("onclick", "myRequest=null; saveDetail();").on("click");
+                    $('#btnSaveDetail').text(' Tambah')
+                    $('#no_produksi').val('');
+                    $('#bruto').val('');
+                    $('#berat_bobbin').val('');
+                    $('#netto').val('');
+                    $('#no_barcode').val('');
+                    $('#message').html("");
+                    $('.alert-danger').hide();
+                    $('#no_produksi').focus();
+                    // console.log('dalem'+myRequest);
+                    // console.log(result['message_type']);
+                }else{
+                    $('#message').html(result['message']);
+                    $('.alert-danger').show(); 
+                }            
+            }
+        });
+    }
+});
     loadDetail(<?php echo $header['id']; ?>);
 </script>

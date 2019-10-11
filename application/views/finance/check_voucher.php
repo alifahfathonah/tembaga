@@ -53,7 +53,7 @@
                         <td><?php echo $data->nama_supplier; ?></td>
                         <td><?php echo $data->jenis_voucher; ?></td>
                         <td><?php echo $data->no_po; ?></td>
-                        <td style="text-align:center"><?php echo date('d-m-Y', strtotime($data->tanggal_po)); ?></td>
+                        <td style="text-align:center"><?php echo $data->tanggal_po; ?></td>
                         <td style="text-align:right"><?php echo number_format($data->amount,0,',','.'); ?></td>
                         <td><?php echo $data->keterangan; ?></td>                        
                         <td style="text-align:center">                             

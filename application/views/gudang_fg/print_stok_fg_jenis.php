@@ -37,6 +37,30 @@
                 ?>
                 </tbody>
             </table>
+            <table width="100%" border="0" cellpadding="4" cellspacing="0" style="font-size: 13px;">
+                <thead>
+                    <th colspan="3" style="border-left:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;">RETUR</th>
+                </thead>
+                <thead>
+                    <th style="border-bottom:1px solid #000; border-left:1px solid #000; border-top:1px solid #000;">Nama Item</th>
+                    <th style="border-bottom:1px solid #000; border-left:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;">Netto</th>
+                </thead>
+                <tbody>
+                <?php
+                $no = 1;
+                // $netto3 = 0;
+
+                foreach ($detailLaporanRTR as $row){
+                    echo '<tr>';
+                    echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000;">'.$row->jenis_barang.' | '.$row->jenis_packing.'</td>';
+                    echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000;">'.number_format($row->netto,2,',','.').'</td>';
+                    echo '</tr>';
+                    $no++;
+                    // $netto3 += $row->netto;
+                }
+                ?>
+                </tbody>
+            </table>
         </td>
         <td width="32%" style="vertical-align: top">
             <table width="100%" border="0" cellpadding="4" cellspacing="0" style="font-size: 13px;">
@@ -63,6 +87,30 @@
                 ?>
                 </tbody>
             </table>
+            <table width="100%" border="0" cellpadding="4" cellspacing="0" style="font-size: 13px;">
+                <thead>
+                    <th colspan="3" style="border-left:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;">RETUR</th>
+                </thead>
+                <thead>
+                    <th style="border-bottom:1px solid #000; border-left:1px solid #000; border-top:1px solid #000;">Nama Item</th>
+                    <th style="border-bottom:1px solid #000; border-left:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;">Netto</th>
+                </thead>
+                <tbody>
+                <?php
+                $no = 1;
+                // $netto3 = 0;
+
+                foreach ($detailLaporanRTR2 as $row){
+                    echo '<tr>';
+                    echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000;">'.$row->jenis_barang.' | '.$row->jenis_packing.'</td>';
+                    echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000;">'.number_format($row->netto,2,',','.').'</td>';
+                    echo '</tr>';
+                    $no++;
+                    // $netto3 += $row->netto;
+                }
+                ?>
+                </tbody>
+            </table>
         </td>
         <td width="32%" style="vertical-align: top">
             <table width="100%" border="0" cellpadding="4" cellspacing="0" style="font-size: 13px;">
@@ -85,6 +133,30 @@
                     echo '</tr>';
                     $no++;
                     $netto3 += $row->netto;
+                }
+                ?>
+                </tbody>
+            </table>
+            <table width="100%" border="0" cellpadding="4" cellspacing="0" style="font-size: 13px;">
+                <thead>
+                    <th colspan="3" style="border-left:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;">RETUR</th>
+                </thead>
+                <thead>
+                    <th style="border-bottom:1px solid #000; border-left:1px solid #000; border-top:1px solid #000;">Nama Item</th>
+                    <th style="border-bottom:1px solid #000; border-left:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;">Netto</th>
+                </thead>
+                <tbody>
+                <?php
+                $no = 1;
+                // $netto3 = 0;
+
+                foreach ($detailLaporanRTR3 as $row){
+                    echo '<tr>';
+                    echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000;">'.$row->jenis_barang.' | '.$row->jenis_packing.'</td>';
+                    echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000;">'.number_format($row->netto,2,',','.').'</td>';
+                    echo '</tr>';
+                    $no++;
+                    // $netto3 += $row->netto;
                 }
                 ?>
                 </tbody>
@@ -159,13 +231,13 @@
                 <td style="text-align: right;"><?=number_format($header['76mm']['total_netto'],2,',','.');?></td>
                 <td width="40%"></td>
             </tr>
-            <tr>
+            <!-- <tr>
                 <td width="10%"></td>
                 <td style="text-align: left;" width="25%">STOCK 2,60 MM TMS</td>
                 <td style="text-align: left;" width="15%"><strong>PER <?=date("d-m-Y");?></strong></td>
                 <td style="text-align: right;"><?=number_format($header['26mm']['total_netto'],2,',','.');?></td>
                 <td width="40%"></td>
-            </tr>
+            </tr> -->
             <!-- <tr>
                 <td width="10%"></td>
                 <td style="text-align: left;" width="25%">STOCK 2,80 MM TMS</td>
@@ -173,6 +245,15 @@
                 <td style="text-align: right;"><?=number_format($netto1+$netto2+$netto3,2,',','.');?></td>
                 <td width="40%"></td>
             </tr> -->
+            <?php foreach ($stok_beli as $value) {
+                echo '<tr>';
+                    echo '<td width="10%"></td>';
+                    echo '<td style="text-align: left;" width="25%">'.$value->jenis_barang.'</td>';
+                    echo '<td style="text-align: left;" width="15%"><strong>PER '.date("d-m-Y").'</strong></td>';
+                    echo '<td style="text-align: right;">'.number_format($value->netto,2,',','.').'</td>';
+                    echo '<td width="40%"></td>';
+                echo '</tr>'; 
+            } ?>
         </table>
     </tr>
 </table>

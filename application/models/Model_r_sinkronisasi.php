@@ -32,7 +32,16 @@ class Model_r_sinkronisasi extends CI_Model{
 		$data = $this->db->query('
 				SELECT COUNT(id) AS count_sj
 				FROM r_t_surat_jalan
-				WHERE jenis_surat_jalan = "SURAT JALAN CV KE KMP" AND flag_tolling = 1
+				WHERE jenis_surat_jalan = "SURAT JALAN CV KE KMP" AND api = 0
+			');
+		return $data;
+	}
+
+	function count_inv_jasa_cv() {
+		$data = $this->db->query('
+				SELECT COUNT(id) AS count_inv
+				FROM r_t_inv_jasa
+				WHERE jenis_invoice = "INVOICE CV KE CUSTOMER" AND api = 0
 			');
 		return $data;
 	}
@@ -112,6 +121,25 @@ class Model_r_sinkronisasi extends CI_Model{
 		$data = $this->db->query("select rdd.*, rtd.id as ttr_detail_id from r_dtr_detail rdd
 			left join r_ttr_detail rtd on rtd.r_dtr_detail_id = rdd.id
 			where r_dtr_id = ".$id);
+		return $data;
+	}
+
+	function get_inv_cv_cust($id) {
+		$data = $this->db->query('
+				SELECT ij.*, cv.idkmp
+				FROM r_t_inv_jasa ij
+				LEFT JOIN m_cv cv ON cv.id = ij.cv_id
+				WHERE reff_cv = '.$id.' and ij.jenis_invoice = "INVOICE CV KE CUSTOMER" AND ij.api = 0 limit 100
+			');
+		return $data;
+	}
+
+	function count_inv_cv_cust($id) {
+		$data = $this->db->query('
+				SELECT count(id) as jumlah
+				FROM r_t_inv_jasa
+				WHERE reff_cv = '.$id.' and jenis_invoice = "INVOICE CV KE CUSTOMER" AND api = 0
+			');
 		return $data;
 	}
 }

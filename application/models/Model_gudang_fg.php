@@ -482,16 +482,16 @@ class Model_gudang_fg extends CI_Model{
 
     function show_kartu_stok_detail_packing($start,$end,$id_barang){
         $data = $this->db->query("(SELECT
-                    tg.id, tg.jenis_barang_id, tg.no_packing, jb.jenis_barang, tg.netto as netto_masuk, 0 as netto_keluar, tg.tanggal_masuk, tg.tanggal_keluar = null as tanggal_keluar, tg.tanggal_masuk as tanggal
+                    tg.id, tg.jenis_barang_id, tg.no_packing, jb.jenis_barang, tg.netto as netto_masuk, 0 as netto_keluar, tg.nomor_BPB as nomor, tg.tanggal_masuk, tg.tanggal_keluar = null as tanggal_keluar, tg.tanggal_masuk as tanggal
                 FROM t_gudang_fg tg
                     left join jenis_barang jb on jb.id = tg.jenis_barang_id
                     where tg.jenis_barang_id =".$id_barang." and tg.tanggal_masuk between '".$start."' and '".$end."')
                 UNION ALL
                 (SELECT 
-                    tgf.id, tgf.jenis_barang_id, tgf.no_packing, jb.jenis_barang, 0 as netto_masuk, tgf.netto as netto_keluar, tgf.tanggal_masuk = null, tgf.tanggal_keluar, tgf.tanggal_keluar as tanggal
+                    tgf.id, tgf.jenis_barang_id, tgf.no_packing, jb.jenis_barang, 0 as netto_masuk, tgf.netto as netto_keluar, tgf.nomor_SPB as nomor, tgf.tanggal_masuk = null, tgf.tanggal_keluar, tgf.tanggal_keluar as tanggal
                 FROM t_gudang_fg tgf
                     left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-                    where tgf.jenis_barang_id =".$id_barang." and tgf.tanggal_keluar between '".$start."' and '".$end."') Order By tanggal asc
+                    where tgf.jenis_barang_id =".$id_barang." and tgf.tanggal_keluar between '".$start."' and '".$end."') Order By tanggal, nomor asc
                     ");
         return $data;
     }
@@ -638,32 +638,6 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
         return $data;
     }
 
-    // function stok_fg_kawat_rambut_jenis(){
-    //     $data = $this->db->query("select sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
-    //         left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-    //         where tgf.jenis_trx = 0 and jb.ukuran <= '0500' and substr(tgf.no_packing,7,2) IN ('A0','B0','C0') group by tgf.jenis_barang_id order by jb.jenis_barang asc");
-    //     return $data;
-    // }
-
-    // function stok_fg_kawat_halus_jenis(){
-    //     $data = $this->db->query("select * from 
-    //         ((select sum(tgf.netto) as netto, jb.ukuran, jb.jenis_barang, jb.kode, jb.uom, tgf.jenis_barang_id from t_gudang_fg tgf
-    //         left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-    //         where tgf.jenis_trx = 0 and jb.ukuran <= '0500' and substr(tgf.no_packing,7,2) IN ('A0','B0','C0') group by tgf.jenis_barang_id)
-    //         UNION ALL
-    //         (select sum(tgf.netto) as netto, jb.ukuran, jb.jenis_barang, jb.kode, jb.uom, tgf.jenis_barang_id from t_gudang_fg tgf
-    //         left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-    //         where tgf.jenis_trx = 0 and jb.ukuran BETWEEN '0600' and '0900' group by tgf.jenis_barang_id )) a order by ukuran asc");
-    //     return $data;
-    // }
-
-    // function stok_fg_kawat_besar_jenis(){
-    //     $data = $this->db->query("select sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
-    //         left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-    //         where tgf.jenis_trx = 0 and jb.ukuran >= '1000' group by tgf.jenis_barang_id order by jb.jenis_barang asc");
-    //     return $data;
-    // }
-
     function stok_fg_kawat_rambut_jenis(){
         $data = $this->db->query("select CASE 
         WHEN substr(tgf.no_packing,7,2) IN ('A0','B0','C0', 'A1','B1','C1') THEN 'K' 
@@ -673,7 +647,7 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
         ELSE 'B' END AS jenis_packing,
         sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-            where tgf.jenis_trx = 0 and jb.ukuran <= '0499' group by tgf.jenis_barang_id, jenis_packing
+            where tgf.jenis_trx = 0 and jb.ukuran <= '0499' and tgf.keterangan not like '%BARANG PO%' group by tgf.jenis_barang_id, jenis_packing
             order by jb.ukuran asc");
         return $data;
     }
@@ -688,7 +662,7 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
         ELSE 'B' END AS jenis_packing,
         sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-            where tgf.jenis_trx = 0 and jb.ukuran BETWEEN '0500' and '0999' group by tgf.jenis_barang_id, jenis_packing
+            where tgf.jenis_trx = 0 and jb.ukuran BETWEEN '0500' and '0999' and tgf.keterangan not like '%BARANG PO%' group by tgf.jenis_barang_id, jenis_packing
             order by jb.ukuran asc");
         return $data;
     }
@@ -698,13 +672,67 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
         WHEN substr(tgf.no_packing,7,2) IN ('A0','B0','C0', 'A1','B1','C1') THEN 'K' 
         WHEN substr(tgf.no_packing,7,2) IN ('BP','BV','BH') THEN 'B.P' 
         WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ'
+        WHEN substr(tgf.no_packing,7,2) IN ('RB') THEN 'RB'
+        WHEN substr(tgf.no_packing,7,2) IN ('RK') THEN 'RK'
+        WHEN substr(tgf.no_packing,7,2) IN ('R0','R1') THEN 'R'
+        ELSE 'B' END AS jenis_packing,
+        sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            where tgf.jenis_trx = 0 and jb.ukuran >= '1000' and tgf.keterangan not like '%BARANG PO%' group by tgf.jenis_barang_id, jenis_packing
+            order by jb.ukuran asc");
+        return $data;
+    }
+
+    function stok_fg_kawat_rambut_rtr(){
+        $data = $this->db->query("select CASE 
+        WHEN substr(tgf.no_packing,7,2) IN ('A0','B0','C0', 'A1','B1','C1') THEN 'K' 
+        WHEN substr(tgf.no_packing,7,2) IN ('BP','BV','BH') THEN 'B.P' 
+        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ' 
         WHEN substr(tgf.no_packing,7,2) IN ('RB','RK','R0','R1') THEN 'R'
         ELSE 'B' END AS jenis_packing,
         sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-            where tgf.jenis_trx = 0 and jb.ukuran >= '1000' group by tgf.jenis_barang_id, jenis_packing
+            where tgf.jenis_trx = 0 and jb.ukuran <= '0499' and tgf.nomor_BPB like '%BPB-RTR%' group by tgf.jenis_barang_id, jenis_packing
             order by jb.ukuran asc");
         return $data;
+    }
+
+    function stok_fg_kawat_halus_rtr(){
+        $data = $this->db->query("select CASE 
+        WHEN substr(tgf.no_packing,7,2) IN ('A0','B0','C0', 'A1','B1','C1') THEN 'K' 
+        WHEN substr(tgf.no_packing,7,2) IN ('BP','BV','BH') THEN 'B.P' 
+        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ' 
+        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ' 
+        WHEN substr(tgf.no_packing,7,2) IN ('RB','RK','R0','R1') THEN 'R'
+        ELSE 'B' END AS jenis_packing,
+        sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            where tgf.jenis_trx = 0 and tgf.nomor_BPB like '%BPB-RTR%' and jb.ukuran BETWEEN '0500' and '0999' group by tgf.jenis_barang_id, jenis_packing
+            order by jb.ukuran asc");
+        return $data;
+    }
+
+    function stok_fg_kawat_besar_rtr(){
+        $data = $this->db->query("select CASE 
+        WHEN substr(tgf.no_packing,7,2) IN ('A0','B0','C0', 'A1','B1','C1') THEN 'K' 
+        WHEN substr(tgf.no_packing,7,2) IN ('BP','BV','BH') THEN 'B.P' 
+        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ'
+        WHEN substr(tgf.no_packing,7,2) IN ('RB') THEN 'RB'
+        WHEN substr(tgf.no_packing,7,2) IN ('RK') THEN 'RK'
+        WHEN substr(tgf.no_packing,7,2) IN ('R0','R1') THEN 'R'
+        ELSE 'B' END AS jenis_packing,
+        sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            where tgf.jenis_trx = 0 and jb.ukuran >= '1000' and tgf.nomor_BPB like '%BPB-RTR%' group by tgf.jenis_barang_id, jenis_packing
+            order by jb.ukuran asc");
+        return $data;
+    }
+
+    function stok_fg_beli(){
+        return $this->db->query("select sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            where tgf.jenis_trx = 0 and tgf.keterangan like '%BARANG PO%' group by tgf.jenis_barang_id
+            order by jb.ukuran");
     }
 
     function stok_penjualan_hari($date){

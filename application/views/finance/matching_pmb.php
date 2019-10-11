@@ -158,14 +158,13 @@
                                 </tbody>
                             <tr>
                                 <td style="text-align:center"><i class="fa fa-plus"></i></td>
-                                <td>
+                                <td colspan="2">
                                     <select id="vc_id" name="vc_id" class="form-control select2me myline"  style="margin-bottom:5px;" onchange="get_data_vc(this.value);">
                                     </select>
                                 </td>
                                 <td><input type="text" id="jenis_voucher" name="jenis_voucher" class="form-control myline" readonly="readonly"></td>
                                 <td><input type="text" id="jenis_barang" name="jenis_barang" class="form-control myline" readonly="readonly"></td>
-                                <td><input type="text" id="amount_vc" name="amount_vc" class="form-control myline" readonly="readonly"/></td>
-                                <td><input type="text" id="keterangan_vc" name="keterangan_vc" class="form-control myline" readonly="readonly" onkeyup="this.value = this.value.toUpperCase()"></td>      
+                                <td><input type="text" id="amount_vc" name="amount_vc" class="form-control myline" readonly="readonly"/></td>    
                                 <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail_vc();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
                             </tr>
                             </tbody>

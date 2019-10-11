@@ -32,7 +32,7 @@ class Model_voucher_cost extends CI_Model{
                     Left Join m_customers mc ON (voucher.customer_id = mc.id)
                     Left join supplier supp on (voucher.supplier_id = supp.id)
                 Where voucher.jenis_voucher='Manual' and voucher.flag_ppn =".$ppn." and status = 0
-                Order By voucher.no_voucher");
+                Order By voucher.no_voucher desc");
         return $data;
     }
 
@@ -124,6 +124,27 @@ class Model_voucher_cost extends CI_Model{
             left join m_customers mc on mc.id = v.customer_id
             left join po on po.id = v.po_id
             where v.pembayaran_id = 0 and v.status = 0 and v.flag_ppn =".$ppn);
+        return $data;
+    }
+
+    function show_header_voucher($id){
+        $data = $this->db->query("select v.*, COALESCE(s.nama_supplier, mc.nama_customer) as nama, p.no_po, p.currency, pmb.no_pembayaran, u.realname as pic 
+            from voucher v 
+            left join po p on (p.id = v.po_id)
+            left join supplier s on (s.id = p.supplier_id)
+            left join m_customers mc on (mc.id = v.customer_id)
+            left join f_pembayaran pmb on (pmb.id = v.pembayaran_id)
+            left join users u on (u.id = v.created_by)
+            where v.id = ".$id);
+        return $data;
+    }
+
+    function show_detail_voucher($id){
+        $data = $this->db->query("Select v.*, po.no_po, coalesce(s.nama_supplier, mc.nama_customer)as nama, concat_ws(v.nm_cost, v.keterangan) as keterangan from voucher v
+                left join supplier s on s.id = v.supplier_id
+                left join m_customers mc on mc.id = v.customer_id
+                left join po on po.id = v.po_id
+                where v.id = ".$id);
         return $data;
     }
 }

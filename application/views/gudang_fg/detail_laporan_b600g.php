@@ -153,7 +153,7 @@
                                     <a href="javascript:;" onclick="timbang_netto_a()" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang Auto</a></td>
                                 <td><input type="text" id="netto" name="netto" class="form-control myline" readonly="readonly"/></td>
                                 <td><input type="text" value="Auto" class="form-control myline" readonly="readonly"></td>
-                                <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
+                                <td style="text-align:center"><button href="javascript:;" class="btn btn-xs btn-circle yellow-gold" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </button></td>
                             </tr>
                         </table>
                     </div>
@@ -365,46 +365,46 @@ function updateDetail(id){
     }
 }
 
-function saveDetail(){
-    if($.trim($("#netto").val()) == ""){
-        $('#message').html("Silahkan isi netto barang!");
-        $('.alert-danger').show(); 
-    } else if($.trim($("#no_packing").val()) == ""){
-        $('#message').html("Silahkan pilih packing barang!");
-        $('.alert-danger').show(); 
-    } else{
-        $.ajax({
-            type:"POST",
-            url:'<?php echo base_url('index.php/GudangFG/save_detail_b600g'); ?>',
-            data:{
-                id:$('#id').val(),
-                tanggal: $('#tanggal').val(),
-                no_produksi: $('#no_produksi').val(),
-                bruto:$('#bruto').val(),
-                netto: $('#netto').val(),
-                ukuran: $('#ukuran').val(),
-                berat_bobbin: $('#berat_bobbin').val(),
-                no_packing: $('#no_packing').val(),
-                id_packing: $('#id_packing').val()
-            },
-            success:function(result){
-                if(result['message_type']=="sukses"){
-                    loadDetail($('#id').val());
-                    $('#no_produksi').val('');
-                    $('#bruto').val('');
-                    $('#berat_bobbin').val('');
-                    $('#netto').val('');
-                    $('#message').html("");
-                    $('.alert-danger').hide(); 
-                    $('#no_produksi').focus();
-                }else{
-                    $('#message').html(result['message']);
-                    $('.alert-danger').show(); 
-                }            
-            }
-        });
-    }
-}
+// function saveDetail(){
+//     if($.trim($("#netto").val()) == ""){
+//         $('#message').html("Silahkan isi netto barang!");
+//         $('.alert-danger').show(); 
+//     } else if($.trim($("#no_packing").val()) == ""){
+//         $('#message').html("Silahkan pilih packing barang!");
+//         $('.alert-danger').show(); 
+//     } else{
+//         $.ajax({
+//             type:"POST",
+//             url:'<?php echo base_url('index.php/GudangFG/save_detail_b600g'); ?>',
+//             data:{
+//                 id:$('#id').val(),
+//                 tanggal: $('#tanggal').val(),
+//                 no_produksi: $('#no_produksi').val(),
+//                 bruto:$('#bruto').val(),
+//                 netto: $('#netto').val(),
+//                 ukuran: $('#ukuran').val(),
+//                 berat_bobbin: $('#berat_bobbin').val(),
+//                 no_packing: $('#no_packing').val(),
+//                 id_packing: $('#id_packing').val()
+//             },
+//             success:function(result){
+//                 if(result['message_type']=="sukses"){
+//                     loadDetail($('#id').val());
+//                     $('#no_produksi').val('');
+//                     $('#bruto').val('');
+//                     $('#berat_bobbin').val('');
+//                     $('#netto').val('');
+//                     $('#message').html("");
+//                     $('.alert-danger').hide(); 
+//                     $('#no_produksi').focus();
+//                 }else{
+//                     $('#message').html(result['message']);
+//                     $('.alert-danger').show(); 
+//                 }            
+//             }
+//         });
+//     }
+// }
 
 function hapusDetail(id){
     var r=confirm("Anda yakin menghapus item barang ini?");
@@ -432,6 +432,52 @@ function printBarcode(id){
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
-<script>    
+<script>
+$('#btnSaveDetail').click(function(event) {
+    event.preventDefault(); /*  Stops default form submit on click */
+
+    if($.trim($("#netto").val()) == ""){
+        $('#message').html("Silahkan isi netto barang!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#no_packing").val()) == ""){
+        $('#message').html("Silahkan pilih packing barang!");
+        $('.alert-danger').show(); 
+    }else{
+        // $('#btnSaveDetail').text('Please Wait ...').prop("onclick", null).off("click");
+        $('#btnSaveDetail').prop('disabled',true);
+        $('#btnSaveDetail').text('Please Wait ...');
+        $.ajax({
+            type:"POST",
+            url:'<?php echo base_url('index.php/GudangFG/save_detail_b600g'); ?>',
+            data:{
+                id: $('#id').val(),
+                tanggal: $('#tanggal').val(),
+                no_produksi: $('#no_produksi').val(),
+                bruto: $('#bruto').val(),
+                netto: $('#netto').val(),
+                ukuran: $('#ukuran').val(),
+                berat_bobbin: $('#berat_bobbin').val(),
+                no_packing: $('#no_packing').val(),
+                id_packing: $('#id_packing').val()
+            },
+            success:function(result){
+                if(result['message_type']=="sukses"){
+                    loadDetail($('#id').val());
+                    $('#btnSaveDetail').prop('disabled',false);
+                    $('#no_produksi').val('');
+                    $('#bruto').val('');
+                    $('#berat_bobbin').val('');
+                    $('#netto').val('');
+                    $('#message').html("");
+                    $('.alert-danger').hide(); 
+                    $('#no_produksi').focus();
+                }else{
+                    $('#message').html(result['message']);
+                    $('.alert-danger').show(); 
+                }            
+            }
+        });
+    }
+});
     loadDetail(<?php echo $header['id']; ?>);
 </script>

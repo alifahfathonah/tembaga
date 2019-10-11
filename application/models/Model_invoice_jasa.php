@@ -18,8 +18,19 @@ class Model_invoice_jasa extends CI_Model{
 	    left join r_t_so ts on ts.id = tij.r_t_so_id
 	    left join r_t_po tp on tp.id = tij.r_t_po_id
 	    left join m_customers_cv mc on mc.id = tij.customer_id
-	    where tij.cv_id = ".$reff_cv." 
+	    where tij.cv_id = ".$reff_cv." and tij.jenis_invoice = 'INVOICE KMP KE CV'
 	    order by tij.no_invoice_jasa desc");
+		return $data;
+	}
+
+	function list_inv_for_cv2($reff_cv){
+		$data = $this->db->query("select tij.*, tsj.id as sjr_id, tsj.no_sj_resmi, ts.no_so, tp.no_po, mc.nama_customer, mc.pic from r_t_inv_jasa tij
+		left join r_t_surat_jalan tsj on tsj.id = tij.sjr_id
+	    left join r_t_so ts on ts.id = tij.r_t_so_id
+	    left join r_t_po tp on tp.id = tij.r_t_po_id
+	    left join m_customers_cv mc on mc.id = tij.customer_id
+	    where tij.cv_id = ".$reff_cv." and tij.jenis_invoice = 'INVOICE CV KE CUSTOMER'
+	    order by tij.tanggal desc, tij.no_invoice_jasa desc");
 		return $data;
 	}
 

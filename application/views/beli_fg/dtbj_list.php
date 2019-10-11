@@ -167,7 +167,7 @@
                                 //     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliFinishGood/proses_dtbj/'.$data->id.'" 
                                 //         style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
                                 // }
-                                if ($data->status==0 && $data->jumlah_item != 0 && ($data->supplier_id==0 || $data->flag_gudang == 0)){
+                                if ($data->status==0 && $data->jumlah_item != 0 /**&& ($data->supplier_id==0 || $data->flag_gudang == 0)**/){
                                     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliFinishGood/proses_dtbj/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
                                 }
                                 if ($data->status==0 && $data->jumlah_item==0){

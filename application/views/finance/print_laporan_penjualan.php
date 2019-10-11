@@ -3,7 +3,8 @@
         <title></title>
         <meta charset="utf-8" />
     </head>
-    <body onLoad="window.print()">
+    <body onLoad="window.print()"><strong>PT. KAWAT MAS PRAKASA</strong><br>
+
       <table width="100%" style="page-break-after: auto;">
         <tr>
           <td align="center">
@@ -42,9 +43,29 @@
         $nilai_invoice = 0;
         $nilai_ppn = 0;
         $nilai_total = 0;
+        $nettoc = 0;
+        $nic = 0;
+        $npc = 0;
+        $ntc = 0;
         foreach($detailLaporan as $row){ 
           $total_harga = $row->total_harga+$row->nilai_ppn;
  /*           $total_amount = $row->netto * $row->amount;  */
+              if($last_series != $row->kode_customer && $last_series != null){
+                echo '<tr>
+                    <td colspan="7" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total</strong></td>
+                    <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;">'.number_format($netto,2,',','.').'</td>
+                    <td style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;"></td>
+                    <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;">'.number_format($ni,2,',','.').'</td>
+                    <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;">'.number_format($np,2,',','.').'</td>
+                    <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;">'.number_format($nt,2,',','.').'</td>
+                    <td colspan="2" align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid; border-right: 1px solid;"></td>
+                  </tr>';
+                $nettoc = 0;
+                $nic = 0;
+                $npc = 0;
+                $ntc = 0;
+              }
+
               if($last_tolling != $row->flag_tolling && $last_tolling != null){
                 echo '<tr>
                     <td colspan="7" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total</strong></td>
@@ -87,6 +108,10 @@
           $nilai_invoice +=$row->total_harga;
           $nilai_ppn += $row->nilai_ppn;
           $nilai_total += $total_harga;
+          $nettoc += $row->netto;
+          $nic +=$row->total_harga;
+          $npc += $row->nilai_ppn;
+          $ntc += $total_harga;
           } ?>
           <tr>
             <td colspan="7" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total</strong></td>

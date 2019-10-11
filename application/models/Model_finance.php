@@ -89,7 +89,10 @@ class Model_finance extends CI_Model{
     }
 
     function list_data_voucher($ppn){
-        $data = $this->db->query("Select * from voucher where pembayaran_id = 0 and status = 0 and flag_ppn =".$ppn);
+        $data = $this->db->query("Select v.id, v.no_voucher, COALESCE(mc.nama_customer, s.nama_supplier, v.keterangan) as keterangan from voucher v
+            left join m_customers mc on v.customer_id = mc.id
+            left join supplier s on v.supplier_id = s.id
+            where v.pembayaran_id = 0 and v.status = 0 and v.flag_ppn =".$ppn." order by v.no_voucher asc");
         return $data;
     }
 
@@ -105,12 +108,13 @@ class Model_finance extends CI_Model{
     }
 
     function check_voucher(){
-        $data = $this->db->query("Select voucher.*, supplier.nama_supplier,
-                po.no_po, po.tanggal As tanggal_po
-                From voucher 
-                    Left Join po On (voucher.po_id = po.id)
-                    left join supplier on (supplier.id = po.supplier_id)
-                where pembayaran_id = 0 Order By voucher.no_voucher");
+        $data = $this->db->query("Select v.*, COALESCE(s.nama_supplier,mc.nama_customer) as nama_supplier,
+                po.no_po, COALESCE(po.tanggal,'-') As tanggal_po
+                From voucher v
+                    Left Join po On (v.po_id = po.id)
+                    left join supplier s on (s.id = po.supplier_id)
+                    Left Join m_customers mc on (v.customer_id = mc.id)
+                where pembayaran_id = 0 and v.status = 0 Order By v.no_voucher desc");
         return $data;
     }
 
@@ -149,22 +153,43 @@ class Model_finance extends CI_Model{
     }
 
     function detail_pembayaran_um($id){
-        $data = $this->db->query("(select fum.no_uang_masuk, fum.nominal, COALESCE(mc.nama_customer,fum.keterangan) as keterangan, fum.rekening_pembayaran, fum.nomor_cek
+        $data = $this->db->query("select fum.no_uang_masuk, fum.nominal, COALESCE(mc.nama_customer,fum.keterangan) as keterangan, fum.rekening_pembayaran, fum.nomor_cek
             from f_pembayaran_detail fpd
             left join f_uang_masuk fum on fum.id = fpd.um_id
             left join m_customers mc on mc.id = fum.m_customer_id
-            where fpd.id_pembayaran =".$id." and fpd.voucher_id = 0)
-            UNION ALL
-            (select COALESCE(fk.nomor,'Slip Setoran') as no_uang_masuk, fss.nominal*-1, COALESCE(fum.keterangan, 'Slip Setoran') as keterangan, '' as rekening_pembayaran, '' as nomor_cek from f_slip_setoran fss
-            left join f_kas fk on fk.id = fss.id_kas
-            left join f_uang_masuk fum on fum.id = fk.id_um
-            where fss.id_pembayaran =".$id.")");
+            where fpd.id_pembayaran =".$id." and fpd.voucher_id = 0");
         return $data;
     }
 
     function load_detail($id){
         $data = $this->db->query("select * from voucher where pembayaran_id = ".$id);
         return $data;
+    }
+
+    function load_detail_vc($id){
+        $data = $this->db->query("select v.id, v.no_voucher, v.jenis_barang, v.jenis_voucher, 
+            ( CASE WHEN ( COALESCE ( mc.nama_customer, s.nama_supplier ) IS NOT NULL ) THEN
+                concat_ws(
+                    '',
+                    'PEMB. ',
+                    COALESCE ( concat( mc.nama_customer, '' ), concat( s.nama_supplier, '' ) ), v.keterangan 
+                ) ELSE v.nm_cost 
+            END 
+            ) as keterangan, v.amount from voucher v 
+            left join m_customers mc on v.customer_id = mc.id
+            left join supplier s on v.supplier_id = s.id
+            where pembayaran_id = ".$id);
+        return $data;
+    }
+
+    function load_detail_pembayaran($id){
+        return $this->db->query("
+            (Select no_voucher, tanggal, amount, keterangan from voucher where pembayaran_id =".$id.")
+            UNION ALL
+            (select COALESCE(fk.nomor,'Slip Setoran') as no_voucher, COALESCE(fum.tanggal, '') as tanggal, fss.nominal as amount, COALESCE(fum.keterangan, 'Slip Setoran') as keterangan from f_slip_setoran fss
+            left join f_kas fk on fk.id = fss.id_kas
+            left join f_uang_masuk fum on fum.id = fk.id_um
+            where fss.id_pembayaran =".$id.")");
     }
 
     function load_detail_reject($id){
@@ -1534,6 +1559,7 @@ class Model_finance extends CI_Model{
                                     WHERE
                                         ( t.ttr_status != 0 ) 
                                     AND ( dd.po_detail_id = 0 AND d.so_id > 0 )
+                                    AND ( so.flag_ppn = 1)
                                     AND t.tanggal BETWEEN '".$s."' and '".$e."' )
                         UNION ALL
                     (Select rt.tanggal as tgl_ttr, rt.no_ttr_resmi as no_ttr, 'Tolling' as sumber, rts.no_so as no_doc_sumber, rts.tanggal as tgl_doc, mc.kode_customer as kode_sup_cust, mc.nama_customer as nama_sup_cust, r.kode_rongsok, r.nama_item, rtd.bruto, rtd.netto, 0 as amount, 0 as total_amount, 0 as jmlh_afkiran, 0 as jmlh_lain, 1 as flag_ppn from r_ttr_detail rtd
@@ -2237,7 +2263,7 @@ class Model_finance extends CI_Model{
                      sum(x.qty_keluar)*round((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk)),2))  amount_sisa, x.uom
                 FROM
                 (
-                    SELECT 
+                    (SELECT 
                         t.sparepart_id, EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) bulan, s.alias, s.nama_item, 0 saldo_qty, 0 saldo_amount,
                         case when t.jenis_trx=0 then t.qty else 0 end  qty_masuk, case when t.jenis_trx=0 then t.qty*t.amount else 0 end amount_masuk
                         , case when t.jenis_trx=1 then t.qty else 0 end  qty_keluar, case when t.jenis_trx=1 then t.qty*t.amount else 0 end amount_keluar, s.uom
@@ -2245,13 +2271,12 @@ class Model_finance extends CI_Model{
                     t_gudang_sp t
                     LEFT JOIN sparepart s ON s.id = t.sparepart_id
                     WHERE s.sparepart_group IN (6,7)
-                    and EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) = '".$tgl1."'
-                    -- group by bulan, alias, nama_item
+                    and EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) = '".$tgl1."')
                     union all
-                    select t2.sparepart_id,  case when right(t2.bulan,2)=12 then t2.bulan+101 else t2.bulan+1 end , s2.alias, s2.nama_item, t2.qty saldo_qty, t2.total_amount saldo_amount, 0 qty_masuk, 0 amount_masuk, 0 qty_keluar, 0 amount_keluar, s2.uom  
+                    (select t2.sparepart_id,  case when right(t2.bulan,2)=12 then t2.bulan+101 else t2.bulan+1 end , s2.alias, s2.nama_item, t2.qty saldo_qty, t2.total_amount saldo_amount, 0 qty_masuk, 0 amount_masuk, 0 qty_keluar, 0 amount_keluar, s2.uom  
                     FROM t_sparepart_saldo t2
                     LEFT JOIN sparepart s2 ON s2.id = t2.sparepart_id
-                    WHERE t2.bulan='".$tgl2."'
+                    WHERE t2.bulan='".$tgl2."')
                 )
                 x
                 GROUP BY bulan, kode, nama_item

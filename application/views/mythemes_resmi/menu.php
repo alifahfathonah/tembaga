@@ -164,7 +164,27 @@
                         <span class="title">SALES ORDER</span>
                     </a>
                 </li>
-                <?php } if($group_id==9 || (isset($akses_menu['R_InvoiceJasa']) && $akses_menu['R_InvoiceJasa']==1)){ ?>
+                <?php } if(($group_id==9 || $group_id == 14) && (isset($akses_menu['R_InvoiceJasa']) && $akses_menu['R_InvoiceJasa']==1)){ ?>
+                <li <?php if ($module_name=="InvoiceJasa") echo 'class="start active open"'; ?>>
+                    <a href="<?php echo base_url(); ?>index.php/R_InvoiceJasa">
+                        <i class="fa fa-credit-card"></i>
+                        <span class="title">INVOICE JASA</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/index/Customer">
+                                Customer
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/R_InvoiceJasa/index/Supplier">
+                                Supplier
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <?php } if( ($group_id==9 || $group_id == 16) && (isset($akses_menu['R_InvoiceJasa']) && $akses_menu['R_InvoiceJasa']==1)){ ?>
                 <li <?php if ($module_name=="InvoiceJasa") echo 'class="start active open"'; ?>>
                     <a href="<?php echo base_url(); ?>index.php/R_InvoiceJasa">
                         <i class="fa fa-credit-card"></i>
@@ -215,6 +235,12 @@
                                 <a href="<?= base_url() ?>index.php/R_Sinkronisasi/tolling_sync">
                                     <i class="fa fa-refresh"></i>
                                     <span class="title">Sync Tolling</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?= base_url() ?>index.php/R_Sinkronisasi/inv_sync">
+                                    <i class="fa fa-refresh"></i>
+                                    <span class="title">Sync Invoice Jasa</span>
                                 </a>
                             </li>
                         </ul>

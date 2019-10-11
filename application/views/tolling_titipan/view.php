@@ -140,7 +140,7 @@
                             <table class="table table-bordered table-striped table-hover">
                                 <thead>
                                     <th>No</th>
-                                    <th style="width: 22%">Nama Item </th>
+                                    <th style="width: 30%">Nama Item </th>
                                     <th style="width: 5%">Unit of Measure</th>
                                     <th>Harga (Rp)</th>
                                     <th>Netto (Kg)</th>
@@ -150,7 +150,7 @@
                                 foreach ($detail as $row) { ?>
                                 <tbody>
                                     <td><?= $no;?></td>
-                                    <td><?= $row->jenis_barang;?></td>
+                                    <td><?='('.$row->kode.') '.$row->jenis_barang;?></td>
                                     <td><?= $row->uom;?></td>
                                     <td><?= number_format($row->amount,0,',','.');?></td>
                                     <td><?= number_format($row->netto,2,',','.');?></td>

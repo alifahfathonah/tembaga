@@ -3,7 +3,8 @@
 <head>
 	<title>Laporan Pembelian</title>
 </head>
-<body onload="window.print()">
+<body onload="window.print()"><strong>PT. KAWAT MAS PRAKASA</strong><br>
+
 	<table width="100%" style="page-break-after: auto;">
 		<tr>
 			<td align="center">

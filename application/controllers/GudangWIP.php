@@ -975,7 +975,8 @@ class GudangWIP extends CI_Controller{
                         'qty'=>$this->input->post('qty'),
                         'netto'=>$this->input->post('berat'),
                         'no_pallete'=>date("dmyHis").$rand,
-                        'line_remarks'=>$this->input->post('keterangan')
+                        'line_remarks'=>$this->input->post('keterangan'),
+                        'tanggal_masuk'=>$tgl_input
                     ));
                    
                
@@ -1263,7 +1264,8 @@ class GudangWIP extends CI_Controller{
                             'bruto'=> $row->berat,
                             'netto'=> $row->berat,
                             'no_pallete'=> $no_pallete,
-                            'line_remarks'=> 'Kirim Rongsok dari WIP'
+                            'line_remarks'=> 'Kirim Rongsok dari WIP',
+                            'tanggal_masuk'=> $tgl_input
                         ));
             }
         }

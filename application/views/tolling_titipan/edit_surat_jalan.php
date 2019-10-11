@@ -197,7 +197,7 @@
                                     '<input type="hidden" name="details['.$no.'][id_barang]" id="id_barang_'.$no.'" value="'.$row->id.'">'.
                                     '<input type="hidden" id="jenis_barang_id_'.$no.'" name="details['.$no.'][jenis_barang_id]" value="'.$row->jenis_barang_id.'" data-id="'.$row->ukuran.'">'.
                                     '<td>'.
-                                        '<select id="barang_alias_id_'.$no.'" name="details['.$no.'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onChange="genPacking('.$no.');">
+                                        '<select id="barang_alias_id_'.$no.'" name="details['.$no.'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
                                             <option></option>
                                             <option value="0" data-id="0">TIDAK ADA ALIAS</option>';
                                             foreach ($jenis_barang as $value){
@@ -349,16 +349,16 @@ function delete_row(id){
     $('#row_'+id).remove();
 }
 
-function genPacking(id){
-    const str = $('#no_packing_'+id).val();
-    const res = str.substring(7, 11);
-    var ukuran = $('#barang_alias_id_'+id).find(':selected').attr('data-id');
-    if(ukuran==0 || ukuran==undefined){
-        var ukuran = $('#jenis_barang_id_'+id).attr('data-id');
-    }
-    const no_packing = str.replace(res, ukuran);
-    $('#no_packing_'+id).val(no_packing);    
-}
+// function genPacking(id){
+//     const str = $('#no_packing_'+id).val();
+//     const res = str.substring(7, 11);
+//     var ukuran = $('#barang_alias_id_'+id).find(':selected').attr('data-id');
+//     if(ukuran==0 || ukuran==undefined){
+//         var ukuran = $('#jenis_barang_id_'+id).attr('data-id');
+//     }
+//     const no_packing = str.replace(res, ukuran);
+//     $('#no_packing_'+id).val(no_packing);    
+// }
 
 function simpanData(){
     if($.trim($("#tanggal").val()) == ""){

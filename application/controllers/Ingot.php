@@ -1414,6 +1414,34 @@ class Ingot extends CI_Controller{
        redirect('index.php/Ingot/spb_list');
     }
 
+    function update_tanggal_keluar(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('update_tanggal_keluar')));
+        $spb_id = $this->input->post('id');
+        
+        $this->db->trans_start();
+
+        $details = $this->input->post('myDetails');
+        // print_r($details);die();
+        foreach ($details as $v) {
+            if(isset($v['check']) && $v['check']==1){
+                $this->db->where('id', $v['id_detail']);
+                $this->db->update('dtr_detail', array(
+                    'tanggal_keluar'=> $tgl_input
+                ));
+            }   
+        }
+
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'SPB sudah di-save. Detail Pemenuhan SPB sudah disimpan');                 
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+        }                 
+
+       redirect('index.php/GudangRongsok/view_spb/'.$spb_id);
+    }
+
     function delPemenuhan(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');

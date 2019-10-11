@@ -807,7 +807,7 @@ class Model_beli_rongsok extends CI_Model{
 
     function show_kartu_stok_palette($start,$end,$id_barang){
         $data = $this->db->query("(SELECT
-                    t.no_ttr, p.no_po as nomor, dd.id, dd.rongsok_id, dd.no_pallete, s.nama_supplier as nama, r.nama_item, dd.netto as netto_masuk, 0 as netto_keluar, dd.tanggal_masuk, dd.tanggal_keluar = null as tanggal_keluar, dd.tanggal_masuk as tanggal
+                    t.no_ttr, COALESCE(p.no_po, d.no_dtr) as nomor, dd.id, dd.rongsok_id, dd.no_pallete, COALESCE(s.nama_supplier,t.no_ttr) as nama, r.nama_item, dd.netto as netto_masuk, 0 as netto_keluar, dd.tanggal_masuk, dd.tanggal_keluar = null as tanggal_keluar, dd.tanggal_masuk as tanggal
                 FROM
                     dtr_detail dd 
                     left join dtr d on d.id = dd.dtr_id
@@ -828,7 +828,7 @@ class Model_beli_rongsok extends CI_Model{
                     left join spb on spb.id = sdf.spb_id
                     left join m_customers mc on mc.id = so.m_customer_id
                     left join rongsok rsk on rsk.id = dtd.rongsok_id
-                    where dtd.rongsok_id ='".$id_barang."' and dtd.tanggal_keluar >= '".$start."' and dtd.tanggal_keluar <= '".$end."') Order By tanggal, tanggal_keluar asc");
+                    where dtd.rongsok_id ='".$id_barang."' and dtd.tanggal_keluar >= '".$start."' and dtd.tanggal_keluar <= '".$end."') Order By tanggal, nama asc");
         return $data;
     }
 

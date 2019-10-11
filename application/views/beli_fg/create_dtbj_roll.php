@@ -153,6 +153,7 @@
                                 <th></th>
                                 <th>Netto (Kg)</th>
                                 <th>No. Packing</th>
+                                <th>Keterangan</th>
                                 <th>Action</th>
                             </thead>
                             <tbody id="boxDetail">
@@ -174,6 +175,7 @@
                                 <td><a href="javascript:;" onclick="timbang_netto()" class="btn btn-xs btn-circle blue"><i class="fa fa-dashboard"></i> Timbang</a></td>
                                 <td><input type="text" id="netto" name="netto" class="form-control myline"/></td>
                                 <td><input type="text" value="Auto" class="form-control myline" readonly="readonly"></td>
+                                <td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline"/></td>
                                 <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
                             </tr>
                         </table>
@@ -278,7 +280,8 @@ function saveDetail(){
                 netto: $('#netto').val(),
                 ukuran: $('#ukuran').val(),
                 no_packing: $('#no_packing').val(),
-                id_packing: $('#id_packing').val()
+                id_packing: $('#id_packing').val(),
+                line_remarks: $('#line_remarks').val()
             },
             success:function(result){
                 if(result['message_type']=="sukses"){
@@ -286,6 +289,7 @@ function saveDetail(){
                     $('#jenis_barang').select2('val','');
                     $('#netto').val('');
                     $('#uom').val('');
+                    $('#line_remarks').val('');
                     $('#message').html("");
                     $('.alert-danger').hide(); 
                 }else{

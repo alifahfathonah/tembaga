@@ -11,6 +11,7 @@
         <th style="width:40px">No</th>
         <th>Tanggal</th>
         <th>Nomor Packing</th>
+        <th>Keterangan</th>
         <th>Masuk</th>
         <th>Keluar</th>
         <th>Sisa</th>
@@ -35,6 +36,7 @@
         echo '<td style="text-align:center">'.$no.'</td>';
         echo '<td>'.$row->tanggal_masuk.$row->tanggal_keluar.'</td>';
         echo '<td>'.$row->no_packing.'</td>';
+        echo '<td>'.$row->nomor.'</td>';
         echo '<td>'.number_format($row->netto_masuk,2,',','.').'</td>';
         echo '<td>'.number_format($row->netto_keluar,2,',','.').'</td>';
         $sisa_now = $sisa + $row->netto_masuk - $row->netto_keluar;

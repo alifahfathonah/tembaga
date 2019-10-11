@@ -605,6 +605,38 @@ class VoucherCost extends CI_Controller{
         }
     }
 
+    function print_voucher_kh(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $user_ppn = $this->session->userdata('user_ppn');
+        $this->load->helper('tanggal_indo');
+
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+
+            $this->load->helper('terbilang_d_helper');
+            $this->load->model('Model_voucher_cost');
+            $data['header'] = $this->Model_voucher_cost->show_header_voucher($id)->row_array();
+            $data['list_data'] = $this->Model_voucher_cost->show_detail_voucher($id)->result();
+
+            $total = 0;
+            foreach ($data['list_data'] as $row) {
+                $total += $row->amount;
+            }
+
+            $data['total'] = $total;
+
+            $this->load->view('voucher_cost/print_voucher_kh', $data);
+        }else{
+            redirect('index.php/BeliRongsok');
+        }
+    }
+
     function add_uk(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');

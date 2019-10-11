@@ -742,6 +742,7 @@ class BeliFinishGood extends CI_Controller{
             $tabel .= '<td><a href="javascript:;" onclick="timbang(this)" class="btn btn-xs btn-circle blue disabled"><i class="fa fa-dashboard"></i> Timbang</a></td>';
             $tabel .= '<td>'.$row->netto.'</td>';
             $tabel .= '<td>'.$row->no_packing.'</td>';
+            $tabel .= '<td>'.$row->line_remarks.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
@@ -752,7 +753,7 @@ class BeliFinishGood extends CI_Controller{
         $tabel .= '<tr>';
         $tabel .= '<td colspan="4" style="text-align:right"><strong>Total Netto :</strong></td>';
         $tabel .= '<td style="background-color:green; color:white;">'.number_format($netto,2,',','.').'</td>';
-        $tabel .= '<td colspan="2">';
+        $tabel .= '<td colspan="3">';
         $tabel .= '</tr>';
             
         header('Content-Type: application/json');
@@ -781,7 +782,8 @@ class BeliFinishGood extends CI_Controller{
             'no_packing' =>$no_packing,
             'bruto' => $this->input->post('netto'),
             'netto' => $this->input->post('netto'),
-            'berat_bobbin' => 0
+            'berat_bobbin' => 0,
+            'line_remarks' => $this->input->post('line_remarks')
         ));
         if($this->db->trans_complete()){
             $return_data['message_type']= "sukses";

@@ -27,7 +27,12 @@ class R_InvoiceJasa extends CI_Controller{
         if ($group_id == 9) {
             $data['list_data']= $this->Model_invoice_jasa->list_inv()->result();    
         } elseif ($group_id == 14) {
-            $data['list_data']= $this->Model_invoice_jasa->list_inv_for_cv($reff_cv)->result(); 
+            $jenis = $this->uri->segment(3);
+            if($jenis == 'Customer'){
+                $data['list_data']= $this->Model_invoice_jasa->list_inv_for_cv2($reff_cv)->result(); 
+            }else{
+                $data['list_data']= $this->Model_invoice_jasa->list_inv_for_cv($reff_cv)->result();
+            }
         } elseif ($group_id == 16) {
             $data['list_data']= $this->Model_invoice_jasa->list_inv_for_kmp()->result();
         }
@@ -482,6 +487,11 @@ class R_InvoiceJasa extends CI_Controller{
             curl_close($ch2);
 
             log_message('debug', print_r($result2,1));
+
+            if($result2 == 1){
+                $this->db->where('id', $inv_jasa_id);
+                $this->db->update('r_t_inv_jasa', array('api'=>1));
+            }
 
             if($this->db->trans_complete()){
                 redirect('index.php/R_InvoiceJasa/edit_inv_cust/'.$inv_jasa_id);  

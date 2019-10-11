@@ -54,7 +54,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/Finance/approve_pmb'); ?>">
+              id="formku">
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -124,6 +124,16 @@
                     </div>    
                 </div>       
             </div>
+        <?php if($header['status']==1){ ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="javascript:;" style="display: none;" class="btn blue" id="simpan_update" onclick="simpan_update();"> 
+                        <i class="fa fa-check"></i> Simpan </a>
+                    <a href="javascript:;" class="btn blue" id="edit_update" onclick="edit();"> 
+                        <i class="fa fa-pencil"></i> Edit </a>
+                </div>    
+            </div>
+        <?php } ?>
             <hr class="divider"/>
     <!-- VOUCHER -->
             <div class="row">
@@ -313,13 +323,25 @@
     </div>
 </div> 
 <script>
-function simpanData(){
-    if($.trim($("#tanggal").val()) == ""){
+function simpan_update(){
+    if($.trim($("#no_pmb").val()) == ""){
+        $('#message').html("Nomor harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else{     
+    }else{
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/save_pmb");
         $('#formku').submit(); 
     };
+}
+
+function edit(){
+    $('#edit_update').hide();
+    $('#no_pmb').prop('readonly', false);
+    $('#tanggal').prop('readonly', false);
+    $('#remarks').prop('readonly', false);
+    $('#simpan_update').show();
 }
 
 function approveData(){
@@ -362,7 +384,19 @@ function rejectData(){
     }
 }
 </script>
-
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+<script>
+$(function(){        
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });
+});
+</script>

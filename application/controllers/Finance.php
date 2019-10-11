@@ -687,8 +687,9 @@ class Finance extends CI_Controller{
         }
         $tabel .= '<tr>';
         $tabel .= '<td></td>';
-        $tabel .= '<td><a <a href="'.base_url().'index.php/Finance/check_voucher" onclick="window.open(\''.base_url().'index.php/Finance/check_voucher\',\'newwindow\',\'width=1200,height=550\'); return false;" class="btn btn-primary" style="width:100%;">Lihat daftar voucher</a></td>';
-        $tabel .= '<td colspan="4" style="text-align:right"><strong>Total </strong></td>';
+        $tabel .= '<td><a href="'.base_url().'index.php/Finance/check_voucher" onclick="window.open(\''.base_url().'index.php/Finance/check_voucher\',\'newwindow\',\'width=1200,height=550\'); return false;" class="btn btn-primary" style="width:100%;">Lihat daftar voucher</a></td>';
+        $tabel .= '<td><a href="'.base_url().'index.php/VoucherCost/voucher_kh" target="_blank" class="btn btn-primary" style="width:100%;">Create Voucher</a></td>';
+        $tabel .= '<td colspan="3" style="text-align:right"><strong>Total </strong></td>';
         $tabel .= '<td><input type="text" id="total_vc" name="total_vc" style="background-color: green; color: white;" class="form-control" data-myvalue="'.$total_vc.'" value="'.number_format($total_vc,0,',','.').'" readonly="readonly"></td>';
         $tabel .= '<tr>';
 
@@ -702,7 +703,7 @@ class Finance extends CI_Controller{
         $data = $this->Model_finance->list_data_voucher($user_ppn)->result();
         $arr_so[] = "Silahkan pilih....";
         foreach ($data as $row) {
-            $arr_so[$row->id] = $row->no_voucher;
+            $arr_so[$row->id] = $row->no_voucher.' | '.$row->keterangan;
         } 
         print form_dropdown('vc_id', $arr_so);
     }
@@ -781,7 +782,7 @@ class Finance extends CI_Controller{
             $this->load->helper('tanggal_indo');
             $this->load->model('Model_finance');
             $data['header'] = $this->Model_finance->header_pembayaran($id)->row_array();
-            $data['details'] = $this->Model_finance->load_detail($id)->result();
+            $data['details'] = $this->Model_finance->load_detail_pembayaran($id)->result();
             $data['details_um'] = $this->Model_finance->detail_pembayaran_um($id)->result();
 
             $this->load->view('finance/print_matching_pmb', $data);
@@ -1087,6 +1088,7 @@ class Finance extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
+        $this->db->trans_start();
         $data = array(
             'no_pembayaran'=>$this->input->post('no_pmb'),
             'tanggal'=>$tgl_input,
@@ -1095,7 +1097,9 @@ class Finance extends CI_Controller{
             'modified_by'=>$user_id
         );
         $this->db->where('id', $this->input->post('id'));
-        if($this->db->update('f_pembayaran', $data)){
+        $this->db->update('f_pembayaran', $data);
+
+        if($this->db->trans_complete()){
             redirect(base_url('index.php/Finance/pembayaran'));
         }else{
             $this->session->set_flashdata('flash_msg', 'Uang Masuk gagal disimpan, silahkan dicoba kembali!');
@@ -1163,7 +1167,7 @@ class Finance extends CI_Controller{
             if($data['header']['status']==9){
             $data['detailVC'] = $this->Model_finance->load_detail_reject($id)->result();
             }else{
-            $data['detailVC'] = $this->Model_finance->load_detail($id)->result();
+            $data['detailVC'] = $this->Model_finance->load_detail_vc($id)->result();
             }
             $data['detailUM'] = $this->Model_finance->load_detail_um($id)->result();
             $data['detailUK'] = $this->Model_finance->load_detail_uk($id)->result();
@@ -1193,7 +1197,7 @@ class Finance extends CI_Controller{
                 $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat menjalankan pembayaran, silahkan coba kembali!');
             }             
         
-       redirect('index.php/Finance/pembayaran');
+       redirect('index.php/Finance/view_pmb/'.$id);
     }
 
     function approve_pmb(){
@@ -2941,7 +2945,7 @@ class Finance extends CI_Controller{
 
             $this->load->model('Model_finance');
             $data['detailLaporan'] = $this->Model_finance->print_laporan_penjualan($start,$end,$ppn)->result();
-            $this->load->view('finance/print_laporan_penjualan', $data);
+            $this->load->view('finance/print_laporan_piutang', $data);
     }
 
     function print_laporan_sj(){
@@ -3695,6 +3699,8 @@ class Finance extends CI_Controller{
         $dt=date_create($datestring);
         $tgl2 = $dt->format('Ym');
 
+        // echo $tgl1.' | '.$tgl2; die();
+
         $data['periode'] = bulan_indo($bulan).' '.$tahun;
 
         $group_id    = $this->session->userdata('group_id');        
@@ -3714,9 +3720,9 @@ class Finance extends CI_Controller{
                 $this->db->insert('t_sparepart_saldo', [
                     'bulan' => $tgl1,
                     'sparepart_id' => $row->sparepart_id,
-                    'qty' => $row->qty_keluar,
+                    'qty' => $row->qty_sisa,
                     'amount' => $row->rata2,
-                    'total_amount' => $row->amount_keluar,
+                    'total_amount' => $row->amount_sisa
                 ]);
             }
         }

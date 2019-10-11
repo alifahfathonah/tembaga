@@ -2239,11 +2239,15 @@ class GudangFG extends CI_Controller{
         $data['detailLaporan'] = $this->Model_gudang_fg->stok_fg_kawat_rambut_jenis()->result();
         $data['detailLaporan2'] = $this->Model_gudang_fg->stok_fg_kawat_halus_jenis()->result();
         $data['detailLaporan3'] = $this->Model_gudang_fg->stok_fg_kawat_besar_jenis()->result();
+        $data['detailLaporanRTR'] = $this->Model_gudang_fg->stok_fg_kawat_rambut_rtr()->result();
+        $data['detailLaporanRTR2'] = $this->Model_gudang_fg->stok_fg_kawat_halus_rtr()->result();
+        $data['detailLaporanRTR3'] = $this->Model_gudang_fg->stok_fg_kawat_besar_rtr()->result();
         $data['header']['penjualan'] = $this->Model_gudang_fg->stok_penjualan_hari($date)->row_array();
         $data['header']['t_penjualan'] = $this->Model_gudang_fg->stok_t_penjualan_hari($date,$m,$y)->row_array();
         $data['header']['8mm'] = $this->Model_gudang_fg->stok_8mm()->row_array();
         $data['header']['76mm'] = $this->Model_gudang_fg->stok_76mm()->row_array();
         $data['header']['26mm'] = $this->Model_gudang_fg->stok_26mm()->row_array();
+        $data['stok_beli'] = $this->Model_gudang_fg->stok_fg_beli()->result();
 
         $this->load->view('gudang_fg/print_stok_fg_jenis', $data);
     }

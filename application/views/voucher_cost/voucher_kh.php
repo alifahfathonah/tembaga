@@ -187,7 +187,7 @@
 
                                 if( ($group_id==1)||($hak_akses['print']==1) ){
                             ?>
-                            <a href="<?php echo base_url(); ?>index.php/VoucherCost/print_voucher/<?php echo $data->id; ?>" 
+                            <a href="<?php echo base_url(); ?>index.php/VoucherCost/print_voucher_kh/<?php echo $data->id; ?>" 
                                class="btn btn-circle btn-xs blue-ebonyclay" style="margin-bottom:4px" target="_blank"><i class="fa fa-print"></i> Print &nbsp; </a> 
                             <?php }?>
                         </td>
