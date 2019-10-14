@@ -174,6 +174,13 @@ class R_BPB extends CI_Controller{
             curl_close($ch2);
 
             log_message('debug', print_r($result2,1));
+
+            if($result2['status']==1){
+                $this->db->where('id', $bpb_id);
+                $this->db->update('r_t_bpb', array(
+                    'api' => 1
+                ));
+            }
         }
 
         if($this->db->trans_complete()){

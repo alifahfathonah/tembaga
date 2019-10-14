@@ -37,9 +37,54 @@ class Model_r_sinkronisasi extends CI_Model{
 		return $data;
 	}
 
+	function count_so_cv() {
+		$data = $this->db->query('
+				SELECT COUNT(id) AS jumlah
+				FROM r_t_so
+				WHERE jenis_so = "SO CV" AND api = 0
+			');
+		return $data;
+	}
+
+	function count_po_cv() {
+		$data = $this->db->query('
+				SELECT COUNT(id) AS jumlah
+				FROM r_t_po
+				WHERE jenis_po = "PO CV KE KMP" AND api = 0
+			');
+		return $data;
+	}
+
+	function count_bpb_cv() {
+		$data = $this->db->query('
+				SELECT COUNT(id) AS jumlah
+				FROM r_t_bpb
+				WHERE jenis_bpb = "BPB RONGSOK" AND api = 0
+			');
+		return $data;
+	}
+
+	function count_sj_rsk_cv() {
+		$data = $this->db->query('
+				SELECT COUNT(id) AS jumlah
+				FROM r_t_surat_jalan
+				WHERE jenis_surat_jalan = "SURAT JALAN CV KE KMP" AND api = 0
+			');
+		return $data;
+	}
+
+	function count_sj_bpb_cv() {
+		$data = $this->db->query('
+				SELECT COUNT(id) AS jumlah
+				FROM r_t_surat_jalan
+				WHERE jenis_surat_jalan = "SURAT JALAN CV KE CUSTOMER" AND api = 0
+			');
+		return $data;
+	}
+
 	function count_inv_jasa_cv() {
 		$data = $this->db->query('
-				SELECT COUNT(id) AS count_inv
+				SELECT COUNT(id) AS jumlah
 				FROM r_t_inv_jasa
 				WHERE jenis_invoice = "INVOICE CV KE CUSTOMER" AND api = 0
 			');
@@ -124,6 +169,54 @@ class Model_r_sinkronisasi extends CI_Model{
 		return $data;
 	}
 
+	function get_so_cv_cust($id) {
+		$data = $this->db->query('Select rts.*, rtp.no_po, cv.idkmp from r_t_so rts
+					left join r_t_po rtp on rtp.id = rts.po_id
+					left join m_cv cv on cv.id = rts.reff_cv
+					where rts.reff_cv = '.$id.' and rts.jenis_so="SO CV" and rts.api = 0
+			');
+		return $data;
+	}
+
+	function get_so_detail_cv($id) {
+		$data = $this->db->query('Select * from r_t_so_detail where so_id='.$id);
+		return $data;
+	}
+
+	function get_bpb_cv_cust($id) {
+		$data = $this->db->query('Select rtb.*, rtp.no_po FROM r_t_bpb rtb
+				left join r_t_po rtp on rtp.flag_bpb = rtb.id
+				WHERE rtb.reff_cv ='.$id.' AND rtb.jenis_bpb = "BPB RONGSOK" AND rtb.api = 0
+			');
+		return $data;
+	}
+
+	function get_bpb_detail_cv($id){
+		return $this->db->query('Select * From r_t_bpb_detail where id='.$id);
+	}
+
+	function get_po_cv_cust($id){
+		$data = $this->db->query('Select rtp.* FROM r_t_po rtp
+				WHERE rtp.reff_cv ='.$id.' AND rtp.jenis_po = "PO CV KE KMP" AND rtp.api = 0
+			');
+		return $data;
+	}
+
+	function get_po_detail_cv($id){
+		return $this->db->query('select * from r_t_po_detail where id='.$id);
+	}
+
+	function get_sj_rsk_cv_cust($id) {
+		$data = $this->db->query('Select rts.* FROM r_t_surat_jalan rts
+				WHERE reff_cv ='.$id.' AND jenis_surat_jalan = "SURAT JALAN CV KE KMP" AND api = 0
+			');
+		return $data;
+	}
+
+	function get_sj_detail_cv($id){
+		return $this->db->query('select * from r_t_surat_jalan_detail where sj_resmi_id ='.$id);
+	}
+
 	function get_inv_cv_cust($id) {
 		$data = $this->db->query('
 				SELECT ij.*, cv.idkmp
@@ -134,11 +227,62 @@ class Model_r_sinkronisasi extends CI_Model{
 		return $data;
 	}
 
-	function count_inv_cv_cust($id) {
-		$data = $this->db->query('
+	function count_so_cv_cust() {
+		$data = $this->db->query('Select id, nama_cv, (
+				SELECT COUNT(id)
+				FROM r_t_so
+				WHERE reff_cv = mc.id AND jenis_so = "SO CV" AND api = 0) as jumlah
+				from m_cv mc
+			');
+		return $data;
+	}
+
+	function count_bpb_cv_cust() {
+		$data = $this->db->query('Select id, nama_cv, (
+				SELECT COUNT(id)
+				FROM r_t_bpb
+				WHERE reff_cv = mc.id AND jenis_bpb = "BPB RONGSOK" AND api = 0) as jumlah
+				from m_cv mc
+			');
+		return $data;
+	}
+
+	function count_po_cv_cust() {
+		$data = $this->db->query('Select id, nama_cv, (
+				SELECT COUNT(id)
+				FROM r_t_po
+				WHERE reff_cv = mc.id AND jenis_po = "PO CV KE KMP" AND api = 0) as jumlah
+				from m_cv mc
+			');
+		return $data;
+	}
+
+	function count_sj_rsk_cv_cust() {
+		$data = $this->db->query('Select id, nama_cv, (
+				SELECT COUNT(id) AS jumlah
+				FROM r_t_surat_jalan
+				WHERE reff_cv = mc.id AND jenis_surat_jalan = "SURAT JALAN CV KE KMP" AND api = 0) as jumlah
+				from m_cv mc
+			');
+		return $data;
+	}
+
+	function count_sj_bpb_cv_cust() {
+		$data = $this->db->query('Select id, nama_cv, (
+				SELECT COUNT(id) AS jumlah
+				FROM r_t_surat_jalan
+				WHERE reff_cv = mc.id AND jenis_surat_jalan = "SURAT JALAN CV KE CUSTOMER" AND api = 0) as jumlah
+				from m_cv mc
+			');
+		return $data;
+	}
+
+	function count_inv_cv_cust() {
+		$data = $this->db->query('Select id, nama_cv, (
 				SELECT count(id) as jumlah
 				FROM r_t_inv_jasa
-				WHERE reff_cv = '.$id.' and jenis_invoice = "INVOICE CV KE CUSTOMER" AND api = 0
+				WHERE reff_cv = mc.id and jenis_invoice = "INVOICE CV KE CUSTOMER" AND api = 0) as jumlah
+				from m_cv mc
 			');
 		return $data;
 	}

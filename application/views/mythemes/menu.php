@@ -1052,6 +1052,10 @@
                                     <a href="<?php echo base_url(); ?>index.php/SalesOrder/print_sisa_so_gabungan/" target="_blank">
                                     <i class="fa fa-print"></i> Print Sisa SO Gabungan </a>
                                 </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/print_sisa_so_gabungan_jb/" target="_blank">
+                                    <i class="fa fa-print"></i> Print Sisa SO Gabungan per Jenis Barang </a>
+                                </li>
                             </ul>
                         </li>
                         <?php } ?>

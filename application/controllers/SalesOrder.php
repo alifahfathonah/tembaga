@@ -2193,6 +2193,25 @@ class SalesOrder extends CI_Controller{
             $this->load->view('sales_order/print_sisa_so', $data);
     }
 
+    function print_sisa_so_gabungan_jb(){
+            $module_name = $this->uri->segment(1);
+            $this->load->helper('tanggal_indo');
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_sales_order');
+            $data['detailHarian'] = $this->Model_sales_order->detail_harian_sog()->row_array();
+            $data['detailBulanan'] = $this->Model_sales_order->detail_bulanan_sog()->row_array();
+            $data['detailLaporan'] = $this->Model_sales_order->sisa_so_gabungan_jb()->result();
+            $this->load->view('sales_order/print_sisa_so_gabungan_jb', $data);
+    }
+
     function print_so_bulan(){
             $module_name = $this->uri->segment(1);
             $ppn = $this->session->userdata('user_ppn');

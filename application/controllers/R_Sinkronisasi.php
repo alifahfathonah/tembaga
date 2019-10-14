@@ -369,7 +369,7 @@ class R_Sinkronisasi extends CI_Controller{
         return redirect('index.php/R_Sinkronisasi/tolling_sync');
     }
 
-    function inv_sync(){
+    function all_cv_sync(){
     	$module_name = $this->uri->segment(1);
         $po_id = $this->uri->segment(3);
         $group_id    = $this->session->userdata('group_id');        
@@ -381,11 +381,200 @@ class R_Sinkronisasi extends CI_Controller{
         $data['group_id']  = $group_id;
         $data['content']= "resmi/sinkronisasi/cv_invoice_sync";
 
-        $this->load->model('Model_r_sync_individual');
-        $data['list_cv'] = $this->Model_r_sync_individual->list_cv()->result();
-        $data['count_tolling'] = $this->Model_r_sinkronisasi->count_inv_jasa_cv()->row_array();
+        $data['list_so'] = $this->Model_r_sinkronisasi->count_so_cv_cust()->result();
+        $data['list_bpb'] = $this->Model_r_sinkronisasi->count_bpb_cv_cust()->result();
+        $data['list_po'] = $this->Model_r_sinkronisasi->count_po_cv_cust()->result();
+        $data['list_sj_rsk'] = $this->Model_r_sinkronisasi->count_sj_rsk_cv_cust()->result();
+        $data['list_sj_bpb'] = $this->Model_r_sinkronisasi->count_sj_bpb_cv_cust()->result();
+        $data['list_inv'] = $this->Model_r_sinkronisasi->count_inv_cv_cust()->result();
+        $data['so'] = $this->Model_r_sinkronisasi->count_so_cv()->row_array();
+        $data['po'] = $this->Model_r_sinkronisasi->count_po_cv()->row_array();
+        $data['bpb'] = $this->Model_r_sinkronisasi->count_bpb_cv()->row_array();
+        $data['sj_rsk'] = $this->Model_r_sinkronisasi->count_sj_rsk_cv()->row_array();
+        $data['sj_bpb'] = $this->Model_r_sinkronisasi->count_sj_bpb_cv()->row_array();
+        $data['inv'] = $this->Model_r_sinkronisasi->count_inv_jasa_cv()->row_array();
 
         $this->load->view('layout', $data);
+    }
+
+    function do_sync_so_cv() {
+    	// set_time_limit(600);
+        /*
+        * surat jalan
+        */
+    	$post = $this->input->post();
+        $so = $this->Model_r_sinkronisasi->get_so_cv_cust($post['cv_id'])->result_array();
+        // print_r($so);die();
+        if (!empty($so)) {
+        	foreach ($so as $key => $row) {
+	        	$header[$key] = $so[$key];
+
+        		$sod[$key] = $this->Model_r_sinkronisasi->get_so_detail_cv($row['id'])->result_array();
+        		$data[$key] = array_merge($header[$key], ['details' => $sod[$key]]);
+	        }
+
+        	$json = json_encode($data);
+        	// print_r($json);die();
+
+	        $ch = curl_init();
+	        curl_setopt($ch, CURLOPT_URL, target_url_cv($post['cv_id']).'api/SalesOrderAPI/so_cust_sync');
+	        curl_setopt($ch, CURLOPT_POST, true);
+	        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+	        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+	        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	        // curl_setopt($ch, CURLOPT_HEADER, 0);
+	        // curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+	        $response = curl_exec($ch);
+	        $result = json_decode($response, true);
+	        curl_close($ch);
+	        // print_r($response);die();
+	        if($result['status']==true){
+	        	$this->db->trans_start();
+	        	foreach ($so as $key => $value) {
+	        		$this->db->where('id', $value['id']);
+	        		$this->db->update('r_t_so', ['api' => 1]);
+	        	}
+	        	$this->db->trans_complete();
+	        }
+        }
+
+        $this->session->set_flashdata('flash_msg', $result['message']);
+        return redirect('index.php/R_Sinkronisasi/all_cv_sync');
+    }
+
+    function do_sync_bpb_cv() {
+    	// set_time_limit(600);
+        /*
+        * surat jalan
+        */
+    	$post = $this->input->post();
+        $bpb = $this->Model_r_sinkronisasi->get_bpb_cv_cust($post['cv_id'])->result_array();
+        // print_r($bpb);die();
+        if (!empty($bpb)) {
+        	foreach ($bpb as $key => $row) {
+	        	$header[$key] = $bpb[$key];
+
+        		$bpbd[$key] = $this->Model_r_sinkronisasi->get_bpb_detail_cv($row['id'])->result_array();
+        		$data[$key] = array_merge($header[$key], ['details' => $bpbd[$key]]);
+	        }
+
+        	$json = json_encode($data);
+        	// print_r($json);die();
+
+	        $ch = curl_init();
+	        curl_setopt($ch, CURLOPT_URL, target_url_cv($post['cv_id']).'api/BPBAPI/bpb_rsk_cust_sync');
+	        curl_setopt($ch, CURLOPT_POST, true);
+	        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+	        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+	        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	        // curl_setopt($ch, CURLOPT_HEADER, 0);
+	        // curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+	        $response = curl_exec($ch);
+	        $result = json_decode($response, true);
+	        curl_close($ch);
+	        // print_r($response);die();
+	        if($result['status']==true){
+	        	$this->db->trans_start();
+	        	foreach ($bpb as $key => $value) {
+	        		$this->db->where('id', $value['id']);
+	        		$this->db->update('r_t_bpb', ['api' => 1]);
+	        	}
+	        	$this->db->trans_complete();
+	        }
+        }
+
+        $this->session->set_flashdata('flash_msg', $result['message']);
+        return redirect('index.php/R_Sinkronisasi/all_cv_sync');
+    }
+
+    function do_sync_po_cv() {
+    	// set_time_limit(600);
+        /*
+        * surat jalan
+        */
+    	$post = $this->input->post();
+        $bpb = $this->Model_r_sinkronisasi->get_po_cv_cust($post['cv_id'])->result_array();
+        // print_r($bpb);die();
+        if (!empty($bpb)) {
+        	foreach ($bpb as $key => $row) {
+	        	$header[$key] = $bpb[$key];
+
+        		$bpbd[$key] = $this->Model_r_sinkronisasi->get_po_detail_cv($row['id'])->result_array();
+        		$data[$key] = array_merge($header[$key], ['details' => $bpbd[$key]]);
+	        }
+
+        	$json = json_encode($data);
+        	// print_r($json);die();
+
+	        $ch = curl_init();
+	        curl_setopt($ch, CURLOPT_URL, target_url_cv($post['cv_id']).'api/PurchaseOrderAPI/po_cust_sync');
+	        curl_setopt($ch, CURLOPT_POST, true);
+	        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+	        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+	        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	        // curl_setopt($ch, CURLOPT_HEADER, 0);
+	        // curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+	        $response = curl_exec($ch);
+	        $result = json_decode($response, true);
+	        curl_close($ch);
+	        // print_r($response);die();
+	        if($result['status']==true){
+	        	$this->db->trans_start();
+	        	foreach ($bpb as $key => $value) {
+	        		$this->db->where('id', $value['id']);
+	        		$this->db->update('r_t_po', ['api' => 1]);
+	        	}
+	        	$this->db->trans_complete();
+	        }
+        }
+
+        $this->session->set_flashdata('flash_msg', $result['message']);
+        return redirect('index.php/R_Sinkronisasi/all_cv_sync');
+    }
+
+    function do_sync_sj_rsk_cv() {
+    	// set_time_limit(600);
+        /*
+        * surat jalan
+        */
+    	$post = $this->input->post();
+        $bpb = $this->Model_r_sinkronisasi->get_sj_rsk_cv_cust($post['cv_id'])->result_array();
+        // print_r($bpb);die();
+        if (!empty($bpb)) {
+        	foreach ($bpb as $key => $row) {
+	        	$header[$key] = $bpb[$key];
+
+        		$bpbd[$key] = $this->Model_r_sinkronisasi->get_sj_detail_cv($row['id'])->result_array();
+        		$data[$key] = array_merge($header[$key], ['details' => $bpbd[$key]]);
+	        }
+
+        	$json = json_encode($data);
+        	// print_r($json);die();
+
+	        $ch = curl_init();
+	        curl_setopt($ch, CURLOPT_URL, target_url_cv($post['cv_id']).'api/SuratJalanAPI/sj_rsk_cust_sync');
+	        curl_setopt($ch, CURLOPT_POST, true);
+	        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+	        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+	        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	        // curl_setopt($ch, CURLOPT_HEADER, 0);
+	        // curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+	        $response = curl_exec($ch);
+	        $result = json_decode($response, true);
+	        curl_close($ch);
+	        // print_r($response);die();
+	        if($result['status']==true){
+	        	$this->db->trans_start();
+	        	foreach ($bpb as $key => $value) {
+	        		$this->db->where('id', $value['id']);
+	        		$this->db->update('r_t_surat_jalan', ['api' => 1]);
+	        	}
+	        	$this->db->trans_complete();
+	        }
+        }
+
+        $this->session->set_flashdata('flash_msg', $result['message']);
+        return redirect('index.php/R_Sinkronisasi/all_cv_sync');
     }
 
     function do_sync_inv_jasa_cv() {
@@ -429,15 +618,7 @@ class R_Sinkronisasi extends CI_Controller{
 	        }
         }
 
-        $this->session->set_flashdata('flash_msg', 'Sinkronisasi selesai.');
-        return redirect('index.php/R_Sinkronisasi/tolling_sync');
-    }
-
-    function get_data_inv_cv(){
-        $id = $this->input->post('id');
-        $barang= $this->Model_r_sinkronisasi->count_inv_cv_cust($id)->row_array();
-        
-        header('Content-Type: application/json');
-        echo json_encode($barang); 
+        $this->session->set_flashdata('flash_msg', $result['message']);
+        return redirect('index.php/R_Sinkronisasi/all_cv_sync');
     }
 }
