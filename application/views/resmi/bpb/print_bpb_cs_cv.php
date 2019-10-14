@@ -48,8 +48,8 @@
                             <td>: <?= $header['nama_customer'] ?></td>
                         </tr>                      
                         <tr>
-                            <td>Catatan</td>
-                            <td>: <?= $header['remarks'] ?></td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
                         </tr>
                     </table>
                 </td>

@@ -48,8 +48,8 @@
                             <td>: <?= $header_cv_cs['nama_customer'] ?></td>
                         </tr>                      
                         <tr>
-                            <td>Catatan</td>
-                            <td>: <?= $header_cv_cs['remarks'] ?></td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
                         </tr>
                     </table>
                 </td>

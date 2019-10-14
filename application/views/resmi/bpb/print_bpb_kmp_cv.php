@@ -44,8 +44,8 @@
                             <td>: PT. KAWAT MAS PRAKASA</td>
                         </tr>                      
                         <tr>
-                            <td>Catatan</td>
-                            <td>: <?= $header['remarks'] ?></td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
                         </tr>
                     </table>
                 </td>
