@@ -93,8 +93,22 @@
                         <td align="center"><?= $no ?>.</td>
                         <td><?= $v->jenis_barang ?></td>
                         <td align="center"><?= number_format($v->netto,2,".",",")." ".$v->uom ?></td>
-                        <td align="right"><?= "Rp ".number_format($v->amount,2,".",",") ?></td>
-                        <td align="right"><?= "Rp ".number_format($v->total_amount,2,".",",") ?></td>
+                        <td align="right">
+                            <table width="100%">
+                                <tr>
+                                    <td style="text-indent: 80px;">Rp</td>
+                                    <td align="right"><?= number_format($v->amount,2,".",",") ?></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td align="right">
+                            <table width="100%">
+                                <tr>
+                                    <td style="text-indent: 80px;">Rp</td>
+                                    <td align="right"><?= number_format($v->total_amount,2,".",",") ?></td>
+                                </tr>
+                            </table>
+                        </td>
                     </tr>
                 <?php
                         $total += $v->netto;
@@ -120,7 +134,14 @@
                     <td style="border-top: 1px solid;" colspan="2" align="right"><b>TOTAL</b></td>
                     <td style="border-top: 1px solid;" align="center"><b><?= number_format($total,2,".",",")." ".$v->uom ?></b></td>
                     <td style="border-top: 1px solid;" ></td>
-                    <td style="border-top: 1px solid;" align="right"><b><?= "Rp ".number_format($total_harga,2,".",",") ?></b></td>
+                    <td style="border-top: 1px solid;" align="right"><b>
+                        <table width="100%">
+                            <tr>
+                                <td style="text-indent: 80px;">Rp</td>
+                                <td align="right"><?= number_format($total_harga,2,".",",") ?></td>
+                            </tr>
+                        </table>
+                    </b></td>
                 </tr>
                 <tr><!-- 
                     <td></td>

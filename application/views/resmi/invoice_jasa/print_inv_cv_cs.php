@@ -59,13 +59,13 @@
             </tr>
         </table>
         <br>
-        <table border="1" cellpadding="5" cellspacing="0" width="900px" style="font-family:Times New Roman;">
+        <table border="0" cellpadding="5" cellspacing="0" width="900px" style="font-family:Times New Roman;">
             <thead>
-                <th>No</th>
-                <th>Nama Barang</th>
-                <th width="20%">Quantity</th>
-                <th>Harga Satuan</th>
-                <th>Harga Jual</th>
+                <th style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;">No</th>
+                <th style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;">Nama Barang</th>
+                <th style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;" width="20%">Quantity</th>
+                <th style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;">Harga Satuan</th>
+                <th style="border-top: 1px solid; border-left: 1px; border-left: 1px solid; border-right: 1px solid;">Harga Jual</th>
                 <!-- <th>Keterangan</th> -->
             </thead>
             <tbody>
@@ -75,17 +75,17 @@
                     foreach ($myDetail as $v) { 
                 ?>
                     <tr>
-                        <td align="center"><?= $no ?></td>
-                        <td><?= $v->jenis_barang ?><br>(Ongkos Kerja)</td>
-                        <td align="center"><?= number_format($v->sum_netto,2,".",",")." ".$v->uom ?></td>
-                        <td align="right">
+                        <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;" align="center"><?= $no ?></td>
+                        <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;"><?= $v->jenis_barang ?><br>(Ongkos Kerja)</td>
+                        <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;" align="center"><?= number_format($v->sum_netto,2,".",",")." ".$v->uom ?></td>
+                        <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;" align="right">
                             <table width="100%">
                                 <tr>
                                     <td>Rp</td>
                                     <td align="right"><?= number_format($v->amount,2,".",",") ?></td>
                                 </tr>
                             </table></td>
-                        <td align="right">
+                        <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid; border-right: 1px solid;" align="right">
                             <table width="100%">
                                 <tr>
                                     <td>Rp</td>
@@ -101,8 +101,8 @@
                     $total_amount = $total_jual;
                 ?>
                 <tr>
-                    <td colspan="4"><b>Jumlah Harga Jual</b></td>
-                    <td align="right">
+                    <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;" colspan="4"><b>Jumlah Harga Jual</b></td>
+                    <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid; border-right: 1px solid;" align="right">
                         <table width="100%">
                             <tr>
                                 <td><b>Rp</b></td>
@@ -113,8 +113,8 @@
                     <!-- <td></td> -->
                 </tr>
                 <tr>
-                    <td colspan="4"><b>Dikurangi Potongan Harga</b></td>
-                    <td align="right">
+                    <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;" colspan="4"><b>Dikurangi Potongan Harga</b></td>
+                    <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid; border-right: 1px solid;" align="right">
                         <table width="100%">
                             <tr>
                                 <td><b>Rp</b></td>
@@ -125,8 +125,8 @@
                     <!-- <td></td> -->
                 </tr>
                 <tr>
-                    <td colspan="4"><b>Uang muka yang diterima</b></td>
-                    <td align="right">
+                    <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid;" colspan="4"><b>Uang muka yang diterima</b></td>
+                    <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid; border-right: 1px solid;" align="right">
                         <table width="100%">
                             <tr>
                                 <td><b>Rp</b></td>
@@ -137,8 +137,8 @@
                     <!-- <td></td> -->
                 </tr>
                 <tr>
-                    <td colspan="4"><b>T o t a l</b></td>
-                    <td align="right">
+                    <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid; border-bottom: 1px solid;" colspan="4"><b>T o t a l</b></td>
+                    <td style="border-top: 1px solid; border-left: 1px; border-left: 1px solid; border-bottom: 1px solid; border-right: 1px solid;" align="right">
                         <table width="100%">
                             <tr>
                                 <td><b>Rp</b></td>

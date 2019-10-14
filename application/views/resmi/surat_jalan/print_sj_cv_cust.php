@@ -48,8 +48,8 @@
                             <td>: <?= $header_cv_cs['nama_customer'] ?></td>
                         </tr>                      
                         <tr>
-                            <td>Catatan</td>
-                            <td>: <?= $header_cv_cs['remarks'] ?></td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
                         </tr>
                     </table>
                 </td>
@@ -60,8 +60,8 @@
             <thead>
                 <th style="border-top: 1px solid; border-bottom: 1px solid; border-left: 1px solid;">No</th>
                 <th style="border-top: 1px solid; border-bottom: 1px solid; border-left: 1px solid;">Nama Barang</th>
-                <th style="border-top: 1px solid; border-bottom: 1px solid; border-left: 1px solid;" width="20%">Quantity</th>
-                <th style="border-top: 1px solid; border-bottom: 1px solid; border-left: 1px solid; border-right: 1px solid;">Keterangan</th>
+                <th style="border-top: 1px solid; border-bottom: 1px solid; border-left: 1px solid; border-right: 1px solid;" width="20%">Quantity</th>
+                <!-- <th style="border-top: 1px solid; border-bottom: 1px solid; border-left: 1px solid; border-right: 1px solid;">Keterangan</th> -->
             </thead>
             <tbody>
                 <?php
@@ -72,8 +72,8 @@
                     <tr>
                         <td style="border-bottom: 1px solid; border-left: 1px solid;" align="center"><?= $no ?></td>
                         <td style="border-bottom: 1px solid; border-left: 1px solid;"><?= $v->jenis_barang ?></td>
-                        <td style="border-bottom: 1px solid; border-left: 1px solid;" align="center"><?= number_format($v->total_netto,2,".",",")." ".$v->uom ?></td>
-                        <td style="border-bottom: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?= $header_cv_cs['no_po'] ?></td>
+                        <td style="border-bottom: 1px solid; border-left: 1px solid; border-right: 1px solid;" align="center"><?= number_format($v->total_netto,2,".",",")." ".$v->uom ?></td>
+                        <!-- <td style="border-bottom: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?= $header_cv_cs['no_po'] ?></td> -->
                     </tr>
                 <?php
                         $total += $v->total_netto;
@@ -82,8 +82,8 @@
                 ?>
                 <tr>
                     <td style="border-left: 1px solid; border-bottom: 1px solid;" colspan="2" align="right"><b>TOTAL</b></td>
-                    <td style="border-left: 1px solid; border-bottom: 1px solid;" align="center"><b><?= number_format($total,2,".",",")." ".$v->uom ?></b></td>
-                    <td style="border-left: 1px solid; border-bottom: 1px solid; border-right: 1px solid;"></td>
+                    <td style="border-left: 1px solid; border-bottom: 1px solid; border-right: 1px solid;" align="center"><b><?= number_format($total,2,".",",")." ".$v->uom ?></b></td>
+                    <!-- <td style="border-left: 1px solid; border-bottom: 1px solid; border-right: 1px solid;"></td> -->
                 </tr>
             </tbody>
         </table>
