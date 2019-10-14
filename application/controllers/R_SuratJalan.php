@@ -397,6 +397,13 @@ class R_SuratJalan extends CI_Controller{
             curl_close($ch2);
 
             log_message('debug', print_r($result2,1));
+            // print_r($result2);die();
+            if($result2['status']==1){
+                $this->db->where('id', $sjr_id);
+                $this->db->update('r_t_surat_jalan', array(
+                    'api'=>1
+                ));
+            }
             
         } else if($jenis == 'sj_customer'){
             $data = array(
@@ -553,6 +560,12 @@ class R_SuratJalan extends CI_Controller{
 
             log_message('debug', print_r($result2,1));
 
+            if($result2['status']==1){
+                $this->db->where('id',$sjr_id);
+                $this->db->update('r_t_surat_jalan', array(
+                    'api' => 1
+                ));
+            }
 
             $data_bpb_api = array(
                 'no_bpb'=> $this->input->post('no_bpb'),
@@ -605,6 +618,13 @@ class R_SuratJalan extends CI_Controller{
             curl_close($ch2);
 
             log_message('debug', print_r($result2,1));
+
+            if($result2['status']==1){
+                $this->db->where('id', $bpb_id);
+                $this->db->update('r_t_bpb', array(
+                    'api'=>1
+                ));
+            }
         }
 
             if($this->db->trans_complete()){

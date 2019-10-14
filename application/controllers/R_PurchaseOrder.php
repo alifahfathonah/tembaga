@@ -162,6 +162,12 @@ class R_PurchaseOrder extends CI_Controller{
 
         log_message('debug', print_r($result2,1));
 
+        if($result2['status']==1){
+            $this->db->where('id',$po_id);
+            $this->db->update('r_t_po',array(
+                'api'=>1
+            ));
+        }
         // $invoice_detail = $this->Model_purchase_order->invoice_detail($this->input->post('id_invoice'))->result();
         // foreach ($invoice_detail as $row) {
         //     $detail = array(
@@ -467,8 +473,15 @@ class R_PurchaseOrder extends CI_Controller{
         $result2 = json_decode($response2, true);
         curl_close($ch2);
 
-        log_message('debug', print_r($result2,1));
-
+        // log_message('debug', print_r($result2,1));
+        // print_r($response2);
+        // die();
+        if($result2['status']==1){
+            $this->db->where('id', $so_id);
+            $this->db->update('r_t_so', array(
+                'api'=>1
+            ));
+        }
 
         if($this->db->trans_complete()){
             redirect('index.php/R_PurchaseOrder/edit_po_fcustomer/'.$po_id);  

@@ -238,9 +238,9 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="<?= base_url() ?>index.php/R_Sinkronisasi/inv_sync">
+                                <a href="<?= base_url() ?>index.php/R_Sinkronisasi/all_cv_sync">
                                     <i class="fa fa-refresh"></i>
-                                    <span class="title">Sync Invoice Jasa</span>
+                                    <span class="title">Sync Data CV</span>
                                 </a>
                             </li>
                         </ul>

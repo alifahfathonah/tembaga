@@ -781,6 +781,25 @@ class Model_sales_order extends CI_Model{
             ");
     }
 
+    function sisa_so_gabungan_jb(){
+        return $this->db->query("
+            select so.no_sales_order, COALESCE(NULLIF(tso.alias,''),(case when so.flag_ppn = 1 then mc.nama_customer else mc.nama_customer_kh end)) as nama_customer, so.flag_ppn, so.tanggal as tgl_so, tso.tgl_po, IF(so.flag_tolling = 2,1,so.flag_tolling) as flag_tolling, tso.no_po, tsod.jenis_barang_id, tsod.amount, COALESCE(NULLIF(tsod.nama_barang_alias,''),r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as nama_barang, COALESCE(r.kode_rongsok,r2.kode_rongsok,sp.alias,jb.kode) as kode_barang, IF(tso.jenis_barang = 'RONGSOK', tsod.qty, tsod.netto)as netto, tsod.amount,
+             (select sum(tsjd.netto) from t_surat_jalan_detail tsjd
+             left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id and tsjd.t_sj_id
+             where tsj.sales_order_id = so.id and CASE WHEN tsjd.jenis_barang_alias = 0 THEN tsjd.jenis_barang_id=tsod.jenis_barang_id ELSE tsjd.jenis_barang_alias=tsod.jenis_barang_id END) as netto_kirim, tso.no_po
+            from t_sales_order_detail tsod
+            left join t_sales_order tso on tso.id = tsod.t_so_id
+            left join sales_order so on so.id = tso.so_id
+            left join m_customers mc on mc.id = so.m_customer_id
+            left join rongsok r on (tso.jenis_barang = 'RONGSOK' and r.id = tsod.jenis_barang_id)
+            left join rongsok r2 on (tso.jenis_barang = 'AMPAS' and r2.id = tsod.jenis_barang_id)
+            left join sparepart sp on (tso.jenis_barang = 'LAIN' and sp.id = tsod.jenis_barang_id)
+            left join jenis_barang jb on (jb.id = tsod.jenis_barang_id)
+            where so.flag_sj = 0
+            order by kode asc, so.tanggal asc, kode_barang asc
+            ");
+    }
+
     function sisa_so($ppn){
         return $this->db->query("
             select so.no_sales_order, so.flag_ppn, COALESCE(NULLIF(tso.alias,''),(case when so.flag_ppn = 1 then mc.nama_customer else mc.nama_customer_kh end)) as nama_customer, so.tanggal as tgl_so, tso.tgl_po, IF(so.flag_tolling = 2,1,so.flag_tolling) as flag_tolling, tso.no_po, tsod.jenis_barang_id, tsod.amount, COALESCE(NULLIF(tsod.nama_barang_alias,''),r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as nama_barang, COALESCE(r.kode_rongsok,r2.kode_rongsok,sp.alias,jb.kode) as kode_barang, IF(tso.jenis_barang = 'RONGSOK', tsod.qty, tsod.netto)as netto, tsod.amount,
