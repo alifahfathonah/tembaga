@@ -56,11 +56,18 @@
             </tr>
         </table>
         <br>
+        <table border="0" cellpadding="2" cellspacing="0" width="900px">
+            <tr>
+                <td>No. Kendaraan : <?= $header_cv_cs['no_kendaraan'] ?></td>
+                <td align="center">Type Kendaraan : </td>
+                <td align="right">Catatan : ONGKOS KERJA</td>
+            </tr>
+        </table>
         <table border="0" cellpadding="5" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif;">
             <thead>
                 <th style="border-top: 1px solid; border-bottom: 1px solid; border-left: 1px solid;">No</th>
                 <th style="border-top: 1px solid; border-bottom: 1px solid; border-left: 1px solid;">Nama Barang</th>
-                <th style="border-top: 1px solid; border-bottom: 1px solid; border-left: 1px solid; border-right: 1px solid;" width="20%">Quantity</th>
+                <th style="border-top: 1px solid; border-bottom: 1px solid; border-left: 1px solid; border-right: 1px solid;" width="35%">Quantity</th>
                 <!-- <th style="border-top: 1px solid; border-bottom: 1px solid; border-left: 1px solid; border-right: 1px solid;">Keterangan</th> -->
             </thead>
             <tbody>
