@@ -1,3 +1,4 @@
+<?=(($this->session->userdata('user_ppn')==0)? '' : '<strong>PT. KAWAT MAS PRAKASA</strong><br>');?>
  <h3 align="center"><b> LAPORAN <?=$bank['nama_bank'];?></b></h3>
  <table width="100%" >
     <tr>

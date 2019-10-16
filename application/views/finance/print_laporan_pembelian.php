@@ -3,8 +3,8 @@
 <head>
 	<title>Laporan Pembelian</title>
 </head>
-<body onload="window.print()"><strong>PT. KAWAT MAS PRAKASA</strong><br>
-
+<body onload="window.print()">
+	<?=(($this->session->userdata('user_ppn')==0)? '' : '<strong>PT. KAWAT MAS PRAKASA</strong><br>');?>
 	<table width="100%" style="page-break-after: auto;">
 		<tr>
 			<td align="center">
@@ -70,8 +70,7 @@
 					if ($last_sumber != $row->sumber) {
 						echo 
 							"<tr>
-								<td colspan='5'></td>
-								<td><b>Grand Total</b></td>
+								<td align='right' colspan='6'><b>Grand Total</b></td>
 								<td align='right' style='border-top: 1px solid;'><b>".number_format($grand_netto_sumber,2,'.',',')."</b></td>
 								<td></td>
 								<td align='right' style='border-top: 1px solid;'><b>".number_format($grand_total_sumber,2,'.',',')."</b></td>
@@ -119,16 +118,14 @@
 				</tr>";
 			echo 
 				"<tr>
-					<td colspan='5'></td>
-					<td><b>Grand Total</b></td>
+					<td align='right' colspan='6'><b>Grand Total</b></td>
 					<td align='right' style='border-top: 1px solid;'><b>".number_format($grand_netto_sumber,2,'.',',')."</b></td>
 					<td></td>
 					<td align='right' style='border-top: 1px solid;'><b>".number_format($grand_total_sumber,2,'.',',')."</b></td>
 				</tr>";
 			echo 
 				"<tr>
-					<td colspan='5'></td>
-					<td><b>Grand Total</b></td>
+					<td align='right' colspan='6'><b>Grand Total</b></td>
 					<td align='right' style='border-top: 1px solid;'><b>".number_format($netto_seluruh,2,'.',',')."</b></td>
 					<td></td>
 					<td align='right' style='border-top: 1px solid;'><b>".number_format($total_amount_seluruh,2,'.',',')."</b></td>
