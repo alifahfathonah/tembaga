@@ -86,9 +86,9 @@
         <br>
         <table border="0" cellpadding="2" cellspacing="0" width="900px">
             <tr>
-                <td>DITERIMA OLEH :</td>
+                <!-- <td>DITERIMA OLEH :</td> -->
                 <td width="60%"></td>
-                <!-- <td>DIKIRIM OLEH :</td> -->
+                <td>DITERMA OLEH :</td>
             </tr>
         </table>
         <p>&nbsp;</p>
