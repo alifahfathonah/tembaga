@@ -56,7 +56,7 @@
             <thead>
                 <th style="border-left: 1px solid; border-top: 1px solid;">No</th>
                 <th style="border-left: 1px solid; border-top: 1px solid;">Nama Barang</th>
-                <th style="border-left: 1px solid; border-top: 1px solid; border-right: 1px solid;" width="20%">Quantity</th>
+                <th style="border-left: 1px solid; border-top: 1px solid; border-right: 1px solid;" width="35%">Quantity</th>
                 <!-- <th>Keterangan</th> -->
             </thead>
             <tbody>
@@ -86,9 +86,9 @@
         <br>
         <table border="0" cellpadding="2" cellspacing="0" width="900px">
             <tr>
-                <td>DITERIMA :</td>
+                <td>DITERIMA OLEH :</td>
                 <td width="60%"></td>
-                <td>DIKIRIM OLEH :</td>
+                <!-- <td>DIKIRIM OLEH :</td> -->
             </tr>
         </table>
         <p>&nbsp;</p>
