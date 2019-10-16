@@ -836,11 +836,11 @@ class Model_beli_rongsok extends CI_Model{
         $data = $this->db->query("select DATE_FORMAT(d.tanggal,'%M %Y') as showdate, 
             EXTRACT(YEAR_MONTH from d.tanggal) as tanggal, count(dd.id) as jumlah, sum(bruto) as bruto_masuk, sum(netto) as netto_masuk,
             COALESCE((select sum(bruto) from dtr_detail dd where dd.rongsok_id = ".$rongsok_id." and dd.tanggal_keluar < '".$start."'),0)as bruto_keluar,
-            COALESCE((select sum(netto) from dtr_detail dd where dd.rongsok_id = ".$rongsok_id." and dd.tanggal_keluar < '".$start."'),0)as netto_keluar
+            COALESCE((select sum(netto) from dtr_detail dd where dd.rongsok_id = ".$rongsok_id." and dd.tanggal_keluar < '".$start."' and dd.tanggal_keluar is not null),0)as netto_keluar
             from dtr_detail dd
             left join dtr d on d.id = dd.dtr_id
             left join ttr t on t.dtr_id = dd.dtr_id
-                where t.ttr_status = 1 and dd.rongsok_id = ".$rongsok_id." and d.tanggal < '".$start."'");
+                where t.ttr_status = 1 and dd.rongsok_id = ".$rongsok_id." and dd.tanggal_masuk < '".$start."'");
         return $data;
     }
 

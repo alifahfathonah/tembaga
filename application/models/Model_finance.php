@@ -1093,7 +1093,7 @@ class Model_finance extends CI_Model{
             left join bank b on b.id = fk.id_bank
             left join f_uang_masuk fum on fum.id = fk.id_um
             left join m_customers mc on mc.id = fum.m_customer_id
-            where id_bank = 0 and fk.flag_ppn = 0 and jenis_trx=0 and status = 0 order by fk.tanggal");
+            where id_bank = 0 and fk.flag_ppn = 0 and jenis_trx=0 and status = 0 order by nama_customer, tanggal");
     }
 
     function saldo_awal($s,$id){
@@ -1294,7 +1294,89 @@ class Model_finance extends CI_Model{
                                     AND t.tanggal BETWEEN '".$s."' and '".$e."' 
                                     ORDER BY sumber, kode_rongsok, no_ttr, tgl_ttr
                 ");
-        } else {
+        } elseif($ppn == 0){
+            $data = $this->db->query("SELECT
+                        t.tanggal AS tgl_ttr,
+                        t.no_ttr AS no_ttr,
+                    CASE
+                            
+                            WHEN dd.po_detail_id > 0 THEN
+                            'PO' 
+                            WHEN dd.po_detail_id = 0 
+                            AND d.so_id > 0 THEN
+                                'Tolling' ELSE 'Lain2' 
+                                END AS sumber,
+                        CASE
+                                
+                                WHEN dd.po_detail_id > 0 THEN
+                                p.no_po 
+                                WHEN dd.po_detail_id = 0 
+                                AND d.so_id > 0 THEN
+                                    so.no_sales_order ELSE '-' 
+                                    END AS no_doc_sumber,
+                            CASE
+                                    
+                                    WHEN dd.po_detail_id > 0 THEN
+                                    p.tanggal ELSE so.tanggal 
+                                END AS tgl_doc,
+                            CASE
+                                    
+                                    WHEN dd.po_detail_id > 0 THEN
+                                    s.kode_supplier 
+                                    WHEN dd.po_detail_id = 0 
+                                    AND d.so_id > 0 THEN
+                                        mc.kode_customer ELSE '-' 
+                                        END AS kode_sup_cust,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        s.nama_supplier 
+                                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                                        mc.nama_customer_kh 
+                                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                                        mc.nama_customer ELSE '-' 
+                                    END AS nama_sup_cust,
+                                    r.kode_rongsok AS kode_rongsok,
+                                    r.nama_item AS nama_item,
+                                    td.bruto AS bruto,
+                                    td.netto AS netto,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        pd.amount ELSE 0 
+                                    END AS amount,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        ( td.netto * pd.amount ) ELSE 0 
+                                    END AS total_amount,
+                                    t.jmlh_afkiran AS jmlh_afkiran,
+                                    t.jmlh_lain AS jmlh_lain,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        p.flag_ppn 
+                                        WHEN dd.po_detail_id = 0 
+                                        AND d.so_id > 0 THEN
+                                            so.flag_ppn ELSE '-' 
+                                            END AS flag_ppn 
+                                    FROM
+                                        ttr_detail td
+                                        LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+                                        LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+                                        LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+                                        LEFT JOIN po_detail pd ON ( ( dd.po_detail_id > 0 ) AND ( pd.id = dd.po_detail_id ) )
+                                        LEFT JOIN po p ON ( ( p.id = pd.po_id ) AND ( dd.po_detail_id > 0 ) )
+                                        LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+                                        LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+                                        LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
+                                        LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
+                                    WHERE
+                                        ( t.ttr_status != 0 ) 
+                                    AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
+                                    AND t.tanggal BETWEEN '".$s."' and '".$e."'
+                                    AND (p.flag_ppn = ".$ppn." OR so.flag_ppn = ".$ppn.") ORDER BY sumber, kode_rongsok, no_ttr, tgl_ttr");
+        }else{
             $data = $this->db->query("
                     (SELECT
                         t.tanggal AS tgl_ttr,

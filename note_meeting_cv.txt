@@ -111,8 +111,6 @@ print gudang rongsok per item(done)
 
 usd masih aneh invoice nya, cek lagi(done)
 
-DELETE LPB, BENERIN INVENTORY KALO MAU
-
 edit kurs di invoice(done)
 
 edit produksi fg bobin | id bobbin nya, jadi nanti berat palete berubah dan netto nya berubah
@@ -125,7 +123,7 @@ bayar po cv bisa banyak banyak(done)
 
 po ada potongan 2% pph ( (nilai_po * 110) + (nilai_po *2%))
 
-login cv yansen, fani, jatmi
+login cv yansen, fani, jatmi(done)
 
 print cek masuk yg belum di matching(belum cair) (done)
 

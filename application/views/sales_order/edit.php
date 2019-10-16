@@ -183,7 +183,7 @@
                     </div>
                 </div>              
             </div>
-            <?php if($header['status_spb'] == 0){ ?>
+            <?php if($header['flag_invoice'] == 0){ ?>
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
@@ -562,7 +562,7 @@ $(function(){
         dateFormat: 'dd-mm-yy'
     });
 
-    const status = <?= $header['status_spb'] ;?>;
+    const status = <?= $header['flag_invoice'] ;?>;
     if(status==0){
         loadDetail(<?php echo $header['id']; ?>);
     }else{

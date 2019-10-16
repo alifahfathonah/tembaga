@@ -77,10 +77,10 @@
                         <td style="text-align:center">
                             <?php
                                 if( ($group_id==1 || $hak_akses['matching']==1) && $data->flag_tolling==1){
-                                    echo '<a class="btn btn-circle btn-xs green-seagreen" href="'.base_url().'index.php/Tolling/matching_so/'.$data->id.'" 
-                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Matching &nbsp; </a>';
+                                    echo '<a class="btn btn-circle btn-xs green-seagreen" href="'.base_url().'index.php/Tolling/matching_so/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Matching &nbsp; </a>';
                                 }else{
-                                    echo '<div class="bg-green">Received</div>';
+                                    echo '<div class="bg-green" style="margin-bottom:5px;">Received</div>';
+                                    echo '<a class="btn btn-circle btn-xs green-seagreen" href="'.base_url().'index.php/Tolling/matching_so/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Matching &nbsp; </a>';
                                 }
                             ?>
                         </td>

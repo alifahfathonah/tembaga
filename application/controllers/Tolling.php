@@ -613,7 +613,7 @@ class Tolling extends CI_Controller{
                             'jenis_barang_id' => $k1->jenis_barang_id,
                             'created_at' => $tanggal,
                             'created_by' => $user_id,
-                            'keterangan' => 'BARANG PO FG',
+                            'keterangan' => 'BARANG TOLLING FG',
                             'status' => 0
                         );
                     $this->db->insert('t_bpb_fg',$data_bpb);
@@ -643,7 +643,7 @@ class Tolling extends CI_Controller{
                             'tanggal' => $tanggal,
                             'created' => $tanggal,
                             'created_by' => $user_id,
-                            'keterangan' => 'BARANG PO WIP',
+                            'keterangan' => 'BARANG TOLLING WIP',
                             'status' => 0
                         );
                     $this->db->insert('t_bpb_wip',$data_bpb);
@@ -960,7 +960,7 @@ class Tolling extends CI_Controller{
                     //     $this->Model_beli_rongsok->update_flag_dtr_po_detail($po_id);
                     // }
                     // $total_qty += $v->qty;
-                        if(((int)$v->tot_netto) >= (0.9*((int)$v->tot_qty))){
+                        if(((int)$v->tot_netto_dtr+(int)$v->tot_netto_dtwip) >= (0.9*($v->tot_qty))){
                             $this->db->where('id',$so_id);
                             $this->db->update('sales_order',array(
                                             'flag_tolling'=>2));
