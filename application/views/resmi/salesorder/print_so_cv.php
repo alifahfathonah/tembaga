@@ -102,7 +102,41 @@
                     } 
                 ?>
                 <tr>
-                    <td style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;" colspan="4" align="right"><b>TOTAL</b></td>
+                    <td style="border-left: 1px solid; border-top: 1px solid;" colspan="3"><u><b>Note : </b></u></td>
+                    <td style=" border-left: 1px solid; border-top: 1px solid;"><b>Jumlah Harga Jual</b></td>
+                    <td style="border-left: 1px solid; border-top: 1px solid; border-right: 1px solid;" align="right">
+                        <table width="100%">
+                            <tr>
+                                <td>Rp</td>
+                                <td align="right"><b><?= number_format($total,2,".",",") ?></b></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <!-- <td style="border-left: 1px solid; border-top: 1px solid; border-right: 1px solid;"></td> -->
+                </tr>
+                <tr>
+                    <td style="border-left: 1px solid;" colspan="3">Payment : Kredit</td>
+                    <td style="border-left: 1px solid; border-top: 1px solid;" align="right"><b>
+                        <table width="100%">
+                            <tr>
+                                <td><b>Discount</b></td>
+                                <td align="right"><b>%</b></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="border-left: 1px solid; border-top: 1px solid; border-right: 1px solid;" align="right">
+                        <table width="100%">
+                            <tr>
+                                <td>Rp</td>
+                                <td align="right"><b><?= number_format(0,2,".",",") ?></b></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <!-- <td style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid; border-right: 1px solid;"></td> -->
+                </tr>
+                <tr>
+                    <td style="border-left: 1px solid; border-bottom: 1px solid;" colspan="3">&nbsp;</td>
+                    <td style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><b>Total Seluruhnya</b></td>
                     <td style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid; border-right: 1px solid;" align="right">
                         <table width="100%">
                             <tr>
