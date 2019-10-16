@@ -1,3 +1,4 @@
+<?=(($this->session->userdata('user_ppn')==0)? '' : '<strong>PT. KAWAT MAS PRAKASA</strong><br>');?>
  <h3 align="center"><b> Rekap Penerimaan <?=($_GET['laporan']==0)? 'Kas' : 'Bank';?></b></h3>
  <table width="100%" >
     <tr>

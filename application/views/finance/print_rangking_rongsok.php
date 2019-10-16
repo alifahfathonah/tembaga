@@ -3,7 +3,8 @@
 <head>
 	<title>Rangking Pemasukan Rongok</title>
 </head>
-<body onload="window.print()">
+<body onload="window.print()"><?=(($this->session->userdata('user_ppn')==0)? '' : '<strong>PT. KAWAT MAS PRAKASA</strong><br>');?>
+
 	<table width="100%" style="page-break-after: auto;">
 		<tr>
 			<td align="center">

@@ -1,4 +1,4 @@
-<strong>PT. KAWAT MAS PRAKASA</strong><br>
+<?=(($this->session->userdata('user_ppn')==0)? '' : '<strong>PT. KAWAT MAS PRAKASA</strong><br>');?>
  <h3 align="center"><b> Kartu Stok FG <?php echo " <i>".$start.' s/d '.$end."</i>";?></b></h3>
  <table width="100%" >
     <tr>
