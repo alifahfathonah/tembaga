@@ -473,7 +473,7 @@
                             <div class="col-md-12">
                                 <?php
                                     if($row->status==0){
-                                        echo '<a href="javascript:;" class="btn btn-xs btn-circle green" id="approveData" onclick="approve('.$row->id.');"> '
+                                        echo '<a href="javascript:;" class="btn btn-xs btn-circle green" id="approve_dtr_'.$row->id.'" onclick="approve('.$row->id.');"> '
                                         . '<i class="fa fa-check"></i> Approve </a> &nbsp; ';
                                         echo '<a href="javascript:;" class="btn btn-xs btn-circle red" onclick="reject('.$row->id.');"> '
                                         . '<i class="fa fa-check"></i> Reject </a>';
@@ -625,7 +625,7 @@
 </div> 
 <script>
 function approve(id){
-    $('#approve_'+id).text('Please Wait ...').prop("onclick", null).off("click");
+    $('#approve_dtr_'+id).text('Please Wait ...').prop("onclick", null).off("click");
     $.ajax({
         url: "<?php echo base_url('index.php/Tolling/approve_matching'); ?>",
         type: "POST",

@@ -293,7 +293,7 @@
                                     TTR List </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/BeliWIP/dtwip_list">
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/dtwip_list">
                                         <i class="fa fa-file-text-o"></i>
                                         DTWIP List
                                     </a>

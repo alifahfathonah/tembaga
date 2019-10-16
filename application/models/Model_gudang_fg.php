@@ -647,8 +647,9 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
         ELSE 'B' END AS jenis_packing,
         sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-            where tgf.jenis_trx = 0 and jb.ukuran <= '0499' and tgf.keterangan not like '%BARANG PO%' group by tgf.jenis_barang_id, jenis_packing
-            order by jb.ukuran asc");
+            left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+            where tgf.jenis_trx = 0 and jb.ukuran <= '0499' and (tbf.produksi_fg_id != 0 or tgf.t_bpb_fg_id = 0) and tgf.keterangan not like '%BARANG PO%' group by tgf.jenis_barang_id, jenis_packing
+            order by jb.ukuran, jb.jenis_barang asc");
         return $data;
     }
 
@@ -662,8 +663,9 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
         ELSE 'B' END AS jenis_packing,
         sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-            where tgf.jenis_trx = 0 and jb.ukuran BETWEEN '0500' and '0999' and tgf.keterangan not like '%BARANG PO%' group by tgf.jenis_barang_id, jenis_packing
-            order by jb.ukuran asc");
+            left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+            where tgf.jenis_trx = 0 and jb.ukuran BETWEEN '0500' and '0999' and (tbf.produksi_fg_id != 0 or tgf.t_bpb_fg_id = 0) and tgf.keterangan not like '%BARANG PO%' group by tgf.jenis_barang_id, jenis_packing
+            order by jb.ukuran, jb.jenis_barang asc");
         return $data;
     }
 
@@ -678,8 +680,9 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
         ELSE 'B' END AS jenis_packing,
         sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-            where tgf.jenis_trx = 0 and jb.ukuran >= '1000' and tgf.keterangan not like '%BARANG PO%' group by tgf.jenis_barang_id, jenis_packing
-            order by jb.ukuran asc");
+            left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+            where tgf.jenis_trx = 0 and jb.ukuran >= '1000' and (tbf.produksi_fg_id != 0 or tgf.t_bpb_fg_id = 0) and tgf.keterangan not like '%BARANG PO%' group by tgf.jenis_barang_id, jenis_packing
+            order by jb.ukuran, jb.jenis_barang asc");
         return $data;
     }
 
@@ -692,7 +695,8 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
         ELSE 'B' END AS jenis_packing,
         sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-            where tgf.jenis_trx = 0 and jb.ukuran <= '0499' and tgf.nomor_BPB like '%BPB-RTR%' group by tgf.jenis_barang_id, jenis_packing
+            left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+            where tgf.jenis_trx = 0 and jb.ukuran <= '0499' and tbf.retur_id > 0 group by tgf.jenis_barang_id, jenis_packing
             order by jb.ukuran asc");
         return $data;
     }
@@ -707,7 +711,8 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
         ELSE 'B' END AS jenis_packing,
         sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-            where tgf.jenis_trx = 0 and tgf.nomor_BPB like '%BPB-RTR%' and jb.ukuran BETWEEN '0500' and '0999' group by tgf.jenis_barang_id, jenis_packing
+            left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+            where tgf.jenis_trx = 0 and tbf.retur_id > 0 and jb.ukuran BETWEEN '0500' and '0999' group by tgf.jenis_barang_id, jenis_packing
             order by jb.ukuran asc");
         return $data;
     }
@@ -723,7 +728,8 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
         ELSE 'B' END AS jenis_packing,
         sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-            where tgf.jenis_trx = 0 and jb.ukuran >= '1000' and tgf.nomor_BPB like '%BPB-RTR%' group by tgf.jenis_barang_id, jenis_packing
+            left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+            where tgf.jenis_trx = 0 and jb.ukuran >= '1000' and tbf.retur_id > 0 group by tgf.jenis_barang_id, jenis_packing
             order by jb.ukuran asc");
         return $data;
     }
