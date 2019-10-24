@@ -1803,4 +1803,51 @@ class GudangWIP extends CI_Controller{
             $this->load->view('gudangwip/kartu_stok_packing', $data);
         }
     }
+
+    function laporan_masak(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Gudang wip";
+        $data['content']   = "gudangwip/laporan_masak";
+
+        $this->load->view('layout', $data);  
+    }
+
+    function print_laporan_masak(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+
+        $jb_id = $_GET['r'];
+        $start = date('Y/m/d', strtotime($_GET['ts']));
+        $end = date('Y/m/d', strtotime($_GET['te']));
+        // echo $start;die();
+
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Gudang WIP";
+            $this->load->helper('tanggal_indo');
+
+        $data['start'] = $start;
+        $data['end'] = $end;
+
+            $this->load->model('Model_gudang_wip');
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();
+            if($jb_id == 1){
+                $this->load->view('gudangwip/print_laporan_masak', $data);
+            }elseif($jb_id == 2){
+                $this->load->view('gudangwip/print_laporan_masak_rolling', $data);
+            }elseif($jb_id == 4){
+                $this->load->view('gudangwip/print_laporan_masak_cuci', $data);
+            }
+    }
 }

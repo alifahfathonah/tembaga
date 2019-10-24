@@ -114,7 +114,6 @@
                     </table>
                 </td>
             </tr>
-            
         </table>
 	<body onLoad="window.print()">
     </body>

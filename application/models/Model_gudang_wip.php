@@ -358,6 +358,20 @@ class Model_gudang_wip extends CI_Model{
                 where tgw.jenis_barang_id =".$jb." and tgw.tanggal between '".$s."' and '".$e."' group by tgw.tanggal, nomor
             ");
     }
+
+    function print_laporan_masak($s,$e,$j){
+        if($j == 1){
+            return $this->db->query("select thm.tanggal, pi.no_produksi as nomor, total_rongsok, ingot, berat_ingot, bs, susut, ampas, serbuk, bs_service from t_hasil_masak thm
+            left join produksi_ingot pi on thm.id_produksi = pi.id
+            where thm.tanggal between '".$s."' and '".$e."'");
+        }elseif($j == 2){
+            return $this->db->query("select no_produksi_wip as nomor, (select sum(qty) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as qty_rsk, (select sum(berat) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as berat_rsk, thw.tanggal, qty, uom, berat, susut, bs from t_hasil_wip thw
+            where thw.jenis_masak = 'ROLLING' and thw.tanggal between '".$s."' and '".$e."'");
+        }elseif($j == 4){
+            return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, (select sum(qty) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as qty_rsk, (select sum(berat) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as berat_rsk, thw.tanggal, qty, uom, berat, susut, bs from t_hasil_wip thw
+            where thw.jenis_masak = 'CUCI' and thw.tanggal between '".$s."' and '".$e."'");
+        }
+    }
     /*
     cara membuat view stok wip
     

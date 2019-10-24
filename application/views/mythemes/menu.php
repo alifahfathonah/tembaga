@@ -488,9 +488,9 @@
                                 </a>
                                 <ul class="sub-menu">
                                     <li>
-                                        <a href="<?php echo base_url(); ?>index.php/GudangWIP/laporan_list">
+                                        <a href="<?php echo base_url(); ?>index.php/GudangWIP/laporan_masak">
                                         <i class="fa fa-briefcase"></i>
-                                        Laporan Produksi Cuci </a>
+                                        Laporan Masak </a>
                                     </li>
                                     <!-- <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangFG/print_stok_fg" target="_blank">
