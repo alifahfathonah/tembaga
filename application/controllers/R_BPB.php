@@ -433,7 +433,7 @@ class R_BPB extends CI_Controller{
         if(isset($id)){
             $this->load->model('Model_surat_jalan');
             $data['header'] = $this->Model_bpb->show_header_print_bpb($id)->row_array();
-            $data['list_bpb_detail'] = $this->Model_bpb->list_bpb_detail($id)->result();
+            $data['list_bpb_detail'] = $this->Model_bpb->print_list_bpb_detail($id)->result();
             if ($data['header']['jenis_bpb'] == "BPB RONGSOK") {
                 $this->load->view('resmi/bpb/print_bpb_cs_cv', $data);
             } else if ($data['header']['jenis_bpb'] == "BPB FG") {

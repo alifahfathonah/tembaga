@@ -82,6 +82,15 @@ class Model_bpb extends CI_Model{
         return $data;
     }
 
+    function print_list_bpb_detail($id){
+        $data = $this->db->query("select bpbd.*, rsk.nama_item, jb.jenis_barang, coalesce(rsk.uom, jb.uom) as uom, sum(bpbd.netto) as netto_sum from r_t_bpb_detail bpbd 
+        left join r_t_bpb bpb on bpb.id = bpbd.bpb_resmi_id
+        left join rongsok rsk on bpb.jenis_barang = 'RONGSOK' and rsk.id = bpbd.jenis_barang_id
+        left join jenis_barang jb on bpb.jenis_barang = 'FG' and jb.id = bpbd.jenis_barang_id
+        where bpbd.bpb_resmi_id =".$id." group by bpbd.jenis_barang_id");
+        return $data;
+    }
+
     function po_free(){
         $data = $this->db->query("select * from r_t_po where flag_bpb = 0 and cv_id = 0");
         return $data;

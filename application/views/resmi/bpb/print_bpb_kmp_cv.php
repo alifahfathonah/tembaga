@@ -63,22 +63,43 @@
                 <?php
                     $no = 1; 
                     $total = 0;
+                    $last = 0;
+                    $grand_total = 0;
                     foreach ($list_bpb_detail as $v) { 
+                        if ($last != 0) {
+                            if ($last != $v->jenis_barang_id) {
+                                echo "
+                                    <tr>
+                                        <td style='border-left: 1px solid; border-top: 1px solid;' align='right' colspan='2'><b>TOTAL</b></td>
+                                        <td style='border-left: 1px solid; border-top: 1px solid; border-right: 1px solid;' align='center'><b>".number_format($total,2,'.',',')." ".$v->uom."</b></td>
+                                    </tr>
+                                ";
+                                $total = 0;
+                            }
+                        }
                 ?>
                     <tr>
                         <td style="border-left: 1px solid; border-top: 1px solid;" align="center"><?= $no ?></td>
                         <td style="border-left: 1px solid; border-top: 1px solid;"><?= $v->jenis_barang ?></td>
-                        <td style="border-left: 1px solid; border-top: 1px solid; border-right: 1px solid;" align="center"><?= number_format($v->netto,2,".",",")." ".$v->uom ?></td>
+                        <td style="border-left: 1px solid; border-top: 1px solid; border-right: 1px solid;" align="center"><?= number_format($v->netto_sum,2,".",",")." ".$v->uom ?></td>
                         <!-- <td></td> -->
                     </tr>
                 <?php
-                        $total += $v->netto;
+                        $last = $v->jenis_barang_id;
+                        $total += $v->netto_sum;
+                        $grand_total += $v->netto_sum;
                         $no++; 
-                    } 
+                    }
+                    echo "
+                        <tr>
+                            <td style='border-left: 1px solid; border-top: 1px solid;' align='right' colspan='2'><b>TOTAL</b></td>
+                            <td style='border-left: 1px solid; border-top: 1px solid; border-right: 1px solid;' align='center'><b>".number_format($total,2,'.',',')." ".$v->uom."</b></td>
+                        </tr>
+                    "; 
                 ?>
                 <tr>
-                    <td style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;" colspan="2" align="right"><b>TOTAL</b></td>
-                    <td style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid; border-right: 1px solid;" align="center"><b><?= number_format($total,2,".",",")." ".$v->uom ?></b></td>
+                    <td style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;" colspan="2" align="right"><b>GRAND TOTAL</b></td>
+                    <td style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid; border-right: 1px solid;" align="center"><b><?= number_format($grand_total,2,".",",")." ".$v->uom ?></b></td>
                     <!-- <td></td> -->
                 </tr>
             </tbody>
@@ -86,9 +107,9 @@
         <br>
         <table border="0" cellpadding="2" cellspacing="0" width="900px">
             <tr>
-                <td>DITERIMA OLEH :</td>
+                <!-- <td>DITERIMA OLEH :</td> -->
                 <td width="60%"></td>
-                <!-- <td>DIKIRIM OLEH :</td> -->
+                <td>DITERMA OLEH :</td>
             </tr>
         </table>
         <p>&nbsp;</p>
