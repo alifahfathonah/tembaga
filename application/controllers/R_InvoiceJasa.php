@@ -367,7 +367,8 @@ class R_InvoiceJasa extends CI_Controller{
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');  
         $id = $this->uri->segment(3);
-        $user_id = $this->session->userdata('user_id');      
+        $user_id = $this->session->userdata('user_id');  
+        $reff_cv = $this->session->userdata('cv_id');
             if($group_id != 1){
                 $this->load->model('Model_modules');
                 $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -378,7 +379,8 @@ class R_InvoiceJasa extends CI_Controller{
         $data['content']= "resmi/invoice_jasa/add_inv_cust";
             $this->load->model('Model_surat_jalan');
             $data['header'] = $this->Model_surat_jalan->show_header_sj($id)->row_array();
-        $data['customer_list'] = $this->Model_surat_jalan->customer_list()->result();
+        $this->load->model('Model_purchase_order');
+        $data['customer_list'] = $this->Model_purchase_order->customer_list($reff_cv)->result();
         $data['tipe_kendaraan_list'] = $this->Model_surat_jalan->tipe_kendaraan_list()->result();
 
         $this->load->view('layout', $data);
