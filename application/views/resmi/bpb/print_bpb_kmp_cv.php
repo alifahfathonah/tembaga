@@ -81,13 +81,13 @@
                     <tr>
                         <td style="border-left: 1px solid; border-top: 1px solid;" align="center"><?= $no ?></td>
                         <td style="border-left: 1px solid; border-top: 1px solid;"><?= $v->jenis_barang ?></td>
-                        <td style="border-left: 1px solid; border-top: 1px solid; border-right: 1px solid;" align="center"><?= number_format($v->netto,2,".",",")." ".$v->uom ?></td>
+                        <td style="border-left: 1px solid; border-top: 1px solid; border-right: 1px solid;" align="center"><?= number_format($v->netto_sum,2,".",",")." ".$v->uom ?></td>
                         <!-- <td></td> -->
                     </tr>
                 <?php
                         $last = $v->jenis_barang_id;
-                        $total += $v->netto;
-                        $grand_total += $v->netto;
+                        $total += $v->netto_sum;
+                        $grand_total += $v->netto_sum;
                         $no++; 
                     }
                     echo "

@@ -204,9 +204,9 @@
                                     <td><?php echo $no; ?></td>
                                     <td><?php echo $row->jenis_barang; ?></td>
                                     <td><?php echo $row->uom; ?></td>
-                                    <td><?php echo $row->no_packing; ?></td>
                                     <td><?php echo $row->bruto; ?></td>
                                     <td><?php echo $row->netto; ?></td>
+                                    <td><?php echo $row->no_packing; ?></td>
                                     <td><?php echo $row->nomor_bobbin; ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
                                 </tr>
