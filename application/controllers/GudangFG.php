@@ -195,7 +195,7 @@ class GudangFG extends CI_Controller{
             //     $data['content'] = "gudang_fg/detail_laporan_roll";
             //     $data['packing'] =  $this->Model_gudang_fg->packing_list_by_name('ROLL')->row_array();
             //     $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result(); 
-            } else if ($packing['packing'] == ('KARDUS' || 'KERANJANG SDM')) {
+            } else if ($packing['packing'] == 'KARDUS' || $packing['packing'] == 'KERANJANG SDM') {
                 $data['content'] = "gudang_fg/detail_laporan_rambut";
                 $data['packing'] =  $this->Model_gudang_fg->get_bobbin_g($packing['id'])->result();
                 $data['myDetail'] = $this->Model_gudang_fg->load_detail($id)->result();
@@ -2220,13 +2220,14 @@ class GudangFG extends CI_Controller{
     }
 
     function print_laporan_pemasukan(){
-
+        $l = $_GET['l'];
         $s = date('Y-m-d', strtotime($_GET['ts']));
         $e = date('Y-m-d', strtotime($_GET['te']));
         $this->load->helper('tanggal_indo');  
         $this->load->model('Model_gudang_fg');
-        $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e)->result();
 
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
+        
         $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
     }
 

@@ -1787,6 +1787,84 @@ class Retur extends CI_Controller{
         }
     }
 
+    function view_surat_jalan(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "retur/view_surat_jalan";
+            $this->load->model('Model_sales_order');
+            $this->load->model('Model_retur');
+            $data['header'] = $this->Model_retur->show_header_sj($id)->row_array(); 
+            $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+            $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
+
+            $jenis = $data['header']['jenis_barang'];
+            $soid = $data['header']['sales_order_id'];
+            if($jenis == 'FG'){
+                $data['list_sj'] = $this->Model_sales_order->load_view_sjd($id)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_fg()->result();
+            }else if($jenis == 'WIP'){
+                $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_wip()->result();
+            }else{
+                $data['list_sj'] = $this->Model_retur->load_detail_sj_rsk($id)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_rsk()->result();
+            }
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/Retur/surat_jalan');
+        }
+    }
+
+    function update_surat_jalan_existing(){
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn  = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d h:m:s');        
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $jenis = $this->input->post('jenis_barang');
+        $soid = $this->input->post('so_id');
+
+        #Insert Surat Jalan
+        $details = $this->input->post('details');
+
+        // print_r($details);
+        // die();
+        foreach ($details as $v) {
+            if($v['id_tsj_detail']!=''){
+                $this->db->where('id',$v['id_tsj_detail']);
+                $this->db->update('t_surat_jalan_detail', array(
+                    'jenis_barang_alias'=>$v['barang_alias_id'],
+                    'modified_by'=>$user_id,
+                    'modified_at'=>$tanggal
+                ));
+            }
+        }
+
+        $data = array(
+                'no_surat_jalan'=> $this->input->post('no_surat_jalan'),
+                'tanggal'=> $tgl_input,
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
+                'supir'=>$this->input->post('supir'),
+                'remarks'=>$this->input->post('remarks'),
+                'modified_at'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+        
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('t_surat_jalan', $data);
+
+        $this->session->set_flashdata('flash_msg', 'Data surat jalan berhasil disimpan');
+        redirect('index.php/Retur/view_surat_jalan/'.$this->input->post('id'));
+    }
+
     function get_data_sj(){
         $id = $this->input->post('id');
         $jb = $this->input->post('jenis_barang');
@@ -2183,7 +2261,7 @@ class Retur extends CI_Controller{
         }else{
             $this->session->set_flashdata('flash_msg', 'Uang Masuk gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/Finance');  
-        }            
+        }           
     }
 
     function print_barcode_kardus(){

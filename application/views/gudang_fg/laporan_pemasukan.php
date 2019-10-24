@@ -25,6 +25,15 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
+                            Bentuk Laporan <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="bl" name="bl" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                    <option value="0">Global</option>
+                                    <option value="1">Produksi</option>
+                                </select>
+                        </div>
+                        <div class="col-md-4">
                             Tanggal Awal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -62,9 +71,10 @@ function simpanData(){
         $('#message').html("Tanggal Akhir harus diisi, tidak boleh kosong!");
         $('.alert-danger').show();
     }else{   
+        var l=$('#bl').val();
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/GudangFG/print_laporan_pemasukan?ts='+s+'&te='+e,'_blank');
+        window.open('<?php echo base_url();?>index.php/GudangFG/print_laporan_pemasukan?ts='+s+'&te='+e+'&l='+l,'_blank');
     };
 };
 </script>

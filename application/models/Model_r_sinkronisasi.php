@@ -173,7 +173,7 @@ class Model_r_sinkronisasi extends CI_Model{
 		$data = $this->db->query('Select rts.*, rtp.no_po, cv.idkmp from r_t_so rts
 					left join r_t_po rtp on rtp.id = rts.po_id
 					left join m_cv cv on cv.id = rts.reff_cv
-					where rts.reff_cv = '.$id.' and rts.jenis_so="SO CV" and rts.api = 0
+					where rts.reff_cv = '.$id.' and rts.jenis_so="SO CV"
 			');
 		return $data;
 	}
@@ -184,31 +184,32 @@ class Model_r_sinkronisasi extends CI_Model{
 	}
 
 	function get_bpb_cv_cust($id) {
-		$data = $this->db->query('Select rtb.*, rtp.no_po FROM r_t_bpb rtb
+		$data = $this->db->query('Select rtb.*, rtp.no_po, rts.id as id_so FROM r_t_bpb rtb
 				left join r_t_po rtp on rtp.flag_bpb = rtb.id
-				WHERE rtb.reff_cv ='.$id.' AND rtb.jenis_bpb = "BPB RONGSOK" AND rtb.api = 0
+				left join r_t_so rts on rts.po_id = rtp.id
+				WHERE rtb.reff_cv ='.$id.' AND rtb.jenis_bpb = "BPB RONGSOK"
 			');
 		return $data;
 	}
 
 	function get_bpb_detail_cv($id){
-		return $this->db->query('Select * From r_t_bpb_detail where id='.$id);
+		return $this->db->query('Select * From r_t_bpb_detail where bpb_resmi_id='.$id);
 	}
 
 	function get_po_cv_cust($id){
 		$data = $this->db->query('Select rtp.* FROM r_t_po rtp
-				WHERE rtp.reff_cv ='.$id.' AND rtp.jenis_po = "PO CV KE KMP" AND rtp.api = 0
+				WHERE rtp.reff_cv ='.$id.' AND rtp.jenis_po = "PO CV KE KMP"
 			');
 		return $data;
 	}
 
 	function get_po_detail_cv($id){
-		return $this->db->query('select * from r_t_po_detail where id='.$id);
+		return $this->db->query('select * from r_t_po_detail where po_id='.$id);
 	}
 
 	function get_sj_rsk_cv_cust($id) {
 		$data = $this->db->query('Select rts.* FROM r_t_surat_jalan rts
-				WHERE reff_cv ='.$id.' AND jenis_surat_jalan = "SURAT JALAN CV KE KMP" AND api = 0
+				WHERE reff_cv ='.$id.' AND jenis_surat_jalan = "SURAT JALAN CV KE KMP"
 			');
 		return $data;
 	}
@@ -217,12 +218,22 @@ class Model_r_sinkronisasi extends CI_Model{
 		return $this->db->query('select * from r_t_surat_jalan_detail where sj_resmi_id ='.$id);
 	}
 
+	function get_sj_bpb_cv_cust($id) {
+		$data = $this->db->query('
+				SELECT rtsj.*, rtb.no_bpb, rtp.flag_po_cv, rtp.no_po, rtb.tanggal as tanggal_bpb, rtb.jenis_barang as jenis_barang_bpb, rtb.m_type_kendaraan_id, rtb.no_kendaraan, rtb.supir, rtb.remarks as remarks_bpb FROM r_t_surat_jalan rtsj
+				left join r_t_bpb rtb on rtsj.r_bpb_id = rtb.id
+				left join r_t_po rtp on rtsj.r_po_id = rtp.id
+				WHERE rtsj.jenis_surat_jalan = "SURAT JALAN CV KE CUSTOMER" AND rtsj.reff_cv ='.$id.'
+			');
+		return $data;
+	}
+
 	function get_inv_cv_cust($id) {
 		$data = $this->db->query('
 				SELECT ij.*, cv.idkmp
 				FROM r_t_inv_jasa ij
 				LEFT JOIN m_cv cv ON cv.id = ij.cv_id
-				WHERE reff_cv = '.$id.' and ij.jenis_invoice = "INVOICE CV KE CUSTOMER" AND ij.api = 0 limit 100
+				WHERE reff_cv = '.$id.' and ij.jenis_invoice = "INVOICE CV KE CUSTOMER"
 			');
 		return $data;
 	}

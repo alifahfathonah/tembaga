@@ -99,7 +99,10 @@ function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else{     
+    }else if($.trim($("#no_pembayaran").val()) == ""){
+        $('#message').html("Nomor Pembayaran harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{
         $('#formku').submit(); 
     };
 };

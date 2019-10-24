@@ -134,12 +134,12 @@
                             <thead>
                                 <th>No</th>
                                 <th>No Produksi</th>
-                                <th>Bruto</th>
-                                <th>Berat Packing</th>
+                                <th width="20%">Bruto</th>
+                                <th width="10%%">Berat</th>
                                 <th></th>
-                                <th>Netto (Kg)</th>
-                                <th>Nomor Packing / Barcode</th>
-                                <th width="20%">Actions</th>
+                                <th width="15%">Netto (Kg)</th>
+                                <th>Nomor Packing</th>
+                                <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
 

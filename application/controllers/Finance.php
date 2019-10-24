@@ -3727,6 +3727,10 @@ class Finance extends CI_Controller{
             }
         }
 
-        $this->load->view('finance/print_laporan_bahan_pembantu', $data);
+        if($_GET['l']==1){
+            $this->load->view('finance/print_laporan_bahan_pembantu', $data);
+        }else{
+            $this->load->view('finance/print_laporan_bahan_pembantu2', $data);
+        }
     }
 }

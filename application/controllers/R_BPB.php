@@ -124,6 +124,8 @@ class R_BPB extends CI_Controller{
                 ));
             }
 
+            $get_so = $this->db->query('select id from r_t_so where po_id ='.$this->input->post('flag_po'))->row_array();
+
             $data_api = array(
                 'no_bpb'=> $this->input->post('no_surat_jalan'),
                 'no_po'=> $this->input->post('no_po'),
@@ -137,6 +139,7 @@ class R_BPB extends CI_Controller{
                 'supir'=>$this->input->post('supir'),
                 'remarks'=>$this->input->post('remarks'),
                 'reff'=>$bpb_id,
+                'id_so'=> $get_so['id']
             );
 
             $this->load->helper('target_url');

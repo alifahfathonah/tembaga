@@ -31,20 +31,34 @@ class Model_gudang_fg extends CI_Model{
         return $data;
     }
 
+    // function gudang_fg_produksi_list($m,$y){
+    //     $data = $this->db->query("Select pf.*, jb.jenis_barang, jp.jenis_packing, COALESCE(tbf.status,8) as status,
+    //                 (select count(pfd.id) from produksi_fg_detail pfd where pfd.produksi_fg_id = pf.id)as total_barang,
+    //                 (select sum(netto) from produksi_fg_detail pfd where pfd.produksi_fg_id = pf.id)as total_netto,
+    //                 usr.realname As pembuat
+    //             From produksi_fg pf
+    //                 Left join t_bpb_fg tbf on tbf.produksi_fg_id = pf.id
+    //                 Left Join users usr On (pf.created_by = usr.id)
+    //                 left join jenis_barang jb on (jb.id = pf.jenis_barang_id)
+    //                 left join m_jenis_packing jp on (jp.id = pf.jenis_packing_id)
+    //             Where month(pf.tanggal) ='".$m."' and year(pf.tanggal)='".$y."'
+    //             Order By pf.tanggal desc, pf.id desc");
+    //     return $data;
+    // }
+
     function gudang_fg_produksi_list($m,$y){
-        $data = $this->db->query("Select pf.*, jb.jenis_barang, jp.jenis_packing, COALESCE(tbf.status,8) as status,
-                    (select count(pfd.id) from produksi_fg_detail pfd where pfd.produksi_fg_id = pf.id)as total_barang,
-                    (select sum(netto) from produksi_fg_detail pfd where pfd.produksi_fg_id = pf.id)as total_netto,
-                    usr.realname As pembuat
-                From produksi_fg pf
-                    Left join t_bpb_fg tbf on tbf.produksi_fg_id = pf.id
-                    Left Join users usr On (pf.created_by = usr.id)
-                    left join jenis_barang jb on (jb.id = pf.jenis_barang_id)
-                    left join m_jenis_packing jp on (jp.id = pf.jenis_packing_id)
+        $data = $this->db->query("select pf.*, jb.jenis_barang, jp.jenis_packing, COALESCE(tbf.status,8) as status, sum(pfd.netto) as total_netto, count(pfd.netto) as total_barang, usr.realname as pembuat from produksi_fg pf
+                left join produksi_fg_detail pfd on pfd.produksi_fg_id = pf.id
+                left join t_bpb_fg tbf on tbf.produksi_fg_id = pf.id
+                left Join users usr On (pf.created_by = usr.id)
+                left join jenis_barang jb on (jb.id = pf.jenis_barang_id)
+                left join m_jenis_packing jp on (jp.id = pf.jenis_packing_id)
                 Where month(pf.tanggal) ='".$m."' and year(pf.tanggal)='".$y."'
-                Order By pf.tanggal desc, pf.id desc");
+                group by pf.id
+                Order By pf.tanggal desc, pf.id desc
+                ");
         return $data;
-    } 
+    }
 
     // function gudang_fg_produksi_list($m,$y){
     //     $data = $this->db->query("Select pf.*, jb.jenis_barang, jp.jenis_packing, COALESCE((select status from t_bpb_fg where produksi_fg_id = pf.id limit 1),0) as status,
@@ -629,19 +643,29 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
         return $data;
     }
 
-    function print_laporan_pemasukan($s,$e){
-        $data = $this->db->query("select tgf.tanggal_masuk as tanggal, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
-            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-            where tanggal_masuk between '".$s."' and '".$e."' group by tgf.jenis_barang_id, tgf.tanggal_masuk
-            order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
-            ");
+    function print_laporan_pemasukan($s,$e,$l){
+        if($l==0){
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+                left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tanggal_masuk between '".$s."' and '".$e."' group by tgf.jenis_barang_id, tgf.tanggal_masuk
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
+                ");
+        }else{
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+                left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tbf.produksi_fg_id > 0 and tanggal_masuk between '".$s."' and '".$e."' group by tgf.jenis_barang_id, tgf.tanggal_masuk
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
+        }
         return $data;
     }
 
     function stok_fg_kawat_rambut_jenis(){
         $data = $this->db->query("select CASE 
         WHEN substr(tgf.no_packing,7,2) IN ('A0','B0','C0', 'A1','B1','C1') THEN 'K' 
-        WHEN substr(tgf.no_packing,7,2) IN ('BP','BV','BH') THEN 'B.P' 
+        WHEN substr(tgf.no_packing,7,2) IN ('BP') THEN 'B.P' 
+        WHEN substr(tgf.no_packing,7,2) IN ('BV') THEN 'B.V' 
+        WHEN substr(tgf.no_packing,7,2) IN ('BH') THEN 'B.H' 
         WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ' 
         WHEN substr(tgf.no_packing,7,2) IN ('RB','RK','R0','R1') THEN 'R'
         ELSE 'B' END AS jenis_packing,
@@ -656,7 +680,9 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
     function stok_fg_kawat_halus_jenis(){
         $data = $this->db->query("select CASE 
         WHEN substr(tgf.no_packing,7,2) IN ('A0','B0','C0', 'A1','B1','C1') THEN 'K' 
-        WHEN substr(tgf.no_packing,7,2) IN ('BP','BV','BH') THEN 'B.P' 
+        WHEN substr(tgf.no_packing,7,2) IN ('BP') THEN 'B.P' 
+        WHEN substr(tgf.no_packing,7,2) IN ('BV') THEN 'B.V' 
+        WHEN substr(tgf.no_packing,7,2) IN ('BH') THEN 'B.H' 
         WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ' 
         WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ' 
         WHEN substr(tgf.no_packing,7,2) IN ('RB','RK','R0','R1') THEN 'R'
@@ -672,7 +698,9 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
     function stok_fg_kawat_besar_jenis(){
         $data = $this->db->query("select CASE 
         WHEN substr(tgf.no_packing,7,2) IN ('A0','B0','C0', 'A1','B1','C1') THEN 'K' 
-        WHEN substr(tgf.no_packing,7,2) IN ('BP','BV','BH') THEN 'B.P' 
+        WHEN substr(tgf.no_packing,7,2) IN ('BP') THEN 'B.P' 
+        WHEN substr(tgf.no_packing,7,2) IN ('BV') THEN 'B.V' 
+        WHEN substr(tgf.no_packing,7,2) IN ('BH') THEN 'B.H' 
         WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ'
         WHEN substr(tgf.no_packing,7,2) IN ('RB') THEN 'RB'
         WHEN substr(tgf.no_packing,7,2) IN ('RK') THEN 'RK'
@@ -736,8 +764,9 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
 
     function stok_fg_beli(){
         return $this->db->query("select sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+            left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-            where tgf.jenis_trx = 0 and tgf.keterangan like '%BARANG PO%' group by tgf.jenis_barang_id
+            where tgf.jenis_trx = 0 and tgf.keterangan like '%BARANG%' group by tgf.jenis_barang_id
             order by jb.ukuran");
     }
 

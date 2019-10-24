@@ -23,42 +23,17 @@
         <hr class="divider">
         <div class="row">
                 <div class="col-md-6">
-                    <!-- <div class="row">
+                    <div class="row">
                         <div class="col-md-4">
                            Laporan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <select id="laporan" name="laporan" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
-                                    <option value=""></option>
-                                <?php if($this->session->userdata('user_ppn')==0){ ?>
-                                    <option value="1">KH</option>
-                                    <option value="2">KMP + KH</option>
-                                <?php }else{ ?>
-                                    <option value="3">KMP + CV</option>
-                                <?php } ?>
+                                    <option value="1">Dengan Harga</option>
+                                    <option value="2">Tanpa Harga</option>
                                 </select>
                         </div>
-                    </div> -->
-                    <!-- <div class="row">
-                        <div class="col-md-4">
-                            Tanggal Awal <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="tgl_start" name="tgl_start" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
-                        </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Tanggal Akhir <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="tgl_end" name="tgl_end" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
-                        </div>
-                    </div> -->
                     <div class="row">
                         <div class="col-md-4">
                             Bulan <font color="#f00">*</font>
@@ -113,9 +88,10 @@ function simpanData(){
         $('#message').html("Silahkan pilih tahun!");
         $('.alert-danger').show();
     }else{     
+        var l=$('#laporan').val();
         var b=$('#bulan').val();
         var t=$('#tahun').val();
-        window.open('<?php echo base_url();?>index.php/Finance/print_laporan_bahan_pembantu?b='+b+'&t='+t,'_blank');
+        window.open('<?php echo base_url();?>index.php/Finance/print_laporan_bahan_pembantu?b='+b+'&t='+t+'&l='+l,'_blank');
     };
 };
 </script>

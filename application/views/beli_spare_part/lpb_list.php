@@ -70,10 +70,10 @@
                         </td>
                         <td style="text-align:center"> 
                             <?php
-                            //PENDING
-                            // if($data->vk_id==0){
-                            //     echo '<a href="'.base_url().'index.php/BeliSparePart/delete_lpb/'.$data->id.'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete </a>';
-                            // }
+                            // PENDING
+                            if($data->vk_id==0){
+                                echo '<a href="'.base_url().'index.php/BeliSparePart/delete_lpb/'.$data->id.'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete </a>';
+                            }
                                 if($group_id==1 || $hak_akses['print_bpb']==1){
                             ?>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/BeliSparePart/print_lpb/<?php echo $data->id; ?>" 

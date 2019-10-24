@@ -437,7 +437,7 @@
             </div>
             <div class="row">&nbsp;</div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-10">
                     <?php
                         if( ($group_id==1 || $group_id==21 || $hak_akses['approve_spb']==1) && ($myData['status']=='3' || $myData['status']=='1')){
                             echo '<a href="javascript:;" class="btn blue" onclick="tambahData();"> '
@@ -475,6 +475,12 @@
                     <a class="btn btn-circle blue-ebonyclay" href="<?php echo base_url('index.php/GudangWIP/print_spb_fulfilment/').$myData['id'];?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                     <?php } ?>
                 </div>    
+                <div class="col-md-2">
+                    <?php if($myData['status']==0 || $myData['status']==2 || $myData['status']==4){ ?>
+                    <a href="javascript:;" class="btn red" onclick="closeSPB();">
+                        <i class="fa fa-ban"></i> CLOSE SPB </a>
+                    <?php } ?>
+                </div>
             </div>
         </form>
         <?php
@@ -490,6 +496,11 @@
     </div>
 </div> 
 <script>
+function closeSPB(){
+    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/GudangWIP/close_spb");    
+    $('#formku').submit(); 
+}
+
 function inputUlang(){
     $('#formku').attr("action", "<?php echo base_url();?>index.php/GudangWIP/input_ulang_spb");
     $('#formku').submit();

@@ -208,9 +208,7 @@
                     </div>
                 </div>              
             </div>
-            
         </form>
-        
         <?php
             }else{
         ?>

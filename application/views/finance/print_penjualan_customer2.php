@@ -3,7 +3,7 @@
         <title></title>
         <meta charset="utf-8" />
     </head>
-    <body onLoad="window.print()"><?=(($this->session->userdata('user_ppn')==0)? '' : '<strong>PT. KAWAT MAS PRAKASA</strong><br>');?>
+    <body onLoad="window.print()">
 
       <table width="100%" style="page-break-after: auto;">
         <tr>

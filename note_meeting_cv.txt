@@ -139,6 +139,16 @@ dtbj dtr dtwip tambahin dpp, nilai total sebelum dikali ppn (done)
 
 laporan trx kas masih salah cek lagi (done)
 
-edit barcode di bpb dan dtbj. utk yg keranjang sdm. karena sering ada yg sama
+edit barcode di bpb dan dtbj. utk yg keranjang sdm. karena sering ada yg sama(done)
 
 edit po bodong jumlahnya aja
+
+sisa so per jenis barang seperti kayak di foto
+
+sisa so tanpa harga kh/kmp
+
+dtr multiple di produksi apollo dan rolling
+
+tipe bahan A, B, D hanya di apollo
+
+cv laporannya dikasi total per customer piutang

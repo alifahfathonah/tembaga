@@ -82,7 +82,7 @@
                     <div class="row">
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                            <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                                 <i class="fa fa-floppy-o"></i> Input Details </a>
                         </div>
                     </div>
@@ -177,7 +177,8 @@ function simpanData(){
     } else if($.trim($("#persentase").val()) == ""){
         $('#message').html("Persentase harus diisi, tidak boleh kosong!");
         $('.alert-danger').show();
-    }else{          
+    }else{
+        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
         $('#formku').submit(); 
     };
 };

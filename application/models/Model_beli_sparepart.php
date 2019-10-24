@@ -658,7 +658,7 @@ class Model_beli_sparepart extends CI_Model{
     }
 
     function get_last_po($jenis){
-        $data = $this->db->query("select no_po from po where jenis_po = '".$jenis."' order by no_po desc limit 1");
+        $data = $this->db->query("select no_po from po where jenis_po = '".$jenis."' order by id desc limit 1");
         return $data;
     }
 
@@ -677,6 +677,10 @@ class Model_beli_sparepart extends CI_Model{
 
     function bank_keluar_terakhir($ppn){
         return $this->db->query("select nomor from f_kas where id_bank >= 5 and jenis_trx = 1 and flag_ppn=".$ppn." order by nomor desc limit 1");
+    }
+
+    function get_lpb_detail($id,$po_id){
+        return $this->db->query("select ld.*, (select pd.id from po_detail pd where pd.po_id =".$po_id." and pd.sparepart_id = ld.sparepart_id) as po_detail_id from lpb_detail ld where ld.lpb_id =".$id);
     }
 }
 

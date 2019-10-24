@@ -73,6 +73,7 @@
                             
                             <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['id']; ?>">
                             <input type="hidden" id="kurs" name="kurs" value="<?php echo $header['kurs']; ?>">
+                            <input type="hidden" id="diskon" name="diskon" value="<?php echo $header['diskon']; ?>">
                         </div>
                     </div>                    
                     <div class="row">
@@ -212,7 +213,6 @@ function check_sisa(ID){
         dataType: "json",
         success:function(result){
             qty_asli=$('#qty_asli_'+ID).val();
-            $('#qty_'+ID).val(qty_asli-result['total']);
             $('#qty_full_'+ID).val(qty_asli-result['total']);     
         }
     });
@@ -252,7 +252,9 @@ function simpanData(){
     var item_check = 0;
     $('input').each(function(i){
         if($('#check_'+i).prop("checked")){
-            item_check += 1;
+            if($('#qty_'+i).val()!=''){
+                item_check += 1;
+            }
         }
     });
     

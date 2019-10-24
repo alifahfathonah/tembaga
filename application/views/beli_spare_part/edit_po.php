@@ -207,28 +207,28 @@
                                 $no = 1;
                                 foreach ($details as $row){
                                     echo '<tr>';
-                                    if($header['lpb_dibayar']==0){
+                                    if($row->flag_lpb==0){
                                     echo '<input type="hidden" name="details['.$no.'][po_detail_id]" value="'.$row->id.'">';
                                     }
                                     echo '<td style="text-align:center">'.$no.'</td>';
                                     echo '<td>'.$row->nama_item.'</td>';
                                     echo '<td>'.$row->uom.'</td>';
                                     echo '<td>';
-                                    if($header['lpb_dibayar']==0){
+                                    if($row->flag_lpb==0){
                                     echo '<input type="text" id="amount_'.$no.'" name="details['.$no.'][amount]" onkeyup="getComa(this.value, this.id, '.$no.');" value="'.number_format($row->amount,2,'.', ',').'">';
                                     }else{
                                     echo number_format($row->amount,2,',','.');
                                     }
                                     echo '</td>';
-                                    if($header['lpb_dibayar']==0){
+                                    if($row->flag_lpb==0){
                                     echo '<td><input type="text" id="qty_'.$no.'" name="details['.$no.'][qty]" onkeyup="getComa(this.value, this.id, '.$no.');" value="'.number_format($row->qty,2,'.', ',').'"></td>';
                                     }else{
                                     echo '<td>'.$row->qty.'</td>';
                                     }
-                                    if($header['lpb_dibayar']==0){
+                                    if($row->flag_lpb==0){
                                     echo '<td><input type="text" id="total_amount_'.$no.'" class="form-control" name="details['.$no.'][total_amount]" value="'.number_format($row->total_amount,2,'.', ',').'" readonly></td>';
                                     }else{
-                                    echo '<td>'.$row->total_amount.'</td>';
+                                    echo '<td>'.number_format($row->total_amount,2,'.', ',').'</td>';
                                     }
                                     echo '</tr>';
                                     $no++;

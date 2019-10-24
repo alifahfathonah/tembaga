@@ -577,6 +577,51 @@ class R_Sinkronisasi extends CI_Controller{
         return redirect('index.php/R_Sinkronisasi/all_cv_sync');
     }
 
+    function do_sync_sj_bpb_cv() {
+    	// set_time_limit(600);
+        /*
+        * surat jalan
+        */
+    	$post = $this->input->post();
+        $bpb = $this->Model_r_sinkronisasi->get_sj_bpb_cv_cust($post['cv_id'])->result_array();
+        // print_r($bpb);die();
+        if (!empty($bpb)) {
+        	foreach ($bpb as $key => $row) {
+	        	$header[$key] = $bpb[$key];
+        		$sjd[$key] = $this->Model_r_sinkronisasi->get_sj_detail_cv($row['id'])->result_array();
+        		$bpbd[$key] = $this->Model_r_sinkronisasi->get_bpb_detail_cv($row['r_bpb_id'])->result_array();
+        		$data[$key] = array_merge($header[$key], ['details' => $sjd[$key]], ['details_bpb' => $bpbd[$key]]);
+	        }
+
+        	$json = json_encode($data);
+        	// print("<pre>".print_r($data,true)."</pre>");die();
+
+	        $ch = curl_init();
+	        curl_setopt($ch, CURLOPT_URL, target_url_cv($post['cv_id']).'api/SuratJalanAPI/sj_bpb_cust_sync');
+	        curl_setopt($ch, CURLOPT_POST, true);
+	        curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+	        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+	        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	        // curl_setopt($ch, CURLOPT_HEADER, 0);
+	        // curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+	        $response = curl_exec($ch);
+	        $result = json_decode($response, true);
+	        curl_close($ch);
+	        // print_r($response);die();
+	        if($result['status']==true){
+	        	$this->db->trans_start();
+	        	foreach ($bpb as $key => $value) {
+	        		$this->db->where('id', $value['id']);
+	        		$this->db->update('r_t_surat_jalan', ['api' => 1]);
+	        	}
+	        	$this->db->trans_complete();
+	        }
+        }
+
+        $this->session->set_flashdata('flash_msg', $result['message']);
+        return redirect('index.php/R_Sinkronisasi/all_cv_sync');
+    }
+
     function do_sync_inv_jasa_cv() {
     	// set_time_limit(600);
         /*
@@ -607,12 +652,12 @@ class R_Sinkronisasi extends CI_Controller{
 	        $response = curl_exec($ch);
 	        $result = json_decode($response, true);
 	        curl_close($ch);
-	        print_r($response);die();
+	        // print_r($result);die();
 	        if($result['status']==true){
 	        	$this->db->trans_start();
 	        	foreach ($tolling as $key => $value) {
-	        		$this->db->where('id', $value['sj_id']);
-	        		$this->db->update('r_t_surat_jalan', ['api' => 1]);
+	        		$this->db->where('id', $value['id']);
+	        		$this->db->update('r_t_inv_jasa', ['api' => 1]);
 	        	}
 	        	$this->db->trans_complete();
 	        }

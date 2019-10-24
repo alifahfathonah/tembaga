@@ -184,7 +184,15 @@ class Model_finance extends CI_Model{
 
     function load_detail_pembayaran($id){
         return $this->db->query("
-            (Select no_voucher, tanggal, amount, keterangan from voucher where pembayaran_id =".$id.")
+            (Select v.no_voucher, v.tanggal, v.amount, 
+                CASE WHEN ( COALESCE(mc.nama_customer, s.nama_supplier) IS NOT NULL ) THEN
+                    concat_ws('', 'PEMB. ',
+                        COALESCE ( concat( mc.nama_customer, '' ), concat( s.nama_supplier, '' ) ),
+                        v.keterangan 
+                    ) ELSE v.nm_cost END as keterangan from voucher v
+            left join supplier s on s.id = v.supplier_id
+            left join m_customers mc on mc.id = v.customer_id
+            where v.pembayaran_id =".$id.")
             UNION ALL
             (select COALESCE(fk.nomor,'Slip Setoran') as no_voucher, COALESCE(fum.tanggal, '') as tanggal, fss.nominal as amount, COALESCE(fum.keterangan, 'Slip Setoran') as keterangan from f_slip_setoran fss
             left join f_kas fk on fk.id = fss.id_kas
@@ -752,7 +760,7 @@ class Model_finance extends CI_Model{
     }
 
     function query_penjualan($s,$e,$c){
-        $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn = 0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
+        $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs) as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn = 0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
             where v.PENJUALAN != '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."')
             order by v.flag_ppn, v.flag_tolling, v.kode_customer, v.tanggal, v.no_invoice
             ");
@@ -1093,7 +1101,7 @@ class Model_finance extends CI_Model{
             left join bank b on b.id = fk.id_bank
             left join f_uang_masuk fum on fum.id = fk.id_um
             left join m_customers mc on mc.id = fum.m_customer_id
-            where id_bank = 0 and fk.flag_ppn = 0 and jenis_trx=0 and status = 0 order by nama_customer, tanggal");
+            where id_bank = 0 and fk.flag_ppn = 0 and jenis_trx=0 and status = 0 order by nama_customer, tgl_cair");
     }
 
     function saldo_awal($s,$id){
@@ -2089,7 +2097,7 @@ class Model_finance extends CI_Model{
                             LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
                             LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
                         WHERE
-                            ( t.ttr_status != 0 ) 
+                            ( t.ttr_status != 0 ) AND ( d.type = 0)
                             AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
                             AND t.tanggal BETWEEN '".$s."' AND '".$e."' 
                         GROUP BY
@@ -2333,36 +2341,93 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    // function detail_daftar_bahan_pembantu($tgl1, $tgl2) {
+    //     $data = $this->db->query("
+    //         select
+    //         x.sparepart_id,x.bulan, x.alias kode, x.nama_item, sum(x.saldo_qty) saldo_qty, round(sum(x.saldo_amount),2) saldo_amount,
+    //         sum(x.qty_masuk) qty_masuk, round(sum(x.amount_masuk),2) amount_masuk, sum(x.qty_keluar) qty_keluar,
+    //         round((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk)),2) rata2,
+    //          round(sum(x.qty_keluar)* ((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk))),2)  amount_keluar,
+    //          (sum(x.saldo_qty)+sum(x.qty_masuk)-sum(x.qty_keluar)) qty_sisa,
+    //          (round(sum(x.saldo_amount),2) +  round(sum(x.amount_masuk),2)-
+    //           round(sum(x.qty_keluar)* ((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk))),2))  amount_sisa,
+    //          x.uom
+    //         from
+    //         (
+    //         select t.sparepart_id,
+    //         EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) bulan, s.alias, s.nama_item, 0 saldo_qty, 0 saldo_amount,
+    //         case when t.jenis_trx=0 then t.qty else 0 end  qty_masuk, 
+    //         case when t.jenis_trx=0 then 
+    //         case when ISNULL(ka.kurs) then t.qty*t.amount else t.qty*pd.amount*ka.kurs end 
+    //         else 0 end amount_masuk
+    //         , case when t.jenis_trx=1 then t.qty else 0 end  qty_keluar, 
+    //         case when t.jenis_trx=1 then t.qty*t.amount else 0 end amount_keluar, s.uom
+    //         from 
+    //         t_gudang_sp t
+    //         left join sparepart s on s.id = t.sparepart_id
+    //         left join lpb_detail ld on (ld.id = t.lpb_detail_id and t.jenis_trx=0)
+    //         left join po_detail pd on pd.id = ld.po_detail_id
+    //         left join po p on p.id = pd.po_id
+    //         left join m_kurs_akhir ka on ka.bulan = '".$tgl1."' and ka.currency = p.currency
+    //         where s.sparepart_group in (6,7)
+    //         and EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) = '".$tgl1."'
+    //         union all
+    //         select  t2.sparepart_id, case when right(t2.bulan,2)=12 then t2.bulan+101 else t2.bulan+1 end , s2.alias, s2.nama_item, t2.qty saldo_qty, t2.total_amount saldo_amount, 0 qty_masuk, 0 amount_masuk, 0 qty_keluar, 0 amount_keluar, s2.uom  
+    //         from t_sparepart_saldo t2
+    //         left join sparepart s2 on s2.id = t2.sparepart_id
+    //         where t2.bulan='".$tgl2."'
+    //         )
+    //         x
+    //         where x.alias  not in ('06KB002')
+    //         group by bulan, kode, nama_item
+    //         order by 3
+    //         ");
+    //     return $data;
+    // }
+
     function detail_daftar_bahan_pembantu($tgl1, $tgl2) {
-        $data = $this->db->query("
-                SELECT
-                    x.sparepart_id, x.bulan, x.alias kode, x.nama_item, sum(x.saldo_qty) saldo_qty, round(sum(x.saldo_amount),2) saldo_amount,
-                    sum(x.qty_masuk) qty_masuk, round(sum(x.amount_masuk),2) amount_masuk, sum(x.qty_keluar) qty_keluar,
-                    round((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk)),2) rata2,
-                     sum(x.qty_keluar)*round((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk)),2)  amount_keluar,
-                     (sum(x.saldo_qty)+sum(x.qty_masuk)-sum(x.qty_keluar)) qty_sisa,
-                     (sum(x.saldo_amount)+ sum(x.amount_masuk)-
-                     sum(x.qty_keluar)*round((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk)),2))  amount_sisa, x.uom
-                FROM
-                (
-                    (SELECT 
-                        t.sparepart_id, EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) bulan, s.alias, s.nama_item, 0 saldo_qty, 0 saldo_amount,
-                        case when t.jenis_trx=0 then t.qty else 0 end  qty_masuk, case when t.jenis_trx=0 then t.qty*t.amount else 0 end amount_masuk
-                        , case when t.jenis_trx=1 then t.qty else 0 end  qty_keluar, case when t.jenis_trx=1 then t.qty*t.amount else 0 end amount_keluar, s.uom
-                    FROM 
-                    t_gudang_sp t
-                    LEFT JOIN sparepart s ON s.id = t.sparepart_id
-                    WHERE s.sparepart_group IN (6,7)
-                    and EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) = '".$tgl1."')
-                    union all
-                    (select t2.sparepart_id,  case when right(t2.bulan,2)=12 then t2.bulan+101 else t2.bulan+1 end , s2.alias, s2.nama_item, t2.qty saldo_qty, t2.total_amount saldo_amount, 0 qty_masuk, 0 amount_masuk, 0 qty_keluar, 0 amount_keluar, s2.uom  
-                    FROM t_sparepart_saldo t2
-                    LEFT JOIN sparepart s2 ON s2.id = t2.sparepart_id
-                    WHERE t2.bulan='".$tgl2."')
-                )
-                x
-                GROUP BY bulan, kode, nama_item
-                ORDER BY 3
+        $data = $this->db->query("select
+        x.sparepart_id,x.bulan, x.alias kode, x.nama_item, sum(x.saldo_qty) saldo_qty, round(sum(x.saldo_amount),2) saldo_amount,
+        sum(x.qty_masuk) qty_masuk, 
+                round(sum(x.amount_masuk),2) amount_masuk,
+                sum(x.qty_keluar) qty_keluar,
+        round((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk)),2) rata2,
+         round(sum(x.qty_keluar)* ((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk))),2)  amount_keluar,
+         (sum(x.saldo_qty)+sum(x.qty_masuk)-sum(x.qty_keluar)) qty_sisa,
+         (round(sum(x.saldo_amount),2) +  round(sum(x.amount_masuk),2)-
+          round(sum(x.qty_keluar)* ((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk))),2))  amount_sisa,
+         x.uom
+        from
+        (
+        select t.sparepart_id,
+        EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) bulan, s.alias, s.nama_item, 0 saldo_qty, 0 saldo_amount,
+        case when t.jenis_trx=0 then t.qty else 0 end  qty_masuk, 
+        case when t.jenis_trx=0 then 
+        case when ISNULL(ka.kurs) then t.qty*t.amount else 
+                case when pd.id = 1057 then round(2.816666433 * ka.kurs *t.qty,2) else t.qty*pd.amount*ka.kurs end end
+        else 0 end amount_masuk
+        , case when t.jenis_trx=1 then t.qty else 0 end  qty_keluar, 
+        case when t.jenis_trx=1 then t.qty*t.amount else 0 end amount_keluar, s.uom
+        from 
+        t_gudang_sp t
+        left join sparepart s on s.id = t.sparepart_id
+        left join lpb_detail ld on (ld.id = t.lpb_detail_id and t.jenis_trx=0)
+        left join po_detail pd on pd.id = ld.po_detail_id
+        left join po p on p.id = pd.po_id
+        left join m_kurs_akhir ka on ka.bulan =  '".$tgl1."' and ka.currency = p.currency
+        where s.sparepart_group in (6,7)
+        and EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) =  '".$tgl1."'
+        union all
+        select  t2.sparepart_id, case when right(t2.bulan,2)=12 then t2.bulan+101 else t2.bulan+1 end , s2.alias, s2.nama_item, t2.qty saldo_qty, t2.total_amount saldo_amount, 0 qty_masuk, 0 amount_masuk, 
+                0 qty_keluar, 0 amount_keluar, s2.uom  
+        from t_sparepart_saldo t2
+        left join sparepart s2 on s2.id = t2.sparepart_id
+        where t2.bulan=  '".$tgl2."'
+        )
+        x
+       where x.alias  not in ('06KB002')
+        group by bulan, kode, nama_item
+        order by 3
             ");
         return $data;
     }

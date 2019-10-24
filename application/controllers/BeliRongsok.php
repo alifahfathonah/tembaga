@@ -524,15 +524,17 @@ class BeliRongsok extends CI_Controller{
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('VRSK', $tgl_input);
-        if($nilai_po-($nilai_dp+$amount)>0){
-            $jenis_voucher = 'DP';
-            $this->db->where('id', $id);
-            $this->db->update('po', array('flag_dp'=>1));
-        }else{
+        if($nilai_po-($nilai_dp+$amount)==0 && $this->input->post('status_vc') == 3){
             $jenis_voucher = 'Pelunasan';
             $this->db->where('id', $id);
             $this->db->update('po', array('flag_pelunasan'=>1,'status'=>4));
-        } 
+        }else{
+            $jenis_voucher = 'DP';
+            $this->db->where('id', $id);
+            $this->db->update('po', array('flag_dp'=>1));
+        }
+
+        // echo $nilai_po-($nilai_dp+$amount).' | '.$this->input->post('status_vc');die();
 
         if($code){ 
             $this->db->insert('voucher', array(
@@ -1834,6 +1836,7 @@ class BeliRongsok extends CI_Controller{
                         }else {
                             $this->db->where('id',$get['po_id']);
                             $this->db->update('po',array(
+                                            'flag_pelunasan'=>0,
                                             'status'=>2));
                         }
                 }

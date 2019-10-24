@@ -219,6 +219,11 @@ function sync_sj_rsk(){
     $('#btnSync_sj_rsk').text('Please Wait ...').prop("onclick", null).off("click");
 }
 
+function sync_sj_bpb(){
+    $('#formSync_sj_bpb').submit();
+    $('#btnSync_sj_bpb').text('Please Wait ...').prop("onclick", null).off("click");
+}
+
 function sync_invoice(){
     $('#formSync_inv').submit();
     $('#btnSync_inv').text('Please Wait ...').prop("onclick", null).off("click");
@@ -259,6 +264,14 @@ $(function() {
             $('#btnSync_sj_rsk').show(); 
         } else {
             $('#btnSync_sj_rsk').hide(); 
+        } 
+    });
+
+    $('#cv_id_sj_bpb').change(function(){
+        if($('#cv_id_sj_bpb').val() > 0) {
+            $('#btnSync_sj_bpb').show(); 
+        } else {
+            $('#btnSync_sj_bpb').hide(); 
         } 
     });
 
