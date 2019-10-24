@@ -100,7 +100,8 @@ class R_SuratJalan extends CI_Controller{
         }else if($jenis == 'sj_customer'){
             $data['header'] = $this->Model_surat_jalan->show_header_sj_cv($id)->row_array();
             $data['po_list'] = $this->Model_surat_jalan->po_list($reff_cv)->result();
-            $data['customer_list'] = $this->Model_surat_jalan->customer_list()->result();
+            $this->load->model('Model_purchase_order');
+            $data['customer_list'] = $this->Model_purchase_order->customer_list($reff_cv)->result();
         }
         // $data['customer_list'] = $this->Model_surat_jalan->customer_list()->result();
         $data['tipe_kendaraan_list'] = $this->Model_surat_jalan->tipe_kendaraan_list()->result();
