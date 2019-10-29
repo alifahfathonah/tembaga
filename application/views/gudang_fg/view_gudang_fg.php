@@ -26,6 +26,7 @@
             <th>Jenis Barang</th>
             <th>No Produksi</th>
             <th>No Packing</th>
+            <th>Keterangan</th>
             <th>Bruto</th>
             <th>Berat</th>
             <th>Netto</th>
@@ -39,6 +40,7 @@
             <td><?= $data->jenis_barang; ?></td>
             <td><?= $data->no_produksi ?></td>
             <td><?= $data->no_packing; ?></td>
+            <td><?= $data->keterangan.' '.$data->line_remarks; ?></td>
             <td><?= number_format($data->bruto,2,',','.'); ?></td>
             <td><?= number_format($data->berat_bobbin,2,',','.'); ?></td>
             <td style="background-color: green; color: white;"><?= number_format($data->netto,2,',','.'); ?></td>

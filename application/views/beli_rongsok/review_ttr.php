@@ -58,7 +58,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal"
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
+                                value="<?php echo date('d-m-Y', strtotime($header['tgl_dtr'])); ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -81,6 +81,19 @@
                             <input type="text" id="no_sj" name="no_sj" class="form-control myline" style="margin-bottom:5px" placeholder="Nomor Surat Jalan dari supplier...">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Masuk Stok
+                        </div>
+                        <div class="col-md-8">
+                            <select id="stok" name="stok" class="form-control myline" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                        <input type="hidden" name="type" value="0">
+                    </div>    
                 </div>
                 <div class="col-md-2">&nbsp;</div>
                 <div class="col-md-5"> 
@@ -131,7 +144,7 @@
                             <input type="number" id="jumlah_lain" name="jumlah_lain" 
                                 class="form-control myline" style="margin-bottom:5px" value="0">
                         </div>
-                    </div>                    
+                    </div>           
                 </div>              
             </div>
             <div class="row">

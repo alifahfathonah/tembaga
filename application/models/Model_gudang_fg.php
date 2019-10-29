@@ -25,7 +25,8 @@ class Model_gudang_fg extends CI_Model{
     }
 
     function view_gudang_fg($id){
-        $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+        $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.kode, jb.uom, COALESCE(dd.line_remarks,'') as line_remarks from t_gudang_fg tgf
+                left join dtbj_detail dd on dd.no_packing = tgf.no_packing
                 left join jenis_barang jb on jb.id = tgf.jenis_barang_id
                 where tgf.jenis_trx = 0 and tgf.jenis_barang_id =".$id);
         return $data;

@@ -189,6 +189,7 @@ class GudangWIP extends CI_Controller{
                 if($this->input->post('jenis_masak') == 'BAKAR ULANG'){
                     $this->db->insert('t_gudang_keras', array(
                         'jenis_trx'=>1,
+                        'tanggal'=>$tgl_input,
                         't_hasil_wip_id'=>$insert_id,
                         'jenis_barang_id'=>15,
                         'qty'=>(int)$this->input->post('jml_ingot_keras') - (int)$this->input->post('susut_jumlah_keras'),
@@ -202,6 +203,7 @@ class GudangWIP extends CI_Controller{
         if($this->input->post('jml_keras') && $this->input->post('berat_keras') != 0){
             $data = array(
                 'jenis_trx'=>0,
+                'tanggal'=>$tgl_input,
                 't_hasil_wip_id'=>$insert_id,
                 'jenis_barang_id'=>15,
                 'qty'=>$this->input->post('jml_keras'),
@@ -1841,13 +1843,33 @@ class GudangWIP extends CI_Controller{
         $data['end'] = $end;
 
             $this->load->model('Model_gudang_wip');
-            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();
             if($jb_id == 1){
-                $this->load->view('gudangwip/print_laporan_masak', $data);
+                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();
+                $this->load->view('gudangwip/print_laporan_masak_apollo', $data);
             }elseif($jb_id == 2){
+                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();
+                $data['a'] = $this->Model_gudang_wip->get_wip_awal($start,$end)->row_array();
+                $data['b'] = $this->Model_gudang_wip->get_wip_akhir($start,$end)->row_array();
                 $this->load->view('gudangwip/print_laporan_masak_rolling', $data);
+            }elseif($jb_id == 3){
+                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();
+                $this->load->view('gudangwip/print_laporan_masak_bu', $data);
             }elseif($jb_id == 4){
+                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();
                 $this->load->view('gudangwip/print_laporan_masak_cuci', $data);
+            }elseif($jb_id == 5){
+                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_bb_apollo($start,$end)->result();
+                $data['addition'] = $this->Model_gudang_wip->get_gas_kayu($start,$end)->row_array();
+                $this->load->view('gudangwip/print_laporan_bb_apollo', $data);
+            }elseif($jb_id == 6){
+                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_bb_rolling($start,$end)->result();
+                $this->load->view('gudangwip/print_laporan_bb_rolling', $data);
+            }elseif($jb_id == 7){
+                // $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_bb_rolling($start,$end)->result();
+                // $this->load->view('gudangwip/print_laporan_bb_rolling', $data);
+            }elseif($jb_id == 8){
+                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();
+                $this->load->view('gudangwip/print_laporan_hasil_apollo', $data);
             }
     }
 }

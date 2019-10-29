@@ -162,7 +162,7 @@
                         </div>
                         <div class="col-md-4">
                             <select id="ppn" name="ppn" class="form-control myline" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" disabled>
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                 <option value="1" <?=($header['ppn']==1)? 'selected':'';?>>Yes</option>
                                 <option value="0" <?=($header['ppn']==0)? 'selected':'';?>>No</option>
                             </select>

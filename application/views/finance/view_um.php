@@ -33,6 +33,7 @@
                                         onkeyup="this.value = this.value.toUpperCase()" rows="3"></textarea>
                                     
                                     <input type="hidden" id="headers_id" name="header_id">
+                                    <input type="hidden" id="customer_id_baru" name="customer_id_baru">
                                     <input type="hidden" id="tanggal_baru" name="tanggal_baru">
                                     <input type="hidden" id="tanggal_cek_baru" name="tanggal_cek_baru">
                                     <input type="hidden" id="nominal_baru" name="nominal_baru">
@@ -149,9 +150,15 @@
                             Nama Customer<font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_customer" name="nama_customer" readonly="readonly" class="form-control myline" style="margin-bottom:5px" value="<?php echo $myData['nama_customer']; ?>">
-
-                            <input type="hidden" id="id" name="id" value="<?php echo $myData['id']; ?>">
+                            <select id="customer_id" name="customer_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" disabled onchange="resetAllValues();$('#show_replace').hide();$('#show_replace_detail').hide();$('#jenis_id').select2('val','');">
+                                <option value=""></option>
+                                <option value="0" <?=((0==$myData['m_customer_id'])?'selected="selected"':'');?>>**Tidak Ada Customer**</option>
+                                <?php
+                                    foreach ($customer_list as $row){
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$myData['m_customer_id'])? 'selected="selected"': '').'>'.$row->nama_customer.'</option>';
+                                    }
+                                ?>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -399,6 +406,7 @@ function editDataCekMundur(){
 function editData(){
     $("#editData").hide();
     $("#nominal").prop('readonly', false);
+    $("#customer_id").prop('disabled', false);
     $("#no_um").attr('readonly', false);
     $("#remarks").attr("readonly", false);
     $("#tanggal").attr("readonly", false);
@@ -426,6 +434,7 @@ function showUpdateBox(){
         $('.alert-danger').show();
     }else{
         if (r==true){
+            $('#customer_id_baru').val($('#customer_id').val());
             $('#headers_id').val($('#id').val());
             $('#no_um_baru').val($('#no_um').val());
             $('#remarks_baru').val($('#remarks').val());

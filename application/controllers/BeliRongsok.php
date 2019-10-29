@@ -220,6 +220,7 @@ class BeliRongsok extends CI_Controller{
         
         $data = array(
                 'tanggal'=> $tgl_input,
+                'ppn'=> $this->input->post('ppn'),
                 'supplier_id'=>$this->input->post('supplier_id'),
                 'remarks'=> $this->input->post('remarks'),
                 'term_of_payment'=>$this->input->post('term_of_payment'),
@@ -1217,6 +1218,12 @@ class BeliRongsok extends CI_Controller{
 
             $code = $this->Model_m_numberings->getNumbering($num, $tgl_input);
 
+            if($this->input->post('stok')==1){
+                $status = 1;
+            }else{
+                $status = 2;
+            }
+
         #Update status TTR
             $this->db->where('id',$ttr_id);
             $result = $this->db->update('ttr', array(
@@ -1226,7 +1233,7 @@ class BeliRongsok extends CI_Controller{
                     'jmlh_afkiran' => $this->input->post('jumlah_afkir'),
                     'jmlh_pengepakan' => $this->input->post('jumlah_packing'),
                     'jmlh_lain'=> $this->input->post("jumlah_lain"),
-                    'ttr_status'=>1,
+                    'ttr_status'=>$status,
                     'tgl_approve'=>$tanggal,
                     'approved_by'=>$user_id));
 

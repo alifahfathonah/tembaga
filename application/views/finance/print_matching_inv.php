@@ -42,8 +42,9 @@
                     <table border="0" cellpadding="4" cellspacing="0" width="100%">
                         <tr>
                             <td width="10%" rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
-                            <td width="45%" rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Invoice</strong></td>
-                            <td width="45%" rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;"><strong>Nominal Invoice</strong></td>                        
+                            <td width="35%" rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Invoice</strong></td>
+                            <td width="20%" rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Account</strong></td>
+                            <td width="35%" rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;"><strong>Nominal Invoice</strong></td>                        
                         </tr>
                        
                                 <tr>
@@ -56,6 +57,7 @@
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
                             <td style="border-left:1px solid #000;"><?=$row->nomor.' | '.$row->tanggal;?></td>
+                            <td style="border-left:1px solid #000;">&nbsp;</td>
                             <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=number_format($row->nominal,2,',', '.');?></td>
                         </tr>
                         <?php
@@ -66,10 +68,11 @@
                         <tr style="height:50px">
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                         </tr>
                         <tr>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;" colspan="2"><strong>Total</strong></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;" colspan="3"><strong>Total</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-right: 1px solid #000;">
                                 <strong><?=number_format($total,2,',', '.');?></strong>
                             </td>
@@ -85,8 +88,9 @@
                     <table border="0" cellpadding="4" cellspacing="0" width="100%">
                         <tr>
                             <td width="10%" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
-                            <td width="45%" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Uang Masuk</strong></td>
-                            <td width="45%" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;"><strong>Nominal</strong></td>
+                            <td width="35%" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Uang Masuk</strong></td>
+                            <td width="20%" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Account</strong></td>
+                            <td width="35%" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;"><strong>Nominal</strong></td>
                         </tr>
                         <?php
                             $no = 1;
@@ -96,16 +100,18 @@
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
                             <td style="text-align:left; border-left:1px solid #000;"><?=$row->nomor.(($row->nomor_cek!=null)? ' | '.$row->nomor_cek : '').(($row->nama_bank!=null)? ' ('.$row->nama_bank.')':'');?></td>
+                            <td style="border-left:1px solid #000;">&nbsp;</td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000;"><?=number_format($row->nominal,2,',','.');?></td>
                         </tr>
                         <?php $nominal += $row->nominal; $no++; } ?>
                         <tr style="height:50px">
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
+                            <td style="border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                             <td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
                         </tr>
                         <tr>
-                            <td colspan="2" style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000;"><strong>Total</strong></td>
+                            <td colspan="3" style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000;"><strong>Total</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;"><strong><?=number_format($nominal,2,',','.');?></strong></td>
                         </tr>
                     </table>

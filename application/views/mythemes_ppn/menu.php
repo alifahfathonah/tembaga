@@ -970,11 +970,6 @@
                             Voucher List </a>
                         </li>
                     <?php  } ?>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/Finance/slip_setoran">
-                            <i class="fa fa-chain-broken"></i>
-                            Slip Setoran </a>
-                        </li>
                     <?php if($group_id==1 || (isset($akses_menu['laporan_finance']) && $akses_menu['laporan_finance']==1)){ ?>
                         <li>
                             <a href="javascript:;">

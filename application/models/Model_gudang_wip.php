@@ -361,16 +361,83 @@ class Model_gudang_wip extends CI_Model{
 
     function print_laporan_masak($s,$e,$j){
         if($j == 1){
-            return $this->db->query("select thm.tanggal, pi.no_produksi as nomor, total_rongsok, ingot, berat_ingot, bs, susut, ampas, serbuk, bs_service from t_hasil_masak thm
+            return $this->db->query("select thm.tanggal, pi.no_produksi as nomor, count(thm.id) as count, sum(kayu) as kayu, sum(gas) as gas, sum(bs_service) as bs_service, sum(total_rongsok) as total_rongsok, sum(ingot) as ingot, sum(berat_ingot) as berat_ingot, sum(bs) as bs, sum(susut) as susut, sum(ampas) as ampas, sum(serbuk) as serbuk, sum(bs_service) as bs_service from t_hasil_masak thm
             left join produksi_ingot pi on thm.id_produksi = pi.id
-            where thm.tanggal between '".$s."' and '".$e."'");
+            where thm.tanggal between '".$s."' and '".$e."' group by thm.tanggal");
         }elseif($j == 2){
-            return $this->db->query("select no_produksi_wip as nomor, (select sum(qty) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as qty_rsk, (select sum(berat) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as berat_rsk, thw.tanggal, qty, uom, berat, susut, bs from t_hasil_wip thw
+            return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, thw.gas, a.qty as qty_rsk, a.netto as berat_rsk, thw.tanggal, thw.qty, uom, thw.berat, susut, bs from t_hasil_wip thw
+                left join (select tsw.tanggal, sum(tgw.qty) as qty, sum(tgw.berat) as netto from t_gudang_wip tgw
+                    left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
+                    where tsw.flag_produksi = 2
+                    group by tsw.id) a on a.tanggal = thw.tanggal
             where thw.jenis_masak = 'ROLLING' and thw.tanggal between '".$s."' and '".$e."'");
+        }elseif($j == 3){
+            return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, (select sum(qty) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as qty_rsk, (select sum(berat) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as berat_rsk, thw.tanggal, qty, uom, berat, susut, bs from t_hasil_wip thw
+            where thw.jenis_masak = 'BAKAR ULANG' and thw.tanggal between '".$s."' and '".$e."'");
         }elseif($j == 4){
             return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, (select sum(qty) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as qty_rsk, (select sum(berat) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as berat_rsk, thw.tanggal, qty, uom, berat, susut, bs from t_hasil_wip thw
             where thw.jenis_masak = 'CUCI' and thw.tanggal between '".$s."' and '".$e."'");
+        }elseif($j == 8){
+            return $this->db->query("select thm.tanggal, pi.no_produksi, mulai,selesai, kayu, gas, bs_service, total_rongsok, ingot, berat_ingot, bs, susut, ampas, serbuk, bs_service from t_hasil_masak thm
+            left join produksi_ingot pi on thm.id_produksi = pi.id
+            where thm.tanggal between '".$s."' and '".$e."' order by thm.tanggal, pi.no_produksi");
         }
+    }
+
+    function print_laporan_bb_apollo($s,$e){
+        return $this->db->query("select pi.tanggal, 
+            sum(netto) as total,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id IN (9,10) then dd.netto else 0 end),0),null) as ABCW,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id = 12 then dd.netto else 0 end),0),null) as BC,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id = 17 then dd.netto else 0 end),0),null) as BBAKAR,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id = 14 then dd.netto else 0 end),0),null) as COVERTAPE,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id = 58 then dd.netto else 0 end),0),null) as BTELP,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id = 65 then dd.netto else 0 end),0),null) as DK,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id = 64 then dd.netto else 0 end),0),null) as DH,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id = 11 then dd.netto else 0 end),0),null) as ARMBT,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id = 21 then dd.netto else 0 end),0),null) as BSAPL,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id = 20 then dd.netto else 0 end),0),null) as BSROLL,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id = 19 then dd.netto else 0 end),0),null) as BSSDM,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id IN (79,52) then dd.netto else 0 end),0),null) as AFK8MM,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id = 22 then dd.netto else 0 end),0),null) as BSINGOT,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id IN (72,74) then dd.netto else 0 end),0),null) as PIPA,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id IN (62,63) then dd.netto else 0 end),0),null) as DDBARU,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id = 13 then dd.netto else 0 end),0),null) as TRAVO,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id = 24 then dd.netto else 0 end),0),null) as BSQC,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id = 66 then dd.netto else 0 end),0),null) as DDG,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id = 57 then dd.netto else 0 end),0),null) as BS,
+            COALESCE(NULLIF(sum(case when dd.rongsok_id IN (59,61,15) then dd.netto else 0 end),0),null) as COPER from produksi_ingot pi
+            left join spb on spb.produksi_ingot_id = pi.id
+            left join spb_detail_fulfilment sdf on sdf.spb_id = spb.id
+            left join dtr_detail dd on sdf.dtr_detail_id = dd.id
+            where pi.tanggal between '".$s."' and '".$e."'
+            group by pi.tanggal order by pi.tanggal
+            ");
+    }
+
+    function get_gas_kayu($s,$e){
+        return $this->db->query("select sum(kayu) as kayu, sum(gas) as gas from t_hasil_masak where tanggal between '".$s."' and '".$e."'");
+    }
+
+    function print_laporan_bb_rolling($s,$e){
+        return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, thw.gas, thw.tanggal, thw.qty, uom, thw.berat, susut, bs from t_hasil_wip thw 
+            where thw.jenis_masak = 'ROLLING' and thw.tanggal between '".$s."' and '".$e."'");
+    }
+
+    function get_wip_awal($s,$e){
+        return $this->db->query("select 
+                sum(CASE WHEN jenis_trx = 0 THEN berat ELSE 0 END) as berat_masuk,
+                sum(CASE WHEN jenis_trx = 1 THEN berat ELSE 0 END) as berat_keluar
+                from t_gudang_keras
+                where tanggal < '".$s."'");
+    }
+
+    function get_wip_akhir($s,$e){
+        return $this->db->query("select 
+                sum(CASE WHEN jenis_trx = 0 THEN berat ELSE 0 END) as berat_masuk,
+                sum(CASE WHEN jenis_trx = 1 THEN berat ELSE 0 END) as berat_keluar
+                from t_gudang_keras
+                where tanggal between '".$s."' and '".$e."' ");
     }
     /*
     cara membuat view stok wip

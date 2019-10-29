@@ -299,6 +299,7 @@ class Finance extends CI_Controller{
 
             $this->load->model('Model_finance');
             $data['myData'] = $this->Model_finance->view_um($id)->row_array();
+            $data['customer_list'] = $this->Model_finance->customer_list()->result();
             if($data['myData']['replace_id'] > 0){
                 $data['dataReplace'] = $this->Model_finance->replace_list_detail($data['myData']['replace_id'])->row_array();
             }
@@ -367,6 +368,7 @@ class Finance extends CI_Controller{
                 'tanggal'=>$tgl_input,
                 'nominal'=>str_replace(',', '', $this->input->post('nominal_baru')),
                 'status'=>0,
+                'm_customer_id'=>$this->input->post('customer_id_baru'),
                 'bank_pembayaran'=>$this->input->post('nama_bank'),
                 'nomor_cek'=>$this->input->post('nomor_cek'),
                 'tgl_cair'=>date('Y-m-d', strtotime($this->input->post('tanggal_cek_baru'))),
@@ -384,6 +386,7 @@ class Finance extends CI_Controller{
                 'tanggal'=>$tgl_input,
                 'nominal'=>str_replace(',', '', $this->input->post('nominal_baru')),
                 'status'=>0,
+                'm_customer_id'=>$this->input->post('customer_id_baru'),
                 'nomor_cek'=>$this->input->post('nomor'),
                 'modified_at'=>$tanggal,
                 'modified_by'=>$user_id,
@@ -399,6 +402,7 @@ class Finance extends CI_Controller{
                 'no_uang_masuk'=>$this->input->post('no_um'),
                 'keterangan'=>$this->input->post('remarks'),
                 'tanggal'=>$tgl_input,
+                'm_customer_id'=>$this->input->post('customer_id_baru'),
                 'nominal'=>str_replace(',', '', $this->input->post('nominal_baru')),
                 'rekening_pembayaran'=>$this->input->post('nomor'),
                 'modified_at'=>$tanggal,
