@@ -413,6 +413,7 @@ class GudangBobbin extends CI_Controller{
 
             $data = array(
             'no_surat_peminjaman' => $code,
+            'tanggal'=> $tgl_input,
             'supplier_id' => $this->input->post('supplier_id'),
             'status' => 0,
             'remarks' => $this->input->post('remarks'),
@@ -1124,5 +1125,105 @@ class GudangBobbin extends CI_Controller{
         }else{
             'GAGAL';
         }
+    }
+
+    function print_laporan_status(){
+            $module_name = $this->uri->segment(1);
+            $ppn = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+            $date=date('Y-m-d');
+            // $start = date('Y-m-d', strtotime($_GET['ts']));
+            // $end = date('Y-m-d', strtotime($_GET['te']));
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_bobbin');
+            $data['ready'] = $this->Model_bobbin->print_laporan_status(1,0)->result();
+            $data['used'] = $this->Model_bobbin->print_laporan_status(1,1)->result();
+            $data['delivered'] = $this->Model_bobbin->print_laporan_status(1,2)->result();
+            $data['booked'] = $this->Model_bobbin->print_laporan_status(1,3)->result();
+            $data['k_ready'] = $this->Model_bobbin->print_laporan_status(2,0)->result();
+            $data['k_used'] = $this->Model_bobbin->print_laporan_status(2,1)->result();
+            $data['k_delivered'] = $this->Model_bobbin->print_laporan_status(2,2)->result();
+            $data['k_booked'] = $this->Model_bobbin->print_laporan_status(2,3)->result();
+            $this->load->view('gudang_bobbin/print_laporan_status', $data);
+    }
+
+    function laporan_status(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "gudang_bobbin/laporan_status";
+
+        $this->load->view('layout', $data);   
+    }
+
+    function print_status(){
+        $module_name = $this->uri->segment(1);
+        $ppn = $this->session->userdata('user_ppn');
+        $this->load->helper('tanggal_indo');
+        $date=date('Y-m-d');
+        $s = $_GET['s'];
+
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $this->load->model('Model_bobbin');
+        $data['jenis'] = $this->Model_bobbin->size_bk($s)->result();
+        $this->load->view('gudang_bobbin/print_status', $data);
+    }
+
+    function laporan_bulanan(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "gudang_bobbin/laporan_bulanan";
+
+        $this->load->view('layout', $data);   
+    }
+
+    function print_laporan_bulanan(){
+            $module_name = $this->uri->segment(1);
+            $ppn = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+            $date=date('Y-m-d');
+            $start = date('Y-m-d', strtotime($_GET['ts']));
+            $end = date('Y-m-d', strtotime($_GET['te']));
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_bobbin');
+            $data['details'] = $this->Model_bobbin->print_laporan_bulanan($start,$end)->result();
+            // print_r($data['details']);die();
+            $this->load->view('gudang_bobbin/print_stok_bulanan', $data);
     }
 }

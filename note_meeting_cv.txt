@@ -148,7 +148,14 @@ sisa so per jenis barang seperti kayak di foto
 sisa so tanpa harga kh/kmp
 
 dtr multiple di produksi apollo dan rolling
+Dan untuk penambahan kolom BS Apollo maupun rolling juga blom
 
-tipe bahan A, B, D hanya di apollo
+tipe bahan A, B, D hanya di apollo (done)
 
 cv laporannya dikasi total per customer piutang
+
+Untuk Bobin dan keranjang, Laporan Stock(Awal + pemasukan -Pengeluaran= Akhir)*Bobin Kosong (done) *gaada awal & akhir
+
+tolling & so tgl input saat approve utk bobbin peminjaman
+
+lpb edit kurs dan gudang sp

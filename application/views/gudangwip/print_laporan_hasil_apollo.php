@@ -55,7 +55,7 @@ table td, table td * {
         echo '<td style="border-top:1px solid #000; border-left:1px solid #000">'.number_format($row->gas,2,',','.').'</td>';
         echo '<td style="border-top:1px solid #000; border-left:1px solid #000">'.number_format($row->kayu,2,',','.').'</td>';
         echo '<td style="border-top:1px solid #000; border-left:1px solid #000">'.$hours.'j, '.$minutes.'m</td>';
-        echo '<td style="border-top:1px solid #000; border-left:1px solid #000">-</td>';
+        echo '<td style="border-top:1px solid #000; border-left:1px solid #000">'.$row->tipe.'</td>';
         echo '<td style="border-top:1px solid #000; border-left:1px solid #000">'.number_format($row->total_rongsok,2,',','.').'</td>';
         echo '<td style="border-top:1px solid #000; border-left:1px solid #000">'.number_format($row->ingot,2,',','.').'</td>';
         echo '<td style="border-top:1px solid #000; border-left:1px solid #000">'.number_format($row->berat_ingot,2,',','.').'</td>';
@@ -96,7 +96,7 @@ table td, table td * {
                             <?=$t_hours.'j, '.$t_minutes;?>m
                         </td>
                         <td style="border-top:1px solid #000; border-left:1px solid #000;">
-                            -
+                            
                         </td>
                         <td style="border-top:1px solid #000; border-left:1px solid #000;">
                             <?=number_format($berat_rongsok,2,',','.');?>

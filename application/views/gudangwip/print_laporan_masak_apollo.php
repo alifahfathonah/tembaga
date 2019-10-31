@@ -40,6 +40,9 @@ table td, table td * {
 <?php
     $no = 0;
     $berat_rongsok = 0;
+    $berat_rongsok_a = 0;
+    $berat_rongsok_b = 0;
+    $berat_rongsok_d = 0;
     $berat_ingot = 0;
     $berat = 0;
     $berat_susut = 0;
@@ -52,9 +55,9 @@ table td, table td * {
         echo '<tr>';
         echo '<td style="text-align:center; border-bottom:1px solid #000;">'.$no.'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.$row->tanggal.'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->total_rongsok,2,',','.').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->total_rongsok,2,',','.').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->total_rongsok,2,',','.').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->tipe=='A')?number_format($row->total_rongsok,2,',','.') : '-').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->tipe=='B')?number_format($row->total_rongsok,2,',','.') : '-').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->tipe=='D')?number_format($row->total_rongsok,2,',','.') : '-').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->total_rongsok,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->ingot,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->berat_ingot,2,',','.').'</td>';
@@ -70,6 +73,14 @@ table td, table td * {
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->gas,2,',','.').'</td>';
         echo '</tr>';
         $berat_rongsok += $row->total_rongsok;
+        if($row->tipe=='A'){
+            $berat_rongsok_a += $row->total_rongsok;
+        }elseif($row->tipe=='B'){
+            $berat_rongsok_b += $row->total_rongsok;
+        }else{
+            $berat_rongsok_d += $row->total_rongsok;
+        }
+
         $berat_ingot += $row->ingot;
         $berat += $row->berat_ingot;
         $berat_susut += $row->total_rongsok-$row->berat_ingot-$row->bs-$row->bs_service;
@@ -89,13 +100,13 @@ table td, table td * {
                     <tr>
                         <td colspan="2" style="border-bottom: 1px solid #000;"><strong>Grand Total</strong></td>
                         <td style="border-bottom:1px solid #000; border-left:1px solid #000;">
-                            <?=number_format($berat_rongsok,2,',','.');?>
+                            <?=number_format($berat_rongsok_a,2,',','.');?>
                         </td>
                         <td style="border-bottom:1px solid #000; border-left:1px solid #000;">
-                            <?=number_format($berat_rongsok,2,',','.');?>
+                            <?=number_format($berat_rongsok_b,2,',','.');?>
                         </td>
                         <td style="border-bottom:1px solid #000; border-left:1px solid #000;">
-                            <?=number_format($berat_rongsok,2,',','.');?>
+                            <?=number_format($berat_rongsok_d,2,',','.');?>
                         </td>
                         <td style="border-bottom:1px solid #000; border-left:1px solid #000;">
                             <?=number_format($berat_rongsok,2,',','.');?>

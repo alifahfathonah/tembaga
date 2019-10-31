@@ -175,7 +175,7 @@
                                 }else{
                                     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliFinishGood/edit_dtbj/'.$data->id.'" style="margin-bottom:4px">&nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>';
                                 }
-                                if (($data->status==0 && $data->jumlah_item==0)|| $data->status==9){
+                                if ($data->status==0|| $data->status==9){
                                     echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/BeliFinishGood/delete_dtbj/'.$data->id.'" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"> &nbsp; <i class="fa fa-trash"></i> Delete &nbsp;</a> ';
                                 }
                                 if($group_id==1 || $hak_akses['print_dtbj']==1){

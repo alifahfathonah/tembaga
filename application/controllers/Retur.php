@@ -2097,31 +2097,34 @@ class Retur extends CI_Controller{
 
         if($jenis=='FG'){
             #insert bobbin_peminjaman
-            $this->load->model('Model_m_numberings');
-            $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);
+            $query = $this->db->query('select * from t_surat_jalan_detail where t_sj_id = '.$sjid.' and nomor_bobbin != ""')->result();
 
-            $this->db->insert('m_bobbin_peminjaman', array(
-                'no_surat_peminjaman' => $code,
-                'id_surat_jalan' => $sjid,
-                'id_customer' => $custid,
-                'status' => 0,
-                'created_by' => $user_id,
-                'created_at' => $tanggal
-            ));
-            $insert_id = $this->db->insert_id();
-
-            $query = $this->db->query('select * from t_surat_jalan_detail where t_sj_id = '.$sjid)->result();
-            foreach ($query as $row) {
-                $this->db->where('nomor_bobbin', $row->nomor_bobbin);
-                $this->db->update('m_bobbin', array(
-                    'borrowed_by' => $custid,
-                    'status' => 2
+            if(!empty($query)){
+                $this->load->model('Model_m_numberings');
+                $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);
+                $this->db->insert('m_bobbin_peminjaman', array(
+                    'no_surat_peminjaman' => $code,
+                    'tanggal'=> $tgl_input,
+                    'id_surat_jalan' => $sjid,
+                    'id_customer' => $custid,
+                    'status' => 0,
+                    'created_by' => $user_id,
+                    'created_at' => $tanggal
                 ));
+                $insert_id = $this->db->insert_id();
 
-                $this->db->insert('m_bobbin_peminjaman_detail', array(
-                    'id_peminjaman' => $insert_id,
-                    'nomor_bobbin' => $row->nomor_bobbin
-                ));
+                foreach ($query as $row) {
+                    $this->db->where('nomor_bobbin', $row->nomor_bobbin);
+                    $this->db->update('m_bobbin', array(
+                        'borrowed_by' => $custid,
+                        'status' => 2
+                    ));
+
+                    $this->db->insert('m_bobbin_peminjaman_detail', array(
+                        'id_peminjaman' => $insert_id,
+                        'nomor_bobbin' => $row->nomor_bobbin
+                    ));
+                }
             }
         }
         

@@ -2063,7 +2063,7 @@ class Finance extends CI_Controller{
 
     function print_matching_invoice(){
         $id = $this->uri->segment(3);
-        if($id){       
+        if($id){
             $this->load->helper('terbilang_helper');
             $this->load->helper('tanggal_indo');
             $this->load->model('Model_finance');

@@ -467,7 +467,10 @@ class BeliFinishGood extends CI_Controller{
         $id = $this->uri->segment(3);
         if(!empty($id)){
             $this->db->where('id', $id);
-            $this->db->delete('dtbj');            
+            $this->db->delete('dtbj');
+
+            $this->db->where('dtbj_id', $id);
+            $this->db->delete('dtbj_detail');
         }
         $this->session->set_flashdata('flash_msg', 'DTBJ berhasil dihapus');
         redirect('index.php/BeliFinishGood/dtbj_list');
@@ -478,52 +481,7 @@ class BeliFinishGood extends CI_Controller{
         $jp = $this->input->post('jp');
         $this->load->model('Model_beli_fg');
         $barang= $this->Model_beli_fg->show_data_bobbin($id)->row_array();
-        // $barang['berat_bobbin']=number_format($barang['berat'],2);
-        // if ($barang['m_jenis_packing_id'] == 1) {
-        //     #bobbin
-        //     $check = $this->Model_beli_fg->check_urut()->row_array();
-        //     $no_urut = $check['no_urut'];
-        //     $no_urut = $no_urut + 1;
-        //     switch (strlen($no_urut)) {
-        //         case 1 : $urutan = "000".$no_urut;
-        //             break;
-        //         case 2 : $urutan = "00".$no_urut;
-        //             break;
-        //         case 3 : $urutan = "0".$no_urut;
-        //             break;
-                
-        //         default:
-        //             $urutan = $no_urut;
-        //             break;
-        //     }
 
-        //     $no_bobbin = $barang['nomor_bobbin'];
-        //     $kode_bobbin = substr($no_bobbin, 0,1);
-        //     $urut_bobbin = substr($no_bobbin, 1,4);
-        //     $ukuran = substr($no_bobbin, 0,1);
-        //     $barang['no_packing'] = date("ymd").$ukuran.$urut_bobbin.$urutan;
-        // } else if ($barang['m_jenis_packing_id'] == 2){
-        //     #keranjang
-        //     $no_bobbin = $barang['nomor_bobbin'];
-        //     $kode_bobbin = substr($no_bobbin, 0,1);
-        //     $urut_bobbin = substr($no_bobbin, 2,4);
-        //     $ukuran = substr($no_bobbin, 0,1);
-        //     $barang['no_packing'] = date("ymd").$ukuran.$urut_bobbin.rand(1,20);
-        // } else if ($barang['m_jenis_packing_id'] == 4){
-        //     #roll
-        //     $no_bobbin = $barang['nomor_bobbin'];
-        //     $kode_bobbin = substr($no_bobbin, 0,1);
-        //     $urut_bobbin = substr($no_bobbin, 1,4);
-        //     $ukuran = substr($no_bobbin, 0,1);
-        //     $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin;
-        // } else {
-        //     #kardus
-        //     $no_bobbin = $barang['nomor_bobbin'];
-        //     $kode_bobbin = substr($no_bobbin, 0,1);
-        //     $urut_bobbin = substr($no_bobbin, 1,4);
-        //     $ukuran = substr($no_bobbin, 0,1);
-        //     $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urut_bobbin;
-        // }
         if($this->input->post('jenis_barang')=='KARDUS'){
             $check = $this->Model_beli_fg->check_urut($jp)->row_array();
             $no_urut = $check['no_urut'];
@@ -705,8 +663,7 @@ class BeliFinishGood extends CI_Controller{
                         'created_by'=>$user_id,
                         'tanggal_masuk'=>$tgl_input
                     ));
-
-                    if(isset($row['bobbin'])){
+                    if($row['no_bobbin']!=''){
                         $updatebobbin = array('status'=>1);
                         $this->db->where('nomor_bobbin', $row['no_bobbin']);
                         $this->db->update('m_bobbin', $updatebobbin);

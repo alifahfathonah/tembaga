@@ -168,6 +168,7 @@ class Model_bobbin extends CI_Model{
             from m_bobbin_peminjaman mbp left join t_surat_jalan tsj on (mbp.id_surat_jalan = tsj.id)
             left join m_customers mc on (mbp.id_customer = mc.id)
             left join supplier supp on (mbp.supplier_id = supp.id)
+            order by id desc
             ");
         return $data;
 
@@ -202,7 +203,8 @@ class Model_bobbin extends CI_Model{
 
     function list_bobbin(){
         $data = $this->db->query("select mbt.*, (select count(mbtd.id) as jumlah_item from m_bobbin_penerimaan_detail mbtd where mbtd.id_bobbin_penerimaan = mbt.id) as jumlah_item
-            from m_bobbin_penerimaan mbt");
+            from m_bobbin_penerimaan mbt
+            order by mbt.no_penerimaan desc");
         return $data;
     }
 
@@ -345,5 +347,29 @@ class Model_bobbin extends CI_Model{
             left join m_bobbin_size mbz on mbz.id = mb.m_bobbin_size_id
             where mb.id =".$id);
         return $data;
+    }
+
+    function print_laporan_status($jp,$id){
+        return $this->db->query("select mb.* from m_bobbin mb where m_jenis_packing_id =".$jp." and status =".$id." order by nomor_bobbin asc");
+    }
+
+    function size_bk($id){
+        return $this->db->query("select mbs.id, mbs.bobbin_size from m_bobbin mb 
+            left join m_bobbin_size mbs on mb.m_bobbin_size_id = mbs.id
+            where mb.m_jenis_packing_id in (1,2) and status =".$id." group by mb.m_bobbin_size_id");
+    }
+
+    function print_laporan_bulanan($s,$e){
+        return $this->db->query("select m.id, m.bobbin_size, m.keterangan, 
+            (select count(ped.id) from m_bobbin_penerimaan_detail ped
+            left join m_bobbin_penerimaan pe on ped.id_bobbin_penerimaan = pe.id
+            left join m_bobbin mb2 on ped.nomor_bobbin = mb2.nomor_bobbin
+            where mb2.m_bobbin_size_id = m.id and pe.tanggal between '".$s."' and '".$e."'
+            ) as pemasukan,
+            (select count(pd.id) from m_bobbin_peminjaman_detail pd 
+            left join m_bobbin_peminjaman p on pd.id_peminjaman = p.id
+            left join m_bobbin mb on pd.nomor_bobbin = mb.nomor_bobbin
+            where mb.m_bobbin_size_id = m.id and p.tanggal between '".$s."' and '".$e."') as pengeluaran
+            from m_bobbin_size m where m.jenis_packing_id in (1,2)");
     }
 }

@@ -44,6 +44,19 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Tipe Rongsok<font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="tipe_rongsok" name="tipe_rongsok" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value=""></option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="D">D</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Tanggal Produksi
                         </div>
                         <div class="col-md-8">
@@ -271,6 +284,9 @@ function simpanData(){
         $('.alert-danger').show();
     }else if($.trim($("#ingot_berat").val()) == ""){
         $('#message').html("Silahkan Input Berat Ingot!");
+        $('.alert-danger').show();
+    }else if($.trim($("#tipe_rongsok").val()) == ""){
+        $('#message').html("Tipe Rongsok Belum Dipilih!");
         $('.alert-danger').show();
     }else{     
         $('#formku').submit(); 

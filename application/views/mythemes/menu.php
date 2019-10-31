@@ -996,6 +996,27 @@
                             Bobbin Terima Barang </a>
                         </li>
                     <?php } ?>
+                        <li>
+                            <a href="javascript:;">
+                            <i class="fa fa-book"></i>
+                            <span class="title">Laporan Bobbin</span>
+                            <span class="arrow "></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/GudangBobbin/print_laporan_status/" target="_blank">
+                                    <i class="fa fa-print"></i> Print Laporan Status </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/GudangBobbin/laporan_status/">
+                                    <i class="fa fa-search"></i> Laporan Status </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/GudangBobbin/laporan_bulanan/">
+                                    <i class="fa fa-search"></i> Laporan Bulanan </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
             <?php } if($group_id==1 || (isset($akses_menu['SalesOrder']) && $akses_menu['SalesOrder']==1)){ ?>
@@ -1479,5 +1500,3 @@
     <!-- CONTENT -->
     <div class="page-content-wrapper">
         <div class="page-content">
-            
-            

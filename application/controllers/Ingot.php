@@ -735,6 +735,7 @@ class Ingot extends CI_Controller{
                 'tanggal'=> $tgl_input,
                 'mulai'=>$this->input->post('mulai'),
                 'selesai'=>$this->input->post('selesai'),
+                'tipe'=>$this->input->post('tipe_rongsok'),
                 'total_rongsok'=>$this->input->post('total_rongsok'),
                 'kayu'=>$this->input->post('kayu'),
                 'gas'=> $this->input->post('gas'),
