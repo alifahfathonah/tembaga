@@ -97,6 +97,23 @@ class GudangRongsok extends CI_Controller{
         }
     }
 
+    function update_tgl_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $data = array(
+                'tanggal'=> $tgl_input
+            );
+        
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('spb', $data);
+
+        $this->session->set_flashdata('flash_msg', 'Data SPB Rongsok berhasil disimpan');
+        redirect('index.php/GudangRongsok/view_spb/'.$this->input->post('id'));
+    }
+
     function laporan_list(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);

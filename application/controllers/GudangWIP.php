@@ -1312,6 +1312,23 @@ class GudangWIP extends CI_Controller{
         }
     }
 
+    function update_tgl_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $data = array(
+                'tanggal'=> $tgl_input
+            );
+        
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('t_spb_wip', $data);
+
+        $this->session->set_flashdata('flash_msg', 'Data SPB WIP berhasil disimpan');
+        redirect('index.php/GudangWIP/view_spb/'.$this->input->post('id'));
+    }
+
     function close_spb(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');

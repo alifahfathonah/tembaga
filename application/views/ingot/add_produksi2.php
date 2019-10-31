@@ -221,11 +221,18 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            GAS  <font color="#f00">*</font>
+                                        <div class="col-md-2">
+                                            GAS Kiri<font color="#f00">*</font>
                                         </div>
-                                        <div class="col-md-6">
-                                            <input type="text" id="gas" name="gas"
+                                        <div class="col-md-3">
+                                            <input type="text" id="gas" name="gas_l"
+                                                class="form-control myline" placeholder="Gas/m3" style="margin-bottom:5px; width:120px;"  required="required">
+                                        </div>
+                                        <div class="col-md-3">
+                                            GAS Kanan<font color="#f00">*</font>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" id="gas" name="gas_r"
                                                 class="form-control myline" placeholder="Gas/m3" style="margin-bottom:5px; width:120px;"  required="required">
                                         </div>
                                     </div>

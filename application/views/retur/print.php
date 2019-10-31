@@ -103,7 +103,38 @@
                     </table>
                 </td>
             </tr>
-            
+            <tr><td colspan="3">
+                    <p>&nbsp;</p>
+                    <table width="100%" align="center" border="0">
+                        <tr>
+                            <td style="text-align:center">
+                                Diketahui,<br>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p>(______________)</p>
+                            </td>
+                            <td style="text-align:center">
+                                Diterima Gudang,<br>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p>(______________)</p>
+                            </td>
+                            <td style="text-align:center">
+                                Bagian QC,<br>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p>(______________)</p>
+                            </td>
+                            <td style="text-align:center">
+                                Yang Mengajukan,<br>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p>(______________)</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
         </table>
 	<body onLoad="window.print()">
     </body>

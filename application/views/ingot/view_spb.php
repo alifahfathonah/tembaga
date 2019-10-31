@@ -102,6 +102,14 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
+                    <button class="close" data-close="alert"></button>
+                    <span id="msg_sukses"><?php echo $this->session->flashdata('flash_msg'); ?></span>
+                </div>
+            </div>
+        </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku">  
             <div class="row">
@@ -125,7 +133,7 @@
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
+                                class="form-control input-small" style="margin-bottom:5px; float: left;" 
                                 value="<?php echo date('d-m-Y', strtotime($myData['tanggal'])); ?>">
                         </div>
                     </div>                    <div class="row">
@@ -169,7 +177,6 @@
                             ?>
                         </div>
                     </div>
-
                 </div>
                 <div class="col-md-6">
                     <div class="row">
@@ -258,7 +265,8 @@
                     ?>
                 </div>              
             </div>
-            
+            <a href="javascript:;" class="btn blue" onclick="editData();" id="btnEdit"><i class="fa fa-pencil"></i> Edit Tanggal </a>
+            <a href="javascript:;" class="btn blue" style="display: none;" onclick="updateData();" id="btnUpdate"><i class="fa fa-floppy-o"></i> Simpan </a>
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="row">
@@ -561,6 +569,22 @@
     </div>
 </div> 
 <script>
+function editData(){
+    $('#tanggal').removeAttr('readonly');
+
+    $('#btnUpdate').show();
+    $('#btnEdit').hide();
+}
+
+function updateData(){
+    var r=confirm("Anda yakin menyimpan surat jalan ini?");
+    if(r == true){
+        $('#btnSimpan').text('Please Wait ...').prop("onclick", null).off("click");
+        $('#formku').attr("action", "<?php echo base_url('index.php/GudangRongsok/update_tgl_spb'); ?>");
+        $('#formku').submit(); 
+    }
+}
+
 function checkAll(){
     if ($('#check_all').prop("checked")) {  
         $('input').each(function(i){
@@ -737,7 +761,17 @@ function hapusDetail(id){
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-$(function(){        
+$(function(){
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    }); 
+
     $("#tanggal_keluar").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",

@@ -40,14 +40,20 @@ table td, table td * {
             </tr>
             <tr>
                     <?php
+                    $jml = 0;
                     $query = $this->db->query('select * from m_bobbin where m_bobbin_size_id ='.$value->id.' and status ='.$_GET['s'])->result();
                     foreach ($query as $row){
+                    $jml++;
                         echo '<tr>';
                         echo '<td style="text-align:center; border-bottom:1px solid #000;">'.$row->nomor_bobbin.'</td>';
                         echo '<td style="text-align:center; border-bottom:1px solid #000;">'.$row->berat.'</td>';
                         echo '</tr>';
                     }
                     ?>
+            </tr>
+            <tr>
+                <td>Jumlah</td>
+                <td>= <?=$jml;?></td>
             </tr>
         </table>
         </td>
