@@ -134,18 +134,6 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4">
-                                                BS <font color="#f00">*</font>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <input type="text" id="bs" name="bs"
-                                                    class="form-control myline" placeholder="bs/kg" style="margin-bottom:5px; width:100px;"  required="required" onchange="hitung_susut()">
-                                            </div>
-                                            <div class="col-md-3">
-                                                <span>KG</span>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-4">
                                                 SUSUT  <font color="#f00">*</font>
                                             </div>
                                             <div class="col-md-3">
@@ -175,18 +163,6 @@
                                             <div class="col-md-3">
                                                 <input type="text" id="serbuk" name="serbuk"
                                                     class="form-control myline" placeholder="serbuk/kg" style="margin-bottom:5px; width:100px;"  required="required" onchange="hitung_susut()">     
-                                            </div>
-                                            <div class="col-md-3">
-                                                <span>KG</span>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                BS SERVICE
-                                            </div>
-                                            <div class="col-md-3">
-                                                <input type="text" id="bs_service" name="bs_service"
-                                                    class="form-control myline" placeholder="bs/kg" style="margin-bottom:5px; width:100px;"  required="required" onchange="hitung_susut()">
                                             </div>
                                             <div class="col-md-3">
                                                 <span>KG</span>
@@ -239,6 +215,59 @@
                                 </div>
                             </div>
                         </div>
+            <div class="row" id="dtr" style="display: none;">
+                <div class="col-md-12">
+                    <div class="table-scrollable">
+                        <table class="table table-bordered table-striped table-hover" id="tabel_dtr">
+                            <thead>
+                                <th style="width:40px">No</th>
+                                <th style="width:20%">Nama Item Rongsok</th>
+                                <th style="width: 15%;">Bruto (Kg)</th>
+                                <th style="width: 10%;">Berat Palette</th>
+                                <th style="width: 15%;">Netto (Kg)</th>
+                                <th></th>
+                                <th style="width:15%">No. Pallete</th>
+                                <th>Action</th>
+                            </thead>
+                            <tbody id="boxDetail">
+                            <tr>
+                                <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
+                                <input type="hidden" id="po_id_1" name="myDetails[1][po_detail_id]" value="">
+                                <input type="hidden" id="rongsok_id_1" name="myDetails[1][rongsok_id]" value="">
+                                <td><select id="name_rongsok_1" name="myDetails[1][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,1);">
+                                    <option value=""></option>
+                                    <?php foreach ($rongsok as $value){ ?>
+                                            <option value='<?=$value->id;?>'>
+                                                <?='('.$value->kode_rongsok.') '.$value->nama_item;?>
+                                            </option>
+                                    <?php } ?>
+                                </select>
+                                </td>
+                                <td><input type="number" id="bruto_1" name="myDetails[1][bruto]" class="form-control myline" value="0" maxlength="10"></td>
+                                <td><input type="number" id="berat_palette_1" name="myDetails[1][berat_palette]" class="form-control myline" value="0" maxlength="10"></td>
+                                <td><input type="text" id="netto_1" name="myDetails[1][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
+                                <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(1);"> <i class="fa fa-dashboard"></i> Timbang </a></td>                          
+                                <td><input type="text" name="myDetails[1][no_pallete]" id="no_pallete_1"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly"></td>
+                                <td style="text-align:center">
+                                    <a id="save_1" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(1);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
+                                    <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
+                                    <a id="print_1" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(1);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><strong>Total :</strong></td>
+                                    <td><input type="text" id="total_bruto" class="form-control" readonly="readonly"></td>
+                                    <td><input type="text" id="total_berat" class="form-control" readonly="readonly"></td>
+                                    <td><input type="text" id="total_netto" name="bs" class="form-control" readonly="readonly"></td>
+                                    <td colspan="4"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
                         <div class="row">&nbsp;</div>
                             <div class="row">
                                 <div class="col-md-2">&nbsp; &nbsp; <a href="javascript:;" class="btn green" onclick="simpanData();"><i class="fa fa-floppy-o"></i> Save </a>
@@ -262,7 +291,7 @@
 </div> 
 <script>
 function hitung_susut(){
-    var susut = Number(Number($('#total_rongsok').val()) - (Number($('#ingot_berat').val()) + Number($('#bs_service').val()) + Number($('#bs').val()) + Number($('#ampas').val()) + Number($('#serbuk').val())));
+    var susut = Number(Number($('#total_rongsok').val()) - (Number($('#ingot_berat').val()) + Number($('#total_netto').val()) + Number($('#ampas').val()) + Number($('#serbuk').val())));
     $('#susut').val(susut.toFixed(2));
 }
 
@@ -273,6 +302,7 @@ function get_detail_produksi(id){
         data: {id: id},
         cache: false,
         success: function(result) {
+            $('#dtr').show();
             $("#no_spb").val(result['no_spb']);
             $('#tgl_prd').val(result['tgl_prd']);
             $('#tipe_apolo').val(result['tipe_apolo']);
@@ -299,6 +329,102 @@ function simpanData(){
         $('#formku').submit(); 
     };
 };
+
+//DTR
+function timbang_netto(id){
+    var bruto = $("#bruto_"+id).val();
+    var berat_palette = $("#berat_palette_"+id).val();
+    var total_netto = bruto - berat_palette;
+    const netto = total_netto.toFixed(2);
+    $("#netto_"+id).val(netto);
+}
+
+function get_uom_po(id, nmr){
+    // var idpo = $('#po_id').val();
+    if($.trim($('#name_rongsok_'+nmr).val())!=''){
+        $.ajax({
+            url: "<?php echo base_url('index.php/BeliRongsok/get_uom_po'); ?>",
+            type: "POST",
+            data: {iditem: id},
+            dataType: "json",
+            success: function(result) {
+                $('#rongsok_id_'+nmr).val(result['id']);
+            }
+        });
+    }
+}
+
+function saveDetail(id){
+    if($.trim($("#name_rongsok_"+id).val()) == ""){
+        $('#message').html("Silahkan pilih nama item rongsok!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#bruto_"+id).val()) == "" || 0){
+        $('#message').html("Jumlah bruto tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#netto_"+id).val()) == ("" || 0)){
+        $('#message').html("Jumlah netto tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{
+        $.ajax({
+            url: "<?php echo base_url('index.php/BeliRongsok/generate_palette'); ?>",
+            type: "POST",
+            data: {
+                id:id,
+                tanggal: $('#tanggal').val()
+            },
+            dataType: "json",
+            success: function(result){
+                $('#no_pallete_'+id).val(result['no_packing']);
+            }
+        });
+        $('#total_bruto').val((Number($('#total_bruto').val())+Number($('#bruto_'+id).val())).toFixed(2));
+        $('#total_berat').val((Number($('#total_berat').val())+Number($('#berat_palette_'+id).val())).toFixed(2));
+        $('#total_netto').val((Number($('#total_netto').val())+Number($('#netto_'+id).val())).toFixed(2));
+        $("#name_rongsok_"+id).attr('disabled','disabled');
+        $("#save_"+id).hide();
+        $('#qty_'+id).attr('readonly','readonly');
+        $('#bruto_'+id).attr('readonly','readonly');
+        $('#berat_palette_'+id).attr('readonly','readonly');
+        $('#no_pallete_'+id).attr('readonly','readonly');
+        $("#print_"+id).show();
+        $("#delete_"+id).removeClass('disabled');
+        var new_id = id+1; 
+        $("#tabel_dtr>tbody").append(
+            '<tr>'+
+                '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
+                '<input type="hidden" id="po_id_'+new_id+'" name="myDetails['+new_id+'][po_detail_id]" value="">'+
+                '<input type="hidden" id="rongsok_id_'+new_id+'" name="myDetails['+new_id+'][rongsok_id]" value="">'+
+                '<td><select id="name_rongsok_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,'+new_id+');">'+
+                    '<option value=""></option>'+
+                    '<?php foreach($rongsok as $v){ print('<option value="'.$v->id.'">('.$v->kode_rongsok.') '.$v->nama_item.'</option>');}?>'+
+                '</select>'+
+                '</td>'+
+                '<td><input type="number" id="bruto_'+new_id+'" name="myDetails['+new_id+'][bruto]" class="form-control myline" value="0" maxlength="10"></td>'+
+                '<td><input type="text" id="berat_palette_'+new_id+'" name="myDetails['+new_id+'][berat_palette]" class="form-control myline" value="0" maxlength="10"></td>'+
+                '<td><input type="text" id="netto_'+new_id+'" name="myDetails['+new_id+'][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
+                '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('+new_id+');"> <i class="fa fa-dashboard"></i> Timbang </a></td>'+
+                '<td><input type="text" name="myDetails['+new_id+'][no_pallete]" id="no_pallete_'+new_id+'"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly"></td>'+
+                '<td style="text-align:center"><a id="save_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail('+new_id+');" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>'+
+                    '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>'+
+                ' <a id="print_'+new_id+'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('+new_id+');" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>'+
+                '</td>'+
+            '</tr>'
+        );
+        $('#name_rongsok_'+new_id).select2();
+        hitung_susut();
+    }
+}
+
+function deleteDetail(id){
+    var r=confirm("Anda yakin menghapus item rongsok ini?");
+    if (r==true){
+        $('#total_bruto').val(Number($('#total_bruto').val())-Number($('#bruto_'+id).val()));
+        $('#total_berat').val(Number($('#total_berat').val())-Number($('#berat_palette_'+id).val()));
+        $('#total_netto').val(Number($('#total_netto').val())-Number($('#netto_'+id).val()));
+        $('#no_tabel_'+id).closest('tr').remove();
+    }
+    hitung_susut();
+}
 </script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>

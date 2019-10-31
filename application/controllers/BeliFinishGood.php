@@ -664,7 +664,11 @@ class BeliFinishGood extends CI_Controller{
                         'tanggal_masuk'=>$tgl_input
                     ));
                     if($row['no_bobbin']!=''){
-                        $updatebobbin = array('status'=>1);
+                        $updatebobbin = array(
+                            'status'=>1,
+                            'modified_at'=>$tanggal,
+                            'modified_by'=>$user_id
+                        );
                         $this->db->where('nomor_bobbin', $row['no_bobbin']);
                         $this->db->update('m_bobbin', $updatebobbin);
                     }
@@ -1116,7 +1120,9 @@ class BeliFinishGood extends CI_Controller{
         foreach ($query as $row) {
             $this->db->where('nomor_bobbin', $row->no_bobbin);
             $this->db->update('m_bobbin', array(
-                'status' => 3
+                'status' => 3,
+                'modified_at'=>$tanggal,
+                'modified_by'=>$user_id
             ));
         }
         if(null !== ($this->input->post('po_id'))){

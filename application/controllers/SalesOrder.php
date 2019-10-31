@@ -1610,6 +1610,8 @@ class SalesOrder extends CI_Controller{
 
     function delete_approved_surat_jalan(){
         $id = $this->uri->segment(3);
+        $tanggal  = date('Y-m-d h:m:s');
+        $user_id  = $this->session->userdata('user_id');
         $this->db->trans_start();
 
         $this->load->model('Model_sales_order');
@@ -1630,7 +1632,9 @@ class SalesOrder extends CI_Controller{
                 $this->db->where('nomor_bobbin', $v->nomor_bobbin);
                 $this->db->update('m_bobbin', array(
                     'borrowed_by' => 0,
-                    'status' => 1
+                    'status' => 1,
+                    'modified_at' => $tanggal,
+                    'modified_by' => $user_id
                 ));
             } else if ($header['jenis_barang'] == 'RONGSOK'){
                 $this->db->where('id', $v->gudang_id);

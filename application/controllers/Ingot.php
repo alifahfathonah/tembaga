@@ -666,7 +666,9 @@ class Ingot extends CI_Controller{
         $data['content']= "ingot/add_produksi2";
      
         $this->load->model('Model_ingot');
+        $this->load->model('Model_beli_rongsok');
         $data['no_produksi_list'] = $this->Model_ingot->get_no_produksi_list()->result();
+        $data['rongsok'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
 
         $this->load->view('layout', $data);
     }
@@ -748,7 +750,7 @@ class Ingot extends CI_Controller{
                 'susut'=> $this->input->post('susut'),
                 'ampas'=> $this->input->post('ampas'),
                 'serbuk'=> $this->input->post('serbuk'),
-                'bs_service'=> $this->input->post('bs_service'),
+                'bs_service'=> 0,
                 'created_by'=> $user_id
             );
 
@@ -772,7 +774,7 @@ class Ingot extends CI_Controller{
         $this->db->insert('t_hasil_wip', $data_wip);
         $id_hasil_wip = $this->db->insert_id();
 
-        if($this->input->post('bs') != 0 || $this->input->post('bs_service')!=0){
+        if($this->input->post('bs') != 0){
             //CREATE DTR
         $this->load->model('Model_m_numberings');
         $code_dtr = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
@@ -792,50 +794,27 @@ class Ingot extends CI_Controller{
             $dtr_id = $this->db->insert_id();
 
             //CREATE DTR_DETAIL
-            $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
-
             if($this->input->post('bs')!=0){
 
-                $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
-                
-                $bs_packing = $tgl_code.substr($bs_code,13,4);
-                    #insert bs ke gudang bs
-                            $this->db->insert('dtr_detail', array(
-                                'dtr_id'=>$dtr_id,
-                                'rongsok_id'=>21,//BS APOLLO
-                                'qty'=>0,
-                                'bruto'=>$this->input->post('bs'),
-                                'netto'=>$this->input->post('bs'),
-                                'line_remarks'=>'SISA PRODUKSI',
-                                'no_pallete'=>$bs_packing,
-                                'created'=>$tanggal,
-                                'created_by'=>$user_id,
-                                'modified'=>$tanggal,
-                                'modified_by'=>$user_id,
-                                'tanggal_masuk'=>$tgl_input
-                            ));
-            }
-
-            if($this->input->post('bs_service')!=0){
-
-                $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
-                
-                $bs_packing = $tgl_code.substr($bs_code,13,4);
-                    #insert bs ke gudang bs
-                            $this->db->insert('dtr_detail', array(
-                                'dtr_id'=>$dtr_id,
-                                'rongsok_id'=>21,//BS APOLLO
-                                'qty'=>0,
-                                'bruto'=>$this->input->post('bs_service'),
-                                'netto'=>$this->input->post('bs_service'),
-                                'line_remarks'=>'BS SERVICE',
-                                'no_pallete'=>$bs_packing,
-                                'created'=>$tanggal,
-                                'created_by'=>$user_id,
-                                'modified'=>$tanggal,
-                                'modified_by'=>$user_id,
-                                'tanggal_masuk'=>$tgl_input
-                            ));
+                $details = $this->input->post('myDetails');
+                // print_r($details);die();
+                foreach ($details as $i => $row){
+                    if($row['rongsok_id']!=''){
+                        $this->db->insert('dtr_detail', array(
+                            'dtr_id'=>$dtr_id,
+                            //'po_detail_id'=>$row['po_detail_id'],
+                            'rongsok_id'=>$row['rongsok_id'],
+                            'bruto'=>$row['bruto'],
+                            'berat_palette'=>$row['berat_palette'],
+                            'netto'=>$row['netto'],
+                            'no_pallete'=>$row['no_pallete'],
+                            'line_remarks'=>'SISA PRODUKSI',
+                            'created'=>$tanggal,
+                            'created_by'=>$user_id,
+                            'tanggal_masuk'=>$tgl_input
+                        ));
+                    }
+                }
             }
         }
 

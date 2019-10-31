@@ -851,7 +851,9 @@ class Tolling extends CI_Controller{
         foreach ($query as $row) {
             $this->db->where('nomor_bobbin', $row->no_bobbin);
             $this->db->update('m_bobbin', array(
-                'status' => 3
+                'status' => 3,
+                'modified_at' => $tanggal,
+                'modified_by' => $user_id
             ));
         }
 
@@ -2395,7 +2397,9 @@ class Tolling extends CI_Controller{
                         $this->db->where('nomor_bobbin', $row->nomor_bobbin);
                         $this->db->update('m_bobbin', array(
                             'borrowed_by' => $custid,
-                            'status' => 2
+                            'status' => 2,
+                            'modified_at' => $tanggal,
+                            'modified_by' => $user_id
                         ));
 
                         $this->db->insert('m_bobbin_peminjaman_detail', array(
@@ -2549,7 +2553,9 @@ class Tolling extends CI_Controller{
                         $this->db->where('nomor_bobbin', $row->nomor_bobbin);
                         $this->db->update('m_bobbin', array(
                             'borrowed_by' => $custid,
-                            'status' => 2
+                            'status' => 2,
+                            'modified_at' => $tanggal,
+                            'modified_by' => $user_id
                         ));
 
                         $this->db->insert('m_bobbin_peminjaman_detail', array(
@@ -3533,7 +3539,11 @@ class Tolling extends CI_Controller{
                             'tanggal_masuk'=>$tgl_input
                         ));
                     if($row['no_bobbin']!=''){
-                        $updatebobbin = array('status'=>1);
+                        $updatebobbin = array(
+                            'status'=>1,
+                            'modified_at' => $tanggal,
+                            'modified_by' => $user_id
+                    );
                         $this->db->where('nomor_bobbin', $row['no_bobbin']);
                         $this->db->update('m_bobbin', $updatebobbin);
                     }

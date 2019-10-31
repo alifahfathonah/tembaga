@@ -569,6 +569,7 @@ class GudangFG extends CI_Controller{
 
     function save_detail(){
         $return_data = array();
+        $user_id  = $this->session->userdata('user_id');
         $tgl_input = date("Y-m-d");
         $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
 
@@ -601,7 +602,9 @@ class GudangFG extends CI_Controller{
        #update status bobbin
        $this->db->where('id' ,$this->input->post('id_bobbin'));
        $this->db->update('m_bobbin', array(
-            'status' => 1
+            'status' => 1,
+            'modified_at'=>$tgl_input,
+            'modified_by'=>$user_id
        ));
 
         if ($this->db->trans_complete()){
@@ -944,6 +947,8 @@ class GudangFG extends CI_Controller{
 
     function delete_detail(){
         $id = $this->input->post('id');
+        $tanggal = date('Y-m-d');
+        $user_id  = $this->session->userdata('user_id');
         $return_data = array();
         $this->db->where('id', $id);
         $key = $this->db->get('produksi_fg_detail')->result();
@@ -951,7 +956,9 @@ class GudangFG extends CI_Controller{
                 $id_bobbin = $row->bobbin_id;
                 $this->db->where('id', $id_bobbin);
                 $this->db->update('m_bobbin', array(
-                    'status' => 3
+                    'status' => 3,
+                    'modified_at' => $tanggal,
+                    'modified_by' => $user_id
                 ));
             }
         $this->db->where('id', $id);
@@ -1639,7 +1646,9 @@ class GudangFG extends CI_Controller{
 
             $this->db->where('id', $this->input->post('id_bobbin'));
             $this->db->update('m_bobbin', array(
-                'status' => 3
+                'status' => 3,
+                'modified_at' => $tanggal,
+                'modified_by' => $user_id
             ));
 
             #insert DTR ke gudang rongsok

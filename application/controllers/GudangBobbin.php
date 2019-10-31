@@ -435,7 +435,9 @@ class GudangBobbin extends CI_Controller{
                     $this->db->where('id', $row->id);
                     $this->db->update('m_bobbin', array(
                         'status' => 2,
-                        'borrowed_by_supplier' => $this->input->post('supplier_id')
+                        'borrowed_by_supplier' => $this->input->post('supplier_id'),
+                        'modified_at'=>$tanggal,
+                        'modified_by'=>$user_id
                     ));
                 }
 
@@ -627,7 +629,9 @@ class GudangBobbin extends CI_Controller{
                 $this->db->update('m_bobbin', array(
                     'status' => 0,
                     'borrowed_by' => 0,
-                    'borrowed_by_supplier' => 0
+                    'borrowed_by_supplier' => 0,
+                    'modified_at'=>$tanggal,
+                    'modified_by'=>$user_id
                 ));
 
                 // $this->db->where('id', $v['barang_id']);

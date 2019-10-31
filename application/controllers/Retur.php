@@ -1023,7 +1023,9 @@ class Retur extends CI_Controller{
                     if($row2->bobbin_id > 0){
                         $this->db->where('id' ,$row2->bobbin_id);
                         $this->db->update('m_bobbin', array(
-                             'status' => 1
+                            'status' => 1,
+                            'modified_at' => $tanggal,
+                            'modified_by' => $user_id
                         ));
                     }
                 }
@@ -2117,7 +2119,9 @@ class Retur extends CI_Controller{
                     $this->db->where('nomor_bobbin', $row->nomor_bobbin);
                     $this->db->update('m_bobbin', array(
                         'borrowed_by' => $custid,
-                        'status' => 2
+                        'status' => 2,
+                        'modified_at' => $tanggal,
+                        'modified_by' => $user_id
                     ));
 
                     $this->db->insert('m_bobbin_peminjaman_detail', array(

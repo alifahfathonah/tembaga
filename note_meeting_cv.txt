@@ -159,3 +159,5 @@ Untuk Bobin dan keranjang, Laporan Stock(Awal + pemasukan -Pengeluaran= Akhir)*B
 tolling & so tgl input saat approve utk bobbin peminjaman
 
 lpb edit kurs dan gudang sp
+
+pindahin fg stok saat itu ke pajak. di buatin bpb di pajak per jenis barang
