@@ -52,7 +52,7 @@ table td, table td * {
         echo '<tr>';
         echo (($last_tanggal==$row->tanggal) ? '<td style="text-align:center;">' : '<td style="text-align:center; border-top:1px solid #000;">'.$row->tanggal).'</td>';
         echo '<td style="border-top:1px solid #000; border-left:1px solid #000">'.$row->no_produksi.'</td>';
-        echo '<td style="border-top:1px solid #000; border-left:1px solid #000">'.number_format($row->gas,2,',','.').'</td>';
+        echo '<td style="border-top:1px solid #000; border-left:1px solid #000">'.number_format($row->gas+$row->gas_r,2,',','.').'</td>';
         echo '<td style="border-top:1px solid #000; border-left:1px solid #000">'.number_format($row->kayu,2,',','.').'</td>';
         echo '<td style="border-top:1px solid #000; border-left:1px solid #000">'.$hours.'j, '.$minutes.'m</td>';
         echo '<td style="border-top:1px solid #000; border-left:1px solid #000">'.$row->tipe.'</td>';
@@ -67,7 +67,7 @@ table td, table td * {
         $berat_ingot += $row->ingot;
         $berat += $row->berat_ingot;
         $berat_susut += $row->total_rongsok-$row->berat_ingot-$row->bs-$row->bs_service;
-        $gas += $row->gas;
+        $gas += $row->gas+$row->gas_r;
         $jam += $total;
         $kayu += $row->kayu;
         $bs += $row->bs;
@@ -144,7 +144,7 @@ table td, table td * {
                 <tr>
                     <td style="text-align:left">SUSUT 25 %</td>
                     <td>:</td>
-                    <td><?=number_format($berat_susut*25/100,2,',','.');?></td>
+                    <td><?=number_format($berat_susut*25/100,2,',','.');?> KG</td>
                 </tr>
             </table>
         </td>

@@ -740,8 +740,7 @@ class Ingot extends CI_Controller{
                 'tipe'=>$this->input->post('tipe_rongsok'),
                 'total_rongsok'=>$this->input->post('total_rongsok'),
                 'kayu'=>$this->input->post('kayu'),
-                'gas'=> $this->input->post('gas_l'),
-                'gas_r'=> $this->input->post('gas_r'),
+                'gas'=> $this->input->post('gas'),
                 'no_spb_rongsok'=> $this->input->post('no_spb_rongsok'),
                 'id_produksi'=> $this->input->post('no_masak'),
                 'ingot'=> $this->input->post('ingot'),
@@ -798,6 +797,7 @@ class Ingot extends CI_Controller{
 
                 $details = $this->input->post('myDetails');
                 // print_r($details);die();
+                $bs_ingot = 0;
                 foreach ($details as $i => $row){
                     if($row['rongsok_id']!=''){
                         $this->db->insert('dtr_detail', array(
@@ -813,7 +813,19 @@ class Ingot extends CI_Controller{
                             'created_by'=>$user_id,
                             'tanggal_masuk'=>$tgl_input
                         ));
+                        if($row['rongsok_id'] == 22){
+                            $bs_ingot += $row['netto'];
+                        }
                     }
+                }
+
+                if($bs_ingot > 0){
+                    $new_bs = $this->input->post('bs') - $bs_ingot;
+                    $this->db->where('id', $id_masak);
+                    $this->db->update('t_hasil_masak', array(
+                        'bs'=> $new_bs,
+                        'bs_service'=>$bs_ingot
+                    ));
                 }
             }
         }

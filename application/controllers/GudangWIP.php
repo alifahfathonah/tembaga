@@ -130,12 +130,13 @@ class GudangWIP extends CI_Controller{
                     't_spb_wip_id'=> $this->input->post('id_spb'),
                     'qty'=>(int)($this->input->post('qty_kh')!= null) ? $this->input->post('qty_kh'): $this->input->post('qty_km'),
                     'uom' => 'ROLL',
-                    'gas'=> (int)$this->input->post('gas'),
+                    'gas'=> $this->input->post('gas'),
+                    'gas_r'=> $this->input->post('gas_r'),
                     'berat' => (int)($this->input->post('berat_kh')!=null) ? $this->input->post('berat_kh') : $this->input->post('berat_km'),
                     'susut' => $susut,
                     'keras' => (int)$this->input->post('berat_keras'),
                     'qty_keras' => (int)$this->input->post('jml_keras'),
-                    'bs' => (int)($this->input->post('bs')!= null)? $this->input->post('bs') : $this->input->post('bs_rolling'),
+                    'bs' => (int)($this->input->post('bs')!= null)? $this->input->post('bs') : $this->input->post('bs_rolling')+$this->input->post('bs_8m'),
                     'bs_ingot' => (int)($this->input->post('bs_ingot')!= null)? $this->input->post('bs_ingot') : 0,
                     'serbuk' => (int)$this->input->post('serbuk'),
                     'tali_rolling' => (int)$this->input->post('tali_rolling'),
@@ -1882,8 +1883,8 @@ class GudangWIP extends CI_Controller{
                 $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_bb_rolling($start,$end)->result();
                 $this->load->view('gudangwip/print_laporan_bb_rolling', $data);
             }elseif($jb_id == 7){
-                // $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_bb_rolling($start,$end)->result();
-                // $this->load->view('gudangwip/print_laporan_bb_rolling', $data);
+                $data['detailLaporan'] = $this->Model_gudang_wip->lap_babakar_apollo($start,$end)->result();
+                $this->load->view('gudangwip/print_laporan_bbk_apollo', $data);
             }elseif($jb_id == 8){
                 $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();
                 $this->load->view('gudangwip/print_laporan_hasil_apollo', $data);

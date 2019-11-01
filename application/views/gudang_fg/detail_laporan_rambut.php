@@ -247,7 +247,7 @@
     </div>
 </div> 
 <script>
-var myRequest;
+var loading = false;
 
 function timbang_netto(){
     var bruto = $("#bruto").val();
@@ -451,15 +451,18 @@ $('#btnSaveDetail').click(function(event) {
     event.preventDefault(); /*  Stops default form submit on click */
 
     if($.trim($("#netto").val()) == ""){
-        $('#message').html("Silahkan isi netto barang!");
+        $('#message').html("Silahkan isi netto barang!");   
         $('.alert-danger').show(); 
     }else if($.trim($("#no_packing").val()) == ""){
         $('#message').html("Silahkan pilih packing barang!");
         $('.alert-danger').show(); 
     }else{
+        if(loading) {
+            return ;
+        }
+        loading = true;
         // $('#btnSaveDetail').text('Please Wait ...').prop("onclick", null).off("click");
         $('#btnSaveDetail').prop('disabled',true);
-        $('#btnSaveDetail').text('Please Wait ...');
         $.ajax({
             type:"POST",
             url:'<?php echo base_url('index.php/GudangFG/save_detail_rambut'); ?>',
@@ -479,9 +482,10 @@ $('#btnSaveDetail').click(function(event) {
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
+                    loading = false;
                     $('#btnSaveDetail').prop('disabled',false);
                     // $('#btnSaveDetail').text('Tambah ').prop("onclick", "myRequest=null; saveDetail();").on("click");
-                    $('#btnSaveDetail').text(' Tambah')
+                    // $('#btnSaveDetail').text(' Tambah')
                     $('#no_produksi').val('');
                     $('#bruto').val('');
                     $('#berat_bobbin').val('');

@@ -6,17 +6,16 @@
         <td colspan="3">
         <table border="0" cellpadding="4" cellspacing="0" width="100%" style="font-size:12px;">
             <tr>
-                <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
-                <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Tanggal</strong></td>
-                <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No. Produksi</strong></td>
+                <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>NO</strong></td>
+                <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>TANGGAL</strong></td>
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>GAS</strong></td>
-                <td colspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Hasil Produksi</strong></td>
+                <td colspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>HASIL PRODUKSI</strong></td>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>ROLLING<br>RATA-RATA<br>LTR/KG</strong></td>
                 <td rowspan="2" style="text-align:center; border:1px solid #000"><strong>ROLLING<br>RATA-RATA<br>M<sup>3</sup>/KG</strong></td>
             </tr>
             <tr>
-                <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>SOLAR</strong></td>
-                <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>GAS</strong></td>
+                <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>GAS(KIRI)</strong></td>
+                <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>GAS(KANAN)</strong></td>
                 <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>ROD MM</strong></td>
                 <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>ROD MM(GAS)</strong></td>
             </tr>
@@ -26,15 +25,15 @@
     <?php
     $no = 1;
     $gas = 0;
+    $gas_r = 0;
     $hasil = 0;
     foreach ($detailLaporan as $row){
-        $rata2m = $row->gas/$row->berat;
+        $rata2m = ($row->gas+$row->gas_r)/$row->berat;
         echo '<tr>';
         echo '<td style="text-align:center; border-bottom:1px solid #000; border-left:1px solid #000">'.$no.'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.$row->tanggal.'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.$row->nomor.'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->gas,2,',','.').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->gas_r,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->berat,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
@@ -42,14 +41,15 @@
         echo '</tr>';
         $no++;
         $gas += $row->gas;
+        $gas_r += $row->gas_r;
         $hasil += $row->berat;
     }
-    $rrm = $gas/$hasil;
+    $rrm = ($gas+$gas_r)/$hasil;
     ?>
     <tr>
-        <td colspan="3" style="border-left: 1px solid #000; border-bottom: 1px solid #000;"><strong>Grand Total</strong></td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;">-</td>
+        <td colspan="2" style="border-left: 1px solid #000; border-bottom: 1px solid #000;"><strong>Grand Total</strong></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($gas,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($gas_r,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;">-</td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($hasil,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;">-</td>
@@ -58,22 +58,22 @@
     </tr>
     </tbody>
     <tr>
-        <td colspan="6" style="text-align: left; border-bottom:1px solid #000; border-left:1px solid #000;">
+        <td colspan="5" style="text-align: left; border-bottom:1px solid #000; border-left:1px solid #000;">
             <table border="0" width="100%" style="text-align:left">
                 <tr>
                     <td>TOTAL PEMAKAIAN BAHAN BAKAR ROLLING (GAS)</td>
                     <td>=</td>
-                    <td><?=$gas;?></td>
+                    <td><?=number_format($gas+$gas_r,2,',','.');?></td>
                 </tr>
                 <tr>
                     <td>TOTAL HASIL ROLLING (GAS)</td>
                     <td>=</td>
-                    <td><?=$hasil;?></td>
+                    <td><?=number_format($hasil,2,',','.');?></td>
                 </tr>
                 <tr>
                     <td>RATA PEMAKAIAN BAHAN BAKAR ROLLING (GAS)</td>
                     <td>=</td>
-                    <td><?=$rrm;?></td>
+                    <td><?=number_format($rrm,5,',','.');?></td>
                 </tr>
             </table>
         </td>

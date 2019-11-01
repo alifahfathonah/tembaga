@@ -2343,7 +2343,7 @@ class Tolling extends CI_Controller{
         if ($jenis == 'FG') {
             foreach ($loop as $row) {
                 $this->db->where('id', $row->gudang_id);
-                $this->db->update('t_gudang_fg', array('flag_taken' => 1));
+                $this->db->update('t_gudang_fg', array('flag_taken' => 1, 't_sj_id'=> $sjid));
             }
         } else if ($jenis == 'WIP') {
             foreach ($loop as $row) {

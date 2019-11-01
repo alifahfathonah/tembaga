@@ -70,7 +70,7 @@ table td, table td * {
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->total_rongsok-$row->berat_ingot-$row->bs-$row->bs_service,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->gas,2,',','.').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->gas+$row->gas_r,2,',','.').'</td>';
         echo '</tr>';
         $berat_rongsok += $row->total_rongsok;
         if($row->tipe=='A'){
@@ -84,7 +84,7 @@ table td, table td * {
         $berat_ingot += $row->ingot;
         $berat += $row->berat_ingot;
         $berat_susut += $row->total_rongsok-$row->berat_ingot-$row->bs-$row->bs_service;
-        $gas += $row->gas;
+        $gas += $row->gas+$row->gas_r;
         $bs += $row->bs;
         $bs_service += $row->bs_service;
         $count += $row->count;

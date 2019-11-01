@@ -364,14 +364,25 @@
                     </div>
                 </div>
                 <br/>
-                <div class="row">
-                    <div class="col-md-6" id="div_gas">
+                <div class="row" id="div_gas">
+                    <div class="col-md-6">
                         <div class="form-inline">
                             <div class="form-group">
-                                <label>Gas</label>
+                                <label>Gas Kiri</label>
                                 <input type="text" id="gas" name="gas" 
                                 class="form-control myline" size="25" 
-                                value="0" placeholder="Input Gas...">
+                                value="0" placeholder="Input Gas Kiri...">
+                                <label> Kg</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label>Gas Kanan</label>
+                                <input type="text" id="gas_r" name="gas_r" 
+                                class="form-control myline" size="25" 
+                                value="0" placeholder="Input Gas Kanan...">
                                 <label> Kg</label>
                             </div>
                         </div>
@@ -419,6 +430,8 @@
                         </div>
                     </div>
                 </div>
+                <input type="hidden" name="gas" value="0">
+                <input type="hidden" name="gas_r" value="0">
                 <br>
                 <div class="row">
                     <!-- <div class="col-md-6">
@@ -467,6 +480,7 @@ function reset_values(){
     $('#berat_bs_in').val('');
     $('#berat_serbuk_in').val('');
 }
+
 function hitung_susut_jumlah(){
     if($('#jenis_masak').val()=='ROLLING'){
         var susut = Number(Number($('#jml_ingot').val()) - (Number($('#qty_kh_in').val()) + Number($('#jml_keras_in').val())));

@@ -101,7 +101,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                                value="<?php echo date('Y-m-d'); ?>">
                         </div>
                     </div>
                 </div>              
@@ -197,18 +197,11 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-2">
-                                            GAS Kiri<font color="#f00">*</font>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input type="text" id="gas" name="gas_l"
-                                                class="form-control myline" placeholder="Gas/m3" style="margin-bottom:5px; width:120px;"  required="required">
-                                        </div>
-                                        <div class="col-md-3">
-                                            GAS Kanan<font color="#f00">*</font>
-                                        </div>
                                         <div class="col-md-4">
-                                            <input type="text" id="gas" name="gas_r"
+                                            GAS<font color="#f00">*</font>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" id="gas" name="gas"
                                                 class="form-control myline" placeholder="Gas/m3" style="margin-bottom:5px; width:120px;"  required="required">
                                         </div>
                                     </div>
@@ -305,6 +298,7 @@ function get_detail_produksi(id){
             $('#dtr').show();
             $("#no_spb").val(result['no_spb']);
             $('#tgl_prd').val(result['tgl_prd']);
+            $('#tanggal').val(result['tgl_prd']);
             $('#tipe_apolo').val(result['tipe_apolo']);
             $("#total_rongsok").val(Number(result['total_rongsok']).toFixed(2)); 
             hitung_susut();
@@ -438,7 +432,7 @@ $(function(){
         buttonText: "Select date",
         changeMonth: true,
         changeYear: true,
-        dateFormat: 'dd-mm-yy'
+        dateFormat: 'yy-mm-dd'
     });
 });
 </script>

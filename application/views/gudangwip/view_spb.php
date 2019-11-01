@@ -104,15 +104,25 @@
                 </div>
                 <div class="col-md-1">&nbsp;</div>
                 <div class="col-md-5">
-                    <div class="row">
-                        <?php if($myData['flag_produksi']==2){
+                    <div class="row"><?php 
+                            if($myData['flag_produksi']==0){
+                                $flag_produksi = 'SDM';
+                            }else if($myData['flag_produksi']==2){
                                 $flag_produksi = 'ROLLING';
                             }else if($myData['flag_produksi']==3){
                                 $flag_produksi = 'CUCI';
+                            }else if($myData['flag_produksi']==4){
+                                $flag_produksi = 'Tolling';
                             }else if($myData['flag_produksi']==5){
                                 $flag_produksi = 'KIRIM KE RONGSOK';
+                            }else if($myData['flag_produksi']==6){
+                                $flag_produksi = 'SO';
+                            }else if($myData['flag_produksi']==7){
+                                $flag_produksi = 'Retur';
+                            }else if($myData['flag_produksi']==8){
+                                $flag_produksi = 'Repacking';
                             }else{
-                                $flag_produksi = 'LAINNYA';
+                                $flag_produksi = 'CUCI';
                             } ?>
                         <div class="col-md-4">
                             Keperluan

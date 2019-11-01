@@ -361,7 +361,7 @@ class Model_gudang_wip extends CI_Model{
 
     function print_laporan_masak($s,$e,$j){
         if($j == 1){
-            return $this->db->query("select thm.tanggal, pi.no_produksi as nomor, thm.tipe, count(thm.id) as count, sum(kayu) as kayu, sum(gas) as gas, sum(bs_service) as bs_service, sum(total_rongsok) as total_rongsok, sum(ingot) as ingot, sum(berat_ingot) as berat_ingot, sum(bs) as bs, sum(susut) as susut, sum(ampas) as ampas, sum(serbuk) as serbuk, sum(bs_service) as bs_service from t_hasil_masak thm
+            return $this->db->query("select thm.tanggal, pi.no_produksi as nomor, thm.tipe, count(thm.id) as count, sum(kayu) as kayu, sum(gas) as gas,  sum(gas_r) as gas_r, sum(bs_service) as bs_service, sum(total_rongsok) as total_rongsok, sum(ingot) as ingot, sum(berat_ingot) as berat_ingot, sum(bs) as bs, sum(susut) as susut, sum(ampas) as ampas, sum(serbuk) as serbuk, sum(bs_service) as bs_service from t_hasil_masak thm
             left join produksi_ingot pi on thm.id_produksi = pi.id
             where thm.tanggal between '".$s."' and '".$e."' group by thm.tanggal");
         }elseif($j == 2){
@@ -378,7 +378,7 @@ class Model_gudang_wip extends CI_Model{
             return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, (select sum(qty) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as qty_rsk, (select sum(berat) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as berat_rsk, thw.tanggal, qty, uom, berat, susut, bs from t_hasil_wip thw
             where thw.jenis_masak = 'CUCI' and thw.tanggal between '".$s."' and '".$e."'");
         }elseif($j == 8){
-            return $this->db->query("select thm.tanggal, pi.no_produksi, thm.tipe, mulai,selesai, kayu, gas, bs_service, total_rongsok, ingot, berat_ingot, bs, susut, ampas, serbuk, bs_service from t_hasil_masak thm
+            return $this->db->query("select thm.tanggal, pi.no_produksi, thm.tipe, mulai,selesai, kayu, gas, gas_r, bs_service, total_rongsok, ingot, berat_ingot, bs, susut, ampas, serbuk, bs_service from t_hasil_masak thm
             left join produksi_ingot pi on thm.id_produksi = pi.id
             where thm.tanggal between '".$s."' and '".$e."' order by thm.tanggal, pi.no_produksi");
         }
@@ -415,12 +415,23 @@ class Model_gudang_wip extends CI_Model{
             ");
     }
 
+    function lap_babakar_apollo($s,$e){
+        return $this->db->query("select thm.tanggal, 1 as v_digital, pi.no_produksi as nomor, thm.tipe, count(thm.id) as count, sum(kayu) as kayu, 
+    sum(CASE WHEN a.jenis = 3 THEN gas ELSE 0 END) as gas3,
+    sum(CASE WHEN a.jenis = 4 THEN gas ELSE 0 END) as gas4,
+    sum(CASE WHEN a.jenis = 3 THEN berat_ingot ELSE 0 END) as berat_ingot3, sum(CASE WHEN a.jenis = 4 THEN berat_ingot ELSE 0 END) as berat_ingot4,
+    sum(bs_service) as bs_service, sum(total_rongsok) as total_rongsok, sum(ingot) as ingot, sum(bs) as bs, sum(susut) as susut, sum(ampas) as ampas, sum(serbuk) as serbuk, sum(bs_service) as bs_service, a.jenis from t_hasil_masak thm
+            left join produksi_ingot pi on thm.id_produksi = pi.id
+            left join apolo a on a.id = pi.id_apolo
+            where thm.tanggal between '".$s."' and '".$e."' group by thm.tanggal");
+    }
+
     function get_gas_kayu($s,$e){
         return $this->db->query("select sum(kayu) as kayu, sum(gas) as gas from t_hasil_masak where tanggal between '".$s."' and '".$e."'");
     }
 
     function print_laporan_bb_rolling($s,$e){
-        return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, thw.gas, thw.tanggal, thw.qty, uom, thw.berat, susut, bs from t_hasil_wip thw 
+        return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, thw.gas, thw.gas_r, thw.tanggal, thw.qty, uom, thw.berat, susut, bs from t_hasil_wip thw 
             where thw.jenis_masak = 'ROLLING' and thw.tanggal between '".$s."' and '".$e."'");
     }
 
