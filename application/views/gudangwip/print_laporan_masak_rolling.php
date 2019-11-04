@@ -125,6 +125,13 @@
         <td style="border-left:1px solid #000; border-right:1px solid #000;"></td>
     </tr>
     <tr>
+        <td style="border-left: 1px solid #000; border-bottom: 1px solid #000;"><?=number_format($ia['netto'],2,',','.');?></td>
+        <td colspan="19" style="border-bottom:1px solid #000; border-left:1px solid #000;"></td>
+        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($ib['netto'],2,',','.');?></td>
+        <td colspan="2" style="border-bottom:1px solid #000; border-left:1px solid #000;"></td>
+        <td style="border-left:1px solid #000; border-right:1px solid #000;"></td>
+    </tr>
+    <tr>
         <td colspan="3" style="border-left: 1px solid #000; border-bottom: 1px solid #000;"></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_qty,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_rongsok,2,',','.');?></td>

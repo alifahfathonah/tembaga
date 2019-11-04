@@ -492,6 +492,16 @@
                                         <i class="fa fa-briefcase"></i>
                                         Laporan Masak </a>
                                     </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangWIP/floor_produksi">
+                                        <i class="fa fa-briefcase"></i>
+                                        Floor Produksi </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangWIP/gudang_keras">
+                                        <i class="fa fa-briefcase"></i>
+                                        Gudang Keras </a>
+                                    </li>
                                     <!-- <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangFG/print_stok_fg" target="_blank">
                                         <i class="fa fa-print"></i>

@@ -450,6 +450,31 @@ class Model_gudang_wip extends CI_Model{
                 from t_gudang_keras
                 where tanggal between '".$s."' and '".$e."' ");
     }
+
+    function gudang_floor_produksi(){
+        return $this->db->query("select tgp.*, jb.jenis_barang, u.realname from t_gudang_produksi tgp 
+                left join jenis_barang jb on tgp.jenis_barang_id = jb.id
+                left join users u on tgp.created_by = u.id order by tgp.tanggal desc");
+    }
+
+    function get_floor_produksi($a){
+        return $this->db->query("select * from t_gudang_produksi where tanggal ='".$a."'");
+    }
+
+    function header_gudang_produksi($id){
+        return $this->db->query("select * from t_gudang_produksi where id =".$id);
+    }
+
+    function gudang_keras(){
+        return $this->db->query("select tgk.*, jb.jenis_barang, thw.no_produksi_wip from t_gudang_keras tgk
+                left join jenis_barang jb on tgk.jenis_barang_id = jb.id
+                left join t_hasil_wip thw on tgk.t_hasil_wip_id = thw.id
+                order by tgk.tanggal desc");
+    }
+
+    function header_gudang_keras($id){
+        return $this->db->query("select * from t_gudang_keras where id =".$id);
+    }
     /*
     cara membuat view stok wip
     

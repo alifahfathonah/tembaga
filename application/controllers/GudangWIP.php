@@ -1868,6 +1868,8 @@ class GudangWIP extends CI_Controller{
                 $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();
                 $data['a'] = $this->Model_gudang_wip->get_wip_awal($start,$end)->row_array();
                 $data['b'] = $this->Model_gudang_wip->get_wip_akhir($start,$end)->row_array();
+                $data['ia'] = $this->Model_gudang_wip->get_floor_produksi($start)->row_array();
+                $data['ib'] = $this->Model_gudang_wip->get_floor_produksi($end)->row_array();
                 $this->load->view('gudangwip/print_laporan_masak_rolling', $data);
             }elseif($jb_id == 3){
                 $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();
@@ -1888,6 +1890,264 @@ class GudangWIP extends CI_Controller{
             }elseif($jb_id == 8){
                 $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();
                 $this->load->view('gudangwip/print_laporan_hasil_apollo', $data);
+            }
+    }
+
+    function floor_produksi(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Gudang WIP";
+        $data['content']   = "gudangwip/floor_produksi";
+        
+       $this->load->model('Model_gudang_wip');
+       $data['list_data'] = $this->Model_gudang_wip->gudang_floor_produksi()->result();
+        
+        $this->load->view('layout', $data);  
+    }
+
+    function add_floor(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "gudangwip/add_floor";
+        $this->load->model('Model_gudang_wip');
+        $data['list_barang'] = $this->Model_gudang_wip->jenis_barang_list()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function save_floor(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+            $data = array(
+                'tanggal'=> $tgl_input,
+                'jenis_barang_id'=> $this->input->post('barang_id'),
+                'netto'=> $this->input->post('netto'),
+                'keterangan'=>$this->input->post('remarks'),
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id
+            );
+
+            if($this->db->insert('t_gudang_produksi', $data)){
+                $this->session->set_flashdata('flash_msg', 'Data Floor Produksi berhasil disimpan, silahkan dicoba kembali!');
+                redirect('index.php/GudangWIP/floor_produksi/');  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data Floor Produksi gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/GudangWIP/add_floor');  
+            }
+    }
+
+    function delete_floor(){
+        $user_id  = $this->session->userdata('user_id');
+        $id = $this->uri->segment(3);
+
+        $this->db->trans_start();
+        if($id){
+            $this->db->where('id', $id);
+            $this->db->delete('t_gudang_produksi');
+
+            if($this->db->trans_complete()){
+                redirect('index.php/GudangWIP/floor_produksi/');  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data Floor Produksi berhasil dihapus, silahkan dicoba kembali!');
+                redirect('index.php/GudangWIP/add_floor');  
+            }            
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data Floor Produksi gagal disimpan, penomoran belum disetup!');
+            redirect('index.php/GudangWIP/floor_produksi');
+        }
+    }
+
+    function edit_floor(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "gudangwip/edit_floor";
+            $this->load->model('Model_gudang_wip');
+            $data['header'] = $this->Model_gudang_wip->header_gudang_produksi($id)->row_array();
+            $data['list_barang'] = $this->Model_gudang_wip->jenis_barang_list()->result();
+
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/GudangWIP/spb_list');
+        }
+    }
+
+    function update_floor(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $id = $this->input->post('id');
+
+            $this->db->trans_start();
+            $this->db->where('id', $id);
+            $data = array(
+                'tanggal'=> $tgl_input,
+                'jenis_barang_id'=> $this->input->post('barang_id'),
+                'netto'=> $this->input->post('netto'),
+                'keterangan'=>$this->input->post('remarks'),
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id
+            );
+            $this->db->update('t_gudang_produksi', $data);
+            if($this->db->trans_complete()){
+                $this->session->set_flashdata('flash_msg', 'Data Floor Produksi berhasil disimpan!');
+                redirect('index.php/GudangWIP/floor_produksi/');  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data Floor Produksi gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/GudangWIP/edit_floor/'.$id);  
+            }
+    }
+
+    function gudang_keras(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Gudang WIP";
+        $data['content']   = "gudangwip/gudang_keras";
+        
+       $this->load->model('Model_gudang_wip');
+       $data['list_data'] = $this->Model_gudang_wip->gudang_keras()->result();
+        
+        $this->load->view('layout', $data);  
+    }
+
+    function add_gudang_keras(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "gudangwip/add_gudang_keras";
+        $this->load->model('Model_gudang_wip');
+        $data['list_barang'] = $this->Model_gudang_wip->jenis_barang_list()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function save_gudang_keras(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+            $data = array(
+                'tanggal'=> $tgl_input,
+                't_hasil_wip_id' => 0,
+                'jenis_barang_id'=> $this->input->post('barang_id'),
+                'qty'=> $this->input->post('qty'),
+                'berat'=> $this->input->post('netto'),
+                'keterangan'=>$this->input->post('remarks'),
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id
+            );
+
+            if($this->db->insert('t_gudang_keras', $data)){
+                $this->session->set_flashdata('flash_msg', 'Data Gudang Keras berhasil disimpan, silahkan dicoba kembali!');
+                redirect('index.php/GudangWIP/gudang_keras/');  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data Gudang Keras gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/GudangWIP/add_gudang_keras');  
+            }
+    }
+
+    function delete_gudang_keras(){
+        $user_id  = $this->session->userdata('user_id');
+        $id = $this->uri->segment(3);
+
+        $this->db->trans_start();
+        if($id){
+            $this->db->where('id', $id);
+            $this->db->delete('t_gudang_keras');
+
+            if($this->db->trans_complete()){
+                redirect('index.php/GudangWIP/gudang_keras/');  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data Gudang Keras berhasil dihapus, silahkan dicoba kembali!');
+                redirect('index.php/GudangWIP/add_gudang_keras');  
+            }            
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data Gudang Keras gagal disimpan, penomoran belum disetup!');
+            redirect('index.php/GudangWIP/gudang_keras');
+        }
+    }
+
+    function edit_gudang_keras(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "gudangwip/edit_gudang_keras";
+            $this->load->model('Model_gudang_wip');
+            $data['header'] = $this->Model_gudang_wip->header_gudang_keras($id)->row_array();
+
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/GudangWIP/gudang_keras');
+        }
+    }
+
+    function update_gudang_keras(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $this->db->trans_start();
+            // echo $this->input->post('id');die();
+            $this->db->where('id',$this->input->post('id'));
+            $data = array(
+                'tanggal'=> $tgl_input,
+                'qty'=> $this->input->post('qty'),
+                'berat'=> $this->input->post('netto'),
+                'keterangan'=>$this->input->post('remarks'),
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id
+            );
+            $this->db->update('t_gudang_keras', $data);
+
+            if($this->db->trans_complete()){
+                $this->session->set_flashdata('flash_msg', 'Data Gudang Keras berhasil disimpan');
+                redirect('index.php/GudangWIP/gudang_keras/');  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data Gudang Keras gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/GudangWIP/edit_gudang_keras/'.$this->input->post('id'));  
             }
     }
 }

@@ -43,6 +43,7 @@ class Supplier extends CI_Controller{
                     'alamat'=> $this->input->post('alamat'),
                     'npwp'=> $this->input->post('npwp'),
                     'kode_supplier'=> $this->input->post('kode_supplier'),
+                    'flag_gudang'=> 1,
                     'created'=> $tanggal,
                     'created_by'=> $user_id,
                     'modified'=> $tanggal,
