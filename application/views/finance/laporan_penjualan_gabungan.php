@@ -19,10 +19,21 @@
     </div>
   
    <div class="col-md-12" style="margin-top: 10px;"> 
-        <h3>Laporan Penjualan Gabungan</h3>
+        <h3>Laporan Penjualan</h3>
         <hr class="divider">
         <div class="row">
                 <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4">
+                           Jenis <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis" name="jenis" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                    <option value="0">Global</option>
+                                    <option value="1">Per Jenis Barang</option>
+                                </select>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                            Laporan <font color="#f00">*</font>
@@ -71,17 +82,24 @@
     </div>
 <script type="text/javascript">
 function simpanData(){
-    if($.trim($("#tgl_start").val()) == ""){
+    if($.trim($("#jenis").val()) == ""){
+        $('#message').html("Jenis harus dipilih, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#laporan").val()) == ""){
+        $('#message').html("laporan harus dipilih, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else if($.trim($("#tgl_start").val()) == ""){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else if($.trim($("#tgl_end").val()) == ""){
         $('#message').html("Silahkan pilih nama supplier!");
         $('.alert-danger').show();
-    }else{     
+    }else{
+        var j=$('#jenis').val();
         var l=$('#laporan').val();
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/Finance/print_query_penjualan?laporan='+l+'&ts='+s+'&te='+e,'_blank');
+        window.open('<?php echo base_url();?>index.php/Finance/print_query_penjualan?laporan='+l+'&ts='+s+'&te='+e+'&j='+j,'_blank');
     };
 };
 </script>

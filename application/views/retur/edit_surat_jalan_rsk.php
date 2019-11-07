@@ -171,7 +171,7 @@
                                     '<td><input type="text" id="nama_barang_alias_'.$no.'" name="details['.$no.'][nama_barang_alias]" class="form-control myline" value="" onkeyup="this.value = this.value.toUpperCase()"></td>'.
                                     '<td><input type="text" id="no_packing_'.$no.'" name="details['.$no.'][no_packing]" class="form-control myline" readonly="readonly" value="'.$row->no_pallete.'"></td>'.
                                     '<td><input type="text" id="bruto_'.$no.'" name="details['.$no.'][bruto]" class="form-control myline" readonly="readonly" value="'.$row->bruto.'"></td>'.
-                                    '<td><input type="text" id="berat_palette_'.$no.'" name="details['.$no.'][berat_palette]" class="form-control myline" readonly="readonly" value="'.$row->berat_palette.'"></td>'.
+                                    '<td><input type="text" id="berat_palette_'.$no.'" name="details['.$no.'][berat_bobbin]" class="form-control myline" readonly="readonly" value="'.$row->berat_palette.'"></td>'.
                                     '<td><input type="text" id="netto_'.$no.'" name="details['.$no.'][netto]" class="form-control myline" readonly="readonly" value="'.$row->netto.'"></td>'.
                                     '</td>'.
                                 '</tr>';

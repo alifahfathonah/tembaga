@@ -37,6 +37,19 @@
                     </div> -->
                     <div class="row">
                         <div class="col-md-4">
+                           Jenis <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis" name="jenis" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                    <option value="0">Global</option>
+                                    <?php if($this->session->userdata('user_ppn')==0){
+                                        echo '<option value="1">KKH</option>';
+                                    } ?>
+                                </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Tanggal Awal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -74,10 +87,10 @@ function simpanData(){
         $('#message').html("Silahkan pilih nama supplier!");
         $('.alert-danger').show();
     }else{     
-        var l=$('#laporan').val();
+        var j=$('#jenis').val();
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/Finance/print_penjualan_customer?ts='+s+'&te='+e,'_blank');
+        window.open('<?php echo base_url();?>index.php/Finance/print_penjualan_customer?ts='+s+'&te='+e+'&j='+j,'_blank');
     };
 };
 </script>

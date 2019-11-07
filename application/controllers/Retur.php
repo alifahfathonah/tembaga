@@ -519,13 +519,21 @@ class Retur extends CI_Controller{
         $this->db->trans_start();
 
         $this->load->model('Model_m_numberings');
-        $first = substr($this->input->post('no_packing'),0,1);
-        $sec = substr($this->input->post('no_packing'),1,1);
-        $num = $first.$sec;
-        $code = $this->Model_m_numberings->getNumbering($num,$tgl_input);
+        // OLD BARCODE
+        // $first = substr($this->input->post('no_packing'),0,1);
+        // $sec = substr($this->input->post('no_packing'),1,1);
+        // $num = $first.$sec;
+        // $code = $this->Model_m_numberings->getNumbering($num,$tgl_input);
+
+        // $ukuran = $this->input->post('ukuran');
+        // $no_packing = $tgl_code.$first.$ukuran.$sec.substr($code,8,3);
+
+        // NEW BARCODE
+        $first = substr($this->input->post('no_packing'),0,2);
+        $code = $this->Model_m_numberings->getNumbering($first,$tgl_input);
 
         $ukuran = $this->input->post('ukuran');
-        $no_packing = $tgl_code.$first.$ukuran.$sec.substr($code,8,3);
+        $no_packing = $tgl_code.$first.$ukuran.substr($code,8,3);
         
         $this->db->insert('retur_detail', array(
             'retur_id' => $this->input->post('id'),
@@ -745,171 +753,113 @@ class Retur extends CI_Controller{
         }
         $data['group_id']  = $group_id;
         $data['content']= "retur/create_request_barang";
-        
-        $this->load->model('Model_retur');
-        $data['header'] = $this->Model_retur->show_header_ttr($id)->row_array();
-        $data['jenis_barang_list'] = $this->Model_retur->jenis_barang_list()->result();
 
         $this->load->view('layout', $data);
     }
     
-    function save_request_barang(){
+    function save_spb(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        
+        $jenis = $this->input->post('jenis_barang');
+
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('REQ', $tgl_input); 
-        
-        if($code){        
-            $data = array(
-                'no_request'=> $code,
-                'tanggal'=> $tgl_input,
-                'm_customer_id'=>$this->input->post('m_customer_id'),
-                'jenis_barang'=>$this->input->post('jenis_barang'),
-                'remarks'=>$this->input->post('remarks'),
-                'ttr_id'=>$this->input->post('ttr_id'),
-                'module'=>'Retur',
-                'created'=> $tanggal,
-                'created_by'=> $user_id,
-                'modified'=> $tanggal,
-                'modified_by'=> $user_id
-            );
+        if($jenis == 'FG'){
+            $code = $this->Model_m_numberings->getNumbering('SPB-FG', $tgl_input); 
+            if($code){        
+                $data = array(
+                    'no_spb'=> $code,
+                    'tanggal'=> $tgl_input,
+                    'jenis_spb'=> 9,
+                    'flag_tolling'=> 0,
+                    'keterangan'=>$this->input->post('remarks'),
+                    'created_at'=> $tanggal,
+                    'created_by'=> $user_id
+                );
 
-            if($this->db->insert('request_sample', $data)){
-                redirect('index.php/Retur/edit_request_barang/'.$this->db->insert_id());  
+                if($this->db->insert('t_spb_fg', $data)){
+                    redirect('index.php/GudangFG/edit_spb/'.$this->db->insert_id());  
+                }else{
+                    $this->session->set_flashdata('flash_msg', 'Data SPB FG gagal disimpan, silahkan dicoba kembali!');
+                    redirect('index.php/Retur/create_request_barang');  
+                }            
             }else{
-                $this->session->set_flashdata('flash_msg', 'Data request gagal disimpan, silahkan dicoba kembali!');
-                redirect('index.php/Retur');  
-            }            
-        }else{
-            $this->session->set_flashdata('flash_msg', 'Data request gagal disimpan, penomoran belum disetup!');
-            redirect('index.php/Retur');
-        }
-    }  
-    
-    function edit_request_barang(){
-        $module_name = $this->uri->segment(1);
-        $id = $this->uri->segment(3);
-        if($id){
-            $group_id    = $this->session->userdata('group_id');        
-            if($group_id != 1){
-                $this->load->model('Model_modules');
-                $roles = $this->Model_modules->get_akses($module_name, $group_id);
-                $data['hak_akses'] = $roles;
+                $this->session->set_flashdata('flash_msg', 'Data SPB FG gagal disimpan, penomoran belum disetup!');
+                redirect('index.php/Retur/request_barang_list');
             }
-            $data['group_id']  = $group_id;
+        }else if($jenis == 'WIP'){
+            $code = $this->Model_m_numberings->getNumbering('SPB-WIP', $tgl_input); 
+            if($code){        
+                $data = array(
+                    'no_spb_wip'=> $code,
+                    'tanggal'=> $tgl_input,
+                    'flag_produksi'=> 9,
+                    'flag_tolling'=> 0,
+                    'keterangan'=>$this->input->post('remarks'),
+                    'created'=> $tanggal,
+                    'created_by'=> $user_id
+                );
 
-            $data['content']= "retur/edit_request_barang";
-            $this->load->model('Model_retur');
-            $data['header'] = $this->Model_retur->show_header_rs($id)->row_array();  
-            $data['jenis_barang_list'] = $this->Model_retur->jenis_barang_list()->result();
-            $this->load->view('layout', $data);   
-        }else{
-            redirect('index.php/Retur');
-        }
-    }
-    
-    function update_request_barang(){
-        $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
-        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        
-        $data = array(
-                'tanggal'=> $tgl_input,
-                'jenis_barang'=>$this->input->post('jenis_barang'),
-                'modified'=> $tanggal,
-                'modified_by'=> $user_id
-            );
-        
-        $this->db->where('id', $this->input->post('id'));
-        $this->db->update('request_sample', $data);
-        
-        $this->session->set_flashdata('flash_msg', 'Data request barang berhasil disimpan');
-        redirect('index.php/Retur/ttr_list');
-    }
-    
-    function load_detail_request_barang(){
-        $id = $this->input->post('id');
-        
-        $tabel = "";
-        $no    = 1;
-        $this->load->model('Model_rongsok');
-        $list_rongsok = $this->Model_rongsok->list_data()->result();
-        
-        $this->load->model('Model_pengiriman_sample'); 
-        $myDetail = $this->Model_pengiriman_sample->load_detail($id)->result(); 
-        foreach ($myDetail as $row){
-            $tabel .= '<tr>';
-            $tabel .= '<td style="text-align:center">'.$no.'</td>';
-            $tabel .= '<td>'.$row->nama_item.'</td>';
-            $tabel .= '<td>'.$row->uom.'</td>';
-            $tabel .= '<td style="text-align:right">'.number_format($row->qty,0,',','.').'</td>';
-            $tabel .= '<td>'.$row->line_remarks.'</td>';
-            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
-                    . '<i class="fa fa-trash"></i> Delete </a></td>';
-            $tabel .= '</tr>';           
-            $no++;
-        }
-            
-        $tabel .= '<tr>';
-        $tabel .= '<td style="text-align:center">'.$no.'</td>';
-        $tabel .= '<td>';
-        $tabel .= '<select id="rongsok_id" name="rongsok_id" class="form-control select2me myline" ';
-            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">';
-            $tabel .= '<option value=""></option>';
-            foreach ($list_rongsok as $value){
-                $tabel .= "<option value='".$value->id."'>".$value->nama_item."</option>";
+                if($this->db->insert('t_spb_wip', $data)){
+                    redirect('index.php/GudangWIP/edit_spb/'.$this->db->insert_id());  
+                }else{
+                    $this->session->set_flashdata('flash_msg', 'Data SPB WIP gagal disimpan, silahkan dicoba kembali!');
+                    redirect('index.php/Retur/create_request_barang');  
+                }            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data SPB FG gagal disimpan, penomoran belum disetup!');
+                redirect('index.php/Retur/request_barang_list');
             }
-        $tabel .= '</select>';
-        $tabel .= '</td>';
-        $tabel .= '<td><input type="text" id="uom" name="uom" class="form-control myline" readonly="readonly"></td>';        
-        $tabel .= '<td><input type="text" id="qty" name="qty" class="form-control myline" '
-                . 'onkeydown="return myCurrency(event);" maxlength="5" value="0" onkeyup="getComa(this.value, this.id);"></td>';
-        
-        $tabel .= '<td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';  
-        $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                . 'yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"> '
-                . '<i class="fa fa-plus"></i> Tambah </a></td>';
-        $tabel .= '</tr>';       
-        
-        header('Content-Type: application/json');
-        echo json_encode($tabel); 
-    }
-    
-    function save_detail_request_barang(){
-        $return_data = array();
-        
-        if($this->db->insert('request_sample_detail', array(
-            'request_sample_id'=>$this->input->post('id'),
-            'rongsok_id'=>$this->input->post('rongsok_id'),
-            'qty'=>str_replace('.', '', $this->input->post('qty')),
-            'line_remarks'=>$this->input->post('line_remarks')
-        ))){
-            $return_data['message_type']= "sukses";
-        }else{
-            $return_data['message_type']= "error";
-            $return_data['message']= "Gagal menambahkan detail request! Silahkan coba kembali";
+        }else if($jenis == 'RONGSOK'){
+            $code = $this->Model_m_numberings->getNumbering('SPB-RSK', $tgl_input); 
+            if($code){        
+                $data = array(
+                    'no_spb'=> $code,
+                    'tanggal'=> $tgl_input,
+                    'jenis_barang'=>1,
+                    'jenis_spb'=> 9,//JENIS SPB RETUR K
+                    'flag_tolling'=> 1,
+                    'jumlah'=> $this->input->post('jumlah_rsk'),
+                    'remarks'=>$this->input->post('remarks'),
+                    'created'=> $tanggal,
+                    'created_by'=> $user_id
+                );
+
+                if($this->db->insert('spb', $data)){
+                    redirect('index.php/Ingot/add_spb/'.$this->db->insert_id());  
+                }else{
+                    $this->session->set_flashdata('flash_msg', 'Data SPB Rongsok gagal disimpan, silahkan dicoba kembali!');
+                    redirect('index.php/Retur/create_request_barang');  
+                }            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data SPB Rongsok gagal disimpan, penomoran belum disetup!');
+                redirect('index.php/Retur/request_barang_list');
+            }
+        }else if($jenis == 'AMPAS'){
+            $code = $this->Model_m_numberings->getNumbering('SPB-AMP', $tgl_input); 
+            if($code){        
+                $data = array(
+                    'no_spb_ampas'=> $code,
+                    'tanggal'=> $tgl_input,
+                    'flag_tolling'=> 0,
+                    'keterangan'=>$this->input->post('remarks'),
+                    'created_at'=> $tanggal,
+                    'created_by'=> $user_id
+                );
+
+                if($this->db->insert('t_spb_ampas', $data)){
+                    redirect('index.php/PengirimanAmpas/edit_spb/'.$this->db->insert_id());  
+                }else{
+                    $this->session->set_flashdata('flash_msg', 'Data SPB Rongsok gagal disimpan, silahkan dicoba kembali!');
+                    redirect('index.php/Retur/create_request_barang');  
+                }            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data SPB Rongsok gagal disimpan, penomoran belum disetup!');
+                redirect('index.php/Retur/request_barang_list');
+            }
         }
-        header('Content-Type: application/json');
-        echo json_encode($return_data); 
     }
-    
-    function delete_detail_request_barang(){
-        $id = $this->input->post('id');
-        $return_data = array();
-        $this->db->where('id', $id);
-        if($this->db->delete('request_sample_detail')){
-            $return_data['message_type']= "sukses";
-        }else{
-            $return_data['message_type']= "error";
-            $return_data['message']= "Gagal menghapus detail request! Silahkan coba kembali";
-        }           
-        header('Content-Type: application/json');
-        echo json_encode($return_data);
-    }
-    
+
     function request_barang_list(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
@@ -922,11 +872,369 @@ class Retur extends CI_Controller{
 
         $data['content']= "retur/request_barang_list";
         $this->load->model('Model_retur');
-        $data['list_data'] = $this->Model_retur->list_request_barang()->result();
+        $data['list_data'] = $this->Model_retur->spb_list()->result();
 
         $this->load->view('layout', $data);
     }
     
+    function surat_jalan_sp(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "retur/surat_jalan_sp";
+        $this->load->model('Model_retur');
+        $data['list_data'] = $this->Model_retur->surat_jalan_sp()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function add_surat_jalan_sp(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "retur/add_surat_jalan_sp";
+        
+        $this->load->model('Model_sales_order');
+        $this->load->model('Model_retur');
+        $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+        $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
+        // $data['retur_list'] = $this->Model_retur->retur_list_2()->result();
+        $this->load->view('layout', $data);
+    }
+
+    function save_surat_jalan_sp(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('SJ', $tgl_input); 
+        
+        if($code){        
+            $data = array(
+                'no_surat_jalan'=> $code,
+                'tanggal'=> $tgl_input,
+                'spb_id' => $this->input->post('spb_id'),
+                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'm_customer_id'=>$this->input->post('m_customer_id'),
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
+                'supir'=>$this->input->post('supir'),
+                'remarks'=>$this->input->post('remarks'),
+                'status'=>0,
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id,
+            );
+
+            if($this->db->insert('t_surat_jalan', $data)){
+                redirect('index.php/Retur/edit_surat_jalan_sp/'.$this->db->insert_id());  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data surat jalan gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/Retur/add_surat_jalan_sp');  
+            }            
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data surat jalan gagal disimpan, penomoran belum disetup!');
+            redirect('index.php/Retur/add_surat_jalan_sp');
+        }
+    }
+
+    function edit_surat_jalan_sp(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['content']= "retur/edit_surat_jalan_sp";
+
+            $this->load->model('Model_retur');
+            $this->load->model('Model_tolling_titipan');
+            $this->load->model('Model_sales_order');
+
+            $data['header'] = $this->Model_retur->show_header_sj_sp($id)->row_array();
+            $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+            $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
+
+            $jenis = $data['header']['jenis_barang'];
+            $spbid = $data['header']['spb_id'];
+
+            if($jenis == 'FG'){
+                $data['list_produksi'] = $this->Model_tolling_titipan->list_item_sjk_fg($spbid)->result();
+            }else if($jenis == 'WIP'){
+                $data['list_produksi'] = $this->Model_tolling_titipan->list_item_sjk_wip($spbid)->result();
+            }else if($jenis == 'RONGSOK'){
+                $data['list_produksi'] = $this->Model_tolling_titipan->list_item_sjk_rsk($spbid)->result();
+            }
+
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/Retur/surat_jalan');
+        }
+    }
+
+    function update_surat_jalan_sp(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');        
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $jenis = $this->input->post('jenis_barang');
+        $soid = $this->input->post('so_id');
+
+        #Insert Surat Jalan
+        $details = $this->input->post('details');
+        // print_r($details);
+        // die();
+        foreach ($details as $v) {
+            if($v['id_barang']!=''){
+                if($v['barang_alias']==''){
+                    $v['barang_alias']=null;
+                }
+                if($jenis=='FG'){// BARANG FINISH GOOD
+                    $this->db->insert('t_surat_jalan_detail', array(
+                        't_sj_id'=>$this->input->post('id'),
+                        'gudang_id'=>$v['id_barang'],
+                        'jenis_barang_id'=>$v['jenis_barang_id'],
+                        'barang_alias'=>$v['barang_alias'],
+                        'no_packing'=>$v['no_packing'],
+                        'qty'=>'1',
+                        'bruto'=>$v['bruto'],
+                        'berat'=>$v['berat'],
+                        'netto'=>$v['netto'],
+                        'nomor_bobbin'=>$v['bobbin'],
+                        'line_remarks'=>'',
+                        'created_by'=>$user_id,
+                        'created_at'=>$tanggal
+                    ));
+                }else if($jenis=='WIP'){//BARANG WIP
+                    $this->db->insert('t_surat_jalan_detail', array(
+                        't_sj_id'=>$this->input->post('id'),
+                        'gudang_id'=>$v['id_barang'],
+                        'jenis_barang_id'=>$v['jenis_barang_id'],
+                        'barang_alias'=>$v['barang_alias'],
+                        'no_packing'=>0,
+                        'qty'=>$v['qty'],
+                        'bruto'=>0,
+                        'berat'=>0,
+                        'netto'=>$v['netto'],
+                        'nomor_bobbin'=>0,
+                        'created_by'=>$user_id,
+                        'created_at'=>$tanggal
+                    ));
+                }else if($jenis=='RONGSOK'){
+                    $this->db->insert('t_surat_jalan_detail', array(
+                        't_sj_id'=>$this->input->post('id'),
+                        'gudang_id'=>$v['id_barang'],
+                        'jenis_barang_id'=>$v['jenis_barang_id'],
+                        'barang_alias'=>$v['barang_alias'],
+                        'no_packing'=>$v['no_palette'],
+                        'qty'=>$v['qty'],
+                        'bruto'=>$v['bruto'],
+                        'berat'=>$v['berat_palette'],
+                        'netto'=>$v['netto'],
+                        'nomor_bobbin'=>0,
+                        'line_remarks'=>'',
+                        'created_by'=>$user_id,
+                        'created_at'=>$tanggal
+                    ));
+                }else if($jenis=='AMPAS'){
+                    $this->db->insert('t_surat_jalan_detail', array(
+                        't_sj_id'=>$this->input->post('id'),
+                        'gudang_id'=>$v['id_barang'],
+                        'jenis_barang_id'=>$v['jenis_barang_id'],
+                        'barang_alias'=>$v['barang_alias'],
+                        'no_packing'=>0,
+                        'qty'=>1,
+                        'bruto'=>$v['netto'],
+                        'berat'=>0,
+                        'netto'=>$v['netto'],
+                        'nomor_bobbin'=>0,
+                        'line_remarks'=>'',
+                        'created_by'=>$user_id,
+                        'created_at'=>$tanggal
+                    ));
+                }
+            }
+        }
+
+        $data = array(
+                'tanggal'=> $tgl_input,
+                'status'=> 0,
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
+                'supir'=>$this->input->post('supir'),
+                'remarks'=>$this->input->post('remarks'),
+                'modified_at'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+        
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('t_surat_jalan', $data);
+
+        $this->session->set_flashdata('flash_msg', 'Data surat jalan berhasil disimpan');
+        redirect('index.php/Retur/surat_jalan_sp');
+    }
+
+    function approve_surat_jalan_sp(){
+        $sjid = $this->input->post('id');
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $flag_sj = 0;
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $custid = $this->input->post('customer_id');
+        $jenis = $this->input->post('jenis_barang');
+        $spb_id = $this->input->post('spb_id');
+
+        $this->db->trans_start();
+        
+        $this->load->model('Model_tolling_titipan');
+        #set flag taken
+        $loop = $this->db->query("select *from t_surat_jalan_detail where t_sj_id = ".$sjid)->result();
+        if ($jenis == 'FG') {
+            foreach ($loop as $row) {
+                $this->db->where('id', $row->gudang_id);
+                $this->db->update('t_gudang_fg', array('flag_taken' => 1, 't_sj_id'=> $sjid));
+            }
+        } else if ($jenis == 'WIP') {
+            foreach ($loop as $row) {
+                $this->db->where('id', $row->gudang_id);
+                $this->db->update('t_gudang_wip', array('flag_taken' => 1));
+            }
+        } else if ($jenis == 'RONGSOK'){
+            foreach ($loop as $row) {
+                $this->db->where('id', $row->gudang_id);
+                $this->db->update('dtr_detail', array('flag_sj' => $sjid));
+            }
+        } else if ($jenis == 'AMPAS'){
+            foreach ($loop as $row) {
+                $this->db->where('id', $row->gudang_id);
+                $this->db->update('t_spb_ampas_fulfilment', array('flag_taken' => 1));
+            }
+        }
+
+        #cek jika surat jalan sudah di kirim semua atau belum
+        if($jenis == 'FG'){
+            $list_produksi = $this->Model_tolling_titipan->list_item_sjk_fg($spb_id)->result();
+        }else if($jenis == 'WIP'){
+            $list_produksi = $this->Model_tolling_titipan->list_item_sjk_wip($spb_id)->result();
+        }else{
+            $list_produksi = $this->Model_tolling_titipan->list_item_sjk_rsk($spb_id)->result();
+        }
+
+        if($jenis == 'LAIN'){
+            $flag_sj = 1;
+        }else{
+            if(empty($list_produksi)){
+                $flag_sj = 1;
+            }
+        }
+
+        $this->db->where('id',$spb_id);
+        if($jenis == 'FG'){
+            $this->db->update('t_spb_fg', array(
+                'flag_retur'=>$flag_sj
+            ));
+        }elseif($jenis == 'WIP'){
+            $this->db->update('t_spb_wip', array(
+                'flag_retur'=>$flag_sj
+            ));
+        }elseif($jenis == 'RONGSOK'){
+            $this->db->update('spb', array(
+                'flag_retur'=>$flag_sj
+            ));
+        }
+
+        if($jenis=='FG'){
+            #insert bobbin_peminjaman
+            $query = $this->db->query('select * from t_surat_jalan_detail where t_sj_id = '.$sjid.' and nomor_bobbin != ""')->result();
+            // print_r($query);die();
+            if(!empty($query)){
+            $this->load->model('Model_m_numberings');
+            $code = $this->Model_m_numberings->getNumbering('BB-BR', $tgl_input);
+                $this->db->insert('m_bobbin_peminjaman', array(
+                    'no_surat_peminjaman' => $code,
+                    'tanggal'=> $tgl_input,
+                    'id_surat_jalan' => $sjid,
+                    'id_customer' => $custid,
+                    'status' => 0,
+                    'created_by' => $user_id,
+                    'created_at' => $tanggal
+                ));
+                $insert_id = $this->db->insert_id();
+
+                foreach ($query as $row) {
+                    if($row->nomor_bobbin!=''){
+                        $this->db->where('nomor_bobbin', $row->nomor_bobbin);
+                        $this->db->update('m_bobbin', array(
+                            'borrowed_by' => $custid,
+                            'status' => 2
+                        ));
+
+                        $this->db->insert('m_bobbin_peminjaman_detail', array(
+                            'id_peminjaman' => $insert_id,
+                            'nomor_bobbin' => $row->nomor_bobbin
+                        ));
+                    }
+                }
+            }
+        }
+        
+        $data = array(
+                'status' => 1,
+                'approved_at'=> $tanggal,
+                'approved_by'=> $user_id
+            );
+        
+        $this->db->where('id', $sjid);
+        $this->db->update('t_surat_jalan', $data);
+
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'Surat jalan sudah di-approve. Detail Surat jalan sudah disimpan');            
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Surat Jalan, silahkan coba kembali!');
+        }             
+        
+       redirect('index.php/Retur/surat_jalan_sp');
+    }
+
+    function reject_surat_jalan(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $sjid = $this->input->post('sj_id');
+        
+        #Update status t_surat_jalan
+        $data = array(
+                'status'=> 9,
+                'rejected_at'=> $tanggal,
+                'rejected_by'=>$user_id,
+                'reject_remarks'=>$this->input->post('reject_remarks')
+            );
+        
+        $this->db->where('id', $sjid);
+        $this->db->update('t_surat_jalan', $data);
+        
+        $this->db->where('t_sj_id', $sjid);
+        $this->db->delete('t_surat_jalan_detail');
+        
+        $this->session->set_flashdata('flash_msg', 'Surat jalan berhasil direject');
+        redirect('index.php/Retur/surat_jalan_sp');
+    }
+
+
     function view(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
@@ -1186,6 +1494,23 @@ class Retur extends CI_Controller{
             $arr_so[$row->id] = $row->no_retur;
         } 
         print form_dropdown('retur_id', $arr_so);
+    }
+
+    function get_spb(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_retur');
+        if($id == 'RONGSOK'){
+            $data = $this->Model_retur->get_spb_list_rsk($id)->result();
+        }else if($id == 'WIP'){
+            $data = $this->Model_retur->get_spb_list_wip($id)->result();
+        }else if($id == 'FG'){
+            $data = $this->Model_retur->get_spb_list_fg($id)->result();
+        }
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->no_spb;
+        } 
+        print form_dropdown('spb_id', $arr_so);
     }
 
     function fulfilment(){
@@ -1826,6 +2151,43 @@ class Retur extends CI_Controller{
         }
     }
 
+    function view_surat_jalan_sp(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "retur/view_surat_jalan_sp";
+            $this->load->model('Model_sales_order');
+            $this->load->model('Model_retur');
+            $data['header'] = $this->Model_retur->show_header_sj_sp($id)->row_array(); 
+            $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+            $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
+
+            $jenis = $data['header']['jenis_barang'];
+            $soid = $data['header']['sales_order_id'];
+            if($jenis == 'FG'){
+                $data['list_sj'] = $this->Model_sales_order->load_view_sjd($id)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_fg()->result();
+            }else if($jenis == 'WIP'){
+                $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_wip()->result();
+            }else{
+                $data['list_sj'] = $this->Model_retur->load_detail_sj_rsk($id)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_rsk()->result();
+            }
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/Retur/surat_jalan');
+        }
+    }
+
     function update_surat_jalan_existing(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn  = $this->session->userdata('user_ppn');
@@ -1864,7 +2226,11 @@ class Retur extends CI_Controller{
         $this->db->update('t_surat_jalan', $data);
 
         $this->session->set_flashdata('flash_msg', 'Data surat jalan berhasil disimpan');
-        redirect('index.php/Retur/view_surat_jalan/'.$this->input->post('id'));
+        if($this->input->post('spb_id')==0){
+            redirect('index.php/Retur/view_surat_jalan/'.$this->input->post('id'));
+        }else{
+            redirect('index.php/Retur/view_surat_jalan_sp/'.$this->input->post('id'));
+        }
     }
 
     function get_data_sj(){
@@ -2066,7 +2432,7 @@ class Retur extends CI_Controller{
         if ($jenis == 'FG') {
             foreach ($loop as $row) {
                 $this->db->where('id', $row->gudang_id);
-                $this->db->update('t_gudang_fg', array('flag_taken' => 1));
+                $this->db->update('t_gudang_fg', array('flag_taken' => 1, 't_sj_id'=> $sjid));
             }
         } else if ($jenis == 'WIP') {
             foreach ($loop as $row) {
@@ -2076,7 +2442,7 @@ class Retur extends CI_Controller{
         } else if ($jenis == 'RONGSOK'){
             foreach ($loop as $row) {
                 $this->db->where('id', $row->gudang_id);
-                $this->db->update('dtr_detail', array('retur_id' => $retur_id));
+                $this->db->update('dtr_detail', array('retur_id' => $retur_id, 'flag_sj' => $sjid));
             }
         }
 

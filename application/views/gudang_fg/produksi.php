@@ -15,7 +15,7 @@
     </div>
 </div>
     <?php
-        if( ($group_id==1 || $group_id==21)||($hak_akses['produksi']==1) ){
+        if( ($group_id==1)||($hak_akses['produksi']==1) ){
     ?>
 <div class="row">&nbsp;</div>
 <div class="collapse well" id="form_add" >
@@ -131,7 +131,7 @@
                         <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter">
                             <i class="fa fa-search"></i> Filter Bulan
                         </a>
-                        <?php if( ($group_id==1 || $group_id==21)||($hak_akses['add']==1) ){ ?>
+                        <?php if( ($group_id==1)||($hak_akses['add']==1) ){ ?>
                         <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_add" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_add">
                             <i class="fa fa-plus"></i> Tambah
                         </a>
@@ -198,7 +198,7 @@
                                 </td>
                                 <td>
                                     <?php
-                if(( ($group_id==1 || $group_id==21) && !$data->flag_result) || (!$data->flag_result)){
+                if(( ($group_id==1) && !$data->flag_result) || (!$data->flag_result)){
                     echo '
                                     <a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/GudangFG/edit_laporan/'.$data->id.'" style="margin-bottom:4px"> &nbsp; 
                                         <i class="fa fa-edit"></i> Edit &nbsp; 
@@ -209,7 +209,7 @@
                                         <i class="fa fa-book"></i> View &nbsp; 
                                     </a> ';
                 }
-                if(($group_id==1 || $group_id==21) && $data->status!=1){
+                if(($group_id==1) && $data->status!=1){
                     echo '
                                     <a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/GudangFG/delete_produksi_fg/'.$data->id.'" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"> &nbsp; 
                                         <i class="fa fa-trash"></i> Delete &nbsp; 

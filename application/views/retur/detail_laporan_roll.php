@@ -253,6 +253,7 @@ function get_uom(id){
         dataType: "json",
         success: function(result) {
             if(result){
+                console.log(result['ukuran']);
                 $('#uom').val(result['uom']);
                 $('#ukuran').val(result['ukuran']);
             } else {

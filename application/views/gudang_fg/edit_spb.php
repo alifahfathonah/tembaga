@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['edit']==1) ){
+            if( ($group_id==1)||($hak_akses['edit_spb']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -31,7 +31,7 @@
                             No. SPB FG<font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_produksi" name="no_produksi" readonly="readonly"
+                            <input type="text" id="no_spb" name="no_spb" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_spb']; ?>">
                             
@@ -67,8 +67,8 @@
                             Jenis SPB
                         </div>
                         <div class="col-md-8">
-                            <select id="jenis_spb" name="jenis_spb" placeholder="Silahkan pilih..."
-                                class="form-control myline select2me" style="margin-bottom:5px;">
+                            <select placeholder="Silahkan pilih..."
+                                class="form-control myline select2me" style="margin-bottom:5px;" disabled>
                                 <option></option>
                                 <option value="0" <?=(($header['jenis_spb']==0)? 'selected="selected"' : '""');?>>SDM</option>
                                 <option value="5" <?=(($header['jenis_spb']==5)? 'selected="selected"' : '""');?>>Kirim Rongsok</option>
@@ -77,7 +77,26 @@
                                 <option value="8" <?=(($header['jenis_spb']==8)? 'selected="selected"' : '""');?>>Repacking</option>
                             </select> 
                         </div>
+
+                        <input type="hidden" name="jenis_spb" value="<?=$header['jenis_spb'];?>">
                     </div>
+                    <?php if($header['jenis_spb']==5){ ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Barang Rongsok
+                        </div>
+                        <div class="col-md-8">
+                            <select id="rongsok_id" name="rongsok_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                    <option value=""></option>
+                                    <?php foreach ($rongsok as $value){ ?>
+                                            <option value='<?=$value->id;?>'>
+                                                <?='('.$value->kode_rongsok.') '.$value->nama_item;?>
+                                            </option>
+                                    <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                    <?php } ?>
                     <div class="row">
                         <div class="col-md-4">
                             Catatan

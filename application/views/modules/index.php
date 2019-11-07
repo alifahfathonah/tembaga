@@ -19,15 +19,18 @@
                     <div class="caption">
                             <i class="fa fa-cube"></i>Modules
                     </div>
+                    <div class="tools">
+                        <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Modules/add_modules"><i class="fa fa-plus"></i> Tambah</a>
+                    </div>
             </div>
             <div class="portlet-body">
                 <table class="table table-bordered table-stripped table-hover">
                     <thead>
                         <th>Alias</th>
-                        <th>Admin</th>
+                        <th style='font-size:10px;'>Admin</th>
                         <?php 
                             foreach ($groups as $value){
-                                echo "<th>".$value->group_name."</th>";
+                                echo "<th style='font-size:10px;'>".$value->group_name."</th>";
                             }
                         ?>
                     </thead>

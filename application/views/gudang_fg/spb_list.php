@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1 || $group_id==21)||($hak_akses['spb_list']==1) ){
+            if( ($group_id==1)||($hak_akses['spb_list']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -76,6 +76,8 @@
                                     echo 'Retur';
                                 }else if($data->jenis_spb==8){
                                     echo 'Repacking';
+                                }else if($data->jenis_spb==9){
+                                    echo 'Retur K';
                                 }
                             ?>
                         </td>
@@ -105,21 +107,21 @@
                         </td>
                         <td style="text-align:center"> 
                             <?php
-                                if($group_id==1 || $group_id==21 || $hak_akses['view_spb']==1){
+                                if($group_id==1 || $hak_akses['view_spb']==1){
                             ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangFG/view_spb/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
                                
                             <?php
                                 }
-                                if( ($group_id==1 || $group_id==21 || $hak_akses['edit_spb']==1) && ($data->jumlah_item == 0 && $data->status == 0 && ($data->jenis_spb == 0 || $data->jenis_spb == 8))){
+                                if( ($group_id==1 || $hak_akses['edit_spb']==1) && ($data->jumlah_item == 0 && $data->status == 0 && ($data->jenis_spb == 0 || $data->jenis_spb == 8))){
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/GudangFG/edit_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
                             <a href="<?php echo base_url(); ?>index.php/GudangFG/delete_spb/<?php echo $data->id; ?>" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus spb ini?');">
                                 <i class="fa fa-trash-o"></i> Delete </a>
                             <?php   
                                 }
-                                if($group_id==1 || $group_id==21 || $hak_akses['print_spb']==1){
+                                if($group_id==1 || $hak_akses['print_spb']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangFG/print_spb/'.$data->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }

@@ -1,0 +1,6 @@
+- Gudang Produksi
+
+- Gudang Keras
+- Minta Print Semua Kartu Stok FG dan di Page Break setiap Jenis Barang
+- Barcode RB dan RK disambung, bukan dipisah depan belakang. (Perubahan)
+- tambah 2 report CEK Belum Masuk Langganan + CEK Belum Masuk KMP

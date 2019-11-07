@@ -34,11 +34,15 @@
                 </td>
                 <td>&nbsp;</td>
                 <td width="40%">
-                    <table border="0" cellpadding="2" cellspacing="0" width="100%"><!-- 
+                    <table border="0" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
-                            <td>No. PO</td>
-                            <td>: <?php echo $header['no_po']; ?></td>
-                        </tr> -->
+                            <td>No. Retur</td>
+                            <td>: <?php echo $header['no_retur']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>Tgl Retur</td>
+                            <td>: <?php echo date('d-m-Y', strtotime($header['tgl_retur'])); ?></td>
+                        </tr>
                         <tr>
                             <td>Jenis Barang</td>
                             <td>: <?php echo $header['jenis_barang']; ?></td>

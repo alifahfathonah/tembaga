@@ -37,7 +37,7 @@ class Model_retur extends CI_Model{
             left join users u on (u.id = r.created_by)
             left join m_jenis_packing jp on (jp.id = r.jenis_packing_id)
             left join m_customers c on (c.id = r.customer_id)
-            where r.customer_id = ".$id." and status = 1 and flag_taken = 0 and jenis_retur = 0");
+            where r.customer_id = ".$id." and status = 1 and flag_taken = 0 and jenis_retur = 0 and r.spb_id != 0");
         return $data;
     }
     
@@ -269,6 +269,18 @@ class Model_retur extends CI_Model{
         return $data;
     }
 
+    function surat_jalan_sp(){
+        $data = $this->db->query("Select tsj.*, (select count(tsjd.id) from t_surat_jalan_detail tsjd where tsjd.t_sj_id = tsj.id) as jumlah_item,
+                    cust.nama_customer, cust.alamat,
+                    so.no_sales_order
+                From t_surat_jalan tsj
+                    Left Join m_customers cust On (tsj.m_customer_id = cust.id)
+                    Left Join sales_order so On (tsj.sales_order_id = so.id) 
+                Where tsj.spb_id > 0 and tsj.m_customer_id > 0
+                Order By tsj.id Desc");
+        return $data;
+    }
+
     function load_detail_sj($id){
         $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.berat, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jb.uom 
                 from t_surat_jalan_detail tsjd
@@ -344,11 +356,35 @@ class Model_retur extends CI_Model{
         return $data;
     }
     */
+    function show_header_sj_sp($id){
+        $data = $this->db->query("Select tsj.*, COALESCE(cust.id,s.id) as id_customer, 
+                    COALESCE(cust.nama_customer,s.nama_supplier) as nama_customer,
+                    COALESCE(tsf.no_spb, tsw.no_spb_wip, spb.no_spb) as nomor_spb,
+                    COALESCE(tsf.status, tsw.status, spb.status) as status_spb,
+                    COALESCE(s.alamat, cust.alamat) as alamat,
+                    tkdr.type_kendaraan,
+                    usr.realname,
+                    aprv.realname as approved_name,
+                    rjct.realname as rejected_name
+                From t_surat_jalan tsj
+                    Left Join m_customers cust On (tsj.m_customer_id = cust.id)
+                    Left Join supplier s On (tsj.supplier_id = s.id)
+                    Left Join t_spb_fg tsf On (tsj.jenis_barang = 'FG' and tsf.id = tsj.spb_id)
+                    Left Join t_spb_wip tsw On (tsj.jenis_barang = 'WIP' and tsw.id = tsj.spb_id)
+                    Left Join spb On (tsj.jenis_barang = 'RONGSOK' and spb.id = tsj.spb_id)
+                    Left Join m_type_kendaraan tkdr On (tsj.m_type_kendaraan_id = tkdr.id) 
+                    Left Join users usr On (tsj.created_by = usr.id)
+                    Left Join users aprv On (tsj.approved_by = aprv.id)
+                    Left Join users rjct On (tsj.rejected_by = rjct.id)
+                    Where tsj.id=".$id);
+        return $data;
+    }    
+
     function show_header_sj($id){
         $data = $this->db->query("Select tsj.*, 
                     cust.nama_customer, cust.alamat,
                     cust.nama_customer_kh, cust.alamat_kh,
-                    r.no_retur, r.spb_id,
+                    r.no_retur, r.tanggal as tgl_retur, r.spb_id,
                     tkdr.type_kendaraan,
                     usr.realname
                 From t_surat_jalan tsj
@@ -369,6 +405,48 @@ class Model_retur extends CI_Model{
         $data = $this->db->query("Select rd.*, jb.jenis_barang, jb.kode from retur_detail rd
                     left join jenis_barang jb on jb.id = rd.jenis_barang_id
                     where rd.id=".$id);
+        return $data;
+    }
+
+    function get_spb_list_rsk(){
+        $data = $this->db->query("select id, no_spb from spb where jenis_spb = 9 and flag_retur = 0");
+        return $data;
+    }
+
+    function get_spb_list_wip(){
+        $data = $this->db->query("select id, no_spb_wip as no_spb from t_spb_wip where flag_produksi = 9 and flag_retur = 0");
+        return $data;
+    }
+
+    function get_spb_list_fg(){
+        $data = $this->db->query("select id, no_spb from t_spb_fg where jenis_spb = 9 and flag_retur = 0");
+        return $data;
+    }
+
+    function spb_list(){
+        $data = $this->db->query("SELECT * FROM (
+    Select tsf.id, tsf.tanggal, tsf.no_spb, tsf.status, tsf.flag_tolling, tsf.keterangan, usr.realname As pic,
+    aprv.realname As approved_name, rjt.realname As rejected_name, (Select count(tsfd.id)As jumlah_item From t_spb_fg_detail tsfd Where tsfd.t_spb_fg_id = tsf.id)As jumlah_item, 'FG' as jenis_barang
+                From t_spb_fg tsf
+                    Left Join users usr On (tsf.created_by = usr.id) 
+                    Left Join users aprv On (tsf.approved_by = aprv.id) 
+                    Left Join users rjt On (tsf.rejected_by = rjt.id)
+                    where jenis_spb = 9
+    UNION
+    Select tsw.id, tsw.tanggal, tsw.no_spb_wip as no_spb, tsw.status, tsw.flag_tolling, tsw.keterangan,  usr.realname As pic, aprv.realname As approved_name, rjt.realname As rejected_name, (Select count(tswd.id)As jumlah_item From t_spb_wip_detail tswd Where tswd.t_spb_wip_id = tsw.id)As jumlah_item, 'WIP' as jenis_barang
+                From t_spb_wip tsw
+                    Left Join users usr On (tsw.created_by = usr.id) 
+                    Left Join users aprv On (tsw.approved_by = aprv.id) 
+                    Left Join users rjt On (tsw.rejected_by = rjt.id)
+                    where flag_produksi = 9
+    UNION
+    Select spb.id, spb.tanggal, spb.no_spb, spb.status, spb.flag_tolling, spb.remarks as keterangan, usr.realname As pic, aprv.realname As approved_name, rjt.realname As rejected_name, (Select count(sd.id)As jumlah_item From spb_detail sd Where sd.spb_id = spb.id)As jumlah_item, 'RONGSOK' as jenis_barang
+                From spb
+                    Left Join users usr On (spb.created_by = usr.id) 
+                    Left Join users aprv On (spb.approved_by = aprv.id) 
+                    Left Join users rjt On (spb.rejected_by = rjt.id)
+                    where jenis_spb = 9
+    ) a");
         return $data;
     }
 

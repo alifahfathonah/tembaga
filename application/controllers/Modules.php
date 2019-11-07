@@ -420,4 +420,38 @@ class Modules extends CI_Controller{
         $this->load->view('layout', $data);                                 
     }
 
+    function add_modules(){
+        $module_name = $this->uri->segment(1);
+        $data['user_ppn'] = $this->session->userdata('user_ppn');
+        $group_id    = $this->session->userdata('group_id');      
+        $this->load->model('Model_modules');  
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "modules/add_modules";
+        
+        $data['modules_list'] = $this->Model_modules->modules_details_c()->result();
+        $this->load->view('layout', $data);
+    }
+    
+    function save_modules(){
+        $user_id   = $this->session->userdata('user_id');
+        $tanggal   = date('Y-m-d h:m:s');
+    
+        $this->db->trans_start();
+        $this->db->insert('modules', array(
+            'parent_id'=>$this->input->post('modules_id'),
+            'alias'=>$this->input->post('nama_modules')
+        ));
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Modules berhasil disimpan!');
+            redirect('index.php/Modules/add_modules');  
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Modules gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/Modules/add_modules');
+        }            
+    }
 }

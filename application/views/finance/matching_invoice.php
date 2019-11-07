@@ -565,6 +565,7 @@ function view_inv(id){
             $("#nominal_sdh_bayar").val(numberWithCommas(result['nilai_sdh_bayar']));
             $("#nominal_potongan").val(numberWithCommas(result['nilai_pembulatan']));
             $("#nominal_bayar").val(numberWithCommas(result['inv_bayar']));
+            hitungSubTotalInv();
         }
     });
 }

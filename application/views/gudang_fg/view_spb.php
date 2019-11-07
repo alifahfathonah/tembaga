@@ -123,6 +123,8 @@
                                     echo 'Retur';
                                 }else if($myData['jenis_spb']==8){
                                     echo 'Repacking';
+                                }else if($myData['jenis_spb']==9){
+                                    echo 'Retur K';
                                 }
                                ?>">
                         </div>
@@ -215,7 +217,7 @@
                                         </tbody>
                                         <tr>
                                             <td colspan="2" style="text-align: right"><strong>Total :</strong></td>
-                                            <td style="color: white; background-color: green;"><?= number_format($netto,0,',','.'); ?></td>
+                                            <td style="color: white; background-color: green;"><?= number_format($netto,2,',','.'); ?></td>
                                             <td colspan="4"></td>
                                         </tr>
                                     </table>
@@ -223,7 +225,6 @@
                         </div>
                     </div>
                     <hr class="divider"/>
-
                     <div class="row">
                         <div class="col-md-12">
                             <h4 align="center">SPB FG yang Sudah Dipenuhi</h4>
@@ -390,9 +391,9 @@
                                             <th>No. Bobbin</th>
                                             <th>Bruto</th>
                                             <th>Netto</th>
-                                            <th>Keterangan</th>
+                                            <th>Tgl Keluar</th>
                                             <th>Status</th>
-                                            <th>Action</th>
+                                            <th>Action <input type="checkbox" id="check_all" name="check_all" onclick="checkAll()" class="form-control checklist"></th>
                                         </thead>
                                         <tbody>
                                         <?php
@@ -426,10 +427,12 @@
                                                 echo '<td>'.$row->nomor_bobbin.'</td>';
                                                 echo '<td>'.$row->bruto.'</td>';
                                                 echo '<td>'.number_format($row->netto,2,',','.').' '.$row->uom.'</td>';
-                                                echo '<td>'.$row->keterangan.'</td>';
+                                                echo '<td>'.$row->tanggal_keluar.'</td>';
                                                 if($row->flag_taken==1){
                                                 echo '<td style="background-color: green; color: white">Sudah di Kirim</td>';
-                                                echo '<td></td>';
+                                                echo '<td><input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
+                                                            onclick="check();" class="form-control checklist">';
+                                                    echo '<input type="hidden" value="'.$row->id.'" id="check_'.$no.'" name="myDetails['.$no.'][id_detail]" class="form-control checklist"></td>';
                                                 }else{
                                                     echo '<td>Belum Dikirim</td>';
                                                     echo '<td><a href="'.base_url().'index.php/GudangFG/delSPBSudahDipenuhi/'.$row->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm("Anda yakin menghapus transaksi ini?");"><i class="fa fa-trash-o"></i> Delete</a></td>';
@@ -538,9 +541,19 @@
                         </div>
                     </div>
                 <?php } ?>
-
                 </div>
             </div>
+                            <div class="row pindah" style="display: none;">
+                                <div class="col-md-2">
+                                    Tanggal Keluar <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" id="update_tanggal_keluar" name="update_tanggal_keluar" class="form-control myline input-small" style="margin-bottom:5px; float: left;" value="<?php echo date('d-m-Y'); ?>">
+                                </div>
+                                <div class="col-md-7">
+                                    <a href="javascript:;" class="btn green" onclick="update_tanggal_keluar();"><i class="fa fa-check"></i> Update Tanggal Keluar </a>
+                                </div>
+                            </div>
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-10">
@@ -606,6 +619,30 @@
             data: {id: id_barang}, // Send the slected option to the PHP page
         });
     });*/
+function checkAll(){
+    if ($('#check_all').prop("checked")) {  
+        $('input').each(function(i){
+            $('#uniform-check_'+i+' span').attr('class', 'checked');
+            $('#check_'+i).attr('checked', true);
+        });
+    }else{
+        $('input').each(function(i){
+            $('#uniform-check_'+i+' span').attr('class', '');
+            $('#check_'+i).attr('checked', false);
+        });
+    }   
+}
+
+function check(){
+    $('#uniform-check_all span').attr('class', '');
+    $('#check_all').attr('checked', false);    
+}
+
+function update_tanggal_keluar(){
+    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/GudangFG/update_tanggal_keluar"); 
+    $('#formku').submit();
+};
+
 function rejectApproved(){
     var r=confirm("Anda yakin me-reject barang yang sudah di approve ini?");
     if (r==true){
@@ -763,9 +800,7 @@ $(function(){
     window.onbeforeunload = function() {
       return "Data Akan Terhapus Bila Page di Refresh, Anda Yakin?";
     };
-});
 
-$(function(){        
     $("#tanggal_keluar").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
@@ -774,7 +809,21 @@ $(function(){
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd-mm-yy'
-    });       
+    });
+
+    $("#update_tanggal_keluar").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });
+
+    $(".checklist").click(function() {
+      $('.pindah').toggle( $(".checklist:checked").length > 0 );
+    });   
 });
 </script>
       

@@ -62,7 +62,7 @@
                                     <i class="fa fa-cubes"></i>
                                     BPB List </a>
                                 </li> 
-                                <?php } if($group_id==1 || (isset($akses_menu['bpb_list']) && $akses_menu['lpb_list']==1)){ ?>
+                                <?php } if($group_id==1 || (isset($akses_menu['lpb_list']) && $akses_menu['lpb_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliSparePart/lpb_list">
                                     <i class="fa fa-usd"></i>
@@ -74,7 +74,7 @@
                                     <i class="fa fa-usd"></i>
                                     Voucher List </a>
                                 </li>
-                                <?php } if($group_id==1 || (isset($akses_menu['view']) && $akses_menu['view']==1)){ ?>
+                                <?php } if($group_id==1 || (isset($akses_menu['laporan']) && $akses_menu['laporan']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliSparePart/laporan_list">
                                     <i class="fa fa-usd"></i>
@@ -902,25 +902,17 @@
                             </a>
                             <ul class="sub-menu">
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/laporan_so_bulan/">
+                                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/laporan_so/">
                                     <i class="fa fa-search"></i> Laporan SO </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/laporan_so">
-                                    - Berdasarkan Jenis Barang </a>
+                                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/laporan_sisa_so/">
+                                    <i class="fa fa-search"></i> Laporan Sisa SO </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/view_laporan_so_by_sj/<?= date("Y-m") ?>">
-                                    - Berdasarkan Surat Jalan </a>
+                                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/laporan_sj/">
+                                    <i class="fa fa-search"></i> Laporan Surat Jalan </a>
                                 </li>
-                                <li>
-                                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/print_sisa_so/" target="_blank">
-                                    <i class="fa fa-print"></i> Print Sisa SO </a>
-                                </li>
-                                <!-- <li>
-                                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/print_sisa_so_gabungan/" target="_blank">
-                                    <i class="fa fa-print"></i> Print Sisa SO Gabungan </a>
-                                </li> -->
                             </ul>
                         </li>
                         <?php } ?>
@@ -987,41 +979,33 @@
                                     <i class="fa fa-search"></i> Laporan Penjualan </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/laporan_penjualan_per_jb/">
-                                    <i class="fa fa-search"></i> Laporan Penjualan per Jenis Barang </a>
-                                </li>
-                                <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/laporan_pembelian/">
                                     <i class="fa fa-search"></i> Laporan Pembelian </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/rangking_rongsok/">
-                                    <i class="fa fa-search"></i> Rangking Pemasukan Rongsok </a>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/laporan_penjualan_piutang/">
+                                    <i class="fa fa-search"></i> Laporan Piutang Belum Lunas </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/laporan_bahan_pembantu/">
                                     <i class="fa fa-search"></i> Laporan Bahan Pembantu dan Pelumas </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_jb/">
-                                    <i class="fa fa-print"></i> Rekap per Jenis Barang</a>
-                                </li>
-                                <!-- <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_jb2/" target="_blank">
-                                    <i class="fa fa-print"></i> Rekap per Jenis Barang KMP</a>
-                                </li> -->
-                                <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_customer/">
-                                    <i class="fa fa-print"></i> Rekap per Customer</a>
+                                    <i class="fa fa-search"></i> Rekap per Customer</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_jb/">
+                                    <i class="fa fa-search"></i> Rekap per Jenis Barang</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/rangking_rongsok/">
+                                    <i class="fa fa-search"></i> Rangking Pemasukan Rongsok </a>
                                 </li>
                                 <!-- <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_customer2/" target="_blank">
                                     <i class="fa fa-print"></i> Rekap per Customer KMP</a>
                                 </li> -->
-                                <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/print_penjualan_piutang/" target="_blank">
-                                    <i class="fa fa-print"></i> Penjualan Piutang Belum Lunas</a>
-                                </li>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/Finance/search_penerimaan/">
                                     <i class="fa fa-money" style="color: green;"></i> Rekap Penerimaan Kas/Bank</a>

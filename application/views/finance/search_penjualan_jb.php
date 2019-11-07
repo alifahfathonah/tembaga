@@ -8,7 +8,6 @@
         </h5>          
     </div>
 </div>
-    
     <div class="row">
         <div class="col-md-12">
             <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
@@ -18,10 +17,23 @@
         </div>
     </div>
    <div class="col-md-12" style="margin-top: 10px;"> 
-        <h3>Rekap per Jenis Barang Gabungan</h3>
+        <h3>Rekap per Jenis Barang</h3>
         <hr class="divider">
-        <div class="row">
+            <div class="row">
                 <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4">
+                           Jenis <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis" name="jenis" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                    <option value="0">Global</option>
+                                    <?php if($this->session->userdata('user_ppn')==0){
+                                        echo '<option value="1">KKH</option>';
+                                    } ?>
+                                </select>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Tanggal Awal <font color="#f00">*</font>
@@ -61,10 +73,10 @@ function simpanData(){
         $('#message').html("Silahkan pilih nama supplier!");
         $('.alert-danger').show();
     }else{     
-        var l=$('#laporan').val();
+        var j=$('#jenis').val();
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/Finance/print_penjualan_jb?ts='+s+'&te='+e,'_blank');
+        window.open('<?php echo base_url();?>index.php/Finance/print_penjualan_jb?ts='+s+'&te='+e+'&j='+j,'_blank');
     };
 };
 </script>

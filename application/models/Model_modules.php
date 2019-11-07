@@ -36,7 +36,7 @@ class Model_modules extends CI_Model{
     }
 
     function modules_details_c(){
-        $data = $this->db->query("Select * From modules Where parent_id = 1 Order by Id");
+        $data = $this->db->query("Select * From modules Where parent_id = 1 Order by alias");
         return $data;
     }
 
@@ -84,7 +84,7 @@ class Model_modules extends CI_Model{
     }
 
     function akses_menu($id){
-        $data = $this->db->query("Select a.id as id_roles, g.name, a.group_id, a.module_id, b.alias, a.akses From roles a Left Join modules b ON (a.module_id=b.id) Left Join groups g ON (g.id=a.group_id) Where a.group_id=".$id);
+        $data = $this->db->query("Select a.id as id_roles, g.name, a.group_id, a.module_id, b.alias, a.akses From roles a Left Join modules b ON (a.module_id=b.id) Left Join groups g ON (g.id=a.group_id) Where akses = 1 and a.group_id=".$id);
         if($id){
             $loop = $data->result_array();
             $loop_id = array();

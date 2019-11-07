@@ -17,42 +17,27 @@
             </div>
         </div>
     </div>
+  
    <div class="col-md-12" style="margin-top: 10px;"> 
-        <h3>Laporan Rekap per Customer KKH</h3>
+        <h3>Laporan Penjualan Piutang</h3>
         <hr class="divider">
         <div class="row">
                 <div class="col-md-6">
-                    <!-- <div class="row">
+                    <div class="row">
                         <div class="col-md-4">
-                           Customer <font color="#f00">*</font>
+                           Laporan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <select id="laporan" name="laporan" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
-                                    <option value="0">**SEMUA CUSTOMER**</option>
-                                    <?php foreach ($customer_list as $v) {
-                                        echo '<option value="'.$v->id.'">('.$v->kode_customer.') '.$v->nama_customer.'</option>';
-                                    } ?>
-                            </select>
-                        </div>
-                    </div> -->
-                    <div class="row">
-                        <div class="col-md-4">
-                            Tanggal Awal <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="tgl_start" name="tgl_start" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Tanggal Akhir <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="tgl_end" name="tgl_end" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                                    <option value=""></option>
+                                <?php if($this->session->userdata('user_ppn')==0){ ?>
+                                    <option value="0">KH</option>
+                                    <option value="2">KMP + KH</option>
+                                <?php }else{ ?>
+                                    <option value="1">KMP</option>
+                                    <option value="3">KMP + CV</option>
+                                <?php } ?>
+                                </select>
                         </div>
                     </div>
                         <div class="row">
@@ -67,17 +52,12 @@
     </div>
 <script type="text/javascript">
 function simpanData(){
-    if($.trim($("#tgl_start").val()) == ""){
-        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#tgl_end").val()) == ""){
-        $('#message').html("Silahkan pilih nama supplier!");
+    if($.trim($("#laporan").val()) == ""){
+        $('#message').html("Laporan harus dipilih, tidak boleh kosong!");
         $('.alert-danger').show();
     }else{     
         var l=$('#laporan').val();
-        var s=$('#tgl_start').val();
-        var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/Finance/print_penjualan_customer2?ts='+s+'&te='+e,'_blank');
+        window.open('<?php echo base_url();?>index.php/Finance/print_penjualan_piutang?laporan='+l,'_blank');
     };
 };
 </script>

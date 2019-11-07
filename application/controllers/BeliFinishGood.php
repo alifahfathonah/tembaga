@@ -617,7 +617,7 @@ class BeliFinishGood extends CI_Controller{
             'tanggal'=>$tgl_input,
             'no_sj'=>strtoupper($this->input->post('no_sj')),
             'remarks'=>$this->input->post('remarks'),
-            // 'supplier_id'=>$this->input->post('supplier_id'),
+            'supplier_id'=>$this->input->post('supplier_id'),
             'modified'=>$tanggal,
             'modified_by'=>$user_id
         ));
@@ -728,13 +728,21 @@ class BeliFinishGood extends CI_Controller{
         $this->db->trans_start();
 
         $this->load->model('Model_m_numberings');
-        $first = substr($this->input->post('no_packing'),0,1);
-        $sec = substr($this->input->post('no_packing'),1,1);
-        $num = $first.$sec;
-        $code = $this->Model_m_numberings->getNumbering($num,$tgl_input);
+        // OLD BARCODE
+        // $first = substr($this->input->post('no_packing'),0,1);
+        // $sec = substr($this->input->post('no_packing'),1,1);
+        // $num = $first.$sec;
+        // $code = $this->Model_m_numberings->getNumbering($num,$tgl_input);
+
+        // $ukuran = $this->input->post('ukuran');
+        // $no_packing = $tgl_code.$first.$ukuran.$sec.substr($code,8,3);
+
+        // NEW BARCODE
+        $first = substr($this->input->post('no_packing'),0,2);
+        $code = $this->Model_m_numberings->getNumbering($first,$tgl_input);
 
         $ukuran = $this->input->post('ukuran');
-        $no_packing = $tgl_code.$first.$ukuran.$sec.substr($code,8,3);
+        $no_packing = $tgl_code.$first.$ukuran.substr($code,8,3);
 
         $this->db->insert('dtbj_detail', array(
             'tanggal_masuk' => $tgl_input,
@@ -787,6 +795,8 @@ class BeliFinishGood extends CI_Controller{
             $this->load->model('Model_beli_fg');
             $data['header']  = $this->Model_beli_fg->show_header_dtbj($id)->row_array(); 
             $data['details'] = $this->Model_beli_fg->show_detail_dtbj($id)->result();
+            $this->load->model('Model_beli_rongsok');
+            $data['supplier_list'] = $this->Model_beli_rongsok->supplier_list()->result();
             
             $this->load->view('layout', $data);   
         }else{

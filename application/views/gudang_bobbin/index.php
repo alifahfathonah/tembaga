@@ -99,6 +99,15 @@
                                     </select>
                                 </div>
                             </div> 
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Last Modified
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="last_modified" name="last_modified" readonly 
+                                        class="form-control myline" style="margin-bottom:5px">
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">                        
@@ -445,6 +454,7 @@ function editData(id){
             $('#nomor_urut_edit').val(result['nomor_urut']);
             $('#status_edit').val(result['status']);
             $('#bobbin_s').val(result['bobbin_size']);
+            $('#last_modified').val(result['modified_at']);
             $('#id').val(result['id']);
             
             $("#myModal").find('.modal-title').text('Edit Bobin');

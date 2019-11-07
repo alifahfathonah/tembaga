@@ -195,7 +195,7 @@
                     <a href="<?php echo base_url('index.php/BeliSparePart'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                     <?php
-                        if( ($group_id==1 || $hak_akses['print_po']==1)){
+                        if( ($group_id==1 || $hak_akses['print_spb']==1)){
                     ?>
                         <a class="btn btn-circle blue-ebonyclay" href="<?php echo base_url(); ?>index.php/BeliSparePart/print_pps/<?php echo $myData['id']; ?>"> &nbsp; <i class="fa  fa-file-text-o"></i> Print &nbsp; </a>
                     <?php

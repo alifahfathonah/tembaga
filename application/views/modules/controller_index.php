@@ -24,10 +24,10 @@
                 <table class="table table-bordered table-stripped table-hover">
                     <thead>
                         <th>Alias</th>
-                        <th>Administrator</th>
+                        <th style='font-size:10px;'>Administrator</th>
                         <?php 
                             foreach ($groups as $value){
-                                echo "<th>".$value->group_name."</th>";
+                                echo "<th style='font-size:10px;'>".$value->group_name."</th>";
                             }
                         ?>
                     </thead>

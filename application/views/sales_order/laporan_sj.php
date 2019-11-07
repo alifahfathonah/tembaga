@@ -17,11 +17,39 @@
             </div>
         </div>
     </div>
+  
    <div class="col-md-12" style="margin-top: 10px;"> 
-        <h3>Rekap per Jenis Barang KKH</h3>
+        <h3>Laporan Surat Jalan</h3>
         <hr class="divider">
         <div class="row">
                 <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4">
+                           Laporan <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="laporan" name="laporan" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px"> 
+                                    <option value="0">Global</option>
+                                    <option value="1">Order by Tanggal</option>
+                                </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                           Jenis <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis" name="jenis" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                    <option value=""></option> 
+                                    <?php if($this->session->userdata('user_ppn')==1){ ?>
+                                    <option value="1">KMP</option>
+                                    <?php }else{ ?>
+                                    <option value="0">KH</option>
+                                    <option value="2">KMP + KH</option>
+                                    <?php } ?>
+                                </select>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Tanggal Awal <font color="#f00">*</font>
@@ -54,17 +82,24 @@
     </div>
 <script type="text/javascript">
 function simpanData(){
-    if($.trim($("#tgl_start").val()) == ""){
-        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show(); 
+    if($.trim($("#laporan").val()) == ""){
+        $('#message').html("Laporan harus dipilih, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else if($.trim($("#jenis").val()) == ""){
+        $('#message').html("Jenis harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else if($.trim($("#tgl_start").val()) == ""){
+        $('#message').html("Tanggal Awal harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
     }else if($.trim($("#tgl_end").val()) == ""){
-        $('#message').html("Silahkan pilih nama supplier!");
+        $('#message').html("Tanggal Akhir harus diisi, tidak boleh kosong!");
         $('.alert-danger').show();
     }else{     
         var l=$('#laporan').val();
+        var j=$('#jenis').val();
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/Finance/print_penjualan_jb2?ts='+s+'&te='+e,'_blank');
+        window.open('<?php echo base_url();?>index.php/SalesOrder/print_laporan_sj?ts='+s+'&te='+e+'&l='+l+'&j='+j,'_blank');
     };
 };
 </script>

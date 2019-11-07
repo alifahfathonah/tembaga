@@ -436,10 +436,9 @@
             <div class="row">
                 <div class="col-md-10">
                     <?php
-                        if( ($group_id==1 || $hak_akses['edit_sj']==1) && $header['status']==1 && $header['jenis_barang'] != 'RONGSOK'){
+                        if( ($group_id==1 || $hak_akses['edit_surat_jalan']==1) && $header['status']==1 && $header['jenis_barang'] != 'RONGSOK'){
                             echo '<a href="javascript:;" class="btn blue" onclick="editData();" id="btnEdit">' 
                                 .'<i class="fa fa-pencil"></i> Edit </a>';
-
                             echo '<a href="javascript:;" class="btn blue" style="display: none;" onclick="simpanData();" id="btnSimpan"><i class="fa fa-floppy-o"></i> Simpan </a>';
                         }
                     ?>

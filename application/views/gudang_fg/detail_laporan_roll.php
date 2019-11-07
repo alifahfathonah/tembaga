@@ -427,6 +427,7 @@ $('#btnSaveDetail').click(function(event) {
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
+                    $('#btnSaveDetail').text('Tambah');
                     $('#btnSaveDetail').prop('disabled',false);
                     $('#no_produksi').val('');
                     $('#bruto').val('');

@@ -47,7 +47,7 @@
             </div>
         </div>
         <?php
-            if( ($group_id==1)||($hak_akses['edit_dtr']==1) ){
+            if( ($group_id==1)||($hak_akses['create_dtbj']==1) ){
         ?>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku" action="<?php echo base_url('index.php/BeliFinishGood/approve_proses_dtbj'); ?>">  
