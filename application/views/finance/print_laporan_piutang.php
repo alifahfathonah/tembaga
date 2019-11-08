@@ -59,16 +59,22 @@
                 <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->no_invoice ?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= date('d-m-Y', strtotime($row->tanggal)) ?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= date('d-m-Y', strtotime($row->tgl_jatuh_tempo)) ?></td>
-                <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($nilai_invoice,2,',','.');?></td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?=(($row->currency != 'IDR')? 0: number_format($nilai_invoice,2,',','.'));?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->nilai_us,2,',','.');?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?= number_format($row->nilai_cm,2,',','.');?></td>
         <?php 
-          $last_series = $row->kode_customer;
-          $ni +=$nilai_invoice;
-          $nt += $row->nilai_cm;
-          $total_invoice +=$nilai_invoice;
-          $nilai_us += $row->nilai_us;
-          $nilai_total += $row->nilai_cm;
+              $last_series = $row->kode_customer;
+              if($row->currency!='IDR'){
+                $ni+=0;
+                $total_invoice+=0;
+              }else{
+                $ni +=$nilai_invoice;
+                $total_invoice +=$nilai_invoice;
+              }
+              $nt += $row->nilai_cm;
+              $nilai_us += $row->nilai_us;
+              $nus += $row->nilai_us;
+              $nilai_total += $row->nilai_cm;
           } ?>
           <tr>
             <td colspan="6" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total</strong></td>

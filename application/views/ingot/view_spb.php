@@ -379,10 +379,12 @@
                                                 <td><?=$v->uom;?></td>
                                                 <td><?=$v->line_remarks;?></td>
                                                 <?php
-                                                if($v->so_id!=0){
+                                                if($v->flag_sj!=0){
                                                 echo '<td style="background-color: green; color: white">Sudah di Kirim</td>';
                                                 echo '<td>'.$v->tanggal_keluar.'</td>';
-                                                echo '<td></td>';
+                                                echo '<td><input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
+                                                            onclick="check();" class="form-control checklist">';
+                                                    echo '<input type="hidden" value="'.$v->id_detail.'" id="check_'.$no.'" name="myDetails['.$no.'][id_detail]" class="form-control checklist"></td>';
                                                 }else{
                                                     echo '<td>Belum Dikirim</td>';
                                                     echo '<td>'.date('Y-m-d', strtotime($v->tanggal_keluar)).'</td>';
@@ -455,6 +457,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <h4 align="center">Pemenuhan SPB</h4>
+                            <?php if($myData['status']==3){ ?>
                             <div class="row">
                                 <div class="col-md-2">
                                     Tanggal Keluar <font color="#f00">*</font>
@@ -463,6 +466,7 @@
                                     <input type="text" id="tanggal_keluar" name="tanggal_keluar" class="form-control myline input-small" style="margin-bottom:5px; float: left;" value="<?php echo date('d-m-Y'); ?>">
                                 </div>
                             </div>
+                            <?php } ?>
                                 <div class="table-scrollable">
                                     <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
                                         <thead>

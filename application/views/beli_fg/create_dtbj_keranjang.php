@@ -147,6 +147,7 @@
                                 <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
                                 <input type="hidden" id="po_id_1" name="myDetails[1][po_detail_id]" value="">
                                 <input type="hidden" id="fg_id_1" name="myDetails[1][fg_id]" value="">
+                                <input type="hidden" id="ukuran_1" name="myDetails[1][ukuran]" value="">
                                 <td><select id="name_rongsok_1" name="myDetails[1][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom_po(this.value,1);">
                                     <option value=""></option>
                                     <?php foreach ($list_fg_on_po as $value){ ?>
@@ -209,12 +210,14 @@
 function get_bobbin(id, nmr){
     if(''!=id){
         const ukuran = $('#ukuran_'+nmr).val();
+        console.log(ukuran);
         $.ajax({
             url: "<?php echo base_url('index.php/BeliFinishGood/get_bobbin'); ?>",
             type: "POST",
             data: {
                 id:id,
                 ukuran:ukuran,
+                tanggal:$('#tanggal').val(),
                 jenis_barang:$('#jenis_barang').val()
             },
             dataType: "json",
@@ -298,6 +301,7 @@ function get_uom_po(id, nmr){
                 data: {id: id},
                 dataType: "json",
                 success: function(result) {
+                    $('#ukuran_'+nmr).val(result['ukuran']);
                     // $('#uom_'+nmr).val(result['uom']);
                     $('#fg_id_'+nmr).val(id);
                 }
@@ -336,6 +340,7 @@ function saveDetail(id){
                 '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
                 '<input type="hidden" id="po_id_'+new_id+'" name="myDetails['+new_id+'][po_detail_id]" value="">'+
                 '<input type="hidden" id="fg_id_'+new_id+'" name="myDetails['+new_id+'][fg_id]" value="">'+
+                '<input type="hidden" id="ukuran_'+new_id+'" name="myDetails['+new_id+'][ukuran]" value="">'+
                 '<td><select id="name_rongsok_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_uom_po(this.value,'+new_id+');">'+
                     '<option value=""></option>'+
                     '<?php foreach($list_fg_on_po as $v){ print('<option value="'.$v->id.'">('.$v->kode.') '.$v->jenis_barang.'</option>');}?>'+

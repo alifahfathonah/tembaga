@@ -65,7 +65,17 @@
             <td style="text-align: right;border-bottom: 1px solid; border-top: 5px solid;border-left: 1px solid;"><strong><?=number_format($t_netto,2,',','.');?></strong></td>
             <td style="text-align: right;border-bottom: 1px solid; border-top: 5px solid;border-left: 1px solid;border-right: 1px solid;"><strong><?=number_format($t_netto,2,',','.');?></strong></td>
           </tr>
-        </tbody>   
+        </tbody>
       </table>
+      <?php foreach($so_hari_ini as $v){ 
+        if(!empty($v->netto)){
+      ?>
+        <tr>
+          <td><?=$v->jenis_barang;?></td>
+          <td><?=number_format($v->netto,2,',','.');?></td>
+        </tr>
+      <?php 
+        }
+      } ?>
     </body>
 </html>

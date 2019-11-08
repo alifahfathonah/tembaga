@@ -152,10 +152,12 @@ Dan untuk penambahan kolom BS Apollo maupun rolling juga blom
 
 tipe bahan A, B, D hanya di apollo (done)
 
-tolling & so tgl input saat approve utk bobbin peminjaman
+tolling & so tgl input saat approve utk bobbin peminjaman (done)
 
 lpb edit kurs dan gudang sp
 
 pindahin fg stok saat itu ke pajak. di buatin bpb di pajak per jenis barang
 
-cek barcode ada double atau tidak di jenis packing bobbin / keranjang dtbj
+cek barcode ada double atau tidak di jenis packing bobbin / keranjang dtbj (done benerin barcode aja)
+
+tambah revisi di surat jalan tolling

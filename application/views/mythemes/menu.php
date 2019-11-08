@@ -1206,7 +1206,7 @@
                                     <i class="fa fa-money" style="color: orange;"></i> Rekap Penerimaan CM</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Finance/cm_belum_cair/" target="_blank">
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_cm_belum_cair/">
                                     <i class="fa fa-money" style="color: orange;"></i> List CM Belum Cair</a>
                                 </li>
                             </ul>

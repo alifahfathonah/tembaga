@@ -3142,7 +3142,6 @@ class Finance extends CI_Controller{
         $this->load->view('layout', $data);   
     }
 
-
     function print_penjualan_piutang(){
             $module_name = $this->uri->segment(1);
             $user_ppn    = $this->session->userdata('user_ppn');
@@ -3291,6 +3290,26 @@ class Finance extends CI_Controller{
             $this->load->view('finance/print_penerimaan_cm', $data);
     }
 
+    function search_cm_belum_cair(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');   
+        $ppn = $this->session->userdata('user_ppn');
+
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "finance/search_cm_belum_cair";
+
+        $this->load->model('Model_finance');
+        $data['customer_list'] = $this->Model_finance->customer_list($ppn)->result();
+
+        $this->load->view('layout', $data);   
+    }
+
     function cm_belum_cair(){
             $module_name = $this->uri->segment(1);
             $ppn         = $this->session->userdata('user_ppn');
@@ -3303,11 +3322,15 @@ class Finance extends CI_Controller{
                 $data['hak_akses'] = $roles;
             }
             $data['group_id']  = $group_id;
+            $j = $_GET['j'];
 
             $this->load->model('Model_finance');
 
-            $data['detailLaporan'] = $this->Model_finance->cm_belum_cair()->result();
-
+            if($j==0){
+                $data['detailLaporan'] = $this->Model_finance->cm_belum_cair0()->result();
+            }else{
+                $data['detailLaporan'] = $this->Model_finance->cm_belum_cair()->result();
+            }
             $this->load->view('finance/cm_belum_cair', $data);
     }
 

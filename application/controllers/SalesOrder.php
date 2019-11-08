@@ -2192,7 +2192,8 @@ class SalesOrder extends CI_Controller{
 
             $this->load->model('Model_sales_order');
             $data['detailLaporan'] = $this->Model_sales_order->print_laporan_sisa_so_jb()->result();
-            // print_r($data['detailLaporan']);die();
+            $data['so_hari_ini'] = $this->Model_sales_order->so_hari_ini($tanggal)->result();
+            // print_r($data['so_hari_ini']);die();
             $this->load->view('sales_order/print_laporan_sisa_so_jb', $data);   
         }else{
             redirect('index.php/SalesOrder/laporan_list_so');

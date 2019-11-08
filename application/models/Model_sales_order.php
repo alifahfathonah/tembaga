@@ -972,6 +972,17 @@ class Model_sales_order extends CI_Model{
         return $this->db->query("select no_so from r_t_so where jenis_so = 'SO KMP' order by no_so desc limit 1");
     }
 
+    function so_hari_ini($date){
+        return $this->db->query("select COALESCE(jb.jenis_barang, jb2.jenis_barang, jb3.nama_item, r.nama_item, r2.nama_item) as jenis_barang, sum(netto) as netto  from t_sales_order_detail d
+                left join t_sales_order tso on d.t_so_id = tso.id
+                left join sales_order so on tso.so_id = so.id
+                left join jenis_barang jb on tso.jenis_barang = 'FG' and jb.id = d.jenis_barang_id
+                left join jenis_barang jb2 on tso.jenis_barang = 'WIP' and jb2.id = d.jenis_barang_id
+                left join sparepart jb3 on tso.jenis_barang = 'LAIN' and jb3.id = d.jenis_barang_id
+                left join rongsok r on  tso.jenis_barang = 'RONGSOK' and r.id = d.jenis_barang_id
+                left join rongsok r2 on  tso.jenis_barang = 'AMPAS' and r2.id = d.jenis_barang_id
+                where so.tanggal ='".$date."'");
+    }
     // Select tsjd.*, tsod.nama_barang_alias, COALESCE(tsod.nama_barang_alias, jb.jenis_barang,r.nama_item) as jenis_barang , COALESCE(jb.kode,r.kode_rongsok) as kode from t_surat_jalan_detail tsjd
     //         left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
     //         left join t_sales_order_detail tsod on tsod.t_so_id = tsj.sales_order_id and (case when tsjd.jenis_barang_alias = 0 then tsod.jenis_barang_id = tsjd.jenis_barang_id else tsod.jenis_barang_id = tsjd.jenis_barang_alias end)

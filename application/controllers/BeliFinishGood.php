@@ -479,6 +479,7 @@ class BeliFinishGood extends CI_Controller{
     function get_bobbin(){
         $id = $this->input->post('id');
         $jp = $this->input->post('jp');
+        $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
         $this->load->model('Model_beli_fg');
         $barang= $this->Model_beli_fg->show_data_bobbin($id)->row_array();
 
@@ -503,13 +504,13 @@ class BeliFinishGood extends CI_Controller{
             $kode_bobbin = substr($no_bobbin, 0,1);
             $nomor_bobbin = substr($no_bobbin, 2,4);
             $ukuran = $this->input->post('ukuran');
-            $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$urutan;
+            $barang['no_packing'] = $tgl_code.$kode_bobbin.$ukuran.$urutan;
         }else{
             $no_bobbin = $barang['nomor_bobbin'];
             $kode_bobbin = substr($no_bobbin, 0,1);
             $nomor_bobbin = substr($no_bobbin, 1,4);
             $ukuran = $this->input->post('ukuran');
-            $barang['no_packing'] = date("ymd").$kode_bobbin.$ukuran.$nomor_bobbin;
+            $barang['no_packing'] = $tgl_code.$kode_bobbin.$ukuran.$nomor_bobbin;
         }
 
         header('Content-Type: application/json');

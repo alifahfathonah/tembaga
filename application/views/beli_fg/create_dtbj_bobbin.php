@@ -222,6 +222,7 @@ function get_bobbin(id, nmr){
             data: {
                 id:id,
                 ukuran:ukuran,
+                tanggal:$('#tanggal').val(),
                 jenis_barang:$('#jenis_barang').val()
             },
             dataType: "json",
