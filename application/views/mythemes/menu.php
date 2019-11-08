@@ -1072,6 +1072,10 @@
                                     <i class="fa fa-search"></i> Laporan Surat Jalan </a>
                                 </li>
                                 <li>
+                                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/laporan_penjualan/">
+                                    <i class="fa fa-search"></i> Laporan Penjualan </a>
+                                </li>
+                                <li>
                                     <a href="<?php echo base_url(); ?>index.php/SalesOrder/print_sisa_so_gabungan_jb/" target="_blank">
                                     <i class="fa fa-print"></i> Print Sisa SO Gabungan per Jenis Barang </a>
                                 </li>

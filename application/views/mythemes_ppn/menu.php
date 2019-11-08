@@ -913,6 +913,10 @@
                                     <a href="<?php echo base_url(); ?>index.php/SalesOrder/laporan_sj/">
                                     <i class="fa fa-search"></i> Laporan Surat Jalan </a>
                                 </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/SalesOrder/laporan_penjualan/">
+                                    <i class="fa fa-search"></i> Laporan Penjualan </a>
+                                </li>
                             </ul>
                         </li>
                         <?php } ?>

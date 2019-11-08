@@ -2199,4 +2199,58 @@ class SalesOrder extends CI_Controller{
             redirect('index.php/SalesOrder/laporan_list_so');
         }
     }
+
+    function laporan_penjualan(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "sales_order/laporan_penjualan";
+        $this->load->model('Model_sales_order');
+
+        $this->load->view('layout', $data);   
+    }
+
+    function print_query_penjualan(){
+            $module_name = $this->uri->segment(1);
+            $this->load->helper('tanggal_indo');
+            $l = $_GET['laporan'];
+            $j = $_GET['j'];
+            $start = date('Y-m-d', strtotime($_GET['ts']));
+            $end = date('Y-m-d', strtotime($_GET['te']));
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_finance');
+            if($j == 0){
+                if($l == 1){
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_penjualan($start,$end,0)->result();
+                }elseif ($l == 2) {
+                    $data['detailLaporan'] = $this->Model_finance->query_penjualan($start,$end,'CV')->result();
+                }elseif ($l == 3) {
+                    $data['detailLaporan'] = $this->Model_finance->query_penjualan($start,$end,'KKH')->result();
+                }
+            $this->load->view('sales_order/print_laporan_penjualan', $data);
+            }else{
+                if($l == 1){
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_penjualan_jb($start,$end,0)->result();
+                }elseif ($l == 2) {
+                    $data['detailLaporan'] = $this->Model_finance->query_penjualan_jb($start,$end,'CV')->result();
+                }elseif ($l == 3) {
+                    $data['detailLaporan'] = $this->Model_finance->query_penjualan_jb($start,$end,'KKH')->result();
+                }
+                $this->load->view('sales_order/print_laporan_penjualan_jb', $data);
+            }
+    }
 }
