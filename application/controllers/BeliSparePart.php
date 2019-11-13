@@ -1049,8 +1049,9 @@ class BeliSparePart extends CI_Controller{
                     $this->db->where('id', $row['detail_id']);
                     $this->db->update('lpb_detail', $data_lpb_detail);  
 
-                    $diskon = str_replace('.', '', $row['amount'])*$this->input->post('diskon')/100;
-                    $amount = str_replace('.', '', $row['amount'])*$row['kurs_lpb'];
+                    $diskon = $row['amount']*$this->input->post('diskon')/100;
+                    $amount = $row['amount']*$row['kurs_lpb'];
+                    // echo $amount;die();
                     #Save data ke gudang sp
                     $this->db->where('lpb_detail_id', $row['detail_id']);
                     $this->db->update('t_gudang_sp', array(
@@ -1081,11 +1082,11 @@ class BeliSparePart extends CI_Controller{
             }
                     
             if($this->db->trans_complete()){    
-                $this->session->set_flashdata('flash_msg', 'Bukti penerimaan barang berhasil di-create dengan nomor : '.$code);                 
+                $this->session->set_flashdata('flash_msg', 'Berhasil update lpb ');                 
             }else{
-                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create bukti penerimaan barang, silahkan coba kembali!');
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat update lpb, silahkan coba kembali!');
             }
-            redirect('index.php/BeliSparePart/lpb_list');
+            redirect('index.php/BeliSparePart/edit_lpb/'.$this->input->post('id'));
     }
     
     function bpb_list(){

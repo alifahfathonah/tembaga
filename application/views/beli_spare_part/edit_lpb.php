@@ -18,9 +18,9 @@
         ?>
         <div class="row">
             <div class="col-md-12">
-                <div class="alert alert-danger display-hide">
+                <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
                     <button class="close" data-close="alert"></button>
-                    <span id="message">&nbsp;</span>
+                    <span id="msg_sukses"><?php echo $this->session->flashdata('flash_msg'); ?></span>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_po']; ?>">
                             
-                            <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['id']; ?>">
+                            <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                             <input type="hidden" id="kurs" name="kurs" value="<?php echo $header['kurs']; ?>">
                             <input type="hidden" id="diskon" name="diskon" value="<?php echo $header['diskon']; ?>">
                         </div>
@@ -139,7 +139,7 @@
                     <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Update LPB </a>
 
-                    <a href="<?php echo base_url('index.php/BeliSparePart/po_list'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/BeliSparePart/lpb_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
