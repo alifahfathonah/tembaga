@@ -814,6 +814,10 @@ class R_Rongsok extends CI_Controller{
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
+                if($result['status']==true){
+                    $this->db->where('id',$ttr_id);
+                    $this->db->update('ttr', array('api'=> 1));
+                }
                 // print_r($response);
                 // die();
 

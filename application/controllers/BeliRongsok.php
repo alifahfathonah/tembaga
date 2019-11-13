@@ -1179,6 +1179,10 @@ class BeliRongsok extends CI_Controller{
                 curl_close($ch);
                 // print_r($response);
                 // die();
+                if($result['status']==true){
+                    $this->db->where('id',$ttr_id);
+                    $this->db->update('ttr', array('api'=> 1));
+                }
             }
 
         // #Update Stok Rongsok Tersedia

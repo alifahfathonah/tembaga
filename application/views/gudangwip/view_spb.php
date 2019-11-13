@@ -130,7 +130,8 @@
                             Keperluan
                         </div>
                         <div class="col-md-8">
-                            <input type="text" name="keperluan" class="form-control myline" style="margin-bottom:5px" readonly="readonly"  value="<?=$flag_produksi;?>">
+                            <input type="text" name="keperluan" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?=$flag_produksi;?>">
+                            <input type="hidden" name="flag_produksi" value="<?=$myData['flag_produksi'];?>">
                         </div>
                     </div>
                     <div class="row">

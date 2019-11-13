@@ -96,7 +96,7 @@
                             Nomor Giro
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nomor_giro" name="nomor_giro" class="form-control myline" value="" placeholder="Nomor Giro..." style="margin-bottom:5px" value="<?=$header['no_giro'];?>">
+                            <input type="text" id="nomor_giro" name="nomor_giro" class="form-control myline" placeholder="Nomor Giro..." style="margin-bottom:5px" value="<?=$header['no_giro'];?>">
                         </div>
                     </div>
                     <div class="row">

@@ -454,7 +454,8 @@ class R_InvoiceJasa extends CI_Controller{
                 'customer_id'=>$this->input->post('customer_id'),
                 'jenis_invoice'=>'INVOICE KE CUSTOMER',
                 'remarks'=>$this->input->post('remarks'),
-                'reff' => $inv_jasa_id
+                'reff' => $inv_jasa_id,
+                'id_so'=> $this->input->post('id_so')
             );
 
             $ch = curl_init(target_url_cv($reff_cv).'api/InvoiceAPI/inv');
@@ -465,6 +466,7 @@ class R_InvoiceJasa extends CI_Controller{
             $response = curl_exec($ch);
             $result = json_decode($response, true);
             curl_close($ch);
+            // print_r($response);die();
 
             log_message('debug', print_r($result,1));
 

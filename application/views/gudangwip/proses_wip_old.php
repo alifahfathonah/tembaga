@@ -303,6 +303,67 @@
                     </div>
                 </div>
                 <br/>
+                <div class="row">
+                    <!-- <div class="col-md-6">
+                        <div class="form-inline">
+                            <div class="form-group">
+                            <label>Berat Serbuk</label>
+                            <input id="berat_serbuk_in" name="serbuk" 
+                                class="form-control myline" size="25" 
+                                value="" placeholder="Berat Serbuk" onchange="hitung_susut_berat();"/>
+                                <label> Kg </label>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="col-md-6" id="div_berat_bs">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label>Berat BS </label>
+                                <input type="text" id="berat_bs_in" name="bs" 
+                                class="form-control myline" size="25" 
+                                value="" placeholder="Berat BS" onchange="hitung_susut_berat();"/>
+                                <label> Kg</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 hidden disabled" id="div_berat_bs_rolling">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label>Berat BS Rolling</label>
+                                <input type="text" id="berat_bs_rolling" name="bs_rolling" 
+                                class="form-control myline" size="25" 
+                                value="" placeholder="Berat BS Rolling">
+                                <label> Kg</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-md-6" id="div_bs_8m">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label>Berat BS 8mm </label>
+                                <input type="text" id="berat_bs_8mm" name="bs_8m" 
+                                class="form-control myline" size="25" 
+                                value="" placeholder="Berat BS 8mm"/>
+                                <label> Kg</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 hidden disabled" id="div_berat_bs_ingot">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label>Berat BS Ingot </label>
+                                <input type="text" id="berat_bs_ingot" name="bs_ingot" 
+                                class="form-control myline" size="25" 
+                                value="" placeholder="Berat BS Ingot"/>
+                                <label> Kg</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br/>
                 <div class="row" id="div_gas">
                     <div class="col-md-6">
                         <div class="form-inline">
@@ -327,59 +388,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="row" id="dtr" style="display: none;">
-                <div class="col-md-12">
-                    <div class="table-scrollable">
-                        <table class="table table-bordered table-striped table-hover" id="tabel_dtr">
-                            <thead>
-                                <th style="width:40px">No</th>
-                                <th style="width:20%">Nama Item Rongsok</th>
-                                <th style="width: 15%;">Bruto (Kg)</th>
-                                <th style="width: 10%;">Berat Palette</th>
-                                <th style="width: 15%;">Netto (Kg)</th>
-                                <th></th>
-                                <th style="width:15%">No. Pallete</th>
-                                <th>Action</th>
-                            </thead>
-                            <tbody id="boxDetail">
-                            <tr>
-                                <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
-                                <input type="hidden" id="po_id_1" name="myDetails[1][po_detail_id]" value="">
-                                <input type="hidden" id="rongsok_id_1" name="myDetails[1][rongsok_id]" value="">
-                                <td><select id="name_rongsok_1" name="myDetails[1][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,1);">
-                                    <option value=""></option>
-                                    <?php foreach ($rongsok as $value){ ?>
-                                            <option value='<?=$value->id;?>'>
-                                                <?='('.$value->kode_rongsok.') '.$value->nama_item;?>
-                                            </option>
-                                    <?php } ?>
-                                </select>
-                                </td>
-                                <td><input type="number" id="bruto_1" name="myDetails[1][bruto]" class="form-control myline" value="0" maxlength="10"></td>
-                                <td><input type="number" id="berat_palette_1" name="myDetails[1][berat_palette]" class="form-control myline" value="0" maxlength="10"></td>
-                                <td><input type="text" id="netto_1" name="myDetails[1][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
-                                <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(1);"> <i class="fa fa-dashboard"></i> Timbang </a></td>                          
-                                <td><input type="text" name="myDetails[1][no_pallete]" id="no_pallete_1"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly"></td>
-                                <td style="text-align:center">
-                                    <a id="save_1" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(1);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
-                                    <a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
-                                    <a id="print_1" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(1);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>
-                                </td>
-                            </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="3" style="text-align: right;"><strong>Total :</strong></td>
-                                    <td><input type="text" id="total_bruto" class="form-control" readonly="readonly"></td>
-                                    <td><input type="text" id="total_berat" class="form-control" readonly="readonly"></td>
-                                    <td><input type="text" id="total_netto" name="bs" class="form-control" readonly="readonly" value="0"></td>
-                                    <td colspan="4"></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
                 <div class="row">
                 <br/>
                 <br/>
@@ -490,7 +498,7 @@ function hitung_susut_berat(){
         var susut = Number(Number($('#berat_ingot').val()) - (Number($('#berat_kh_in').val()) + Number($('#berat_keras_in').val()) + Number($('#berat_bs_8m').val()) + Number($('#berat_bs_rolling').val()) + Number($('#berat_serbuk_in').val()) + Number($('#berat_bs_ingot').val())));
         $('#susut_berat_ingot').val(susut);
     }else if($('#jenis_masak').val()=='BAKAR ULANG'){
-        var susut = Number(Number($('#jml_berat_keras').val()) - (Number($('#berat_kh_in').val()) + Number($('#berat_keras_in').val()) + Number($('#total_netto').val())));
+        var susut = Number(Number($('#jml_berat_keras').val()) - (Number($('#berat_kh_in').val()) + Number($('#berat_keras_in').val()) + Number($('#berat_bs_in').val())));
         $('#susut_berat_keras').val(susut);
     }else if($('#jenis_masak').val()=='CUCI'){
         var susut = Number(Number($('#berat_kawat_hitam').val()) - Number($('#berat_km_in').val()));
@@ -540,120 +548,27 @@ function get_data(id,jb){
     });
 }
 
-//DTR
-function timbang_netto(id){
-    var bruto = $("#bruto_"+id).val();
-    var berat_palette = $("#berat_palette_"+id).val();
-    var total_netto = bruto - berat_palette;
-    const netto = total_netto.toFixed(2);
-    $("#netto_"+id).val(netto);
-}
-
-function get_uom_po(id, nmr){
-    // var idpo = $('#po_id').val();
-    if($.trim($('#name_rongsok_'+nmr).val())!=''){
-        $.ajax({
-            url: "<?php echo base_url('index.php/BeliRongsok/get_uom_po'); ?>",
-            type: "POST",
-            data: {iditem: id},
-            dataType: "json",
-            success: function(result) {
-                $('#rongsok_id_'+nmr).val(result['id']);
-            }
-        });
-    }
-}
-
-function saveDetail(id){
-    if($.trim($("#name_rongsok_"+id).val()) == ""){
-        $('#message').html("Silahkan pilih nama item rongsok!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#bruto_"+id).val()) == "" || 0){
-        $('#message').html("Jumlah bruto tidak boleh kosong!");
-        $('.alert-danger').show(); 
-    }else if($.trim($("#netto_"+id).val()) == ("" || 0)){
-        $('#message').html("Jumlah netto tidak boleh kosong!");
-        $('.alert-danger').show(); 
-    }else{
-        $.ajax({
-            url: "<?php echo base_url('index.php/BeliRongsok/generate_palette'); ?>",
-            type: "POST",
-            data: {
-                id:id,
-                tanggal: $('#tanggal').val()
-            },
-            dataType: "json",
-            success: function(result){
-                $('#no_pallete_'+id).val(result['no_packing']);
-            }
-        });
-        $('#total_bruto').val((Number($('#total_bruto').val())+Number($('#bruto_'+id).val())).toFixed(2));
-        $('#total_berat').val((Number($('#total_berat').val())+Number($('#berat_palette_'+id).val())).toFixed(2));
-        $('#total_netto').val((Number($('#total_netto').val())+Number($('#netto_'+id).val())).toFixed(2));
-        $("#name_rongsok_"+id).attr('disabled','disabled');
-        $("#save_"+id).hide();
-        $('#qty_'+id).attr('readonly','readonly');
-        $('#bruto_'+id).attr('readonly','readonly');
-        $('#berat_palette_'+id).attr('readonly','readonly');
-        $('#no_pallete_'+id).attr('readonly','readonly');
-        $("#print_"+id).show();
-        $("#delete_"+id).removeClass('disabled');
-        var new_id = id+1; 
-        $("#tabel_dtr>tbody").append(
-            '<tr>'+
-                '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
-                '<input type="hidden" id="po_id_'+new_id+'" name="myDetails['+new_id+'][po_detail_id]" value="">'+
-                '<input type="hidden" id="rongsok_id_'+new_id+'" name="myDetails['+new_id+'][rongsok_id]" value="">'+
-                '<td><select id="name_rongsok_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,'+new_id+');">'+
-                    '<option value=""></option>'+
-                    '<?php foreach($rongsok as $v){ print('<option value="'.$v->id.'">('.$v->kode_rongsok.') '.$v->nama_item.'</option>');}?>'+
-                '</select>'+
-                '</td>'+
-                '<td><input type="number" id="bruto_'+new_id+'" name="myDetails['+new_id+'][bruto]" class="form-control myline" value="0" maxlength="10"></td>'+
-                '<td><input type="text" id="berat_palette_'+new_id+'" name="myDetails['+new_id+'][berat_palette]" class="form-control myline" value="0" maxlength="10"></td>'+
-                '<td><input type="text" id="netto_'+new_id+'" name="myDetails['+new_id+'][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>'+
-                '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('+new_id+');"> <i class="fa fa-dashboard"></i> Timbang </a></td>'+
-                '<td><input type="text" name="myDetails['+new_id+'][no_pallete]" id="no_pallete_'+new_id+'"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly"></td>'+
-                '<td style="text-align:center"><a id="save_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail('+new_id+');" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>'+
-                    '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>'+
-                ' <a id="print_'+new_id+'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('+new_id+');" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>'+
-                '</td>'+
-            '</tr>'
-        );
-        $('#name_rongsok_'+new_id).select2();
-        hitung_susut_berat();
-    }
-}
-
-function deleteDetail(id){
-    var r=confirm("Anda yakin menghapus item rongsok ini?");
-    if (r==true){
-        $('#total_bruto').val(Number($('#total_bruto').val())-Number($('#bruto_'+id).val()));
-        $('#total_berat').val(Number($('#total_berat').val())-Number($('#berat_palette_'+id).val()));
-        $('#total_netto').val(Number($('#total_netto').val())-Number($('#netto_'+id).val()));
-        $('#no_tabel_'+id).closest('tr').remove();
-    }
-    hitung_susut();
-}
-
 function pilih_data(id){
     if(id == 'ROLLING'){
         $('#div_kawat_merah_masuk').addClass('hidden disabled');
         $('#div_stok_keras').addClass('hidden disabled');
         $('#div_spb_cuci').addClass('hidden disabled');
         $('#div_data_spb_kh').addClass('hidden disabled');
+        $('#div_berat_bs').addClass('hidden disabled');
         $('#id_spb_kh').prop("disabled", true);
         $('#id_spb_ingot').prop("disabled", false);
         $('#div_data_spb').removeClass('hidden disabled');
         $('#div_kawat_hitam_masuk').removeClass('hidden disabled');
         $('#div_spb_rolling').removeClass('hidden disabled');
+        $('#div_berat_bs_rolling').removeClass('hidden disabled');
+        $('#div_berat_bs_ingot').removeClass('hidden disabled');
         // $('#id_jenis_barang').val('6');
         $('#div_kawat_hitam_masuk :input').attr('disabled', false);
         $('#div_kawat_merah_masuk :input').attr('disabled', true);
         $('#div_data_spb :input').attr('disabled', false);
         $('#div_data_spb_kh :input').attr('disabled', true);
         $('#div_stok_keras :input').attr('disabled', true);
-        $('#dtr').show();
+        $('#div_bs_8m').show();
         $('#div_kawat_keras').show();
         reset_values();
         $("#id_spb_ingot").select2("val", "");
@@ -663,17 +578,20 @@ function pilih_data(id){
         $('#div_data_spb').addClass('hidden disabled');
         $('#div_spb_cuci').addClass('hidden disabled');
         $('#div_data_spb_kh').addClass('hidden disabled');
+        $('#div_berat_bs_rolling').addClass('hidden disabled');
+        $('#div_berat_bs_ingot').addClass('hidden disabled');
         $('#id_spb_kh').prop("disabled", true);
         $('#id_spb_ingot').prop("disabled", true);
         $('#div_kawat_hitam_masuk').removeClass('hidden disabled');
         $('#div_stok_keras').removeClass('hidden disabled');
+        $('#div_berat_bs').removeClass('hidden disabled');
         // $('#id_jenis_barang').val('6');
         $('#div_kawat_hitam_masuk :input').attr('disabled', false);
         $('#div_kawat_merah_masuk :input').attr('disabled', true);
         $('#div_data_spb :input').attr('disabled', true);
         $('#div_data_spb_kh :input').attr('disabled', true);
         $('#div_stok_keras :input').attr('disabled', false);
-        $('#dtr').show();
+        $('#div_bs_8m').hide();
         $('#div_kawat_keras').hide();
         reset_values();
     }else if(id == 'CUCI'){
@@ -681,11 +599,14 @@ function pilih_data(id){
         $('#div_kawat_hitam_masuk').addClass('hidden disabled');
         $('#div_stok_keras').addClass('hidden disabled');
         $('#div_data_spb').addClass('hidden disabled');
+        $('#div_berat_bs_rolling').addClass('hidden disabled');
+        $('#div_berat_bs_ingot').addClass('hidden disabled');
         $('#id_spb_kh').prop("disabled", false);
         $('#id_spb_ingot').prop("disabled", true);
         $('#div_data_spb_kh').removeClass('hidden disabled');
         $('#div_spb_cuci').removeClass('hidden disabled');
         $('#div_kawat_merah_masuk').removeClass('hidden disabled');
+        $('#div_berat_bs').removeClass('hidden disabled');
         // $('#id_jenis_barang').val('5');
         $("#id_spb_kh").select2("val", "");
         $('#jml_kawat_hitam').val('');
@@ -693,6 +614,7 @@ function pilih_data(id){
         $('#qty_km').val('');
         $('#berat_km_in').val('');
         $('#berat_serbuk_km').val('');
+        $('#berat_bs_km').val('');
         $('#susut_jumlah_kh').val('');
         $('#susut_berat_kh').val('');
         $('#div_kawat_hitam_masuk :input').attr('disabled', true);
@@ -702,7 +624,6 @@ function pilih_data(id){
         $('#div_stok_keras :input').attr('disabled', true);
     }
 }
-
 function simpanData(){
     id = $('#jenis_masak').val();
     if(id == 'ROLLING'){

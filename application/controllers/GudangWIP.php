@@ -65,6 +65,7 @@ class GudangWIP extends CI_Controller{
         $data['content']   = "gudangwip/proses_wip";
         
        $this->load->model('Model_gudang_wip');
+       $this->load->model('Model_beli_rongsok');
        // $pilihan_jenis_masak = array(
        //                  'ROLLING' => 'ROLLING',
        //                  'BAKAR ULANG' => 'BAKAR ULANG',
@@ -78,6 +79,7 @@ class GudangWIP extends CI_Controller{
        $data['stok_keras'] = $this->Model_gudang_wip->stok_keras()->row_array();
        $data['spb_kawat_hitam'] = $this->Model_gudang_wip->spb_kawat_hitam()->result();
        $data['jenis_barang'] = $this->Model_gudang_wip->jenis_barang_list()->result();
+       $data['rongsok'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
         
        $this->load->view('layout', $data);  
     }
@@ -136,8 +138,8 @@ class GudangWIP extends CI_Controller{
                     'susut' => $susut,
                     'keras' => (int)$this->input->post('berat_keras'),
                     'qty_keras' => (int)$this->input->post('jml_keras'),
-                    'bs' => (int)($this->input->post('bs')!= null)? $this->input->post('bs') : (int)$this->input->post('bs_rolling')+(int)$this->input->post('bs_8m'),
-                    'bs_ingot' => (int)($this->input->post('bs_ingot')!= null)? $this->input->post('bs_ingot') : 0,
+                    'bs' => $this->input->post('bs'),
+                    'bs_ingot' => 0,
                     'serbuk' => (int)$this->input->post('serbuk'),
                     'tali_rolling' => (int)$this->input->post('tali_rolling'),
                     'created_by'=> $user_id
@@ -216,7 +218,7 @@ class GudangWIP extends CI_Controller{
             $this->db->insert('t_gudang_keras', $data);
         }
 
-        if($this->input->post('bs') != 0 || $this->input->post('bs_rolling') != 0 || $this->input->post('bs_ingot') != 0 || $this->input->post('serbuk') != 0 || $this->input->post('bs_8m') != 0){
+        if($this->input->post('bs') != 0){
 
             $code = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
         
@@ -232,315 +234,40 @@ class GudangWIP extends CI_Controller{
                     );
             $this->db->insert('dtr', $data_dtr);
             $dtr_id = $this->db->insert_id();
-           
-            if($this->input->post('jenis_masak') == 'ROLLING'){
-                
-                #insert bs rolling ke rongsok
-                if($this->input->post('bs_rolling') != 0){
 
-                $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
+                $details = $this->input->post('myDetails');
+                // print_r($details);die();
+                $bs_ingot = 0;
+                    foreach ($details as $i => $row){
+                        if($row['rongsok_id']!=''){
+                            $this->db->insert('dtr_detail', array(
+                                'dtr_id'=>$dtr_id,
+                                //'po_detail_id'=>$row['po_detail_id'],
+                                'rongsok_id'=>$row['rongsok_id'],
+                                'bruto'=>$row['bruto'],
+                                'berat_palette'=>$row['berat_palette'],
+                                'netto'=>$row['netto'],
+                                'no_pallete'=>$row['no_pallete'],
+                                'line_remarks'=>'SISA PRODUKSI',
+                                'created'=>$tanggal,
+                                'created_by'=>$user_id,
+                                'tanggal_masuk'=>$tgl_input
+                            ));
+                            if($row['rongsok_id'] == 22){
+                                $bs_ingot += $row['netto'];
+                            }
+                        }
+                    }
 
-                $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
-
-                $bs_packing = $tgl_code.substr($bs_code,13,4);
-
-                    $this->db->insert('dtr_detail', array(
-                        'dtr_id'=>$dtr_id,
-                        'rongsok_id'=>20,
-                        'qty'=>0,
-                        'bruto'=>$this->input->post('bs_rolling'),
-                        'netto'=>$this->input->post('bs_rolling'),
-                        'line_remarks'=>'SISA PRODUKSI',
-                        'no_pallete'=>$bs_packing,
-                        'created'=>$tanggal,
-                        'created_by'=>$user_id,
-                        'modified'=>$tanggal,
-                        'modified_by'=>$user_id,
-                        'tanggal_masuk'=>$tgl_input
-                    ));
-                }
-                #insert bs ingot ke rongsok
-                if($this->input->post('bs_ingot') != 0){
-
-                $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
-
-                $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
-
-                $bs_packing = $tgl_code.substr($bs_code,13,4);
-                    $this->db->insert('dtr_detail', array(
-                        'dtr_id'=>$dtr_id,
-                        'rongsok_id'=>22,
-                        'qty'=>0,
-                        'bruto'=>$this->input->post('bs_ingot'),
-                        'netto'=>$this->input->post('bs_ingot'),
-                        'line_remarks'=>'SISA PRODUKSI',
-                        'no_pallete'=>$bs_packing,
-                        'created'=>$tanggal,
-                        'created_by'=>$user_id,
-                        'modified'=>$tanggal,
-                        'modified_by'=>$user_id,
-                        'tanggal_masuk'=>$tgl_input
-                    ));
-                }
-
-                #insert bs 8mm ke rongsok
-                if($this->input->post('bs_8m') != 0){
-
-                $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
-
-                $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
-
-                $bs_packing = $tgl_code.substr($bs_code,13,4);
-                    $this->db->insert('dtr_detail', array(
-                        'dtr_id'=>$dtr_id,
-                        'rongsok_id'=>52,//BS 8,00MMM
-                        'qty'=>0,
-                        'bruto'=>$this->input->post('bs_8m'),
-                        'netto'=>$this->input->post('bs_8m'),
-                        'line_remarks'=>'SISA PRODUKSI',
-                        'no_pallete'=>$bs_packing,
-                        'created'=>$tanggal,
-                        'created_by'=>$user_id,
-                        'modified'=>$tanggal,
-                        'modified_by'=>$user_id,
-                        'tanggal_masuk'=>$tgl_input
-                    ));
-                }
-                
-            }else if($this->input->post('jenis_masak') == 'BAKAR ULANG'){
-                #insert bs ke rongsok
-                if($this->input->post('bs') != 0){
-                    $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
-
-                    $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
-
-                    $bs_packing = $tgl_code.substr($bs_code,13,4);
-                    $this->db->insert('dtr_detail', array(
-                        'dtr_id'=>$dtr_id,
-                        'rongsok_id'=>52,
-                        'qty'=>0,
-                        'bruto'=>$this->input->post('bs'),
-                        'netto'=>$this->input->post('bs'),
-                        'line_remarks'=>'SISA PRODUKSI',
-                        'no_pallete'=>$bs_packing,
-                        'created'=>$tanggal,
-                        'created_by'=>$user_id,
-                        'modified'=>$tanggal,
-                        'modified_by'=>$user_id,
-                        'tanggal_masuk'=>$tgl_input
-                    ));
-                }
-
-            }else if($this->input->post('jenis_masak') == 'CUCI'){
-                #insert bs ke gudang bs
-                $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
-
-                $bs_code = $this->Model_m_numberings->getNumbering('RONGSOK',$tgl_input);
-
-                $bs_packing = $tgl_code.substr($bs_code,13,4);
-                    $this->db->insert('dtr_detail', array(
-                        'dtr_id'=>$dtr_id,
-                        'rongsok_id'=>51,
-                        'qty'=>0,
-                        'netto'=>$this->input->post('bs'),
-                        'line_remarks'=>'SISA PRODUKSI',
-                        'no_pallete'=>$bs_packing,
-                        'created'=>$tanggal,
-                        'created_by'=>$user_id,
-                        'modified'=>$tanggal,
-                        'modified_by'=>$user_id,
-                        'tanggal_masuk'=>$tgl_input
-                    ));
-            }
+                    if($bs_ingot > 0){
+                        $new_bs = $this->input->post('bs') - $bs_ingot;
+                        $this->db->where('id', $insert_id);
+                        $this->db->update('t_hasil_wip', array(
+                            'bs'=> $new_bs,
+                            'bs_ingot'=>$bs_ingot
+                        ));
+                    }
         }
-
-        // if($this->input->post('serbuk') != 0){
-        //     if($this->input->post('jenis_masak') == 'CUCI'){
-        //         #insert serbuk ke rongsok
-        //         $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
-        //             $this->db->insert('dtr_detail', array(
-        //                 'dtr_id'=>$dtr_id,
-        //                 'rongsok_id'=>53,
-        //                 'qty'=>0,
-        //                 'netto'=>$this->input->post('serbuk'),
-        //                 'line_remarks'=>'SISA PRODUKSI',
-        //                 'no_pallete'=>date("dmyHis").$rand,
-        //                 'created'=>$tanggal,
-        //                 'created_by'=>$user_id,
-        //                 'modified'=>$tanggal,
-        //                 'modified_by'=>$user_id,
-        //                 'tanggal_masuk'=>$tgl_input
-        //             ));
-        //     }else{
-        //         #insert serbuk ke rongsok
-        //         $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
-        //             $this->db->insert('dtr_detail', array(
-        //                 'dtr_id'=>$dtr_id,
-        //                 'rongsok_id'=>30,
-        //                 'qty'=>0,
-        //                 'netto'=>$this->input->post('serbuk'),
-        //                 'line_remarks'=>'SISA PRODUKSI',
-        //                 'no_pallete'=>date("dmyHis").$rand,
-        //                 'created'=>$tanggal,
-        //                 'created_by'=>$user_id,
-        //                 'modified'=>$tanggal,
-        //                 'modified_by'=>$user_id,
-        //                 'tanggal_masuk'=>$tgl_input
-        //             ));
-        //     }
-        // }
-
-        //     if($this->input->post('jenis_masak') == 'ROLLING'){
-        //         #insert bs ke gudang bs
-        //         if($this->input->post('bs_rolling') != 0){
-        //             $data_bs = array(
-        //                 'id_produksi' => $insert_id,
-        //                 'jenis_barang_id' => 20,
-        //                 'jenis_produksi' => 'WIP',
-        //                 'berat' => $this->input->post('bs_rolling'),
-        //                 'tanggal' => $tgl_input,
-        //                 'status' => 0,
-        //                 'created_by' => $user_id,
-        //                 'created_at' => $tanggal
-        //             );
-        //             $this->db->insert('t_gudang_bs', $data_bs);
-        //         }
-        //         if($this->input->post('bs_ingot') != 0){
-        //             $data_bs = array(
-        //                 'id_produksi' => $insert_id,
-        //                 'jenis_barang_id' => 22,
-        //                 'jenis_produksi' => 'WIP',
-        //                 'berat' => $this->input->post('bs_rolling'),
-        //                 'tanggal' => $tgl_input,
-        //                 'status' => 0,
-        //                 'created_by' => $user_id,
-        //                 'created_at' => $tanggal
-        //             );
-        //             $this->db->insert('t_gudang_bs', $data_bs);
-        //         }
-        //     }else if($this->input->post('jenis_masak') == 'BAKAR ULANG'){
-        //         #insert bs ke gudang bs
-        //         $data_bs = array(
-        //             'id_produksi' => $insert_id,
-        //             'jenis_barang_id' => 22,
-        //             'jenis_produksi' => 'WIP',
-        //             'berat' => $this->input->post('bs'),
-        //             'tanggal' => $tgl_input,
-        //             'status' => 0,
-        //             'created_by' => $user_id,
-        //             'created_at' => $tanggal
-        //         );
-        //         $this->db->insert('t_gudang_bs', $data_bs);
-        //     }else if($this->input->post('jenis_masak') == 'CUCI'){
-        //         #insert bs ke gudang bs
-        //         $data_bs = array(
-        //             'id_produksi' => $insert_id,
-        //             'jenis_barang_id' => 51,
-        //             'jenis_produksi' => 'WIP',
-        //             'berat' => $this->input->post('bs'),
-        //             'tanggal' => $tgl_input,
-        //             'status' => 0,
-        //             'created_by' => $user_id,
-        //             'created_at' => $tanggal
-        //         );
-        //         $this->db->insert('t_gudang_bs', $data_bs);
-        //     }
-        // }
-
-        // if($this->input->post('serbuk') != 0){
-        //     if($this->input->post('jenis_masak') == 'CUCI'){
-        //         #insert serbuk ke gudang bs
-        //         $data_bs = array(
-        //             'id_produksi' => $insert_id,
-        //             'jenis_produksi' => 'WIP',
-        //             'berat' => $this->input->post('serbuk'),
-        //             'jenis_barang_id' => 53,
-        //             'tanggal' => $tgl_input,
-        //             'status' => 0,
-        //             'created_by' => $user_id,
-        //             'created_at' => $tanggal
-        //         );
-        //         $this->db->insert('t_gudang_bs', $data_bs);
-        //     }else{
-        //         #insert serbuk ke gudang bs
-        //         $data_bs = array(
-        //             'id_produksi' => $insert_id,
-        //             'jenis_produksi' => 'WIP',
-        //             'berat' => $this->input->post('serbuk'),
-        //             'jenis_barang_id' => 30,
-        //             'tanggal' => $tgl_input,
-        //             'status' => 0,
-        //             'created_by' => $user_id,
-        //             'created_at' => $tanggal
-        //         );
-        //         $this->db->insert('t_gudang_bs', $data_bs);
-        //     }
-        // }
-            
-            #Insert t_gudang_wip             
-            // if($this->input->post('jenis_masak')=='CUCI'){
-            //     $data_t_gudang_wip = array(
-            //         'tanggal' => $tgl_input,
-            //         'flag_taken' => 0,
-            //         'jenis_trx' => null,
-            //         't_hasil_wip_id' => $insert_id,
-            //         'jenis_barang_id'  => '5',
-            //         't_spb_wip_detail_id' => 0,
-            //         't_bpb_wip_detail_id' => 0,
-            //         'qty' => $this->input->post('qty_km'),
-            //         'uom' => 'ROLL',
-            //         'berat' => $this->input->post('berat_km'),
-            //         'keterangan' => $this->input->post('keterangan'),
-            //         'created_by' => $user_id,
-            //         'created_on' => $tanggal
-            //     );
-            //     $this->db->insert('t_gudang_wip', $data_t_gudang_wip);
-            // } else {
-            //     $data_t_gudang_wip = array(
-            //         'tanggal' => $tgl_input,
-            //         'flag_taken' => 0,
-            //         'jenis_trx' => null,
-            //         't_hasil_wip_id' => $insert_id,
-            //         'jenis_barang_id'  => '6',
-            //         't_spb_wip_detail_id' => 0,
-            //         't_bpb_wip_detail_id' => 0,
-            //         'qty' => $this->input->post('qty_kh'),
-            //         'uom' => 'ROLL',
-            //         'berat' => $this->input->post('berat_kh'),
-            //         'keterangan' => $this->input->post('keterangan'),
-            //         'created_by' => $user_id,
-            //         'created_on' => $tanggal
-            //     );
-            //     $this->db->insert('t_gudang_wip', $data_t_gudang_wip);
-            // }
-            
-            // #Create DTR BS ke gudang rongsok
-            // if(((int)$this->input->post('bs'))!=0){    
-            //     $code_dtr_wip = $this->Model_m_numberings->getNumbering('DTR', $tgl_input);
-            //     $data_dtr_bs = array(
-            //             'no_dtr'=> $code_dtr_wip,
-            //             'tanggal' => $tgl_input,
-            //             'status' =>0,
-            //             'jenis_barang' => 'RONGSOK',
-            //             'remarks' => 'BS SISA PRODUKSI WIP',
-            //             'created_by' => $user_id
-            //             );
-            //     $this->db->insert('dtr',$data_dtr_bs);
-            //     $dtr_id = $this->db->insert_id();
-
-            //     #Create DTR Detail BS ke gudang rongsok
-            //     $rand = strtoupper(substr(md5(microtime()),rand(0,26),3));
-            //     $data_dtr_detail_bs = array(
-            //             'dtr_id' => $dtr_id,
-            //             'rongsok_id' => 7,
-            //             'netto'=> $this->input->post('bs'),
-            //             'line_remarks' => 'SISA PRODUKSI WIP',
-            //             'no_pallete' => date("dmyHis").$rand,
-            //             'tanggal_masuk' => $tanggal,
-            //             'flag_taken' => 0
-            //             );
-            //     $this->db->insert('dtr_detail',$data_dtr_detail_bs);
-            // }
             $jenis = $this->input->post('jenis_masak');
             $jenis = str_replace('%20', ' ', $jenis);
             if($this->db->trans_complete()){
@@ -832,6 +559,8 @@ class GudangWIP extends CI_Controller{
                     $response = curl_exec($ch);
                     $result = json_decode($response, true);
                     curl_close($ch);
+                    // print_r($response);
+                    // die();
                 }
 
             if($this->db->trans_complete()){
@@ -1372,6 +1101,7 @@ class GudangWIP extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $spb_id = $this->input->post('id');
+        $flag = $this->input->post('flag_produksi');
         
         $this->db->trans_start();
         
@@ -1404,8 +1134,11 @@ class GudangWIP extends CI_Controller{
             }else{
                 $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
             }             
-        
-       redirect('index.php/GudangWIP/spb_list');
+        if($flag==3){
+            redirect('index.php/GudangWIP/spb_list/CUCI');
+        }else{
+            redirect('index.php/GudangWIP/spb_list');
+        }
     }
 
     function input_ulang_spb(){
@@ -1498,6 +1231,7 @@ class GudangWIP extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $spb_id = $this->input->post('id');
+        $flag = $this->input->post('flag_produksi');
         
         $this->load->model('Model_gudang_wip');
         #Create Gudang WIP list
@@ -1547,8 +1281,11 @@ class GudangWIP extends CI_Controller{
             }else{
                 $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
             }             
-        
-       redirect('index.php/GudangWIP/spb_list');
+        if($flag==3){
+            redirect('index.php/GudangWIP/spb_list/CUCI');
+        }else{
+            redirect('index.php/GudangWIP/spb_list');
+        }
     }
 
     function reject_spb(){
@@ -1859,6 +1596,8 @@ class GudangWIP extends CI_Controller{
 
         $data['start'] = $start;
         $data['end'] = $end;
+        $last_day =date("Y-m-t", strtotime('-1 day', strtotime($start)));
+        // echo $last_day;die();
 
             $this->load->model('Model_gudang_wip');
             if($jb_id == 1){
@@ -1866,9 +1605,9 @@ class GudangWIP extends CI_Controller{
                 $this->load->view('gudangwip/print_laporan_masak_apollo', $data);
             }elseif($jb_id == 2){
                 $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();
-                $data['a'] = $this->Model_gudang_wip->get_wip_awal($start,$end)->row_array();
+                $data['a'] = $this->Model_gudang_wip->get_wip_awal($start)->row_array();
                 $data['b'] = $this->Model_gudang_wip->get_wip_akhir($start,$end)->row_array();
-                $data['ia'] = $this->Model_gudang_wip->get_floor_produksi($start)->row_array();
+                $data['ia'] = $this->Model_gudang_wip->get_floor_produksi($last_day)->row_array();
                 $data['ib'] = $this->Model_gudang_wip->get_floor_produksi($end)->row_array();
                 $this->load->view('gudangwip/print_laporan_masak_rolling', $data);
             }elseif($jb_id == 3){

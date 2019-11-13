@@ -11,7 +11,7 @@ if ( ! function_exists('target_url'))
 	function target_url_cv($id){
 		switch ($id) {
 			case 1:
-				$url = 'http://localhost/tembaga_cv1/index.php/';
+				$url = 'http://localhost/tembaga_cv/index.php/';
 				break;
 
 			case 2:

@@ -42,9 +42,6 @@
                     <th>Jumlah <br>Items</th>
                     <th>Broto (Kg)</th>
                     <th>Netto (Kg)</th>
-                    <th>Jmlh <br>Afkiran</th>
-                    <th>Jmlh <br>Pengepakan</th>
-                    <th>Jmlh <br>Lain-lain</th>
                     <!--th>Voucher <br>Pelunasan</th-->
                     <th>Actions</th>
                 </tr>
@@ -65,9 +62,6 @@
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td style="text-align:right"><?php echo number_format($data->bruto,0,',','.'); ?></td>
                         <td style="text-align:right"><?php echo number_format($data->netto,0,',','.'); ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->jmlh_afkiran,0,',','.'); ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->jmlh_pengepakan,0,',','.'); ?></td>
-                        <td style="text-align:right"><?php echo number_format($data->jmlh_lain,0,',','.'); ?></td>
                         <td style="text-align:center"> 
                             <?php
                                 if($data->ttr_status==0){

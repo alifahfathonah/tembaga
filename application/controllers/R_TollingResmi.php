@@ -212,15 +212,21 @@ class R_TollingResmi extends CI_Controller{
         $this->db->trans_start();
 
         $this->db->where('id', $r_dtr_id);
-        $this->db->update('r_dtr', array('no_dtr_resmi'=>'DTR-KMP.'.$tgl_code.'.'.$this->input->post('no_dtr_r')));
+        $this->db->update('r_dtr', array('no_dtr_resmi'=>'DTR-KMP.'.$tgl_code.'.'.$this->input->post('no_dtr_r'),'tanggal'=>$tgl_input));
 
         $this->db->where('id', $r_ttr_id);
-        $this->db->update('r_ttr', array('no_ttr_resmi'=>'TTR-KMP.'.$tgl_code.'.'.$this->input->post('no_ttr_r')));
+        $this->db->update('r_ttr', array('no_ttr_resmi'=>'TTR-KMP.'.$tgl_code.'.'.$this->input->post('no_ttr_r'),'tanggal'=>$tgl_input));
 
                 //API START//
                 $this->load->helper('target_url');
 
-                $data = array('dtr_id'=>$r_dtr_id, 'ttr_id'=>$r_ttr_id, 'no_dtr'=>'DTR-KMP.'.$tgl_code.'.'.$this->input->post('no_dtr_r'), 'no_ttr'=>'TTR-KMP.'.$tgl_code.'.'.$this->input->post('no_ttr_r'));
+                $data = array(
+                    'dtr_id'=>$r_dtr_id, 
+                    'ttr_id'=>$r_ttr_id, 
+                    'no_dtr'=>'DTR-KMP.'.$tgl_code.'.'.$this->input->post('no_dtr_r'), 
+                    'no_ttr'=>'TTR-KMP.'.$tgl_code.'.'.$this->input->post('no_ttr_r'),
+                    'tanggal'=>$tgl_input
+                );
 
                 $post = json_encode($data);
 
@@ -241,7 +247,7 @@ class R_TollingResmi extends CI_Controller{
 
         if($this->db->trans_complete()){
             $this->session->set_flashdata('flash_msg', 'DTR dan TTR berhasil disimpan!');
-            redirect('index.php/R_TollingResmi');  
+            redirect('index.php/R_TollingResmi/view_tolling/'.$r_dtr_id);  
         }else{
             $this->session->set_flashdata('flash_msg', 'DTR dan TTR gagal disimpan, silahkan dicoba kembali!');
             redirect('index.php/R_TollingResmi');  

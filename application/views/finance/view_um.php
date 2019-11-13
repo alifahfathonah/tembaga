@@ -260,6 +260,23 @@
                                 class="form-control myline" style="margin-bottom:5px" value="<?php echo $myData['nomor_cek']; ?>">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Matching PMB
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_pembayaran" name="no_pembayaran" readonly="readonly"
+                                class="form-control myline" value="<?php echo $myData['no_pembayaran']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            &nbsp;
+                        </div>
+                        <div class="col-md-8">
+                            <a href="<?php echo base_url('index.php/Finance/view_pmb/').$myData['id_pmb']; ?>" class="btn btn-circle btn-xs blue"> <i class="fa fa-book"></i> View </a>
+                        </div>
+                    </div>
                     <?php 
                     }// END IF CEK OR CEK MUNDUR
                 if($myData['jenis_pembayaran'] == 'Cek Mundur'){

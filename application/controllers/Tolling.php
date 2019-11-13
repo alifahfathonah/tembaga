@@ -993,7 +993,8 @@ class Tolling extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $user_ppn  = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d');
+        $get = $this->db->query("select id, tanggal from dtwip where id =".$dtwip_id)->row_array();
+        $tgl_input = date('Y-m-d', strtotime($get['tanggal']));
         $return_data = array();
         
             $this->db->trans_start();       
@@ -1003,7 +1004,9 @@ class Tolling extends CI_Controller{
                     'so_id'=>$so_id,
                     'status'=>1,
                     'approved'=>$tanggal,
-                    'approved_by'=>$user_id));
+                    'approved_by'=>$user_id,
+                    'api'=>1
+                ));
 
                 #Create BPB WIP
                 $this->load->model('Model_m_numberings');
@@ -1016,7 +1019,7 @@ class Tolling extends CI_Controller{
 
                 $data_bpb = array(
                         'no_bpb' => $code,
-                        'tanggal' => $tanggal,
+                        'tanggal' => $tgl_input,
                         'flag_ppn' => $user_ppn,
                         'created' => $tanggal,
                         'created_by' => $user_id,
@@ -1066,43 +1069,43 @@ class Tolling extends CI_Controller{
                                             'flag_tolling'=>$flag_tolling));
                 }
 
-            if($user_ppn==1){
-                $this->load->helper('target_url');
+            // if($user_ppn==1){
+            //     $this->load->helper('target_url');
 
-                $this->load->model('Model_beli_wip');
+            //     $this->load->model('Model_beli_wip');
 
-                $data_post['flag_tolling'] = $flag_tolling;
-                $data_post['so_id'] = $so_id;
+            //     $data_post['flag_tolling'] = $flag_tolling;
+            //     $data_post['so_id'] = $so_id;
 
-                $data_post['dtwip'] = $this->Model_beli_wip->load_dtwip_only($dtwip_id)->row_array();
-                $data_post['details'] = $this->Model_beli_wip->load_dtwip_detail_only($dtwip_id)->result();
+            //     $data_post['dtwip'] = $this->Model_beli_wip->load_dtwip_only($dtwip_id)->row_array();
+            //     $data_post['details'] = $this->Model_beli_wip->load_dtwip_detail_only($dtwip_id)->result();
 
-                unset($data_bpb['flag_ppn']);
-                $data_id = array('reff1' => $id_bpb);
-                $data_post['data_bpb'] = array_merge($data_bpb, $data_id);
-                $data_post['details_bpb'] = $this->Model_beli_wip->load_bpb_detail_only($id_bpb)->result();
+            //     unset($data_bpb['flag_ppn']);
+            //     $data_id = array('reff1' => $id_bpb);
+            //     $data_post['data_bpb'] = array_merge($data_bpb, $data_id);
+            //     $data_post['details_bpb'] = $this->Model_beli_wip->load_bpb_detail_only($id_bpb)->result();
 
-                $detail_post = json_encode($data_post);
-                // print($detail_post);
-                // die();
+            //     $detail_post = json_encode($data_post);
+            //     // print($detail_post);
+            //     // die();
 
-                $ch = curl_init(target_url().'api/TollingAPI/dtwip');
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                $response = curl_exec($ch);
-                $result = json_decode($response, true);
-                curl_close($ch);
-                if($result['status']==true){
-                    $this->db->where('id', $dtwip_id);
-                    $this->db->update('dtwip', array(
-                        'api'=>1
-                    ));
-                }
-                // print_r($response);
-                // die();
-            }
+            //     $ch = curl_init(target_url().'api/TollingAPI/dtwip');
+            //     curl_setopt($ch, CURLOPT_POST, true);
+            //     curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            //     curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
+            //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            //     $response = curl_exec($ch);
+            //     $result = json_decode($response, true);
+            //     curl_close($ch);
+            //     if($result['status']==true){
+            //         $this->db->where('id', $dtwip_id);
+            //         $this->db->update('dtwip', array(
+            //             'api'=>1
+            //         ));
+            //     }
+            //     // print_r($response);
+            //     // die();
+            // }
             // die();
 
         if($this->db->trans_complete()){  
@@ -1175,6 +1178,10 @@ class Tolling extends CI_Controller{
                 curl_close($ch);
                 // print_r($response);
                 // die();
+                if($result['status']==true){
+                    $this->db->where('id',$ttr_id);
+                    $this->db->update('ttr', array('api'=> 1));
+                }
             }
 
         // #Update Stok Rongsok Tersedia

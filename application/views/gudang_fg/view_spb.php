@@ -558,7 +558,7 @@
             <div class="row">
                 <div class="col-md-10">
                     <?php
-                        if( ($group_id==1 || $hak_akses['approve_spb']==1) && ($myData['status']=='3' || $myData['status']=='1')){
+                        if( ($group_id==1 || $hak_akses['save_spb']==1) && ($myData['status']=='3' || $myData['status']=='1')){
                             echo '<a href="javascript:;" class="btn blue" onclick="tambahData();"> '
                                 .'<i class="fa fa-plus"></i> Tambah </a> ';
                         }

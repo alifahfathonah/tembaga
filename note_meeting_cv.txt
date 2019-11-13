@@ -143,12 +143,12 @@ edit barcode di bpb dan dtbj. utk yg keranjang sdm. karena sering ada yg sama(do
 
 edit po bodong jumlahnya aja
 
-sisa so per jenis barang seperti kayak di foto
+sisa so per jenis barang seperti kayak di foto (done)
 
 sisa so tanpa harga kh/kmp
 
-dtr multiple di produksi apollo dan rolling
-Dan untuk penambahan kolom BS Apollo maupun rolling juga blom
+dtr multiple di produksi apollo dan rolling(done)
+Dan untuk penambahan kolom BS Apollo maupun rolling juga blom(done)
 
 tipe bahan A, B, D hanya di apollo (done)
 
@@ -160,4 +160,4 @@ pindahin fg stok saat itu ke pajak. di buatin bpb di pajak per jenis barang
 
 cek barcode ada double atau tidak di jenis packing bobbin / keranjang dtbj (done benerin barcode aja)
 
-tambah revisi di surat jalan tolling
+tambah revisi di surat jalan tolling (done)

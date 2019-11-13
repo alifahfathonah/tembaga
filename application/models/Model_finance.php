@@ -80,8 +80,11 @@ class Model_finance extends CI_Model{
     }
 
     function view_um($id){
-        $data = $this->db->query("Select fum.*, mc.nama_customer, b.kode_bank, b.nama_bank, b.nomor_rekening, u.realname From f_uang_masuk fum
+        $data = $this->db->query("Select fum.*, mc.nama_customer, b.kode_bank, b.nama_bank, b.nomor_rekening, u.realname, fp.id as id_pmb, fp.no_pembayaran
+            From f_uang_masuk fum
             left join m_customers mc on mc.id = fum.m_customer_id
+            left join f_pembayaran_detail fpd on fpd.um_id = fum.id
+            left join f_pembayaran fp on fp.id = fpd.id_pembayaran
             left join bank b on b.id = fum.rekening_tujuan
             left join users u on u.id = fum.approved_by or u.id = fum.reject_by
             where fum.id = ".$id);
@@ -491,6 +494,21 @@ class Model_finance extends CI_Model{
             where fm.id =".$id);
         return $data;
     }
+
+    // function load_invoice_match_print($id){
+    //     $data = $this->db->query("
+    //         (select COALESCE(fi.no_invoice,rti.no_invoice_jasa) as nomor, fmd.inv_bayar+COALESCE(fi.nilai_pembulatan,rti.nilai_pembulatan) as nominal, COALESCE(fi.tanggal,rti.tanggal) as tanggal
+    //         from f_match_detail fmd
+    //         left join f_invoice fi on fmd.inv_type = 0 and fi.id = fmd.id_inv
+    //         left join r_t_inv_jasa rti on fmd.inv_type = 1 and rti.id = fmd.id_inv
+    //         where fmd.id_match =".$id." and fmd.id_um = 0 and biaya = 0)
+    //             UNION ALL
+    //         (select 'SELISIH' as nomor, COALESCE(fi.nilai_pembulatan, rti.nilai_pembulatan)*-1 as nominal, '' as tanggal from f_match_detail fmd
+    //                     left join f_invoice fi on fmd.inv_type = 0 and fi.id = fmd.id_inv
+    //                     left join r_t_inv_jasa rti on fmd.inv_type = 1 and rti.id = fmd.id_inv
+    //                     where fmd.id_match =".$id." and COALESCE(fi.nilai_pembulatan, rti.nilai_pembulatan) < 0 and fmd.id_um = 0)");
+    //     return $data;
+    // }
 
     function load_invoice_match_print($id){
         $data = $this->db->query("
@@ -998,16 +1016,16 @@ class Model_finance extends CI_Model{
 
     function print_laporan_piutang_kmp($ppn){
         $data = $this->db->query("
-            select * from ((select fi.id, fi.id_customer, fi.nilai_invoice, fi.currency, fi.tanggal, fi.nilai_bayar as nilai_invoice_bayar, fi.nilai_pembulatan, fi.no_invoice, fi.tgl_jatuh_tempo,
+            select * from (
+            (select fi.id, fi.id_customer, fi.nilai_invoice, fi.currency, fi.tanggal, fi.nilai_bayar as nilai_invoice_bayar, fi.nilai_pembulatan, fi.no_invoice, fi.tgl_jatuh_tempo,
             (CASE WHEN fi.currency='USD' THEN fi.nilai_invoice ELSE 0 END) as nilai_us, 0 as nilai_cm,
-            tsj.no_surat_jalan, 
-            mc.kode_customer, mc.nama_customer, mc.nama_customer_kh
+            tsj.no_surat_jalan, mc.kode_customer, mc.nama_customer, mc.nama_customer_kh
             from f_invoice fi
             left join t_surat_jalan tsj on tsj.inv_id =  fi.id
             left join m_customers mc on mc.id = fi.id_customer
             where fi.flag_ppn = ".$ppn.")
             UNION ALL
-            (select rinv.id, mc2.id as id_customer, rinv.nilai_invoice, rinv.tanggal, rinv.nilai_bayar as nilai_invoice_bayar, rinv.nilai_pembulatan, rinv.no_invoice_jasa as no_invoice, rinv.jatuh_tempo as tgl_jatuh_tempo, 0 as nilai_us, 0 as nilai_cm, rtsj.no_sj_resmi as no_surat_jalan, mc2.kode_customer, mc2.nama_customer, mc2.nama_customer_kh
+            (select rinv.id, mc2.id as id_customer, rinv.nilai_invoice, 'IDR' as currency, rinv.tanggal, rinv.nilai_bayar as nilai_invoice_bayar, rinv.nilai_pembulatan, rinv.no_invoice_jasa as no_invoice, rinv.jatuh_tempo as tgl_jatuh_tempo, 0 as nilai_us, 0 as nilai_cm, rtsj.no_sj_resmi as no_surat_jalan, mc2.kode_customer, mc2.nama_customer, mc2.nama_customer_kh
                 from r_t_inv_jasa rinv
                 left join r_t_surat_jalan rtsj on rtsj.id = rinv.sjr_id
                 left join m_cv mcv on mcv.id = rinv.cv_id
@@ -2174,7 +2192,77 @@ class Model_finance extends CI_Model{
                     kode_sup_cust
                     ORDER BY sumber, netto DESC;
                 ");
-        } else {
+        } else if ($ppn==3) {
+            $data = $this->db->query("
+                Select * From (
+(
+SELECT MONTH
+                    ( t.tanggal ) AS bulan,
+                CASE
+                        WHEN dd.po_detail_id > 0 THEN
+                        'PO' 
+                        WHEN dd.po_detail_id = 0 
+                        AND d.so_id > 0 THEN
+                            'Tolling' ELSE 'Lain2' 
+                            END AS sumber,
+                    CASE    
+                            WHEN dd.po_detail_id > 0 THEN
+                            s.kode_supplier 
+                            WHEN dd.po_detail_id = 0 
+                            AND d.so_id > 0 THEN
+                                mc.kode_customer ELSE '-' 
+                                END AS kode_sup_cust,
+                        CASE        
+                                WHEN dd.po_detail_id > 0 THEN
+                                s.nama_supplier 
+                                WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                                mc.nama_customer_kh 
+                                WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                                mc.nama_customer ELSE '-' 
+                            END AS nama_sup_cust,
+                            sum( td.netto ) AS netto,
+                            sum( CASE WHEN dd.po_detail_id > 0 THEN ( td.netto * pd.amount ) ELSE 0 END ) AS total_amount,
+                            round(sum( CASE WHEN dd.po_detail_id > 0 THEN ( td.netto * pd.amount ) ELSE 0 END ) / sum( td.netto ),2) AS rata2
+                        FROM
+                            ttr_detail td
+                            LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+                            LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+                            LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+                            LEFT JOIN po_detail pd ON ( ( dd.po_detail_id > 0 ) AND ( pd.id = dd.po_detail_id ) )
+                            LEFT JOIN po p ON ( ( p.id = pd.po_id ) AND ( dd.po_detail_id > 0 ) )
+                            LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+                            LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+                            LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
+                            LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
+                        WHERE
+                            ( t.ttr_status != 0 ) 
+                            AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
+                            AND t.tanggal BETWEEN '".$s."' AND '".$e."'
+                            AND (so.flag_ppn = 1 OR p.flag_ppn = 1)
+                        GROUP BY
+                            bulan,
+                        sumber,
+                    kode_sup_cust)
+                    UNION ALL 
+                    (SELECT MONTH ( rt.tanggal ) AS bulan, 'Tolling' as sumber, mc2.kode_customer as kode_sup_cust, mc2.nama_customer as nama_sup_cust, sum(rtd.netto), 0 as total_amount, 0 as rata2 from
+                                                r_ttr_detail rtd
+                                                LEFT JOIN r_dtr_detail rdd ON ( rdd.id = rtd.r_dtr_detail_id )
+                                                LEFT JOIN r_dtr rd ON ( rd.id = rdd.r_dtr_id )
+                                                LEFT JOIN r_ttr rt ON ( rt.id = rtd.r_ttr_id )
+                                                                            LEFT JOIN r_t_surat_jalan rts ON (rts.id = rd.sj_id)
+                                                LEFT JOIN r_t_so rso ON ( rts.r_po_id = rso.po_id)
+                                                LEFT JOIN rongsok r ON ( r.id = rtd.rongsok_id )
+                                                LEFT JOIN m_cv cv ON ( cv.id = rso.cv_id )
+                                                LEFT JOIN m_customers mc2 ON ( mc2.id = cv.idkmp)
+                                                WHERE rt.tanggal BETWEEN '".$s."' AND '".$e."'
+                                                GROUP BY
+                                                bulan,
+                                            sumber,
+                                        kode_sup_cust
+                    )
+                    ) as i
+                                        ORDER BY sumber, netto DESC;");
+        }else{
             $data = $this->db->query("
                 SELECT MONTH
                     ( t.tanggal ) AS bulan,

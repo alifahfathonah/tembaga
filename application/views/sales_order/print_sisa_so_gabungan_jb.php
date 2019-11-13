@@ -86,7 +86,7 @@
                 <?php echo ($last_series_2==$row->nama_barang) ? '<td style="border-left:1px solid #000">' : '<td style="border-top: 1px solid;border-left: 1px solid;">'.$row->nama_barang; ?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= date('d-m-Y', strtotime($row->tgl_po)) ?></td>
                 <td style="border-top: 1px solid; border-left: 1px solid;"><?= $row->nama_customer ?></td>
-                <td style="border-top: 1px solid; border-left: 1px solid;"><?= $row->no_sales_order.' | ' .$row->flag_tolling ?></td>
+                <td style="border-top: 1px solid; border-left: 1px solid;"><?= $row->no_sales_order;?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->amount,2,',','.') ?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto,2,',','.') ?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto_kirim,2,',','.') ?></td>

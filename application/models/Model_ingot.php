@@ -93,7 +93,7 @@ class Model_ingot extends CI_Model{
                     Left Join produksi_ingot pi On (spb.produksi_ingot_id = pi.id) 
                     Left Join users usr On (spb.created_by = usr.id) 
                     Left Join apolo a On (a.id = pi.id_apolo)
-                Order By spb.id Desc");
+                Order By spb.tanggal Desc");
         return $data;
     }
 

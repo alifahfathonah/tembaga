@@ -647,7 +647,7 @@
                                 <i class="fa fa-cubes"></i>
                                 Gudang FG </a>
                             </li>
-                            <?php } if($group_id==1 || (isset($akses_menu['laporan_so']) && $akses_menu['laporan_so']==1)){ ?>
+                            <?php } if($group_id==1 || (isset($akses_menu['gudang_fg']) && $akses_menu['gudang_fg']==1)){ ?>
                             <li>
                                 <a href="javascript:;">
                                 <i class="fa fa-book"></i>

@@ -1023,21 +1023,6 @@ class BeliFinishGood extends CI_Controller{
 
                     #insert t_bpb_fg
                     if($user_ppn==1){
-
-                    // $this->load->helper('target_url');
-                    // $url = target_url().'api/BeliSparepartAPI/numbering?id=BPB-KMP&tgl='.$tgl_input;
-                    // $ch = curl_init();
-                    // curl_setopt($ch, CURLOPT_URL, $url);
-                    // // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-                    // // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
-                    // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-                    // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    // curl_setopt($ch, CURLOPT_HEADER, 0);
-
-                    // $result = curl_exec($ch);
-                    // $result = json_decode($result);
-                    // curl_close($ch);
-                    // $code = $result->code;
                         $code = $this->Model_m_numberings->getNumbering('BPB-KMP',$tgl_input);
                     }else{
                         $code = $this->Model_m_numberings->getNumbering('BPB-PO',$tgl_input);

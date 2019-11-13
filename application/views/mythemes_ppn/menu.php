@@ -917,6 +917,14 @@
                                     <a href="<?php echo base_url(); ?>index.php/SalesOrder/laporan_penjualan/">
                                     <i class="fa fa-search"></i> Laporan Penjualan </a>
                                 </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_customer/">
+                                    <i class="fa fa-search"></i> Rekap per Customer</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Finance/search_penjualan_jb/">
+                                    <i class="fa fa-search"></i> Rekap per Jenis Barang</a>
+                                </li>
                             </ul>
                         </li>
                         <?php } ?>

@@ -878,13 +878,37 @@ class VoucherCost extends CI_Controller{
                 $total += str_replace(',', '', $v['amount']);
             }
 
-            $this->db->where('id', $this->input->post('id'));
-            $this->db->update('f_kas', array(
+            $data_fk = array(
                 'nomor' => $this->input->post('no_uk'),
                 'tanggal' => $this->input->post('tanggal'),
+                'no_giro' => $this->input->post('nomor_giro'),
                 'tgl_jatuh_tempo' => $this->input->post('tgl_jatuh'),
                 'nominal' => $total
-            ));
+            );
+            $this->db->where('id', $this->input->post('id'));
+            $this->db->update('f_kas', $data_fk);
+
+            if($user_ppn == 1){
+                $this->load->helper('target_url');
+
+                $data_post['id'] = $this->input->post('id');
+                $data_post['header'] = $data_fk;
+                $data_post['details'] = $details;
+
+                $post = json_encode($data_post);
+                // print_r($post);
+                // die();
+                $ch = curl_init(target_url().'api/VoucherAPI/vc_update');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+            }
 
         if($this->db->trans_complete()){
             $this->session->set_flashdata('flash_msg', 'Voucher cost berhasil di-update dengan nomor : '.$this->input->post('no_voucher'));

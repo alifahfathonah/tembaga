@@ -390,7 +390,7 @@ function approve(id){
         type: "POST",
         data : {dtwip_id: id,po_id: $('#po_id').val()},
         success: function(result){    
-        console.log(result);        
+        // console.log(result);        
             if(result['type_message']=="sukses"){
                 // alert(result['message']);
                 location.reload();

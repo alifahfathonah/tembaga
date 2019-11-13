@@ -71,7 +71,7 @@
                     <th>Nama Customer</th>
                     <th>No<br> Cheque Masuk</th>
                     <th>Tanggal</th>
-                    <th>Jenis<br>Pembayaran</th>
+                    <th>Nomor Cek</th>
                     <th>Nominal</th>
                     <th>Keterangan</th>
                     <th>Status</th>
@@ -90,7 +90,7 @@
                         <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->no_uang_masuk; ?></td>
                         <td><?php echo $data->tanggal; ?></td>
-                        <td><?php echo $data->jenis_pembayaran; ?></td>
+                        <td><?php echo $data->nomor_cek; ?></td>
                         <td><?php echo $data->currency.' '.number_format($data->nominal,2,',','.');?></td>
                         <td><?php echo $data->keterangan; ?></td>
                         <td style="text-align:center">

@@ -1,7 +1,13 @@
-- Gudang Produksi
-
-- Gudang Keras
-- Minta Print Semua Kartu Stok FG dan di Page Break setiap Jenis Barang
-- Barcode RB dan RK disambung, bukan dipisah depan belakang. (Perubahan)
-- tambah 2 report CEK Belum Masuk Langganan + CEK Belum Masuk KMP
-- Laporan Penjualan Detail
+1- Gudang Produksi (done)
+2- Gudang Keras (done)
+3- Minta Print Semua Kartu Stok FG dan di Page Break setiap Jenis Barang (done)
+4- Barcode RB dan RK disambung, bukan dipisah depan belakang. (Perubahan) (done)
+5- tambah 2 report CEK Belum Masuk Langganan + CEK Belum Masuk KMP (done)
+6- Laporan Penjualan Detail (done)
+7- ranking dan rekap jenis barang copy in ke menu so, untuk bu war kmp (done)
+8- dtwip dari tolling gausah dikirim ke pajak (done)
+9- dtwip di pajak itu buat sendiri, nanti enggar yg buat. (done)
+10- lpb edit kurs dan gudang sp (done)
+11- pindahin fg stok saat itu ke pajak. di buatin bpb di pajak per jenis barang
+12- pembulatan pindah ke tabel matching. yang di invoice nilai pembulatan total saja
+13- Bank / Kas keluar belum pindah api saat update (done)

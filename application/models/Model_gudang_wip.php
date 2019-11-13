@@ -435,7 +435,7 @@ class Model_gudang_wip extends CI_Model{
             where thw.jenis_masak = 'ROLLING' and thw.tanggal between '".$s."' and '".$e."'");
     }
 
-    function get_wip_awal($s,$e){
+    function get_wip_awal($s){
         return $this->db->query("select 
                 sum(CASE WHEN jenis_trx = 0 THEN berat ELSE 0 END) as berat_masuk,
                 sum(CASE WHEN jenis_trx = 1 THEN berat ELSE 0 END) as berat_keluar

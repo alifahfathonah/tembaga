@@ -191,7 +191,7 @@ class Model_beli_sparepart extends CI_Model{
 
     function lpb_list($ppn){
         $data = $this->db->query("Select lpb.*, 
-                    po.no_po, 
+                    po.no_po, po.currency,
                     spl.nama_supplier,
                     vk.no_vk,
                     usr.realname As penerima,
@@ -213,7 +213,7 @@ class Model_beli_sparepart extends CI_Model{
     
     function show_header_bpb($id){
         $data = $this->db->query("Select lpb.*, (select id from lpb l1 where l1.po_id = lpb.po_id limit 1) as cek,
-                    po.no_po, po.diskon, po.materai,
+                    po.no_po, po.diskon, po.materai, po.kurs,
                     spl.nama_supplier,
                     usr.realname As penerima
                     From lpb
@@ -225,7 +225,7 @@ class Model_beli_sparepart extends CI_Model{
     }
     
     function show_detail_bpb($id){
-        $data = $this->db->query("Select lpbd.*, po.ppn, spr.nama_item, spr.uom, pod.amount, (lpbd.qty*pod.amount) as total
+        $data = $this->db->query("Select lpbd.*, po.ppn, spr.nama_item, spr.uom, spr.alias, pod.amount, (lpbd.qty*pod.amount) as total
                     From lpb_detail lpbd 
                         Left Join sparepart spr On (lpbd.sparepart_id = spr.id) 
                         Left Join po_detail pod On (pod.id = lpbd.po_detail_id)
@@ -658,7 +658,7 @@ class Model_beli_sparepart extends CI_Model{
     }
 
     function get_last_po($jenis){
-        $data = $this->db->query("select no_po from po where jenis_po = '".$jenis."' order by id desc limit 1");
+        $data = $this->db->query("select no_po from po where jenis_po = '".$jenis."' and flag_ppn = 1 order by id desc limit 1");
         return $data;
     }
 

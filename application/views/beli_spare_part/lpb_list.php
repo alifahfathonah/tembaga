@@ -38,6 +38,7 @@
                     <th>No. BPB</th>
                     <th>Tanggal</th>
                     <th>No. PO</th>
+                    <th>Currency</th>
                     <th>Supplier</th>
                     <th>Jumlah <br>Items</th>
                     <th>Remarks</th>
@@ -56,6 +57,7 @@
                         <td><?php echo $data->no_bpb; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->no_po; ?></td>
+                        <td><?php echo $data->currency; ?></td>
                         <td><?php echo $data->nama_supplier; ?></td>                     
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td><?php echo $data->remarks; ?></td>
@@ -70,7 +72,9 @@
                         </td>
                         <td style="text-align:center"> 
                             <?php
-                            // PENDING
+                            if($data->currency!='IDR'){
+                                echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/BeliSparePart/edit_lpb/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>';
+                            }
                             if($data->vk_id==0){
                                 echo '<a href="'.base_url().'index.php/BeliSparePart/delete_lpb/'.$data->id.'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete </a>';
                             }
