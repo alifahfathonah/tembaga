@@ -1,4 +1,10 @@
  <h3 align="center"><b> List CM yang Belum Cair</b></h3>
+ <?php if($_GET['j']==1){
+    echo '<h4 align="center">Per Tanggal '.tanggal_indo(date('Y-m-d', strtotime($_GET['t']))).'</h4>';
+ }else{
+    echo '<h4 align="center">Per Tanggal '.tanggal_indo(date('Y-m-d')).'</h4>';
+ }
+?>
 <table width="100%" cellpadding="2" style="font-size: 11px;">
     <thead>
         <th>No</th>

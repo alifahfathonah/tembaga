@@ -79,6 +79,8 @@
                             $jenis= 'Retur';
                         }else if($header['flag_produksi']==8){
                             $jenis= 'Repacking';
+                        }elseif ($header['flag_produksi']==9) {
+                            $jenis= 'Retur K';
                         }
                     ?>
                     <div class="row">

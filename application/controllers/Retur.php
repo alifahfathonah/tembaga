@@ -919,7 +919,7 @@ class Retur extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('SJ', $tgl_input); 
+        $code = $this->Model_m_numberings->getNumbering('SJ-L', $tgl_input); 
         
         if($code){        
             $data = array(
@@ -2049,7 +2049,7 @@ class Retur extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
-        $code = $this->Model_m_numberings->getNumbering('SJ', $tgl_input); 
+        $code = $this->Model_m_numberings->getNumbering('SJ-RETUR', $tgl_input); 
         
         if($code){        
             $data = array(

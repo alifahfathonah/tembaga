@@ -94,7 +94,7 @@
                         <div class="col-md-8">
                             <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                                 <i class="fa fa-floppy-o"></i> Input Details </a>
-                            <a href="<?php echo base_url('index.php/Finance/invoice'); ?>" class="btn blue-hoki"> 
+                            <a href="<?php echo base_url('index.php/Finance/matching'); ?>" class="btn blue-hoki"> 
                             <i class="fa fa-angle-left"></i> Kembali </a>
                         </div>
                     </div>

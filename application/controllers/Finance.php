@@ -2068,8 +2068,11 @@ class Finance extends CI_Controller{
             $this->load->helper('tanggal_indo');
             $this->load->model('Model_finance');
             $data['header'] = $this->Model_finance->matching_header_print($id)->row_array();
-            $data['details'] = $this->Model_finance->load_invoice_match_print($id)->result();
-            $data['details_um'] = $this->Model_finance->load_um_match_print($id)->result();
+            // $data['details'] = $this->Model_finance->load_invoice_match_print($id)->result();
+            // $data['details_um'] = $this->Model_finance->load_um_match_print($id)->result();
+            $data['details'] = $this->Model_finance->load_invoice_match_print2($id)->result();
+            $data['details_um'] = $this->Model_finance->load_um_match_print2($id)->result();
+
 
             $this->load->view('finance/print_matching_inv', $data);
         }else{
@@ -2168,7 +2171,8 @@ class Finance extends CI_Controller{
                 }
             $tabel .= '<td>'.$row->no_invoice.'</td>';
             $tabel .= '<td style="text-align:right;">'.number_format($row->inv_bayar,0,',','.').'</td>';
-            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle blue" onclick="view_inv('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-floppy-o"></i> View </a>';
+            $tabel .= '<td style="text-align:center">';
+            // $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle blue" onclick="view_inv('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-floppy-o"></i> View </a>';
             $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle red" onclick="delInv('.$row->id.','.$row->id_inv.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-trash"></i> Delete </a></td>';
             $no++;
         }
@@ -2308,19 +2312,28 @@ class Finance extends CI_Controller{
             $flag_matching = 0;
         }
 
-        $nilai_bayar = str_replace(',', '', $this->input->post('nominal_sdh_bayar')) + str_replace(',', '', $this->input->post('nominal_bayar'));
+        $this->load->model("Model_finance");
         if($type == 0){
+
+            $get_inv = $this->Model_finance->get_data_inv($this->input->post('id_inv'))->row_array();
+            $nilai_bayar = $get_inv['nilai_bayar'] + str_replace(',', '', $this->input->post('nominal_bayar'));
+            $nilai_pembulatan = $get_inv['nilai_pembulatan']+str_replace(',', '', $this->input->post('nominal_potongan'));
+
             $this->db->where('id',$this->input->post('id_inv'));
             $this->db->update('f_invoice', array(
                 'nilai_bayar'=>$nilai_bayar,
-                'nilai_pembulatan'=>str_replace(',', '', $this->input->post('nominal_potongan')),
+                'nilai_pembulatan'=>$nilai_pembulatan,
                 'flag_matching'=>$flag_matching
             ));
         }else{
+            $get_inv = $this->Model_finance->get_data_inv2($this->input->post('id_inv'))->row_array();
+            $nilai_bayar = $get_inv['nilai_bayar'] + str_replace(',', '', $this->input->post('nominal_bayar'));
+            $nilai_pembulatan = $get_inv['nilai_pembulatan']+str_replace(',', '', $this->input->post('nominal_potongan'));
+
             $this->db->where('id',$this->input->post('id_inv'));
             $this->db->update('r_t_inv_jasa', array(
                 'nilai_bayar'=>$nilai_bayar,
-                'nilai_pembulatan'=>str_replace(',', '', $this->input->post('nominal_potongan')),
+                'nilai_pembulatan'=>$nilai_pembulatan,
                 'flag_matching'=>$flag_matching
             ));
         }
@@ -2330,6 +2343,7 @@ class Finance extends CI_Controller{
             'inv_type'=>$type,
             'id_inv'=>$this->input->post('id_inv'),
             'inv_bayar'=>str_replace(',', '', $this->input->post('nominal_bayar')),
+            'inv_pembulatan'=>str_replace(',', '', $this->input->post('nominal_potongan')),
             'id_um'=>0
         );
         $this->db->insert('f_match_detail', $data);
@@ -2357,25 +2371,32 @@ class Finance extends CI_Controller{
             $flag_matching = 0;
         }
 
+        $this->load->model("Model_finance");
         $nilai_bayar = str_replace(',', '', $this->input->post('nominal_sdh_bayar')) + str_replace(',', '', $this->input->post('nominal_bayar'));
         if($this->input->post('inv_type')==0){
+            $get_inv = $this->Model_finance->get_data_inv($this->input->post('id_inv'))->row_array();
             $this->db->where('id',$this->input->post('id_inv'));
+            // BAWAH INI MASIH SALAH, KARENA HANYA MENAMBAH, JADI KALAU MAU EDIT, TETEP NAMBAH. HARUSNYA BERKURANG KALAU DI KURANG, BERTAMBAH KALAU DITAMBAH. JADI SALAH SATUNYA HARUS NGE SUM DARI MATCH DETAIL NILAI PEMBULATANNYA
+            $nilai_pembulatan = $get_inv['nilai_pembulatan']+str_replace(',', '', $this->input->post('nominal_potongan'));
             $this->db->update('f_invoice', array(
                 'nilai_bayar'=>$nilai_bayar,
-                'nilai_pembulatan'=>str_replace(',', '', $this->input->post('nominal_potongan')),
+                'nilai_pembulatan'=>$nilai_pembulatan,
                 'flag_matching'=>$flag_matching
             ));
         }else{
+            $get_inv = $this->Model_finance->get_data_inv2($this->input->post('id_inv'))->row_array();
             $this->db->where('id',$this->input->post('id_inv'));
+            $nilai_pembulatan = $get_inv['nilai_pembulatan']+str_replace(',', '', $this->input->post('nominal_potongan'));
             $this->db->update('r_t_inv_jasa', array(
                 'nilai_bayar'=>$nilai_bayar,
-                'nilai_pembulatan'=>str_replace(',', '', $this->input->post('nominal_potongan')),
+                'nilai_pembulatan'=>$nilai_pembulatan,
                 'flag_matching'=>$flag_matching
             ));
         }
 
         $data = array(
             'inv_bayar'=>str_replace(',', '', $this->input->post('nominal_bayar')),
+            'inv_pembulatan'=>str_replace(',', '', $this->input->post('nominal_potongan'))
         );
         $this->db->where('id',$this->input->post('id_modal'));
         $this->db->update('f_match_detail', $data);
@@ -2400,6 +2421,7 @@ class Finance extends CI_Controller{
         $get = $this->Model_finance->view_inv_match($this->input->post('id'))->row_array();
 
         $nilai_bayar = $get['nilai_bayar'] - $get['inv_bayar'];
+        $nilai_pembulatan = $get['nilai_pembulatan'] - $get['inv_pembulatan'];
 
         // print_r($get);
         // die();
@@ -2407,14 +2429,14 @@ class Finance extends CI_Controller{
             $this->db->where('id',$this->input->post('id_inv'));
             $this->db->update('f_invoice', array(
                 'nilai_bayar'=>$nilai_bayar,
-                'nilai_pembulatan'=>0,
+                'nilai_pembulatan'=>$nilai_pembulatan,
                 'flag_matching'=>0
             ));
         }else{
             $this->db->where('id',$this->input->post('id_inv'));
             $this->db->update('r_t_inv_jasa', array(
                 'nilai_bayar'=>$nilai_bayar,
-                'nilai_pembulatan'=>0,
+                'nilai_pembulatan'=>$nilai_pembulatan,
                 'flag_matching'=>0
             ));
         }
@@ -2613,6 +2635,7 @@ class Finance extends CI_Controller{
         }else{
             $result= $this->Model_finance->get_data_inv2($id)->row_array();
         }
+        $result['nilai_sudah_bayar'] = $result['nilai_bayar']+$result['nilai_pembulatan'];
 
         header('Content-Type: application/json');
         echo json_encode($result);
@@ -3148,6 +3171,8 @@ class Finance extends CI_Controller{
             $this->load->helper('tanggal_indo');
             $tanggal = date('Y-m-d');
             $l = $_GET['laporan'];
+            $j = $_GET['j'];
+            $tgl = date('Y-m-d', strtotime($_GET['t']));
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
                 $this->load->model('Model_modules');
@@ -3155,16 +3180,29 @@ class Finance extends CI_Controller{
                 $data['hak_akses'] = $roles;
             }
             $data['group_id']  = $group_id;
+            // echo $t;die();
 
             $this->load->model('Model_finance');
-            if($l==0){
-                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang($l)->result();
-            }elseif($l==1){
-                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang($l)->result();
-            }elseif($l==2){
-                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_all()->result();
-            }elseif($l==3){
-                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_kmp(1)->result();
+            if($j==0){
+                if($l==0){
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang($l)->result();
+                }elseif($l==1){
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang($l)->result();
+                }elseif($l==2){
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_all()->result();
+                }elseif($l==3){
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_kmp(1)->result();
+                }
+            }else{
+                if($l==0){
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang2($l,$tgl)->result();
+                }elseif($l==1){
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang2($l,$tgl)->result();
+                }elseif($l==2){
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_all2($tgl)->result();
+                }elseif($l==3){
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_kmp2(1,$tgl)->result();
+                }
             }
             $this->load->view('finance/print_laporan_piutang', $data);
     }
@@ -3322,14 +3360,24 @@ class Finance extends CI_Controller{
                 $data['hak_akses'] = $roles;
             }
             $data['group_id']  = $group_id;
+            $l = $_GET['laporan'];
             $j = $_GET['j'];
+            $tgl = date('Y-m-d', strtotime($_GET['t']));
 
             $this->load->model('Model_finance');
 
             if($j==0){
-                $data['detailLaporan'] = $this->Model_finance->cm_belum_cair0()->result();
+                if($l==0){
+                    $data['detailLaporan'] = $this->Model_finance->cm_belum_cair0()->result();
+                }else{
+                    $data['detailLaporan'] = $this->Model_finance->cm_belum_cair()->result();
+                }
             }else{
-                $data['detailLaporan'] = $this->Model_finance->cm_belum_cair()->result();
+                if($l==0){
+                    $data['detailLaporan'] = $this->Model_finance->cm_belum_cair02($tgl)->result();
+                }else{
+                    $data['detailLaporan'] = $this->Model_finance->cm_belum_cair2($tgl)->result();
+                }
             }
             $this->load->view('finance/cm_belum_cair', $data);
     }

@@ -791,7 +791,7 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
     }
 
     function stok_76mm(){
-        $data = $this->db->query("select * from stok_fg where jenis_barang_id=678");
+        $data = $this->db->query("select (total_berat_in - total_berat_out) as total_netto from stok_wip where jenis_barang_id=678");
         return $data;
     }
 

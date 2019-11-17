@@ -539,6 +539,41 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function load_invoice_match_print2($id){
+        $data = $this->db->query("
+            (select COALESCE(fi.no_invoice,rti.no_invoice_jasa) as nomor, COALESCE(fi.nilai_invoice,rti.nilai_invoice) as nominal, COALESCE(fi.tanggal,rti.tanggal) as tanggal
+            from f_match_detail fmd
+            left join f_invoice fi on fmd.inv_type = 0 and fi.id = fmd.id_inv
+            left join r_t_inv_jasa rti on fmd.inv_type = 1 and rti.id = fmd.id_inv
+            where fmd.id_match =".$id." and fmd.id_um = 0 and biaya = 0)
+                UNION ALL
+            (select 'SELISIH' as nomor, COALESCE(fi.nilai_pembulatan, rti.nilai_pembulatan)*-1 as nominal, '' as tanggal from f_match_detail fmd
+                        left join f_invoice fi on fmd.inv_type = 0 and fi.id = fmd.id_inv
+                        left join r_t_inv_jasa rti on fmd.inv_type = 1 and rti.id = fmd.id_inv
+                        where fmd.id_match =".$id." and COALESCE(fi.nilai_pembulatan, rti.nilai_pembulatan) < 0 and fmd.id_um = 0)");
+        return $data;
+    }
+
+    function load_um_match_print2($id){
+        $data = $this->db->query("
+            (select COALESCE(fmd.keterangan,fum.no_uang_masuk) as nomor, COALESCE(NULLIF(fmd.biaya,0),fum.nominal) as nominal,  COALESCE(NULLIF(fum.rekening_pembayaran,''),fum.nomor_cek) as nomor_cek, b.nama_bank from f_match_detail fmd
+            left join f_uang_masuk fum on fum.id = fmd.id_um
+            left join bank b on b.id = fum.rekening_tujuan
+            where fmd.id_match =".$id." and fmd.id_inv = 0)
+                UNION ALL
+            (select 'SELISIH' as nomor, COALESCE(fi.nilai_pembulatan, rti.nilai_pembulatan) as nominal, '' as nomor_cek, '' as nama_bank from f_match_detail fmd
+            left join f_invoice fi on fmd.inv_type = 0 and fi.id = fmd.id_inv
+            left join r_t_inv_jasa rti on fmd.inv_type = 1 and rti.id = fmd.id_inv
+            where fmd.id_match =".$id." and COALESCE(fi.nilai_pembulatan, rti.nilai_pembulatan) > 0 and fmd.id_um = 0)
+                UNION ALL
+            (select concat_ws(COALESCE(fi.no_invoice, rti.no_invoice_jasa), 'PEL. ','') as nomor, COALESCE(fi.nilai_invoice,rti.nilai_invoice)-COALESCE(fi.nilai_pembulatan,rti.nilai_pembulatan)-fmd2.inv_bayar as nominal, '' as nomor_cek, '' as nama_bank from f_match_detail fmd2
+            left join f_invoice fi on fmd2.inv_type = 0 and fi.id = fmd2.id_inv
+            left join r_t_inv_jasa rti on fmd2.inv_type = 1 and rti.id = fmd2.id_inv
+            where fmd2.id_match =".$id." and fmd2.inv_bayar!=COALESCE(fi.nilai_invoice,rti.nilai_invoice)-COALESCE(fi.nilai_pembulatan,rti.nilai_pembulatan) and fmd2.id_um = 0)
+            ");
+        return $data;
+    }
+
     function load_invoice_print_um_match($id){
         $data = $this->db->query("select fmd.*, COALESCE(fi.jenis_trx,0) as jenis_trx, COALESCE(fi.no_invoice,rti.no_invoice_jasa) as no_invoice, COALESCE(fi.nilai_bayar,rti.nilai_bayar) as total 
             from f_match_detail fmd
@@ -771,8 +806,18 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    // function view_inv_match($id){
+    //     $data = $this->db->query("Select fmd.*,COALESCE((select sum(fmd2.inv_bayar) from f_match_detail fmd2 where fmd2.id_inv = COALESCE(fi.id,rti.id) and fmd2.id != fmd.id),0) as nilai_sdh_bayar, COALESCE(fi.nilai_bayar, rti.nilai_bayar)as nilai_bayar, COALESCE(fi.nilai_invoice, rti.nilai_invoice) as nilai_invoice, COALESCE(fi.nilai_pembulatan,rti.nilai_pembulatan) as nilai_pembulatan, COALESCE(fi.no_invoice,rti.no_invoice_jasa) as no_invoice from f_match_detail fmd
+    //         left join f_invoice fi on inv_type = 0 and fi.id = fmd.id_inv
+    //         left join r_t_inv_jasa rti on inv_type = 1 and rti.id = fmd.id_inv
+    //         where fmd.id =".$id);
+    //     return $data;
+    // }
+
     function view_inv_match($id){
-        $data = $this->db->query("Select fmd.*,COALESCE((select sum(fmd2.inv_bayar) from f_match_detail fmd2 where fmd2.id_inv = COALESCE(fi.id,rti.id) and fmd2.id != fmd.id),0) as nilai_sdh_bayar, COALESCE(fi.nilai_bayar, rti.nilai_bayar)as nilai_bayar, COALESCE(fi.nilai_invoice, rti.nilai_invoice) as nilai_invoice, COALESCE(fi.nilai_pembulatan,rti.nilai_pembulatan) as nilai_pembulatan, COALESCE(fi.no_invoice,rti.no_invoice_jasa) as no_invoice from f_match_detail fmd
+        $data = $this->db->query("Select fmd.*, COALESCE(
+            (select sum(fmd2.inv_bayar) from f_match_detail fmd2 where fmd2.id_inv = COALESCE(fi.id,rti.id) and fmd2.id != fmd.id),0) as nilai_sdh_bayar, 
+            COALESCE(fi.nilai_bayar, rti.nilai_bayar)as nilai_bayar, COALESCE(fi.nilai_invoice, rti.nilai_invoice) as nilai_invoice, COALESCE(fi.nilai_pembulatan,rti.nilai_pembulatan) as nilai_pembulatan, COALESCE(fi.no_invoice,rti.no_invoice_jasa) as no_invoice from f_match_detail fmd
             left join f_invoice fi on inv_type = 0 and fi.id = fmd.id_inv
             left join r_t_inv_jasa rti on inv_type = 1 and rti.id = fmd.id_inv
             where fmd.id =".$id);
@@ -996,6 +1041,25 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function print_laporan_piutang2($ppn,$tgl){
+        $data = $this->db->query("select *, 0 as nilai_cm from 
+            (select fi.id, fi.id_customer, fi.nilai_invoice, fi.currency, fi.tanggal, fi.nilai_bayar, fi.nilai_pembulatan, fi.no_invoice, fi.tgl_jatuh_tempo, 
+                (select COALESCE(sum(fmd.inv_bayar+fmd.inv_pembulatan),0) from f_match_detail fmd
+                    left join f_match fm on fm.id = fmd.id_match
+                    where fmd.inv_type = 0 and fi.id = fmd.id_inv and fm.tanggal <= '".$tgl."') as nilai_invoice_bayar,
+            (CASE WHEN fi.currency='USD' THEN fi.nilai_invoice ELSE 0 END) as nilai_us,
+            tsj.no_surat_jalan, mc.kode_customer, mc.nama_customer, mc.nama_customer_kh
+            from f_invoice fi
+            left join t_surat_jalan tsj on tsj.inv_id =  fi.id
+            left join m_customers mc on mc.id = fi.id_customer
+            where fi.flag_ppn ='".$ppn."' and fi.tanggal <= '".$tgl."'
+             group by fi.id
+            ) as i
+             where i.nilai_invoice > i.nilai_invoice_bayar
+             order by i.id_customer, i.no_invoice, i.tanggal asc");
+        return $data;
+    }
+
     function print_laporan_piutang_all(){
         $data = $this->db->query("select *, (select sum(fmd.inv_bayar) from f_invoice fi2
             left join f_match_detail fmd on fmd.id_inv = fi2.id
@@ -1010,6 +1074,25 @@ class Model_finance extends CI_Model{
              group by fi.id
             ) as i
              where i.nilai_invoice > (i.nilai_bayar + i.nilai_pembulatan)
+             order by i.id_customer, i.no_invoice, i.tanggal asc");
+        return $data;
+    }
+
+    function print_laporan_piutang_all2($tgl){
+        $data = $this->db->query("select *, 0 as nilai_cm from 
+            (select fi.id, fi.id_customer, fi.nilai_invoice, fi.currency, fi.tanggal, fi.nilai_bayar, fi.nilai_pembulatan, fi.no_invoice, fi.tgl_jatuh_tempo, 
+                (select COALESCE(sum(fmd.inv_bayar+fmd.inv_pembulatan),0) from f_match_detail fmd
+                    left join f_match fm on fm.id = fmd.id_match
+                    where fmd.inv_type = 0 and fi.id = fmd.id_inv and fm.tanggal <= '".$tgl."') as nilai_invoice_bayar,
+            (CASE WHEN fi.currency='USD' THEN fi.nilai_invoice ELSE 0 END) as nilai_us,
+            tsj.no_surat_jalan, mc.kode_customer, mc.nama_customer, mc.nama_customer_kh
+            from f_invoice fi
+            left join t_surat_jalan tsj on tsj.inv_id =  fi.id
+            left join m_customers mc on mc.id = fi.id_customer
+            where fi.tanggal <= '".$tgl."' and fi.nilai_pembulatan != fi.nilai_invoice
+             group by fi.id
+            ) as i
+             where i.nilai_invoice > i.nilai_invoice_bayar
              order by i.id_customer, i.no_invoice, i.tanggal asc");
         return $data;
     }
@@ -1031,6 +1114,34 @@ class Model_finance extends CI_Model{
                 left join m_cv mcv on mcv.id = rinv.cv_id
                 left join m_customers mc2 on mc2.id = mcv.idkmp
                 where customer_id = 0
+            )) as i where i.nilai_invoice > (i.nilai_invoice_bayar + i.nilai_pembulatan) order by i.id_customer, i.tanggal, i.no_surat_jalan
+            ");
+        return $data;
+    }
+
+    function print_laporan_piutang_kmp2($ppn,$tgl){
+        $data = $this->db->query("
+            select * from (
+            (select fi.id, fi.id_customer, fi.nilai_invoice, fi.currency, fi.tanggal, 
+                (select COALESCE(sum(fmd.inv_bayar+fmd.inv_pembulatan),0) from f_match_detail fmd
+                    left join f_match fm on fm.id = fmd.id_match
+                    where fmd.inv_type = 0 and fi.id = fmd.id_inv and fm.tanggal <= '".$tgl."') as nilai_invoice_bayar, fi.nilai_pembulatan, fi.no_invoice, fi.tgl_jatuh_tempo,
+            (CASE WHEN fi.currency='USD' THEN fi.nilai_invoice ELSE 0 END) as nilai_us, 0 as nilai_cm,
+            tsj.no_surat_jalan, mc.kode_customer, mc.nama_customer, mc.nama_customer_kh
+            from f_invoice fi
+            left join t_surat_jalan tsj on tsj.inv_id =  fi.id
+            left join m_customers mc on mc.id = fi.id_customer
+            where fi.flag_ppn = ".$ppn." and fi.tanggal <= '".$tgl."')
+            UNION ALL
+            (select rinv.id, mc2.id as id_customer, rinv.nilai_invoice, 'IDR' as currency, rinv.tanggal,
+                (select COALESCE(sum(fmd.inv_bayar+fmd.inv_pembulatan),0) from f_match_detail fmd
+                    left join f_match fm on fm.id = fmd.id_match
+                    where fmd.inv_type = 1 and rinv.id = fmd.id_inv and fm.tanggal <= '".$tgl."') as nilai_invoice_bayar, rinv.nilai_pembulatan, rinv.no_invoice_jasa as no_invoice, rinv.jatuh_tempo as tgl_jatuh_tempo, 0 as nilai_us, 0 as nilai_cm, rtsj.no_sj_resmi as no_surat_jalan, mc2.kode_customer, mc2.nama_customer, mc2.nama_customer_kh
+                from r_t_inv_jasa rinv
+                left join r_t_surat_jalan rtsj on rtsj.id = rinv.sjr_id
+                left join m_cv mcv on mcv.id = rinv.cv_id
+                left join m_customers mc2 on mc2.id = mcv.idkmp
+                where customer_id = 0 and rinv.tanggal <= '".$tgl."'
             )) as i where i.nilai_invoice > (i.nilai_invoice_bayar + i.nilai_pembulatan) order by i.id_customer, i.tanggal, i.no_surat_jalan
             ");
         return $data;
@@ -1156,7 +1267,21 @@ class Model_finance extends CI_Model{
             left join bank b on b.id = fk.id_bank
             left join f_uang_masuk fum on fum.id = fk.id_um
             left join m_customers mc on mc.id = fum.m_customer_id
-            where fum.m_customer_id = 0 and id_bank = 0 and fk.flag_ppn = 0 and jenis_trx=0 and status = 0 order by nama_customer, tgl_cair");
+            where fum.m_customer_id = 0 and id_bank = 0 and fk.flag_ppn = 0 and jenis_trx=0 and status = 0 order by nama_customer, tgl_cair, tanggal, nomor");
+    }
+
+    function cm_belum_cair02($tgl){
+        return $this->db->query("select * from (select fk.id, fk.tanggal, fk.flag_ppn, fum.no_uang_masuk as nomor, fk.jenis_trx, (fk.nominal*fk.kurs) as nominal, mc.nama_customer, b.nama_bank, fum.nomor_cek, fum.tgl_cair,
+            (CASE WHEN fum.status = 1 THEN CASE WHEN fp.tanggal > '".$tgl."' THEN 0 ELSE 1 END ELSE 0 END) as stat from f_kas fk 
+            left join bank b on b.id = fk.id_bank
+            left join f_uang_masuk fum on fum.id = fk.id_um
+            left join m_customers mc on mc.id = fum.m_customer_id
+            left join f_pembayaran_detail fpd on fpd.um_id = fum.id
+            left join f_pembayaran fp on fp.id = fpd.id_pembayaran
+            where fum.m_customer_id = 0 and id_bank = 0 and fum.tanggal <= '".$tgl."' and fk.flag_ppn = 0 and jenis_trx = 0 
+        ) as i
+        where stat = 0
+        order by nama_customer, tgl_cair, tanggal, nomor");
     }
 
     function cm_belum_cair(){
@@ -1164,7 +1289,21 @@ class Model_finance extends CI_Model{
             left join bank b on b.id = fk.id_bank
             left join f_uang_masuk fum on fum.id = fk.id_um
             left join m_customers mc on mc.id = fum.m_customer_id
-            where fum.m_customer_id > 0 and id_bank = 0 and fk.flag_ppn = 0 and jenis_trx=0 and status = 0 order by nama_customer, tgl_cair");
+            where fum.m_customer_id > 0 and id_bank = 0 and fk.flag_ppn = 0 and jenis_trx=0 and status = 0 order by nama_customer, tgl_cair, tanggal, nomor");
+    }
+
+    function cm_belum_cair2($tgl){
+        return $this->db->query("select * from (select fk.id, fk.tanggal, fk.flag_ppn, fum.no_uang_masuk as nomor, fk.jenis_trx, (fk.nominal*fk.kurs) as nominal, mc.nama_customer, b.nama_bank, fum.nomor_cek, fum.tgl_cair,
+            (CASE WHEN fum.status = 1 THEN CASE WHEN fp.tanggal > '".$tgl."' THEN 0 ELSE 1 END ELSE 0 END) as stat from f_kas fk 
+            left join bank b on b.id = fk.id_bank
+            left join f_uang_masuk fum on fum.id = fk.id_um
+            left join m_customers mc on mc.id = fum.m_customer_id
+            left join f_pembayaran_detail fpd on fpd.um_id = fum.id
+            left join f_pembayaran fp on fp.id = fpd.id_pembayaran
+            where fum.m_customer_id > 0 and id_bank = 0 and fum.tanggal <= '".$tgl."' and fk.flag_ppn = 0 and jenis_trx = 0 
+        ) as i
+        where stat = 0
+        order by nama_customer, tgl_cair, tanggal, nomor");
     }
 
     function saldo_awal($s,$id){

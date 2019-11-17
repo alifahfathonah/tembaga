@@ -9,5 +9,9 @@
 9- dtwip di pajak itu buat sendiri, nanti enggar yg buat. (done)
 10- lpb edit kurs dan gudang sp (done)
 11- pindahin fg stok saat itu ke pajak. di buatin bpb di pajak per jenis barang
-12- pembulatan pindah ke tabel matching. yang di invoice nilai pembulatan total saja
+12- pembulatan pindah ke tabel matching. yang di invoice nilai pembulatan total saja(done)
 13- Bank / Kas keluar belum pindah api saat update (done)
+14- Piutang belum lunas diliat atur by tanggal(done)
+15- Cek Belum Cair diliat atur by tanggal(done)
+16- Edit Hasil Produksi Apollo
+17- BS di Hasil Produksi WIP bisa multiple (done)

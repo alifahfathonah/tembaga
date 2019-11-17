@@ -154,7 +154,7 @@ tipe bahan A, B, D hanya di apollo (done)
 
 tolling & so tgl input saat approve utk bobbin peminjaman (done)
 
-lpb edit kurs dan gudang sp
+lpb edit kurs dan gudang sp (done)
 
 pindahin fg stok saat itu ke pajak. di buatin bpb di pajak per jenis barang
 

@@ -83,7 +83,7 @@
                                     Nominal Potongan/Pembulatan
                                 </div>
                                 <div class="col-md-7">
-                                    <input type="text" id="nominal_potongan" name="nominal_potongan" class="form-control myline" style="margin-bottom:5px" onkeyup="getComa(this.value, this.id); hitungSubTotalInv();" placeholder="Nominal Potongan ...">
+                                    <input type="text" id="nominal_potongan" name="nominal_potongan" class="form-control myline" style="margin-bottom:5px" onkeyup="getComa(this.value, this.id); hitungSubTotalInv();" placeholder="Nominal Potongan ..." value="0">
                                 </div>
                             </div>
                             <div class="row">
@@ -449,8 +449,8 @@ function input_inv(id,type){
             $("#inv_id").val(result['id']);
             $("#inv_type").val(type);
             $("#nominal_inv").val(numberWithCommas(result['nilai_invoice']));
-            $("#nominal_sdh_bayar").val(numberWithCommas(result['nilai_bayar']));
-            $("#nominal_potongan").val(numberWithCommas(result['nilai_pembulatan']));
+            $("#nominal_sdh_bayar").val(numberWithCommas(result['nilai_sudah_bayar']));
+            // $("#nominal_potongan").val(numberWithCommas(result['nilai_pembulatan']));
             $("#nominal_bayar").val(numberWithCommas(result['nominal']));
             $("#sisa_invoice").val(0);
         }

@@ -351,7 +351,7 @@
                                 <i class="fa fa-lock"></i> Close PO </a>';
                         }
                     ?>
-                    <a href="<?php echo base_url('index.php/BeliRongsok'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/R_Rongsok'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -526,9 +526,7 @@ function rejectData(){
 //         });
 //     }
 // }
-
 </script>
-
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>

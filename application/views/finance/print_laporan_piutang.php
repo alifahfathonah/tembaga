@@ -8,7 +8,13 @@
       <table width="100%" style="page-break-after: auto;">
         <tr>
           <td align="center">
-            <h4>Daftar Piutang Belum Lunas per <?=tanggal_indo(date('Y-m-d'));?></h4>
+            <h4>Daftar Piutang Belum Lunas per 
+              <?php if($_GET['j']==1){
+    echo tanggal_indo(date('Y-m-d', strtotime($_GET['t'])));
+ }else{
+    echo tanggal_indo(date('Y-m-d'));
+ }
+?></h4>
           </td>
         </tr>
       </table>

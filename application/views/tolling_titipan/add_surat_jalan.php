@@ -199,8 +199,25 @@ function simpanData(){
         $('#message').html("Silahkan pilih no. sales order");
         $('.alert-danger').show();
     }else{     
-        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
-        $('#formku').submit(); 
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url('index.php/SalesOrder/get_penomoran_sj'); ?>",
+            data: {
+                no_sj: $('#no_surat_jalan').val(),
+                tanggal: $('#tanggal').val()
+            },
+            cache: false,
+            success: function(result) {
+                var res = result['type'];
+                if(res=='duplicate'){
+                    $('#message').html("Nomor Surat Jalan sudah ada, tolong coba lagi!");
+                    $('.alert-danger').show();
+                }else{
+                    $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+                    $('#formku').submit(); 
+                }
+            }
+        });
     };
 };
 

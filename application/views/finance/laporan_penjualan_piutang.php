@@ -40,6 +40,27 @@
                                 </select>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                           Jenis <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis" name="jenis" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_jenis(this.value)">
+                                    <option value="0">Saat Ini</option>
+                                    <option value="1">Tanggal</option> 
+                                </select>
+                        </div>
+                    </div>
+                    <div class="row" id="show_tanggal" style="display:none">
+                        <div class="col-md-4">
+                            Tanggal <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tanggal" name="tanggal" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('d-m-Y'); ?>">
+                        </div>
+                    </div>
                         <div class="row">
                             <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
@@ -51,13 +72,24 @@
             </div>
     </div>
 <script type="text/javascript">
+function get_jenis(id){
+    if(id==0){
+        $('#show_tanggal').hide();
+    }else{
+        $('#show_tanggal').show();
+    }
+
+}
+
 function simpanData(){
     if($.trim($("#laporan").val()) == ""){
         $('#message').html("Laporan harus dipilih, tidak boleh kosong!");
         $('.alert-danger').show();
-    }else{     
+    }else{
         var l=$('#laporan').val();
-        window.open('<?php echo base_url();?>index.php/Finance/print_penjualan_piutang?laporan='+l,'_blank');
+        var j=$('#jenis').val();
+        var t=$('#tanggal').val();
+        window.open('<?php echo base_url();?>index.php/Finance/print_penjualan_piutang?laporan='+l+'&t='+t+'&j='+j,'_blank');
     };
 };
 </script>
@@ -65,8 +97,8 @@ function simpanData(){
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-$(function(){        
-    $("#tgl_start").datepicker({
+$(function(){
+    $("#tanggal").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,
@@ -74,15 +106,6 @@ $(function(){
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd-mm-yy'
-    });        
-    $("#tgl_end").datepicker({
-        showOn: "button",
-        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
-        buttonImageOnly: true,
-        buttonText: "Select date",
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'dd-mm-yy'
-    });    
+    });
 });
 </script>

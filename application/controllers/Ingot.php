@@ -951,7 +951,9 @@ class Ingot extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_prd = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $id = $this->input->post('id');
+        $id_hasil_wip = $this->input->post('id_hasil_wip');
 
         $this->db->trans_start();
 
@@ -977,31 +979,91 @@ class Ingot extends CI_Controller{
         $this->db->where('id', $id);
         $this->db->update('t_hasil_masak', $data);
 
-        //BS
-        if($this->input->post('bs_old') != 0){
-            #update bs ke gudang bs
-            $data_bs = array(
-                'bruto' => $this->input->post('bs'),
-                'netto' => $this->input->post('bs')
-            );
-            $this->db->where('dtr_id',$this->input->post('id_dtr'));
-            $this->db->where('rongsok_id',21);
-            $this->db->where('line_remarks', 'SISA PRODUKSI');
-            $this->db->update('dtr_detail', $data_bs);
+        if(empty($this->input->post('id_dtr'))){
+            if($this->input->post('bs') != 0){
+                //CREATE DTR
+            $this->load->model('Model_m_numberings');
+            $code_dtr = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
+            
+                #insert dtr
+                $data_dtr = array(
+                            'no_dtr'=> $code_dtr,
+                            'tanggal'=> $tgl_prd,
+                            'supplier_id'=> 96,//APOLLO
+                            'prd_id'=> $id_hasil_wip,
+                            'jenis_barang'=> 'RONGSOK',
+                            'remarks'=> 'SISA PRODUKSI INGOT',
+                            'created'=> $tanggal,
+                            'created_by'=> $user_id
+                        );
+                $this->db->insert('dtr', $data_dtr);
+                $dtr_id = $this->db->insert_id();
 
+                //CREATE DTR_DETAIL
+                if($this->input->post('bs')!=0){
+
+                    $details = $this->input->post('myDetails');
+                    // print_r($details);die();
+                    $bs_ingot = 0;
+                    foreach ($details as $i => $row){
+                        if($row['rongsok_id']!=''){
+                            $this->db->insert('dtr_detail', array(
+                                'dtr_id'=>$dtr_id,
+                                //'po_detail_id'=>$row['po_detail_id'],
+                                'rongsok_id'=>$row['rongsok_id'],
+                                'bruto'=>$row['bruto'],
+                                'berat_palette'=>$row['berat_palette'],
+                                'netto'=>$row['netto'],
+                                'no_pallete'=>$row['no_pallete'],
+                                'line_remarks'=>'SISA PRODUKSI',
+                                'created'=>$tanggal,
+                                'created_by'=>$user_id,
+                                'tanggal_masuk'=>$tgl_input
+                            ));
+                            if($row['rongsok_id'] == 22){
+                                $bs_ingot += $row['netto'];
+                            }
+                        }
+                    }
+
+                    if($bs_ingot > 0){
+                        $new_bs = $this->input->post('bs') - $bs_ingot;
+                        $this->db->where('id', $id_masak);
+                        $this->db->update('t_hasil_masak', array(
+                            'bs'=> $new_bs,
+                            'bs_service'=>$bs_ingot
+                        ));
+                    }
+                }
+            }
+        }else{
+            $details = $this->input->post('myDetails');
+            // print_r($details);die();
+            $bs_ingot = 0;
+            foreach ($details as $i => $row){
+                if($row['rongsok_id']!=''){
+                    $this->db->where('id', $row['id']);
+                    $this->db->update('dtr_detail', array(
+                        'bruto'=>$row['bruto'],
+                        'berat_palette'=>$row['berat_palette'],
+                        'netto'=>$row['netto'],
+                        'tanggal_masuk'=>$tgl_input
+                    ));
+                    if($row['rongsok_id'] == 22){
+                        $bs_ingot += $row['netto'];
+                    }
+                }
+            }
+
+            if($bs_ingot > 0){
+                $new_bs = $this->input->post('bs') - $bs_ingot;
+                $this->db->where('id', $id_masak);
+                $this->db->update('t_hasil_masak', array(
+                    'bs'=> $new_bs,
+                    'bs_service'=>$bs_ingot
+                ));
+            }
         }
-
-        if($this->input->post('bs_service_old') != 0){
-            $data_bs_service = array(
-                'bruto' => $this->input->post('bs_service'),
-                'netto' => $this->input->post('bs_service')
-            );
-            $this->db->where('dtr_id',$this->input->post('id_dtr'));
-            $this->db->where('rongsok_id',21);
-            $this->db->where('line_remarks', 'BS SERVICE');
-            $this->db->update('dtr_detail', $data_bs_service);
-        }
-
         //SERBUK
         // if($this->input->post('serbuk_old') != 0){
         //     #update serbuk ke gudang bs
@@ -1284,7 +1346,12 @@ class Ingot extends CI_Controller{
 
             $data['content']= "ingot/edit_hasil";
             $this->load->model('Model_ingot');
+            $this->load->model('Model_beli_rongsok');
             $data['header'] = $this->Model_ingot->show_hasil($id)->row_array();
+            $data['rongsok'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
+            if(!empty($data['header']['id_dtr'])){
+                $data['details'] = $this->Model_beli_rongsok->show_detail_dtr($data['header']['id_dtr'])->result();
+            }
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/Ingot');
