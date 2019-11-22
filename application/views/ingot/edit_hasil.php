@@ -293,17 +293,15 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
-                        <table class="table table-bordered table-striped table-hover">
+                        <table class="table table-bordered table-striped table-hover" id="tabel_dtr">
                             <thead>
                                 <th>No</th>
                                 <th>Nama Item Rongsok</th>
-                                <th>UOM</th>
                                 <th>Bruto (Kg)</th>
                                 <th>Berat Pallete</th>
                                 <th>Netto (Kg)</th>
                                 <th></th>
                                 <th width="15%">No. Pallete</th>
-                                <th>Keterangan</th>
                                 <th>Print</th>
                             </thead>
                             <tbody>
@@ -320,20 +318,15 @@
                                     echo '<input type="hidden" name="myDetails['.$no.'][id]" value="'.$row->id.'">';
                                     echo '<input type="hidden" id="rongsok_id_'.$no.'" value="'.$row->rongsok_id.'";?>';                                    
                                     echo '</td>';
-                                    echo '<td><input type="text" name="myDetails['.$no.'][uom]" '
-                                            . 'class="form-control myline" value="'.$row->uom.'" '
-                                            . 'readonly="readonly"></td>';
                                     echo '<td><input type="number" id="bruto_'.$no.'" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
                                             . 'class="form-control myline" maxlength="10" value="'.$row->bruto.'"></td>';
                                     echo '<td><input type="text" id="berat_palette_'.$no.'" name="myDetails['.$no.'][berat_palette]" '
                                             . 'class="form-control myline" maxlength="10" value="'.$row->berat_palette.'"></td>';
                                     echo '<td><input type="text" id="netto_'.$no.'" name="myDetails['.$no.'][netto]" '
                                             . 'class="form-control myline" maxlength="10" value="'.$row->netto.'" readonly></td>';
-                                    echo '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('.$no.');"> <i class="fa fa-dashboard"></i> Timbang </a></td>';
+                                    echo '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto('.$no.',1);"> <i class="fa fa-dashboard"></i> Timbang </a></td>';
                                     
                                     echo '<td><input type="text" id="no_pallete_'.$no.'" name="myDetails['.$no.'][no_pallete]" value="'.$row->no_pallete.'" '
-                                            . 'class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';
-                                    echo '<td><input type="text" name="myDetails['.$no.'][line_remarks]" value="'.$row->line_remarks.'"'
                                             . 'class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>';
                                     echo '<td style="text-align:center"><a id="print_'.$no.'" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode('.$no.');" style="margin-top:5px;"><i class="fa fa-trash"></i> Print </a></td>';
                                     echo '</tr>';
@@ -341,14 +334,39 @@
                                     $netto+= $row->netto;
                                 }
                             ?>
+                            <tr>
+                                <td style="text-align: center;"><div id="no_tabel_2">2</div></td>
+                                <input type="hidden" id="po_id_2" name="myDetails[2][po_detail_id]" value="">
+                                <input type="hidden" id="rongsok_id_2" name="myDetails[2][rongsok_id]" value="">
+                                <td><select id="name_rongsok_2" name="myDetails[2][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,2);">
+                                    <option value=""></option>
+                                    <?php foreach ($rongsok as $value){ ?>
+                                            <option value='<?=$value->id;?>'>
+                                                <?='('.$value->kode_rongsok.') '.$value->nama_item;?>
+                                            </option>
+                                    <?php } ?>
+                                </select>
+                                </td>
+                                <input type="hidden" name="myDetails[2][id]" value="0">
+                                <td><input type="number" id="bruto_2" name="myDetails[2][bruto]" class="form-control myline" value="0" maxlength="10"></td>
+                                <td><input type="number" id="berat_palette_2" name="myDetails[2][berat_palette]" class="form-control myline" value="0" maxlength="10"></td>
+                                <td><input type="text" id="netto_2" name="myDetails[2][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
+                                <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(2,2);"> <i class="fa fa-dashboard"></i> Timbang </a></td>                          
+                                <td><input type="text" name="myDetails[2][no_pallete]" id="no_pallete_2"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly"></td>
+                                <td style="text-align:center">
+                                    <a id="save_2" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(2);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
+                                    <a id="delete_2" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(2);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
+                                    <a id="print_2" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(2);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>
+                                </td>
+                            </tr>
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="3" style="text-align: right;"><strong>Total :</strong></td>
+                                    <td colspan="2" style="text-align: right;"><strong>Total :</strong></td>
                                     <td><input type="text" id="total_bruto" class="form-control" readonly="readonly"></td>
                                     <td><input type="text" id="total_berat" class="form-control" readonly="readonly"></td>
                                     <td><input type="text" id="total_netto" name="bs" class="form-control" readonly="readonly" value="<?=$netto;?>"></td>
-                                    <td colspan="4"></td>
+                                    <td colspan="3"></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -376,7 +394,7 @@
    </div>
    <?php
       }
-      ?>
+    ?>
    </div>
 </div>
 <script>
@@ -410,7 +428,8 @@ function timbang_netto(id){
     $("#netto_"+id).val(netto);
 }
 <?php }else{ ?>
-function timbang_netto(id){
+function timbang_netto(id,jn){
+  if(jn==1){
     var bruto = $("#bruto_"+id).val();
     var berat_palette = $("#berat_palette_"+id).val();
     var total_netto = bruto - berat_palette;
@@ -421,6 +440,13 @@ function timbang_netto(id){
     bs_new = Number(bs_new) + Number(netto);
     $('#total_netto').val(bs_new);
     hitung_susut();
+  }else{
+    var bruto = $("#bruto_"+id).val();
+    var berat_palette = $("#berat_palette_"+id).val();
+    var total_netto = bruto - berat_palette;
+    const netto = total_netto.toFixed(2);
+    $("#netto_"+id).val(netto);
+  }
 }
 <?php } ?>
 
@@ -464,6 +490,7 @@ function saveDetail(id){
                 '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
                 '<input type="hidden" id="po_id_'+new_id+'" name="myDetails['+new_id+'][po_detail_id]" value="">'+
                 '<input type="hidden" id="rongsok_id_'+new_id+'" name="myDetails['+new_id+'][rongsok_id]" value="">'+
+                '<input type="hidden" name="myDetails['+new_id+'][id]" value="0">'+
                 '<td><select id="name_rongsok_'+new_id+'" name="myDetails['+new_id+'][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,'+new_id+');">'+
                     '<option value=""></option>'+
                     '<?php foreach($rongsok as $v){ print('<option value="'.$v->id.'">('.$v->kode_rongsok.') '.$v->nama_item.'</option>');}?>'+

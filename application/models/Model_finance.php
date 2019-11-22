@@ -80,8 +80,10 @@ class Model_finance extends CI_Model{
     }
 
     function view_um($id){
-        $data = $this->db->query("Select fum.*, mc.nama_customer, b.kode_bank, b.nama_bank, b.nomor_rekening, u.realname, fp.id as id_pmb, fp.no_pembayaran
+        $data = $this->db->query("Select fum.*, mc.nama_customer, b.kode_bank, b.nama_bank, b.nomor_rekening, u.realname, fp.id as id_pmb, fp.no_pembayaran, fmd.id_match, fm.no_matching
             From f_uang_masuk fum
+            left join f_match_detail fmd on fmd.id_um = fum.id
+            left join f_match fm on fm.id = fmd.id_match
             left join m_customers mc on mc.id = fum.m_customer_id
             left join f_pembayaran_detail fpd on fpd.um_id = fum.id
             left join f_pembayaran fp on fp.id = fpd.id_pembayaran
@@ -338,10 +340,9 @@ class Model_finance extends CI_Model{
     }
 
     function show_detail_matching_um($id){
-        $data = $this->db->query("select fum.*, b.kode_bank, b.nama_bank, b.nomor_rekening from f_match_detail fmd
-            left join f_uang_masuk fum on fum.id = fmd.id_um
-            left join bank b on b.id = fum.rekening_tujuan
-            where id_inv = 0 and fmd.id_match =".$id);
+        $data = $this->db->query("select fm.id, fm.no_matching, fm.tanggal, fmd.inv_bayar, fmd.inv_pembulatan from f_match_detail fmd
+            left join f_match fm on fm.id = fmd.id_match
+            where id_um = 0 and fmd.id_inv =".$id);
         return $data;
     }
 

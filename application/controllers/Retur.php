@@ -1415,6 +1415,19 @@ class Retur extends CI_Controller{
         redirect('index.php/Retur/');
     }
     
+    function update_type(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('retur', array(
+            'jenis_retur'=>$this->input->post('type_retur')
+        ));
+        
+        $this->session->set_flashdata('flash_msg', 'Data permintaan retur barang berhasil direject');
+        redirect('index.php/Retur');
+    }
+
     function reject(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');

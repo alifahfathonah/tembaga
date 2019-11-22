@@ -264,16 +264,11 @@
                         <div class="col-md-4">
                             No. Matching PMB
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-5">
                             <input type="text" id="no_pembayaran" name="no_pembayaran" readonly="readonly"
-                                class="form-control myline" value="<?php echo $myData['no_pembayaran']; ?>">
+                                class="form-control myline" value="<?php echo $myData['no_pembayaran']; ?>" style="margin-bottom: 5px;">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            &nbsp;
-                        </div>
-                        <div class="col-md-8">
+                        <div class="col-md-3" style="padding-top:5px">
                             <a href="<?php echo base_url('index.php/Finance/view_pmb/').$myData['id_pmb']; ?>" class="btn btn-circle btn-xs blue"> <i class="fa fa-book"></i> View </a>
                         </div>
                     </div>
@@ -304,6 +299,18 @@
                         </div>
                     </div>
             <?php } ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. Matching Invoice
+                        </div>
+                        <div class="col-md-5">
+                            <input type="text" id="no_matching" name="no_matching" readonly="readonly"
+                                class="form-control myline" value="<?php echo $myData['no_matching']; ?>" style="margin-bottom:5px">
+                        </div>
+                        <div class="col-md-3" style="padding-top:5px">
+                            <a href="<?php echo base_url('index.php/Finance/matching_invoice/').$myData['id_match']; ?>" class="btn btn-circle btn-xs blue"> <i class="fa fa-book"></i> View </a>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Catatan

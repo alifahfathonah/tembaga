@@ -1,5 +1,5 @@
  <h3 style="text-align: center; text-decoration: underline;">PT. KAWAT MAS PRAKASA<br>
-    LAPORAN PEMAKAIAN BAHAN BAKAR ROLLING</h3>
+    LAPORAN PEMAKAIAN BAHAN BAKAR APOLLO</h3>
  <h3 align="center"><b><?php echo " <i>".tanggal_indo(date('Y-m-d', strtotime($start))).' s/d '.tanggal_indo(date('Y-m-d', strtotime($end)))."</i>";?></b></h3>
 <table width="100%" class="table table-striped table-bordered table-hover" id="sample_6">
     <tr>
@@ -8,9 +8,9 @@
             <tr>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>NO</strong></td>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>TANGGAL</strong></td>
-                <td colspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>V (DIGITAL)</strong></td>
-                <td colspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>GAS</strong></td>
-                <td colspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>HASIL PRODUKSI</strong></td>
+                <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>V (DIGITAL)</strong></td>
+                <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>GAS</strong></td>
+                <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>HASIL PRODUKSI</strong></td>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>APOLLO 3<br>RATA-RATA<br>M<sup>3</sup>/KG</strong></td>
                 <td rowspan="2" style="text-align:center; border:1px solid #000"><strong>APOLLO 4<br>RATA-RATA<br>M<sup>3</sup>/KG</strong></td>
             </tr>
@@ -31,6 +31,19 @@
     $gas4 = 0;
     $hasil3 = 0;
     $hasil4 = 0;
+    $v_digital11 = 0;
+    $v_digital12 = 0;
+    foreach ($apollo_detail as $value) {
+        ${"apollo".$value->jenis_barang_id} = $value->netto;
+    }
+    if(empty($apollo11)||$apollo11==0){
+        $apollo11 = 0;//apollo 3
+    }
+    if(empty($apollo12)||$apollo12==0){
+        $apollo12 = 0;//apollo 4
+    }
+    $v_digital11 += $apollo11;
+    $v_digital12 += $apollo12;
     foreach ($detailLaporan as $row){
         if($row->berat_ingot3 == 0){
             $rata2m3 = 0;
@@ -42,11 +55,13 @@
         }else{
             $rata2m4 = ($row->gas4)/$row->berat_ingot4;
         }
+        $v_digital11 +=$row->gas3;
+        $v_digital12 +=$row->gas4;
         echo '<tr>';
         echo '<td style="text-align:center; border-bottom:1px solid #000; border-left:1px solid #000">'.$no.'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.$row->tanggal.'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis == 3)? number_format($row->v_digital,2,',','.'):'-').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis == 4)? number_format($row->v_digital,2,',','.'):'-').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->gas3==0)? '-':number_format($v_digital11,2,',','.')).'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->gas4==0)? '-':number_format($v_digital12,2,',','.')).'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->gas3,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->gas4,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->berat_ingot3,2,',','.').'</td>';
@@ -77,21 +92,53 @@
     </tr>
     </tr>
     </tbody>
+    <?php
+        $tanggal = date("Y-m-t", strtotime($start));
+        // echo $tanggal;die();
+        $cek = $this->db->query("select * from t_gudang_produksi where jenis_barang_id in (11,12) and tanggal='".$tanggal."' limit 2")->result();
+        if(empty($cek)){
+            //APOLLO 3
+            $this->db->insert('t_gudang_produksi', array(
+                'tanggal'=>$tanggal,
+                'jenis_barang_id'=>11,
+                'netto'=>$v_digital11,
+                'keterangan'=>'APOLLO 3 Stok Generate',
+                'created_at'=>date('Y-m-d h:m:s')
+            ));
+            //APOLLO 4
+            $this->db->insert('t_gudang_produksi', array(
+                'tanggal'=>$tanggal,
+                'jenis_barang_id'=>12,
+                'netto'=>$v_digital12,
+                'keterangan'=>'APOLLO 4 Stok Generate',
+                'created_at'=>date('Y-m-d h:m:s')
+            ));
+        }else{
+            foreach ($cek as $v) {
+                if($v->created_by == 0){
+                    $this->db->where('id', $v->id);
+                    $this->db->update('t_gudang_produksi', array(
+                        'netto'=>${'v_digital'.$v->jenis_barang_id}
+                    ));
+                }
+            }
+        }
+    ?>
     <tr>
         <td colspan="7" style="text-align: left; border-bottom:1px solid #000; border-left:1px solid #000;">
             <table border="0" width="100%" style="text-align:left">
                 <tr>
-                    <td>TOTAL PEMAKAIAN BAHAN BAKAR ROLLING (GAS)</td>
+                    <td>TOTAL PEMAKAIAN BAHAN BAKAR APOLLO (GAS)</td>
                     <td>=</td>
                     <td><?=number_format($gas3+$gas4,2,',','.');?></td>
                 </tr>
                 <tr>
-                    <td>TOTAL HASIL ROLLING (GAS)</td>
+                    <td>TOTAL HASIL APOLLO (GAS)</td>
                     <td>=</td>
                     <td><?=number_format($hasil3+$hasil4,2,',','.');?></td>
                 </tr>
                 <tr>
-                    <td>RATA PEMAKAIAN BAHAN BAKAR ROLLING (GAS)</td>
+                    <td>RATA PEMAKAIAN BAHAN BAKAR APOLLO (GAS)</td>
                     <td>=</td>
                     <td><?=number_format($rrm,5,',','.');?></td>
                 </tr>

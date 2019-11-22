@@ -41,11 +41,19 @@
                             Jenis Barang
                         </div>
                         <div class="col-md-8">
-                            <select id="barang_id" name="barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
+                            <select id="barang_id" name="barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
                                 <option value=""></option>
-                                <?php foreach ($list_barang as $value){
-                                        echo "<option value='".$value->id."'>".$value->jenis_barang."</option>";
-                                    }?>
+                                <optgroup label="Jenis Barang">
+                                    <option value="2">INGOT</option>
+                                </optgroup>
+                                <optgroup label="Gas">
+                                    <option value="9">GAS (Kanan)</option>
+                                    <option value="10">GAS (Kiri)</option>
+                                </optgroup>
+                                <optgroup label="Apollo">
+                                    <option value="11">APOLLO 3</option>
+                                    <option value="12">APOLLO 4</option>
+                                </optgroup>
                             </select>
                         </div>
                     </div>

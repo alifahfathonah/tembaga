@@ -315,6 +315,61 @@
                                 </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 align="center">Pemenuhan SPB</h4>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-striped table-hover">
+                                        <thead>
+                                            <th style="width:40px">No</th>
+                                            <th>Nama Item</th>
+                                            <th>No Pallete</th>
+                                            <th>Netto</th>
+                                            <th>UOM</th>
+                                            <th>Keterangan</th>
+                                            <th>Status</th>
+                                            <th>Tanggal Keluar</th>
+                                            <th>Action <input type="checkbox" id="check_all" name="check_all" onclick="checkAll()" class="form-control checklist"></th>
+                                        </thead>
+                                        <tbody>
+                                            <?php $no=1; $total_netto = 0; foreach($detailSPBFulfilment as $v) { ?>
+                                            <tr>
+                                                <td><?=$no;?></td>
+                                                <td><?=$v->nama_item;?></td>
+                                                <td><?=$v->no_pallete;?></td>
+                                                <td><?=number_format($v->netto,2,',','.');?></td>
+                                                <td><?=$v->uom;?></td>
+                                                <td><?=$v->line_remarks;?></td>
+                                                <?php
+                                                if($v->flag_sj!=0){
+                                                echo '<td style="background-color: green; color: white">Sudah di Kirim</td>';
+                                                echo '<td>'.$v->tanggal_keluar.'</td>';
+                                                echo '<td><input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
+                                                            onclick="check();" class="form-control checklist">';
+                                                    echo '<input type="hidden" value="'.$v->id_detail.'" id="check_'.$no.'" name="myDetails['.$no.'][id_detail]" class="form-control checklist"></td>';
+                                                }else{
+                                                    echo '<td>Belum Dikirim</td>';
+                                                    echo '<td>'.date('Y-m-d', strtotime($v->tanggal_keluar)).'</td>';
+                                                    echo '<td><a href="'.base_url().'index.php/Ingot/delSPBSudahDipenuhi/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete</a>';
+                                                    echo '<input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
+                                                            onclick="check();" class="form-control checklist">';
+                                                    echo '<input type="hidden" value="'.$v->id_detail.'" id="check_'.$no.'" name="myDetails['.$no.'][id_detail]" class="form-control checklist">';
+                                                    echo '</td>';
+                                                }?>
+                                            </tr>
+                                            <?php 
+                                            $total_netto += $v->netto;
+                                            $no++; } ?>
+                                            <tr>
+                                                <td colspan="3"> Total</td>
+                                                <td><?=number_format($total_netto,2,',','.');?></td>
+                                                <td colspan="5"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                        </div>
+                    </div>
                     <hr class="divider"/>
                     <?php if ($myData['status']==0 || $myData['status']==4) { ?>
                     <div class="row">
@@ -505,8 +560,6 @@
                         </div>
                     </div>
                 <?php } ?>
-                </div>
-            </div>
                             <div class="row pindah" style="display: none;">
                                 <div class="col-md-2">
                                     Tanggal Keluar <font color="#f00">*</font>
@@ -518,6 +571,8 @@
                                     <a href="javascript:;" class="btn green" onclick="update_tanggal_keluar();"><i class="fa fa-check"></i> Update Tanggal Keluar </a>
                                 </div>
                             </div>
+                </div>
+            </div>
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-10">

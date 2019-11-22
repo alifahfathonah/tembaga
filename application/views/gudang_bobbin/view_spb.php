@@ -158,7 +158,6 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <?php if ($myData['status']==0) { ?>
-
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-scrollable">

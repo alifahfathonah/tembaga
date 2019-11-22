@@ -42,11 +42,18 @@
                             Jenis Barang
                         </div>
                         <div class="col-md-8">
-                            <select id="barang_id" name="barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
-                                <option value=""></option>
-                                <?php foreach ($list_barang as $value){
-                                        echo "<option value='".$value->id."' ".(($header['jenis_barang_id']==$value->id)? 'selected':'').">".$value->jenis_barang."</option>";
-                                    }?>
+                            <select id="barang_id" name="barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                <option value=""></option><optgroup label="Jenis Barang">
+                                    <option value="2" <?=(($header['jenis_barang_id']==2)? 'selected':'');?>>INGOT</option>
+                                </optgroup>
+                                <optgroup label="Gas">
+                                    <option value="9" <?=(($header['jenis_barang_id']==9)? 'selected':'');?>>GAS (Kanan)</option>
+                                    <option value="10" <?=(($header['jenis_barang_id']==10)? 'selected':'');?>>GAS (Kiri)</option>
+                                </optgroup>
+                                <optgroup label="Apollo">
+                                    <option value="11" <?=(($header['jenis_barang_id']==11)? 'selected':'');?>>APOLLO 3</option>
+                                    <option value="12" <?=(($header['jenis_barang_id']==12)? 'selected':'');?>>APOLLO 4</option>
+                                </optgroup>
                             </select>
                         </div>
                     </div>
@@ -63,7 +70,7 @@
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
                             <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                                <i class="fa fa-floppy-o"></i> Input Details </a>
+                                <i class="fa fa-floppy-o"></i> Save Details </a>
                         </div>    
                     </div>
                 </div>

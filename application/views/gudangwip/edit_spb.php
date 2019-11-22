@@ -134,6 +134,7 @@
                                 <th>Keterangan</th>
                                 <th>Actions</th>
                             </thead>
+                        <?php if($header['status']==0){ ?>
                             <tbody id="boxDetail">
 
                             </tbody>
@@ -153,6 +154,25 @@
                                 <td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
                                 <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail();" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a></td>
                             </tr>
+                        <?php }else{ 
+                            $no = 0;
+                            $qty_spb = 0;
+                            $berat_spb = 0;
+                                foreach ($myDetail as $row){
+                                    $no++;
+                                    echo '<td style="text-align:center">'.$no.'</td>';
+                                    echo '<td>'.$row->kode.' | '.$row->jenis_barang.'</td>';
+                                    echo '<td>'.$row->uom.'</td>';
+                                    echo '<td>'.$row->qty.'</td>';
+                                    echo '<td>'.number_format($row->berat,2,',','.').'</td>';
+                                    echo '<td>'.$row->keterangan.'</td>';
+                                    echo '<td></td>';
+                                    echo '</tr>';
+                                    $qty_spb += $row->qty;
+                                    $berat_spb += $row->berat;
+                                }
+                            }
+                        ?>
                         </table>
                     </div>
                 </div>

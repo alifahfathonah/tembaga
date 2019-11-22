@@ -828,9 +828,9 @@ class Model_sales_order extends CI_Model{
                 CASE WHEN jb.ukuran < 1000 THEN 0 ELSE 1 END
             ELSE 2 END) as jenis,
             IF(so.flag_tolling = 2,1,so.flag_tolling) as flag_tolling, tsod.jenis_barang_id, COALESCE(r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as nama_barang, IF(tso.jenis_barang = 'RONGSOK', tsod.qty, tsod.netto) as netto,
-             (select sum(tsjd.netto) from t_surat_jalan_detail tsjd
+             coalesce((select sum(tsjd.netto) from t_surat_jalan_detail tsjd
              left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id and tsjd.t_sj_id
-             where tsj.sales_order_id = so.id and CASE WHEN tsjd.jenis_barang_alias = 0 THEN tsjd.jenis_barang_id=tsod.jenis_barang_id ELSE tsjd.jenis_barang_alias=tsod.jenis_barang_id END) as netto_kirim
+             where tsj.sales_order_id = so.id and CASE WHEN tsjd.jenis_barang_alias = 0 THEN tsjd.jenis_barang_id=tsod.jenis_barang_id ELSE tsjd.jenis_barang_alias=tsod.jenis_barang_id END),0) as netto_kirim
             from t_sales_order_detail tsod
             left join t_sales_order tso on tso.id = tsod.t_so_id
             left join sales_order so on so.id = tso.so_id
@@ -840,10 +840,35 @@ class Model_sales_order extends CI_Model{
             left join jenis_barang jb on (jb.id = tsod.jenis_barang_id)
             where so.flag_sj = 0
             ) as a
+            where (netto- netto_kirim) > 0
             group by nama_barang, flag_tolling
             order by jenis, nama_barang asc
             ");
     }
+
+    // function print_laporan_sisa_so_jb(){
+    //     return $this->db->query("SELECT jenis, nama_barang, flag_tolling, jenis_barang_id, sum(netto) as netto, sum(netto_kirim) as netto_kirim from (
+    //         select
+    //         (CASE WHEN tso.jenis_barang = 'FG' THEN
+    //             CASE WHEN jb.ukuran < 1000 THEN 0 ELSE 1 END
+    //         ELSE 2 END) as jenis,
+    //         IF(so.flag_tolling = 2,1,so.flag_tolling) as flag_tolling, tsod.jenis_barang_id, COALESCE(r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as nama_barang, IF(tso.jenis_barang = 'RONGSOK', tsod.qty, tsod.netto) as netto,
+    //          coalesce((select sum(tsjd.netto) from t_surat_jalan_detail tsjd
+    //          left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id and tsjd.t_sj_id
+    //          where tsj.sales_order_id = so.id and CASE WHEN tsjd.jenis_barang_alias = 0 THEN tsjd.jenis_barang_id=tsod.jenis_barang_id ELSE tsjd.jenis_barang_alias=tsod.jenis_barang_id END),0) as netto_kirim
+    //         from t_sales_order_detail tsod
+    //         left join t_sales_order tso on tso.id = tsod.t_so_id
+    //         left join sales_order so on so.id = tso.so_id
+    //         left join rongsok r on (tso.jenis_barang = 'RONGSOK' and r.id = tsod.jenis_barang_id)
+    //         left join rongsok r2 on (tso.jenis_barang = 'AMPAS' and r2.id = tsod.jenis_barang_id)
+    //         left join sparepart sp on (tso.jenis_barang = 'LAIN' and sp.id = tsod.jenis_barang_id)
+    //         left join jenis_barang jb on (jb.id = tsod.jenis_barang_id)
+    //         where so.flag_sj = 0
+    //         ) as a
+    //         group by nama_barang, flag_tolling
+    //         order by jenis, nama_barang asc
+    //         ");
+    // }
 
     function sisa_so_jb($id){
         return $this->db->query("

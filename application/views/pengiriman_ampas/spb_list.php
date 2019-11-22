@@ -94,7 +94,7 @@
                                
                             <?php
                                 }
-                                if($group_id==1 || $hak_akses['edit_spb']==1 && $hak_akses['status']!=1 ){
+                                if($group_id==1 || $hak_akses['edit_spb']==1 && $data->status!=1 ){
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/PengirimanAmpas/edit_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
                             <?php   

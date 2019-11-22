@@ -365,7 +365,17 @@ class Model_gudang_wip extends CI_Model{
             left join produksi_ingot pi on thm.id_produksi = pi.id
             where thm.tanggal between '".$s."' and '".$e."' group by thm.tanggal");
         }elseif($j == 2){
-            return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, thw.gas, a.qty as qty_rsk, a.netto as berat_rsk, thw.tanggal, thw.qty, uom, thw.berat, susut, bs from t_hasil_wip thw
+            return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, thw.gas, a.qty as qty_rsk, a.netto as berat_rsk, thw.tanggal, thw.qty, uom, thw.berat, susut, bs, qty_keras, keras,
+                (select sum(netto) from dtr_detail dd 
+                    left join dtr on dd.dtr_id = dtr.id
+                    where dtr.prd_id = thw.id and rongsok_id = 20) as bs_rolling,
+                (select sum(netto) from dtr_detail dd2 
+                    left join dtr dtr2 on dd2.dtr_id = dtr2.id
+                    where dtr2.prd_id = thw.id and rongsok_id = 52) as bs_8m,
+                (select sum(netto) from dtr_detail dd3 
+                    left join dtr dtr3 on dd3.dtr_id = dtr3.id
+                    where dtr3.prd_id = thw.id and rongsok_id = 22) as bs_ingot
+                from t_hasil_wip thw
                 left join (select tsw.tanggal, sum(tgw.qty) as qty, sum(tgw.berat) as netto from t_gudang_wip tgw
                     left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
                     where tsw.flag_produksi = 2
@@ -416,7 +426,7 @@ class Model_gudang_wip extends CI_Model{
     }
 
     function lap_babakar_apollo($s,$e){
-        return $this->db->query("select thm.tanggal, 1 as v_digital, pi.no_produksi as nomor, thm.tipe, count(thm.id) as count, sum(kayu) as kayu, 
+        return $this->db->query("select thm.tanggal, pi.no_produksi as nomor, thm.tipe, count(thm.id) as count, sum(kayu) as kayu, 
     sum(CASE WHEN a.jenis = 3 THEN gas ELSE 0 END) as gas3,
     sum(CASE WHEN a.jenis = 4 THEN gas ELSE 0 END) as gas4,
     sum(CASE WHEN a.jenis = 3 THEN berat_ingot ELSE 0 END) as berat_ingot3, sum(CASE WHEN a.jenis = 4 THEN berat_ingot ELSE 0 END) as berat_ingot4,
@@ -474,6 +484,14 @@ class Model_gudang_wip extends CI_Model{
 
     function header_gudang_keras($id){
         return $this->db->query("select * from t_gudang_keras where id =".$id);
+    }
+
+    function get_gas($tgl){
+        return $this->db->query("select * from t_gudang_produksi where jenis_barang_id in (9,10) and tanggal = '".$tgl."'");
+    }
+
+    function get_apollo($tgl){
+        return $this->db->query("select * from t_gudang_produksi where jenis_barang_id in (11,12) and tanggal = '".$tgl."'");
     }
     /*
     cara membuat view stok wip

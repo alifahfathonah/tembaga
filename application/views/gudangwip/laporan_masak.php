@@ -40,9 +40,6 @@
                                         <option value="2">Rolling</option>
                                         <option value="6">Bahan Bakar Rolling</option>
                                     </optgroup>
-                                    <optgroup label="Bakar Ulang">
-                                        <option value="3">Bakar Ulang</option>
-                                    </optgroup>
                                     <optgroup label="Cuci">
                                         <option value="4">Cuci</option>
                                     </optgroup>

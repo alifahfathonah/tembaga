@@ -359,17 +359,110 @@ class Model_bobbin extends CI_Model{
             where mb.m_jenis_packing_id in (1,2) and status =".$id." group by mb.m_bobbin_size_id");
     }
 
-    function print_laporan_bulanan($s,$e){
-        return $this->db->query("select m.id, m.bobbin_size, m.keterangan, 
-            (select count(ped.id) from m_bobbin_penerimaan_detail ped
-            left join m_bobbin_penerimaan pe on ped.id_bobbin_penerimaan = pe.id
-            left join m_bobbin mb2 on ped.nomor_bobbin = mb2.nomor_bobbin
-            where mb2.m_bobbin_size_id = m.id and pe.tanggal between '".$s."' and '".$e."'
-            ) as pemasukan,
-            (select count(pd.id) from m_bobbin_peminjaman_detail pd 
-            left join m_bobbin_peminjaman p on pd.id_peminjaman = p.id
-            left join m_bobbin mb on pd.nomor_bobbin = mb.nomor_bobbin
-            where mb.m_bobbin_size_id = m.id and p.tanggal between '".$s."' and '".$e."') as pengeluaran
-            from m_bobbin_size m where m.jenis_packing_id in (1,2)");
+    // function print_laporan_bulanan($s,$e){
+    //     return $this->db->query("select m.id, m.bobbin_size, m.keterangan, 
+    //         (select count(ped.id) from m_bobbin_penerimaan_detail ped
+    //         left join m_bobbin_penerimaan pe on ped.id_bobbin_penerimaan = pe.id
+    //         left join m_bobbin mb2 on ped.nomor_bobbin = mb2.nomor_bobbin
+    //         where mb2.m_bobbin_size_id = m.id and pe.tanggal between '".$s."' and '".$e."'
+    //         ) as pemasukan,
+    //         (select count(pd.id) from m_bobbin_peminjaman_detail pd 
+    //         left join m_bobbin_peminjaman p on pd.id_peminjaman = p.id
+    //         left join m_bobbin mb on pd.nomor_bobbin = mb.nomor_bobbin
+    //         where mb.m_bobbin_size_id = m.id and p.tanggal between '".$s."' and '".$e."') as pengeluaran
+    //         from m_bobbin_size m where m.jenis_packing_id in (1,2)");
+    // }
+
+    function print_laporan_bulanan($s,$e, $l){
+        if($l==0){
+            return $this->db->query("select m.id, m.bobbin_size, m.keterangan, 
+                (select count(ped.id) from m_bobbin_penerimaan_detail ped
+                left join m_bobbin_penerimaan pe on ped.id_bobbin_penerimaan = pe.id
+                left join m_bobbin mb2 on ped.nomor_bobbin = mb2.nomor_bobbin
+                where mb2.m_bobbin_size_id = m.id and pe.tanggal between '".$s."' and '".$e."'
+                ) as pemasukan,
+                (select count(mbsd.id)
+                    from bobbin_spb_fulfilment mbsd
+                    left join bobbin_spb bs on (bs.id=mbsd.id_spb_bobbin)
+                    left join m_bobbin mb on (mb.id = mbsd.bobbin_id ) 
+                    where mb.m_bobbin_size_id = m.id and bs.tanggal between '".$s."' and '".$e."'
+                    ) as pengeluaran
+                from m_bobbin_size m where m.jenis_packing_id in (1,2)");
+        }else{
+            return $this->db->query("select m.id, m.bobbin_size, m.keterangan, 
+                (select count(tgf.id) from t_gudang_fg tgf
+                left join m_bobbin mb on tgf.bobbin_id = mb.id
+                where tgf.bobbin_id > 0 and tgf.tanggal_masuk between '".$s."' and '".$e."' and mb.m_bobbin_size_id = m.id 
+                ) as pemasukan,
+                (select count(tgf2.id)
+                    from t_gudang_fg tgf2
+                    left join m_bobbin mb2 on (mb2.id = tgf2.bobbin_id) 
+                    where tgf2.jenis_trx = 1 and tgf2.tanggal_keluar between '".$s."' and '".$e."' and mb2.m_bobbin_size_id = m.id 
+                    ) as pengeluaran
+                from m_bobbin_size m where m.jenis_packing_id in (1,2)");
+        }
+    }
+
+    function print_kartu_stok_global($s,$e){
+        return $this->db->query("select * from (
+            (
+                select pe.no_penerimaan as nomor, pe.tanggal, mb2.nomor_bobbin, mb2.m_jenis_packing_id, mb2.m_bobbin_size_id, mb2.berat as masuk, 0 as keluar, 1 as qty_masuk, 0 as qty_keluar
+                 from m_bobbin_penerimaan_detail ped
+                    left join m_bobbin_penerimaan pe on ped.id_bobbin_penerimaan = pe.id
+                    left join m_bobbin mb2 on ped.nomor_bobbin = mb2.nomor_bobbin
+                    where pe.tanggal between '".$s."' and '".$e."'
+            )
+            UNION ALL
+            (
+                select bs.no_spb_bobbin as nomor, bs.tanggal, mb.nomor_bobbin, mb.m_jenis_packing_id, mb.m_bobbin_size_id, 0 as masuk, mb.berat as keluar, 0 as qty_masuk, 1 as qty_keluar
+                from bobbin_spb_fulfilment mbsd
+                left join bobbin_spb bs on (bs.id=mbsd.id_spb_bobbin)
+                left join m_bobbin mb on (mb.id = mbsd.bobbin_id ) 
+                where bs.tanggal between '".$s."' and '".$e."'
+            )
+            ) as a order by tanggal, nomor, nomor_bobbin
+            ");
+    }
+
+    function print_kartu_stok($s,$e,$j){
+        if($j==1){
+            return $this->db->query("select pe.no_penerimaan as nomor, pe.tanggal, mb2.nomor_bobbin, mb2.m_jenis_packing_id, mb2.m_bobbin_size_id, mb2.berat
+                 from m_bobbin_penerimaan_detail ped
+                    left join m_bobbin_penerimaan pe on ped.id_bobbin_penerimaan = pe.id
+                    left join m_bobbin mb2 on ped.nomor_bobbin = mb2.nomor_bobbin
+                    where pe.tanggal between '".$s."' and '".$e."'");
+        }else{
+            return $this->db->query("select bs.no_spb_bobbin as nomor, bs.tanggal, mb.nomor_bobbin, mb.m_jenis_packing_id, mb.m_bobbin_size_id, mb.berat
+                from bobbin_spb_fulfilment mbsd
+                left join bobbin_spb bs on (bs.id=mbsd.id_spb_bobbin)
+                left join m_bobbin mb on (mb.id = mbsd.bobbin_id ) 
+                where bs.tanggal between '".$s."' and '".$e."'");
+        }
+    }
+
+    function print_laporan_langganan($l){
+        if($l==0){
+            return $this->db->query("select mb.nomor_bobbin, mb.berat, COALESCE(s.nama_supplier,mc.nama_customer) as nama from m_bobbin mb
+                left join supplier s on s.id = mb.borrowed_by_supplier
+                left join m_customers mc on mc.id = mb.borrowed_by
+                where mb.borrowed_by_supplier > 0 or mb.borrowed_by > 0 order by nama, nomor_bobbin
+             ");
+        }else if($l==1){
+            return $this->db->query("select mb.nomor_bobbin, mb.berat, s.nama_supplier as nama from m_bobbin mb
+                left join supplier s on s.id = mb.borrowed_by_supplier
+                where mb.borrowed_by_supplier =".$l." order by mb.nomor_bobbin");
+        }elseif($l==2){
+            return $this->db->query("select mb.nomor_bobbin, mb.berat, mc.nama_customer as nama from m_bobbin mb
+                left join m_customers mc on mc.id = mb.borrowed_by
+                where mb.borrowed_by=".$l." order by mb.nomor_bobbin");
+        }
+    }
+
+    function get_supplier($j){
+        return $this->db->query("select nama_supplier as nama from supplier where id=".$j);
+    }
+
+    function get_customer($j){
+        return $this->db->query("select nama_customer as nama from m_customers where id=".$j);
     }
 }

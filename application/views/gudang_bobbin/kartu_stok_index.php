@@ -19,7 +19,7 @@
     </div>
   
    <div class="col-md-12" style="margin-top: 10px;"> 
-        <h3>Laporan Bulanan</h3>
+        <h3>Laporan Kartu Stok Bobbin</h3>
         <hr class="divider">
         <div class="row">
                 <div class="col-md-6">
@@ -28,10 +28,10 @@
                            Laporan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="laporan" name="laporan" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_cost(this.value);">
-                                    <option></option>
-                                    <option value="0">Bobbin Kosong</option>
-                                    <option value="1">Bobbin Isi</option>
+                            <select id="laporan" name="laporan" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                    <option value="0">Global</option>
+                                    <option value="1">Pemasukan</option>
+                                    <option value="2">Pengeluaran</option>
                                 </select>
                         </div>
                     </div>
@@ -80,7 +80,7 @@ function simpanData(){
         var l=$('#laporan').val();
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/GudangBobbin/print_laporan_bulanan?ts='+s+'&te='+e+'&l='+l,'_blank');
+        window.open('<?php echo base_url();?>index.php/GudangBobbin/print_kartu_stok?ts='+s+'&te='+e+'&l='+l,'_blank');
     };
 };
 </script>

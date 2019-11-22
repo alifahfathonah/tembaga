@@ -550,6 +550,11 @@
                                         <i class="fa fa-briefcase"></i>
                                         Laporan Bulanan</a>
                                     </li>
+                                    <!-- <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangRongsok/laporan_bb">
+                                        <i class="fa fa-briefcase"></i>
+                                        Laporan Bahan Baku</a>
+                                    </li> -->
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangRongsok/search_permintaan_gudang">
                                         <i class="fa fa-print"></i>
@@ -1020,6 +1025,14 @@
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/GudangBobbin/laporan_bulanan/">
                                     <i class="fa fa-search"></i> Laporan Bulanan </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/GudangBobbin/kartu_stok_index/">
+                                    <i class="fa fa-search"></i> Laporan Kartu Stok </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/GudangBobbin/laporan_langganan/">
+                                    <i class="fa fa-search"></i> Laporan Langganan </a>
                                 </li>
                             </ul>
                         </li>

@@ -1367,22 +1367,29 @@ class BeliRongsok extends CI_Controller{
     function proses_revisi(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('dtr', array(
+                    'tanggal'=> $tgl_input,
                     'remarks'=>$this->input->post('remarks'),
                     'modified'=>$tanggal,
                     'modified_by'=>$user_id
         ));
         
+        $this->db->where('dtr_id', $this->input->post('id'));
+        $this->db->update('ttr', array(
+            'tanggal'=> $tgl_input
+        ));
+
         $details = $this->input->post('myDetails');
         foreach($details as $row){
             $this->db->where('id', $row['id_dtr']);
             $this->db->update('dtr_detail', array(
                 'rongsok_id'=>$row['rongsok_id'],
                 'line_remarks'=>$row['line_remarks'],
+                'tanggal_masuk'=>$tgl_input,
                 'modified'=>$tanggal,
                 'modified_by'=>$user_id
             ));
@@ -1406,7 +1413,7 @@ class BeliRongsok extends CI_Controller{
     function update_dtr_rsk(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $dtr_id = $this->input->post('id');
 
         $this->db->trans_start();
@@ -1461,7 +1468,7 @@ class BeliRongsok extends CI_Controller{
     function update_dtr(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
-        $tgl_input = date('Y-m-d');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $dtr_id = $this->input->post('id');
 
         $this->db->trans_start();

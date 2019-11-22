@@ -13,5 +13,29 @@
 13- Bank / Kas keluar belum pindah api saat update (done)
 14- Piutang belum lunas diliat atur by tanggal(done)
 15- Cek Belum Cair diliat atur by tanggal(done)
-16- Edit Hasil Produksi Apollo
+16- Edit Hasil Produksi Apollo(done)
 17- BS di Hasil Produksi WIP bisa multiple (done)
+18- BS bisa di edit terus ditambah jika kurang di produksi(done)
+19- Cek Invoice nya udah di matching di nomor mana aja(done)
+20- Bs 8m, bs ingot,(done)
+    Size tampil yg ada doang,
+    Tali rolling,
+    Pemasukan 8mm keras(done)
+    -laporan rolling
+21- Revisi surat jalan rongsok edit kartuk stok juga(done)
+22- Edit Netto DTR Manual, search No palette nya
+kekurangan - 
+V Digital Apollo
+3 628273.39
+4 898181.03(done)
+
+V Digital Rolling
+Kiri 254762.53
+Kanan 341192.04
+Rata2 gas kanan kiri(done)
+8mm keras tambahin per tanggal di laporan bbakar rolling(done)
+23- Bobbin Laporan di Langganan (done)
+24- Laporan bobbin kayak kartu stock per bulan (done)
+bug - Laporan Bobbin Kosong masih salah pengeluarannya(done test)
+25- Retur ganti tipe retur yg sudah di approve (done)
+bug - cek kenapa kadang uang masuk matching nyangkut (done)

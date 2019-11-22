@@ -106,17 +106,6 @@
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View SJ &nbsp; </a>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            No. Matching<font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="no_sj" name="no_sj" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px;" 
-                                value="<?php echo $header['no_matching']; ?>">
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Finance/matching_invoice/<?php echo $header['flag_matching']; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View Matching &nbsp; </a>
-                        </div>
-                    </div>
                 <?php } else { ?>
                     <div class="row">
                         <div class="col-md-4">
@@ -341,44 +330,43 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12">
-                                <h4 align="center" style="font-weight: bold;">Detail Matching Uang Masuk</h4>
+                                <h4 align="center" style="font-weight: bold;">Detail Matching</h4>
                                 <div class="table-scrollable">
                                     <table class="table table-bordered table-striped table-hover">
                                         <thead>
                                             <th style="width:40px">No</th>
-                                            <th>No Uang Masuk</th>
-                                            <th>Jenis<br>Pembayaran</th>
-                                            <th>Bank<br>Pembayaran</th>
-                                            <th>Rekening Pembayaran /<br>Nomor Cek</th>
-                                            <th>Currency</th>
-                                            <th>Nominal</th>
-                                            <th>Keterangan</th>
+                                            <th>No Matching</th>
+                                            <th>Tanggal</th>
+                                            <th>Nilai Bayar</th>
+                                            <th>Nilai Pembulatan</th>
+                                            <th>Action</th>
                                         </thead>
                                         <tbody>
                                         <?php
                                             $no = 1;
-                                            $total_all = 0;
+                                            $total_bayar=0;
+                                            $total_pembulatan=0;
                                             foreach ($matching as $row){
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
-                                                echo '<td>'.$row->no_uang_masuk.'</td>';
-                                                echo '<td>'.$row->jenis_pembayaran.'</td>';
-                                                echo '<td>'.$row->bank_pembayaran.'</td>';
-                                                echo '<td>'.$row->rekening_pembayaran.$row->nomor_cek.'</td>';
-                                                echo '<td>'.$row->currency.'</td>';
-                                                echo '<td>'.number_format($row->nominal,0,',','.').'</td>';
-                                                echo '<td>'.$row->keterangan.'</td>';
+                                                echo '<td>'.$row->no_matching.'</td>';
+                                                echo '<td>'.$row->tanggal.'</td>';
+                                                echo '<td>'.number_format($row->inv_bayar,2,',','.').'</td>';
+                                                echo '<td>'.number_format($row->inv_pembulatan,2,',','.').'</td>';
+                                                echo '<td><a href="'.base_url('index.php/Finance/matching_invoice/').$row->id.'" class="btn btn-circle btn-xs blue"> <i class="fa fa-book"></i> View </a></td>';
                                                 echo '</tr>';
                                                 $no++;
-                                                $total_all += $row->nominal;
+                                                $total_bayar+=$row->inv_bayar;
+                                                $total_pembulatan+=$row->inv_pembulatan;
                                             }
                                         ?>
-                                        <tr>
-                                            <td colspan="6" style="text-align: right; font-weight: bold;">Total</td>
-                                            <td style="background-color: green; color: white;"><?php echo number_format($total_all,0,',','.');?></td>
-                                            <td></td>
-                                        </tr>
                                         </tbody>
+                                        <tr>
+                                            <td colspan="3"><b>Total Bayar</b></td>
+                                            <td><?=number_format($total_bayar,2,',','.');?></td>
+                                            <td><?=number_format($total_pembulatan,2,',','.');?></td>
+                                            <td style="background-color: green;color:white;"><?=number_format($total_bayar+$total_pembulatan,2,',','.');?></td>
+                                        </tr>
                                     </table>
                                 </div>
                         </div>

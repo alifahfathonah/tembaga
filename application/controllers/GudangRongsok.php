@@ -455,4 +455,36 @@ class GudangRongsok extends CI_Controller{
             // $data['detailLaporan'] = $this->Model_beli_rongsok->show_laporan_barang_detail($tgl,$bulan,$tahun)->result();
             // $this->load->view("gudang_rongsok/print_laporan_bulanan_detail", $data);
     }
+
+    function laporan_bb(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Laporan Bahan Baku";
+        $data['content']   = "gudang_rongsok/laporan_bb";
+
+        $this->load->view('layout', $data);  
+    }
+
+    function print_laporan_bb(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+
+        $start = date('Y/m/d', strtotime($_GET['ts']));
+        $end = date('Y/m/d', strtotime($_GET['te']));
+
+        $data['start'] = $start;
+        $data['end'] = $end;
+
+        $this->load->model('Model_beli_rongsok');
+            $data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_external($start,$end)->result();
+
+            $this->load->view('gudang_rongsok/print_permintaan_external', $data);
+
+    }
 }

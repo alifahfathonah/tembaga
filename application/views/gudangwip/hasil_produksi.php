@@ -109,9 +109,9 @@
                             echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Ingot/print_afkir/'.$data->id_dtr.'" target="_blank"><i class="fa fa-print">&nbsp;</i> Print AFKIR &nbsp;</a>';
                             }
                             if($data->status==0){
-                            echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/GudangWIP/edit_produksi_wip/'.$data->id.'" ><i class="fa fa-edit">&nbsp;</i> Edit &nbsp;</a>';
                             echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/GudangWIP/delete_produksi_wip/'.$data->id.'"  onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash">&nbsp;</i> Delete &nbsp;</a>';
                             }
+                            echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/GudangWIP/edit_produksi_wip/'.$data->id.'" ><i class="fa fa-edit">&nbsp;</i> Edit &nbsp;</a>';
                         ?>
                         </td>
                     </tr>

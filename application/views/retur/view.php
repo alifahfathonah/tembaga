@@ -208,6 +208,10 @@
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
                         }
+                        if( ($group_id==1 || $hak_akses['approve']==1) && $header['status']=="1" && $header['spb_id']==0 && $header['flag_taken']==0){
+                            echo '<a href="javascript:;" class="btn green" onclick="updateData();"> '
+                                .'<i class="fa fa-check"></i> Update </a> ';
+                        }
                     ?>
 
                     <a href="<?php echo base_url('index.php/Retur'); ?>" class="btn blue-hoki"> 
@@ -232,6 +236,14 @@ function approveData(){
     var r=confirm("Anda yakin meng-approve permintaan retur barang ini?");
     if (r==true){
         $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Retur/approve");    
+        $('#formku').submit(); 
+    }
+};
+
+function updateData(){
+    var r=confirm("Anda yakin meng-approve permintaan retur barang ini?");
+    if (r==true){
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Retur/update_type");    
         $('#formku').submit(); 
     }
 };

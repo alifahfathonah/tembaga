@@ -556,16 +556,16 @@ function view_inv(id){
             $("#InvModal").find('.modal-title').text('Input Invoice');
             $("#InvModal").modal('show',{backdrop: 'true'});
             $("#tambah_inv").hide();
-            $("#simpan_inv").show();
+            $("#simpan_inv").hide();
             $("#id_modal_inv").val(result['id']);
             $("#inv_type").val(result['inv_type']);
             $("#no_inv").val(result['no_invoice']);
             $("#inv_id").val(result['id_inv']);
             $("#nominal_inv").val(numberWithCommas(result['nilai_invoice']));
-            $("#nominal_sdh_bayar").val(numberWithCommas(result['nilai_sdh_bayar']));
-            $("#nominal_potongan").val(numberWithCommas(result['nilai_pembulatan']));
+            $("#nominal_sdh_bayar").val(numberWithCommas(result['inv_bayar']));
+            $("#nominal_potongan").val(numberWithCommas(result['inv_pembulatan']));
             $("#nominal_bayar").val(numberWithCommas(result['inv_bayar']));
-            hitungSubTotalInv();
+            // hitungSubTotalInv();
         }
     });
 }

@@ -1625,7 +1625,7 @@ class Finance extends CI_Controller{
             $id_match = $data['header']['flag_matching'];
             if($data['header']['id_retur']==0){
                 $data['detailInvoice'] = $this->Model_finance->show_detail_invoice($id)->result();
-                $data['matching'] = $this->Model_finance->show_detail_matching_um($id_match)->result();
+                $data['matching'] = $this->Model_finance->show_detail_matching_um($id)->result();
             }else{
                 $data['detailInvoice'] = $this->Model_finance->show_invoice_detail($id)->result();
             }
@@ -2172,7 +2172,7 @@ class Finance extends CI_Controller{
             $tabel .= '<td>'.$row->no_invoice.'</td>';
             $tabel .= '<td style="text-align:right;">'.number_format($row->inv_bayar,0,',','.').'</td>';
             $tabel .= '<td style="text-align:center">';
-            // $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle blue" onclick="view_inv('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-floppy-o"></i> View </a>';
+            $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle blue" onclick="view_inv('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-floppy-o"></i> View </a>';
             $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle red" onclick="delInv('.$row->id.','.$row->id_inv.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-trash"></i> Delete </a></td>';
             $no++;
         }
@@ -2196,17 +2196,18 @@ class Finance extends CI_Controller{
         
         $this->db->trans_start();
 
-        $this->db->where('id',$this->input->post('um_id'));
-        $this->db->update('f_uang_masuk', array(
-            'flag_matching'=>$this->input->post('id_modal')
-        ));
-
         $data = array(
-            'id_match'=>$this->input->post('id_modal'),
-            'id_um'=>$this->input->post('um_id'),
-            'id_inv'=>0
+            'flag_matching'=>$this->input->post('id_modal')
         );
-        $this->db->insert('f_match_detail', $data);
+        $this->db->where('id',$this->input->post('um_id'));
+        if($this->db->update('f_uang_masuk',$data)){
+            $data = array(
+                'id_match'=>$this->input->post('id_modal'),
+                'id_um'=>$this->input->post('um_id'),
+                'id_inv'=>0
+            );
+            $this->db->insert('f_match_detail', $data);
+        }
 
         if($this->db->trans_complete()){
             $return_data['message_type']= "sukses";

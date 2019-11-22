@@ -1477,7 +1477,7 @@ class SalesOrder extends CI_Controller{
         if ($jenis == 'FG') {
             foreach ($loop as $row) {
                 $this->db->where('id', $row->gudang_id);
-                $this->db->update('t_gudang_fg', array('flag_taken' => 1, 't_sj_id'=> $sjid));
+                $this->db->update('t_gudang_fg', array('flag_taken' => 1, 't_sj_id'=> $sjid, 'tanggal_keluar'=>$tgl_input));
             }
         } else if ($jenis == 'WIP') {
             foreach ($loop as $row) {
@@ -1487,7 +1487,7 @@ class SalesOrder extends CI_Controller{
         } else if ($jenis == 'RONGSOK'){
             foreach ($loop as $row) {
                 $this->db->where('id', $row->gudang_id);
-                $this->db->update('dtr_detail', array('so_id' => $so_id, 'flag_sj' => $sjid));
+                $this->db->update('dtr_detail', array('so_id' => $so_id, 'flag_sj' => $sjid, 'tanggal_keluar'=>$tgl_input));
             }
         } else if ($jenis == 'AMPAS'){
             foreach ($loop as $row) {
@@ -1821,6 +1821,21 @@ class SalesOrder extends CI_Controller{
                 $this->db->where('id', $v['id']);
                 $this->db->update('t_surat_jalan_detail', $data);
                 $data_post[$key] = array_merge($v, array('bruto' => $bruto));
+
+                if($this->input->post('jenis_barang')=='RONGSOK'){
+                    $this->db->where('id',$v['gudang_id']);
+                    $this->db->update('dtr_detail',array(
+                        'bruto'=> $bruto,
+                        'berat_palette'=> $v['berat'],
+                        'netto'=>$v['netto_r']
+                    ));
+
+                    $this->db->where('dtr_detail_id', $v['gudang_id']);
+                    $this->db->update('ttr_detail', array(
+                        'bruto'=>$bruto,
+                        'netto'=>$v['netto_r']
+                    ));
+                }
             }
         }
 

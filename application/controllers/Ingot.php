@@ -1042,13 +1042,29 @@ class Ingot extends CI_Controller{
             $bs_ingot = 0;
             foreach ($details as $i => $row){
                 if($row['rongsok_id']!=''){
-                    $this->db->where('id', $row['id']);
-                    $this->db->update('dtr_detail', array(
-                        'bruto'=>$row['bruto'],
-                        'berat_palette'=>$row['berat_palette'],
-                        'netto'=>$row['netto'],
-                        'tanggal_masuk'=>$tgl_input
-                    ));
+                    if($row['id']!=0){
+                        $this->db->where('id', $row['id']);
+                        $this->db->update('dtr_detail', array(
+                            'bruto'=>$row['bruto'],
+                            'berat_palette'=>$row['berat_palette'],
+                            'netto'=>$row['netto'],
+                            'tanggal_masuk'=>$tgl_input
+                        ));
+                    }else{
+                        $this->db->insert('dtr_detail', array(
+                            'dtr_id'=>$this->input->post('id_dtr'),
+                            //'po_detail_id'=>$row['po_detail_id'],
+                            'rongsok_id'=>$row['rongsok_id'],
+                            'bruto'=>$row['bruto'],
+                            'berat_palette'=>$row['berat_palette'],
+                            'netto'=>$row['netto'],
+                            'no_pallete'=>$row['no_pallete'],
+                            'line_remarks'=>'SISA PRODUKSI',
+                            'created'=>$tanggal,
+                            'created_by'=>$user_id,
+                            'tanggal_masuk'=>$tgl_input
+                        ));
+                    }
                     if($row['rongsok_id'] == 22){
                         $bs_ingot += $row['netto'];
                     }

@@ -3,7 +3,7 @@ table td, table td * {
     vertical-align: top;
 }
 </style>
- <h2 align="center"><b><u>STOK BOBBIN BESI KOSONG</u></b></h2>
+ <h2 align="center"><b><u>STOK BOBBIN <?=($_GET['l']==0)? 'BESI KOSONG': 'BESI ISI';?></u></b></h2>
     <table width="100%" style="page-break-after: auto;">
         <tr>
             <td align="center">

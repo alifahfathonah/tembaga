@@ -813,6 +813,7 @@ class GudangBobbin extends CI_Controller{
         if($code){        
             $data = array(
             'no_spb_bobbin' => $code,
+            'tanggal' => $tgl_input,
             'jenis_packing' => $this->input->post('jenis_packing'),
             'pemohon' => $this->input->post('nama_pemohon'),
             'status' => 0,
@@ -857,6 +858,9 @@ class GudangBobbin extends CI_Controller{
             $data['header'] = $this->Model_bobbin->show_header_spb($id)->row_array();
             $jp = $data['header']['jenis_packing'];
             $data['jenis_size'] = $this->Model_bobbin->jenis_size($jp)->result();
+            if($data['header']['status']==1){
+                $data['myDetail'] = $this->Model_bobbin->show_detail_spb($id)->result();
+            }
     
             $this->load->view('layout', $data);   
         }else{
@@ -926,9 +930,9 @@ class GudangBobbin extends CI_Controller{
     }
 
     function update_spb(){
-        // $user_id  = $this->session->userdata('user_id');
-        // $tanggal  = date('Y-m-d h:m:s');        
-        // $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');        
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         #Create SPB fulfilment
         $details = $this->input->post('details');
@@ -943,7 +947,8 @@ class GudangBobbin extends CI_Controller{
         }
 
         $data = array(
-                'keterangan'=>$this->input->post('remarks'),
+                'tanggal'=>$tgl_input,
+                'keterangan'=>$this->input->post('remarks')
             );
         
         $this->db->where('id', $this->input->post('id'));
@@ -1216,6 +1221,7 @@ class GudangBobbin extends CI_Controller{
             $date=date('Y-m-d');
             $start = date('Y-m-d', strtotime($_GET['ts']));
             $end = date('Y-m-d', strtotime($_GET['te']));
+            $l = $_GET['l'];
 
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -1226,8 +1232,119 @@ class GudangBobbin extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $this->load->model('Model_bobbin');
-            $data['details'] = $this->Model_bobbin->print_laporan_bulanan($start,$end)->result();
+            if($l==0){
+                $data['details'] = $this->Model_bobbin->print_laporan_bulanan($start,$end,$l)->result();
+            }else{
+                $data['details'] = $this->Model_bobbin->print_laporan_bulanan($start,$end,$l)->result();
+            }
             // print_r($data['details']);die();
             $this->load->view('gudang_bobbin/print_stok_bulanan', $data);
+    }
+
+    function kartu_stok_index(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "gudang_bobbin/kartu_stok_index";
+
+        $this->load->view('layout', $data);   
+    }
+
+    function print_kartu_stok(){
+            $module_name = $this->uri->segment(1);
+            $ppn = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+            $date=date('Y-m-d');
+            $start = date('Y-m-d', strtotime($_GET['ts']));
+            $end = date('Y-m-d', strtotime($_GET['te']));
+            $l = $_GET['l'];
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_bobbin');
+            if($l==0){
+                $data['details'] = $this->Model_bobbin->print_kartu_stok_global($start,$end)->result();
+                $this->load->view('gudang_bobbin/print_kartu_stok_global', $data);
+            }elseif($l==1){
+                $data['details'] = $this->Model_bobbin->print_kartu_stok($start,$end,$l)->result();
+                $this->load->view('gudang_bobbin/print_kartu_stok', $data);
+            }elseif($l==2){
+                $data['details'] = $this->Model_bobbin->print_kartu_stok($start,$end,$l)->result();
+                $this->load->view('gudang_bobbin/print_kartu_stok', $data);
+            }
+    }
+
+    function laporan_langganan(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "gudang_bobbin/laporan_langganan";
+
+        $this->load->view('layout', $data);   
+    }
+
+    function print_laporan_langganan(){
+            $module_name = $this->uri->segment(1);
+            $ppn = $this->session->userdata('user_ppn');
+            $this->load->helper('tanggal_indo');
+            $date=date('Y-m-d');
+            $l = $_GET['l'];
+            $j = $_GET['j'];
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $this->load->model('Model_bobbin');
+            if($l==0){
+                $data['nama'] = array('nama'=> 'GLOBAL');
+                $data['details'] = $this->Model_bobbin->print_laporan_langganan($l)->result();
+                $this->load->view('gudang_bobbin/print_laporan_langganan', $data);
+            }elseif($l==1){
+                $data['nama'] = $this->Model_bobbin->get_supplier($j)->row_array();
+                $data['details'] = $this->Model_bobbin->print_laporan_langganan($l)->result();
+                $this->load->view('gudang_bobbin/print_laporan_langganan', $data);
+            }elseif($l==2){
+                $data['nama'] = $this->Model_bobbin->get_customer($j)->row_array();
+                $data['details'] = $this->Model_bobbin->print_laporan_langganan($l)->result();
+                $this->load->view('gudang_bobbin/print_laporan_langganan', $data);
+            }
+    }
+
+    function get_cost_list(){ 
+        $id = $this->input->post('id');
+        $this->load->model('Model_voucher_cost');
+        if($id == 2){
+            $data = $this->Model_voucher_cost->get_customer()->result();
+        } else if ($id == 1){
+            $data = $this->Model_voucher_cost->get_supplier()->result();
+        }
+        $arr_cost[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_cost[$row->id] = $row->nama_cost;
+        } 
+        print form_dropdown('cost_id', $arr_cost);
     }
 }

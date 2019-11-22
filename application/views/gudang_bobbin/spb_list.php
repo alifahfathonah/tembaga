@@ -60,7 +60,7 @@
                     <tr>
                         <td style="text-align:center;"><?php echo $no; ?></td>
                         <td style="background-color: "><?php echo $data->no_spb_bobbin; ?></td>
-                        <td><?php echo date('d-m-Y', strtotime($data->created_at)); ?></td>
+                        <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->pemohon; ?></td>                            
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td><?php
@@ -94,9 +94,12 @@
                             <?php
                                 if($group_id==1 || $hak_akses['view_spb']==1){
                             ?>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangBobbin/view_spb/<?php echo $data->id; ?>" 
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/GudangBobbin/view_spb/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                                <?php if($data->status == 1 || $data->jumlah_item == 0){ ?>
+                                    <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangBobbin/edit_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
                             <?php
+                                    }
                                 }
                                 if($group_id==1 || $hak_akses['print']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangBobbin/print_spb_bobbin/'.$data->id.'" 

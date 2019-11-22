@@ -126,11 +126,12 @@
                                
                             <?php
                                 }
-                                if(($group_id==1 || $group_id==21 || $hak_akses['edit_spb']==1) && $data->jumlah_fulfilment==0 && $data->flag_produksi!=5){
+                                if(($group_id==1 || $group_id==21 || $hak_akses['edit_spb']==1) && $data->flag_produksi!=5){
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/GudangWIP/edit_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
-                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/GudangWIP/delete_spb/<?php echo $data->id; ?>/<?= $data->flag_produksi ?>" onclick="return confirm('Anda yakin menghapus transaksi ini?');" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-trash"></i> Hapus &nbsp; </a>
-                            <?php   
+                                <?php if($data->jumlah_fulfilment==0 || $data->status==9){ ?>
+                                    <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/GudangWIP/delete_spb/<?php echo $data->id; ?>/<?= $data->flag_produksi ?>" onclick="return confirm('Anda yakin menghapus transaksi ini?');" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-trash"></i> Hapus &nbsp; </a>
+                            <?php    }  
                                 }
                                 if($group_id==1 || $group_id==21 || $hak_akses['print_spb']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangWIP/print_spb/'.$data->id.'" 

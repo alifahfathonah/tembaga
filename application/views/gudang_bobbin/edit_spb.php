@@ -103,6 +103,7 @@
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
+                        <?php if($header['status']==0) { ?>
                             <tr>
                                 <td style="text-align:center"><div id="no_tabel_1">1</div></td>
                                 <input type="hidden" id="id_size_1" name="details[1][id_size]">
@@ -121,6 +122,15 @@
                                     <a id="del_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Hapus </a>
                                 </td>
                             </tr>
+                        <?php }else{ $no=0; foreach ($myDetail as $row) { $no++;
+                                    echo '<tr>';
+                                    echo '<td>'.$no.'</td>';
+                                    echo '<td>'.$row->bobbin_size.'</td>';
+                                    echo '<td>'.$row->jumlah.'</td>';
+                                    echo '<td>'.$row->keterangan.'</td>';
+                                    echo '<tr>';
+                            }
+                        } ?>
                             </tbody>
                         </table>
                     </div>

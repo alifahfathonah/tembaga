@@ -2,13 +2,12 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Gudang Bobbin
+            <i class="fa fa-angle-right"></i> Laporan Rongsok
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/gudangbobbin/laporan_status'); ?>"> Laporan Bobbin </a> 
+            <a href="<?php echo base_url('index.php/GudangRongsok/index'); ?>">Gudang Rongsok</a> 
         </h5>          
     </div>
 </div>
-   <div class="row">&nbsp;</div>
     <div class="row">
         <div class="col-md-12">
             <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
@@ -17,24 +16,11 @@
             </div>
         </div>
     </div>
-  
    <div class="col-md-12" style="margin-top: 10px;"> 
-        <h3>Laporan Bulanan</h3>
+        <h3>Laporan Bahan Baku</h3>
         <hr class="divider">
         <div class="row">
                 <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-4">
-                           Laporan <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <select id="laporan" name="laporan" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_cost(this.value);">
-                                    <option></option>
-                                    <option value="0">Bobbin Kosong</option>
-                                    <option value="1">Bobbin Isi</option>
-                                </select>
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             Tanggal Awal <font color="#f00">*</font>
@@ -67,20 +53,16 @@
     </div>
 <script type="text/javascript">
 function simpanData(){
-    if($.trim($("#laporan").val()) == ""){
-        $('#message').html("Laporan harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show();
-    }else if($.trim($("#tgl_start").val()) == ""){
+    if($.trim($("#tgl_start").val()) == ""){
         $('#message').html("Tanggal Awal harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show();
+        $('.alert-danger').show(); 
     }else if($.trim($("#tgl_end").val()) == ""){
         $('#message').html("Tanggal Akhir harus diisi, tidak boleh kosong!");
         $('.alert-danger').show();
-    }else{
-        var l=$('#laporan').val();
+    }else{ 
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/GudangBobbin/print_laporan_bulanan?ts='+s+'&te='+e+'&l='+l,'_blank');
+        window.open('<?php echo base_url();?>index.php/GudangRongsok/print_laporan_bb?ts='+s+'&te='+e,'_blank');
     };
 };
 </script>

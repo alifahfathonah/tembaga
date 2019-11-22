@@ -13,15 +13,15 @@ table td, table td * {
                 <tr>
                     <td rowspan="2" style="text-align:center; border-bottom:1px solid #000; border-top:1px solid #000;"><br><strong>NO</strong></td>
                     <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong><br>TANGGAL</strong></td>
-                    <td colspan="3" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>RONGSOK</strong></td>
+                    <td colspan="3" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>RONGSOK</strong></td>
                     <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong><br>TOTAL</strong></td>
-                    <td colspan="3" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>HASIL INGOT</strong></td>
-                    <td colspan="3" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>BS INGOT</strong></td>
-                    <td colspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>BS APOLLO</strong></td>
+                    <td colspan="3" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>HASIL INGOT</strong></td>
+                    <td colspan="3" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>BS INGOT</strong></td>
+                    <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>BS APOLLO</strong></td>
                     <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>SUSUT<br>APOLLO</strong></td>
                     <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong><br>%</strong></td>
                     <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong><br>Minyak<strong></td>
-                    <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>GAS</strong></td>
+                    <td style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>GAS</strong></td>
                 </tr>
                 <tr>
                     <td style="text-align:center; border-bottom:1px solid #000; border-top:1px solid #000; border-left: 1px solid #000"><strong>A</strong></td>

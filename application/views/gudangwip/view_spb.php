@@ -238,7 +238,9 @@
                                             <th>Quantity</th>
                                             <th>Berat (kg)</th>
                                             <th>Keterangan</th>
+                                            <th>Tanggal Keluar</th>
                                             <th>Status</th>
+                                            <th>Action <input type="checkbox" id="check_all" name="check_all" onclick="checkAll()" class="form-control checklist"></th>
                                         </thead>
                                         <tbody>
                                             <?php $no=1; $qty=0; $berat=0; foreach($detailSPB as $v) { ?>
@@ -249,13 +251,17 @@
                                                 <td><?=$v->qty;?></td>
                                                 <td><?=number_format($v->berat,2,',','.');?></td>
                                                 <td><?=$v->keterangan;?></td>
+                                                <td><?=$v->tanggal;?></td>
                                                 <?php 
                                                 if($v->flag_taken==1){
                                                 echo '<td style="background-color: green; color: white">Sudah di Kirim</td>';
                                                 echo '<td></td>';
                                                 }else{
                                                     echo '<td>Belum Dikirim</td>';
-                                                    echo '<td><a href="'.base_url().'index.php/GudangWIP/delSPBSudahDipenuhi/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete</a></td>';
+                                                    echo '<td><a href="'.base_url().'index.php/GudangWIP/delSPBSudahDipenuhi/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete</a>';
+                                                    echo '<input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
+                                                            onclick="check();" class="form-control checklist">';
+                                                    echo '<input type="hidden" value="'.$v->id.'" id="check_'.$no.'" name="myDetails['.$no.'][id_detail]" class="form-control checklist"></td>';
                                                 } ?>
                                             </tr>
                                             <?php 
@@ -417,7 +423,9 @@
                                             <th>Quantity</th>
                                             <th>Berat (kg)</th>
                                             <th>Keterangan</th>
+                                            <th>Tanggal Keluar</th>
                                             <th>Status</th>
+                                            <th>Action <input type="checkbox" id="check_all" name="check_all" onclick="checkAll()" class="form-control checklist"></th>
                                         </thead>
                                         <tbody>
                                             <?php $no=1; $qty = 0; $berat = 0; foreach($detailSPB as $v) { ?>
@@ -428,13 +436,17 @@
                                                 <td><?=$v->qty;?></td>
                                                 <td><?=$v->berat;?></td>
                                                 <td><?=$v->keterangan;?></td>
+                                                <td><?=$v->tanggal;?></td>
                                                 <?php 
                                                 if($v->flag_taken==1){
                                                 echo '<td style="background-color: green; color: white">Sudah di Kirim</td>';
                                                 echo '<td></td>';
                                                 }else{
                                                     echo '<td>Belum Dikirim</td>';
-                                                    echo '<td><a href="'.base_url().'index.php/GudangWIP/delSPBSudahDipenuhi/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete</a></td>';
+                                                    echo '<td><a href="'.base_url().'index.php/GudangWIP/delSPBSudahDipenuhi/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete</a>';
+                                                    echo '<input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
+                                                            onclick="check();" class="form-control checklist">';
+                                                    echo '<input type="hidden" value="'.$v->id.'" id="check_'.$no.'" name="myDetails['.$no.'][id_detail]" class="form-control checklist"></td>';
                                                 } ?>
                                             </tr>
                                             <?php 
@@ -446,7 +458,7 @@
                                                 <td colspan="3" style="text-align: right;"><strong>Total</strong></td>
                                                 <td><?=number_format($qty,0,',', '.');?></td>
                                                 <td><?=number_format($berat,0,',', '.');?></td>
-                                                <td></td>
+                                                <td colspan="4"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -454,7 +466,17 @@
                         </div>
                     </div>
                 <?php } ?>
-
+                            <div class="row pindah" style="display: none;">
+                                <div class="col-md-2">
+                                    Tanggal Keluar <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" id="update_tanggal_keluar" name="update_tanggal_keluar" class="form-control myline input-small" style="margin-bottom:5px; float: left;" value="<?php echo date('d-m-Y'); ?>">
+                                </div>
+                                <div class="col-md-7">
+                                    <a href="javascript:;" class="btn green" onclick="update_tanggal_keluar();"><i class="fa fa-check"></i> Update Tanggal Keluar </a>
+                                </div>
+                            </div>
                 </div>
             </div>
             <div class="row">&nbsp;</div>
@@ -518,6 +540,30 @@
     </div>
 </div> 
 <script>
+function checkAll(){
+    if ($('#check_all').prop("checked")) {  
+        $('input').each(function(i){
+            $('#uniform-check_'+i+' span').attr('class', 'checked');
+            $('#check_'+i).attr('checked', true);
+        });
+    }else{
+        $('input').each(function(i){
+            $('#uniform-check_'+i+' span').attr('class', '');
+            $('#check_'+i).attr('checked', false);
+        });
+    }   
+}
+
+function check(){
+    $('#uniform-check_all span').attr('class', '');
+    $('#check_all').attr('checked', false);    
+}
+
+function update_tanggal_keluar(){
+    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/GudangWIP/update_tanggal_keluar"); 
+    $('#formku').submit();
+};
+
 function editData(){
     $('#tanggal').removeAttr('readonly');
 
@@ -696,5 +742,18 @@ $(function(){
         changeYear: true,
         dateFormat: 'dd-mm-yy'
     });       
+
+    $("#update_tanggal_keluar").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });  
+    $(".checklist").click(function() {
+      $('.pindah').toggle( $(".checklist:checked").length > 0 );
+    });   
 });
 </script>
