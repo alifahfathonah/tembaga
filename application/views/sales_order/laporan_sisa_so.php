@@ -31,6 +31,8 @@
                             <select id="laporan" name="laporan" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
                                     <option value="0">Global</option>
                                     <option value="1">Per Jenis Barang</option>
+                                    <option value="2">Global (Tanpa Harga)</option>
+                                    <option value="3">Per Jenis Barang (Tanpa Harga)</option>
                                 </select>
                         </div>
                     </div>

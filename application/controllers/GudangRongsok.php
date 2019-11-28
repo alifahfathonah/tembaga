@@ -474,17 +474,165 @@ class GudangRongsok extends CI_Controller{
     function print_laporan_bb(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');
+        $user_id = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
 
-        $start = date('Y/m/d', strtotime($_GET['ts']));
-        $end = date('Y/m/d', strtotime($_GET['te']));
+        $bulan = $_GET['b'];
+        $tahun = $_GET['t'];
+        $jb = 'RONGSOK';
 
-        $data['start'] = $start;
-        $data['end'] = $end;
+        $start = $tahun.'-'.$bulan.'-01';
+        $end = date("Y-m-t", strtotime($start));
 
         $this->load->model('Model_beli_rongsok');
-            $data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_external($start,$end)->result();
+        $this->load->model('Model_gudang_fg');
 
-            $this->load->view('gudang_rongsok/print_permintaan_external', $data);
+        $before = date('Y-m-d', strtotime('first day of last month', strtotime($start)));
+        // echo $before;die();
 
+            $jenis_barang = $this->Model_beli_rongsok->show_data_rongsok()->result();
+            $this->db->where(array(
+                'tanggal' => $start,
+                'jenis_barang' => $jb
+            ));
+            $this->db->delete('inventory');
+            $no = 0;
+            foreach ($jenis_barang as $key => $value) {
+                $stok_before = $this->Model_gudang_fg->inventory_stok_before($jb,$before,$value->id)->row_array();
+                $t = 1;
+                if(empty($stok_before)){
+                    $stok_before = $this->Model_beli_rongsok->get_stok_before($start,$value->id)->row_array();
+                    $t = 2;
+                }
+                echo $t;
+                $trx = $this->Model_beli_rongsok->show_kartu_stok_inventory($start,$end,$value->id)->row_array();
+                if(!empty($stok_before) || !empty($trx)){
+                    // echo $value->jenis_barang.' | '.$stok_before['netto_masuk'].$stok_before['netto_keluar'].' | ';
+                    // echo $trx['netto_masuk'].' - '.$trx['netto_keluar'].'<br>';
+                    if($t==1){
+                        $stok_awal = $stok_before['stok_akhir'];
+                    }else{
+                        $stok_awal = $stok_before['netto_masuk']-$stok_before['netto_keluar'];
+                    }
+
+                    $stok_awal_next_month = $stok_awal + $trx['netto_masuk'] - $trx['netto_keluar'];
+                    if($stok_awal > 0 || $trx['netto_masuk'] > 0 || $trx['netto_keluar'] > 0){
+                    // echo $value->jenis_barang.' | '.$stok_awal.' | '.$trx['netto_masuk'].' & '.$trx['netto_keluar'].' | '.$stok_awal_next_month.'<br>';die();
+                        //stok akhir
+                        $this->db->insert('inventory', array(
+                            'jenis_barang'=>$jb,
+                            'bulan'=>$bulan,
+                            'tahun'=>$tahun,
+                            'tanggal'=>$start,
+                            'jenis_barang_id'=>$value->id,
+                            'qty'=> 0,
+                            'stok_awal'=>$stok_awal,
+                            'netto_masuk'=>((empty($trx['netto_masuk']))? 0: $trx['netto_masuk']),
+                            'netto_keluar'=>((empty($trx['netto_keluar']))? 0: $trx['netto_keluar']),
+                            'stok_akhir'=>$stok_awal_next_month,
+                            'created_at'=>$tanggal,
+                            'created_by'=>$user_id
+                        ));
+                    }
+                }
+            }
+
+        // die();
+            // $this->load->model('Model_beli_rongsok');
+            // $this->load->model('Model_beli_rongsok');
+            // $data['detailLaporan'] = $this->Model_beli_rongsok->show_laporan_barang2('RONGSOK','2019-11-01')->result();
+            // print_r($data['detailLaporan']);die();
+            // $this->load->view("gudang_rongsok/print_laporan_bulanan2", $data);
+
+            $data['detailLaporan'] = $this->Model_beli_rongsok->print_laporan_bb($bulan,$tahun)->result();
+            $this->load->view('gudang_rongsok/print_laporan_bb', $data);
+    }
+
+    function edit_palette(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "gudang_rongsok/edit_palette";
+        // $this->load->model('Model_stok_opname');
+        // $data['list_data'] = $this->Model_stok_opname->stok_missing()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function load_palette(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $no    = 0;
+        $total_all = 0;
+        $netto = 0;
+        
+        $this->load->model('Model_beli_rongsok');
+        $myDetail = $this->Model_beli_rongsok->get_palette($id)->result();
+        foreach ($myDetail as $row){
+            $no++;
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<input type="hidden" name="myDetails['.$no.'][id]" value="'.$row->id.'">';
+            $tabel .= '<input type="hidden" id="netto_resmi_'.$no.'" name="myDetails['.$no.'][netto_resmi]" value="'.$row->netto_resmi.'">';
+            $tabel .= '<td>'.$row->nama_item.'</td>';
+            $tabel .= '<td>'.$row->no_pallete.'</td>';
+            $tabel .= '<td><input type="text" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" class="form-control myline" value="'.number_format($row->bruto,2,'.','').'"></td>';
+            $tabel .= '<td><input type="text" id="berat_'.$no.'" name="myDetails['.$no.'][berat]" class="form-control myline" value="'.number_format($row->berat_palette,2,'.','').'"></td>';
+            $tabel .= '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(1);"> <i class="fa fa-dashboard"></i> Timbang </a></td>';
+            $tabel .= '<td><input type="text" id="netto_'.$no.'" name="myDetails['.$no.'][netto]" class="form-control myline" value="'.number_format($row->netto,2,'.','').'"></td>';
+            $tabel .= '<td>'.(($row->netto_resmi > 0)?'Sudah dipakai CV':'Belum dipakai CV').'</td>';
+            $tabel .= '</tr>';
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function update_palette(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+
+        $this->db->trans_start();
+        $details = $this->input->post('myDetails');
+        // print_r($details);die();
+        foreach ($details as $i => $row){
+            if($row['netto_resmi']==0){
+                if($row['netto']!=''){
+                    $this->db->where('id', $row['id']);
+                    $this->db->update('dtr_detail', array(
+                        'bruto'=>$row['bruto'],
+                        'berat_palette'=>$row['berat'],
+                        'netto'=>$row['netto'],
+                        'modified'=>$tanggal,
+                        'modified_by'=>$user_id
+                    ));
+
+                    $this->db->where('dtr_detail_id', $row['id']);
+                    $this->db->update('ttr_detail', array(
+                        'bruto'=> $row['bruto'],
+                        'netto'=> $row['netto'],
+                        'modified'=>$tanggal,
+                        'modified_by'=>$user_id,
+                    ));
+                }
+            }
+        }
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Palette berhasil disimpan!');
+            redirect(base_url('index.php/GudangRongsok/edit_palette'));
+        } else {
+            $this->session->set_flashdata('flash_msg', 'Palette gagal disimpan, silahkan dicoba kembali!');
+            redirect(base_url('index.php/GudangRongsok/edit_palette'));
+        }
     }
 }

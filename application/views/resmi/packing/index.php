@@ -84,8 +84,9 @@
                 <tr>
                     <th style="width:50px;">No</th>
                     <th>Tanggal</th>
-                    <th>Kode</th>   
+                    <th>Kode</th>
                     <th>Jenis Barang</th>
+                    <th>Jumlah</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -100,10 +101,13 @@
                         <td><?php echo $data->tanggal; ?></td>
                         <td><?php echo $data->kode; ?></td>
                         <td><?php echo $data->jenis_barang; ?></td>
+                        <td><?php echo $data->jumlah; ?></td>
                         <td style="text-align:center">
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/R_Rongsok/view_pindah/<?php echo $data->id; ?>" style="margin-bottom:4px">&nbsp; <i class="fa fa-book"></i> View &nbsp; </a>
-                            <!-- <a href="<?php echo base_url(); ?>index.php/Rongsok/delete/<?php echo $data->id; ?>" 
-                               class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus data ini?');"><i class="fa fa-trash-o"></i> Hapus </a> -->
+                            <?php if($data->jumlah==0){ ?>
+                                <a href="<?php echo base_url(); ?>index.php/R_Rongsok/delete_pindah/<?php echo $data->id; ?>" 
+                               class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus data ini?');"><i class="fa fa-trash-o"></i> Hapus </a>
+                            <?php } ?>
                         </td>
                     </tr>
                     <?php

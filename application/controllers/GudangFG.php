@@ -2326,8 +2326,11 @@ class GudangFG extends CI_Controller{
         $this->load->model('Model_gudang_fg');
 
             $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
-        
-        $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
+        if($l<2){
+            $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
+        }else{
+            $this->load->view('gudang_fg/print_laporan_pemasukan2', $data);
+        }
     }
 
     function print_stok_ukuran_fg(){

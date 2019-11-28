@@ -1033,6 +1033,12 @@ class Ingot extends CI_Controller{
                             'bs'=> $new_bs,
                             'bs_service'=>$bs_ingot
                         ));
+
+                        $this->db->where('id', $id_hasil_wip);
+                        $this->db->update('t_hasil_wip', array(
+                            'bs'=> $new_bs,
+                            'bs_ingot'=>$bs_ingot
+                        ));
                     }
                 }
             }
@@ -1077,6 +1083,12 @@ class Ingot extends CI_Controller{
                 $this->db->update('t_hasil_masak', array(
                     'bs'=> $new_bs,
                     'bs_service'=>$bs_ingot
+                ));
+
+                $this->db->where('id', $id_hasil_wip);
+                $this->db->update('t_hasil_wip', array(
+                    'bs'=> $new_bs,
+                    'bs_ingot'=>$bs_ingot
                 ));
             }
         }

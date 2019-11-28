@@ -335,10 +335,10 @@
                                 }
                             ?>
                             <tr>
-                                <td style="text-align: center;"><div id="no_tabel_2">2</div></td>
-                                <input type="hidden" id="po_id_2" name="myDetails[2][po_detail_id]" value="">
-                                <input type="hidden" id="rongsok_id_2" name="myDetails[2][rongsok_id]" value="">
-                                <td><select id="name_rongsok_2" name="myDetails[2][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,2);">
+                                <td style="text-align: center;"><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
+                                <input type="hidden" id="po_id_<?=$no;?>" name="myDetails[<?=$no;?>][po_detail_id]" value="">
+                                <input type="hidden" id="rongsok_id_<?=$no;?>" name="myDetails[<?=$no;?>][rongsok_id]" value="">
+                                <td><select id="name_rongsok_<?=$no;?>" name="myDetails[<?=$no;?>][nama_item]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom_po(this.value,<?=$no;?>);">
                                     <option value=""></option>
                                     <?php foreach ($rongsok as $value){ ?>
                                             <option value='<?=$value->id;?>'>
@@ -347,16 +347,16 @@
                                     <?php } ?>
                                 </select>
                                 </td>
-                                <input type="hidden" name="myDetails[2][id]" value="0">
-                                <td><input type="number" id="bruto_2" name="myDetails[2][bruto]" class="form-control myline" value="0" maxlength="10"></td>
-                                <td><input type="number" id="berat_palette_2" name="myDetails[2][berat_palette]" class="form-control myline" value="0" maxlength="10"></td>
-                                <td><input type="text" id="netto_2" name="myDetails[2][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
-                                <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(2,2);"> <i class="fa fa-dashboard"></i> Timbang </a></td>                          
-                                <td><input type="text" name="myDetails[2][no_pallete]" id="no_pallete_2"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly"></td>
+                                <input type="hidden" name="myDetails[<?=$no;?>][id]" value="0">
+                                <td><input type="number" id="bruto_<?=$no;?>" name="myDetails[<?=$no;?>][bruto]" class="form-control myline" value="0" maxlength="10"></td>
+                                <td><input type="number" id="berat_palette_<?=$no;?>" name="myDetails[<?=$no;?>][berat_palette]" class="form-control myline" value="0" maxlength="10"></td>
+                                <td><input type="text" id="netto_<?=$no;?>" name="myDetails[<?=$no;?>][netto]" class="form-control myline" value="0" maxlength="10" readonly="readonly" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);"></td>
+                                <td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(<?=$no;?>,<?=$no;?>);"> <i class="fa fa-dashboard"></i> Timbang </a></td>                          
+                                <td><input type="text" name="myDetails[<?=$no;?>][no_pallete]" id="no_pallete_<?=$no;?>"class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly"></td>
                                 <td style="text-align:center">
-                                    <a id="save_2" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(2);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
-                                    <a id="delete_2" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(2);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
-                                    <a id="print_2" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(2);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>
+                                    <a id="save_<?=$no;?>" href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="saveDetail(<?=$no;?>);" style="margin-top:5px" id="btnSaveDetail"><i class="fa fa-plus"></i> Tambah </a>
+                                    <a id="delete_<?=$no;?>" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="deleteDetail(<?=$no;?>);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
+                                    <a id="print_<?=$no;?>" href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(<?=$no;?>);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Print </a>
                                 </td>
                             </tr>
                             </tbody>

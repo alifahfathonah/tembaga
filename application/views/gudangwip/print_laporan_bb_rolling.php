@@ -11,7 +11,6 @@
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>V (DIGITAL)</strong></td>
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>GAS</strong></td>
                 <td style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>HASIL PRODUKSI</strong></td>
-                <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>ROLLING<br>RATA-RATA<br>LTR/KG</strong></td>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>ROLLING<br>RATA-RATA<br>M<sup>3</sup>/KG KIRI</strong></td>
                 <td rowspan="2" style="text-align:center; border:1px solid #000"><strong>ROLLING<br>RATA-RATA<br>M<sup>3</sup>/KG KANAN</strong></td>
             </tr>
@@ -56,7 +55,6 @@
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->gas,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->gas_r,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->berat,2,',','.').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($rata2,10,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000">'.number_format($rata2_r,10,',','.').'</td>';
         echo '</tr>';
@@ -76,7 +74,6 @@
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($gas,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($gas_r,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($hasil,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;">-</td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($rrkiri,10,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000;"><?=number_format($rrkanan,10,',','.');?></td>
     </tr>
@@ -102,7 +99,7 @@
                 </tr>
             </table>
         </td>
-        <td colspan="5" style="border-bottom:1px solid #000; border-right:1px solid #000;">
+        <td colspan="4" style="border-bottom:1px solid #000; border-right:1px solid #000;">
             <table border="0" width="100%">
                 <tr>
                     <td style="text-align:center">Mengetahui. </td>

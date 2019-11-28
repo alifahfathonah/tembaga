@@ -23,22 +23,31 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            Tanggal Awal <font color="#f00">*</font>
+                           Bulan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="tgl_start" name="tgl_start" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                            <select id="bulan" name="bulan" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                    <option value="01">JANUARI</option>
+                                    <option value="02">FEBRUARI</option>
+                                    <option value="03">MARET</option>
+                                    <option value="04">APRIL</option>
+                                    <option value="05">MEI</option>
+                                    <option value="06">JUNI</option>
+                                    <option value="07">JULI</option>
+                                    <option value="08">AGUSTUS</option>
+                                    <option value="09">SEPTEMBER</option>
+                                    <option value="10">OKTOBER</option>
+                                    <option value="11">NOVEMBER</option>
+                                    <option value="12">DESEMBER</option>
+                                </select>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            Tanggal Akhir <font color="#f00">*</font>
+                            Tahun
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="tgl_end" name="tgl_end" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                            <input type="text" class="form-control myline" style="margin-bottom:5px" id="tahun" name="tahun" maxlength="4" value="<?=date('Y');?>">
                         </div>
                     </div>
                         <div class="row">
@@ -53,41 +62,16 @@
     </div>
 <script type="text/javascript">
 function simpanData(){
-    if($.trim($("#tgl_start").val()) == ""){
-        $('#message').html("Tanggal Awal harus diisi, tidak boleh kosong!");
+    if($.trim($("#bulan").val()) == ""){
+        $('#message').html("Bulan harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#tgl_end").val()) == ""){
-        $('#message').html("Tanggal Akhir harus diisi, tidak boleh kosong!");
+    }else if($.trim($("#tahun").val()) == ""){
+        $('#message').html("Tahun harus diisi, tidak boleh kosong!");
         $('.alert-danger').show();
     }else{ 
-        var s=$('#tgl_start').val();
-        var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/GudangRongsok/print_laporan_bb?ts='+s+'&te='+e,'_blank');
+        var s=$('#bulan').val();
+        var e=$('#tahun').val();
+        window.open('<?php echo base_url();?>index.php/GudangRongsok/print_laporan_bb?b='+s+'&t='+e,'_blank');
     };
 };
-</script>
-<link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
-<script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
-<script>
-$(function(){        
-    $("#tgl_start").datepicker({
-        showOn: "button",
-        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
-        buttonImageOnly: true,
-        buttonText: "Select date",
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'dd-mm-yy'
-    });        
-    $("#tgl_end").datepicker({
-        showOn: "button",
-        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
-        buttonImageOnly: true,
-        buttonText: "Select date",
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'dd-mm-yy'
-    });    
-});
 </script>

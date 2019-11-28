@@ -246,6 +246,7 @@
                                 <?php 
                                     $last_series = null;
                                     $no=1; 
+                                    $no_u=1;
                                     $bruto=0;
                                     $berat=0;
                                     $netto=0;
@@ -280,9 +281,9 @@
                                     } else {
                                     echo '<label class="lbl_alias">('.$row->kode_alias.') '.$row->jenis_barang_a.'</label>';
                                     } 
-                                    echo '<input type="hidden" style="display: none;" class="id_tsj_detail" name="details['.$no.'][id_tsj_detail]" value="'.$row->id.'">';
+                                    echo '<input type="hidden" style="display: none;" class="id_tsj_detail" name="details['.$no_u.'][id_tsj_detail]" value="'.$row->id.'">';
                                     echo '<input type="hidden" style="display: none;" class="harga_alias" value="'.$row->amount.'">';
-                                    echo '<select class="jb_alias" name="details['.$no.'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px; display: none;">
+                                    echo '<select class="jb_alias" name="details['.$no_u.'][barang_alias_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px; display: none;">
                                             <option value="0" data-id="0">TIDAK ADA ALIAS</option>';
                                             foreach ($jenis_barang as $value){
                                             echo '<option value="'.$value->id.'" '.(($value->id==$row->jenis_barang_alias)? 'selected="selected"': '').'>('.$value->kode.') '.$value->jenis_barang.'</option>';
@@ -305,6 +306,7 @@
                                     $berat += $row->berat;
                                     $netto += $netto_sj; 
                                     $no++; 
+                                    $no_u++;
                                 $last_series = $row->jenis_barang;
                                     } 
                                 ?>

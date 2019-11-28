@@ -81,6 +81,8 @@
                             $jenis= 'Repacking';
                         }elseif ($header['flag_produksi']==9) {
                             $jenis= 'Retur K';
+                        }else{
+                            $jenis='CUCI (KAWAT HITAM)';
                         }
                     ?>
                     <div class="row">

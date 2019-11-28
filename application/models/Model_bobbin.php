@@ -420,7 +420,7 @@ class Model_bobbin extends CI_Model{
                 left join m_bobbin mb on (mb.id = mbsd.bobbin_id ) 
                 where bs.tanggal between '".$s."' and '".$e."'
             )
-            ) as a order by tanggal, nomor, nomor_bobbin
+            ) as a order by m_bobbin_size_id, tanggal, nomor, nomor_bobbin
             ");
     }
 
@@ -430,31 +430,31 @@ class Model_bobbin extends CI_Model{
                  from m_bobbin_penerimaan_detail ped
                     left join m_bobbin_penerimaan pe on ped.id_bobbin_penerimaan = pe.id
                     left join m_bobbin mb2 on ped.nomor_bobbin = mb2.nomor_bobbin
-                    where pe.tanggal between '".$s."' and '".$e."'");
+                    where pe.tanggal between '".$s."' and '".$e."' order by  m_bobbin_size_id, tanggal, nomor, nomor_bobbin");
         }else{
             return $this->db->query("select bs.no_spb_bobbin as nomor, bs.tanggal, mb.nomor_bobbin, mb.m_jenis_packing_id, mb.m_bobbin_size_id, mb.berat
                 from bobbin_spb_fulfilment mbsd
                 left join bobbin_spb bs on (bs.id=mbsd.id_spb_bobbin)
                 left join m_bobbin mb on (mb.id = mbsd.bobbin_id ) 
-                where bs.tanggal between '".$s."' and '".$e."'");
+                where bs.tanggal between '".$s."' and '".$e."' order by  m_bobbin_size_id, tanggal, nomor, nomor_bobbin");
         }
     }
 
-    function print_laporan_langganan($l){
+    function print_laporan_langganan($l,$j){
         if($l==0){
-            return $this->db->query("select mb.nomor_bobbin, mb.berat, COALESCE(s.nama_supplier,mc.nama_customer) as nama from m_bobbin mb
+            return $this->db->query("select mb.nomor_bobbin, mb.berat, mb.m_bobbin_size_id, COALESCE(s.nama_supplier,mc.nama_customer) as nama from m_bobbin mb
                 left join supplier s on s.id = mb.borrowed_by_supplier
                 left join m_customers mc on mc.id = mb.borrowed_by
                 where mb.borrowed_by_supplier > 0 or mb.borrowed_by > 0 order by nama, nomor_bobbin
              ");
         }else if($l==1){
-            return $this->db->query("select mb.nomor_bobbin, mb.berat, s.nama_supplier as nama from m_bobbin mb
+            return $this->db->query("select mb.nomor_bobbin, mb.berat, mb.m_bobbin_size_id, s.nama_supplier as nama from m_bobbin mb
                 left join supplier s on s.id = mb.borrowed_by_supplier
-                where mb.borrowed_by_supplier =".$l." order by mb.nomor_bobbin");
+                where mb.borrowed_by_supplier =".$j." order by mb.nomor_bobbin");
         }elseif($l==2){
-            return $this->db->query("select mb.nomor_bobbin, mb.berat, mc.nama_customer as nama from m_bobbin mb
+            return $this->db->query("select mb.nomor_bobbin, mb.berat, mb.m_bobbin_size_id, mc.nama_customer as nama from m_bobbin mb
                 left join m_customers mc on mc.id = mb.borrowed_by
-                where mb.borrowed_by=".$l." order by mb.nomor_bobbin");
+                where mb.borrowed_by=".$j." order by mb.nomor_bobbin");
         }
     }
 
@@ -464,5 +464,19 @@ class Model_bobbin extends CI_Model{
 
     function get_customer($j){
         return $this->db->query("select nama_customer as nama from m_customers where id=".$j);
+    }
+
+    function bpk_list(){
+        return $this->db->query("select tsj.id, tsp.jumlah, tsj.no_surat_jalan, COALESCE(mc.nama_customer, s.nama_supplier, '') as nama, count(tsp.id) as jumlah from t_surat_peminjaman tsp 
+            left join t_surat_jalan tsj on tsp.t_sj_id = tsj.id
+            left join m_customers mc on tsj.m_customer_id = mc.id
+            left join supplier s on tsj.supplier_id = s.id
+            group by tsp.t_sj_id");
+    }
+
+    function show_detail_bpk($id){
+        return $this->db->query("select tsp.*, mjp.keterangan as nama_jenis from t_surat_peminjaman tsp
+            left join m_jenis_packing mjp on tsp.jenis_packing = mjp.id
+            where t_sj_id =".$id);
     }
 }

@@ -1320,15 +1320,15 @@ class GudangBobbin extends CI_Controller{
             $this->load->model('Model_bobbin');
             if($l==0){
                 $data['nama'] = array('nama'=> 'GLOBAL');
-                $data['details'] = $this->Model_bobbin->print_laporan_langganan($l)->result();
+                $data['details'] = $this->Model_bobbin->print_laporan_langganan($l,0)->result();
                 $this->load->view('gudang_bobbin/print_laporan_langganan', $data);
             }elseif($l==1){
                 $data['nama'] = $this->Model_bobbin->get_supplier($j)->row_array();
-                $data['details'] = $this->Model_bobbin->print_laporan_langganan($l)->result();
+                $data['details'] = $this->Model_bobbin->print_laporan_langganan($l,$j)->result();
                 $this->load->view('gudang_bobbin/print_laporan_langganan', $data);
             }elseif($l==2){
                 $data['nama'] = $this->Model_bobbin->get_customer($j)->row_array();
-                $data['details'] = $this->Model_bobbin->print_laporan_langganan($l)->result();
+                $data['details'] = $this->Model_bobbin->print_laporan_langganan($l,$j)->result();
                 $this->load->view('gudang_bobbin/print_laporan_langganan', $data);
             }
     }
@@ -1346,5 +1346,37 @@ class GudangBobbin extends CI_Controller{
             $arr_cost[$row->id] = $row->nama_cost;
         } 
         print form_dropdown('cost_id', $arr_cost);
+    }
+
+    function bpk_list(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Gudang Bobbin Terima Barang";
+        $data['content']   = "gudang_bobbin/bpk_list";
+        
+        $this->load->model('Model_bobbin');
+        $data['list_peminjam'] = $this->Model_bobbin->bpk_list()->result();
+
+        $this->load->view('layout', $data);  
+    }
+
+    function print_bpk(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_bobbin');
+            $this->load->model('Model_sales_order');
+            $data['header']  = $this->Model_sales_order->show_header_sj($id)->row_array();
+            $data['details'] = $this->Model_bobbin->show_detail_bpk($id)->result();
+
+            $this->load->view('gudang_bobbin/print_bpk', $data);
+        }else{
+            redirect('index.php'); 
+        }
     }
 }

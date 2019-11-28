@@ -1555,6 +1555,19 @@ class SalesOrder extends CI_Controller{
                     }
                 }
             }
+
+            //INSERT SURAT PEMINJAMAN BP DAN KARDUS
+            $query2 = $this->Model_sales_order->get_bp_kardus($sjid)->result();
+            if(!empty($query2)){
+                foreach ($query2 as $value) {
+                    $this->db->insert('t_surat_peminjaman', array(
+                        't_sj_id'=> $sjid,
+                        'jenis_packing'=> $value->jenis_packing,
+                        'jumlah'=> $value->jumlah,
+                        'ket'=> $value->ket
+                    ));
+                }
+            }
         }
         
         $data = array(
@@ -2167,7 +2180,7 @@ class SalesOrder extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $this->load->model('Model_sales_order');
-            if($l == 0){
+            if(($l == 0) || ($l == 2)){
                 if($j == 2){
                     $data['detailHarian'] = $this->Model_sales_order->detail_harian_sog()->row_array();
                     $data['detailBulanan'] = $this->Model_sales_order->detail_bulanan_sog()->row_array();
@@ -2177,8 +2190,12 @@ class SalesOrder extends CI_Controller{
                     $data['detailBulanan'] = $this->Model_sales_order->detail_bulanan_so($j)->row_array();
                     $data['detailLaporan'] = $this->Model_sales_order->sisa_so($j)->result();
                 }
-                $this->load->view('sales_order/print_sisa_so', $data);
-            }else{
+                if($l == 0){
+                    $this->load->view('sales_order/print_sisa_so', $data);
+                }else{
+                    $this->load->view('sales_order/print_sisa_so2', $data);
+                }
+            }elseif(($l == 1) || ($l == 3)){
                 if($j == 2){
                     $data['detailHarian'] = $this->Model_sales_order->detail_harian_sog()->row_array();
                     $data['detailBulanan'] = $this->Model_sales_order->detail_bulanan_sog()->row_array();
@@ -2188,7 +2205,11 @@ class SalesOrder extends CI_Controller{
                     $data['detailBulanan'] = $this->Model_sales_order->detail_bulanan_so($j)->row_array();
                     $data['detailLaporan'] = $this->Model_sales_order->sisa_so_jb($j)->result();
                 }
-                $this->load->view('sales_order/print_sisa_so_gabungan_jb', $data);
+                if($l == 0){
+                    $this->load->view('sales_order/print_sisa_so_gabungan_jb', $data);
+                }else{
+                    $this->load->view('sales_order/print_sisa_so_gabungan_jb2', $data);
+                }
             }
     }
 

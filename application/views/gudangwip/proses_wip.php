@@ -369,7 +369,7 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="3" style="text-align: right;"><strong>Total :</strong></td>
+                                    <td colspan="2" style="text-align: right;"><strong>Total :</strong></td>
                                     <td><input type="text" id="total_bruto" class="form-control" readonly="readonly"></td>
                                     <td><input type="text" id="total_berat" class="form-control" readonly="readonly"></td>
                                     <td><input type="text" id="total_netto" name="bs" class="form-control" readonly="readonly" value="0"></td>

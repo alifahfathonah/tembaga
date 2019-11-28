@@ -21,15 +21,30 @@ table td, table td * {
     <tbody>
     <?php
     $no = 0;
+    $qty_j = 0;
+    $qty_n = 0;
     $berat = 0;
     $berat_n = 0;
+    $berat_j = 0;
+    $last_qty = 0;
     $last_series = null;
     foreach ($details as $row){
+        if($last_qty != null && $last_qty != $row->m_bobbin_size_id){
+            echo '<tr>
+                <td colspan="2"></td>
+                <td style="border-bottom:1px solid #000; border-top:1px solid #000">'.$qty_j.'</td>
+                <td style="border-bottom:1px solid #000; border-top:1px solid #000">'.$berat_j.'</td>
+            </tr>';
+            $qty_j = 0;
+            $berat_j = 0;
+        }
         if($last_series != null && $last_series != $row->nama){
             echo '<tr>
-                <td colspan="3"></td>
+                <td colspan="2" style="border-bottom:1px solid #000; border-top:1px solid #000"><strong>TOTAL '.$last_series.'</strong></td>
+                <td style="border-bottom:1px solid #000; border-top:1px solid #000">'.$qty_n.'</td>
                 <td style="border-bottom:1px solid #000; border-top:1px solid #000">'.number_format($berat_n,2,',','.').'</td>
             </tr>';
+            $qty_n = 0;
             $berat_n = 0;
         }
         $no++;
@@ -39,17 +54,28 @@ table td, table td * {
         echo '<td>'.$row->nomor_bobbin.'</td>';
         echo '<td>'.number_format($row->berat,2,',','.').'</td>';
         echo '</tr>';
+        $qty_j++;
+        $qty_n++;
         $berat += $row->berat;
+        $berat_j += $row->berat;
         $berat_n += $row->berat;
         $last_series = $row->nama;
+        $last_qty = $row->m_bobbin_size_id;
     }
+    echo '<tr>
+        <td colspan="2"></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000">'.$qty_j.'</td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000">'.$berat_j.'</td>
+    </tr>';
     ?>
     <tr>
-        <td colspan="3"></td>
+        <td colspan="2" style="border-bottom:1px solid #000; border-top:1px solid #000"><strong>TOTAL <?=$last_series;?></strong></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=$qty_n;?></td>
         <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($berat_n,2,',','.');?></td>
     </tr>
     <tr>
-        <td colspan="3"></td>
+        <td colspan="2"></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=$no;?></td>
         <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($berat,2,',','.');?></td>
     </tr>
     </tbody>

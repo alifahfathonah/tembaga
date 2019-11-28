@@ -74,6 +74,7 @@
           <td><?=$v->jenis_barang;?></td>
           <td><?=number_format($v->netto,2,',','.');?></td>
         </tr>
+        <br>
       <?php 
         }
       } ?>

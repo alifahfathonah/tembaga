@@ -13,11 +13,14 @@
   
    <div class="col-md-12" style="margin-top: 10px;"> 
     <div class="portlet box yellow-gold">
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class="fa fa-cubes"></i> Gudang Rongsok
-                </div>                
-            </div> 
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-cubes"></i> Gudang Rongsok
+            </div>  
+            <div class="tools">
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/GudangRongsok/edit_palette"><i class="fa fa-pencil"></i> Edit Palette</a>
+            </div>              
+        </div> 
    <div class="portlet-body"> 
    <table class="table table-striped table-bordered table-hover" id="sample_6">
     <thead>

@@ -2416,6 +2416,19 @@ class Tolling extends CI_Controller{
                     }
                 }
             }
+
+            //INSERT SURAT PEMINJAMAN BP DAN KARDUS
+            $query2 = $this->Model_sales_order->get_bp_kardus($sjid)->result();
+            if(!empty($query2)){
+                foreach ($query2 as $value) {
+                    $this->db->insert('t_surat_peminjaman', array(
+                        't_sj_id'=> $sjid,
+                        'jenis_packing'=> $value->jenis_packing,
+                        'jumlah'=> $value->jumlah,
+                        'ket'=> $value->ket
+                    ));
+                }
+            }
         }
 
         $data = array(

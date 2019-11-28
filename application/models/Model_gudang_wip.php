@@ -319,7 +319,7 @@ class Model_gudang_wip extends CI_Model{
     }
 
     function show_header_thw($id){
-        $data = $this->db->query("Select thw.*, pi.id as id_produksi_ingot, COALESCE(NULLIF(thw.no_produksi_wip,''), pi.no_produksi) as no_produksi_wip, usr.realname As pembuat, dtr.id as id_dtr, tbw.id as id_bpb, tbw.status
+        $data = $this->db->query("Select thw.*, pi.id as id_produksi_ingot, COALESCE(NULLIF(thw.no_produksi_wip,''), pi.no_produksi) as no_produksi_wip, usr.realname As pembuat, dtr.id as id_dtr, dtr.status as status_dtr, tbw.id as id_bpb, tbw.status
                 From t_hasil_wip thw
                     left join t_hasil_masak thm On (thm.id = thw.hasil_masak_id)
                     left join produksi_ingot pi On (pi.id = thm.id_produksi)
@@ -359,13 +359,20 @@ class Model_gudang_wip extends CI_Model{
             ");
     }
 
+    function cek_rolling_bu($s,$e){
+        return $this->db->query("select count(thw.id) as jumlah, thw.jenis_barang_id, jb.jenis_barang, jb.ukuran from t_hasil_wip thw
+                left join jenis_barang jb on jb.id = thw.jenis_barang_id
+                where thw.jenis_masak = 'ROLLING' and thw.jenis_barang_id != 656 and thw.tanggal between '".$s."' and '".$e."'
+                group by jenis_barang_id");
+    }
+
     function print_laporan_masak($s,$e,$j){
         if($j == 1){
             return $this->db->query("select thm.tanggal, pi.no_produksi as nomor, thm.tipe, count(thm.id) as count, sum(kayu) as kayu, sum(gas) as gas,  sum(gas_r) as gas_r, sum(bs_service) as bs_service, sum(total_rongsok) as total_rongsok, sum(ingot) as ingot, sum(berat_ingot) as berat_ingot, sum(bs) as bs, sum(susut) as susut, sum(ampas) as ampas, sum(serbuk) as serbuk, sum(bs_service) as bs_service from t_hasil_masak thm
             left join produksi_ingot pi on thm.id_produksi = pi.id
             where thm.tanggal between '".$s."' and '".$e."' group by thm.tanggal");
         }elseif($j == 2){
-            return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, thw.gas, a.qty as qty_rsk, a.netto as berat_rsk, thw.tanggal, thw.qty, uom, thw.berat, susut, bs, qty_keras, keras,
+            return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, thw.gas+thw.gas_r as gas, a.qty as qty_rsk, a.netto as berat_rsk, thw.tanggal, thw.qty, uom, thw.berat, susut, bs, qty_keras, keras,
                 (select sum(netto) from dtr_detail dd 
                     left join dtr on dd.dtr_id = dtr.id
                     where dtr.prd_id = thw.id and rongsok_id = 20) as bs_rolling,

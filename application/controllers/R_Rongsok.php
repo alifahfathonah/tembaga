@@ -923,6 +923,23 @@ class R_Rongsok extends CI_Controller{
         $this->load->view('layout', $data);
     }
 
+    function delete_pindah(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $user_ppn = $this->session->userdata('user_ppn');
+
+        $this->db->trans_start();
+            $this->db->where('id', $this->uri->segment(3));
+            $this->db->delete('t_pindah');
+
+        if($this->db->trans_complete()){
+            redirect('index.php/R_Rongsok/ambil_packing');  
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/R_Rongsok');  
+        } 
+    }
+
     function create_pindah(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');

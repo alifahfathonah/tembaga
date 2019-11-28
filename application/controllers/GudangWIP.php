@@ -227,6 +227,7 @@ class GudangWIP extends CI_Controller{
                         'no_dtr'=> $code,
                         'tanggal'=> $tgl_input,
                         'prd_id'=> $insert_id,
+                        'supplier_id'=>580,//ROLLING
                         'jenis_barang'=> 'RONGSOK',
                         'remarks'=> 'SISA PRODUKSI',
                         'created'=> $tanggal,
@@ -297,9 +298,15 @@ class GudangWIP extends CI_Controller{
         $data['content']   = "gudangwip/edit_produksi_wip";
 
         $this->load->model('Model_gudang_wip');
+        $this->load->model('Model_beli_rongsok');
             $data['header']  = $this->Model_gudang_wip->show_header_thw($id)->row_array();
+            // print_r($data['header']);die();
             // $data['details'] = $this->Model_gudang_wip->show_detail_bpb($id)->result();
             $data['jenis_barang'] = $this->Model_gudang_wip->jenis_barang_list()->result();
+            $data['rongsok'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
+            if(!empty($data['header']['id_dtr'])){
+                $data['details'] = $this->Model_beli_rongsok->show_detail_dtr($data['header']['id_dtr'])->result();
+            }
         
         $this->load->view('layout', $data);  
     }
@@ -308,11 +315,13 @@ class GudangWIP extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_prd = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $id_thw = $this->input->post('id_thw');
         
         $this->db->trans_start();
         
         #Update status SPB
-        $this->db->where('id', $this->input->post('id_thw'));
+        $this->db->where('id', $id_thw);
         $this->db->update('t_hasil_wip', array(
                         'tanggal'=>$tgl_input,
                         'jenis_barang_id'=>$this->input->post('jenis_barang')
@@ -334,7 +343,106 @@ class GudangWIP extends CI_Controller{
             'tanggal'=>$tgl_input,
             'jenis_barang_id'=>$this->input->post('jenis_barang')
         ));
+        
+        if(empty($this->input->post('id_dtr'))){
+            if($this->input->post('bs') != 0){
+                //CREATE DTR
+            $this->load->model('Model_m_numberings');
+            $code_dtr = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
             
+                #insert dtr
+                $data_dtr = array(
+                            'no_dtr'=> $code_dtr,
+                            'tanggal'=> $tgl_prd,
+                            'supplier_id'=>580,//ROLLING
+                            'prd_id'=> $id_thw,
+                            'jenis_barang'=> 'RONGSOK',
+                            'remarks'=> 'SISA PRODUKSI ROLLING',
+                            'created'=> $tanggal,
+                            'created_by'=> $user_id
+                        );
+                $this->db->insert('dtr', $data_dtr);
+                $dtr_id = $this->db->insert_id();
+
+                //CREATE DTR_DETAIL
+
+                    $details = $this->input->post('myDetails');
+                    // print_r($details);die();
+                    $bs_ingot = 0;
+                    foreach ($details as $i => $row){
+                        if($row['rongsok_id']!=''){
+                            $this->db->insert('dtr_detail', array(
+                                'dtr_id'=>$dtr_id,
+                                //'po_detail_id'=>$row['po_detail_id'],
+                                'rongsok_id'=>$row['rongsok_id'],
+                                'bruto'=>$row['bruto'],
+                                'berat_palette'=>$row['berat_palette'],
+                                'netto'=>$row['netto'],
+                                'no_pallete'=>$row['no_pallete'],
+                                'line_remarks'=>'SISA PRODUKSI',
+                                'created'=>$tanggal,
+                                'created_by'=>$user_id,
+                                'tanggal_masuk'=>$tgl_input
+                            ));
+                            if($row['rongsok_id'] == 22){
+                                $bs_ingot += $row['netto'];
+                            }
+                        }
+                    }
+
+                if($bs_ingot > 0){
+                    $new_bs = $this->input->post('bs') - $bs_ingot;
+                    $this->db->where('id', $id_thw);
+                    $this->db->update('t_hasil_wip', array(
+                        'bs'=> $new_bs,
+                        'bs_ingot'=>$bs_ingot
+                    ));
+                }
+            }
+        }else{
+            $details = $this->input->post('myDetails');
+            // print_r($details);die();
+            $bs_ingot = 0;
+            foreach ($details as $i => $row){
+                if($row['rongsok_id']!=''){
+                    if($row['id']!=0){
+                        $this->db->where('id', $row['id']);
+                        $this->db->update('dtr_detail', array(
+                            'bruto'=>$row['bruto'],
+                            'berat_palette'=>$row['berat_palette'],
+                            'netto'=>$row['netto'],
+                            'tanggal_masuk'=>$tgl_input
+                        ));
+                    }else{
+                        $this->db->insert('dtr_detail', array(
+                            'dtr_id'=>$this->input->post('id_dtr'),
+                            //'po_detail_id'=>$row['po_detail_id'],
+                            'rongsok_id'=>$row['rongsok_id'],
+                            'bruto'=>$row['bruto'],
+                            'berat_palette'=>$row['berat_palette'],
+                            'netto'=>$row['netto'],
+                            'no_pallete'=>$row['no_pallete'],
+                            'line_remarks'=>'SISA PRODUKSI',
+                            'created'=>$tanggal,
+                            'created_by'=>$user_id,
+                            'tanggal_masuk'=>$tgl_input
+                        ));
+                    }
+                    // echo $row['rongsok_id'];
+                    if($row['rongsok_id'] == 22){
+                        $bs_ingot += $row['netto'];
+                    }
+                }
+            }
+            if($bs_ingot > 0){
+                $new_bs = $this->input->post('bs') - $bs_ingot;
+                $this->db->where('id', $id_thw);
+                $this->db->update('t_hasil_wip', array(
+                    'bs'=> $new_bs,
+                    'bs_ingot'=>$bs_ingot
+                ));
+            }
+        }
             if($this->db->trans_complete()){    
                 $this->session->set_flashdata('flash_msg', 'Detail SPB sudah disimpan');            
             }else{
@@ -1651,6 +1759,7 @@ class GudangWIP extends CI_Controller{
                 $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();
                 $this->load->view('gudangwip/print_laporan_masak_apollo', $data);
             }elseif($jb_id == 2){
+                $data['check'] = $this->Model_gudang_wip->cek_rolling_bu($start,$end,$jb_id)->result();
                 $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();
                 $data['a'] = $this->Model_gudang_wip->get_wip_awal($start)->row_array();
                 $data['b'] = $this->Model_gudang_wip->get_wip_akhir($start,$end)->row_array();

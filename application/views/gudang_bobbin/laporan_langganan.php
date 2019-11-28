@@ -62,9 +62,6 @@ function simpanData(){
     if($.trim($("#laporan").val()) == ""){
         $('#msg_sukses').html("Laporan harus diisi, tidak boleh kosong!");
         $('.alert-success').show();
-    }else if($.trim($("#jenis").val()) == ""){
-        $('#msg').html("Nama diisi, tidak boleh kosong!");
-        $('.alert-success').show();
     }else{
         var l=$('#laporan').val();
         var j=$('#jenis').val();
@@ -75,6 +72,7 @@ function simpanData(){
 };
 
 function get_cost(id){
+    $('#jenis').select2('val','');
     if(id==0){
         $('#show_nama').hide();
     }else{

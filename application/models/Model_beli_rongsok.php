@@ -647,6 +647,27 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
 
+    function print_laporan_bb($b,$t){
+        return $this->db->query("select *, r.nama_barang as jenis_barang 
+            (select sum(netto) from dtr_detail dd 
+                left join dtr on dd.dtr_id = dtr.id
+                where prd_id > 0 and dd.rongsok_id = i.jenis_barang_id
+                ) as produksi,
+            (select sum(netto) from dtr_detail dd2
+                left join dtr d2 on dd2.dtr_id = d2.id
+                where po_id > 0 or so_id > or retur_id > 0 and dd2.rongsok_id = i.jenis_barang_id
+                ) as supplier,
+            (select sum(netto) from dtr_detail dd3
+                left join dtr d3 on dd3.dtr_id = d3.id
+                where so_id = 0 and po_id = 0 and retur_id = 0 and prd_id = 0 and customer_id = 0 and dd3.rongsok_id = i.jenis_barang_id ) as koreksi
+            (select sum() from dtr_detail dd4
+                left join dtr d4 on dd4.dtr_id = d4.id
+                )
+            from inventory i
+                left join rongsok r on i.jenis_barang_id = r.id
+                where bulan = ".$b." and tahun = ".$t);
+    }
+
     function show_laporan_barang_detail($tgl,$bulan,$tahun){
         $data = $this->db->query("select dd.rongsok_id, rsk.nama_item, rsk.kode_rongsok, rsk.uom, count(dd.id) as jumlah, sum(bruto) as bruto_masuk, sum(netto) as netto_masuk,
                 COALESCE((select sum(netto) from dtr_detail dtd where dtd.rongsok_id = dd.rongsok_id and dtd.tanggal_masuk < '".$tgl."'),0)as netto_masuk_before,
@@ -805,6 +826,33 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
 
+    function show_kartu_stok_inventory($start,$end,$id_barang){
+        $data = $this->db->query("Select sum(netto_masuk) as netto_masuk, sum(netto_keluar) as netto_keluar from ((SELECT
+                    t.no_ttr, p.no_po as nomor, dd.id, dd.rongsok_id, dd.no_pallete, s.nama_supplier as nama, r.nama_item, sum(dd.netto) as netto_masuk, 0 as netto_keluar, dd.tanggal_masuk, dd.tanggal_keluar = null as tanggal_keluar, dd.tanggal_masuk as tanggal
+                FROM
+                    dtr_detail dd 
+                    left join dtr d on d.id = dd.dtr_id
+                    left join ttr t on t.dtr_id = dd.dtr_id
+                    left join po p on p.id = d.po_id
+                    left join supplier s on s.id = d.supplier_id
+                    left join rongsok r on r.id = dd.rongsok_id
+                    where t.ttr_status = 1 and dd.rongsok_id ='".$id_barang."' and dd.tanggal_masuk >= '".$start."' and dd.tanggal_masuk <= '".$end."' group by dd.rongsok_id)
+                UNION ALL
+                (SELECT 
+                    spb.no_spb as no_ttr, COALESCE(so.no_sales_order,spb.remarks) as nomor, dtd.id, dtd.rongsok_id, dtd.no_pallete, mc.nama_customer as nama, rsk.nama_item, 0 as netto_masuk, sum(dtd.netto) as netto_keluar, dtd.tanggal_masuk = null, dtd.tanggal_keluar, dtd.tanggal_keluar as tanggal
+                FROM
+                    dtr_detail dtd 
+                    left join dtr on dtr.id = dtd.dtr_id
+                    left join ttr t on t.dtr_id = dtd.dtr_id
+                    left join sales_order so on so.id = dtd.so_id
+                    left join spb_detail_fulfilment sdf on sdf.dtr_detail_id = dtd.id
+                    left join spb on spb.id = sdf.spb_id
+                    left join m_customers mc on mc.id = so.m_customer_id
+                    left join rongsok rsk on rsk.id = dtd.rongsok_id
+                    where dtd.rongsok_id ='".$id_barang."' and dtd.flag_taken = 1 and dtd.tanggal_keluar >= '".$start."' and dtd.tanggal_keluar <= '".$end."' group by dtd.rongsok_id)) as a Order By tanggal, tanggal_keluar asc");
+        return $data;
+    }
+
     function show_kartu_stok_palette($start,$end,$id_barang){
         $data = $this->db->query("(SELECT
                     t.no_ttr, COALESCE(p.no_po, d.no_dtr) as nomor, dd.id, dd.rongsok_id, dd.no_pallete, COALESCE(s.nama_supplier,t.no_ttr) as nama, r.nama_item, dd.netto as netto_masuk, 0 as netto_keluar, dd.tanggal_masuk, dd.tanggal_keluar = null as tanggal_keluar, dd.tanggal_masuk as tanggal
@@ -896,6 +944,21 @@ class Model_beli_rongsok extends CI_Model{
             where dtr.status = 1 and dtr.flag_taken = 0 and type = 0 group by dtr.no_dtr
             order by dtr.tanggal asc");
         return $data;
+    }
+//
+
+    function show_laporan_barang2($jb,$tgl){
+        return $this->db->query("
+                Select i.*, r.nama_item as jenis_barang, r.uom, r.kode_rongsok as kode from inventory i
+                left join rongsok r on i.jenis_barang_id = r.id 
+                where i.tanggal = '".$tgl."' and i.jenis_barang = '".$jb."'
+                order by r.kode_rongsok asc");
+    }
+
+    function get_palette($id){
+        return $this->db->query("select dd.id, dd.no_pallete, dd.bruto, dd.netto, dd.berat_palette, r.nama_item, dd.netto_resmi from dtr_detail dd 
+            left join rongsok r on dd.rongsok_id = r.id
+            where no_pallete =".$id);
     }
 }
 

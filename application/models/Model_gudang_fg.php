@@ -651,11 +651,23 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
                 where tanggal_masuk between '".$s."' and '".$e."' group by tgf.jenis_barang_id, tgf.tanggal_masuk
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
                 ");
-        }else{
+        }elseif($l==1){
             $data = $this->db->query("select tgf.tanggal_masuk as tanggal, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
                 left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
                 left join jenis_barang jb on jb.id = tgf.jenis_barang_id
                 where tbf.produksi_fg_id > 0 and tanggal_masuk between '".$s."' and '".$e."' group by tgf.jenis_barang_id, tgf.tanggal_masuk
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
+        }elseif($l==2){
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+                left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tanggal_masuk between '".$s."' and '".$e."'
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
+                ");
+        }elseif($l==3){
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
+                left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tbf.produksi_fg_id > 0 and tanggal_masuk between '".$s."' and '".$e."'
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
         }
         return $data;
@@ -798,6 +810,10 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
     function stok_26mm(){
         $data = $this->db->query("select * from stok_fg where jenis_barang_id=273");
         return $data;
+    }
+
+    function inventory_stok_before($jb,$tgl,$jbid){
+        return $this->db->query("select * from inventory where jenis_barang = '".$jb."' and tanggal = '".$tgl."' and jenis_barang_id=".$jbid);
     }
     /*
     cara membuat view stok fg

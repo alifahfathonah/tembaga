@@ -15,9 +15,14 @@
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nomor</strong></td>
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Penerimaan Bahan Baku</strong></td>
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Rod Lunak</strong></td>
-                <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Rod 13,5 mm</strong></td>
-                <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Rod 15,5 mm</strong></td>
-                <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Rod 17,5 mm</strong></td>
+            <?php 
+            $colspan = 0;
+            $test = 0;
+            foreach ($check as $jb) {
+                echo '<td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Rod. '.number_format($jb->ukuran/100,2,',','.').' mm</strong></td>';
+                $test++;
+                $colspan+=2;
+            }?>
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Rod 8mm Keras</strong></td>
                 <td colspan="3" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Total</strong></td>
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>BS Rolling</strong></td>
@@ -32,14 +37,10 @@
             <tr>
                 <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>BATANG</strong></td>
                 <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>KG</strong></td>
-                <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>ROLL</strong></td>
-                <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>KG</strong></td>
-                <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>ROLL</strong></td>
-                <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>KG</strong></td>
-                <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>ROLL</strong></td>
-                <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>KG</strong></td>
-                <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>ROLL</strong></td>
-                <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>KG</strong></td>
+            <?php for ($i=0; $i <= $test ; $i++) { 
+                echo '<td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>ROLL</strong></td>
+                <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>KG</strong></td>';
+            }?>
                 <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>ROLL</strong></td>
                 <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>KG</strong></td>
                 <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>ROLL</strong></td>
@@ -72,12 +73,10 @@
     $berat_keras = 0;
     $qty8 = 0;
     $berat8 = 0;
-    $qty13 = 0;
-    $berat13 = 0;
-    $qty15 = 0;
-    $berat15 = 0;
-    $qty17 = 0;
-    $berat17 = 0;
+        foreach ($check as $jb) {
+            ${'qty'.$jb->jenis_barang_id} =0;
+            ${'berat'.$jb->jenis_barang_id} = 0;
+        }
     foreach ($detailLaporan as $row){
         echo '<tr>';
         echo '<td style="text-align:center; border-bottom:1px solid #000; border-left:1px solid #000"></td>';
@@ -87,12 +86,10 @@
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->berat_rsk,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 656)?number_format($row->qty,2,',','.'):'-').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 656)?number_format($row->berat,2,',','.'):'-').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 663)?number_format($row->qty,2,',','.'):'-').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 663)?number_format($row->berat,2,',','.'):'-').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 665)?number_format($row->qty,2,',','.'):'-').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 665)?number_format($row->berat,2,',','.'):'-').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 662)?number_format($row->qty,2,',','.'):'-').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 662)?number_format($row->berat,2,',','.'):'-').'</td>';
+        foreach ($check as $jb) {
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == $jb->jenis_barang_id)?number_format($row->qty,2,',','.'):'-').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == $jb->jenis_barang_id)?number_format($row->berat,2,',','.'):'-').'</td>';
+        }
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->qty_keras,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->keras,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->qty,2,',','.').'</td>';
@@ -115,15 +112,13 @@
         if($row->jenis_barang_id == 656){
             $qty8 += $row->qty;
             $berat8 += $row->berat;
-        }elseif($row->jenis_barang_id == 663){
-            $qty13 += $row->qty;
-            $berat13 += $row->berat;
-        }elseif($row->jenis_barang_id == 665){
-            $qty15 += $row->qty;
-            $berat15 += $row->berat;
-        }elseif($row->jenis_barang_id == 662){
-            $qty17 += $row->qty;
-            $berat17 += $row->berat;
+        }
+
+        foreach ($check as $jb) {
+            if($row->jenis_barang_id == $jb->jenis_barang_id){
+                ${'qty'.$jb->jenis_barang_id} += $row->qty;
+                ${'berat'.$jb->jenis_barang_id} += $row->berat;
+            }
         }
         $qty_keras += $row->qty_keras;
         $berat_keras += $row->keras;
@@ -141,7 +136,7 @@
     ?>
     <tr>
         <td style="border-left: 1px solid #000; border-bottom: 1px solid #000;"><?=number_format($b_ak,2,',','.');?></td>
-        <td colspan="25" style="border-bottom:1px solid #000; border-left:1px solid #000;"></td>
+        <td colspan="<?=19+$colspan;?>" style="border-bottom:1px solid #000; border-left:1px solid #000;"></td>
         <?php $berat_keras_akhir = $b_ak + ($b['berat_masuk']-$b['berat_keluar']);?>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_keras_akhir,2,',','.');?></td>
         <td colspan="2" style="border-bottom:1px solid #000; border-left:1px solid #000;"></td>
@@ -149,7 +144,7 @@
     </tr>
     <tr>
         <td style="border-left: 1px solid #000; border-bottom: 1px solid #000;"><?=number_format($ia['netto'],2,',','.');?></td>
-        <td colspan="25" style="border-bottom:1px solid #000; border-left:1px solid #000;"></td>
+        <td colspan="<?=19+$colspan;?>" style="border-bottom:1px solid #000; border-left:1px solid #000;"></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($ib['netto'],2,',','.');?></td>
         <td colspan="2" style="border-bottom:1px solid #000; border-left:1px solid #000;"></td>
         <td style="border-left:1px solid #000; border-right:1px solid #000;"></td>
@@ -162,12 +157,14 @@
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_rongsok,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($qty8,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat8,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($qty13,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat13,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($qty15,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat15,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($qty17,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat17,2,',','.');?></td>
+        <?php
+        foreach ($check as $jb) {
+            if($row->jenis_barang_id == $jb->jenis_barang_id){
+                echo'<td style="border-bottom:1px solid #000; border-left:1px solid #000;">'.number_format(${'qty'.$jb->jenis_barang_id},2,',','.').'</td>
+                <td style="border-bottom:1px solid #000; border-left:1px solid #000;">'.number_format(${'berat'.$jb->jenis_barang_id},2,',','.').'</td>';
+            }
+        }
+        ?>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($qty_keras,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_keras,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_ingot,2,',','.');?></td>

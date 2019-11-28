@@ -550,11 +550,11 @@
                                         <i class="fa fa-briefcase"></i>
                                         Laporan Bulanan</a>
                                     </li>
-                                    <!-- <li>
+                                    <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangRongsok/laporan_bb">
                                         <i class="fa fa-briefcase"></i>
                                         Laporan Bahan Baku</a>
-                                    </li> -->
+                                    </li>
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangRongsok/search_permintaan_gudang">
                                         <i class="fa fa-print"></i>
@@ -997,16 +997,21 @@
                         <?php } ?>
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/GudangBobbin/bobbin_request">
-                            <i class="fa fa-file-word-o"></i>
+                            <i class="fa fa-bullseye"></i>
                             Bobbin Request </a>
                         </li>
                         <?php if($group_id==1 || (isset($akses_menu['add']) && $akses_menu['add']==1)){ ?>
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/GudangBobbin/bobbin_terima">
-                            <i class="fa fa-file-word-o"></i>
+                            <i class="fa fa-bullseye"></i>
                             Bobbin Terima Barang </a>
                         </li>
                     <?php } ?>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/GudangBobbin/bpk_list">
+                            <i class="fa fa-square"></i>
+                            Peminjaman BP & Kardus </a>
+                        </li>
                         <li>
                             <a href="javascript:;">
                             <i class="fa fa-book"></i>

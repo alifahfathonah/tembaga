@@ -23,7 +23,7 @@
     Pemasukan 8mm keras(done)
     -laporan rolling
 21- Revisi surat jalan rongsok edit kartuk stok juga(done)
-22- Edit Netto DTR Manual, search No palette nya
+22- Edit Netto DTR Manual, search No palette nya (done)
 kekurangan - 
 V Digital Apollo
 3 628273.39
@@ -37,5 +37,60 @@ Rata2 gas kanan kiri(done)
 23- Bobbin Laporan di Langganan (done)
 24- Laporan bobbin kayak kartu stock per bulan (done)
 bug - Laporan Bobbin Kosong masih salah pengeluarannya(done test)
+bug - Laporan Bobbin di langganan belum bener, kayaknya masih ada where clause tanggal(done)
+bug - Laporan kartu stok bobbin di order by L/M/dll. di totalin per L/M/dll.(done)
 25- Retur ganti tipe retur yg sudah di approve (done)
 bug - cek kenapa kadang uang masuk matching nyangkut (done)
+26- Surat jalan tanpa apa apa. semua barang list dibawah ini
+	26- Sparepart
+	27- Rongsok
+	28- WIP
+	29- FG
+	30- Ampas
+31- Laporan Bahan Baku
+	31- FG
+	32- Rongsok
+33- Laporan Retur, yang udah diterima dan udah dikirim balik lagi ada berapa. per bulan
+34- Pemasukan Rongsok berdasarkan
+
+-PO dan Tolling ( KH dan KMP)
+-Dari Apollo, Rolling, SDM
+-SPB Rongsok tambahin jenis Rolling utk Tali Rolling
+
+35- Pemasukan FG
+35 -Tambahin pemasukan fg detail no packing (global dan produksi)(done)
+36 -Pemasukan FG selain dari produksi
+  #PO (KH & KMP)
+  #Tolling (KH & KMP)
+  #Retur (Pengganti & Terima)
+  #Ke SDM
+  #FG Ke Rongsok
+  #Repacking (+) dan (-)
+  #Adjustment Selisih
+
+37- WIP
+37- Penerimaan Ingot
+  +pemasukan apollo
+  +pemasukan Rolling
+  +pemasukan Cuci
+  +Penerimaan dari PO & Tolling (KH & KMP)
+ 
+38- Pengeluaran Ingot
+  -Pengeluaran 8mm Hitam
+  -Pengeluaran 8mm cuci
+  -Pengeluaran Jual(KH&KMP)
+  -Pengeluaran WIP ke SDM
+  -Adjustment
+
+39- SO balance terima wip/rongsok dan kirim fg balik
+40- PO balance kirim surat jalan keluar dan terima hasil fg nya
+
+41- Generate Baru saat Approve Surat Jalan
+41- BP 1pcs(done)
+-BH *Dikembalikan(done)
+-yang lain dipinjamkan(done)
+-Kardus 6pcs per kardus(done)
+-ABC dipinjamkan(done)
+
+42- So tanpa harga aja(done)
+43- Laporan rolling yg ada sizenya aja(done)

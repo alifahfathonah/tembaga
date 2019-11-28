@@ -46,7 +46,7 @@ class Model_r_rongsok extends CI_Model{
     }
 
     function pindah_history(){
-        return $this->db->query("Select tp.*, jb.kode, jb.jenis_barang From t_pindah tp
+        return $this->db->query("Select tp.*, jb.kode, jb.jenis_barang, (select count(id) from t_gudang_fg tgf where tgf.flag_pindah = tp.id) as jumlah From t_pindah tp
             left join jenis_barang jb on jb.id = tp.jenis_barang_id
             ");
     }
