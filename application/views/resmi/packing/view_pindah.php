@@ -3,9 +3,9 @@
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/R_BPB/'); ?>"> BPB </a> 
+            <a href="<?php echo base_url('index.php/R_Rongsok/ambil_packing'); ?>"> Ambil Packing </a> 
             <i class="fa fa-angle-right"></i> 
-            Edit BPB
+            View
         </h5>          
     </div>
 </div>
@@ -13,7 +13,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($group_id==16) ){
+            if( ($group_id==9)||($group_id==16) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -45,20 +45,7 @@
                                 value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>" readonly="readonly">
                         </div>
                     </div>
-                </div>
-                <div class="col-md-2">&nbsp;</div>
-                <div class="col-md-5">
-                    <div class="row">
-                        <div class="col-md-4">
-                            Jenis Barang
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['jenis_barang']; ?>">
-                        </div>
-                    </div>
-                </div>              
+                </div>           
             </div>
             <div class="row">&nbsp;</div>
             <div class="row">
@@ -79,8 +66,27 @@
                                 <?php 
                                     $no=1; 
                                     $total_n = 0;
+                                    $last_series = null;
+                                    $bruto = 0;
+                                    $berat = 0;
+                                    $netto = 0;
                                     foreach ($list_data as $row) {
                                 echo '<input type="hidden" name="details['.$no.'][id]" value="'.$row->id.'">';
+                                if($row->jenis_barang!=$last_series && $last_series!=null){
+                                    echo '<tr>
+                                                <td style="text-align: right;" colspan="3"><strong>Total</strong></td>
+                                                <td style="background-color: green; color: white;">'.number_format($bruto,2,',','.').'</td>
+                                                <td style="background-color: green; color: white;">'.number_format($berat,2,',','.').'</td>
+                                                <td style="background-color: green; color: white;">'.number_format($netto,2,',','.').'</td>
+                                                <td colspan="2"></td>
+                                            </tr>';
+                                            $bruto = 0;
+                                            $berat = 0;
+                                            $netto = 0;
+                                            $no = 1;
+                                        }else{
+                                            echo '</tr>';
+                                        }
                                 ?>
                                 <tr>
                                     <td><?php echo $no; ?></td>
@@ -91,12 +97,25 @@
                                     <td><?php echo number_format($row->netto,2,',','.'); ?></td>
                                     <td><?php echo $row->no_packing; ?></td>
                                     <td><?php echo $row->keterangan; ?></td>
-                                </tr>
                                 <?php
+                                        if($row->jenis_barang==$last_series){
+                                            echo '<tr>';
+                                        }
+                                    $last_series = $row->jenis_barang;
                                     $no++;
+                                    $bruto += $row->bruto;
+                                    $berat += $row->berat_bobbin;
+                                    $netto += $row->netto;
                                     $total_n += $row->netto;
                                     }
                                 ?>
+                                <tr>
+                                    <td style="text-align: right;" colspan="3"><strong>Total</strong></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($bruto,2,',','.');?></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($berat,2,',','.');?></td>
+                                    <td style="background-color: green; color: white;"><?=number_format($netto,2,',','.');?></td>
+                                    <td colspan="2"></td>
+                                </tr>
                                 <tr>
                                     <td colspan="5" style="text-align: right;"><strong>Total Netto :</strong></td>
                                     <td><?=number_format($total_n,2,',','.');?></td>

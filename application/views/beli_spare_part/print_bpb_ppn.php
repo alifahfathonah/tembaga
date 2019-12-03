@@ -64,10 +64,10 @@
                                 echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000;">'.$row->nama_item.'</td>';
                                 echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000;">'.$row->uom.'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->qty,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->amount,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($diskon,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($hp,0,',', '.').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->total-$diskon+$hp,0,',', '.').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->amount,2,',', '.').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($diskon,2,',', '.').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($hp,2,',', '.').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->total-$diskon+$hp,2,',', '.').'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000;">'.$row->line_remarks.'</td>';
                                 echo '</tr>';
                                 $total += ($row->total-$diskon)+$hp;
@@ -101,7 +101,7 @@
                         </tr>
                         <tr>
                             <td colspan="7" style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;"><strong>Total</strong></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;"><?=number_format($total,0,',', '.');?></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;"><?=number_format($total,2,',', '.');?></td>
                             <td style=" border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;"></td>
                         </tr>
                     </table>

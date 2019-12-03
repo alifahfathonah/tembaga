@@ -252,7 +252,7 @@
                             Nominal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-9">
-                            <input type="text" id="nominal" name="nominal" class="form-control myline" style="margin-bottom:5px;" placeholder="Nominal" onkeydown="return myCurrency(event);" onkeyup="getComa(this.value, this.id);" readonly="readonly">
+                            <input type="text" id="nominal" name="nominal" class="form-control myline" style="margin-bottom:5px;" placeholder="Nominal" readonly="readonly">
                         </div>
                     </div>
                     <div class="row">
@@ -339,7 +339,7 @@
 </div> 
 <script>
 function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function simpanData(){
@@ -401,6 +401,7 @@ function get_data_lpb(id){
             data: "id="+id,
             dataType: "json",
             success: function(result) {
+                console.log(result);
                 $('#no_po').val(result['no_po']);
                 if(result['ppn']==1){
                     $('#ppn').val('PPN');

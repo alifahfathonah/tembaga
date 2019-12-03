@@ -54,22 +54,8 @@
                         <td><?php echo $data->jenis_stok_opname; ?></td>
                         <td><?php echo $data->jumlah_item; ?></td>
                         <td style="text-align:center"> 
-                            <?php
-                                if( ($group_id==1 || $hak_akses['edit']==1)){
-                            ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/StokOpname/<?= ($jenis == 'FG')? 'detail_fg' : 'detail_rongsok' ?>/<?php echo $data->id; ?>" style="margin-bottom:4px">
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
-                            <?php 
-                                }
-                                if( (($group_id==1)||($hak_akses['delete']==1))){
-                            ?>
-                            <!-- <a href="<?php echo base_url(); ?>index.php/BeliFinishGood/delete_po/<?php echo $data->id; ?>" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus po ini?');">
-                                <i class="fa fa-trash-o"></i> Delete 
-                            </a>   -->                          
-                            <?php 
-                                }
-                                if($group_id==1 || $hak_akses['view']==1){
-                            ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/StokOpname/<?= ($jenis == 'FG')? 'view' : 'view_rongsok' ?>/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px"> &nbsp; <i class="fa fa-file"></i> View &nbsp; </a>
                             <?php if($jenis == 'FG'){ ?>
@@ -78,7 +64,6 @@
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/StokOpname/<?= ($jenis == 'FG')? 'print_stok_fg_per_tanggal_all' : '' ?>/<?php echo $data->id; ?>" 
                                 target="_blank" style="margin-bottom:4px"> &nbsp; <i class="fa fa-print"></i> Print Global &nbsp; </a>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/StokOpname/search_fg/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa fa-search"></i> Filter &nbsp; </a>
-                            <?php } ?>
                             <?php
                                 }
                             ?>

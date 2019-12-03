@@ -103,6 +103,8 @@
                                     echo 'Repacking';
                                 }else if($data->jenis_spb==9){
                                     echo 'Retur K';
+                                }else if($data->jenis_spb==10){
+                                    echo 'Tali Rolling';
                                 }
                             ?>
                         </td>

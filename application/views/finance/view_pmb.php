@@ -148,6 +148,7 @@
                                 <th>Jenis Barang</th>
                                 <th>Keterangan</th>
                                 <th>Amount</th>
+                                <th>Action</th>
                             </thead>
                             <tbody>
                             <?php 
@@ -163,6 +164,18 @@
                                 <td><?php echo $data->jenis_barang; ?></td>
                                 <td><?php echo $data->keterangan; ?></td>
                                 <td style="text-align:right"><?php echo number_format($data->amount,0,',','.'); ?></td>
+                                <td>
+                                <?php 
+                                if($data->jenis_barang=='RONGSOK'){ ?>
+                                    <a class="btn btn-circle btn-xs blue-ebonyclay" target="_blank" href="<?php echo base_url(); ?>index.php/BeliRongsok/print_voucher/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-print"></i> Print &nbsp; </a>
+                                <?php }elseif($data->jenis_barang=='WIP'){ ?>
+                                    <a class="btn btn-circle btn-xs blue-ebonyclay" target="_blank" href="<?php echo base_url(); ?>index.php/BeliWIP/print_voucher/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-print"></i> Print &nbsp; </a>
+                                <?php }elseif($data->jenis_barang=='FG'){ ?>
+                                    <a class="btn btn-circle btn-xs blue-ebonyclay" target="_blank" href="<?php echo base_url(); ?>index.php/BeliFinishGood/print_voucher/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-print"></i> Print &nbsp; </a>
+                                <?php }else{ ?>
+                                    <a class="btn btn-circle btn-xs blue-ebonyclay" target="_blank" href="<?php echo base_url(); ?>index.php/VoucherCost/print_voucher_kh/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-print"></i> Print &nbsp; </a>
+                                <?php } ?>
+                                </td>
                             </tr>
                             <?php
                                 $total_vc += $data->amount;
@@ -171,6 +184,7 @@
                             <tr>
                                 <td colspan="5" style="text-align: right; font-weight: bold;"> Total</td>
                                 <td style="background-color: red; color: white;"><?php echo number_format($total_vc,0,',','.');?></td>
+                                <td></td>
                             </tr>
                             </tbody>
                         </table>

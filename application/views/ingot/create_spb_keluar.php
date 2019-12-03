@@ -72,6 +72,7 @@
                                 <option value="6" <?=(($header['jenis_spb']==6)? 'selected="selected"' : '""');?>>SO</option>
                                 <option value="7" <?=(($header['jenis_spb']==7)? 'selected="selected"' : '""');?>>Retur</option>
                                 <option value="8" <?=(($header['jenis_spb']==8)? 'selected="selected"' : '""');?>>Repacking</option>
+                                <option value="10" <?=(($header['jenis_spb']==10)? 'selected="selected"' : '""');?>>Tali Rolling</option>
                             </select> 
                         </div>
                     </div>

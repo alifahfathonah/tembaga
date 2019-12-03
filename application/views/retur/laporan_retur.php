@@ -2,9 +2,9 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Laporan Rongsok
+            <i class="fa fa-angle-right"></i> Retur
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/GudangRongsok/index'); ?>">Gudang Rongsok</a> 
+            <a href="<?php echo base_url('index.php/Retur/laporan_retur'); ?>">Laporan Retur</a> 
         </h5>          
     </div>
 </div>
@@ -19,32 +19,19 @@
     </div>
   
    <div class="col-md-12" style="margin-top: 10px;"> 
-        <h3>Laporan Permintaan Keluar Masuk Gudang Rongsok</h3>
+        <h3>Laporan Retur</h3>
         <hr class="divider">
         <div class="row">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                           Laporan <font color="#f00">*</font>
+                           Jenis Laporan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="laporan" name="laporan" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
-                                <optgroup label="Pengeluaran">
-                                    <option value="0">Permintaan Gudang</option>
-                                    <option value="1">Permintaan External</option>
-                                    <option value="2">Permintaan Tali Rolling</option>
-                                </optgroup>
-                                <optgroup label="Pemasukan">
-                                    <?php if($this->session->userdata('user_ppn')==0){ ?>
-                                    <option value="3">Pemasukan dari PO (KH)</option>
-                                    <?php } ?>
-                                    <option value="4">Pemasukan dari PO (KMP)</option>
-                                    <option value="5">Pemasukan dari Apollo</option>
-                                    <option value="6">Pemasukan dari Rolling</option>
-                                    <option value="7">Pemasukan dari SDM</option>
-                                    <option value="8">Pemasukan Lain</option>
-                                </optgroup>
-                            </select>
+                            <select id="jenis" name="jenis" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                    <option value="0">Per Nomor Retur</option>
+                                    <option value="1">Per Jenis Barang</option>
+                                </select>
                         </div>
                     </div>
                     <div class="row">
@@ -86,10 +73,10 @@ function simpanData(){
         $('#message').html("Silahkan pilih nama supplier!");
         $('.alert-danger').show();
     }else{
-        var l=$('#laporan').val();
+        var j=$('#jenis').val();
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/GudangRongsok/print_permintaan_gudang?ts='+s+'&te='+e+'&l='+l,'_blank');
+        window.open('<?php echo base_url();?>index.php/Retur/print_laporan_retur?ts='+s+'&te='+e+'&j='+j,'_blank');
     };
 };
 </script>

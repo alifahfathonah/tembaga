@@ -44,6 +44,7 @@
                     <th style="width:50px;">No</th>
                     <th>No. Surat Jalan</th>
                     <th>Tanggal</th>
+                    <th>No. Retur</th>
                     <th>Jenis Barang</th>                     
                     <th>Customer</th> 
                     <th>Alamat</th> 
@@ -62,6 +63,7 @@
                         <td style="text-align:center;"><?php echo $no; ?></td>
                         <td><?php echo $data->no_surat_jalan; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
+                        <td><?php echo $data->no_retur; ?></td>
                         <td><?php echo $data->jenis_barang; ?></td>
                         <td><?php echo $data->nama_customer; ?></td>
                         <td><?php echo $data->alamat; ?></td>  

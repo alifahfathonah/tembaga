@@ -365,30 +365,6 @@ class GudangRongsok extends CI_Controller{
         }
     }
 
-    function print_permintaan_gudang(){
-        $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');
-
-        $start = date('Y/m/d', strtotime($_GET['ts']));
-        $end = date('Y/m/d', strtotime($_GET['te']));
-
-            if($group_id != 1){
-                $this->load->model('Model_modules');
-                $roles = $this->Model_modules->get_akses($module_name, $group_id);
-                $data['hak_akses'] = $roles;
-            }
-            $data['group_id']  = $group_id;
-            $data['judul']     = "Gudang Rongsok";
-
-        $this->load->model('Model_beli_rongsok');
-        $data['start'] = $start;
-        $data['end'] = $end;
-
-            $data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_dari_produksi($start,$end)->result();
-
-            $this->load->view('gudang_rongsok/print_permintaan_gudang', $data);
-    }
-
     function search_permintaan_gudang(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
@@ -406,54 +382,58 @@ class GudangRongsok extends CI_Controller{
         $this->load->view('layout', $data);  
     }
 
-    function print_permintaan_external(){
+    function print_permintaan_gudang(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');
 
+        $this->load->helper('tanggal_indo');
         $start = date('Y/m/d', strtotime($_GET['ts']));
         $end = date('Y/m/d', strtotime($_GET['te']));
+        $l = $_GET['l'];
 
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Gudang Rongsok";
+
+        $this->load->model('Model_beli_rongsok');
         $data['start'] = $start;
         $data['end'] = $end;
 
-        $this->load->model('Model_beli_rongsok');
+        if($l==0){
+            $data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_dari_produksi($start,$end)->result();
+            $this->load->view('gudang_rongsok/print_permintaan_gudang', $data);
+        }elseif($l==1){
             $data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_external($start,$end)->result();
-
             $this->load->view('gudang_rongsok/print_permintaan_external', $data);
-    }
+        }elseif($l==2){
 
-    function search_permintaan_external(){
-        $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
-        if($group_id != 1){
-            $this->load->model('Model_modules');
-            $roles = $this->Model_modules->get_akses($module_name, $group_id);
-            $data['hak_akses'] = $roles;
+        }elseif($l==3){
+            $data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok($start,$end,0)->result();
+            $this->load->view('gudang_rongsok/print_laporan_pemasukan', $data);
+        }elseif($l==4){
+            $data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok($start,$end,1)->result();
+            $this->load->view('gudang_rongsok/print_laporan_pemasukan', $data);
+        }elseif($l==5){
+            $data['header'] = 'APOLLO';
+            $data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok_lain($start,$end,1)->result();//Apollo
+            $this->load->view('gudang_rongsok/print_pemasukan_rsk', $data);
+        }elseif($l==6){
+            $data['header'] = 'ROLLING';
+            $data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok_lain($start,$end,2)->result();//Rolling
+            $this->load->view('gudang_rongsok/print_pemasukan_rsk', $data);
+        }elseif($l==7){
+            $data['header'] = 'SDM';
+            $data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok_lain($start,$end,3)->result();//SDM
+            $this->load->view('gudang_rongsok/print_pemasukan_rsk', $data);
+        }elseif($l==8){
+            $data['header'] = 'Lain - Lain';
+            $data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok_lain($start,$end,4)->result();//SDM
+            $this->load->view('gudang_rongsok/print_pemasukan_rsk', $data);
         }
-        $data['group_id']  = $group_id;
-        $data['judul']     = "Gudang Rongsok";
-        $data['content']   = "gudang_rongsok/search_permintaan_external";
-
-        // $this->load->model('Model_beli_rongsok');
-
-        $this->load->view('layout', $data);  
-
-            $this->load->helper('tanggal_indo');            
-            // $items = strval($id);
-            // $tgl=str_split($id,4);
-            // $tahun=$tgl[0];
-            // $bulan=$tgl[1];
-
-            // $tgl = $tahun.'/'.$bulan.'/01';
-
-            // $data['tgl'] = array(
-            //     'tahun' => $tahun,
-            //     'bulan' => $bulan
-            // );
-
-            // $this->load->model('Model_beli_rongsok');
-            // $data['detailLaporan'] = $this->Model_beli_rongsok->show_laporan_barang_detail($tgl,$bulan,$tahun)->result();
-            // $this->load->view("gudang_rongsok/print_laporan_bulanan_detail", $data);
     }
 
     function laporan_bb(){

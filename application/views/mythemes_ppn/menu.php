@@ -346,11 +346,11 @@
                                         Voucher List
                                     </a>
                                 </li>
-                                <li>
+                                <!-- <li>
                                     <a href="<?php echo base_url(); ?>index.php/Tolling/cek_balance">
                                     <i class="fa fa-truck"></i>
                                     Cek Balance </a>
-                                </li>
+                                </li> -->
                             </ul>
                         </li>
                     </ul>
@@ -512,6 +512,11 @@
                                     </li>
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangRongsok/search_permintaan_gudang">
+                                        <i class="fa fa-arrows-h"></i>
+                                        Laporan Keluar Masuk</a>
+                                    </li>
+                                    <!-- <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangRongsok/search_permintaan_gudang">
                                         <i class="fa fa-print"></i>
                                         Permintaan Gudang</a>
                                     </li>
@@ -519,7 +524,7 @@
                                         <a href="<?php echo base_url(); ?>index.php/GudangRongsok/search_permintaan_external">
                                         <i class="fa fa-print"></i>
                                         Permintaan External</a>
-                                    </li>
+                                    </li> -->
                                 </ul>
                             </li>
                             <?php } ?>

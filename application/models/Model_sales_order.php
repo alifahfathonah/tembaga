@@ -998,7 +998,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function so_hari_ini($date){
-        return $this->db->query("select COALESCE(jb.jenis_barang, jb2.jenis_barang, jb3.nama_item, r.nama_item, r2.nama_item) as jenis_barang, IF(tso.jenis_barang = ('RONGSOK' || 'AMPAS' || 'LAIN'), d.qty, d.netto) as netto, so.no_sales_order from t_sales_order_detail d
+        return $this->db->query("select COALESCE(jb.jenis_barang, jb2.jenis_barang, jb3.nama_item, r.nama_item, r2.nama_item) as jenis_barang, COALESCE(NULLIF(d.netto,0),d.qty) as netto, so.no_sales_order from t_sales_order_detail d
                 left join t_sales_order tso on d.t_so_id = tso.id
                 left join sales_order so on tso.so_id = so.id
                 left join jenis_barang jb on tso.jenis_barang = 'FG' and jb.id = d.jenis_barang_id
@@ -1006,7 +1006,7 @@ class Model_sales_order extends CI_Model{
                 left join sparepart jb3 on tso.jenis_barang = 'LAIN' and jb3.id = d.jenis_barang_id
                 left join rongsok r on  tso.jenis_barang = 'RONGSOK' and r.id = d.jenis_barang_id
                 left join rongsok r2 on  tso.jenis_barang = 'AMPAS' and r2.id = d.jenis_barang_id
-                where so.tanggal ='".$date."'
+                where CAST(so.created AS DATE) ='".$date."'
                 group by jenis_barang_id");
     }
 

@@ -2257,7 +2257,7 @@ class BeliSparePart extends CI_Controller{
                     'id_vc'=>0,
                     'kurs'=>$this->input->post('kurs'),
                     'currency'=>$this->input->post('currency'),
-                    'nominal'=>str_replace('.', '', $this->input->post('nominal')),
+                    'nominal'=>str_replace(',', '', $this->input->post('nominal')),
                     'created_at'=>$tanggal,
                     'created_by'=>$user_id
                 );
@@ -2281,7 +2281,7 @@ class BeliSparePart extends CI_Controller{
                         'vk_id'=> $this->input->post('id'),
                         'id_fk'=> $f_kas,
                         'keterangan'=> $this->input->post('remarks'),
-                        'amount'=> str_replace('.', '', $this->input->post('total_lpb')),
+                        'amount'=> str_replace(',', '', $this->input->post('nominal')),
                         'created'=> $tanggal,
                         'created_by'=> $user_id,
                         'modified'=> $tanggal,
@@ -2439,20 +2439,20 @@ class BeliSparePart extends CI_Controller{
             $tabel .= '<td>'.$row->no_po.'</td>';
             $tabel .= '<td>'.(($row->ppn==1)? '<i class="fa fa-check"></i> Yes': '<i class="fa fa-times"></i> No').'</td>';
             $tabel .= '<td>'.$row->currency.'</td>';
-            $tabel .= '<td>'.number_format($row->amount,0,',','.').'</td>';
+            $tabel .= '<td>'.number_format($row->amount,2,',','.').'</td>';
             $tabel .= '<td>'.$row->remarks.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
                     . 'red" onclick="hapusDetail_lpb('.$row->id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';            
             $no++;
-            $total_lpb += $row->amount;
+            $total_lpb += number_format($row->amount, 2, '.', '');
         }
         $tabel .= '<tr>';
         $tabel .= '<td></td>';
         $tabel .= '<td><a <a href="'.base_url().'index.php/BeliSparePart/bpb_list" onclick="window.open(\''.base_url().'index.php/BeliSparePart/lpb_list\',\'newwindow\',\'width=1200,height=550\'); return false;" class="btn btn-primary" style="width:100%;">Lihat daftar Penerimaan Barang</a></td>';
         $tabel .= '<td style="text-align:right" colspan="3"><strong>Total </strong></td>';
-        $tabel .= '<td><input type="text" id="total_lpb" name="total_lpb" style="background-color: green; color: white;" class="form-control" data-myvalue="'.$total_lpb.'" value="'.number_format($total_lpb,0,',','.').'" readonly="readonly"></td>';
+        $tabel .= '<td><input type="text" id="total_lpb" name="total_lpb" style="background-color: green; color: white;" class="form-control" data-myvalue="'.$total_lpb.'" value="'.number_format($total_lpb,2,',','.').'" readonly="readonly"></td>';
         $tabel .= '<td colspan="2"></td>';
         $tabel .= '<tr>';
 

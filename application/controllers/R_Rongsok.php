@@ -917,7 +917,6 @@ class R_Rongsok extends CI_Controller{
         $this->load->model('Model_gudang_fg');
         $data['group_id']  = $group_id;
         $data['list'] = $this->Model_r_rongsok->pindah_history()->result();
-        $data['list_jb'] = $this->Model_gudang_fg->barang_fg_list()->result();
         $data['content']= "resmi/packing/index";
 
         $this->load->view('layout', $data);
@@ -948,14 +947,19 @@ class R_Rongsok extends CI_Controller{
         $user_ppn = $this->session->userdata('user_ppn');
 
         $this->db->trans_start();
+
+        $cek = $this->db->query("select id from t_pindah where tanggal = '".$tgl_input."'")->row_array();
+            if(empty($cek)){
                 $data = array(
                         'tanggal'=> $tgl_input,
-                        'jenis_barang_id'=> $this->input->post('jenis_barang'),
                         'created_at'=> $tanggal,
                         'created_by'=> $user_id
                     );
                 $this->db->insert('t_pindah', $data);
                 $id = $this->db->insert_id();
+            }else{
+                $id = $cek['id'];
+            }
 
         if($this->db->trans_complete()){
             redirect('index.php/R_Rongsok/pilih_pindah/'.$id);  
@@ -980,7 +984,6 @@ class R_Rongsok extends CI_Controller{
             $data['content']= "resmi/packing/pindah";
             $data['header']  = $this->Model_r_rongsok->show_header_pindah($id)->row_array(); 
             $this->load->model('Model_gudang_fg');
-            $data['details'] = $this->Model_gudang_fg->view_gudang_fg($data['header']['jenis_barang_id'])->result();
 
             $this->load->view('layout', $data);   
         }else{
@@ -992,20 +995,17 @@ class R_Rongsok extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
-        $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
+        $id = $this->input->post('id');
 
         $this->db->trans_start();
 
-            $details = $this->input->post('myDetails');
-
+            $details = $this->Model_r_rongsok->list_scan_pindah($id)->result();
             foreach ($details as $row){
-                if(isset($row['check']) && $row['check']==1){
-                    $this->db->where('id', $row['id_detail']);
-                    $this->db->update('t_gudang_fg', array(
-                        'flag_pindah'=>$this->input->post('id')
-                    ));
-                }
+                $this->db->where('id', $row->gudang_id);
+                $this->db->update('t_gudang_fg', array(
+                    'flag_pindah'=> $id
+                ));
             }
                 //API
                 $this->load->helper('target_url');
@@ -1025,6 +1025,13 @@ class R_Rongsok extends CI_Controller{
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
+                if($result['status']==true){
+                    // echo $id;
+                    $this->db->where('id', $id);
+                    $this->db->update('t_pindah', array(
+                        'api'=> 1
+                    ));
+                }
                 // print_r($response);
                 // die();
 
@@ -1054,5 +1061,97 @@ class R_Rongsok extends CI_Controller{
         $data['content']= "resmi/packing/view_pindah";
 
         $this->load->view('layout', $data);
+    }
+
+    function load_detail_fg(){
+        $id = $this->input->post('id');
+        
+        $tabel = "";
+        $no    = 1;
+        $total_netto = 0;
+        $this->load->model('Model_r_rongsok');
+        $myDetail = $this->Model_r_rongsok->list_scan_pindah($id)->result();
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>'.$row->no_packing.'</td>';
+            $tabel .= '<td>'.$row->jenis_barang.'</td>';
+            $tabel .= '<td>'.$row->uom.'</td>';
+            $tabel .= '<td align="right">'.number_format($row->netto,2,".",",").'</td>';
+            $tabel .= '<td>'.$row->keterangan.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a>';
+            $tabel .= '</tr>';            
+            $no++;
+            $total_netto += $row->netto;
+        }
+            
+        $tabel .= '<tr>';
+        $tabel .= '<td colspan="4" style="text-align:right">TOTAL : </td>';
+        $tabel .= '<td align="right">'.number_format($total_netto,2,".",",").'</td>';
+        $tabel .= '<td colspan="2"></td>';
+        $tabel .= '</tr>';
+
+        header('Content-Type: application/json');
+        echo json_encode($tabel);
+    }
+
+    function check_duplicate(){
+        $id = $this->input->post('id');
+        $no = $this->input->post('no');
+        $sql = $this->db->query('SELECT no_packing FROM t_pindah_history
+            WHERE pindah_id = '.$id.' AND no_packing = "'.$no.'"');
+
+        if($sql->num_rows() > 0){
+            $return_data['response']= "duplicate";
+        }else{
+            $return_data['response']= "ok";
+        } 
+
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
+
+    function save_detail_fg(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $pindah_id = $this->input->post('id');
+        $no_packing = $this->input->post('no_packing');
+        $gudang_id = $this->input->post('gudang_id');
+        $jenis_barang_id = $this->input->post('jenis_barang_id');
+        $netto = $this->input->post('netto');
+        $keterangan = $this->input->post('keterangan');
+
+        $return_data = [];
+        $data = [
+                'pindah_id'=> $pindah_id,
+                'gudang_id'=> $gudang_id,
+                'jenis_barang_id'=> $jenis_barang_id,
+                'no_packing'=> $no_packing
+            ];
+        
+        if($this->db->insert('t_pindah_history', $data)){
+            $return_data['response']= "success";
+        }else{
+            $return_data['response']= "error";
+            $return_data['message']= "Gagal!";
+        } 
+
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
+
+    function delete_detail_fg(){
+        $id = $this->input->post('id');
+        if($this->db->delete('t_pindah_history', ['id' => $id])){
+            $return_data['response']= "success";
+        }else{
+            $return_data['response']= "error";
+            $return_data['message']= "Gagal!";
+        } 
+
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
     }
 }

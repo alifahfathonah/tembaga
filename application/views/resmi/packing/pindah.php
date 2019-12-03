@@ -1,20 +1,18 @@
 <div class="row">
     <div class="col-md-12 alert-warning alert-dismissable">        
-        <h5 style="color:navy">
+        <h4 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> BPB 
-            <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/R_Rongsok'); ?>"> BPB FG </a> 
-            <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/R_Rongsok/ambil_packing'); ?>"> BPB FG List </a> 
-        </h5>          
+            <i class="fa fa-angle-right"></i> Pindah Packing
+            <i class="fa fa-angle-right"></i>
+            <a href="<?php echo base_url('index.php/R_Rongsok/'); ?>"> Scan FG</a>
+        </h4>          
     </div>
 </div>
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12">
         <?php
-            if( ($group_id==16)||($hak_akses['create_lpb']==1) ){
+            if( ($group_id==9)||($hak_akses['index']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -25,7 +23,8 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/R_Rongsok/update_bpb'); ?>">  
+              id="formku" action="<?php echo base_url('index.php/R_Rongsok/simpan_pindah_data'); ?>">  
+              <input type="hidden" name="id" id="id" value="<?= $header['id'] ?>">
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -35,75 +34,42 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
-
-                            <input type="hidden" id="id" name="id" value="<?=$header['id'];?>">
+                                value="<?php echo date('Y-m-d', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
-                </div>
-                <div class="col-md-2">&nbsp;</div>
-                <div class="col-md-5"> 
-                    <div class="row">
-                        <div class="col-md-4">
-                            Jenis Barang
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="jenis_barang" name="jenis_barang" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="(<?php echo $header['kode'].') '.$header['jenis_barang']; ?>">
-
-                            <input type="hidden" name="id_jenis_barang" value="<?=$header['jenis_barang_id']; ?>">
-                        </div>
-                    </div>
-                </div>      
+                </div>             
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-scrollable">
-                        <table class="table table-bordered table-striped table-hover">
+                        <table class="table table-bordered table-striped table-hover" id="tabel_dtr">
                             <thead>
                                 <th style="width:40px">No</th>
-                                <th>
-                                    <input type="checkbox" id="check_all" name="check_all" onclick="checkAll()" class="form-control checklist">
-                                </th>
-                                <th>Ket</th>
-                                <th>Nama Item</th>
+                                <th>No. Packing</th>
+                                <th>Nama Barang</th>
                                 <th>UOM</th>
-                                <th>Bruto</th>
-                                <th>Berat</th>
                                 <th>Netto</th>
-                                <th>No Packing</th>
+                                <th>Keterangan</th>
+                                <th></th>
                             </thead>
-                            <tbody>
-                            <?php
-                                $no = 1;
-                                $total_netto = 0;
-                                foreach ($details as $row){
-                                    echo '<tr>';
-                                    echo '<td style="text-align:center">'.$no.'</td>';
-                                    echo '<td>';
-                                    echo '<input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
-                                            onclick="check();" class="form-control checklist">';
-                                    echo '<input type="hidden" value="'.$row->id.'" id="check_'.$no.'" name="myDetails['.$no.'][id_detail]" class="form-control checklist">';
-                                    echo '</td>';
-                                    echo '<td>'.(($row->flag_pindah > 0)? '<div style="background-color: red;color: white;"><i class="fa fa-remove"></i></div>' : '<div style="background-color: green;color: white;"><i class="fa fa-check"></i></div>').'</td>';
-                                    echo '<td>('.$row->kode.') '.$row->jenis_barang.'</td>';
-                                    echo '<td>'.$row->uom.'</td>';          
-                                    echo '<td>'.number_format($row->bruto,2,',','.').'</td>';   
-                                    echo '<td>'.number_format($row->berat_bobbin,2,',','.').'</td>';  
-                                    echo '<td>'.number_format($row->netto,2,',','.').'</td>';
-                                    echo '<td>'.$row->no_packing.'</td>';          
-                                    echo '</tr>';
-                                    $total_netto += $row->netto;
-                                    $no++;
-                                }
-                            ?>
+                            <tbody id="boxDetail">
                             </tbody>
-                            <tr>
-                                <td colspan="6"></td>
-                                <td><?=number_format($total_netto,2,',','.');?></td>
-                                <td></td>
-                            </tr>
+                            <tfoot>
+                                <tr>
+                                    <td>#</td>
+                                    <td><input type="text" id="no_packing" name="no_packing" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()" onchange="get_packing(this.value);"></td>
+                                    <input type="hidden" name="id_barang" id="id_barang"><!-- ID GUDANG -->
+                                    <input type="hidden" name="id_gudang" id="id_gudang"><!-- ID GUDANG -->
+                                    <td><input type="text" id="nama_barang" name="nama_barang" class="form-control myline"></td>
+                                    <td><input type="text" id="uom" name="uom" class="form-control myline"></td>
+                                    </td>
+                                    <td><input type="text" id="netto" name="netto" class="form-control myline" /></td>
+                                    <td><input type="text" id="keterangan" name="keterangan" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
+                                    <td style="text-align:center">
+                                         <a id="btn_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
+                                    </td>
+                                 </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -111,11 +77,12 @@
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
+                    <a href="javascript:;" class="btn green" id="simpanData" onclick="simpanData();"> 
+                        <i class="fa fa-floppy-o"></i> Simpan </a>
+                    <!-- <a href="javascript:;" class="btn blue-ebonyclay" id="refreshData" onclick="refreshData();"> 
+                        <i class="fa fa-refresh"></i> Refresh </a> -->
                     <a href="<?php echo base_url('index.php/R_Rongsok/ambil_packing'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
-
-                    <a href="javascript:;" style="display: none;" class="btn blue pindah" id="btnPindah" onclick="pindahData();"> 
-                        <i class="fa fa-floppy-o"></i> Pindah Details </a>
                 </div>    
             </div>
         </form>
@@ -131,44 +98,169 @@
         ?>
     </div>
 </div>
-<script type="text/javascript">
-function checkAll(){
-    if ($('#check_all').prop("checked")) {  
-        $('input').each(function(i){
-            $('#uniform-check_'+i+' span').attr('class', 'checked');
-            $('#check_'+i).attr('checked', true);
-        });
-    }else{
-        $('input').each(function(i){
-            $('#uniform-check_'+i+' span').attr('class', '');
-            $('#check_'+i).attr('checked', false);
-        });
-    }   
+<script>
+function loadDetail(id){
+    id = $('#id').val();
+    $.ajax({
+        type:"POST",
+        url:'<?php echo base_url('index.php/R_Rongsok/load_detail_fg'); ?>',
+        data:{
+            id: id,
+        },
+        success:function(result){
+            $('#boxDetail').html(result);     
+        }
+    });
+}
+function get_packing(no){
+    $.ajax({
+        url: "<?php echo base_url('index.php/StokOpname/get_packing'); ?>",
+        type: "POST",
+        data : {no: no},
+        success: function (result){
+            if (result!=null){
+                $("#nama_barang").val(result['jenis_barang']);
+                $("#id_gudang").val(result['id']);
+                $("#id_barang").val(result['jenis_barang_id']);
+                $("#uom").val(result['uom']);
+                $("#netto").val(result['netto']);
+                $("#keterangan").val(result['keterangan']);
+                // const total_old = (parseFloat($('#total_netto').val()) + parseFloat(result['netto']));
+                // const total = total_old.toFixed(2);
+                // $('#total_netto').val(total);
+                check_duplicate(no);
+                // $('#no_packing_'+id).prop('readonly',true);
+
+            } else {
+                check_duplicate(no);
+                // $('#message').html("No pallete tidak ditemukan, silahkan ulangi kembali");
+                // $('.alert-danger').show();
+                // $("#no_packing").val('');
+                // $('#no_packing').focus();
+                // $("#nama_barang").val('');
+                // $("#id_gudang").val('');
+                // $("#id_barang").val('');
+                // $("#uom").val('');
+                // $("#netto").val('');
+                // $("#keterangan").val('');
+            }
+        }
+    });
 }
 
-function check(){
-    $('#uniform-check_all span').attr('class', '');
-    $('#check_all').attr('checked', false);    
+function check_duplicate(no){
+    id= $('#id').val();
+    // tanggal: $('#tanggal').val();
+    $.ajax({
+        url: "<?php echo base_url('index.php/R_Rongsok/check_duplicate'); ?>",
+        type: "POST",
+        data : {
+            id: id,
+            no: no
+        },
+        success: function (result){
+            console.log(result);
+            if (result['response'] == "ok"){
+                create_new_input();
+
+                $('#message').html("");
+                $('.alert-danger').hide();
+            } else {
+                $('#message').html("Nomor packing sudah tersimpan, tolong coba lagi!");
+                $('.alert-danger').show();
+
+                $("#no_packing").val('');
+                $('#no_packing').focus();
+                $("#nama_barang").val('');
+                $("#id_barang").val('');
+                $("#id_gudang").val('');
+                $("#uom").val('');
+                $("#netto").val('');
+                $("#keterangan").val('');
+            }
+        }
+    });
 }
 
-function pindahData(){    
+function create_new_input(){
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url('index.php/R_Rongsok/save_detail_fg'); ?>",
+        data: {
+            id: $('#id').val(),
+            gudang_id: $('#id_gudang').val(),
+            no_packing: $('#no_packing').val(),
+            jenis_barang_id: $('#id_barang').val(),
+            netto: $('#netto').val(),
+            keterangan: $('#keterangan').val(),
+        },
+        cache: false,
+        success: function(result) {
+            var res = result['response'];
+            if(res=='success'){
+                loadDetail($("#id").val());
+                $("#no_packing").val('');
+                $('#no_packing').focus();
+                $("#nama_barang").val('');
+                $("#id_gudang").val('');
+                $("#id_barang").val('');
+                $("#uom").val('');
+                $("#netto").val('');
+                $("#keterangan").val('');
+            }else{
+                // $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+                // $('#message').html("");
+                // $('.alert-danger').hide(); 
+                // $('#formku').submit();
+            }
+        }
+    });
+}
+
+function hapusDetail(id){
+    var r=confirm("Anda yakin menghapus packing ini?");
+    if (r==true){
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url('index.php/R_Rongsok/delete_detail_fg'); ?>",
+            data: {
+                id: id,
+            },
+            cache: false,
+            success: function(result) {
+                var res = result['response'];
+                if(res=='success'){
+                    loadDetail($("#id").val());
+                }else{
+                    // $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+                    // $('#message').html("");
+                    // $('.alert-danger').hide(); 
+                    // $('#formku').submit();
+                }
+            }
+        });
+    }
+}
+
+function simpanData(){
     if($.trim($("#tanggal").val()) == ""){
-        $('#message').html("Tanggal harus diisi, tidak boleh kososng!");
-        $('.alert-danger').show();
-    }else if(confirm('Anda Yakin Barcode ingin di Pindah ?')==true){    
-        $('#btnPindah').text('Please Wait ...').prop("onclick", null).off("click");
-        $('#message').html("");
-        $('.alert-danger').hide(); 
-        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/R_Rongsok/simpan_pindah_data");
+        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    }else{   
         $('#formku').submit();
     };
 };
+
+function refreshData(){
+    loadDetail($("#id").val());
+}
+
 </script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-$(function(){        
+$(function(){
     $("#tanggal").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
@@ -176,11 +268,10 @@ $(function(){
         buttonText: "Select date",
         changeMonth: true,
         changeYear: true,
-        dateFormat: 'dd-mm-yy'
-    }); 
-
-    $(".checklist").click(function() {
-      $('.pindah').toggle( $(".checklist:checked").length > 0 );
+        dateFormat: 'yy-mm-dd'
     });
+
+    loadDetail($("#id").val());
+    $('#no_packing').focus();
 });
 </script>

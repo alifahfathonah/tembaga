@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12">
         <?php
-            if( ($group_id==1)||($hak_akses['create_dtr']==1) ){
+            if( ($group_id==1)||($hak_akses['index']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">

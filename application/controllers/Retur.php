@@ -2509,6 +2509,19 @@ class Retur extends CI_Controller{
                     ));
                 }
             }
+            
+            //INSERT SURAT PEMINJAMAN BP DAN KARDUS
+            $query2 = $this->Model_sales_order->get_bp_kardus($sjid)->result();
+            if(!empty($query2)){
+                foreach ($query2 as $value) {
+                    $this->db->insert('t_surat_peminjaman', array(
+                        't_sj_id'=> $sjid,
+                        'jenis_packing'=> $value->jenis_packing,
+                        'jumlah'=> $value->jumlah,
+                        'ket'=> $value->ket
+                    ));
+                }
+            }
         }
         
         $data = array(
@@ -2680,6 +2693,45 @@ class Retur extends CI_Controller{
         echo '<script type="text/javascript">document.getElementById(\'coba\').submit();</script>';
         }else{
             'GAGAL';
+        }
+    }
+
+    function laporan_retur(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "retur/laporan_retur";
+
+        $this->load->view('layout', $data);  
+    }
+
+    function print_laporan_retur(){
+        $module_name = $this->uri->segment(1);
+        $this->load->helper('tanggal_indo');
+        $data['start']= date('Y-m-d', strtotime($_GET['ts']));
+        $data['end'] = date('Y-m-d', strtotime($_GET['te']));
+        $j = $_GET['j'];
+
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $this->load->model('Model_retur');
+        if($j == 0){
+            $data['detailLaporan'] = $this->Model_retur->print_laporan_retur($data['start'],$data['end'])->result();
+            $this->load->view('retur/print_laporan_retur', $data);
+        }else{
+
         }
     }
 }

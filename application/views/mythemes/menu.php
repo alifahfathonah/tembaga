@@ -345,11 +345,11 @@
                                     </a>
                                 </li>
                             <?php } ?>
-                                <li>
+                                <!-- <li>
                                     <a href="<?php echo base_url(); ?>index.php/Tolling/cek_balance">
                                     <i class="fa fa-truck"></i>
                                     Cek Balance </a>
-                                </li>
+                                </li> -->
                             </ul>
                         </li>
                     </ul>
@@ -555,7 +555,7 @@
                                         <i class="fa fa-briefcase"></i>
                                         Laporan Bahan Baku</a>
                                     </li>
-                                    <li>
+                                    <!-- <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangRongsok/search_permintaan_gudang">
                                         <i class="fa fa-print"></i>
                                         Permintaan Gudang</a>
@@ -564,7 +564,7 @@
                                         <a href="<?php echo base_url(); ?>index.php/GudangRongsok/search_permintaan_external">
                                         <i class="fa fa-print"></i>
                                         Permintaan External</a>
-                                    </li>
+                                    </li> -->
                                 </ul>
                             </li>
                             <?php } ?>
@@ -916,8 +916,27 @@
                                 Surat Jalan</a>
                             </li>
                         <?php } ?>
-                        </ul>
+                            </ul>
                         </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/Retur/laporan_retur">
+                            <i class="fa fa-file-text-o"></i>
+                            Laporan Retur </a>
+                        </li>
+                        <!-- <li>
+                            <a href="javascript:;">
+                            <i class="fa fa-cogs"></i>
+                            <span class="title">Retur Supplier</span>
+                            <span class="arrow "></span>
+                            </a>
+                            <ul class="sub-menu">
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/Retur/request_barang_list">
+                                <i class="fa fa-file-text-o"></i>
+                                SPB Retur </a>
+                            </li>
+                            </ul>
+                        </li> -->
                     </ul>
                 </li>
             <?php } ?>

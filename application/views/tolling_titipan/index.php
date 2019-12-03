@@ -82,6 +82,7 @@
                                     echo '<div class="bg-green" style="margin-bottom:5px;">Received</div>';
                                     echo '<a class="btn btn-circle btn-xs green-seagreen" href="'.base_url().'index.php/Tolling/matching_so/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Matching &nbsp; </a>';
                                 }
+                                echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/Tolling/print_balance/'.$data->id.'" target="_blank" style="margin-bottom:4px"> &nbsp; <i class="fa fa-arrows-h"></i> Cek Balance &nbsp; </a>'
                             ?>
                         </td>
                         <td>

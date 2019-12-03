@@ -935,6 +935,108 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
 
+    function pemasukan_rongsok($s,$e,$ppn){
+        return $this->db->query("SELECT
+                        t.tanggal AS tgl_ttr,
+                        t.no_ttr AS no_ttr,
+                    CASE
+                            
+                            WHEN dd.po_detail_id > 0 THEN
+                            'PO' 
+                            WHEN dd.po_detail_id = 0 
+                            AND d.so_id > 0 THEN
+                                'Tolling' ELSE 'Lain2' 
+                                END AS sumber,
+                        '' as no_spb,
+                        CASE
+                                
+                                WHEN dd.po_detail_id > 0 THEN
+                                p.no_po 
+                                WHEN dd.po_detail_id = 0 
+                                AND d.so_id > 0 THEN
+                                    so.no_sales_order ELSE '-' 
+                                    END AS no_doc_sumber,
+                            CASE
+                                    
+                                    WHEN dd.po_detail_id > 0 THEN
+                                    p.tanggal ELSE so.tanggal 
+                                END AS tgl_doc,
+                            CASE
+                                    
+                                    WHEN dd.po_detail_id > 0 THEN
+                                    s.kode_supplier 
+                                    WHEN dd.po_detail_id = 0 
+                                    AND d.so_id > 0 THEN
+                                        mc.kode_customer ELSE '-' 
+                                        END AS kode_sup_cust,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        s.nama_supplier 
+                                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                                        mc.nama_customer_kh 
+                                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                                        mc.nama_customer ELSE '-' 
+                                    END AS nama_sup_cust,
+                                    r.kode_rongsok AS kode_rongsok,
+                                    r.nama_item AS nama_item,
+                                    td.bruto AS bruto,
+                                    td.netto AS netto from
+            ttr_detail td
+            LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+            LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+            LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+            LEFT JOIN po p ON ( ( p.id = d.po_id ) AND ( dd.po_detail_id > 0 ) )
+            LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+            LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+            LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = d.supplier_id ) )
+            LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id )
+            WHERE
+                ( t.ttr_status != 0 ) AND ( d.type = 0 ) AND ( d.flag_ppn = ".$ppn." )
+            AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
+            AND t.tanggal BETWEEN '".$s."' and '".$e."'
+            ORDER BY sumber, kode_rongsok, no_ttr, tgl_ttr");
+    }
+
+    function pemasukan_rongsok_lain($s,$e,$j){
+        if($j==1){
+            $data = $this->db->query("select dd.*, r.nama_item, r.kode_rongsok, ttr.no_ttr, dtr.remarks, s.nama_supplier as nama from dtr_detail dd
+            left join dtr on dtr.id = dd.dtr_id
+            left join ttr on ttr.dtr_id = dtr.id
+            left join t_hasil_wip thw on dtr.prd_id = thw.id
+            left join rongsok r on dd.rongsok_id = r.id
+            left join supplier s on s.id = dtr.supplier_id
+            where dtr.prd_id > 0 and ttr.ttr_status = 1 and thw.jenis_masak = 'INGOT' and dtr.tanggal between '".$s."' and '".$e."'
+            order by kode_rongsok, tanggal_masuk, no_ttr");
+        }elseif($j==2){
+            $data = $this->db->query("select dd.*, r.nama_item, r.kode_rongsok, ttr.no_ttr, dtr.remarks, s.nama_supplier as nama from dtr_detail dd
+            left join dtr on dtr.id = dd.dtr_id
+            left join ttr on ttr.dtr_id = dtr.id
+            left join t_hasil_wip thw on dtr.prd_id = thw.id
+            left join rongsok r on dd.rongsok_id = r.id
+            left join supplier s on s.id = dtr.supplier_id
+            where dtr.prd_id > 0 and ttr.ttr_status = 1 and thw.jenis_masak = 'ROLLING' and dtr.tanggal between '".$s."' and '".$e."'
+            order by kode_rongsok, tanggal_masuk, no_ttr");
+        }elseif($j==3){
+            $data = $this->db->query("select dd.*, r.nama_item, r.kode_rongsok, ttr.no_ttr, dtr.remarks, s.nama_supplier as nama from dtr_detail dd
+            left join dtr on dtr.id = dd.dtr_id
+            left join ttr on ttr.dtr_id = dtr.id
+            left join rongsok r on dd.rongsok_id = r.id
+            left join supplier s on s.id = dtr.supplier_id
+            where dtr.supplier_id = 713 and ttr.ttr_status = 1 and dtr.tanggal between '".$s."' and '".$e."'
+            order by kode_rongsok, tanggal_masuk, no_ttr");
+        }elseif($j==4){
+            $data = $this->db->query("select dd.*, r.nama_item, r.kode_rongsok, ttr.no_ttr, COALESCE(s.nama_supplier,dtr.remarks) as nama from dtr_detail dd
+            left join dtr on dtr.id = dd.dtr_id
+            left join ttr on ttr.dtr_id = dtr.id
+            left join rongsok r on dd.rongsok_id = r.id
+            left join supplier s on s.id = dtr.supplier_id
+            where dtr.po_id = 0 and dtr.so_id = 0 and dtr.retur_id = 0 and dtr.prd_id = 0 and supplier_id != 713 and ttr.ttr_status = 1 and dtr.tanggal between '".$s."' and '".$e."'
+            order by kode_rongsok, tanggal_masuk, no_ttr");
+        }
+        return $data;
+    }
+
 // LIST DTR UNTUK SPB MATCHING
     function list_dtr(){
         $data = $this->db->query("select dtr.*, r.nama_item, (select SUM(netto) from dtr_detail where dtr_detail.dtr_id = dtr.id and flag_resmi = 0) as netto, dtrd.berat_palette, dtrd.no_pallete, dtrd.line_remarks

@@ -8,7 +8,7 @@
 8- dtwip dari tolling gausah dikirim ke pajak (done)
 9- dtwip di pajak itu buat sendiri, nanti enggar yg buat. (done)
 10- lpb edit kurs dan gudang sp (done)
-11- pindahin fg stok saat itu ke pajak. di buatin bpb di pajak per jenis barang
+11- pindahin fg stok saat itu ke pajak. di buatin bpb di pajak per jenis barang(done)
 12- pembulatan pindah ke tabel matching. yang di invoice nilai pembulatan total saja(done)
 13- Bank / Kas keluar belum pindah api saat update (done)
 14- Piutang belum lunas diliat atur by tanggal(done)
@@ -51,11 +51,11 @@ bug - cek kenapa kadang uang masuk matching nyangkut (done)
 	31- FG
 	32- Rongsok
 33- Laporan Retur, yang udah diterima dan udah dikirim balik lagi ada berapa. per bulan
-34- Pemasukan Rongsok berdasarkan
+34- Pemasukan Rongsok berdasarkan (done)
 
--PO dan Tolling ( KH dan KMP)
--Dari Apollo, Rolling, SDM
--SPB Rongsok tambahin jenis Rolling utk Tali Rolling
+-PO dan Tolling ( KH dan KMP) (done)
+-Dari Apollo, Rolling, SDM (done)
+-SPB Rongsok tambahin jenis Rolling utk Tali Rolling(done)
 
 35- Pemasukan FG
 35 -Tambahin pemasukan fg detail no packing (global dan produksi)(done)
@@ -82,10 +82,10 @@ bug - cek kenapa kadang uang masuk matching nyangkut (done)
   -Pengeluaran WIP ke SDM
   -Adjustment
 
-39- SO balance terima wip/rongsok dan kirim fg balik
-40- PO balance kirim surat jalan keluar dan terima hasil fg nya
+39- SO balance terima wip/rongsok dan kirim fg balik(done)
+40- PO balance kirim surat jalan keluar dan terima hasil fg nya(done)
 
-41- Generate Baru saat Approve Surat Jalan
+41- Generate Baru saat Approve Surat Jalan(done)
 41- BP 1pcs(done)
 -BH *Dikembalikan(done)
 -yang lain dipinjamkan(done)
@@ -94,3 +94,4 @@ bug - cek kenapa kadang uang masuk matching nyangkut (done)
 
 42- So tanpa harga aja(done)
 43- Laporan rolling yg ada sizenya aja(done)
+44- ReDesign Kirim Barcode ke Pajak(done)

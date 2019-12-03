@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['index']==1) ){
+            if( ($group_id==9)||($hak_akses['index']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-<div class="collapse well" id="form_add" >
+    <div class="collapse well" id="form_add" >
         <form class="eventInsForm" method="post" target="_self" name="formku" 
     id="formku" action="<?php echo base_url('index.php/R_Rongsok/create_pindah'); ?>">
         <div class="row">
@@ -37,36 +37,39 @@
                             <input type="text" id="tanggal" name="tanggal" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
                                 value="<?php echo date('d-m-Y'); ?>">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="col-md-12">
-                            Jenis Barang
-                                <font color="#f00">*</font>
-                            </div>
-                            <div class="col-md-12">
-                                <select  id="jenis_barang" name="jenis_barang" placeholder="Silahkan pilih..."
-                                class="form-control myline select2me" style="margin-bottom:5px">
-                                    <option value=""></option>
-                                    <?php 
-                                foreach($list_jb as $jb){
-                                ?>
-                                    <option value="<?=$jb->id;?>"><?='('.$jb->kode.') '.$jb->jenis_barang;?></option>
-                                    <?php } ?>
-                                </select>
-                                </div>
-                                <div class="col-md-12 text-right">
-                            &nbsp; &nbsp; 
-                                    <a href="javascript:;" onclick="simpanData()" class="btn green" >
-                                        <i class="fa fa-floppy-o"></i> Buat Laporan 
-                                    </a>
-                                </div>
-                            </div>
+                            <a href="javascript:;" onclick="simpanData()" class="btn green" >
+                                <i class="fa fa-floppy-o"></i> Buat Laporan 
+                            </a>
                         </div>
                     </div>
+                    <!-- <div class="col-md-6">
+                        <div class="col-md-12">
+                        Jenis Barang
+                            <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-12">
+                            <select  id="jenis_barang" name="jenis_barang" placeholder="Silahkan pilih..."
+                            class="form-control myline select2me" style="margin-bottom:5px">
+                                <option value=""></option>
+                                <?php 
+                            foreach($list_jb as $jb){
+                            ?>
+                                <option value="<?=$jb->id;?>"><?='('.$jb->kode.') '.$jb->jenis_barang;?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-md-12 text-right">
+                        &nbsp; &nbsp; 
+                            <a href="javascript:;" onclick="simpanData()" class="btn green" >
+                                <i class="fa fa-floppy-o"></i> Buat Laporan 
+                            </a>
+                        </div>
+                    </div> -->
                 </div>
-            </form>
+            </div>
         </div>
+        </form>
+    </div>
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
@@ -84,9 +87,8 @@
                 <tr>
                     <th style="width:50px;">No</th>
                     <th>Tanggal</th>
-                    <th>Kode</th>
-                    <th>Jenis Barang</th>
                     <th>Jumlah</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -99,11 +101,11 @@
                     <tr>
                         <td style="text-align:center"><?php echo $no; ?></td>
                         <td><?php echo $data->tanggal; ?></td>
-                        <td><?php echo $data->kode; ?></td>
-                        <td><?php echo $data->jenis_barang; ?></td>
                         <td><?php echo $data->jumlah; ?></td>
+                        <td><?=($data->api==0)?'<div style="background-color:grey; color:white;">Belum Dikirim':'<div style="background-color:green; color:white;">Sudah Terkirim';?></td></div></td>
                         <td style="text-align:center">
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/R_Rongsok/view_pindah/<?php echo $data->id; ?>" style="margin-bottom:4px">&nbsp; <i class="fa fa-book"></i> View &nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/R_Rongsok/pilih_pindah/<?php echo $data->id; ?>" style="margin-bottom:4px">&nbsp; <i class="fa fa-pencil"></i> Edit &nbsp; </a>
                             <?php if($data->jumlah==0){ ?>
                                 <a href="<?php echo base_url(); ?>index.php/R_Rongsok/delete_pindah/<?php echo $data->id; ?>" 
                                class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus data ini?');"><i class="fa fa-trash-o"></i> Hapus </a>
@@ -150,4 +152,4 @@ $(function(){
 
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });
-</script>         
+</script>

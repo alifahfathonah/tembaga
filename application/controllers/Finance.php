@@ -345,11 +345,11 @@ class Finance extends CI_Controller{
                         'approved_by'=> $user_id
         ));
             
-            if($this->db->trans_complete()){    
-                $this->session->set_flashdata('flash_msg', 'Uang Masuk sudah di-approve');            
-            }else{
-                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
-            }             
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'Uang Masuk sudah di-approve');            
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+        }
         
        redirect('index.php/Finance');
     }
@@ -3167,45 +3167,45 @@ class Finance extends CI_Controller{
     }
 
     function print_penjualan_piutang(){
-            $module_name = $this->uri->segment(1);
-            $user_ppn    = $this->session->userdata('user_ppn');
-            $this->load->helper('tanggal_indo');
-            $tanggal = date('Y-m-d');
-            $l = $_GET['laporan'];
-            $j = $_GET['j'];
-            $tgl = date('Y-m-d', strtotime($_GET['t']));
-            $group_id    = $this->session->userdata('group_id');        
-            if($group_id != 1){
-                $this->load->model('Model_modules');
-                $roles = $this->Model_modules->get_akses($module_name, $group_id);
-                $data['hak_akses'] = $roles;
-            }
-            $data['group_id']  = $group_id;
-            // echo $t;die();
+        $module_name = $this->uri->segment(1);
+        $user_ppn    = $this->session->userdata('user_ppn');
+        $this->load->helper('tanggal_indo');
+        $tanggal = date('Y-m-d');
+        $l = $_GET['laporan'];
+        $j = $_GET['j'];
+        $tgl = date('Y-m-d', strtotime($_GET['t']));
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        // echo $t;die();
 
-            $this->load->model('Model_finance');
-            if($j==0){
-                if($l==0){
-                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang($l)->result();
-                }elseif($l==1){
-                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang($l)->result();
-                }elseif($l==2){
-                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_all()->result();
-                }elseif($l==3){
-                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_kmp(1)->result();
-                }
-            }else{
-                if($l==0){
-                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang2($l,$tgl)->result();
-                }elseif($l==1){
-                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang2($l,$tgl)->result();
-                }elseif($l==2){
-                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_all2($tgl)->result();
-                }elseif($l==3){
-                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_kmp2(1,$tgl)->result();
-                }
+        $this->load->model('Model_finance');
+        if($j==0){
+            if($l==0){
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang($l)->result();
+            }elseif($l==1){
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang($l)->result();
+            }elseif($l==2){
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_all()->result();
+            }elseif($l==3){
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_kmp(1)->result();
             }
-            $this->load->view('finance/print_laporan_piutang', $data);
+        }else{
+            if($l==0){
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang2($l,$tgl)->result();
+            }elseif($l==1){
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang2($l,$tgl)->result();
+            }elseif($l==2){
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_all2($tgl)->result();
+            }elseif($l==3){
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_kmp2(1,$tgl)->result();
+            }
+        }
+        $this->load->view('finance/print_laporan_piutang', $data);
     }
 
     function search_penerimaan(){

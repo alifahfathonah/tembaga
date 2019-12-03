@@ -259,9 +259,9 @@ class Model_retur extends CI_Model{
 
     function surat_jalan(){
         $data = $this->db->query("Select tsj.*, (select count(tsjd.id) from t_surat_jalan_detail tsjd where tsjd.t_sj_id = tsj.id) as jumlah_item,
-                    cust.nama_customer, cust.alamat,
-                    so.no_sales_order
+                    cust.nama_customer, cust.alamat, r.no_retur, so.no_sales_order
                 From t_surat_jalan tsj
+                    Left Join retur r On (tsj.retur_id = r.id)
                     Left Join m_customers cust On (tsj.m_customer_id = cust.id)
                     Left Join sales_order so On (tsj.sales_order_id = so.id) 
                 Where tsj.retur_id > 0
@@ -450,6 +450,26 @@ class Model_retur extends CI_Model{
         return $data;
     }
 
+    function print_laporan_retur($s,$e){
+        return $this->db->query("select * from (select r.no_retur, r.tanggal, r.jenis_retur, mc.nama_customer, COALESCE(jb.jenis_barang, rsk.nama_item) as jenis_barang, sum(rd.netto) as netto, r.remarks,
+                COALESCE((select sum(netto) from t_surat_jalan_detail tsjd
+                    left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
+                        where tsj.retur_id = r.id and tsjd.jenis_barang_id = rd.jenis_barang_id and tsj.tanggal < '".$s."' group by tsjd.jenis_barang_id),0) as netto_kirim_b,
+                (CASE WHEN r.jenis_retur = 1 THEN rd.netto ELSE COALESCE((select sum(netto) from t_surat_jalan_detail tsjd
+                    left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
+                        where tsj.retur_id = r.id and tsjd.jenis_barang_id = rd.jenis_barang_id and tsj.tanggal  between '".$s."' and '".$e."'
+                            group by tsjd.jenis_barang_id),0) END) as netto_kirim, COALESCE(fi.tanggal,'".$s."') as tanggal_invoice
+                    from retur_detail rd
+                left join retur r on rd.retur_id = r.id
+                left join m_customers mc on r.customer_id = mc.id
+                left join jenis_barang jb on r.jenis_barang != 'RONGSOK' and rd.jenis_barang_id = jb.id
+                left join rongsok rsk on r.jenis_barang = 'RONGSOK' and rd.jenis_barang_id = rsk.id
+                left join f_invoice fi on r.id = fi.id_retur
+                where r.tanggal <= '".$e."'
+                group by rd.retur_id, jenis_barang_id)as a
+                where CASE WHEN jenis_retur = 1 THEN tanggal_invoice >= '".$s."' ELSE netto >= netto_kirim_b END
+                order by nama_customer, tanggal, no_retur");
+    }
     /*
     function load_detail_surat_jalan($id){
         $data = $this->db->query("Select sjd.*, ampas.nama_item, ampas.uom,

@@ -178,6 +178,52 @@ class Model_tolling_titipan extends CI_Model{
         return $data;
     }
 
+//START
+//TOLLING SO
+    function details_bahan($id){
+        return $this->db->query("Select * From ((Select dtwip.id, dtwip.no_dtwip as nomor, dtwip.tanggal, sum(berat) as netto
+                From dtwip_detail dd
+                    Left Join dtwip on dd.dtwip_id = dtwip.id
+                Where dtwip.so_id=".$id."
+                group by dd.dtwip_id)
+                UNION ALL
+                (Select dtr.id, dtr.no_dtr as nomor, dtr.tanggal, sum(netto) as netto
+                From dtr_detail dtrd
+                    Left Join dtr On (dtrd.dtr_id = dtr.id) 
+                Where dtr.so_id=".$id."
+                group by dtrd.dtr_id)) as a order by tanggal");
+    }
+
+    function details_kirim($id){
+        $data = $this->db->query("select tsj.no_surat_jalan as nomor, tsj.tanggal, sum(tsjd.netto) as netto from t_surat_jalan_detail tsjd
+            left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
+            left join t_sales_order tso on tsj.sales_order_id = tso.id
+        where tso.id =".$id."
+            group by tso.id
+        ");
+        return $data;
+    }
+
+//TOLLING PO
+    function details_terima($id){
+        return $this->db->query("Select dtt.id, dtt.no_dtt as nomor, dtt.tanggal, sum(netto) as netto
+                From dtt_detail dd
+                    Left Join dtt on dd.dtt_id = dtt.id
+                Where dtt.po_id=".$id."
+                group by dd.dtt_id");
+    }
+
+    function details_kirim_bahan($id){
+        $data = $this->db->query("select tsj.no_surat_jalan as nomor, tsj.tanggal, sum(tsjd.netto) as netto from t_surat_jalan_detail tsjd
+            left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
+            left join po on tsj.po_id = po.id
+        where po.id =".$id."
+            group by po.id
+        ");
+        return $data;
+    }
+//END
+
     function show_detail_dtwip($id){
         $data = $this->db->query("Select dtwipd.*, jb.jenis_barang, jb.uom
                     From dtwip_detail dtwipd 

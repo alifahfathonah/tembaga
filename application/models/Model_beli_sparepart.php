@@ -268,7 +268,7 @@ class Model_beli_sparepart extends CI_Model{
                     Left Join po On (voucher.po_id = po.id) 
                     Left Join f_kas fk On (fk.id = voucher.id_fk)
                 Where voucher.jenis_barang='SPARE PART' and po.flag_ppn = ".$user_ppn." or v.flag_ppn =".$user_ppn."
-                Order By fk.nomor desc");
+                Order By fk.tanggal desc");
         return $data;
     }
 
@@ -500,7 +500,7 @@ class Model_beli_sparepart extends CI_Model{
                 round((select if(po.diskon=0,if(p.ppn=1,sum(ld.qty*pd.amount)*110/100,sum(ld.qty*pd.amount)),if(p.ppn=1,sum(ld.qty*pd.amount)*110/100,sum(ld.qty*pd.amount))*(100-po.diskon)/100)+po.materai from lpb_detail ld
                  left join po_detail pd on pd.id = ld.po_detail_id
                  left join po p on p.id = pd.po_id
-                 where ld.lpb_id=lpb.id),0) as amount          
+                 where ld.lpb_id=lpb.id),2) as amount          
             from lpb
             left join po on po.id = lpb.po_id
             where lpb.id =".$id);
@@ -512,7 +512,7 @@ class Model_beli_sparepart extends CI_Model{
                 (select if(po.diskon=0,if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount)),if(p.ppn=1,round(sum(ld.qty*pd.amount)*110/100),sum(ld.qty*pd.amount))*(100-po.diskon)/100)+po.materai from lpb_detail ld
                  left join po_detail pd on pd.id = ld.po_detail_id
                  left join po p on p.id = pd.po_id
-                 where ld.lpb_id=lpb.id) as amount          
+                 where ld.lpb_id=lpb.id) as amount
             from lpb
             left join po on po.id = lpb.po_id
             where lpb.vk_id =".$id);

@@ -4438,4 +4438,37 @@ class Tolling extends CI_Controller{
             redirect('index.php/Tolling/dtwip_list');
         }
     }
+
+    function print_balance(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_tolling_titipan');
+            $this->load->helper('tanggal_indo');
+            $data['header']  = $this->Model_tolling_titipan->show_header_so($id)->row_array();
+            $data['header']['jenis'] = 'SO';
+            $data['details_bahan'] = $this->Model_tolling_titipan->details_bahan($id)->result();
+            $data['details_kirim'] = $this->Model_tolling_titipan->details_kirim($id)->result();
+
+            $this->load->view('tolling_titipan/print_balance', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
+
+    function print_balance_sp(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_tolling_titipan');
+            $this->load->model('Model_beli_fg');
+            $this->load->helper('tanggal_indo');
+            $data['header']  = $this->Model_beli_fg->show_header_po($id)->row_array();
+            $data['header']['jenis'] = 'PO';
+            $data['details_bahan'] = $this->Model_tolling_titipan->details_kirim_bahan($id)->result();
+            $data['details_kirim'] = $this->Model_tolling_titipan->details_terima($id)->result();
+
+            $this->load->view('tolling_titipan/print_balance', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
 }

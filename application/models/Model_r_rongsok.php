@@ -46,24 +46,30 @@ class Model_r_rongsok extends CI_Model{
     }
 
     function pindah_history(){
-        return $this->db->query("Select tp.*, jb.kode, jb.jenis_barang, (select count(id) from t_gudang_fg tgf where tgf.flag_pindah = tp.id) as jumlah From t_pindah tp
-            left join jenis_barang jb on jb.id = tp.jenis_barang_id
+        return $this->db->query("Select tp.*, (select count(id) from t_gudang_fg tgf where tgf.flag_pindah = tp.id) as jumlah From t_pindah tp
             ");
     }
 
     function view_pindah($id){
         return $this->db->query("Select tgf.*, jb.jenis_barang, jb.uom from t_gudang_fg tgf 
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-            where tgf.flag_pindah =".$id);
+            where tgf.flag_pindah =".$id." order by jenis_barang_id");
     }
 
     function show_header_pindah($id){
-        return $this->db->query("Select tp.*, jb.kode, jb.jenis_barang From t_pindah tp
-            left join jenis_barang jb on jb.id = tp.jenis_barang_id
-            where tp.id =".$id);
+        return $this->db->query("Select * From t_pindah
+            where id =".$id);
     }
 
     function get_list_pindah($id){
         return $this->db->query("Select * from t_gudang_fg where flag_pindah =".$id);
+    }
+
+    function list_scan_pindah($id){
+        $data = $this->db->query("select tph.*, jb.kode, jb.jenis_barang, jb.uom, tgf.netto, tgf.berat_bobbin, tgf.tanggal_masuk, tgf.keterangan from t_pindah_history tph 
+                left JOIN jenis_barang jb on jb.id = tph.jenis_barang_id
+                LEFT JOIN t_gudang_fg tgf ON tgf.id = tph.gudang_id
+                WHERE tph.pindah_id = ".$id." order by tph.id asc");
+        return $data;
     }
 }

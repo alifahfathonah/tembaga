@@ -530,7 +530,7 @@
                                 }
                                 if(($group_id==1 || $hak_akses['delete']==1) && $data->status == 0){
                             ?>
-                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/Tolling/delete_po/<?php echo $data->id; ?>" style="margin-bottom:4px">&nbsp; <i class="fa fa-trash"></i> Delete &nbsp; </a>
+                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/Tolling/delete_po/<?php echo $data->id; ?>" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus transaksi ini?');">&nbsp; <i class="fa fa-trash"></i> Delete &nbsp; </a>
                             <?php
                                 }
                                 if($group_id==1 || $hak_akses['print_po']==1){
@@ -542,6 +542,7 @@
                             <?php
                                     }
                                 }
+                                echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/Tolling/print_balance_sp/'.$data->id.'" target="_blank" style="margin-bottom:4px"> &nbsp; <i class="fa fa-arrows-h"></i> Cek Balance &nbsp; </a>'
                             ?>
                         </td>
                     </tr>
