@@ -84,7 +84,8 @@
                                     }
                                 ?>
                             </select> -->
-                            <input type="text" name="flag_po" id="flag_po" value="<?= $header['no_po'] ?>" class="form-control myline" style="margin-bottom: 5px;" readonly="readonly">
+                            <input type="text" name="no_po" id="no_po" value="<?= $header['no_po'] ?>" class="form-control myline" style="margin-bottom: 5px;" readonly="readonly">
+                            <input type="hidden" name="flag_po" id="flag_po" value="<?= $header['r_po_id'] ?>">
                         </div>
                     </div> 
                     <div class="row">
@@ -115,7 +116,8 @@
                                     }
                                 ?>
                             </select> -->
-                            <input type="text" name="flag_po" id="flag_po" value="<?= $header['no_po'] ?>" class="form-control myline" style="margin-bottom: 5px;" readonly="readonly">
+                            <input type="text" name="no_po" id="no_po" value="<?= $header['no_po'] ?>" class="form-control myline" style="margin-bottom: 5px;" readonly="readonly">
+                            <input type="hidden" name="flag_po" id="flag_po" value="<?= $header['r_po_id'] ?>">
                         </div>
                     </div> 
                     <div class="row">
