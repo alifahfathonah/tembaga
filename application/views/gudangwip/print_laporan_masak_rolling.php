@@ -23,14 +23,14 @@
                 $test++;
                 $colspan+=2;
             }?>
-                <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Rod 8mm Keras</strong></td>
+                <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Rod Bakar Ulang</strong></td>
                 <td colspan="3" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Total</strong></td>
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>BS Rolling</strong></td>
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>BS 8mm</strong></td>
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>BS Ingot</strong></td>
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Susut</strong></td>
-                <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>WIP Akhir<br>8MM KRS.</strong></td>
-                <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>SOL<br>AR</strong></td>
+                <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>WIP Akhir<br></strong></td>
+                <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Tali<br>Rolling</strong></td>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>GAS(M<sup>3</sup>)</strong></td>
                 <td rowspan="2" style="text-align:center; border:1px solid #000"><strong>Keterangan</strong></td>
             </tr>
@@ -69,8 +69,8 @@
     $bs_8m = 0;
     $bs_ingot = 0;
     $berat_gas = 0;
-    $qty_keras = 0;
-    $berat_keras = 0;
+    $qty_bu = 0;
+    $berat_bu = 0;
     $qty8 = 0;
     $berat8 = 0;
         foreach ($check as $jb) {
@@ -90,8 +90,8 @@
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == $jb->jenis_barang_id)?number_format($row->qty,2,',','.'):'-').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == $jb->jenis_barang_id)?number_format($row->berat,2,',','.'):'-').'</td>';
         }
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->qty_keras,2,',','.').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->keras,2,',','.').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 667)?number_format($row->qty,2,',','.'):'-').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 667)?number_format($row->berat,2,',','.'):'-').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->qty,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->berat,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
@@ -113,6 +113,10 @@
             $qty8 += $row->qty;
             $berat8 += $row->berat;
         }
+        if($row->jenis_barang_id == 667){
+            $qty_bu += $row->qty;
+            $berat_bu += $row->berat;
+        }
 
         foreach ($check as $jb) {
             if($row->jenis_barang_id == $jb->jenis_barang_id){
@@ -120,8 +124,7 @@
                 ${'berat'.$jb->jenis_barang_id} += $row->berat;
             }
         }
-        $qty_keras += $row->qty_keras;
-        $berat_keras += $row->keras;
+
         $berat_qty += $row->qty_rsk;
         $berat_rongsok += $row->berat_rsk;
         $berat_ingot += $row->qty;
@@ -132,21 +135,21 @@
         $berat_gas += $row->gas;
         // $berat_susut += $row->berat_rsk - ($row->berat + $row->bs);
     }
-    $berat_susut = $berat_rongsok - ($berat + $bs_rolling + $bs_ingot + $bs_8m);
+    $berat_keras_akhir = $b_ak + ($b['berat_masuk']-$b['berat_keluar']);
+    $berat_susut = ($berat_rongsok + $tr['netto'] + $b_ak + $ia['netto']) - ($berat + $bs_rolling + $bs_ingot + $bs_8m + $berat_keras_akhir + $ib['netto']);
     ?>
     <tr>
         <td style="border-left: 1px solid #000; border-bottom: 1px solid #000;"><?=number_format($b_ak,2,',','.');?></td>
         <td colspan="<?=19+$colspan;?>" style="border-bottom:1px solid #000; border-left:1px solid #000;"></td>
-        <?php $berat_keras_akhir = $b_ak + ($b['berat_masuk']-$b['berat_keluar']);?>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_keras_akhir,2,',','.');?></td>
-        <td colspan="2" style="border-bottom:1px solid #000; border-left:1px solid #000;"></td>
+        <td colspan="2" style="border-bottom:1px solid #000; border-left:1px solid #000;">8mm Keras</td>
         <td style="border-left:1px solid #000; border-right:1px solid #000;"></td>
     </tr>
     <tr>
         <td style="border-left: 1px solid #000; border-bottom: 1px solid #000;"><?=number_format($ia['netto'],2,',','.');?></td>
         <td colspan="<?=19+$colspan;?>" style="border-bottom:1px solid #000; border-left:1px solid #000;"></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($ib['netto'],2,',','.');?></td>
-        <td colspan="2" style="border-bottom:1px solid #000; border-left:1px solid #000;"></td>
+        <td colspan="2" style="border-bottom:1px solid #000; border-left:1px solid #000;">WIP di Produksi</td>
         <td style="border-left:1px solid #000; border-right:1px solid #000;"></td>
     </tr>
     <tr>
@@ -165,8 +168,8 @@
             }
         }
         ?>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($qty_keras,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_keras,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($qty_bu,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_bu,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_ingot,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format(($berat/$berat_rongsok*100),2,',','.');?></td>
@@ -180,9 +183,14 @@
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format(($berat_susut/$berat*100),2,',','.');?></td>
         <?php $wip_akhir = $berat_keras_akhir + $ib['netto'];?>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($wip_akhir,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;">-</td>
+        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($tr['netto'],2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_gas,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right: 1px solid #000;"></td>
+    </tr>
+    <tr>
+        <td colspan="<?=24+$colspan;?>" style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000;" align="center">
+            <?='('.number_format($berat_rongsok,2,',','.').' + '.number_format($tr['netto'],2,',','.').' + '.number_format($b_ak,2,',','.').' + '.number_format($ia['netto'],2,',','.').') - ('.number_format($berat,2,',','.').' + '.number_format($bs_rolling,2,',','.').' + '.number_format($bs_ingot,2,',','.').' + '.number_format($bs_8m,2,',','.').' + '.number_format($berat_keras_akhir,2,',','.').' + '.number_format($ib['netto'],2,',','.').' + '.number_format($berat_susut,2,',','.').')';?>
+        </td>
     </tr>
     </tbody>
 </table>

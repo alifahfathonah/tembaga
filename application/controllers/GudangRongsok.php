@@ -367,7 +367,7 @@ class GudangRongsok extends CI_Controller{
 
     function search_permintaan_gudang(){
         $module_name = $this->uri->segment(1);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -379,7 +379,7 @@ class GudangRongsok extends CI_Controller{
 
         $this->load->model('Model_beli_rongsok');
 
-        $this->load->view('layout', $data);  
+        $this->load->view('layout', $data);
     }
 
     function print_permintaan_gudang(){
@@ -404,13 +404,14 @@ class GudangRongsok extends CI_Controller{
         $data['end'] = $end;
 
         if($l==0){
-            $data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_dari_produksi($start,$end)->result();
+            $data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_dari_produksi($start,$end,0)->result();//produksi
             $this->load->view('gudang_rongsok/print_permintaan_gudang', $data);
         }elseif($l==1){
             $data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_external($start,$end)->result();
             $this->load->view('gudang_rongsok/print_permintaan_external', $data);
         }elseif($l==2){
-
+            $data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_dari_produksi($start,$end,1)->result();//tali rolling
+            $this->load->view('gudang_rongsok/print_permintaan_gudang', $data);
         }elseif($l==3){
             $data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok($start,$end,0)->result();
             $this->load->view('gudang_rongsok/print_laporan_pemasukan', $data);
@@ -433,6 +434,12 @@ class GudangRongsok extends CI_Controller{
             $data['header'] = 'Lain - Lain';
             $data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok_lain($start,$end,4)->result();//SDM
             $this->load->view('gudang_rongsok/print_pemasukan_rsk', $data);
+        }elseif($l==9){
+            $data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok_tolling($start,$end,0)->result();
+            $this->load->view('gudang_rongsok/print_laporan_pemasukan', $data);
+        }elseif($l==10){
+            $data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok_tolling($start,$end,1)->result();
+            $this->load->view('gudang_rongsok/print_laporan_pemasukan', $data);
         }
     }
 

@@ -1649,11 +1649,11 @@ class Retur extends CI_Controller{
             $no++;
         }
         
-        // $tabel .= '<tr>';
-        // $tabel .= '<td style="text-align: right;" colspan="2">Total</td>';
-        // $tabel .= '<td name="sum_netto" id="sum_netto">'.$netto.'</td>';
-        // $tabel .= '<td></td>';
-        // $tabel .= '</tr>';       
+        $tabel .= '<tr>';
+        $tabel .= '<td style="text-align: right;" colspan="2">Total</td>';
+        $tabel .= '<td name="sum_netto" id="sum_netto">'.number_format($netto,2,',','.').'</td>';
+        $tabel .= '<td></td>';
+        $tabel .= '</tr>';       
         
         header('Content-Type: application/json');
         echo json_encode($tabel); 
@@ -1664,12 +1664,14 @@ class Retur extends CI_Controller{
         
         $tabel = "";
         $no    = 1;
+        $qty = 0;
         $netto = 0;
         $this->load->model('Model_retur');
         $jenis_barang_list = $this->Model_retur->jenis_barang_list()->result();
          
         $myDetail = $this->Model_retur->load_detail_fulfilment($id)->result(); 
         foreach ($myDetail as $row){
+            $qty += $row->qty;
             $netto += $row->netto;
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
@@ -1685,11 +1687,12 @@ class Retur extends CI_Controller{
             $no++;
         }
         
-        // $tabel .= '<tr>';
-        // $tabel .= '<td style="text-align: right;" colspan="2">Total</td>';
-        // $tabel .= '<td name="sum_netto" id="sum_netto">'.$netto.'</td>';
-        // $tabel .= '<td></td>';
-        // $tabel .= '</tr>';       
+        $tabel .= '<tr>';
+        $tabel .= '<td style="text-align: right;" colspan="2">Total</td>';
+        $tabel .= '<td name="sum_netto" id="sum_netto">'.$qty.'</td>';
+        $tabel .= '<td name="sum_netto" id="sum_netto">'.$netto.'</td>';
+        $tabel .= '<td></td>';
+        $tabel .= '</tr>';       
         
         header('Content-Type: application/json');
         echo json_encode($tabel); 
@@ -1720,11 +1723,11 @@ class Retur extends CI_Controller{
             $no++;
         }
         
-        // $tabel .= '<tr>';
-        // $tabel .= '<td style="text-align: right;" colspan="2">Total</td>';
-        // $tabel .= '<td name="sum_netto" id="sum_netto">'.$netto.'</td>';
-        // $tabel .= '<td></td>';
-        // $tabel .= '</tr>';       
+        $tabel .= '<tr>';
+        $tabel .= '<td style="text-align: right;" colspan="2">Total</td>';
+        $tabel .= '<td name="sum_netto" id="sum_netto">'.$netto.'</td>';
+        $tabel .= '<td></td>';
+        $tabel .= '</tr>';
         
         header('Content-Type: application/json');
         echo json_encode($tabel); 
@@ -2510,6 +2513,7 @@ class Retur extends CI_Controller{
                 }
             }
             
+            $this->load->model('Model_sales_order');
             //INSERT SURAT PEMINJAMAN BP DAN KARDUS
             $query2 = $this->Model_sales_order->get_bp_kardus($sjid)->result();
             if(!empty($query2)){

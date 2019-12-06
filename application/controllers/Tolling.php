@@ -610,6 +610,7 @@ class Tolling extends CI_Controller{
                             'no_bpb_fg' => $code,
                             'flag_ppn' => $user_ppn,
                             'tanggal' => $tgl_input,
+                            'dtt_id' => $k1->dtt_id,
                             'jenis_barang_id' => $k1->jenis_barang_id,
                             'created_at' => $tanggal,
                             'created_by' => $user_id,

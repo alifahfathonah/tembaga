@@ -467,11 +467,12 @@ class Model_bobbin extends CI_Model{
     }
 
     function bpk_list(){
-        return $this->db->query("select tsj.id, tsp.jumlah, tsj.no_surat_jalan, COALESCE(mc.nama_customer, s.nama_supplier, '') as nama, count(tsp.id) as jumlah from t_surat_peminjaman tsp 
+        return $this->db->query("select tsj.id, tsp.jumlah, tsj.no_surat_jalan, tsj.tanggal, COALESCE(mc.nama_customer, s.nama_supplier, '') as nama, count(tsp.id) as jumlah from t_surat_peminjaman tsp 
             left join t_surat_jalan tsj on tsp.t_sj_id = tsj.id
             left join m_customers mc on tsj.m_customer_id = mc.id
             left join supplier s on tsj.supplier_id = s.id
-            group by tsp.t_sj_id");
+            group by tsp.t_sj_id
+            order by tanggal desc ");
     }
 
     function show_detail_bpk($id){

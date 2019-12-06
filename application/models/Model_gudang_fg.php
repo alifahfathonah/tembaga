@@ -646,15 +646,21 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
 
     function print_laporan_pemasukan($s,$e,$l){
         if($l==0){
-            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
-                left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tbf.no_bpb_fg as nomor, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, CASE WHEN produksi_fg_id > 0 THEN 'SDM' ELSE COALESCE(po.no_po, po2.no_po, r.no_retur) END as nama, jb.uom from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj d on tbf.dtbj_id = d.id
+                    left join dtt on tbf.dtt_id = dtt.id
+                    left join retur r on tbf.retur_id = r.id
+                    left join po on po.id = d.po_id
+                    left join po po2 on po2.id = dtt.po_id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
                 where tanggal_masuk between '".$s."' and '".$e."' group by tgf.jenis_barang_id, tgf.tanggal_masuk
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
                 ");
         }elseif($l==1){
-            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
-                left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
-                left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tbf.no_bpb_fg as nomor, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, 'SDM' as nama, jb.uom from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
                 where tbf.produksi_fg_id > 0 and tanggal_masuk between '".$s."' and '".$e."' group by tgf.jenis_barang_id, tgf.tanggal_masuk
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
         }elseif($l==2){
@@ -665,10 +671,121 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
                 ");
         }elseif($l==3){
             $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
-                left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
-                left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
                 where tbf.produksi_fg_id > 0 and tanggal_masuk between '".$s."' and '".$e."'
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
+        }elseif($l==4){
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
+                from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj d on tbf.dtbj_id = d.id
+                    left join po on po.id = d.po_id
+                    left join supplier s on d.supplier_id = s.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where d.po_id > 0 and tanggal_masuk between '".$s."' and '".$e."' and tbf.flag_ppn = 0
+                group by tgf.t_bpb_fg_id
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
+        }elseif($l==5){
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
+                from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj d on tbf.dtbj_id = d.id
+                    left join po on po.id = d.po_id
+                    left join supplier s on d.supplier_id = s.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where d.po_id > 0 and tanggal_masuk between '".$s."' and '".$e."' and tbf.flag_ppn = 1
+                group by tgf.t_bpb_fg_id
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
+        }elseif($l==6){
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
+                from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtt on tbf.dtt_id = dtt.id
+                    left join po po on po.id = dtt.po_id
+                    left join supplier s on dtt.supplier_id = s.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where dtt.po_id > 0 and tanggal_masuk between '".$s."' and '".$e."' and tbf.flag_ppn = 0
+                group by tgf.t_bpb_fg_id
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
+        }elseif($l==7){
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
+                from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtt on tbf.dtt_id = dtt.id
+                    left join po po on po.id = dtt.po_id
+                    left join supplier s on dtt.supplier_id = s.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where dtt.po_id > 0 and tanggal_masuk between '".$s."' and '".$e."' and tbf.flag_ppn = 1
+                group by tgf.t_bpb_fg_id
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
+        }elseif($l==9){
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, mc.nama_customer as nama
+                from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join retur on tbf.retur_id = retur.id
+                    left join m_customers mc on retur.customer_id = mc.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tbf.retur_id > 0 and tanggal_masuk between '".$s."' and '".$e."'
+                group by tgf.t_bpb_fg_id
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
+        }elseif($l==12){
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
+                from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj d on tbf.dtbj_id = d.id
+                    left join supplier s on d.supplier_id = s.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where d.supplier_id = 822 and tanggal_masuk between '".$s."' and '".$e."'
+                group by tgf.t_bpb_fg_id
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
+        }elseif($l==14){
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
+                from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj d on tbf.dtbj_id = d.id
+                    left join supplier s on d.supplier_id = s.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where d.supplier_id = 95 and tanggal_masuk between '".$s."' and '".$e."'
+                group by tgf.t_bpb_fg_id
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
+        }
+        return $data;
+    }
+
+    function print_laporan_pengeluaran($s,$e,$l){
+        if($l==15){
+            $data = $this->db->query("select tgf.tanggal_keluar as tanggal, tsf.no_spb as nomor, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, jb.uom, COALESCE(tsj.no_surat_jalan, tsf.keterangan) as nama from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    left join t_surat_jalan tsj on tgf.t_sj_id = tsj.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tanggal_keluar between '".$s."' and '".$e."' group by tgf.jenis_barang_id, tgf.tanggal_keluar
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
+                ");
+        }elseif($l==8) {
+            $data = $this->db->query("select tgf.tanggal_keluar as tanggal, tsf.no_spb as nomor, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, jb.uom, COALESCE(tsj.no_surat_jalan, tsf.keterangan) as nama from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    left join t_surat_jalan tsj on tgf.t_sj_id = tsj.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tanggal_keluar between '".$s."' and '".$e."' and tgf.t_sj_id > 0 and tsj.retur_id > 0 group by tgf.jenis_barang_id, tgf.t_sj_id
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
+                ");
+        }elseif($l==10) {
+            $data = $this->db->query("select tgf.tanggal_keluar as tanggal, tsf.no_spb as nomor, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, jb.uom, COALESCE(tsj.no_surat_jalan, tsf.keterangan) as nama from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    left join t_surat_jalan tsj on tgf.t_sj_id = tsj.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 0 group by tgf.jenis_barang_id, tgf.tanggal_keluar
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
+                ");
+        }elseif($l==11) {
+            $data = $this->db->query("select tgf.tanggal_keluar as tanggal, tsf.no_spb as nomor, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, jb.uom, COALESCE(tsj.no_surat_jalan, tsf.keterangan) as nama from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    left join t_surat_jalan tsj on tgf.t_sj_id = tsj.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 5 group by tgf.jenis_barang_id, tgf.tanggal_keluar
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
+                ");
         }
         return $data;
     }
@@ -814,6 +931,33 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
 
     function inventory_stok_before($jb,$tgl,$jbid){
         return $this->db->query("select * from inventory where jenis_barang = '".$jb."' and tanggal = '".$tgl."' and jenis_barang_id=".$jbid);
+    }
+
+    function surat_jalan($user_ppn){
+        $data = $this->db->query("Select tsj.*, (select count(tsjd.id) from t_surat_jalan_detail tsjd where tsjd.t_sj_id = tsj.id) as jumlah_item,
+                    cust.nama_customer, cust.alamat
+                From t_surat_jalan tsj
+                    Left Join m_customers cust On (tsj.m_customer_id = cust.id)
+                Where sales_order_id = 0 and po_id = 0 and spb_id = 0 and retur_id = 0
+                Order By tsj.no_surat_jalan Desc");
+        return $data;
+    }
+
+    function get_last_sj(){
+        $data = $this->db->query("select no_surat_jalan from t_surat_jalan tsj
+            left join sales_order so on so.id = tsj.sales_order_id 
+            where sales_order_id = 0 and po_id = 0 and spb_id = 0 and retur_id = 0
+            order by no_surat_jalan desc limit 1
+            ");
+        return $data;
+    }
+
+    function load_detail_sj($id){
+        return $this->db->query("select d.*, COALESCE(s.nama_item, r.nama_item) as jenis_barang, COALESCE(s.uom, r.uom) as uom, COALESCE(s.alias, r.kode_rongsok)as kode from t_surat_jalan_detail d
+            left join t_surat_jalan h on d.t_sj_id = h.id
+            left join sparepart s on h.jenis_barang = 'LAIN' and d.jenis_barang_id = s.id
+            left join rongsok r on h.jenis_barang = 'AMPAS' and d.jenis_barang_id = r.id
+            where d.t_sj_id =".$id);
     }
     /*
     cara membuat view stok fg

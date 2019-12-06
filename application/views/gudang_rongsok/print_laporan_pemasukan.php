@@ -104,11 +104,11 @@
 					<td colspan='6'></td>
 					<td align='right' style='border-top: 1px solid;'><b>".number_format($total_netto,2,'.',',')."</b></td>
 				</tr>";
-			echo 
-				"<tr>
-					<td align='right' colspan='6'><b>Grand Total</b></td>
-					<td align='right' style='border-top: 1px solid;'><b>".number_format($grand_netto_sumber,2,'.',',')."</b></td>
-				</tr>";
+			// echo 
+			// 	"<tr>
+			// 		<td align='right' colspan='6'><b>Grand Total</b></td>
+			// 		<td align='right' style='border-top: 1px solid;'><b>".number_format($grand_netto_sumber,2,'.',',')."</b></td>
+			// 	</tr>";
 			echo 
 				"<tr>
 					<td align='right' colspan='6'><b>Grand Total</b></td>

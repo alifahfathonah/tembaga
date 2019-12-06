@@ -642,7 +642,7 @@
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangFG/laporan_pemasukan">
                                         <i class="fa fa-briefcase"></i>
-                                        Pemasukan FG </a>
+                                        Pemasukan & Pengeluaran FG </a>
                                     </li>
                                 </ul>
                             </li>
@@ -868,6 +868,11 @@
                             <a href="<?php echo base_url(); ?>index.php/GudangBobbin/bobbin_terima">
                             <i class="fa fa-file-word-o"></i>
                             Bobbin Terima Barang </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/GudangBobbin/bpk_list">
+                            <i class="fa fa-square"></i>
+                            Peminjaman BP & Kardus </a>
                         </li>
                     <?php } ?>
                     </ul>

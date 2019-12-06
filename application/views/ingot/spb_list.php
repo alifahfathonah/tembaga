@@ -105,6 +105,8 @@
                                     echo 'Retur K';
                                 }else if($data->jenis_spb==10){
                                     echo 'Tali Rolling';
+                                }else if($data->jenis_spb==11){
+                                    echo 'Adjustment';
                                 }
                             ?>
                         </td>

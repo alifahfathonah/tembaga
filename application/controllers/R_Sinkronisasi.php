@@ -254,6 +254,9 @@ class R_Sinkronisasi extends CI_Controller{
 	        		$this->db->update('r_t_surat_jalan', ['api' => 1]);
 	        	}
 	        	$this->db->trans_complete();
+	        }else{
+	        	print_r($response);
+	        	die();
 	        }
         }
 
@@ -398,7 +401,7 @@ class R_Sinkronisasi extends CI_Controller{
     }
 
     function do_sync_so_cv() {
-    	// set_time_limit(600);
+    	set_time_limit(600);
         /*
         * surat jalan
         */

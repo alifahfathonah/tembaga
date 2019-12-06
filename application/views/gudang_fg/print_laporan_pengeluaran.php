@@ -7,16 +7,16 @@
  <table width="100%" >
     <tr>
         <td width="34%" align="center">
- <h4>Laporan Pemasukan <?=$header;?> Finish Good per <?= tanggal_indo(date("Y-m-d", strtotime($_GET['ts']))).' sampai '.tanggal_indo(date("Y-m-d", strtotime($_GET['te'])));?></h4></td>
+ <h4>Laporan Pengeluaran <?=$header;?> Finish Good per <?= tanggal_indo(date("Y-m-d", strtotime($_GET['ts']))).' sampai '.tanggal_indo(date("Y-m-d", strtotime($_GET['te'])));?></h4></td>
     </tr>
  </table>
 <table width="100%" class="table table-striped table-bordered table-hover" id="sample_6" style="font-size: 13px;">
     <thead>
         <th style="border-top: 1px solid; border-bottom: 1px solid;">Kode</th>
-        <th style="border-top: 1px solid; border-bottom: 1px solid;">Nama Barang</th>
-        <th style="border-top: 1px solid; border-bottom: 1px solid;">No. Bukti</th>
-        <th style="border-top: 1px solid; border-bottom: 1px solid;">Tanggal</th>
-        <th style="border-top: 1px solid; border-bottom: 1px solid;">Supplier</th>
+        <th style="border-top: 1px solid; border-bottom: 1px solid; width: 25%;">Nama Barang</th>
+        <th style="border-top: 1px solid; border-bottom: 1px solid; width: 20%;">No. Bukti</th>
+        <th style="border-top: 1px solid; border-bottom: 1px solid; width: 15%;">Tanggal</th>
+        <th style="border-top: 1px solid; border-bottom: 1px solid;">Keterangan</th>
         <th style="border-top: 1px solid; border-bottom: 1px solid;">Netto</th>
     </thead>
          <tbody>

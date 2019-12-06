@@ -78,6 +78,8 @@
                                     echo 'Repacking';
                                 }else if($data->jenis_spb==9){
                                     echo 'Retur K';
+                                }else if($data->jenis_spb==11){
+                                    echo 'Adjustment';
                                 }
                             ?>
                         </td>

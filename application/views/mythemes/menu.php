@@ -555,6 +555,11 @@
                                         <i class="fa fa-briefcase"></i>
                                         Laporan Bahan Baku</a>
                                     </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangRongsok/search_permintaan_gudang">
+                                        <i class="fa fa-arrows-h"></i>
+                                        Laporan Keluar Masuk</a>
+                                    </li>
                                     <!-- <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangRongsok/search_permintaan_gudang">
                                         <i class="fa fa-print"></i>
@@ -688,7 +693,7 @@
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangFG/laporan_pemasukan">
                                         <i class="fa fa-briefcase"></i>
-                                        Pemasukan FG </a>
+                                        Pemasukan & Pengeluaran FG </a>
                                     </li>
                                 </ul>
                             </li>
@@ -774,6 +779,12 @@
                             </li>
                         <?php } ?>
                         </ul>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/GudangFG/surat_jalan">
+                                <i class="fa fa-truck"></i>
+                                Surat Jalan
+                            </a>
                         </li>
                     <?php } ?>
                     </ul>

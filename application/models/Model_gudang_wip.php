@@ -372,7 +372,23 @@ class Model_gudang_wip extends CI_Model{
             left join produksi_ingot pi on thm.id_produksi = pi.id
             where thm.tanggal between '".$s."' and '".$e."' group by thm.tanggal");
         }elseif($j == 2){
-            return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, thw.gas+thw.gas_r as gas, a.qty as qty_rsk, a.netto as berat_rsk, thw.tanggal, thw.qty, uom, thw.berat, susut, bs, qty_keras, keras,
+            // return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, thw.gas+thw.gas_r as gas, a.qty as qty_rsk, a.netto as berat_rsk, thw.tanggal, thw.qty, uom, thw.berat, susut, bs, qty_keras, keras,
+            //     (select sum(netto) from dtr_detail dd 
+            //         left join dtr on dd.dtr_id = dtr.id
+            //         where dtr.prd_id = thw.id and rongsok_id = 20) as bs_rolling,
+            //     (select sum(netto) from dtr_detail dd2 
+            //         left join dtr dtr2 on dd2.dtr_id = dtr2.id
+            //         where dtr2.prd_id = thw.id and rongsok_id = 52) as bs_8m,
+            //     (select sum(netto) from dtr_detail dd3 
+            //         left join dtr dtr3 on dd3.dtr_id = dtr3.id
+            //         where dtr3.prd_id = thw.id and rongsok_id = 22) as bs_ingot
+            //     from t_hasil_wip thw
+            //     left join (select tsw.tanggal, sum(tgw.qty) as qty, sum(tgw.berat) as netto from t_gudang_wip tgw
+            //         left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
+            //         where tsw.flag_produksi = 2
+            //         group by tsw.id) a on a.tanggal = thw.tanggal
+            // where thw.jenis_masak = 'ROLLING' and thw.tanggal between '".$s."' and '".$e."'");
+            return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, thw.gas+thw.gas_r as gas, a.qty as qty_rsk, a.netto as berat_rsk, thw.tanggal, thw.qty, thw.berat,  uom, susut, bs, qty_keras, keras,
                 (select sum(netto) from dtr_detail dd 
                     left join dtr on dd.dtr_id = dtr.id
                     where dtr.prd_id = thw.id and rongsok_id = 20) as bs_rolling,
@@ -387,7 +403,7 @@ class Model_gudang_wip extends CI_Model{
                     left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
                     where tsw.flag_produksi = 2
                     group by tsw.id) a on a.tanggal = thw.tanggal
-            where thw.jenis_masak = 'ROLLING' and thw.tanggal between '".$s."' and '".$e."'");
+            where thw.jenis_masak in ('ROLLING', 'BAKAR ULANG') and thw.tanggal between '".$s."' and '".$e."'");
         }elseif($j == 3){
             return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, (select sum(qty) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as qty_rsk, (select sum(berat) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as berat_rsk, thw.tanggal, qty, uom, berat, susut, bs from t_hasil_wip thw
             where thw.jenis_masak = 'BAKAR ULANG' and thw.tanggal between '".$s."' and '".$e."'");
@@ -475,7 +491,14 @@ class Model_gudang_wip extends CI_Model{
     }
 
     function get_floor_produksi($a){
-        return $this->db->query("select * from t_gudang_produksi where tanggal ='".$a."'");
+        return $this->db->query("select * from t_gudang_produksi where jenis_barang_id = 2 and tanggal ='".$a."'");
+    }
+
+    function get_tali_rolling($s,$e){
+        return $this->db->query("select sum(dd.netto) as netto from spb_detail_fulfilment sdf
+                left join spb on sdf.spb_id = spb.id
+                left join dtr_detail dd on sdf.dtr_detail_id = dd.id
+                where spb.jenis_spb = 10 and spb.tanggal between '".$s."' and '".$e."'");
     }
 
     function header_gudang_produksi($id){
@@ -483,7 +506,7 @@ class Model_gudang_wip extends CI_Model{
     }
 
     function gudang_keras(){
-        return $this->db->query("select tgk.*, jb.jenis_barang, thw.no_produksi_wip from t_gudang_keras tgk
+        return $this->db->query("select tgk.*, jb.jenis_barang, COALESCE(thw.no_produksi_wip, tgk.keterangan) as no_produksi_wip from t_gudang_keras tgk
                 left join jenis_barang jb on tgk.jenis_barang_id = jb.id
                 left join t_hasil_wip thw on tgk.t_hasil_wip_id = thw.id
                 order by tgk.tanggal desc");

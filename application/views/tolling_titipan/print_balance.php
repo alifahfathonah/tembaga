@@ -68,7 +68,7 @@
             <?php } ?>
             </tr>
             <tr><td colspan="3"><hr></td></tr>
-            <tr><td colspan="3" align="center"><h3>Detail Bahan Diterima</h3></td></tr>
+            <tr><td colspan="3" align="center"><h3><?=($header['jenis']=='SO')? 'Detail Bahan Diterima':'Detail Kirim Bahan';?></h3></td></tr>
             <tr><td colspan="3">
                     <table border="0" cellpadding="4" cellspacing="0" width="100%" style="font-size: 14px;">
                         <tr>
@@ -122,7 +122,7 @@
                                 echo '<tr colspan="3"><td> Belum ada Pengiriman </td></tr>';
                             }else{
                                 ?>
-            <tr><td colspan="3" align="center"><h3>Detail Kirim</h3></td></tr>
+            <tr><td colspan="3" align="center"><h3>Detail <?=($header['jenis']=='SO')? 'Kirim':'Terima';?></h3></td></tr>
             <tr>
                 <td colspan="3">
                     <table border="0" cellpadding="4" cellspacing="0" width="100%" style="font-size: 14px;">

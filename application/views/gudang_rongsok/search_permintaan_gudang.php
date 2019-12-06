@@ -39,6 +39,10 @@
                                     <option value="3">Pemasukan dari PO (KH)</option>
                                     <?php } ?>
                                     <option value="4">Pemasukan dari PO (KMP)</option>
+                                    <?php if($this->session->userdata('user_ppn')==0){ ?>
+                                    <option value="9">Pemasukan dari Tolling (KH)</option>
+                                    <?php } ?>
+                                    <option value="10">Pemasukan dari Tolling (KMP)</option>
                                     <option value="5">Pemasukan dari Apollo</option>
                                     <option value="6">Pemasukan dari Rolling</option>
                                     <option value="7">Pemasukan dari SDM</option>
@@ -69,13 +73,13 @@
                     </div>
                         <div class="row">
                             <div class="col-md-4">&nbsp;</div>
-                        <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                                <i class="fa fa-search"></i> Proses </a>
-                        </div>    
-                    </div>
-                </div>        
-            </div>
+                            <div class="col-md-8">
+                                <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                                    <i class="fa fa-search"></i> Proses </a>
+                            </div>    
+                        </div>
+                    </div>        
+                </div>
     </div>
 <script type="text/javascript">
 function simpanData(){

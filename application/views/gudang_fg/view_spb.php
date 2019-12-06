@@ -125,6 +125,8 @@
                                     echo 'Repacking';
                                 }else if($myData['jenis_spb']==9){
                                     echo 'Retur K';
+                                }else if($myData['jenis_spb']==11){
+                                    echo 'Adjustment';
                                 }
                                ?>">
                         </div>

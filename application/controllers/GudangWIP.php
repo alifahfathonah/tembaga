@@ -1765,6 +1765,7 @@ class GudangWIP extends CI_Controller{
                 $data['b'] = $this->Model_gudang_wip->get_wip_akhir($start,$end)->row_array();
                 $data['ia'] = $this->Model_gudang_wip->get_floor_produksi($last_day)->row_array();
                 $data['ib'] = $this->Model_gudang_wip->get_floor_produksi($end)->row_array();
+                $data['tr'] = $this->Model_gudang_wip->get_tali_rolling($start,$end)->row_array();
                 $this->load->view('gudangwip/print_laporan_masak_rolling', $data);
             }elseif($jb_id == 3){
                 $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();

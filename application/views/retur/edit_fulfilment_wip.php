@@ -114,11 +114,11 @@
                                                 $netto += $row->netto;
                                             }
                                         ?>
-                                        <!-- <tr>
+                                        <tr>
                                             <td style="text-align: right;" colspan="2">Total</td>
                                             <td><?php echo $netto; ?></td>
                                             <td></td>
-                                        </tr> -->
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>

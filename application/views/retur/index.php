@@ -44,7 +44,7 @@
                     <th>No. Retur</th>
                     <th>Tanggal</th>
                     <th>Customer</th>
-                    <th>PIC</th>
+                    <th>Jenis Barang</th>
                     <th>Penimbang</th>
                     <th>Jumlah <br>Items</th>
                     <th>Tipe <br>Retur</th>
@@ -64,7 +64,7 @@
                         <td style="background-color: "><?php echo $data->no_retur; ?></td>
                         <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
                         <td><?php echo $data->nama_customer; ?></td>
-                        <td><?php echo $data->pic; ?></td>
+                        <td><?php echo $data->jenis_barang; ?></td>
                         <td><?php echo $data->penimbang; ?></td>                        
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td><?php echo (($data->jenis_retur==0)? "Ganti Barang": "Ganti Voucher"); ?></td>

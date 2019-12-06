@@ -18,9 +18,9 @@
 18- BS bisa di edit terus ditambah jika kurang di produksi(done)
 19- Cek Invoice nya udah di matching di nomor mana aja(done)
 20- Bs 8m, bs ingot,(done)
-    Size tampil yg ada doang,
-    Tali rolling,
-    Pemasukan 8mm keras(done)
+    Size tampil yg ada doang,(done)
+    Tali rolling (done)
+    Pemasukan 8mm Bakar Ulang(done)
     -laporan rolling
 21- Revisi surat jalan rongsok edit kartuk stok juga(done)
 22- Edit Netto DTR Manual, search No palette nya (done)
@@ -42,11 +42,8 @@ bug - Laporan kartu stok bobbin di order by L/M/dll. di totalin per L/M/dll.(don
 25- Retur ganti tipe retur yg sudah di approve (done)
 bug - cek kenapa kadang uang masuk matching nyangkut (done)
 26- Surat jalan tanpa apa apa. semua barang list dibawah ini
-	26- Sparepart
-	27- Rongsok
-	28- WIP
-	29- FG
-	30- Ampas
+	26- Sparepart/Lain(done)
+	27- Ampas(done)
 31- Laporan Bahan Baku
 	31- FG
 	32- Rongsok
@@ -60,11 +57,11 @@ bug - cek kenapa kadang uang masuk matching nyangkut (done)
 35- Pemasukan FG
 35 -Tambahin pemasukan fg detail no packing (global dan produksi)(done)
 36 -Pemasukan FG selain dari produksi
-  #PO (KH & KMP)
-  #Tolling (KH & KMP)
-  #Retur (Pengganti & Terima)
+  #PO (KH & KMP)(done)
+  #Tolling (KH & KMP)(done)
+  #Retur (Pengganti & Terima)(done)
   #Ke SDM
-  #FG Ke Rongsok
+  #FG Ke Rongsok (done)
   #Repacking (+) dan (-)
   #Adjustment Selisih
 
@@ -95,3 +92,9 @@ bug - cek kenapa kadang uang masuk matching nyangkut (done)
 42- So tanpa harga aja(done)
 43- Laporan rolling yg ada sizenya aja(done)
 44- ReDesign Kirim Barcode ke Pajak(done)
+45- Edit Retur setelah di Approve, tapi selama belum di kirim balik. karena pernah salah barang sampai gudang
+46- Retur bisa multiple, tambahin caranya di surat jalan
+	Cek Laporan retur dari spb_detail
+47- PerSingkat Repacking kayak kirim rongsok. utk selain packing bobbin dan keranjang
+48- Laporan Status Bobbin loop per 50 row dan 7 column
+49- Tambahin Revisi Surat Jalan Tolling ke Supplier

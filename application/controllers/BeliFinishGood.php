@@ -926,6 +926,7 @@ class BeliFinishGood extends CI_Controller{
                             'tanggal' => $tgl_input,
                             'flag_ppn' => $user_ppn,
                             // 'produksi_fg_id' => $id_produksi,
+                            'dtbj_id' => $dtbj_id,
                             'jenis_barang_id' => 0,
                             'created_at' => $tanggal,
                             'created_by' => $user_id,
@@ -1032,6 +1033,7 @@ class BeliFinishGood extends CI_Controller{
                             'tanggal' => $tgl_input,
                             'flag_ppn' => $user_ppn,
                             // 'produksi_fg_id' => $id_produksi,
+                            'dtbj_id' => $dtbj_id,
                             'jenis_barang_id' => 0,
                             'created_at' => $tanggal,
                             'created_by' => $user_id,
@@ -1067,6 +1069,8 @@ class BeliFinishGood extends CI_Controller{
                 $data_post['dtbj'] = $this->Model_beli_fg->load_dtbj_only($dtbj_id)->row_array();
                 $data_post['details'] = $this->Model_beli_fg->load_dtbj_detail_only($dtbj_id)->result();
 
+                unset($data_bpb['dtt_id']);
+                unset($data_bpb['dtbj_id']);
                 unset($data_bpb['flag_ppn']);
                 $data_id = array('reff1' => $id_bpb);
                 $data_post['data_bpb'] = array_merge($data_bpb, $data_id);

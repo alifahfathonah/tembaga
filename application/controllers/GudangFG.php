@@ -2318,18 +2318,78 @@ class GudangFG extends CI_Controller{
         $this->load->view('gudang_fg/print_laporan_pemasukan_harian', $data);
     }
 
-    function print_laporan_pemasukan(){
+    function print_laporan_gudang_fg(){
         $l = $_GET['l'];
         $s = date('Y-m-d', strtotime($_GET['ts']));
         $e = date('Y-m-d', strtotime($_GET['te']));
         $this->load->helper('tanggal_indo');  
         $this->load->model('Model_gudang_fg');
 
+        if($l==0){
+            $data['header'] = 'Global';
             $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
-        if($l<2){
             $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
-        }else{
+        }elseif($l==1){
+            $data['header'] = 'Produksi';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
+        }elseif($l==2){
+            $data['header'] = 'Global';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
             $this->load->view('gudang_fg/print_laporan_pemasukan2', $data);
+        }elseif($l==3){
+            $data['header'] = 'Produksi';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pemasukan2', $data);
+        }elseif($l==4){
+            $data['header'] = 'PO';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
+        }elseif($l==5){
+            $data['header'] = 'PO';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
+        }elseif($l==6){
+            $data['header'] = 'Tolling';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
+        }elseif($l==7){
+            $data['header'] = 'Tolling';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
+        }elseif($l==9){
+            $data['header'] = 'Retur';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
+        }elseif($l==12){
+            $data['header'] = 'Repacking';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
+        }elseif($l==14){
+            $data['header'] = 'Adjustment';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
+    //PENGELUARAN
+        }elseif($l==8){
+            $data['header'] = 'Retur';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pengeluaran($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pengeluaran', $data);
+        }elseif($l==10){
+            $data['header'] = 'SDM';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pengeluaran($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pengeluaran', $data);
+        }elseif($l==11){
+            $data['header'] = 'Kirim Ke Rongsok';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pengeluaran($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pengeluaran', $data);
+        }elseif($l==15){
+            $data['header'] = 'Global';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pengeluaran($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pengeluaran', $data);
+        }elseif($l==16){
+            $data['header'] = 'Repacking';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pengeluaran($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pengeluaran', $data);
         }
     }
 
@@ -2417,5 +2477,370 @@ class GudangFG extends CI_Controller{
             $data['detailLaporan'] = $this->Model_gudang_fg->show_kartu_stok_detail_packing($start,$end,$jb_id)->result();
             $this->load->view('gudang_fg/kartu_stok_packing', $data);
         }
+    }
+/** SURAT JALAN **/
+    function surat_jalan(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        $user_ppn = $this->session->userdata('user_ppn');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "gudang_fg/surat_jalan";
+        $this->load->model('Model_gudang_fg');
+        $data['list_data'] = $this->Model_gudang_fg->surat_jalan($user_ppn)->result();
+
+        $this->load->view('layout', $data);
+    }
+    
+    function add_surat_jalan(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');    
+        $user_ppn    = $this->session->userdata('user_ppn');    
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "gudang_fg/add_surat_jalan";
+        
+        $this->load->model('Model_sales_order');
+        $this->load->model('Model_gudang_fg');
+        $data['sj'] = $this->Model_gudang_fg->get_last_sj()->row_array();
+        $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+        $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
+        $this->load->view('layout', $data);
+    }
+
+    function save_surat_jalan(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_sj = date('Ym', strtotime($this->input->post('tanggal')));
+        $user_ppn = $this->session->userdata('user_ppn');
+        
+        $this->load->model('Model_m_numberings');
+        $code = $this->Model_m_numberings->getNumbering('SJ-L', $tgl_input); 
+        
+        if($code){        
+            $data = array(
+                'no_surat_jalan'=> $code,
+                'tanggal'=> $tgl_input,
+                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'm_customer_id'=>$this->input->post('m_customer_id'),
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
+                'supir'=>$this->input->post('supir'),
+                'remarks'=>$this->input->post('remarks'),
+                'status'=>0,
+                'created_at'=> $tanggal,
+                'created_by'=> $user_id,
+                'modified_at'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+
+            if($this->db->insert('t_surat_jalan', $data)){
+                redirect('index.php/GudangFG/edit_surat_jalan/'.$this->db->insert_id());  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data surat jalan gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/GudangFG/surat_jalan');  
+            }            
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data surat jalan gagal disimpan, penomoran belum disetup!');
+            redirect('index.php/GudangFG/surat_jalan');
+        }
+    }
+
+    function edit_surat_jalan(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['content']= "gudang_fg/edit_surat_jalan";
+
+            $this->load->model('Model_sales_order');
+            $data['header'] = $this->Model_sales_order->show_header_sj($id)->row_array();  
+            $jenis = $data['header']['jenis_barang'];
+            $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+            $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
+            if($jenis=='LAIN'){
+                $data['jenis_barang'] = $this->Model_sales_order->list_barang_sp()->result();
+            }elseif ($jenis=='AMPAS') {
+                $this->load->model('Model_beli_rongsok');
+                $data['jenis_barang'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
+                // print_r($data['jenis_barang']);die();
+            }
+
+            $jenis = $data['header']['jenis_barang'];
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/GudangFG/surat_jalan');
+        }
+    }
+
+    function view_surat_jalan(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "gudang_fg/view_sj";
+            $this->load->model('Model_sales_order');
+            $data['header'] = $this->Model_sales_order->show_header_sj($id)->row_array();  
+            $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+            $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
+
+            $jenis = $data['header']['jenis_barang'];
+            $soid = $data['header']['sales_order_id'];
+            if($jenis == 'FG'){
+                $data['list_sj'] = $this->Model_sales_order->load_view_sjd($id)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_in_so($soid)->result();
+            }else if($jenis == 'WIP'){
+                $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->jenis_barang_in_so($soid)->result();
+            }else if($jenis == 'LAIN'){
+                $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_lain($id)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->rongsok_in_so($soid)->result();
+            }else{
+                $data['list_sj'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id,$soid)->result();
+                $data['jenis_barang'] = $this->Model_sales_order->rongsok_in_so($soid)->result();
+            }
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/GudangFG/surat_jalan');
+        }
+    }
+
+    function delete_surat_jalan(){
+        $id = $this->uri->segment(3);
+        $this->db->trans_start();
+
+        $this->db->where('id', $id);
+        $this->db->delete('t_surat_jalan');
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Surat Jalan berhasil di hapus');
+            redirect('index.php/GudangFG/surat_jalan');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Surat Jalan gagal dihapus');
+            redirect('index.php/GudangFG/surat_jalan');
+        }
+    }
+
+    function load_detail_sj(){
+        $id = $this->input->post('id');
+        $jenis = $this->input->post('jenis');
+        
+        $tabel = "";
+        $no    = 1;
+        $total_qty = 0;
+        $total = 0;
+        $bruto = 0;
+        $berat = 0;
+        $netto = 0;
+        
+        $this->load->model('Model_gudang_fg');  
+        $myDetail = $this->Model_gudang_fg->load_detail_sj($id)->result();
+        foreach ($myDetail as $row){
+            $tabel .= '<tr>';
+            $tabel .= '<td style="text-align:center">'.$no.'</td>';
+            $tabel .= '<td>('.$row->kode.') '.$row->jenis_barang.'</td>';
+            $tabel .= '<td>'.$row->uom.'</td>';
+            if($jenis=='LAIN'){
+                $tabel .= '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
+            }elseif($jenis=='AMPAS'){
+                $tabel .= '<td style="text-align:right">'.number_format($row->bruto,2,',','.').'</td>';
+                $tabel .= '<td style="text-align:right">'.number_format($row->berat,2,',','.').'</td>';
+                $tabel .= '<td></td>';
+                $tabel .= '<td style="text-align:right">'.number_format($row->netto,0,',','.').'</td>';
+                $bruto += $row->bruto;
+                $berat += $row->berat;
+            }
+            $tabel .= '<td style="text-align:right">'.$row->line_remarks.'</td>';
+            $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
+                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . '<i class="fa fa-trash"></i> Delete </a></td>';
+            $tabel .= '</tr>';
+            $netto += $row->netto;
+            $no++;
+        }
+        $tabel .= '<tr>';
+        $tabel .= '<td colspan="3" style="text-align:right"><strong>Total </strong></td>';
+        if($jenis=='LAIN'){
+            $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,2,',','.').'</strong></td>';
+        }elseif($jenis=='AMPAS'){
+            $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($bruto,2,',','.').'</strong></td>';
+            $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($berat,2,',','.').'</strong></td>';
+            $tabel .= '<td></td>';
+            $tabel .= '<td style="text-align:right; background-color:green; color:white"><strong>'.number_format($netto,2,',','.').'</strong></td>';
+        }
+        $tabel .= '<td colspan="2"></td>';
+        $tabel .= '</tr>';
+        
+        header('Content-Type: application/json');
+        echo json_encode($tabel); 
+    }
+
+    function save_detail_sj(){
+        $return_data = array();
+        $tanggal  = date('Y-m-d h:m:s');
+        $user_id  = $this->session->userdata('user_id');
+        $spb = $this->input->post('no_spb');
+        $jenis = $this->input->post('jenis');
+        // $netto = str_replace('.', '',$this->input->post('netto'));
+        $netto = str_replace(',', '',$this->input->post('netto'));
+
+        $this->db->trans_start();
+        if($jenis=='LAIN'){
+            $data_sj = array(
+                't_sj_id'=>$this->input->post('id'),
+                'gudang_id'=>0,
+                'jenis_barang_id'=>$this->input->post('barang_id'),
+                'qty'=>1,
+                'netto'=>$this->input->post('netto'),
+                'line_remarks'=>$this->input->post('keterangan'),
+                'created_by'=>$user_id,
+                'created_at'=>$tanggal
+            );
+        }elseif($jenis=='AMPAS'){
+            $data_sj = array(
+                't_sj_id'=>$this->input->post('id'),
+                'gudang_id'=>0,
+                'jenis_barang_id'=>$this->input->post('barang_id'),
+                'qty'=>1,
+                'bruto'=>$this->input->post('bruto'),
+                'berat'=>$this->input->post('berat'),
+                'netto'=>$this->input->post('netto'),
+                'line_remarks'=>$this->input->post('keterangan'),
+                'created_by'=>$user_id,
+                'created_at'=>$tanggal
+            );
+        }
+        $this->db->insert('t_surat_jalan_detail',$data_sj);
+        // print_r($data_so_detail);
+        // die();
+        if($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menambahkan item rongsok! Silahkan coba kembali";
+        }
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+    
+    function delete_detail_sj(){
+        $id = $this->input->post('id');// t_sales_order_detail id
+        $jenis = $this->input->post('jenis');// jenis barang FG/WIP/RONGSOK
+
+        $this->db->trans_start();
+
+        $return_data = array();
+            $this->db->where('id', $id);
+            $this->db->delete('t_surat_jalan_detail');
+
+        if($this->db->trans_complete()){
+            $return_data['message_type']= "sukses";
+        }else{
+            $return_data['message_type']= "error";
+            $return_data['message']= "Gagal menghapus item rongsok! Silahkan coba kembali";
+        }           
+        header('Content-Type: application/json');
+        echo json_encode($return_data);
+    }
+
+    function update_surat_jalan(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');        
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $jenis = $this->input->post('jenis_barang');
+
+        $data = array(
+                'tanggal'=> $tgl_input,
+                'status'=> 0,
+                'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
+                'no_kendaraan'=>$this->input->post('no_kendaraan'),
+                'supir'=>$this->input->post('supir'),
+                'remarks'=>$this->input->post('remarks'),
+                'modified_at'=> $tanggal,
+                'modified_by'=> $user_id
+            );
+        
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('t_surat_jalan', $data);
+
+        $this->session->set_flashdata('flash_msg', 'Data surat jalan berhasil disimpan');
+        redirect('index.php/GudangFG/surat_jalan');
+    }
+
+    function reject_surat_jalan(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
+        $sjid = $this->input->post('sj_id');
+        
+        #Update status t_surat_jalan
+        $data = array(
+                'status'=> 9,
+                'rejected_at'=> $tanggal,
+                'rejected_by'=>$user_id,
+                'reject_remarks'=>$this->input->post('reject_remarks')
+            );
+        
+        $this->db->where('id', $sjid);
+        $this->db->update('t_surat_jalan', $data);
+        
+        $this->db->where('t_sj_id', $sjid);
+        $this->db->delete('t_surat_jalan_detail');
+        
+        $this->session->set_flashdata('flash_msg', 'Surat jalan berhasil direject');
+        redirect('index.php/GudangFG/surat_jalan');
+    }
+
+    function approve_surat_jalan(){
+        $sjid = $this->input->post('id');
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $flag_sj = 0;
+        $tanggal  = date('Y-m-d h:m:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $so_id = $this->input->post('so_id');
+        $custid = $this->input->post('id_customer');
+        $jenis = $this->input->post('jenis_barang');
+
+        $this->db->trans_start();
+
+        $data = array(
+                'status' => 1,
+                'approved_at'=> $tanggal,
+                'approved_by'=> $user_id
+            );
+
+        $this->db->where('id', $sjid);
+        $this->db->update('t_surat_jalan', $data);
+
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'Surat jalan sudah di-approve. Detail Surat jalan sudah disimpan');            
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Surat Jalan, silahkan coba kembali!');
+        }             
+        
+       redirect('index.php/GudangFG/surat_jalan');
     }
 }

@@ -648,21 +648,18 @@ class Model_beli_rongsok extends CI_Model{
     }
 
     function print_laporan_bb($b,$t){
-        return $this->db->query("select *, r.nama_barang as jenis_barang 
+        return $this->db->query("select *, r.nama_barang as jenis_barang,
             (select sum(netto) from dtr_detail dd 
                 left join dtr on dd.dtr_id = dtr.id
-                where prd_id > 0 and dd.rongsok_id = i.jenis_barang_id
+                where (prd_id > 0 or supplier_id = 713) and dd.rongsok_id = i.jenis_barang_id
                 ) as produksi,
             (select sum(netto) from dtr_detail dd2
                 left join dtr d2 on dd2.dtr_id = d2.id
-                where po_id > 0 or so_id > or retur_id > 0 and dd2.rongsok_id = i.jenis_barang_id
+                where (po_id > 0 or so_id > 0 or retur_id > 0) and dd2.rongsok_id = i.jenis_barang_id
                 ) as supplier,
             (select sum(netto) from dtr_detail dd3
                 left join dtr d3 on dd3.dtr_id = d3.id
                 where so_id = 0 and po_id = 0 and retur_id = 0 and prd_id = 0 and customer_id = 0 and dd3.rongsok_id = i.jenis_barang_id ) as koreksi
-            (select sum() from dtr_detail dd4
-                left join dtr d4 on dd4.dtr_id = d4.id
-                )
             from inventory i
                 left join rongsok r on i.jenis_barang_id = r.id
                 where bulan = ".$b." and tahun = ".$t);
@@ -911,14 +908,24 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
 
-    function permintaan_rongsok_dari_produksi($s,$e){
-        $data = $this->db->query("select r.nama_item,r.kode_rongsok, spb.no_spb, dd.id, sum(dd.bruto) as bruto, sum(dd.netto) as netto, dd.tanggal_keluar, spb.remarks from spb_detail_fulfilment sdf
+    function permintaan_rongsok_dari_produksi($s,$e,$j){
+        if($j==0){
+            $data = $this->db->query("select r.nama_item,r.kode_rongsok, spb.no_spb, dd.id, sum(dd.bruto) as bruto, sum(dd.netto) as netto, dd.tanggal_keluar, spb.remarks from spb_detail_fulfilment sdf
             left join dtr_detail dd on dd.id = sdf.dtr_detail_id
             left join rongsok r on r.id = dd.rongsok_id
             left join spb on spb.id = sdf.spb_id
             where spb.produksi_ingot_id > 0 and dd.tanggal_keluar between '".$s."' and '".$e."'
             group by dd.rongsok_id, dd.tanggal_keluar
             order by dd.rongsok_id, dd.tanggal_keluar asc");
+        }else{
+            $data = $this->db->query("select r.nama_item,r.kode_rongsok, spb.no_spb, dd.id, sum(dd.bruto) as bruto, sum(dd.netto) as netto, dd.tanggal_keluar, spb.remarks from spb_detail_fulfilment sdf
+            left join dtr_detail dd on dd.id = sdf.dtr_detail_id
+            left join rongsok r on r.id = dd.rongsok_id
+            left join spb on spb.id = sdf.spb_id
+            where spb.jenis_spb = 10 and dd.tanggal_keluar between '".$s."' and '".$e."'
+            group by dd.rongsok_id, dd.tanggal_keluar
+            order by dd.rongsok_id, dd.tanggal_keluar asc");
+        }
         return $data;
     }
 
@@ -993,7 +1000,70 @@ class Model_beli_rongsok extends CI_Model{
             LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id )
             WHERE
                 ( t.ttr_status != 0 ) AND ( d.type = 0 ) AND ( d.flag_ppn = ".$ppn." )
-            AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
+            AND dd.po_detail_id > 0
+            AND t.tanggal BETWEEN '".$s."' and '".$e."'
+            ORDER BY sumber, kode_rongsok, no_ttr, tgl_ttr");
+    }
+
+    function pemasukan_rongsok_tolling($s,$e,$ppn){
+        return $this->db->query("SELECT
+                        t.tanggal AS tgl_ttr,
+                        t.no_ttr AS no_ttr,
+                    CASE
+                            
+                            WHEN dd.po_detail_id > 0 THEN
+                            'PO' 
+                            WHEN dd.po_detail_id = 0 
+                            AND d.so_id > 0 THEN
+                                'Tolling' ELSE 'Lain2' 
+                                END AS sumber,
+                        '' as no_spb,
+                        CASE
+                                
+                                WHEN dd.po_detail_id > 0 THEN
+                                p.no_po 
+                                WHEN dd.po_detail_id = 0 
+                                AND d.so_id > 0 THEN
+                                    so.no_sales_order ELSE '-' 
+                                    END AS no_doc_sumber,
+                            CASE
+                                    
+                                    WHEN dd.po_detail_id > 0 THEN
+                                    p.tanggal ELSE so.tanggal 
+                                END AS tgl_doc,
+                            CASE
+                                    
+                                    WHEN dd.po_detail_id > 0 THEN
+                                    s.kode_supplier 
+                                    WHEN dd.po_detail_id = 0 
+                                    AND d.so_id > 0 THEN
+                                        mc.kode_customer ELSE '-' 
+                                        END AS kode_sup_cust,
+                                CASE
+                                        
+                                        WHEN dd.po_detail_id > 0 THEN
+                                        s.nama_supplier 
+                                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                                        mc.nama_customer_kh 
+                                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                                        mc.nama_customer ELSE '-' 
+                                    END AS nama_sup_cust,
+                                    r.kode_rongsok AS kode_rongsok,
+                                    r.nama_item AS nama_item,
+                                    td.bruto AS bruto,
+                                    td.netto AS netto from
+            ttr_detail td
+            LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+            LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+            LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+            LEFT JOIN po p ON ( ( p.id = d.po_id ) AND ( dd.po_detail_id > 0 ) )
+            LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+            LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+            LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = d.supplier_id ) )
+            LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id )
+            WHERE
+                ( t.ttr_status != 0 ) AND ( d.type = 0 ) AND ( d.flag_ppn = ".$ppn." )
+            AND dd.po_detail_id = 0 AND d.so_id > 0 
             AND t.tanggal BETWEEN '".$s."' and '".$e."'
             ORDER BY sumber, kode_rongsok, no_ttr, tgl_ttr");
     }

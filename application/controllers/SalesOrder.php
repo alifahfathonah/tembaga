@@ -137,7 +137,7 @@ class SalesOrder extends CI_Controller{
         $jenis = $this->input->post('jenis');
         $this->load->model('Model_sales_order');
         
-        if($jenis == 'RONGSOK'){
+        if($jenis == 'RONGSOK' || $jenis == 'AMPAS'){
             $jenis_barang= $this->Model_sales_order->get_uom_so($id)->row_array();
         }else if($jenis == 'LAIN'){
             $jenis_barang= $this->Model_sales_order->get_uom_sp($id)->row_array();
