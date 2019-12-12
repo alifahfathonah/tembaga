@@ -65,7 +65,7 @@ class Model_stok_opname extends CI_Model{
                 ) x
             left join t_gudang_fg g on g.id = x.gudang_id
             left join jenis_barang jb on jb.id = x.jenis_barang_id
-            order by jb.kode;");
+            order by jb.kode, no_packing_gudang;");
         return $data;
     }
 
@@ -114,7 +114,8 @@ class Model_stok_opname extends CI_Model{
             WHERE (tfg.tanggal_keluar = '0000-00-00' OR tfg.tanggal_keluar > '".$tanggal."') AND tfg.tanggal_masuk <= '".$tanggal."' AND tfg.id NOT IN (
                 SELECT gudang_id 
                 FROM stok_opname_detail sod
-                LEFT JOIN stok_opname so ON so.tanggal = '".$tanggal."' AND so.id = sod.stok_opname_id
+                LEFT JOIN stok_opname so ON so.id = sod.stok_opname_id
+                where so.tanggal = '".$tanggal."'
                 )");
         return $data;
     }

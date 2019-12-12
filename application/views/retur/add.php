@@ -223,6 +223,7 @@ function get_contact(id){
         } 
     });
 }
+
 function get_cek(id){
     if(id === "FG") {
         $('#div_jenis_packing').show();

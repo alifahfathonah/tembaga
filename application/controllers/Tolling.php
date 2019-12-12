@@ -641,6 +641,7 @@ class Tolling extends CI_Controller{
                     $data_bpb = array(
                             'no_bpb' => $code,
                             'flag_ppn' => $user_ppn,
+                            'dtt_id' => $dtt_id,
                             'tanggal' => $tanggal,
                             'created' => $tanggal,
                             'created_by' => $user_id,
@@ -678,6 +679,8 @@ class Tolling extends CI_Controller{
                 $data_post['details'] = $this->Model_tolling_titipan->load_dtt_detail_only($dtt_id)->result();
 
                 unset($data_bpb['flag_ppn']);
+                unset($data_bpb['dtwip_id']);
+                unset($data_bpb['dtt_id']);
                 $data_id = array('reff1' => $id_bpb);
                 $data_post['data_bpb'] = array_merge($data_bpb, $data_id);
                 if($jenis=='FG'){
@@ -1021,6 +1024,7 @@ class Tolling extends CI_Controller{
                 $data_bpb = array(
                         'no_bpb' => $code,
                         'tanggal' => $tgl_input,
+                        'dtt_id' => $dtt_id,
                         'flag_ppn' => $user_ppn,
                         'created' => $tanggal,
                         'created_by' => $user_id,
@@ -1069,45 +1073,6 @@ class Tolling extends CI_Controller{
                         $this->db->update('sales_order',array(
                                             'flag_tolling'=>$flag_tolling));
                 }
-
-            // if($user_ppn==1){
-            //     $this->load->helper('target_url');
-
-            //     $this->load->model('Model_beli_wip');
-
-            //     $data_post['flag_tolling'] = $flag_tolling;
-            //     $data_post['so_id'] = $so_id;
-
-            //     $data_post['dtwip'] = $this->Model_beli_wip->load_dtwip_only($dtwip_id)->row_array();
-            //     $data_post['details'] = $this->Model_beli_wip->load_dtwip_detail_only($dtwip_id)->result();
-
-            //     unset($data_bpb['flag_ppn']);
-            //     $data_id = array('reff1' => $id_bpb);
-            //     $data_post['data_bpb'] = array_merge($data_bpb, $data_id);
-            //     $data_post['details_bpb'] = $this->Model_beli_wip->load_bpb_detail_only($id_bpb)->result();
-
-            //     $detail_post = json_encode($data_post);
-            //     // print($detail_post);
-            //     // die();
-
-            //     $ch = curl_init(target_url().'api/TollingAPI/dtwip');
-            //     curl_setopt($ch, CURLOPT_POST, true);
-            //     curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-            //     curl_setopt($ch, CURLOPT_POSTFIELDS, $detail_post);
-            //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            //     $response = curl_exec($ch);
-            //     $result = json_decode($response, true);
-            //     curl_close($ch);
-            //     if($result['status']==true){
-            //         $this->db->where('id', $dtwip_id);
-            //         $this->db->update('dtwip', array(
-            //             'api'=>1
-            //         ));
-            //     }
-            //     // print_r($response);
-            //     // die();
-            // }
-            // die();
 
         if($this->db->trans_complete()){  
             // $this->session->set_flashdata('flash_msg', ' DTR Berhasil di Approve');      

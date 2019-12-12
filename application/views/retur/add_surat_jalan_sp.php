@@ -33,7 +33,7 @@
                             No. Surat Jalan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" class="form-control myline" style="margin-bottom:5px" placeholder="Nomor Surat Jalan ...">
+                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" class="form-control myline" style="margin-bottom:5px" placeholder="Nomor Surat Jalan ..." value="Auto Generated" disabled>
                         </div>
                     </div>
                     <div class="row">

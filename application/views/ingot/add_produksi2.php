@@ -291,7 +291,7 @@ function hitung_susut(){
 function get_detail_produksi(id){
     $.ajax({
         type: "POST",
-        url: "<?php echo base_url('index.php/ingot/get_detail_produksi'); ?>",
+        url: "<?php echo base_url('index.php/Ingot/get_detail_produksi'); ?>",
         data: {id: id},
         cache: false,
         success: function(result) {

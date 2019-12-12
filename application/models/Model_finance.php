@@ -1,7 +1,8 @@
 <?php
 class Model_finance extends CI_Model{
     function list_data($ppn){
-        $data = $this->db->query("Select fum.*, mc.nama_customer From f_uang_masuk fum
+        $data = $this->db->query("Select fum.*, mc.nama_customer, fk.id_slip_setoran From f_uang_masuk fum
+            left join f_kas fk on fk.id_um = fum.id
             left join m_customers mc on mc.id = fum.m_customer_id
             where fum.flag_ppn =".$ppn." and fum.rekening_tujuan < 4 and (fum.jenis_pembayaran != 'Cek' and fum.jenis_pembayaran != 'Cek Mundur')
             Order By id desc");
@@ -24,7 +25,8 @@ class Model_finance extends CI_Model{
     }
 
     function list_data_bm($ppn){
-        $data = $this->db->query("Select fum.*, mc.nama_customer From f_uang_masuk fum
+        $data = $this->db->query("Select fum.*, mc.nama_customer, fk.id_slip_setoran From f_uang_masuk fum
+            left join f_kas fk on fk.id_um = fum.id
             left join m_customers mc on mc.id = fum.m_customer_id
             where fum.flag_ppn =".$ppn." and fum.rekening_tujuan > 4 and (fum.jenis_pembayaran != 'Cek' and fum.jenis_pembayaran != 'Cek Mundur')
             Order By id desc");
@@ -853,6 +855,47 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function print_flag_sj($ppn){
+        if($ppn==2){
+            $data = $this->db->query("select tsjd.t_sj_id, tsj.no_surat_jalan, so.flag_ppn, tsj.tanggal, sum(tsjd.qty) as qty, sum(tsjd.bruto) as bruto, 
+            COALESCE(NULLIF(tso.alias,''),(case when tsjd.jenis_barang_alias = 0 then tsjd.jenis_barang_id else tsjd.jenis_barang_alias end)) as jbid, (case when so.flag_ppn = 1 then mc.nama_customer else mc.nama_customer_kh end) as nama_customer,
+            round(sum(case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end),3) as netto,
+            COALESCE(r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as jenis_barang, COALESCE(r.uom,r2.uom,sp.uom,jb.uom) as uom,
+            (select tsod.amount from t_sales_order_detail tsod left join t_sales_order tso on tso.id = tsod.t_so_id where tso.so_id = tsj.sales_order_id and tsod.jenis_barang_id = case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)as amount 
+            from t_surat_jalan_detail tsjd 
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id 
+            left join t_sales_order tso on tso.so_id = tsj.sales_order_id
+            left join sales_order so on so.id = tso.so_id
+            left join m_customers mc on mc.id = tsj.m_customer_id
+            left join rongsok r on (tsj.jenis_barang = 'RONGSOK' and r.id = tsjd.jenis_barang_id)
+            left join rongsok r2 on (tsj.jenis_barang = 'AMPAS' and r2.id = tsjd.jenis_barang_id)
+            left join sparepart sp on (tsj.jenis_barang = 'LAIN' and sp.id = tsjd.jenis_barang_id)
+            left join jenis_barang jb on (jb.id = tsjd.jenis_barang_id)
+                        where tsj.sales_order_id > 0 and tsj.inv_id is null
+                        group by jbid, tsj.no_surat_jalan
+                        order by tsj.tanggal, tsj.no_surat_jalan, jenis_barang;");
+        }else{
+            $data = $this->db->query("select tsjd.t_sj_id, tsj.no_surat_jalan, so.flag_ppn, tsj.tanggal, sum(tsjd.qty) as qty, sum(tsjd.bruto) as bruto, 
+            COALESCE(NULLIF(tso.alias,''),(case when tsjd.jenis_barang_alias = 0 then tsjd.jenis_barang_id else tsjd.jenis_barang_alias end)) as jbid, (case when so.flag_ppn = 1 then mc.nama_customer else mc.nama_customer_kh end) as nama_customer,
+            round(sum(case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end),3) as netto,
+            COALESCE(r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as jenis_barang, COALESCE(r.uom,r2.uom,sp.uom,jb.uom) as uom,
+            (select tsod.amount from t_sales_order_detail tsod left join t_sales_order tso on tso.id = tsod.t_so_id where tso.so_id = tsj.sales_order_id and tsod.jenis_barang_id = case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)as amount 
+            from t_surat_jalan_detail tsjd 
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id 
+            left join t_sales_order tso on tso.so_id = tsj.sales_order_id
+            left join sales_order so on so.id = tso.so_id
+            left join m_customers mc on mc.id = tsj.m_customer_id
+            left join rongsok r on (tsj.jenis_barang = 'RONGSOK' and r.id = tsjd.jenis_barang_id)
+            left join rongsok r2 on (tsj.jenis_barang = 'AMPAS' and r2.id = tsjd.jenis_barang_id)
+            left join sparepart sp on (tsj.jenis_barang = 'LAIN' and sp.id = tsjd.jenis_barang_id)
+            left join jenis_barang jb on (jb.id = tsjd.jenis_barang_id)
+                        where tsj.sales_order_id > 0 and tsj.inv_id is null and so.flag_ppn =".$ppn."
+                        group by jbid, tsj.no_surat_jalan
+                        order by tsj.tanggal, tsj.no_surat_jalan, jenis_barang;");
+        }
+        return $data;
+    }
+
     function print_laporan_sj_all($s,$e){
         $data = $this->db->query("select COALESCE(r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as jenis_barang, COALESCE(r.kode_rongsok,r2.kode_rongsok,sp.alias,jb.kode) as kode_barang, COALESCE(r.uom,r2.uom,sp.uom,jb.uom) as uom, sum(tsjd.bruto) as bruto, round(sum(case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end),3) as netto, tsj.tanggal, tsj.no_surat_jalan from t_surat_jalan_detail tsjd 
             left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
@@ -881,6 +924,14 @@ class Model_finance extends CI_Model{
     }
 
     function print_laporan_penjualan_sj_all($s,$e){
+        $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn=1,(((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100),0)) as nilai_ppn from v_data_faktur_all v 
+            where (v.tanggal BETWEEN '".$s."' AND '".$e."')
+            order by v.no_surat_jalan, v.nama_barang
+            ");
+        return $data;
+    }
+
+    function print_flag_sj_all($s,$e){
         $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn=1,(((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100),0)) as nilai_ppn from v_data_faktur_all v 
             where (v.tanggal BETWEEN '".$s."' AND '".$e."')
             order by v.no_surat_jalan, v.nama_barang

@@ -613,6 +613,8 @@ class BeliFinishGood extends CI_Controller{
         $tanggal  = date('Y-m-d h:m:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
+        $this->db->trans_start();
+
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('dtbj', array(
             'tanggal'=>$tgl_input,
@@ -624,11 +626,16 @@ class BeliFinishGood extends CI_Controller{
         ));
 
         if($this->db->trans_complete()){    
-            $this->session->set_flashdata('flash_msg', 'DTBJ berhasil di-create dengan nomor : '.$this->input->post('no_dtr'));                 
+            $this->session->set_flashdata('flash_msg', 'DTBJ berhasil di-create dengan nomor : '.$this->input->post('no_dtr'));  
+            if($this->input->post('spb_id')>0){
+                redirect('index.php/BeliFinishGood/proses_dtbj/'.$this->input->post('id'));               
+            }else{
+                redirect('index.php/BeliFinishGood/dtbj_list');         
+            }
         }else{
             $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTBJ, silahkan coba kembali!');
+            redirect('index.php/BeliFinishGood/dtbj_list');
         }
-        redirect('index.php/BeliFinishGood/dtbj_list');
     }
 
     function save_dtbj(){
@@ -685,7 +692,11 @@ class BeliFinishGood extends CI_Controller{
             }else{
                 $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTBJ, silahkan coba kembali!');
             }
-            redirect('index.php/BeliFinishGood/dtbj_list');
+            if($this->input->post('spb_id')>0){
+                redirect('index.php/BeliFinishGood/proses_dtbj/'.$this->input->post('id'));
+            }else{
+                redirect('index.php/BeliFinishGood/dtbj_list');
+            }
     }
 
     function load_detail_roll(){
@@ -902,25 +913,19 @@ class BeliFinishGood extends CI_Controller{
 
                     #insert t_bpb_fg
                     if($user_ppn==1){
-
-                    // $this->load->helper('target_url');
-                    // $url = target_url().'api/BeliSparepartAPI/numbering?id=BPB-KMP&tgl='.$tgl_input;
-                    // $ch = curl_init();
-                    // curl_setopt($ch, CURLOPT_URL, $url);
-                    // // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-                    // // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
-                    // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-                    // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    // curl_setopt($ch, CURLOPT_HEADER, 0);
-
-                    // $result = curl_exec($ch);
-                    // $result = json_decode($result);
-                    // curl_close($ch);
-                    // $code = $result->code;
                         $code = $this->Model_m_numberings->getNumbering('BPB-KMP',$tgl_input);
                     }else{
-                        $code = $this->Model_m_numberings->getNumbering('BPB-PO',$tgl_input);
+                        if($this->input->post('po_id')==0){
+                            $code = $this->Model_m_numberings->getNumbering('BPB-FG',$tgl_input);
+                        }else{
+                            $code = $this->Model_m_numberings->getNumbering('BPB-PO',$tgl_input);
+                        }
                     }
+                if($this->input->post('po_id')>0){
+                    $ket = 'BARANG PO FG';
+                }else{
+                    $ket = 'PEMASUKAN FG';
+                }
                     $data_bpb = array(
                             'no_bpb_fg' => $code,
                             'tanggal' => $tgl_input,
@@ -930,7 +935,7 @@ class BeliFinishGood extends CI_Controller{
                             'jenis_barang_id' => 0,
                             'created_at' => $tanggal,
                             'created_by' => $user_id,
-                            'keterangan' => 'BARANG PO FG',
+                            'keterangan' => $ket,
                             'status' => 0
                         );
                     $this->db->insert('t_bpb_fg',$data_bpb);
@@ -955,7 +960,11 @@ class BeliFinishGood extends CI_Controller{
 
         if($this->db->trans_complete()){  
             $this->session->set_flashdata('flash_msg', 'DTBJ Berhasil di Approve');  
-            redirect('index.php/BeliFinishGood/dtbj_list/');
+            if($this->input->post('spb_id')>0){
+                redirect('index.php/GudangFG/view_spb/'.$this->input->post('spb_id'));
+            }else{
+                redirect('index.php/BeliFinishGood/dtbj_list/');
+            }
         }else{
             $this->session->set_flashdata('flash_msg', 'DTBJ Gagal di Approve');  
             redirect('index.php/BeliFinishGood/dtbj_list/');
@@ -1071,6 +1080,7 @@ class BeliFinishGood extends CI_Controller{
 
                 unset($data_bpb['dtt_id']);
                 unset($data_bpb['dtbj_id']);
+                unset($data_bpb['spb_id']);
                 unset($data_bpb['flag_ppn']);
                 $data_id = array('reff1' => $id_bpb);
                 $data_post['data_bpb'] = array_merge($data_bpb, $data_id);

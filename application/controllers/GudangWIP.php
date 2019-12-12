@@ -1084,6 +1084,7 @@ class GudangWIP extends CI_Controller{
             $data = array(
                         'no_dtr'=> $code_DTR,
                         'tanggal'=> $tgl_input,
+                        'supplier_id'=> 838,//Gudang WIP
                         'jenis_barang'=> 'RONGSOK',
                         'remarks'=> 'BARANG WIP TRANSFER KE RONGSOK',
                         'created'=> $tanggal,
@@ -1492,7 +1493,7 @@ class GudangWIP extends CI_Controller{
     function laporan_list(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
-        $group_id    = $this->session->userdata('group_id');        
+        $group_id    = $this->session->userdata('group_id');
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -2049,5 +2050,108 @@ class GudangWIP extends CI_Controller{
                 $this->session->set_flashdata('flash_msg', 'Data Gudang Keras gagal disimpan, silahkan dicoba kembali!');
                 redirect('index.php/GudangWIP/edit_gudang_keras/'.$this->input->post('id'));  
             }
+    }
+
+    function search_permintaan_gudang(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Gudang WIP";
+        $data['content']   = "gudangwip/search_permintaan_gudang";
+
+        $this->load->model('Model_beli_rongsok');
+
+        $this->load->view('layout', $data);
+    }
+
+    function print_permintaan_gudang(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+
+        $this->load->helper('tanggal_indo');
+        $start = date('Y/m/d', strtotime($_GET['ts']));
+        $end = date('Y/m/d', strtotime($_GET['te']));
+        $l = $_GET['l'];
+
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Gudang WIP";
+
+        $this->load->model('Model_gudang_wip');
+        $data['start'] = $start;
+        $data['end'] = $end;
+
+        if($l==0){//8mm hitam
+            $data['header'] = 'Pengeluaran Ingot';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
+        }elseif($l==1){
+            $data['header'] = 'Pengeluaran 8mm Hitam';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
+        }elseif($l==2){
+            $data['header'] = 'Pengeluaran 8mm Cuci';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
+        }elseif($l==3){
+            $data['header'] = 'Pengeluaran ke Produksi';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
+        }elseif($l==4){
+            $data['header'] = 'Penjualan WIP KMP';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
+        }elseif($l==5){
+            $data['header'] = 'Penjualan WIP KH';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
+        }elseif($l==6){
+            $data['header'] = 'Adjustment Pengeluaran';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
+
+//PEMASUKAN WIP
+        }elseif($l==7){
+            $data['header'] = 'Pemasukan PO(KH)';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
+        }elseif($l==8){
+            $data['header'] = 'Pemasukan PO(KMP)';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
+        }elseif($l==9){
+            $data['header'] = 'Pemasukan Tolling(KH)';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
+        }elseif($l==10){
+            $data['header'] = 'Pemasukan Tolling(KMP)';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
+        }elseif($l==11){
+            $data['header'] = 'Pemasukan Apollo';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
+        }elseif($l==12){
+            $data['header'] = 'Pemasukan Rolling';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
+        }elseif($l==13){
+            $data['header'] = 'Pemasukan Cuci';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
+        }elseif($l==14){
+            $data['header'] = 'Adjustment Pemasukan';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
+        }
     }
 }

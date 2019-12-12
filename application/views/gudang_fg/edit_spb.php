@@ -79,6 +79,7 @@
                         </div>
 
                         <input type="hidden" name="jenis_spb" value="<?=$header['jenis_spb'];?>">
+                        <input type="hidden" name="jenis_packing_id" value="<?=$header['jenis_packing_id'];?>">
                     </div>
                     <?php if($header['jenis_spb']==5){ ?>
                     <div class="row">

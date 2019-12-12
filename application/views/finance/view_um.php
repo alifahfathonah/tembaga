@@ -43,6 +43,7 @@
                                     <input type="hidden" id="jenis1" name="jenis1">
                                     <input type="hidden" id="remarks_baru" name="remarks">
                                     <input type="hidden" id="no_um_baru" name="no_um">
+                                    <input type="hidden" id="bank_id_baru" name="bank_id" value="0">
                                 </div>
                             </div>                           
                         </form>
@@ -143,6 +144,7 @@
                             <input type="text" id="no_um" name="no_um" readonly="readonly" class="form-control myline" style="margin-bottom:5px" value="<?php echo $myData['no_uang_masuk']; ?>">
 
                             <input type="hidden" id="id" name="id" value="<?php echo $myData['id']; ?>">
+                            <!-- <input type="hidden" id="bank_id" name="bank_id" value="<?php echo $myData['rekening_tujuan']; ?>"> -->
                         </div>
                     </div>
                     <div class="row">
@@ -217,17 +219,14 @@
                             Bank <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_bank" name="nama_bank" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $myData['kode_bank']; ?>">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Bank Tujuan
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="nama_bank" name="nama_bank" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" value="<?php echo $myData['nama_bank']; ?>">
+                            <select id="id_bank" name="bank_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px" disabled>
+                                <option value=""></option>
+                                <?php
+                                    foreach ($list_bank as $row){
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$myData['rekening_tujuan'])? 'selected="selected"': '').'>'.$row->nama_bank.'</option>';
+                                    }
+                                ?>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -434,6 +433,7 @@ function editData(){
     $("#no_um").attr('readonly', false);
     $("#remarks").attr("readonly", false);
     $("#tanggal").attr("readonly", false);
+    $("#id_bank").attr("disabled", false);
     $("#tanggal").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
@@ -465,6 +465,7 @@ function showUpdateBox(){
             $('#tanggal_baru').val($('#tanggal').val());
             $('#jenis1').val($('#jenis').val());
             $('#nominal_baru').val($('#nominal').val());
+            $('#bank_id_baru').val($('#id_bank').val());
             if($("#jenis").val()=="Cek Mundur"){
                 $('#tanggal_cek_baru').val($('#tanggal_cek').val());
                 $('#nama_bank_baru').val($('#nama_bank').val());

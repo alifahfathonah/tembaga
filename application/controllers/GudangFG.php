@@ -1730,7 +1730,8 @@ class GudangFG extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "gudang_fg/add_spb";
-        $this->load->model('Model_gudang_fg');
+        $this->load->model('Model_retur');
+        $data['jenis_packing_list'] = $this->Model_retur->jenis_packing_list()->result();
         
         $this->load->view('layout', $data);
     }
@@ -1747,6 +1748,7 @@ class GudangFG extends CI_Controller{
             $data = array(
                 'no_spb'=> $code,
                 'jenis_spb'=> $this->input->post('jenis_spb'),
+                'jenis_packing_id'=> $this->input->post('jenis_packing_id'),
                 'tanggal'=> $tgl_input,
                 'keterangan'=>$this->input->post('remarks'),
                 'created_at'=> $tanggal,
@@ -1906,6 +1908,7 @@ class GudangFG extends CI_Controller{
 
     function update_spb(){
         $user_id  = $this->session->userdata('user_id');
+        $user_ppn  = $this->session->userdata('user_ppn');
         $tanggal  = date('Y-m-d h:m:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
@@ -1964,11 +1967,32 @@ class GudangFG extends CI_Controller{
                             'tanggal_masuk'=> $tgl_input
                         ));
             }
+        }elseif($this->input->post('jenis_spb')==8){
+
+            $this->load->model('Model_m_numberings');
+            $code = $this->Model_m_numberings->getNumbering('DTBJ', $tgl_input);
+            $data = array(
+                'no_dtbj'=> $code,
+                'flag_ppn'=> $user_ppn,
+                'tanggal'=> $tgl_input,
+                'supplier_id'=> 822,
+                'spb_id'=> $this->input->post('id'),
+                'jenis_packing'=> $this->input->post('jenis_packing_id'),
+                'remarks'=> 'Repacking : '.$this->input->post('no_spb'),
+                'created'=> $tanggal,
+                'created_by'=> $user_id
+            );
+            $this->db->insert('dtbj', $data);
+            $dtbj_id = $this->db->insert_id();
         }
         
         if($this->db->trans_complete()){
             $this->session->set_flashdata('flash_msg', 'Data SPB FG berhasil disimpan');
-            redirect('index.php/GudangFG/spb_list');
+            if($this->input->post('jenis_spb')==8){
+                redirect('index.php/BeliFinishGood/create_dtbj/'.$dtbj_id);
+            }else{
+                redirect('index.php/GudangFG/spb_list');
+            }
         }else{
             $this->session->set_flashdata('flash_msg', 'Data SPB FG gagal disimpan');
             redirect('index.php/GudangFG/edit_spb/'.$this->input->post('id'));
@@ -2059,6 +2083,52 @@ class GudangFG extends CI_Controller{
         }
     }
 
+    // function laporan_list(){
+    //     $module_name = $this->uri->segment(1);
+    //     $id = $this->uri->segment(3);
+    //     $group_id    = $this->session->userdata('group_id');        
+    //     if($group_id != 1){
+    //         $this->load->model('Model_modules');
+    //         $roles = $this->Model_modules->get_akses($module_name, $group_id);
+    //         $data['hak_akses'] = $roles;
+    //     }
+    //     $data['group_id']  = $group_id;
+
+    //         $data['content']= "gudang_fg/laporan_list";
+    //         $i=0;
+    //         $this->load->model('Model_gudang_fg'); 
+    //         //$data['detailTanggal'] = $this->Model_beli_sparepart->show_laporan()->result();
+    //         $comment = $this->Model_gudang_fg->show_laporan();
+    //         if($comment->num_rows() > 0)
+    //             {
+    //                 foreach ($comment->result() as $r)
+    //                 {
+    //                     //bulan ini
+    //                     $data['reg'][$i]['showdate']=$r->showdate;
+    //                     $data['reg'][$i]['tanggal']=$r->tanggal;
+    //                     // $data['reg'][$i]['jumlah']=$r->jumlah;
+    //                     $data['reg'][$i]['bruto_masuk']=$r->bruto_masuk;
+    //                     $data['reg'][$i]['netto_masuk']=$r->netto_masuk;
+    //                     $data['reg'][$i]['bruto_keluar']=$r->bruto_keluar;
+    //                     $data['reg'][$i]['netto_keluar']=$r->netto_keluar;
+
+    //                     //convert tanggal
+    //                     $tgl=str_split($r->tanggal,4);
+    //                     $tahun=$tgl[0];
+    //                     $bulan=$tgl[1];
+
+    //                     if($bulan==12){
+    //                       $bulan = 1;
+    //                       $tahun = $tahun+1;
+    //                     } else {
+    //                       $bulan= intval($bulan)+1;
+    //                     }
+    //                     $i++;
+    //                 }
+    //             }
+    //         $this->load->view('layout', $data);   
+    // }
+
     function laporan_list(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
@@ -2070,54 +2140,83 @@ class GudangFG extends CI_Controller{
         }
         $data['group_id']  = $group_id;
 
-            $data['content']= "gudang_fg/laporan_list";
-            $i=0;
-            $this->load->model('Model_gudang_fg'); 
-            //$data['detailTanggal'] = $this->Model_beli_sparepart->show_laporan()->result();
-            $comment = $this->Model_gudang_fg->show_laporan();
-            if($comment->num_rows() > 0)
-                {
-                    foreach ($comment->result() as $r)
-                    {
-                        //bulan ini
-                        $data['reg'][$i]['showdate']=$r->showdate;
-                        $data['reg'][$i]['tanggal']=$r->tanggal;
-                        // $data['reg'][$i]['jumlah']=$r->jumlah;
-                        $data['reg'][$i]['bruto_masuk']=$r->bruto_masuk;
-                        $data['reg'][$i]['netto_masuk']=$r->netto_masuk;
-                        $data['reg'][$i]['bruto_keluar']=$r->bruto_keluar;
-                        $data['reg'][$i]['netto_keluar']=$r->netto_keluar;
+        $data['content']= "gudang_fg/laporan_list";
+        $this->load->model('Model_gudang_fg'); 
+        //$data['detailTanggal'] = $this->Model_beli_sparepart->show_laporan()->result();
+        $data['list'] = $this->Model_gudang_fg->show_laporan()->result();
+        $this->load->view('layout', $data);   
+    }
 
-                        //convert tanggal
-                        $tgl=str_split($r->tanggal,4);
-                        $tahun=$tgl[0];
-                        $bulan=$tgl[1];
+    function proses_inventory(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d h:m:s');
 
-                        if($bulan==12){
-                          $bulan = 1;
-                          $tahun = $tahun+1;
-                        } else {
-                          $bulan= intval($bulan)+1;
-                        }
+        $bulan = $_GET['b'];
+        $tahun = $_GET['t'];
+        $jb = 'FG';
 
-                        // Get user details from user table
-                        // $before=$this->Model_beli_rongsok->show_laporan_after($tahun,$bulan);
-                        // if($before->num_rows() > 0)
-                        // {
-                        //     foreach ($before->result() as $row)
-                        //     {
-                        //         // user details whatever you have in your db.
-                        //         $data['reg'][$i]['jumlah_b']=$row->jumlah;
-                        //         $data['reg'][$i]['bruto_masuk_b']=$row->bruto_masuk;
-                        //         $data['reg'][$i]['netto_masuk_b']=$row->netto_masuk;
-                        //         $data['reg'][$i]['bruto_keluar_b']=$row->bruto_keluar;
-                        //         $data['reg'][$i]['netto_keluar_b']=$row->netto_keluar;
-                        //     }
-                        // }
-                        $i++;
+        $start = $tahun.'-'.$bulan.'-01';
+        $end = date("Y-m-t", strtotime($start));
+
+        // echo $start;die();
+        // echo $end;die();
+
+        $before = date('Y-m-d', strtotime('first day of last month', strtotime($start)));
+
+        $this->db->trans_start();
+        $this->load->model('Model_gudang_fg');
+
+            $jenis_barang = $this->Model_gudang_fg->barang_fg_list()->result();
+            $this->db->where(array(
+                'tanggal' => $start,
+                'jenis_barang' => $jb
+            ));
+            $this->db->delete('inventory');
+            $no = 0;
+            foreach ($jenis_barang as $key => $value) {
+                $stok_before = $this->Model_gudang_fg->inventory_stok_before($jb,$before,$value->id)->row_array();
+                $t = 1;
+                if(empty($stok_before)){
+                    $stok_before = $this->Model_gudang_fg->show_kartu_stok_before($start,$end,$value->id)->row_array();
+                    $t = 2;
+                // $data['stok_before'] = $this->Model_gudang_fg->show_kartu_stok_before($start,$end,$jb_id)->row_array();
+                // $data['detailLaporan'] = $this->Model_gudang_fg->show_kartu_stok_detail($start,$end,$jb_id)->result();
+                }
+                $trx = $this->Model_gudang_fg->show_kartu_stok_detail_inventory($start,$end,$value->id)->row_array();
+                if(!empty($stok_before) || !empty($trx)){
+                    if($t==1){
+                        $stok_awal = $stok_before['stok_akhir'];
+                    }else{
+                        $stok_awal = $stok_before['netto_masuk']-$stok_before['netto_keluar'];
+                    }
+
+                    $stok_awal_next_month = $stok_awal + $trx['netto_masuk'] - $trx['netto_keluar'];
+                    if($stok_awal > 0 || $trx['netto_masuk'] > 0 || $trx['netto_keluar'] > 0){
+                        //stok akhir
+                        $this->db->insert('inventory', array(
+                            'jenis_barang'=>$jb,
+                            'bulan'=>$bulan,
+                            'tahun'=>$tahun,
+                            'tanggal'=>$start,
+                            'jenis_barang_id'=>$value->id,
+                            'qty'=> 0,
+                            'stok_awal'=>$stok_awal,
+                            'netto_masuk'=>((empty($trx['netto_masuk']))? 0: $trx['netto_masuk']),
+                            'netto_keluar'=>((empty($trx['netto_keluar']))? 0: $trx['netto_keluar']),
+                            'stok_akhir'=>$stok_awal_next_month,
+                            'created_at'=>$tanggal,
+                            'created_by'=>$user_id
+                        ));
                     }
                 }
-            $this->load->view('layout', $data);   
+            }
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Laporan Finish Good berhasil diproses !');
+            redirect(base_url('index.php/GudangFG/laporan_list'));
+        } else {
+            $this->session->set_flashdata('flash_msg', 'Laporan Finish Good gagal diproses, silahkan dicoba kembali!');
+            redirect(base_url('index.php/GudangFG/laporan_list'));
+        }
     }
 
     function view_laporan(){
@@ -2132,8 +2231,7 @@ class GudangFG extends CI_Controller{
             }
             $data['group_id']  = $group_id;
 
-            $items = strval($id);
-            $tgl=str_split($id,4);
+            $tgl=explode('-', $id);
             $tahun=$tgl[0];
             $bulan=$tgl[1];
 
@@ -2141,10 +2239,12 @@ class GudangFG extends CI_Controller{
                 'tahun' => $tahun,
                 'bulan' => $bulan
             );
+            $data['end'] = date("Y-m-t", strtotime($id));
 
             $data['content']= "gudang_fg/view_laporan";
             $this->load->model('Model_gudang_fg');
-            $data['detailLaporan'] = $this->Model_gudang_fg->show_view_laporan($bulan,$tahun)->result();
+            $data['detailLaporan'] = $this->Model_gudang_fg->show_view_laporan('FG',$id)->result();
+            // print_r($data['detailLaporan']);die();
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/GudangFG/laporan_list');
@@ -2251,9 +2351,9 @@ class GudangFG extends CI_Controller{
                 $data['hak_akses'] = $roles;
             }
             $data['group_id']  = $group_id;
-            $this->load->helper('tanggal_indo');            
-            $items = strval($id);
-            $tgl=str_split($id,4);
+            $this->load->helper('tanggal_indo');
+
+            $tgl=explode('-', $id);
             $tahun=$tgl[0];
             $bulan=$tgl[1];
 
@@ -2265,11 +2365,34 @@ class GudangFG extends CI_Controller{
             );
 
             $this->load->model('Model_gudang_fg');
-            $data['detailLaporan'] = $this->Model_gudang_fg->show_laporan_barang($tgl,$bulan,$tahun)->result();
+            $data['detailLaporan'] = $this->Model_gudang_fg->show_laporan_barang('FG',$id)->result();
             $this->load->view("gudang_fg/print_laporan_bulanan", $data);
         }else{
             redirect('index.php/GudangFG/laporan_list');
         }
+    }
+
+    function print_laporan_fg(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $user_id = $this->session->userdata('user_id');
+        $tanggal  = $this->uri->segment(3);
+        $this->load->helper('tanggal_indo');
+
+            $tgl_arr = explode('-', $tanggal);
+            $bulan = $tgl_arr[1];
+            $tahun = $tgl_arr[0];
+            $jb = 'RONGSOK';
+
+            $start = $tanggal;
+            $end = date("Y-m-t", strtotime($start));
+
+            $data['start'] = $start;
+            $data['end'] = $end;
+
+        $this->load->model('Model_gudang_fg');
+        $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_fg($bulan,$tahun,$start,$end)->result();
+        $this->load->view('gudang_fg/print_laporan_fg', $data);
     }
 
     function print_stok_fg(){
@@ -2380,6 +2503,10 @@ class GudangFG extends CI_Controller{
             $this->load->view('gudang_fg/print_laporan_pengeluaran', $data);
         }elseif($l==11){
             $data['header'] = 'Kirim Ke Rongsok';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pengeluaran($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pengeluaran', $data);
+        }elseif($l==13){
+            $data['header'] = 'Adjustment';
             $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pengeluaran($s,$e,$l)->result();
             $this->load->view('gudang_fg/print_laporan_pengeluaran', $data);
         }elseif($l==15){
@@ -2842,5 +2969,25 @@ class GudangFG extends CI_Controller{
         }             
         
        redirect('index.php/GudangFG/surat_jalan');
+    }
+
+    function print_surat_jalan(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_sales_order');
+            $this->load->helper('tanggal_indo');
+            $data['header']  = $this->Model_sales_order->show_header_sj($id)->row_array();
+            $soid = $data['header']['sales_order_id'];
+            $jenis = $data['header']['jenis_barang'];
+            if($jenis=='LAIN'){
+                $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_lain($id)->result();
+                $this->load->view('gudang_fg/print_sj_lain', $data);
+            }else if($jenis=='AMPAS'){
+                $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id,$soid)->result();
+                $this->load->view('gudang_fg/print_sj_ampas', $data);
+            }
+        }else{
+            redirect('index.php'); 
+        }
     }
 }

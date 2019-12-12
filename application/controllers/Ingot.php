@@ -81,6 +81,7 @@ class Ingot extends CI_Controller{
                         'no_spb'=> $code_spb,
                         'tanggal'=> $tgl_input,
                         'produksi_ingot_id'=> $insert_id,
+                        'jenis_spb'=>12,
                         'jenis_barang'=> $this->input->post('jenis_barang'),
                         'jumlah'=> $this->input->post('qty'),
                         'remarks'=> $this->input->post('remarks'),

@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Laporan Rongsok
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/GudangFG/laporan_list'); ?>"> List Laporan Finish Good </a> 
+            <a href="<?php echo base_url('index.php/GudangRongsok/laporan_list'); ?>"> List Laporan Rongsok </a> 
         </h5>          
     </div>
 </div>
@@ -15,7 +15,8 @@
                 <span id="msg_sukses"><?php echo $this->session->flashdata('flash_msg'); ?></span>
             </div>
         </div>
-    </div><div class="collapse well" id="form_filter" >
+    </div>
+    <div class="collapse well" id="form_filter" >
         <div class="row">
             <div class="col-md-6">
                 <div class="row">
@@ -57,14 +58,15 @@
             </div>  
         </div>
     </div>
+   <div class="col-md-12" style="margin-top: 10px;"> 
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-cubes"></i> Laporan Finish Good
+                    <i class="fa fa-cubes"></i> Laporan Rongsok
                 </div> 
                 <div class="tools">
                     <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter">
-                        <i class="fa fa-refresh"></i> Proses Laporan Inventory
+                        <i class="fa fa-search"></i> Proses Laporan Inventory
                     </a>
                 </div>                             
             </div> 
@@ -92,9 +94,10 @@
                         <td><?php
                         if($group_id==1 || $group_id==21 || $hak_akses['view_spb']==1){
                         ?>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangFG/view_laporan/<?php echo $data->tanggal; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangFG/print_laporan_bulanan/<?php echo $data->tanggal; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print All &nbsp; </a>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangFG/print_laporan_fg/<?php echo $data->tanggal; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print Laporan &nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangRongsok/view_laporan/<?php echo $data->tanggal; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangRongsok/print_laporan_bulanan/<?php echo $data->tanggal; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print All &nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangRongsok/print_laporan_bb/<?php echo $data->tanggal; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print Laporan &nbsp; </a>
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/GudangRongsok/edit_laporan/<?php echo $data->tanggal; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
                         <?php
                             }//if group
                             $no++;
@@ -109,6 +112,6 @@ function searchFilter(){
     $('#proses_button').text('Please Wait ... ');
     var s=$('#bulan').val();
     var e=$('#tahun').val();
-    window.location.href = '<?php echo base_url();?>index.php/GudangFG/proses_inventory?b='+s+'&t='+e;
+    window.location.href = '<?php echo base_url();?>index.php/GudangRongsok/proses_inventory?b='+s+'&t='+e;
 }
 </script>

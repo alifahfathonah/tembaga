@@ -73,7 +73,7 @@
                         </div>
                         <div class="col-md-8">
                             <select id="jenis_spb" name="jenis_spb" placeholder="Silahkan pilih..."
-                                class="form-control myline select2me" style="margin-bottom:5px;">
+                                class="form-control myline select2me" style="margin-bottom:5px;" onchange="get_cek(this.value);">
                                 <option></option>
                                 <option value="0">SDM</option>
                                 <option value="5">Kirim Rongsok</option>
@@ -82,6 +82,21 @@
                                 <option value="8">Repacking</option>
                                 <option value="11">Adjustment</option>
                             </select> 
+                        </div>
+                    </div>
+                    <div class="row" id="div_jenis_packing" style="display: none">
+                        <div class="col-md-4">
+                            Jenis Packing Hasil <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis_packing_id" name="jenis_packing_id" class="form-control myline select2me" 
+                                placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value="0"></option>
+                                <?php foreach ($jenis_packing_list as $row) {
+                                ?>
+                                <option value="<?php echo $row->id; ?>"><?php echo $row->jenis_packing; ?></option>
+                            <?php } ?>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -115,12 +130,31 @@ function simpanData(){
         $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
     }else{
-        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
-        $('#formku').submit(); 
+        if($('#jenis_spb').val()==8){
+            if($.trim($("#jenis_packing_id").val()) == ""){
+                $('#message').html("Jenis Packing harus diisi, tidak boleh kosong!");
+                $('.alert-danger').show();
+            }else{
+                $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+                $('#formku').submit();            
+            }
+        }else{
+            $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+            $('#formku').submit();
+        }
     };
 };
-</script>
 
+function get_cek(id){
+    if(id == 8) {
+        $('#div_jenis_packing').show();
+        $('#jenis_packing_id').select2('val','');
+    }else{
+        $('#div_jenis_packing').hide();
+        $('#jenis_packing_id').select2('val','');
+    }
+}
+</script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>

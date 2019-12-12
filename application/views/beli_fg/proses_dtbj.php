@@ -63,6 +63,8 @@
                                 value="<?php echo $header['no_dtbj']; ?>">
                             
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
+                            <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['po_id']; ?>">
+                            <input type="hidden" id="spb_id" name="spb_id" value="<?php echo $header['spb_id']; ?>">
                         </div>
                     </div>
                     <div class="row">

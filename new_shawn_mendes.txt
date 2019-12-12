@@ -44,40 +44,44 @@ bug - cek kenapa kadang uang masuk matching nyangkut (done)
 26- Surat jalan tanpa apa apa. semua barang list dibawah ini
 	26- Sparepart/Lain(done)
 	27- Ampas(done)
-31- Laporan Bahan Baku
-	31- FG
-	32- Rongsok
-33- Laporan Retur, yang udah diterima dan udah dikirim balik lagi ada berapa. per bulan
+28- Laporan Bahan Baku
+	28- FG (done)
+	29- Rongsok (done)
+30- PerSingkat Repacking kayak kirim rongsok. utk selain packing bobbin dan keranjang(done) 
+31- Laporan Status Bobbin loop per 50 row dan 7 column(done)
+32- Tambahin Revisi Surat Jalan Tolling ke Supplier(done)
+//33- Laporan Retur, yang udah diterima dan udah dikirim balik lagi ada berapa. per bulan
 34- Pemasukan Rongsok berdasarkan (done)
 
 -PO dan Tolling ( KH dan KMP) (done)
 -Dari Apollo, Rolling, SDM (done)
 -SPB Rongsok tambahin jenis Rolling utk Tali Rolling(done)
 
-35- Pemasukan FG
-35 -Tambahin pemasukan fg detail no packing (global dan produksi)(done)
-36 -Pemasukan FG selain dari produksi
+35- Pemasukan FG (done)
+35- Tambahin pemasukan fg detail no packing (global dan produksi)(done)
+36- Pemasukan FG selain dari produksi
   #PO (KH & KMP)(done)
   #Tolling (KH & KMP)(done)
   #Retur (Pengganti & Terima)(done)
-  #Ke SDM
+  #Ke SDM (done)
   #FG Ke Rongsok (done)
-  #Repacking (+) dan (-)
-  #Adjustment Selisih
+  #Repacking (+) dan (-) (done)
+  #Adjustment Selisih (done)
 
 37- WIP
-37- Penerimaan Ingot
-  +pemasukan apollo
-  +pemasukan Rolling
-  +pemasukan Cuci
-  +Penerimaan dari PO & Tolling (KH & KMP)
+37- Penerimaan Ingot (done)
+  +pemasukan apollo(done)
+  +pemasukan Rolling(done)
+  +pemasukan Cuci(done)
+  +Penerimaan dari PO & Tolling (KH & KMP) (done)
+  +Adjustment(done)
  
 38- Pengeluaran Ingot
-  -Pengeluaran 8mm Hitam
-  -Pengeluaran 8mm cuci
-  -Pengeluaran Jual(KH&KMP)
-  -Pengeluaran WIP ke SDM
-  -Adjustment
+  -Pengeluaran 8mm Hitam(done)
+  -Pengeluaran 8mm cuci(done)
+  -Pengeluaran Jual(KH&KMP)(done)
+  -Pengeluaran WIP ke SDM(done)
+  -Adjustment(done)
 
 39- SO balance terima wip/rongsok dan kirim fg balik(done)
 40- PO balance kirim surat jalan keluar dan terima hasil fg nya(done)
@@ -92,9 +96,12 @@ bug - cek kenapa kadang uang masuk matching nyangkut (done)
 42- So tanpa harga aja(done)
 43- Laporan rolling yg ada sizenya aja(done)
 44- ReDesign Kirim Barcode ke Pajak(done)
-45- Edit Retur setelah di Approve, tapi selama belum di kirim balik. karena pernah salah barang sampai gudang
-46- Retur bisa multiple, tambahin caranya di surat jalan
+45- Edit Retur setelah di Approve, tapi selama belum di kirim balik. karena pernah salah barang sampai gudang (done)	
+
+46- Edit bank di uang masuk. walaupun sudah cair/matching (done)
+47- Matching Pembayaran gabisa upload kalau masih minus atau jumlah cek / voucher masi 0(done)
+48- Input/Edit stok fisik rongsok karena gaada stok opname (done)
+49- Persingkat Repacking Rongsok kayak Finish Good
+- flag blebek dan serbuk gamasuk laporan rongsok bulanan
+50,51,52,53,54,55- Retur bisa multiple, tambahin caranya di surat jalan
 	Cek Laporan retur dari spb_detail
-47- PerSingkat Repacking kayak kirim rongsok. utk selain packing bobbin dan keranjang
-48- Laporan Status Bobbin loop per 50 row dan 7 column
-49- Tambahin Revisi Surat Jalan Tolling ke Supplier

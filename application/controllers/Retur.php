@@ -59,24 +59,8 @@ class Retur extends CI_Controller{
         }else{
             $code = $this->Model_m_numberings->getNumbering('RTR', $tgl_input); 
         }
-        // $code_bpb = $this->Model_m_numberings->getNumbering('BPB-RTR', $tgl_input);
-        
-        if($code){        
-            // #insert bpb fg
-            // $data_bpb = array(
-            //     'no_bpb_fg' => $code_bpb,
-            //     'tanggal' => $tgl_input,
-            //     'produksi_fg_id' => 0,
-            //     'jenis_barang_id' => $this->input->post('jenis_barang'),
-            //     'created_by' => $user_id,
-            //     'created_at' => $tanggal,
-            //     'status' => 0,
-            //     'keterangan' => $this->input->post('remarks')
-            // );
-            // $this->db->insert('t_bpb_fg', $data_bpb);
-            // $bpb_id = $this->db->insert_id();
 
-
+        if($code){
             #insert retur
             $data = array(
                 'no_retur'=> $code,
@@ -904,12 +888,12 @@ class Retur extends CI_Controller{
         }
         $data['group_id']  = $group_id;
         $data['content']= "retur/add_surat_jalan_sp";
-        
+
         $this->load->model('Model_sales_order');
         $this->load->model('Model_retur');
         $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
         $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
-        // $data['retur_list'] = $this->Model_retur->retur_list_2()->result();
+
         $this->load->view('layout', $data);
     }
 
@@ -1257,6 +1241,7 @@ class Retur extends CI_Controller{
                 $data['myDetail'] = $this->Model_retur->load_detail($id)->result();  
             }else{
                 $data['content']= "retur/view";
+                $data['jenis_barang'] = $this->Model_retur->jenis_barang_list()->result();
                 $data['myDetail'] = $this->Model_retur->load_detail($id)->result();  
             }
 
@@ -1423,9 +1408,39 @@ class Retur extends CI_Controller{
         $this->db->update('retur', array(
             'jenis_retur'=>$this->input->post('type_retur')
         ));
+
+        $details = $this->input->post('details');
+            foreach ($details as $i => $row){
+                if($row['nama_item']>0){
+                    $jb = $row['nama_item'];
+                }else{
+                    $jb = $row['old_item'];
+                }
+                    $this->db->where('no_packing',$row['no_packing']);
+                    $this->db->update('retur_detail', array(
+                        'jenis_barang_id'=>$jb,
+                        'bruto'=>$row['bruto'],
+                        'netto'=>$row['netto']
+                    ));
+
+                    $this->db->where('no_packing_barcode',$row['no_packing']);
+                    $this->db->update('t_bpb_fg_detail', array(
+                        'jenis_barang_id'=>$jb,
+                        'bruto'=>$row['bruto'],
+                        'netto'=>$row['netto']
+                    ));
+
+                    $this->db->where('no_packing',$row['no_packing']);
+                    $this->db->update('t_gudang_fg', array(
+                        'jenis_barang_id'=>$jb,
+                        'bruto'=>$row['bruto'],
+                        'netto'=>$row['netto']
+                    ));
+                    // echo $row['nama_item'];die();
+            }
         
-        $this->session->set_flashdata('flash_msg', 'Data permintaan retur barang berhasil direject');
-        redirect('index.php/Retur');
+        $this->session->set_flashdata('flash_msg', 'Data permintaan retur barang berhasil diupdate');
+        redirect('index.php/Retur/view/'.$this->input->post('id'));
     }
 
     function reject(){

@@ -149,7 +149,7 @@
                         </div>
                         <div class="col-md-8">
                             <select id="type_retur" name="type_retur" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" disabled>
                                 <option value=""></option>
                                 <?php
                                 echo '<option value="0"'.((0==$header['jenis_retur'])? 'selected="selected"': '').'>Ganti Barang</option>';
@@ -176,22 +176,41 @@
                             <tbody>
                             <?php
                                 $no = 1;
+                                $total = 0;
                                 foreach ($myDetail as $row){ 
-                                    ?>
+                            ?>
                                 <tr>
                                     <td style="text-align:center"><?php echo $no; ?></td>
-                                    <td><?php echo $row->jenis_barang; ?></td>
+                                    <td><?php echo '<label class="lbl_alias">'.$row->jenis_barang.'</label>';
+                                    echo '<input type="hidden" style="display: none;" class="id_retur_detail" name="details['.$no.'][id_retur_detail]" value="'.$row->id.'">';
+                                    echo '<input type="hidden" style="display: none;" name="details['.$no.'][old_item]" value="'.$row->jenis_barang_id.'">';
+                                    echo '<input type="hidden" style="display: none;" name="details['.$no.'][no_packing]" value="'.$row->no_packing.'">';
+                                    echo '<select name="details['.$no.'][nama_item]" class="form-control select2me myline jb_alias" data-placeholder="Pilih..." style="margin-bottom:5px; display:none;">
+                                            <option value="0" data-id="0">TIDAK ADA ALIAS</option>';
+                                            foreach ($jenis_barang as $value){
+                                            echo '<option value="'.$value->id.'">('.$value->kode.') '.$value->jenis_barang.'</option>';
+                                            }
+                                        echo '</select>';
+                                    ?></td>
                                     <td><?php echo $row->no_packing; ?></td>
-                                    <td style="text-align:right"><?php echo $row->bruto; ?></td>
-                                    <td style="text-align:right"><?php echo $row->netto; ?></td>
+                                    <td style="text-align:right"><?php echo number_format($row->bruto,2,',','.');
+                                    echo '<input type="text" style="display: none;" class="form-control myline jb_alias" name="details['.$no.'][bruto]" value="'.$row->bruto.'">'
+                                    ?></td>
+                                    <td style="text-align:right"><?php echo number_format($row->netto,2,',','.'); echo '<input type="text" style="display: none;" class="form-control myline jb_alias" name="details['.$no.'][netto]" value="'.$row->netto.'">' ?></td>
                                     <td><?php echo $row->nomor_bobbin; ?></td>
                                     <td><?php echo $row->line_remarks; ?></td>
                                 </tr>
             <?php
+                                    $total += $row->netto;
                                     $no++;
                                 }
                             ?>
                             </tbody>
+                            <tr>
+                                <td colspan="4" style="text-align: right;"><strong>Total</strong></td>
+                                <td><?=number_format($total,2,',','.');?></td>
+                                <td colspan="2"></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -201,16 +220,18 @@
                 <div class="col-md-12">
                     <?php
                         if( ($group_id==1 || $hak_akses['approve']==1) && $header['status']=="0"){
-                            echo '<a href="javascript:;" class="btn green" onclick="approveData();"> '
+                            echo '<a href="javascript:;" class="btn green" id="approveData" onclick="approveData();"> '
                                 .'<i class="fa fa-check"></i> Approve </a> ';
                         }
                         if( ($group_id==1 || $hak_akses['reject']==1) && $header['status']=="0"){
-                            echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
+                            echo '<a href="javascript:;" class="btn red" id="rejectData" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
                         }
                         if( ($group_id==1 || $hak_akses['approve']==1) && $header['status']=="1" && $header['spb_id']==0 && $header['flag_taken']==0){
-                            echo '<a href="javascript:;" class="btn green" onclick="updateData();"> '
+                            echo '<a href="javascript:;" class="btn green" id="updateData" onclick="updateData();" style="display:none;"> '
                                 .'<i class="fa fa-check"></i> Update </a> ';
+                            echo '<a href="javascript:;" class="btn blue" onclick="editData();" id="btnEdit">' 
+                                .'<i class="fa fa-pencil"></i> Edit </a>';
                         }
                     ?>
 
@@ -232,6 +253,15 @@
     </div>
 </div> 
 <script>
+function editData(){
+    $('#type_retur').prop('disabled', false);
+    $('.jb_alias').show();
+
+    $('#updateData').show();
+    $('#btnEdit').hide();
+}
+
+
 function approveData(){
     var r=confirm("Anda yakin meng-approve permintaan retur barang ini?");
     if (r==true){
@@ -273,4 +303,7 @@ function rejectData(){
 }
 
 </script>
+<link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
       

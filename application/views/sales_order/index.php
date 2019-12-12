@@ -95,6 +95,7 @@
                     <th>Tanggal</th>
                     <th>Customer</th> 
                     <?php if($this->session->userdata('user_ppn') == 0){ echo '<th>PPN</th>'; }?> 
+                    <th>User</th>
                     <th>Jumlah<br>Items</th>
                     <th>Status<br>Invoice</th>
                     <th>Status<br>Surat Jalan</th>
@@ -120,6 +121,7 @@
                            echo (($data->flag_ppn==1)? '<td><i class="fa fa-check"></i> Yes</td>': '<td><i class="fa fa-times"></i> No</td>');
                         }
                         ?>
+                        <td style="text-align:center"><?php echo $data->nama_marketing; ?></td>
                         <td style="text-align:center"><?php echo $data->jumlah_item; ?></td>
                         <td>
                         <?php 

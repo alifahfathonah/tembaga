@@ -285,6 +285,7 @@ class Finance extends CI_Controller{
 
     function view_um(){
         $module_name = $this->uri->segment(1);
+        $user_ppn = $this->session->userdata('user_ppn');
         $id = $this->uri->segment(3);
         if($id){
             $group_id    = $this->session->userdata('group_id');        
@@ -303,7 +304,7 @@ class Finance extends CI_Controller{
             if($data['myData']['replace_id'] > 0){
                 $data['dataReplace'] = $this->Model_finance->replace_list_detail($data['myData']['replace_id'])->row_array();
             }
-            //$data['list_bank'] = $this->Model_finance->bank_list()->result();
+            $data['list_bank'] = $this->Model_finance->bank_list($user_ppn)->result();
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/Finance');
@@ -402,6 +403,7 @@ class Finance extends CI_Controller{
                 'no_uang_masuk'=>$this->input->post('no_um'),
                 'keterangan'=>$this->input->post('remarks'),
                 'tanggal'=>$tgl_input,
+                'rekening_tujuan'=>$this->input->post('bank_id'),
                 'm_customer_id'=>$this->input->post('customer_id_baru'),
                 'nominal'=>str_replace(',', '', $this->input->post('nominal_baru')),
                 'rekening_pembayaran'=>$this->input->post('nomor'),
@@ -412,6 +414,7 @@ class Finance extends CI_Controller{
 
             $data_f = array(
                 'nomor'=> $this->input->post('no_um'),
+                'id_bank'=>$this->input->post('bank_id'),
                 'tanggal'=> $tgl_input,
                 'keterangan'=> $this->input->post('remarks'),
                 'nominal'=>str_replace(',', '', $this->input->post('nominal_baru'))
@@ -2961,28 +2964,34 @@ class Finance extends CI_Controller{
     }
 
     function print_laporan_sj(){
-            $module_name = $this->uri->segment(1);
-            $ppn = $this->session->userdata('user_ppn');
-            $this->load->helper('tanggal_indo');
-            $start = date('Y-m-d', strtotime($_GET['ts']));
-            $end = date('Y-m-d', strtotime($_GET['te']));
-            $l = $_GET['l'];
+        $module_name = $this->uri->segment(1);
+        $ppn = $this->session->userdata('user_ppn');
+        $this->load->helper('tanggal_indo');
+        $start = date('Y-m-d', strtotime($_GET['ts']));
+        $end = date('Y-m-d', strtotime($_GET['te']));
+        $l = $_GET['l'];
+        $j = $_GET['j'];
 
-            $group_id    = $this->session->userdata('group_id');        
-            if($group_id != 1){
-                $this->load->model('Model_modules');
-                $roles = $this->Model_modules->get_akses($module_name, $group_id);
-                $data['hak_akses'] = $roles;
-            }
-            $data['group_id']  = $group_id;
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
 
-            $this->load->model('Model_finance');
+        $this->load->model('Model_finance');
+        if($j==0){
             if($l == 2){
                 $data['detailLaporan'] = $this->Model_finance->print_laporan_penjualan_sj_all($start,$end)->result();
             }else{
-                $data['detailLaporan'] = $this->Model_finance->print_laporan_penjualan_sj($start,$end,0)->result();
+                $data['detailLaporan'] = $this->Model_finance->print_laporan_penjualan_sj($start,$end,$l)->result();
             }
-            $this->load->view('finance/print_laporan_sj', $data);
+        $this->load->view('finance/print_laporan_sj', $data);
+        }elseif($j==1){
+                $data['detailLaporan'] = $this->Model_finance->print_flag_sj($l)->result();
+        $this->load->view('sales_order/print_laporan_so_by_sj', $data);
+        }
     }
 
     function search_penjualan_customer(){

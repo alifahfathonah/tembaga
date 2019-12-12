@@ -1196,7 +1196,7 @@ class GudangBobbin extends CI_Controller{
 
         $this->load->model('Model_bobbin');
         $data['jenis'] = $this->Model_bobbin->size_bk($s)->result();
-        $this->load->view('gudang_bobbin/print_status', $data);
+        $this->load->view('gudang_bobbin/print_status2', $data);
     }
 
     function laporan_bulanan(){

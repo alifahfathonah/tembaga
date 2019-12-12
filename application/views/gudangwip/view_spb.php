@@ -123,6 +123,8 @@
                                 $flag_produksi = 'Repacking';
                             }else if($myData['flag_produksi']==9){
                                 $flag_produksi = 'Retur K';
+                            }else if($myData['flag_produksi']==11){
+                                $flag_produksi = 'Adjustment';
                             }else{
                                 $flag_produksi = 'CUCI';
                             } ?>

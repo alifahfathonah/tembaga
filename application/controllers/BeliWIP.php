@@ -731,6 +731,7 @@ class BeliWIP extends CI_Controller{
                         'no_bpb' => $code,
                         'tanggal' => $tanggal,
                         'flag_ppn' => $user_ppn,
+                        'dtwip_id' => $dtwip_id,
                         'created' => $tanggal,
                         'created_by' => $user_id,
                         'keterangan' => 'BARANG PO WIP',
@@ -764,6 +765,8 @@ class BeliWIP extends CI_Controller{
                 $data_post['details'] = $this->Model_beli_wip->load_dtwip_detail_only($dtwip_id)->result();
 
                 unset($data_bpb['flag_ppn']);
+                unset($data_bpb['dtwip_id']);
+                unset($data_bpb['dtt_id']);
                 $data_id = array('reff1' => $id_bpb);
                 $data_post['data_bpb'] = array_merge($data_bpb, $data_id);
                 $data_post['details_bpb'] = $this->Model_beli_wip->load_bpb_detail_only($id_bpb)->result();
@@ -827,6 +830,7 @@ class BeliWIP extends CI_Controller{
                 $data_bpb = array(
                         'no_bpb' => $code,
                         'tanggal' => $tgl_input,
+                        'dtwip_id' => $dtwip_id,
                         'flag_ppn' => $user_ppn,
                         'created' => $tanggal,
                         'created_by' => $user_id,

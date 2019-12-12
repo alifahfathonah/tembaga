@@ -2,9 +2,9 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Laporan Gudang FG
+            <i class="fa fa-angle-right"></i> Laporan WIP
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/GudangFG/index'); ?>">Gudang FG</a> 
+            <a href="<?php echo base_url('index.php/GudangWIP/index'); ?>">Gudang WIP</a> 
         </h5>          
     </div>
 </div>
@@ -19,44 +19,45 @@
     </div>
   
    <div class="col-md-12" style="margin-top: 10px;"> 
-        <h3>Laporan Pemasukan dan Pengeluaran Gudang FG</h3>
+        <h3>Laporan Permintaan Keluar Masuk Gudang WIP</h3>
         <hr class="divider">
         <div class="row">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            Bentuk Laporan <font color="#f00">*</font>
+                           Laporan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="bl" name="bl" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
-                                <option></option>
+                            <select id="laporan" name="laporan" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
                                 <optgroup label="Pengeluaran">
-                                    <option value="15">Global</option>
-                                    <option value="8">Retur (Pengganti)</option>
-                                    <option value="11">Kirim ke Rongsok</option>
-                                    <option value="10">SDM</option>
-                                    <option value="16">Repacking (-)</option>
-                                    <option value="13">Adjustment (-)</option>
+                                    <option value="0">Ingot</option>
+                                    <option value="1">8mm Hitam</option>
+                                    <option value="2">8mm Cuci</option>
+                                    <option value="3">Produksi</option>
+                                    <option value="4">Penjualan (KMP)</option>
+                                    <?php if($this->session->userdata('user_ppn')==0){ ?>
+                                    <option value="5">Penjualan (KH)</option>
+                                    <?php } ?>
+                                    <option value="6">Adjustment</option>
                                 </optgroup>
                                 <optgroup label="Pemasukan">
-                                    <option value="0">Global</option>
-                                    <option value="1">Produksi</option>
-                                    <option value="2">Global (Detail)</option>
-                                    <option value="3">Produksi (Detail)</option>
                                     <?php if($this->session->userdata('user_ppn')==0){ ?>
-                                    <option value="4">PO (KH)</option>
+                                    <option value="7">Pemasukan dari PO (KH)</option>
                                     <?php } ?>
-                                    <option value="5">PO (KMP)</option>
+                                    <option value="8">Pemasukan dari PO (KMP)</option>
                                     <?php if($this->session->userdata('user_ppn')==0){ ?>
-                                    <option value="6">Tolling (KH)</option>
+                                    <option value="9">Pemasukan dari Tolling (KH)</option>
                                     <?php } ?>
-                                    <option value="7">Tolling (KMP)</option>
-                                    <option value="9">Retur (Terima)</option>
-                                    <option value="12">Repacking (+)</option>
-                                    <option value="14">Adjustment (+)</option>
+                                    <option value="10">Pemasukan dari Tolling (KMP)</option>
+                                    <option value="11">Pemasukan dari Apollo</option>
+                                    <option value="12">Pemasukan dari Rolling</option>
+                                    <option value="13">Pemasukan dari Cuci</option>
+                                    <option value="14">Adjustment</option>
                                 </optgroup>
                             </select>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-4">
                             Tanggal Awal <font color="#f00">*</font>
                         </div>
@@ -78,27 +79,27 @@
                     </div>
                         <div class="row">
                             <div class="col-md-4">&nbsp;</div>
-                        <div class="col-md-8">
-                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                                <i class="fa fa-search"></i> Proses </a>
-                        </div>    
-                    </div>
-                </div>        
-            </div>
+                            <div class="col-md-8">
+                                <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                                    <i class="fa fa-search"></i> Proses </a>
+                            </div>    
+                        </div>
+                    </div>        
+                </div>
     </div>
 <script type="text/javascript">
 function simpanData(){
     if($.trim($("#tgl_start").val()) == ""){
-        $('#message').html("Tanggal Awal harus diisi, tidak boleh kosong!");
-        $('.alert-danger').show();
+        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show(); 
     }else if($.trim($("#tgl_end").val()) == ""){
-        $('#message').html("Tanggal Akhir harus diisi, tidak boleh kosong!");
+        $('#message').html("Silahkan pilih nama supplier!");
         $('.alert-danger').show();
-    }else{   
-        var l=$('#bl').val();
+    }else{
+        var l=$('#laporan').val();
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/GudangFG/print_laporan_gudang_fg?ts='+s+'&te='+e+'&l='+l,'_blank');
+        window.open('<?php echo base_url();?>index.php/GudangWIP/print_permintaan_gudang?ts='+s+'&te='+e+'&l='+l,'_blank');
     };
 };
 </script>
@@ -115,7 +116,7 @@ $(function(){
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd-mm-yy'
-    }); 
+    });        
     $("#tgl_end").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
@@ -124,6 +125,6 @@ $(function(){
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd-mm-yy'
-    }); 
+    });    
 });
 </script>

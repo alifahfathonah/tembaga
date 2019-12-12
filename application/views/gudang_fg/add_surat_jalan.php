@@ -28,7 +28,7 @@
               id="formku" action="<?php echo base_url('index.php/GudangFG/save_surat_jalan'); ?>">
             <div class="row">
                 <div class="col-md-6">
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-4">
                             No. Surat Jalan Terakhir
                         </div>
@@ -36,14 +36,15 @@
                             <input type="text" class="form-control myline" style="margin-bottom:5px" readonly="readonly" value="<?=$sj['no_surat_jalan'];?>">
                         </div>
                     </div>
-                    <div class="row">
+ -->                    <div class="row">
                         <div class="col-md-4">
                             No. Surat Jalan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                         <?php
-                            echo '<input type="text" id="no_surat_jalan" name="no_surat_jalan" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor Surat Jalan..." onkeyup="this.value = this.value.toUpperCase()">';
+                            // echo '<input type="text" id="no_surat_jalan" name="no_surat_jalan" class="form-control myline" style="margin-bottom:5px" placeholder="Silahkan isi Nomor Surat Jalan..." onkeyup="this.value = this.value.toUpperCase()">';
                         ?>
+                            <input type="text" id="no_surat_jalan" name="no_surat_jalan" class="form-control myline" style="margin-bottom:5px" placeholder="Nomor Surat Jalan ..." value="Auto Generated" disabled>
                         </div>
                     </div>
                     <div class="row">

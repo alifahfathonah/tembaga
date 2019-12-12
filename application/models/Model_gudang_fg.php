@@ -406,16 +406,24 @@ class Model_gudang_fg extends CI_Model{
         return $data;
     }
 
-    function show_view_laporan($bulan, $tahun){
-        $data = $this->db->query("select tg.jenis_barang_id, jb.jenis_barang, count(tg.id) as jumlah, 
-                (select sum(bruto) from t_gudang_fg tgf where month(tgf.tanggal_masuk) = ".$bulan." and year(tgf.tanggal_masuk) =".$tahun." and tgf.jenis_barang_id=jb.id) as bruto_masuk,
-                (select sum(netto) from t_gudang_fg tgf where month(tgf.tanggal_masuk) =".$bulan." and year(tgf.tanggal_masuk) =".$tahun." and tgf.jenis_barang_id=jb.id) as netto_masuk,
-                (select sum(bruto) from t_gudang_fg tgf where month(tgf.tanggal_keluar) =".$bulan." and year(tgf.tanggal_keluar) =".$tahun." and tgf.jenis_barang_id=jb.id) as bruto_keluar,
-                (select sum(netto) from t_gudang_fg tgf where month(tgf.tanggal_keluar) =".$bulan." and year(tgf.tanggal_keluar) =".$tahun." and tgf.jenis_barang_id=jb.id) as netto_keluar
-                from t_gudang_fg tg
-                    left join jenis_barang jb on jb.id = tg.jenis_barang_id
-                where month(tg.tanggal) =".$bulan." and year(tg.tanggal) =".$tahun."
-            group by tg.jenis_barang_id");
+    // function show_view_laporan($bulan, $tahun){
+    //     $data = $this->db->query("select tg.jenis_barang_id, jb.jenis_barang, count(tg.id) as jumlah, 
+    //             (select sum(bruto) from t_gudang_fg tgf where month(tgf.tanggal_masuk) = ".$bulan." and year(tgf.tanggal_masuk) =".$tahun." and tgf.jenis_barang_id=jb.id) as bruto_masuk,
+    //             (select sum(netto) from t_gudang_fg tgf where month(tgf.tanggal_masuk) =".$bulan." and year(tgf.tanggal_masuk) =".$tahun." and tgf.jenis_barang_id=jb.id) as netto_masuk,
+    //             (select sum(bruto) from t_gudang_fg tgf where month(tgf.tanggal_keluar) =".$bulan." and year(tgf.tanggal_keluar) =".$tahun." and tgf.jenis_barang_id=jb.id) as bruto_keluar,
+    //             (select sum(netto) from t_gudang_fg tgf where month(tgf.tanggal_keluar) =".$bulan." and year(tgf.tanggal_keluar) =".$tahun." and tgf.jenis_barang_id=jb.id) as netto_keluar
+    //             from t_gudang_fg tg
+    //                 left join jenis_barang jb on jb.id = tg.jenis_barang_id
+    //             where month(tg.tanggal) =".$bulan." and year(tg.tanggal) =".$tahun."
+    //         group by tg.jenis_barang_id");
+    //     return $data;
+    // }
+
+    function show_view_laporan($jb,$tgl){
+        $data = $this->db->query("select i.jenis_barang_id, i.stok_awal, i.netto_masuk, i.netto_keluar, i.stok_akhir, COALESCE(jb.jenis_barang,r.nama_item) as jenis_barang, COALESCE(jb.kode,r.kode_rongsok) as kode from inventory i
+                left join jenis_barang jb on i.jenis_barang != 'RONGSOK' and i.jenis_barang_id = jb.id
+                left join rongsok r on i.jenis_barang = 'RONGSOK' and i.jenis_barang_id = r.id
+                where i.jenis_barang = '".$jb."' and i.tanggal = '".$tgl."'");
         return $data;
     }
 
@@ -495,6 +503,18 @@ class Model_gudang_fg extends CI_Model{
         return $data;
     }
 
+    function show_kartu_stok_detail_inventory($start,$end,$id_barang){
+        $data = $this->db->query("Select a.jenis_barang_id, sum(a.netto_masuk) as netto_masuk, sum(a.netto_keluar) as netto_keluar from ((SELECT tg.jenis_barang_id, sum(tg.netto) as netto_masuk, null as netto_keluar
+                FROM t_gudang_fg tg
+                    where tg.jenis_barang_id =".$id_barang." and tg.tanggal_masuk between '".$start."' and '".$end."' group by tg.jenis_barang_id)
+                UNION ALL
+                (SELECT tgf.jenis_barang_id, null as netto_masuk, sum(tgf.netto) as netto_keluar
+                FROM t_gudang_fg tgf
+                    where tgf.jenis_barang_id =".$id_barang." and tgf.tanggal_keluar between '".$start."' and '".$end."' group by tgf.jenis_barang_id)) as a group by a.jenis_barang_id
+                    ");
+        return $data;
+    }
+
     function show_kartu_stok_detail_packing($start,$end,$id_barang){
         $data = $this->db->query("(SELECT
                     tg.id, tg.jenis_barang_id, tg.no_packing, jb.jenis_barang, tg.netto as netto_masuk, 0 as netto_keluar, tg.nomor_BPB as nomor, tg.tanggal_masuk, tg.tanggal_keluar = null as tanggal_keluar, tg.tanggal_masuk as tanggal
@@ -524,71 +544,37 @@ class Model_gudang_fg extends CI_Model{
     //     return $data;
     // }
 
-
     function show_laporan(){
-        $data = $this->db->query("select DATE_FORMAT(tg.tanggal,'%M %Y') as showdate, 
-            EXTRACT(YEAR_MONTH from tg.tanggal) as tanggal, sum(bruto) as bruto_masuk, sum(netto) as netto_masuk,
-            COALESCE((select sum(bruto) from t_gudang_fg tgf where month(tgf.tanggal_keluar) = month(tg.tanggal) and year(tgf.tanggal_keluar) = year(tg.tanggal)),0)as bruto_keluar,
-            COALESCE((select sum(netto) from t_gudang_fg tgf where month(tgf.tanggal_keluar) = month(tg.tanggal) and year(tgf.tanggal_keluar) = year(tg.tanggal)),0)as netto_keluar
-            from t_gudang_fg tg
-            group by year(tg.tanggal), month(tg.tanggal) order by tg.tanggal asc");
+        $data = $this->db->query("select i.tanggal, DATE_FORMAT(tanggal,'%M %Y') as showdate, sum(stok_awal) as stok_awal, sum(stok_akhir) as stok_akhir from inventory i where jenis_barang = 'FG' 
+            group by tanggal");
         return $data;
-    }
-
-    // function show_laporan_barang($tgl,$bulan,$tahun){
-    //     return $this->db->query("
-    //             Select a.jenis_barang_id, jb.kode, jb.uom, jb.jenis_barang, tgm.netto as netto_masuk_before, tgk.netto as netto_keluar_before, sum(netto_masuk) as netto_masuk, sum(netto_keluar) as netto_keluar, tanggal
-    //             FROM
-    //             ((SELECT tg.jenis_barang_id, tg.netto as netto_masuk, 0 as netto_keluar, tg.tanggal_masuk as tanggal
-    //             FROM t_gudang_fg tg
-    //                 where month(tg.tanggal_masuk) =".$bulan." and year(tg.tanggal_masuk) =".$tahun.")
-    //             UNION ALL
-    //             (SELECT tgf.jenis_barang_id, 0 as netto_masuk, tgf.netto as netto_keluar, tgf.tanggal_keluar as tanggal
-    //             FROM t_gudang_fg tgf
-    //                 where month(tgf.tanggal_keluar) =".$bulan." and year(tgf.tanggal_keluar) =".$tahun.")) as a
-    //             left join (select tgm.jenis_barang_id, sum(netto) as netto from t_gudang_fg tgm where tgm.tanggal_masuk < '".$tgl."' group by tgm.jenis_barang_id) as tgm on tgm.jenis_barang_id = jb.id
-    //             left join (select tgk.jenis_barang_id, sum(netto) as netto from t_gudang_fg tgk where tgk.jenis_trx = 1 and tgk.tanggal_keluar < '".$tgl."' group by tgk.jenis_barang_id)as tgk on tgk.jenis_barang_id = jb.jenis_barang_id
-    //             left join jenis_barang jb on jb.id = a.jenis_barang_id
-    //             Group by jenis_barang_id
-    //             Order By kode, jenis_barang desc");
-    // }
-
-    function show_laporan_barang($tgl,$bulan,$tahun){
-        return $this->db->query("
-                Select jenis_barang_id, jb.kode, jb.uom, jb.jenis_barang, sum(netto_masuk) as netto_masuk, sum(netto_keluar) as netto_keluar, tanggal,
-COALESCE((select sum(netto) from t_gudang_fg tgf where tgf.jenis_barang_id = a.jenis_barang_id and tgf.tanggal_masuk < '".$tgl."'),0)as netto_masuk_before,
-COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 and tgf.jenis_barang_id = a.jenis_barang_id and tgf.tanggal_keluar < '".$tgl."'),''),0)as netto_keluar_before
-                FROM
-                ((SELECT tg.jenis_barang_id, tg.netto as netto_masuk, 0 as netto_keluar, tg.tanggal_masuk as tanggal
-                FROM t_gudang_fg tg
-                    where month(tg.tanggal_masuk) =".$bulan." and year(tg.tanggal_masuk) =".$tahun.")
-                UNION ALL
-                (SELECT tgf.jenis_barang_id, 0 as netto_masuk, tgf.netto as netto_keluar, tgf.tanggal_keluar as tanggal
-                FROM t_gudang_fg tgf
-                    where month(tgf.tanggal_keluar) =".$bulan." and year(tgf.tanggal_keluar) =".$tahun.")) as a
-                left join jenis_barang jb on jb.id = a.jenis_barang_id
-                Group by jenis_barang_id
-                Order By kode, jenis_barang desc");
     }
 
 //     function show_laporan_barang($tgl,$bulan,$tahun){
 //         return $this->db->query("
-//                 Select jenis_barang_id, jb.kode, jb.uom, jb.jenis_barang, sum(netto_masuk_before) as netto_masuk_before, sum(netto_keluar_before) as netto_keluar_before, sum(netto_masuk) as netto_masuk, sum(netto_keluar) as netto_keluar, tanggal
+//                 Select jenis_barang_id, jb.kode, jb.uom, jb.jenis_barang, sum(netto_masuk) as netto_masuk, sum(netto_keluar) as netto_keluar, tanggal,
+// COALESCE((select sum(netto) from t_gudang_fg tgf where tgf.jenis_barang_id = a.jenis_barang_id and tgf.tanggal_masuk < '".$tgl."'),0)as netto_masuk_before,
+// COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 and tgf.jenis_barang_id = a.jenis_barang_id and tgf.tanggal_keluar < '".$tgl."'),''),0)as netto_keluar_before
 //                 FROM
-//                 ((SELECT 
-// COALESCE((select sum(netto) from t_gudang_fg tgf1 where tgf1.jenis_barang_id = tg.jenis_barang_id and tgf1.tanggal_masuk < '".$tgl."'),0)as netto_masuk_before, 0 as netto_keluar_before, tg.jenis_barang_id, tg.netto as netto_masuk, 0 as netto_keluar, tg.tanggal_masuk as tanggal
+//                 ((SELECT tg.jenis_barang_id, tg.netto as netto_masuk, 0 as netto_keluar, tg.tanggal_masuk as tanggal
 //                 FROM t_gudang_fg tg
 //                     where month(tg.tanggal_masuk) =".$bulan." and year(tg.tanggal_masuk) =".$tahun.")
 //                 UNION ALL
-//                 (SELECT 0 as netto_masuk_before, 
-// COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf2 where tgf2.jenis_trx = 1 and tgf2.jenis_barang_id = tgf.jenis_barang_id and tgf2.tanggal_keluar < '".$tgl."'),''),0)as netto_keluar_before, tgf.jenis_barang_id, 0 as netto_masuk, tgf.netto as netto_keluar, tgf.tanggal_keluar as tanggal
+//                 (SELECT tgf.jenis_barang_id, 0 as netto_masuk, tgf.netto as netto_keluar, tgf.tanggal_keluar as tanggal
 //                 FROM t_gudang_fg tgf
 //                     where month(tgf.tanggal_keluar) =".$bulan." and year(tgf.tanggal_keluar) =".$tahun.")) as a
 //                 left join jenis_barang jb on jb.id = a.jenis_barang_id
-//                 where 
 //                 Group by jenis_barang_id
 //                 Order By kode, jenis_barang desc");
 //     }
+
+    function show_laporan_barang($jb,$tgl){
+        return $this->db->query("
+                Select i.*, jb.jenis_barang, jb.uom, jb.kode from inventory i
+                left join jenis_barang jb on i.jenis_barang_id = jb.id 
+                where i.tanggal = '".$tgl."' and i.jenis_barang = '".$jb."'
+                order by jb.ukuran asc");
+    }
 
     function produksi_fg_count($id){
         $data = $this->db->query("Select count(id) as count from produksi_fg_detail where produksi_fg_id =".$id);
@@ -786,6 +772,22 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
                 where tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 5 group by tgf.jenis_barang_id, tgf.tanggal_keluar
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
                 ");
+        }elseif($l==13) {
+            $data = $this->db->query("select tgf.tanggal_keluar as tanggal, tsf.no_spb as nomor, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, jb.uom, COALESCE(tsj.no_surat_jalan, tsf.keterangan) as nama from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    left join t_surat_jalan tsj on tgf.t_sj_id = tsj.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 11 group by tgf.jenis_barang_id, tgf.tanggal_keluar
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
+                ");
+        }elseif($l==16) {
+            $data = $this->db->query("select tgf.tanggal_keluar as tanggal, tsf.no_spb as nomor, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, jb.uom, COALESCE(tsj.no_surat_jalan, tsf.keterangan) as nama from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    left join t_surat_jalan tsj on tgf.t_sj_id = tsj.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 8 group by tgf.jenis_barang_id, tgf.tanggal_keluar
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
+                ");
         }
         return $data;
     }
@@ -958,6 +960,65 @@ COALESCE(NULLIF((select sum(netto) from t_gudang_fg tgf where tgf.jenis_trx = 1 
             left join sparepart s on h.jenis_barang = 'LAIN' and d.jenis_barang_id = s.id
             left join rongsok r on h.jenis_barang = 'AMPAS' and d.jenis_barang_id = r.id
             where d.t_sj_id =".$id);
+    }
+
+    function print_laporan_fg($b,$t,$s,$e){
+        return $this->db->query("select i.*, jb.jenis_barang,
+            (select sum(netto) from t_gudang_fg tgf
+                left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                where tgf.tanggal_masuk between '".$s."' and '".$e."' and tbf.produksi_fg_id > 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                ) as produksi,
+            (select sum(netto) from t_gudang_fg tgf
+                left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                left join dtbj on tbf.dtbj_id = dtbj.id
+                where tgf.tanggal_masuk between '".$s."' and '".$e."' and (dtbj.po_id > 0 or tbf.dtt_id > 0) and tgf.jenis_barang_id = i.jenis_barang_id
+                ) as supplier,
+            (select sum(netto) from t_gudang_fg tgf
+                left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                where tgf.tanggal_masuk between '".$s."' and '".$e."' and tbf.retur_id > 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                ) as retur,
+            (select sum(netto) from t_gudang_fg tgf
+                left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                left join dtbj on tbf.dtbj_id = dtbj.id
+                where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id = 713 and tgf.jenis_barang_id = i.jenis_barang_id
+                ) as sdm,
+            (select sum(netto) from t_gudang_fg tgf
+                left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                left join dtbj on tbf.dtbj_id = dtbj.id
+                where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id != 713 and dtbj.po_id = 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                ) as gdrsk,
+            (select sum(netto) from t_gudang_fg tgf
+                left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                left join dtbj on tbf.dtbj_id = dtbj.id
+                where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id = 95 and tgf.jenis_barang_id = i.jenis_barang_id) as koreksi,
+            (select sum(netto) from t_gudang_fg tgf
+                where tgf.tanggal_keluar between '".$s."' and '".$e."' and t_sj_id > 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                ) as konsumen,
+            (select sum(netto) from t_gudang_fg tgf
+                left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                ) as sdm_k,
+            (select sum(netto) from t_gudang_fg tgf
+                left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb in (7,9) and tgf.jenis_barang_id = i.jenis_barang_id
+                ) as retur_k,
+            (select sum(netto) from t_gudang_fg tgf
+                left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 5 and tgf.jenis_barang_id = i.jenis_barang_id
+                ) as rongsok,
+            (select sum(netto) from spb_detail_fulfilment sdf
+                left join dtr_detail dd on sdf.dtr_detail_id = dd.id
+                left join spb on sdf.spb_id = spb.id
+                where dd.tanggal_keluar between '".$s."' and '".$e."' and spb.jenis_spb = 11 and dd.rongsok_id = i.jenis_barang_id
+                ) as koreksi_k,
+            (select sum(netto) from stok_opname_detail sod
+                where sod.stok_opname_id = 
+                    (select id from stok_opname so
+                        where so.jenis_stok_opname = 'FG' and so.tanggal between '".$s."' and '".$e."' order by tanggal desc limit 1) 
+                and sod.jenis_barang_id = i.jenis_barang_id) as fisik
+            from inventory i
+                left join jenis_barang jb on i.jenis_barang_id = jb.id
+                where bulan = ".$b." and tahun = ".$t." and i.jenis_barang = 'FG' order by jb.group, jb.jenis_barang");
     }
     /*
     cara membuat view stok fg

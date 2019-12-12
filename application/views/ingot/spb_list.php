@@ -107,6 +107,8 @@
                                     echo 'Tali Rolling';
                                 }else if($data->jenis_spb==11){
                                     echo 'Adjustment';
+                                }elseif ($data->jenis_spb==12){
+                                    echo 'Apollo';
                                 }
                             ?>
                         </td>

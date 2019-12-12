@@ -39,6 +39,7 @@
                                 value="<?= $header['no_dtbj'];?>">
 
                             <input type="hidden" id="id" name="id" value="<?= $header['id'];?>">
+                            <input type="hidden" id="spb_id" name="spb_id" value="<?= $header['spb_id'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -79,7 +80,7 @@
                         </div>
                         <div class="col-md-8">
                             <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px"></textarea>                           
+                                class="form-control myline" style="margin-bottom:5px"><?=$header['remarks'];?></textarea>                           
                         </div>
                     </div>
                 </div>

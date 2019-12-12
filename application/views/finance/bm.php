@@ -111,7 +111,7 @@
                         <td><?= ($data->flag_matching > 0) ? '<div style="background-color:green; color:#fff; padding:3px">Sudah Matching</div>' : '<div style="background-color:darkkhaki; padding:3px">Belum Matching</div>';?></td>
                         <td style="text-align:center"> 
                             <?php 
-                                if( (($group_id==1)||($hak_akses['delete']==1)) && $data->flag_matching == 0 ){
+                                if( (($group_id==1)||($hak_akses['delete']==1)) && $data->flag_matching == 0 && $data->id_slip_setoran == 0 ){
                             ?>
                             <a href="<?php echo base_url(); ?>index.php/Finance/delete_um/<?php echo $data->id; ?>" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus transaksi ini?');">
                                 <i class="fa fa-trash-o"></i> Delete 

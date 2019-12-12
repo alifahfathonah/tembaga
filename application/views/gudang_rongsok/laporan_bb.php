@@ -27,19 +27,19 @@
                         </div>
                         <div class="col-md-8">
                             <select id="bulan" name="bulan" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
-                                    <option value="01">JANUARI</option>
-                                    <option value="02">FEBRUARI</option>
-                                    <option value="03">MARET</option>
-                                    <option value="04">APRIL</option>
-                                    <option value="05">MEI</option>
-                                    <option value="06">JUNI</option>
-                                    <option value="07">JULI</option>
-                                    <option value="08">AGUSTUS</option>
-                                    <option value="09">SEPTEMBER</option>
-                                    <option value="10">OKTOBER</option>
-                                    <option value="11">NOVEMBER</option>
-                                    <option value="12">DESEMBER</option>
-                                </select>
+                                <option value="01">Januari</option>
+                                <option value="02">Februari</option>
+                                <option value="03">Maret</option>
+                                <option value="04">April</option>
+                                <option value="05">Mei</option>
+                                <option value="06">Juni</option>
+                                <option value="07">Juli</option>
+                                <option value="08">Agustus</option>
+                                <option value="09">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
                         </div>
                     </div>
                     <div class="row">

@@ -1,4 +1,5 @@
- <h2 align="center"><b><u>Daftar Transaksi Barang</u></b></h2>
+<strong>PT. KAWAT MAS PRAKASA</strong><br>
+ <h2 align="center"><b><u>Laporan Gudang Bahan Baku</u></b></h2>
  <table width="100%" >
     <?php
         $tahun = $tgl['tahun'];
@@ -35,21 +36,19 @@
     foreach ($detailLaporan as $row){
         echo '<tr>';
         echo '<td style="text-align:center">'.$no.'</td>';
-        echo '<td>'.$row->kode_rongsok.'</td>';
-        echo '<td>'.$row->nama_item.'</td>';
+        echo '<td>'.$row->kode.'</td>';
+        echo '<td>'.$row->jenis_barang.'</td>';
         echo '<td>'.$row->uom.'</td>';
-        $awal = $row->netto_masuk_before - $row->netto_keluar_before;
-        echo '<td>'.number_format($awal,2,',','.').'</td>';
+        echo '<td>'.number_format($row->stok_awal,2,',','.').'</td>';
         echo '<td>'.number_format($row->netto_masuk,2,',','.').'</td>';
         echo '<td>'.number_format($row->netto_keluar,2,',','.').'</td>';
-        $akhir = $awal + $row->netto_masuk - $row->netto_keluar;
-        echo '<td>'.number_format($akhir,2,',','.').'</td>';
+        echo '<td>'.number_format($row->stok_akhir,2,',','.').'</td>';
         echo '</tr>';
         $no++;
-        $total_awal += $awal;
+        $total_awal += $row->stok_awal;
         $masuk += $row->netto_masuk;
         $keluar += $row->netto_keluar;
-        $total_akhir += $akhir;
+        $total_akhir += $row->stok_akhir;
     }
     ?>
     <tr>
@@ -60,6 +59,6 @@
         <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($total_akhir,2,',','.');?></td>
     </tr>
     </tbody>
-</table>
     <body onLoad="window.print()">
     </body>
+</table>

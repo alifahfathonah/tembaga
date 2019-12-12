@@ -144,18 +144,6 @@
                                     Voucher List </a>
                                 </li>
                                 <?php } ?>
-                                <!-- <?php if($group_id==1 || (isset($akses_menu['view_laporan']) && $akses_menu['view_laporan']==1)){ ?>
-                                <li>
-                                    <a href="<?php echo base_url(); ?>index.php/BeliRongsok/laporan_list">
-                                    <i class="fa fa-briefcase"></i>
-                                    Laporan Rongsok </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo base_url(); ?>index.php/BeliRongsok/gudang_rongsok">
-                                    <i class="fa fa-cubes"></i>
-                                    Gudang Rongsok </a>
-                                </li>
-                                <?php } ?> -->
                             </ul>
                         </li>
                         <?php } if($group_id==1 || (isset($akses_menu['BeliFinishGood']) && $akses_menu['BeliFinishGood']==1)){ ?>
@@ -551,11 +539,6 @@
                                         Laporan Bulanan</a>
                                     </li>
                                     <li>
-                                        <a href="<?php echo base_url(); ?>index.php/GudangRongsok/laporan_bb">
-                                        <i class="fa fa-briefcase"></i>
-                                        Laporan Bahan Baku</a>
-                                    </li>
-                                    <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangRongsok/search_permintaan_gudang">
                                         <i class="fa fa-arrows-h"></i>
                                         Laporan Keluar Masuk</a>
@@ -620,6 +603,11 @@
                                         <i class="fa fa-briefcase"></i>
                                         Laporan WIP </a>
                                     </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangWIP/search_permintaan_gudang">
+                                        <i class="fa fa-arrows-h"></i>
+                                        Laporan Keluar Masuk</a>
+                                    </li>
                                 <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangWIP/stok_wip">
@@ -673,7 +661,7 @@
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangFG/laporan_list">
                                         <i class="fa fa-briefcase"></i>
-                                        Laporan FG </a>
+                                        Laporan Bulanan </a>
                                     </li>
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangFG/print_stok_fg" target="_blank">

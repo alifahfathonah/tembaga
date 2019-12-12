@@ -14,14 +14,6 @@
         <?php
             if( ($group_id==1)||($hak_akses['view_pmb']==1) ){
         ?>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="alert alert-danger display-hide">
-                    <button class="close" data-close="alert"></button>
-                    <span id="message">&nbsp;</span>
-                </div>
-            </div>
-        </div>
         <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -293,6 +285,16 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-danger display-hide">
+                        <button class="close" data-close="alert"></button>
+                        <span id="message">&nbsp;</span>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="total_voucher" value="<?=$total_vc;?>">
+            <input type="hidden" id="total_um" value="<?=$total_um;?>">
             <div class="row">&nbsp;</div>
             <?php if($header['status'] == 0){ ?>
             <div class="row">
@@ -367,10 +369,21 @@ function approveData(){
 }
 
 function jalankan(){
-    var r=confirm("Anda yakin ingin menjalankan permintaan pembayaran ini?");
-    if (r==true){
-        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/jalankan_pmb");    
-        $('#formku').submit(); 
+    if($('#total_voucher').val() == 0){
+        $('#message').html("Voucher tidak Boleh Kosong");
+        $('.alert-danger').show();
+    }else if($('#total_um').val() == 0){
+        $('#message').html("Cek Masuk tidak Boleh Kosong");
+        $('.alert-danger').show();
+    }else if($('#nominal_slip').val() < 0){
+        $('#message').html("Slip Setoran tidak boleh minus");
+        $('.alert-danger').show();
+    }else{
+        var r=confirm("Anda yakin ingin menjalankan permintaan pembayaran ini?");
+        if (r==true){
+            $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/jalankan_pmb");    
+            $('#formku').submit(); 
+        }
     }
 }
 //DIBAWAH CODINGAN FORM REJECT

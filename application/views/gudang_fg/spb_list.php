@@ -116,7 +116,7 @@
                                
                             <?php
                                 }
-                                if( ($group_id==1 || $hak_akses['edit_spb']==1) && ($data->jumlah_item == 0 && $data->status == 0 && ($data->jenis_spb == 0 || $data->jenis_spb == 8))){
+                                if( ($group_id==1 || $hak_akses['edit_spb']==1) && ($data->jumlah_item == 0 && $data->status == 0 && ($data->jenis_spb == 0 || $data->jenis_spb == 8 || $data->jenis_spb == 5))){
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/GudangFG/edit_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
                             <a href="<?php echo base_url(); ?>index.php/GudangFG/delete_spb/<?php echo $data->id; ?>" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus spb ini?');">

@@ -2,9 +2,9 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Gudang Finish Good
+            <i class="fa fa-angle-right"></i> Gudang Rongsok
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/GudangFG/laporan_list'); ?>"> List Laporan Finish Good </a> 
+            <a href="<?php echo base_url('index.php/GudangRongsok/laporan_list'); ?>"> List Laporan Rongsok </a> 
         </h5>          
     </div>
 </div>
@@ -21,7 +21,7 @@
             );
     ?>
     <div class="col-md-12">
-        <h3 align="center"><b> Detail Kuantitas dan Stok Finish Good <?php echo "<i>".date('F', strtotime("$tahun-$bulan-01"))." ".$tahun."</i>";?></b></h3>
+        <h3 align="center"><b> Detail Kuantitas dan Stok Rongsok <?php echo "<i>".date('F', strtotime("$tahun-$bulan-01"))." ".$tahun."</i>";?></b></h3>
             <div class="row">
                 <div class="col-md-12">
                     <div class="alert alert-danger display-hide">
@@ -37,7 +37,7 @@
                 <div class="portlet box blue">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-cubes"></i> Laporan Stok Finish Good
+                            <i class="fa fa-cubes"></i> Laporan Stok Rongsok
                         </div>
                     </div> 
                     <div class="portlet-body">
@@ -70,7 +70,7 @@
                         if($group_id==1 || $group_id==21 || $hak_akses['view_spb']==1){
                         ?>
                             <!-- <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/GudangFG/view_detail_laporan/<?php echo $this->uri->segment(3).'/'.$row->jenis_barang_id;?>" style="margin-bottom:4px"> &nbsp; <i class="fa fa-file-text-o"></i> Detail &nbsp; </a> -->
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangFG/kartu_stok?r=<?=$row->jenis_barang_id.'&ts='.$this->uri->segment(3).'&te='.$end;?>&bl=0>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print &nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangRongsok/kartu_stok?r=<?=$row->jenis_barang_id.'&ts='.$this->uri->segment(3).'&te='.$end;?>&bl=0>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print &nbsp; </a>
                         <?php
                             }
                         echo '</td>';
@@ -82,7 +82,7 @@
                     </div>
                 </div>
             </div>
-            <a href="<?php echo base_url('index.php/GudangFG/laporan_list'); ?>" class="btn blue-hoki"> 
+            <a href="<?php echo base_url('index.php/GudangRongsok/laporan_list'); ?>" class="btn blue-hoki"> 
             <i class="fa fa-angle-left"></i> Kembali </a>
         <?php
             }else{

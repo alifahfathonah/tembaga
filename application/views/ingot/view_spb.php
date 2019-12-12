@@ -408,7 +408,7 @@
                         </div>
                     </div>
                 <?php } else { ?>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-12">
                             <h4 align="center">Pemenuhan SPB</h4>
                                 <div class="table-scrollable">
@@ -425,7 +425,7 @@
                                             <th>Action <input type="checkbox" id="check_all" name="check_all" onclick="checkAll()" class="form-control checklist"></th>
                                         </thead>
                                         <tbody>
-                                            <?php $no=1; $total_netto = 0; foreach($detailSPBFulfilment as $v) { ?>
+                                            // <?php $no=1; $total_netto = 0; foreach($detailSPBFulfilment as $v) { ?>
                                             <tr>
                                                 <td><?=$no;?></td>
                                                 <td><?=$v->nama_item;?></td>
@@ -434,25 +434,25 @@
                                                 <td><?=$v->uom;?></td>
                                                 <td><?=$v->line_remarks;?></td>
                                                 <?php
-                                                if($v->flag_sj!=0){
-                                                echo '<td style="background-color: green; color: white">Sudah di Kirim</td>';
-                                                echo '<td>'.$v->tanggal_keluar.'</td>';
-                                                echo '<td><input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
-                                                            onclick="check();" class="form-control checklist">';
-                                                    echo '<input type="hidden" value="'.$v->id_detail.'" id="check_'.$no.'" name="myDetails['.$no.'][id_detail]" class="form-control checklist"></td>';
-                                                }else{
-                                                    echo '<td>Belum Dikirim</td>';
-                                                    echo '<td>'.date('Y-m-d', strtotime($v->tanggal_keluar)).'</td>';
-                                                    echo '<td><a href="'.base_url().'index.php/Ingot/delSPBSudahDipenuhi/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete</a>';
-                                                    echo '<input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
-                                                            onclick="check();" class="form-control checklist">';
-                                                    echo '<input type="hidden" value="'.$v->id_detail.'" id="check_'.$no.'" name="myDetails['.$no.'][id_detail]" class="form-control checklist">';
-                                                    echo '</td>';
+                                                // if($v->flag_sj!=0){
+                                                // echo '<td style="background-color: green; color: white">Sudah di Kirim</td>';
+                                                // echo '<td>'.$v->tanggal_keluar.'</td>';
+                                                // echo '<td><input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
+                                                //             onclick="check();" class="form-control checklist">';
+                                                //     echo '<input type="hidden" value="'.$v->id_detail.'" id="check_'.$no.'" name="myDetails['.$no.'][id_detail]" class="form-control checklist"></td>';
+                                                // }else{
+                                                //     echo '<td>Belum Dikirim</td>';
+                                                //     echo '<td>'.date('Y-m-d', strtotime($v->tanggal_keluar)).'</td>';
+                                                //     echo '<td><a href="'.base_url().'index.php/Ingot/delSPBSudahDipenuhi/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete</a>';
+                                                //     echo '<input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
+                                                //             onclick="check();" class="form-control checklist">';
+                                                //     echo '<input type="hidden" value="'.$v->id_detail.'" id="check_'.$no.'" name="myDetails['.$no.'][id_detail]" class="form-control checklist">';
+                                                //     echo '</td>';
                                                 }?>
                                             </tr>
                                             <?php 
-                                            $total_netto += $v->netto;
-                                            $no++; } ?>
+                                            // $total_netto += $v->netto;
+                                            // $no++; } ?>
                                             <tr>
                                                 <td colspan="3"> Total</td>
                                                 <td><?=number_format($total_netto,2,',','.');?></td>
@@ -462,7 +462,7 @@
                                     </table>
                                 </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- <div class="row">
                         <div class="col-md-12">
                             <h4 align="center">SPB Rongsok yang Sudah Dipenuhi</h4>
@@ -509,6 +509,7 @@
                                 </div>
                         </div>
                     </div> -->
+                <?php if($myData['status']!=1){ ?>
                     <div class="row">
                         <div class="col-md-12">
                             <h4 align="center">Pemenuhan SPB</h4>
@@ -559,7 +560,9 @@
                                 </div>
                         </div>
                     </div>
-                <?php } ?>
+                <?php
+                    } 
+                } ?>
                             <div class="row pindah" style="display: none;">
                                 <div class="col-md-2">
                                     Tanggal Keluar <font color="#f00">*</font>
