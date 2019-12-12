@@ -215,6 +215,7 @@ function get_bobbin(id, nmr){
             type: "POST",
             data: {
                 id:id,
+                tanggal:$('#tanggal').val(),
                 ukuran:ukuran,
                 jenis_barang:$('#jenis_barang').val()
             },

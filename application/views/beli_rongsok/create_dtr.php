@@ -84,7 +84,6 @@
                             <select id="supplier_id" name="supplier_id" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                 <option value=""></option>
-                                <option value="0">**TIDAK ADA SUPPLIER**</option>
                                 <?php
                                     foreach ($supplier_list as $row){
                                         echo '<option value="'.$row->id.'">'.$row->nama_supplier.'</option>';

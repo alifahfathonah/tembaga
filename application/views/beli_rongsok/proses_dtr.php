@@ -105,6 +105,8 @@
                             <input type="text" id="supplier" name="supplier" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $header['nama_supplier']; ?>">
+
+                            <input type="hidden" name="supplier_id" value="<?=$header['supplier_id'];?>">
                         </div>
                     </div> 
                     <div class="row">

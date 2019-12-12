@@ -369,7 +369,7 @@ class Model_beli_rongsok extends CI_Model{
     }
     
     function show_header_ttr($id){
-        $data = $this->db->query("Select ttr.*, 
+        $data = $this->db->query("Select ttr.*, dtr.supplier_id,
                     dtr.no_dtr,
                     dtr.po_id,
                     dtr.so_id,

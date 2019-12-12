@@ -47,9 +47,6 @@
                                 value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
-                </div>
-                <div class="col-md-2">&nbsp;</div>
-                <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
                             Jumlah Rongsok yang Dibutuhkan
@@ -59,6 +56,9 @@
                                 class="form-control myline" style="margin-bottom:5px; background: green; color: white;" readonly="readonly" value="<?php echo $header['jumlah']; ?> KG">
                         </div>
                     </div> 
+                </div>
+                <div class="col-md-2">&nbsp;</div>
+                <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-4">
                             Jenis SPB

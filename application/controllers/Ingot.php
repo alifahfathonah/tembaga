@@ -427,7 +427,12 @@ class Ingot extends CI_Controller{
             }
             
             if($this->db->trans_complete()){    
-                $this->session->set_flashdata('flash_msg', 'SPB berhasil di-create dengan nomor : '.$this->input->post('no_dtr'));                 
+                $this->session->set_flashdata('flash_msg', 'SPB berhasil di-create');
+                if($this->input->post('jenis_spb')==8){
+                    redirect('index.php/BeliRongsok/create_dtr');
+                }else{
+                    redirect('index.php/GudangRongsok/spb_list');
+                }
             }else{
                 $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create SPB, silahkan coba kembali!');
             }                   

@@ -854,7 +854,12 @@ class BeliRongsok extends CI_Controller{
             // $this->db->update('po', array('status'=>2, 'modified'=>$tanggal, 'modified_by'=>$user_id));
                     
             if($this->db->trans_complete()){    
-                $this->session->set_flashdata('flash_msg', 'DTR berhasil di-create dengan nomor : '.$code);                 
+                $this->session->set_flashdata('flash_msg', 'DTR berhasil di-create dengan nomor : '.$code);
+                if($this->input->post('supplier_id')==822){
+                    redirect('index.php/BeliRongsok/proses_dtr/'.$dtr_id);
+                }else{
+                    redirect('index.php/BeliRongsok/dtr_list');
+                }             
             }else{
                 $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTR, silahkan coba kembali!');
             }
@@ -1242,7 +1247,11 @@ class BeliRongsok extends CI_Controller{
                     'approved_by'=>$user_id));
 
             if($this->db->trans_complete()){
-                redirect('index.php/BeliRongsok/ttr_list');  
+                if($this->input->post('supplier_id')==822){
+                    redirect('index.php/GudangRongsok/spb_list');  
+                }else{
+                    redirect('index.php/BeliRongsok/ttr_list');  
+                }
             }else{
                 $this->session->set_flashdata('flash_msg', 'TTR gagal disimpan, silahkan dicoba kembali!');
                 redirect('index.php/BeliRongsok/ttr_list');  
@@ -1457,12 +1466,17 @@ class BeliRongsok extends CI_Controller{
                 ));
             }
         
-        if($this->db->trans_complete()){    
-            $this->session->set_flashdata('flash_msg', 'DTR dengan nomor : '.$this->input->post('no_dtr').' berhasil diupdate...');                 
+        if($this->db->trans_complete()){
+            if($this->input->post('supplier_id')==822){
+                redirect('index.php/BeliRongsok/review_ttr/'.$ttr_id);
+            }else{
+                $this->session->set_flashdata('flash_msg', 'DTR dengan nomor : '.$this->input->post('no_dtr').' berhasil diupdate...');  
+                redirect('index.php/BeliRongsok/dtr_list');   
+            }            
         }else{
             $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat updates DTR, silahkan coba kembali!');
+            redirect('index.php/BeliRongsok/dtr_list');
         }
-        redirect('index.php/BeliRongsok/dtr_list');
     }
 
     function update_dtr(){

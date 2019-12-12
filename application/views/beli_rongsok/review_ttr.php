@@ -106,6 +106,7 @@
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $header['nama_supplier']; ?>">
                             <input type="hidden" id="flag_gudang" name="flag_gudang" value="<?php echo $header['flag_gudang']; ?>">
+                            <input type="hidden" id="supplier_id" name="supplier_id" value="<?php echo $header['supplier_id']; ?>">
                         </div>
                     </div> 
                     <div class="row">

@@ -29,8 +29,8 @@
                         </div>
                         <div class="col-md-8">
                             <select id="jenis" name="jenis" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="jenis(this.value)">
-                                    <option value="0">Global</option>
-                                    <option value="1">SJ Belum ada Invoice</option>
+                                    <option value="0">SJ Sudah di Fakturkan</option>
+                                    <option value="1">SJ Semua</option>
                                 </select>
                         </div>
                     </div>
