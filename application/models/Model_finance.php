@@ -855,25 +855,38 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function print_flag_sj($ppn){
+    function print_flag_sj($s,$e,$ppn){
         if($ppn==2){
-            $data = $this->db->query("select tsjd.t_sj_id, tsj.no_surat_jalan, so.flag_ppn, tsj.tanggal, sum(tsjd.qty) as qty, sum(tsjd.bruto) as bruto, 
+            $data = $this->db->query("Select *,
+            COALESCE(r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as jenis_barang, COALESCE(r.uom,r2.uom,sp.uom,jb.uom) as uom from 
+            (
+            (select tsjd.t_sj_id, tsj.no_surat_jalan, tsj.jenis_barang as jenis_barang_sj, so.flag_ppn, tsj.tanggal, sum(tsjd.qty) as qty, sum(tsjd.bruto) as bruto, 
             COALESCE(NULLIF(tso.alias,''),(case when tsjd.jenis_barang_alias = 0 then tsjd.jenis_barang_id else tsjd.jenis_barang_alias end)) as jbid, (case when so.flag_ppn = 1 then mc.nama_customer else mc.nama_customer_kh end) as nama_customer,
             round(sum(case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end),3) as netto,
-            COALESCE(r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as jenis_barang, COALESCE(r.uom,r2.uom,sp.uom,jb.uom) as uom,
             (select tsod.amount from t_sales_order_detail tsod left join t_sales_order tso on tso.id = tsod.t_so_id where tso.so_id = tsj.sales_order_id and tsod.jenis_barang_id = case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)as amount 
             from t_surat_jalan_detail tsjd 
             left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id 
             left join t_sales_order tso on tso.so_id = tsj.sales_order_id
             left join sales_order so on so.id = tso.so_id
             left join m_customers mc on mc.id = tsj.m_customer_id
-            left join rongsok r on (tsj.jenis_barang = 'RONGSOK' and r.id = tsjd.jenis_barang_id)
-            left join rongsok r2 on (tsj.jenis_barang = 'AMPAS' and r2.id = tsjd.jenis_barang_id)
-            left join sparepart sp on (tsj.jenis_barang = 'LAIN' and sp.id = tsjd.jenis_barang_id)
-            left join jenis_barang jb on (jb.id = tsjd.jenis_barang_id)
-                        where tsj.sales_order_id > 0 and tsj.inv_id is null
-                        group by jbid, tsj.no_surat_jalan
-                        order by tsj.tanggal, tsj.no_surat_jalan, jenis_barang;");
+                        where so.flag_ppn=1 and tsj.tanggal between '".$s."' and '".$e."'
+                        group by jbid, tsjd.t_sj_id
+            )UNION ALL(
+            select rtsj.sj_resmi_id as t_sj_id, rts.no_sj_resmi as no_surat_jalan, rts.jenis_barang as jenis_barang_sj, 1 as flag_ppn, rts.tanggal, count(rtsj.id) as qty, sum(rtsj.bruto) as bruto, rtsj.jenis_barang_id as jbid, mc.nama_customer, sum(rtsj.netto) as netto, rtso.amount
+                from r_t_surat_jalan_detail rtsj
+                left join r_t_surat_jalan rts on rtsj.sj_resmi_id = rts.id
+                left join m_cv cv on cv.id = rts.m_cv_id
+                left join m_customers mc on cv.idkmp = mc.id
+                left join r_t_so_detail rtso on rtsj.so_detail_id = rtso.id
+                where rts.jenis_barang = 'FG' and rts.jenis_surat_jalan = 'SURAT JALAN KMP KE CV' and rts.tanggal between '".$s."' and '".$e."'
+                    group by jbid, rtsj.sj_resmi_id
+            )
+            )as a
+                left join rongsok r on (a.jenis_barang_sj = 'RONGSOK' and r.id = a.jbid)
+                left join rongsok r2 on (a.jenis_barang_sj = 'AMPAS' and r2.id = a.jbid)
+                left join sparepart sp on (a.jenis_barang_sj = 'LAIN' and sp.id = a.jbid)
+                left join jenis_barang jb on (jb.id = a.jbid)
+                        order by tanggal, no_surat_jalan, jenis_barang;");
         }else{
             $data = $this->db->query("select tsjd.t_sj_id, tsj.no_surat_jalan, so.flag_ppn, tsj.tanggal, sum(tsjd.qty) as qty, sum(tsjd.bruto) as bruto, 
             COALESCE(NULLIF(tso.alias,''),(case when tsjd.jenis_barang_alias = 0 then tsjd.jenis_barang_id else tsjd.jenis_barang_alias end)) as jbid, (case when so.flag_ppn = 1 then mc.nama_customer else mc.nama_customer_kh end) as nama_customer,
@@ -889,7 +902,7 @@ class Model_finance extends CI_Model{
             left join rongsok r2 on (tsj.jenis_barang = 'AMPAS' and r2.id = tsjd.jenis_barang_id)
             left join sparepart sp on (tsj.jenis_barang = 'LAIN' and sp.id = tsjd.jenis_barang_id)
             left join jenis_barang jb on (jb.id = tsjd.jenis_barang_id)
-                        where tsj.sales_order_id > 0 and tsj.inv_id is null and so.flag_ppn =".$ppn."
+                        where so.flag_ppn=".$ppn." and tsj.tanggal between '".$s."' and '".$e."'
                         group by jbid, tsj.no_surat_jalan
                         order by tsj.tanggal, tsj.no_surat_jalan, jenis_barang;");
         }

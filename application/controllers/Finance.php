@@ -2987,13 +2987,9 @@ class Finance extends CI_Controller{
             }else{
                 $data['detailLaporan'] = $this->Model_finance->print_laporan_penjualan_sj($start,$end,$l)->result();
             }
-        $this->load->view('finance/print_laporan_sj', $data);
+            $this->load->view('finance/print_laporan_sj', $data);
         }elseif($j==1){
-            if($l == 2){
-                $data['detailLaporan'] = $this->Model_finance->print_laporan_penjualan_sj_all($start,$end)->result();
-            }else{
-                $data['detailLaporan'] = $this->Model_finance->print_flag_sj($start,$end,$l)->result();
-            }
+            $data['detailLaporan'] = $this->Model_finance->print_flag_sj($start,$end,$l)->result();
             $this->load->view('sales_order/print_laporan_so_by_sj', $data);
         }
     }

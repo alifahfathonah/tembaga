@@ -11,7 +11,7 @@
           </td>
         </tr>
       </table>
-      <table width="100%" cellpadding="2" cellspacing="0">
+      <table width="100%" cellpadding="2" cellspacing="0" style="font-size: 12px;">
         <thead>
            <tr>
                 <th style="text-align: center; border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid;">No</th>

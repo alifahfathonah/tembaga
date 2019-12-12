@@ -28,7 +28,7 @@
                            Jenis <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="jenis" name="jenis" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="jenis(this.value)">
+                            <select id="jenis" name="jenis" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
                                     <option value="0">SJ Sudah di Fakturkan</option>
                                     <option value="1">SJ Semua</option>
                                 </select>
@@ -50,7 +50,6 @@
                                 </select>
                         </div>
                     </div>
-                <div id="tgl">
                     <div class="row">
                         <div class="col-md-4">
                             Tanggal Awal <font color="#f00">*</font>
@@ -71,7 +70,6 @@
                                 value="<?php echo date('d-m-Y'); ?>">
                         </div>
                     </div>
-                </div>
                         <div class="row">
                             <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
@@ -83,13 +81,6 @@
             </div>
     </div>
 <script type="text/javascript">
-function jenis(id){
-    if(id==0){
-        $('#tgl').show();
-    }else{
-        $('#tgl').hide();
-    }
-}
 function simpanData(){
     if($.trim($("#laporan").val()) == ""){
         $('#message').html("Laporan harus dipilih, tidak boleh kosong!");

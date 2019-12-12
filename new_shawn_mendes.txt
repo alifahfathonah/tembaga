@@ -76,7 +76,7 @@ bug - cek kenapa kadang uang masuk matching nyangkut (done)
   +Penerimaan dari PO & Tolling (KH & KMP) (done)
   +Adjustment(done)
  
-38- Pengeluaran Ingot
+38- Pengeluaran Ingot (done)
   -Pengeluaran 8mm Hitam(done)
   -Pengeluaran 8mm cuci(done)
   -Pengeluaran Jual(KH&KMP)(done)
@@ -101,7 +101,7 @@ bug - cek kenapa kadang uang masuk matching nyangkut (done)
 46- Edit bank di uang masuk. walaupun sudah cair/matching (done)
 47- Matching Pembayaran gabisa upload kalau masih minus atau jumlah cek / voucher masi 0(done)
 48- Input/Edit stok fisik rongsok karena gaada stok opname (done)
-49- Persingkat Repacking Rongsok kayak Finish Good
+49- Persingkat Repacking Rongsok kayak Finish Good(done)
 - flag blebek dan serbuk gamasuk laporan rongsok bulanan
 50,51,52,53,54,55- Retur bisa multiple, tambahin caranya di surat jalan
 	Cek Laporan retur dari spb_detail
