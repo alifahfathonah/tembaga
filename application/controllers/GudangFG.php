@@ -144,7 +144,7 @@ class GudangFG extends CI_Controller{
 
     function save_laporan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->load->model('Model_m_numberings');
@@ -304,7 +304,7 @@ class GudangFG extends CI_Controller{
     function delete_produksi_fg(){
         $id = $this->uri->segment(3);
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
 
         $this->db->trans_start();
 
@@ -341,7 +341,7 @@ class GudangFG extends CI_Controller{
     function delete_spb_fg_detail(){
         $id = $this->input->post('id');
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $return_data = array();
         $data = array(
                 //'flag_result' => 1,
@@ -537,7 +537,7 @@ class GudangFG extends CI_Controller{
 
     function save_detail_spb_fg_detail(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $t_spb_fg_id = $this->input->post('t_spb_fg_id');
         $id_spb_fg_detail = $this->input->post('tsfd_detail_id');
         $nomor_SPB = $this->input->post('no_spb');
@@ -1059,7 +1059,7 @@ class GudangFG extends CI_Controller{
 
     function update_laporan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
@@ -1152,7 +1152,7 @@ class GudangFG extends CI_Controller{
 
     function input_ulang_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         $spb_id = $this->input->post('id');
         
@@ -1177,7 +1177,7 @@ class GudangFG extends CI_Controller{
 
     function close_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         $spb_id = $this->input->post('id');
         
@@ -1202,7 +1202,7 @@ class GudangFG extends CI_Controller{
 
     function save_fulfilment(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         $spb_id = $this->input->post('id');
         
@@ -1244,7 +1244,7 @@ class GudangFG extends CI_Controller{
 
     function reject_fulfilment(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         $spb_id = $this->input->post('id');
 
@@ -1276,7 +1276,7 @@ class GudangFG extends CI_Controller{
 
     function reject_approved(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         $spb_id = $this->input->post('id');
 
@@ -1344,7 +1344,7 @@ class GudangFG extends CI_Controller{
 
     function approve_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tanggal_keluar = date('Y-m-d', strtotime($this->input->post('tanggal_keluar')));
         $tgl_input = date('Y-m-d');
         $spb_id = $this->input->post('id');
@@ -1388,7 +1388,7 @@ class GudangFG extends CI_Controller{
 
     function tambah_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         $spb_id = $this->input->post('id');
         
@@ -1415,7 +1415,7 @@ class GudangFG extends CI_Controller{
         $bpb_id = $this->input->post('bpb_fg_id');
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $return_data = array();
         
@@ -1506,7 +1506,7 @@ class GudangFG extends CI_Controller{
 
     function reject_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $id_spb = $this->input->post('header_id');
         
         #Update status t_spb_fg
@@ -1539,7 +1539,7 @@ class GudangFG extends CI_Controller{
     function reject_bpb(){
         $user_id  = $this->session->userdata('user_id');
         $fg_id = $this->input->post('fg_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $query = $this->db->query('select *from produksi_fg_detail where produksi_fg_id = '.$fg_id)->result();
         foreach ($query as $row) {
@@ -1588,7 +1588,7 @@ class GudangFG extends CI_Controller{
 
     function save_sendrongsok(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $data = array(
@@ -1608,7 +1608,7 @@ class GudangFG extends CI_Controller{
 
     function save_spb_kirim_rongsok(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
@@ -1738,7 +1738,7 @@ class GudangFG extends CI_Controller{
 
     function save_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
@@ -1831,7 +1831,7 @@ class GudangFG extends CI_Controller{
 
     function update_tanggal_keluar(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('update_tanggal_keluar')));
         $spb_id = $this->input->post('id');
         
@@ -1909,7 +1909,7 @@ class GudangFG extends CI_Controller{
     function update_spb(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn  = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
@@ -2149,7 +2149,7 @@ class GudangFG extends CI_Controller{
 
     function proses_inventory(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
 
         $bulan = $_GET['b'];
         $tahun = $_GET['t'];
@@ -2315,7 +2315,7 @@ class GudangFG extends CI_Controller{
 
     function update_detail_produksi(){
         $return_data = array();
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $user_id  = $this->session->userdata('user_id');
 
         $this->db->trans_start();
@@ -2646,7 +2646,7 @@ class GudangFG extends CI_Controller{
 
     function save_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_sj = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
@@ -2827,7 +2827,7 @@ class GudangFG extends CI_Controller{
 
     function save_detail_sj(){
         $return_data = array();
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $user_id  = $this->session->userdata('user_id');
         $spb = $this->input->post('no_spb');
         $jenis = $this->input->post('jenis');
@@ -2895,7 +2895,7 @@ class GudangFG extends CI_Controller{
 
     function update_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis_barang');
 
@@ -2919,7 +2919,7 @@ class GudangFG extends CI_Controller{
 
     function reject_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $sjid = $this->input->post('sj_id');
         
         #Update status t_surat_jalan
@@ -2945,7 +2945,7 @@ class GudangFG extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
         $flag_sj = 0;
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $so_id = $this->input->post('so_id');
         $custid = $this->input->post('id_customer');

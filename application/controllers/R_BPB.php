@@ -68,7 +68,7 @@ class R_BPB extends CI_Controller{
     function save_bpb(){
         $user_id  = $this->session->userdata('user_id');
         $reff_cv   = $this->session->userdata('cv_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis');    
         
@@ -228,7 +228,7 @@ class R_BPB extends CI_Controller{
     function update_bpb(){
         $user_id   = $this->session->userdata('user_id');
         $reff_cv   = $this->session->userdata('cv_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();

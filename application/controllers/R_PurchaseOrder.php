@@ -74,7 +74,7 @@ class R_PurchaseOrder extends CI_Controller{
 
     function save_po(){
     	$user_id   = $this->session->userdata('user_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_kirim = date('Y-m-d', strtotime($this->input->post('tanggal_kirim')));
         $reff_cv = $this->session->userdata('cv_id');
@@ -251,7 +251,7 @@ class R_PurchaseOrder extends CI_Controller{
     function update_po(){
     	$user_id   = $this->session->userdata('user_id');
         $reff_cv   = $this->session->userdata('cv_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_kirim = date('Y-m-d', strtotime($this->input->post('tanggal_kirim')));
         
@@ -358,7 +358,7 @@ class R_PurchaseOrder extends CI_Controller{
     function save_po_fcustomer(){
         $user_id   = $this->session->userdata('user_id');
         $reff_cv   = $this->session->userdata('cv_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_kirim = date('Y-m-d', strtotime($this->input->post('tanggal_kirim')));
         $tanggal_so = date('Y-m-d', strtotime($this->input->post('tanggal_so')));
@@ -521,7 +521,7 @@ class R_PurchaseOrder extends CI_Controller{
     function update_po_fcustomer(){
         $user_id   = $this->session->userdata('user_id');
         $reff_cv   = $this->session->userdata('cv_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_kirim = date('Y-m-d', strtotime($this->input->post('tanggal_kirim')));
         

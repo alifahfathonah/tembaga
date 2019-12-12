@@ -40,7 +40,7 @@ class Sparepart extends CI_Controller{
     
     function save(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                     'sparepart_group'=> $this->input->post('group_id'),
@@ -80,7 +80,7 @@ class Sparepart extends CI_Controller{
     
     function update(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                 'sparepart_group'=> $this->input->post('group_id'),

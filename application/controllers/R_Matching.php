@@ -60,7 +60,7 @@ class R_Matching extends CI_Controller{
 
     function save_invoice(){
         $user_id   = $this->session->userdata('user_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
@@ -272,7 +272,7 @@ class R_Matching extends CI_Controller{
     function saveData(){
         $id = $this->input->post('id');
         $qty = $this->input->post('qty');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         // $check = $this->db->query("select sum(netto) as total_netto from r_t_invoice_detail where invoice_resmi_id = ".$id)->row_array();

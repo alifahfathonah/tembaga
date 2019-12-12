@@ -103,7 +103,7 @@
                 'jenis_barang_id'=>11,
                 'netto'=>$v_digital11,
                 'keterangan'=>'APOLLO 3 Stok Generate',
-                'created_at'=>date('Y-m-d h:m:s')
+                'created_at'=>date('Y-m-d H:i:s')
             ));
             //APOLLO 4
             $this->db->insert('t_gudang_produksi', array(
@@ -111,7 +111,7 @@
                 'jenis_barang_id'=>12,
                 'netto'=>$v_digital12,
                 'keterangan'=>'APOLLO 4 Stok Generate',
-                'created_at'=>date('Y-m-d h:m:s')
+                'created_at'=>date('Y-m-d H:i:s')
             ));
         }else{
             foreach ($cek as $v) {

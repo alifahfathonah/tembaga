@@ -45,7 +45,7 @@ class R_Rongsok extends CI_Controller{
 
     function save_dtr(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
@@ -165,7 +165,7 @@ class R_Rongsok extends CI_Controller{
     function update_dtr(){
         $user_id  = $this->session->userdata('user_id');
         $tgl_input = date("Y-m-d", strtotime($this->input->post('tanggal')));
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
 
         $this->db->trans_start();
 
@@ -529,7 +529,7 @@ class R_Rongsok extends CI_Controller{
 
     function save_po(){
         $user_id   = $this->session->userdata('user_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn  = 1;
@@ -621,7 +621,7 @@ class R_Rongsok extends CI_Controller{
     }
 
     function update(){
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $user_id  = $this->session->userdata('user_id');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
@@ -716,7 +716,7 @@ class R_Rongsok extends CI_Controller{
         $po_id = $this->input->post('po_id');
         $user_id  = $this->session->userdata('user_id');
         $tgl_code = date('Ym', strtotime($this->input->post('tanggal')));
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $return_data = array();
         
@@ -924,7 +924,7 @@ class R_Rongsok extends CI_Controller{
 
     function delete_pindah(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $user_ppn = $this->session->userdata('user_ppn');
 
         $this->db->trans_start();
@@ -941,7 +941,7 @@ class R_Rongsok extends CI_Controller{
 
     function create_pindah(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         // $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
@@ -993,7 +993,7 @@ class R_Rongsok extends CI_Controller{
 
     function simpan_pindah_data(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
         $id = $this->input->post('id');
@@ -1115,7 +1115,7 @@ class R_Rongsok extends CI_Controller{
 
     function save_detail_fg(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $pindah_id = $this->input->post('id');
         $no_packing = $this->input->post('no_packing');
         $gudang_id = $this->input->post('gudang_id');

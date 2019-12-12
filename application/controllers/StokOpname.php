@@ -39,7 +39,7 @@ class StokOpname extends CI_Controller{
     function save(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis');
         $cek = $this->db->get_where('stok_opname', ['tanggal' => $tgl_input, 'jenis_stok_opname' => $jenis]);
@@ -117,7 +117,7 @@ class StokOpname extends CI_Controller{
 
     function save_detail_fg(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $stok_opname_id = $this->input->post('id');
         $no_packing = $this->input->post('no_packing');
         $gudang_id = $this->input->post('gudang_id');
@@ -181,7 +181,7 @@ class StokOpname extends CI_Controller{
     function update(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->update('stok_opname', [
@@ -385,7 +385,7 @@ class StokOpname extends CI_Controller{
     function saveAdjustment(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
@@ -522,7 +522,7 @@ class StokOpname extends CI_Controller{
     function save_rongsok(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis');
         
@@ -577,7 +577,7 @@ class StokOpname extends CI_Controller{
 
     function save_detail_rongsok(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $stok_opname_id = $this->input->post('id');
         $no_palette = $this->input->post('no_palette');
         $dtr_detail_id = $this->input->post('dtr_detail_id');
@@ -610,7 +610,7 @@ class StokOpname extends CI_Controller{
     function update_rongsok(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->update('stok_opname', [

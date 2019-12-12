@@ -45,7 +45,7 @@ class IngotRendah extends CI_Controller{
     
     function save(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
         
@@ -104,7 +104,7 @@ class IngotRendah extends CI_Controller{
     
     function update(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
@@ -279,7 +279,7 @@ class IngotRendah extends CI_Controller{
     
     function save_dtr(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
@@ -386,7 +386,7 @@ class IngotRendah extends CI_Controller{
     
     function save_ttr(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
@@ -481,7 +481,7 @@ class IngotRendah extends CI_Controller{
     
     function save_voucher_piutang(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();

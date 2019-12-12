@@ -33,7 +33,7 @@ class Users extends CI_Controller{
         
     function save(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         if (!empty($_FILES['photo_profile_url']['tmp_name'])) {
             $config['upload_path']   = './uploads/users'; 
@@ -91,7 +91,7 @@ class Users extends CI_Controller{
     
     function update(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         if (!empty($_FILES['photo_profile_url']['tmp_name'])) {
             $config['upload_path']   = './uploads/users'; 
@@ -163,7 +163,7 @@ class Users extends CI_Controller{
         
         $old_password = base64_encode($isi_data[0]);
         $new_password = base64_encode($isi_data[1]);
-        $tanggal = date('Y-m-d h:m:s');
+        $tanggal = date('Y-m-d H:i:s');
         
         $this->load->model('Model_users');
         $cek = $this->Model_users->cek_login($user_name, $old_password)->row_array();

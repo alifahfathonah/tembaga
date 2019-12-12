@@ -71,7 +71,7 @@ class Tolling extends CI_Controller{
     
     function save(){
         $user_id = $this->session->userdata('user_id');
-        $tanggal = date('Y-m-d h:m:s');
+        $tanggal = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_so = date('Ym', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
@@ -249,7 +249,7 @@ class Tolling extends CI_Controller{
     function update(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
         $data = array(
@@ -414,7 +414,7 @@ class Tolling extends CI_Controller{
     function delete(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $id = $this->uri->segment(3);
 
         $this->db->trans_start();
@@ -548,7 +548,7 @@ class Tolling extends CI_Controller{
         $jenis = $this->input->post('jenis_barang');
         $user_id  = $this->session->userdata('user_id');
         $user_ppn  = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         $return_data = array();
         $this->load->model('Model_tolling_titipan');
@@ -750,7 +750,7 @@ class Tolling extends CI_Controller{
         $dtr_id = $this->input->post('dtr_id');
         $po_id = $this->input->post('po_id');
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         $return_data = array();
         
@@ -839,7 +839,7 @@ class Tolling extends CI_Controller{
 
     function reject_matching_dtt(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                 'status'=> 9,
@@ -911,7 +911,7 @@ class Tolling extends CI_Controller{
         $dtr_id = $this->input->post('dtr_id');
         $so_id = $this->input->post('so_id');
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         $return_data = array();
         
@@ -996,7 +996,7 @@ class Tolling extends CI_Controller{
         $so_id = $this->input->post('so_id');
         $user_id  = $this->session->userdata('user_id');
         $user_ppn  = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $get = $this->db->query("select id, tanggal from dtwip where id =".$dtwip_id)->row_array();
         $tgl_input = date('Y-m-d', strtotime($get['tanggal']));
         $return_data = array();
@@ -1295,7 +1295,7 @@ class Tolling extends CI_Controller{
     
     function save_dtr(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
 
@@ -1436,7 +1436,7 @@ class Tolling extends CI_Controller{
     function approve(){
         $dtr_id = $this->input->post('dtr_id');
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         
         $return_data = array();
@@ -1536,7 +1536,7 @@ class Tolling extends CI_Controller{
     
     function reject(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                 'status'=> 9,
@@ -1576,7 +1576,7 @@ class Tolling extends CI_Controller{
     
     function update_dtr(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $this->db->trans_start();
         $this->db->where('id', $this->input->post('id'));
@@ -1633,7 +1633,7 @@ class Tolling extends CI_Controller{
     
     function save_ttr(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
@@ -1832,7 +1832,7 @@ class Tolling extends CI_Controller{
     
     function save_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_sj = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
@@ -1877,7 +1877,7 @@ class Tolling extends CI_Controller{
 
     function save_surat_jalan_keluar(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_sj = date('Ym', strtotime($this->input->post('tanggal')));
         
@@ -2011,7 +2011,7 @@ class Tolling extends CI_Controller{
     
     function update_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis_barang');
         $soid = $this->input->post('so_id');
@@ -2075,7 +2075,7 @@ class Tolling extends CI_Controller{
 
     function update_surat_jalan_keluar(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis_barang');
         $soid = $this->input->post('so_id');
@@ -2177,7 +2177,7 @@ class Tolling extends CI_Controller{
     function update_surat_jalan_existing(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn  = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis_barang');
         $soid = $this->input->post('so_id');
@@ -2303,7 +2303,7 @@ class Tolling extends CI_Controller{
         $sjid = $this->input->post('id');
         $user_id  = $this->session->userdata('user_id');
         $user_ppn  = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $so_id = $this->input->post('so_id');
         $custid = $this->input->post('id_customer');
@@ -2451,7 +2451,7 @@ class Tolling extends CI_Controller{
         $spbid = $this->input->post('spb_id');
         $user_id  = $this->session->userdata('user_id');
         $user_ppn  = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $custid = $this->input->post('id_customer');
         $jenis = $this->input->post('jenis_barang');
@@ -2607,7 +2607,7 @@ class Tolling extends CI_Controller{
 
     function reject_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $sjid = $this->input->post('sj_id');
         
         #Update status t_surat_jalan
@@ -2630,7 +2630,7 @@ class Tolling extends CI_Controller{
 
     function reject_surat_jalan_keluar(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $sjid = $this->input->post('sj_id');
         
         #Update status t_surat_jalan
@@ -2786,7 +2786,7 @@ class Tolling extends CI_Controller{
 
     function save_tolling_fg(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
@@ -3048,7 +3048,7 @@ class Tolling extends CI_Controller{
 
     function save_po(){
         $user_id   = $this->session->userdata('user_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
@@ -3171,7 +3171,7 @@ class Tolling extends CI_Controller{
 
     function close_po(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $user_ppn = $this->session->userdata('user_ppn');
         $this->db->trans_start();
         
@@ -3215,7 +3215,7 @@ class Tolling extends CI_Controller{
 
     function update_po(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
@@ -3300,7 +3300,7 @@ class Tolling extends CI_Controller{
 
     function save_dtt(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
         $user_ppn  = $this->session->userdata('user_ppn');
@@ -3405,7 +3405,7 @@ class Tolling extends CI_Controller{
 
     function update_dtt_header(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
@@ -3429,7 +3429,7 @@ class Tolling extends CI_Controller{
     function delete_dtt(){
         $user_id  = $this->session->userdata('user_id');
         $id = $this->uri->segment(3);
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
@@ -3464,7 +3464,7 @@ class Tolling extends CI_Controller{
 
     function save_detail_rambut(){
         $return_data = array();
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_id  = $this->session->userdata('user_id');
 
@@ -3495,7 +3495,7 @@ class Tolling extends CI_Controller{
 
     function save_dtt_detail(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis_barang');
         $dtt_id = $this->input->post('id');
@@ -3629,7 +3629,7 @@ class Tolling extends CI_Controller{
 
     function save_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis_barang');
 
@@ -3897,7 +3897,7 @@ class Tolling extends CI_Controller{
 
     function save_voucher(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $nilai_po  = str_replace(',', '', $this->input->post('nilai_po'));
         $nilai_dp  = str_replace(',', '', $this->input->post('nilai_dp'));
@@ -3946,7 +3946,7 @@ class Tolling extends CI_Controller{
     function save_voucher_pembayaran(){
         $ppn = $this->session->userdata('user_ppn');
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
         $nilai_po  = str_replace(',', '', $this->input->post('nilai_po'));
@@ -4196,7 +4196,7 @@ class Tolling extends CI_Controller{
 
     function close_so(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $jenis    = $this->input->post('jenis_barang');
         
         #Update status t_surat_jalan
@@ -4237,7 +4237,7 @@ class Tolling extends CI_Controller{
 
     function open_so(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $jenis    = $this->input->post('jenis_barang');
         
         #Update status t_surat_jalan
@@ -4278,7 +4278,7 @@ class Tolling extends CI_Controller{
 
     function open_inv(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $jenis    = $this->input->post('jenis_barang');
         
         #Update status t_surat_jalan
@@ -4296,7 +4296,7 @@ class Tolling extends CI_Controller{
 
     function open_sj(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $jenis    = $this->input->post('jenis_barang');
         
         #Update status t_surat_jalan
@@ -4352,7 +4352,7 @@ class Tolling extends CI_Controller{
 
     function save_dtwip(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_ppn =  $this->session->userdata('user_ppn');
 

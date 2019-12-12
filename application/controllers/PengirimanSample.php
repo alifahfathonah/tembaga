@@ -56,7 +56,7 @@ class PengirimanSample extends CI_Controller{
     
     function save(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
@@ -115,7 +115,7 @@ class PengirimanSample extends CI_Controller{
     
     function update(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $data = array(
@@ -263,7 +263,7 @@ class PengirimanSample extends CI_Controller{
     
     function save_skb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
@@ -408,7 +408,7 @@ class PengirimanSample extends CI_Controller{
     
     function save_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
@@ -580,7 +580,7 @@ class PengirimanSample extends CI_Controller{
     
     function update_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $data = array(
@@ -649,7 +649,7 @@ class PengirimanSample extends CI_Controller{
     
     function approve_rs(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                 'status'=> 1,
@@ -666,7 +666,7 @@ class PengirimanSample extends CI_Controller{
     
     function reject_rs(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                 'status'=> 9,

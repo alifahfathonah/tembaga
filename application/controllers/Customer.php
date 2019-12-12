@@ -33,7 +33,7 @@ class Customer extends CI_Controller{
 
     function save(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                     'kode_customer'=> $this->input->post('kode_customer'),
@@ -93,7 +93,7 @@ class Customer extends CI_Controller{
     function update(){
         $user_id  = $this->session->userdata('user_id');
         $ppn      = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         if($ppn == 1){
             $data = array(

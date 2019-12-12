@@ -49,7 +49,7 @@ class Retur extends CI_Controller{
     
     function save(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
         
@@ -144,7 +144,7 @@ class Retur extends CI_Controller{
     function delete(){
         $user_id  = $this->session->userdata('user_id');
         $id = $this->uri->segment(3);
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
 
         $this->db->where('id',$id);
         $this->db->delete('retur');
@@ -158,7 +158,7 @@ class Retur extends CI_Controller{
     
     function update(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
@@ -644,7 +644,7 @@ class Retur extends CI_Controller{
     
     function save_ttr(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
@@ -743,7 +743,7 @@ class Retur extends CI_Controller{
     
     function save_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis_barang');
 
@@ -899,7 +899,7 @@ class Retur extends CI_Controller{
 
     function save_surat_jalan_sp(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
@@ -973,7 +973,7 @@ class Retur extends CI_Controller{
 
     function update_surat_jalan_sp(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis_barang');
         $soid = $this->input->post('so_id');
@@ -1077,7 +1077,7 @@ class Retur extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
         $flag_sj = 0;
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $custid = $this->input->post('customer_id');
         $jenis = $this->input->post('jenis_barang');
@@ -1197,7 +1197,7 @@ class Retur extends CI_Controller{
 
     function reject_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $sjid = $this->input->post('sj_id');
         
         #Update status t_surat_jalan
@@ -1268,7 +1268,7 @@ class Retur extends CI_Controller{
     
     function approve(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
         
@@ -1402,7 +1402,7 @@ class Retur extends CI_Controller{
     
     function update_type(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
 
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('retur', array(
@@ -1445,7 +1445,7 @@ class Retur extends CI_Controller{
 
     function reject(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                 'status'=> 9,
@@ -1786,7 +1786,7 @@ class Retur extends CI_Controller{
 
     function update_fulfilment(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jb = $this->input->post('jenis_barang');
 
@@ -1962,7 +1962,7 @@ class Retur extends CI_Controller{
     
     function save_dtr(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
@@ -2076,7 +2076,7 @@ class Retur extends CI_Controller{
     
     function save_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
@@ -2222,7 +2222,7 @@ class Retur extends CI_Controller{
     function update_surat_jalan_existing(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn  = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis_barang');
         $soid = $this->input->post('so_id');
@@ -2403,7 +2403,7 @@ class Retur extends CI_Controller{
     
     function update_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis_barang');
         $custid = $this->input->post('id_customer');
@@ -2604,7 +2604,7 @@ class Retur extends CI_Controller{
 
     function save_invoice(){
         $user_id   = $this->session->userdata('user_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
 

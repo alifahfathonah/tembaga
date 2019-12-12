@@ -45,7 +45,7 @@ class RollingKawatHitam extends CI_Controller{
     
     function save(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
@@ -100,7 +100,7 @@ class RollingKawatHitam extends CI_Controller{
     
     function update(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $data = array(
@@ -247,7 +247,7 @@ class RollingKawatHitam extends CI_Controller{
     
     function save_skb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $this->db->trans_start();
         $this->load->model('Model_m_numberings');
@@ -360,7 +360,7 @@ class RollingKawatHitam extends CI_Controller{
     
     function save_produksi(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
@@ -536,7 +536,7 @@ class RollingKawatHitam extends CI_Controller{
     
     function update_produksi(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $data = array(
@@ -580,7 +580,7 @@ class RollingKawatHitam extends CI_Controller{
     
     function approve_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                 'status'=> 1,
@@ -597,7 +597,7 @@ class RollingKawatHitam extends CI_Controller{
     
     function reject_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                 'status'=> 9,

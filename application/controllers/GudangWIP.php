@@ -96,7 +96,7 @@ class GudangWIP extends CI_Controller{
 
     function save_proses_wip(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
@@ -313,7 +313,7 @@ class GudangWIP extends CI_Controller{
 
     function update_proses_wip(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_prd = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $id_thw = $this->input->post('id_thw');
@@ -542,7 +542,7 @@ class GudangWIP extends CI_Controller{
 
     function save_sendrongsok(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $data = array(
@@ -608,7 +608,7 @@ class GudangWIP extends CI_Controller{
         $user_ppn = $this->session->userdata('user_ppn');
 
         $hasil_wip_id = $this->input->post('id_hasil_wip');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $return_data = array();
         
@@ -766,7 +766,7 @@ class GudangWIP extends CI_Controller{
 
     function save_spb_kirim_rongsok(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
@@ -841,7 +841,7 @@ class GudangWIP extends CI_Controller{
 
     function save_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
@@ -1061,7 +1061,7 @@ class GudangWIP extends CI_Controller{
 
     function update_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
@@ -1162,7 +1162,7 @@ class GudangWIP extends CI_Controller{
 
     function update_tanggal_keluar(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('update_tanggal_keluar')));
         $spb_id = $this->input->post('id');
         
@@ -1190,7 +1190,7 @@ class GudangWIP extends CI_Controller{
 
     function update_tgl_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
@@ -1207,7 +1207,7 @@ class GudangWIP extends CI_Controller{
 
     function close_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         $spb_id = $this->input->post('id');
         
@@ -1250,7 +1250,7 @@ class GudangWIP extends CI_Controller{
 
     function save_spb_fulfilment(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $spb_id = $this->input->post('id');
         $flag = $this->input->post('flag_produksi');
@@ -1295,7 +1295,7 @@ class GudangWIP extends CI_Controller{
 
     function input_ulang_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $spb_id = $this->input->post('id');
         
@@ -1320,7 +1320,7 @@ class GudangWIP extends CI_Controller{
 
     function tambah_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $spb_id = $this->input->post('id');
         
@@ -1345,7 +1345,7 @@ class GudangWIP extends CI_Controller{
 
     function reject_fulfilment(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $spb_id = $this->input->post('id');
 
@@ -1380,7 +1380,7 @@ class GudangWIP extends CI_Controller{
     function approve_spb(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal_keluar = date('Y-m-d', strtotime($this->input->post('tanggal_keluar')));
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $spb_id = $this->input->post('id');
         $flag = $this->input->post('flag_produksi');
@@ -1446,7 +1446,7 @@ class GudangWIP extends CI_Controller{
 
     function reject_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                 'status'=> 9,
@@ -1831,7 +1831,7 @@ class GudangWIP extends CI_Controller{
 
     function save_floor(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
             $data = array(
@@ -1898,7 +1898,7 @@ class GudangWIP extends CI_Controller{
 
     function update_floor(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $id = $this->input->post('id');
 
@@ -1959,7 +1959,7 @@ class GudangWIP extends CI_Controller{
 
     function save_gudang_keras(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
             $data = array(
@@ -2027,7 +2027,7 @@ class GudangWIP extends CI_Controller{
 
     function update_gudang_keras(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();

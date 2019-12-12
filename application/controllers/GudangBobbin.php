@@ -364,7 +364,7 @@ class GudangBobbin extends CI_Controller{
 
     function edit_surat_peminjaman(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $module_name = $this->uri->segment(1);
@@ -397,7 +397,7 @@ class GudangBobbin extends CI_Controller{
 
     function update_surat_peminjaman(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $spb_id = $this->input->post('spb_id');
 
@@ -491,7 +491,7 @@ class GudangBobbin extends CI_Controller{
 
     function save_penerimaan_bobbin(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->load->model('Model_m_numberings');
@@ -612,7 +612,7 @@ class GudangBobbin extends CI_Controller{
 
     function update_penerimaan_bobbin(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $details = $this->input->post('details');
@@ -803,7 +803,7 @@ class GudangBobbin extends CI_Controller{
 
     function save_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->load->model('Model_m_numberings');
@@ -931,7 +931,7 @@ class GudangBobbin extends CI_Controller{
 
     function update_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         #Create SPB fulfilment
@@ -984,7 +984,7 @@ class GudangBobbin extends CI_Controller{
 
     function approve_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         $spb_id = $this->input->post('id');
         
@@ -1036,7 +1036,7 @@ class GudangBobbin extends CI_Controller{
 
     function reject_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $id_spb = $this->input->post('header_id');
         
         #Update status bobbin_spb

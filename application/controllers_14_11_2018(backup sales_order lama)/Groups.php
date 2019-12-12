@@ -30,7 +30,7 @@ class Groups extends CI_Controller{
     
     function save(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');               
+        $tanggal  = date('Y-m-d H:i:s');               
         
         $data = array(
                         'name'=> $this->input->post('group_name'),
@@ -64,7 +64,7 @@ class Groups extends CI_Controller{
     
     function update(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
                 
         $data = array(
                 'name'=> $this->input->post('group_name'),

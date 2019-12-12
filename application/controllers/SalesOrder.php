@@ -311,7 +311,7 @@ class SalesOrder extends CI_Controller{
 
     function update_detail_so(){
         $return_data = array();
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $user_id  = $this->session->userdata('user_id');
         $jenis = $this->input->post('jenis');
         
@@ -378,7 +378,7 @@ class SalesOrder extends CI_Controller{
 
     function save(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_so = date('Ym', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
@@ -549,7 +549,7 @@ class SalesOrder extends CI_Controller{
     function delete(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $id = $this->uri->segment(3);
 
         $this->db->trans_start();
@@ -636,7 +636,7 @@ class SalesOrder extends CI_Controller{
 
     function save_detail_so(){
         $return_data = array();
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $user_id  = $this->session->userdata('user_id');
         $spb = $this->input->post('no_spb');
         $jenis = $this->input->post('jenis');
@@ -768,7 +768,7 @@ class SalesOrder extends CI_Controller{
     function update_so(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tanggal_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
         
@@ -844,7 +844,7 @@ class SalesOrder extends CI_Controller{
 
     function close_so(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $jenis    = $this->input->post('jenis_barang');
         
         #Update status t_surat_jalan
@@ -885,7 +885,7 @@ class SalesOrder extends CI_Controller{
 
     function open_so(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $jenis    = $this->input->post('jenis_barang');
         
         #Update status t_surat_jalan
@@ -926,7 +926,7 @@ class SalesOrder extends CI_Controller{
 
     function open_inv(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $jenis    = $this->input->post('jenis_barang');
         
         #Update status t_surat_jalan
@@ -944,7 +944,7 @@ class SalesOrder extends CI_Controller{
 
     function open_sj(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $jenis    = $this->input->post('jenis_barang');
         
         #Update status t_surat_jalan
@@ -1127,7 +1127,7 @@ class SalesOrder extends CI_Controller{
 
     function save_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_sj = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
@@ -1250,7 +1250,7 @@ class SalesOrder extends CI_Controller{
     
     function update_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis_barang');
         $soid = $this->input->post('so_id');
@@ -1399,7 +1399,7 @@ class SalesOrder extends CI_Controller{
     function update_surat_jalan_existing(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn  = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis_barang');
         $soid = $this->input->post('so_id');
@@ -1463,7 +1463,7 @@ class SalesOrder extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
         $flag_sj = 0;
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $so_id = $this->input->post('so_id');
         $custid = $this->input->post('id_customer');
@@ -1623,7 +1623,7 @@ class SalesOrder extends CI_Controller{
 
     function delete_approved_surat_jalan(){
         $id = $this->uri->segment(3);
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $user_id  = $this->session->userdata('user_id');
         $this->db->trans_start();
 
@@ -1707,7 +1707,7 @@ class SalesOrder extends CI_Controller{
 
     function reject_surat_jalan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $sjid = $this->input->post('sj_id');
         
         #Update status t_surat_jalan
@@ -1815,7 +1815,7 @@ class SalesOrder extends CI_Controller{
     function save_revisi_sj(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();

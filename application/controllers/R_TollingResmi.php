@@ -57,7 +57,7 @@ class R_TollingResmi extends CI_Controller{
 
     function save(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));  
         $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));      
         
@@ -203,7 +203,7 @@ class R_TollingResmi extends CI_Controller{
 
     function update(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));   
         $tgl_code = date('Ym', strtotime($this->input->post('tanggal')));
         $r_dtr_id = $this->input->post('r_dtr_id');

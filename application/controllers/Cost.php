@@ -40,7 +40,7 @@ class Cost extends CI_Controller{
     
     function save(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                     'nama_cost'=> $this->input->post('nama_cost'),
@@ -78,7 +78,7 @@ class Cost extends CI_Controller{
     
     function update(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                 'nama_cost'=> $this->input->post('nama_cost'),

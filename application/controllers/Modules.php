@@ -439,7 +439,7 @@ class Modules extends CI_Controller{
     
     function save_modules(){
         $user_id   = $this->session->userdata('user_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
     
         $this->db->trans_start();
         $this->db->insert('modules', array(

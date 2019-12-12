@@ -99,7 +99,7 @@ class GudangRongsok extends CI_Controller{
 
 	function update_tgl_spb(){
 		$user_id  = $this->session->userdata('user_id');
-		$tanggal  = date('Y-m-d h:m:s');
+		$tanggal  = date('Y-m-d H:i:s');
 		
 		$tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 		
@@ -179,7 +179,7 @@ class GudangRongsok extends CI_Controller{
 
 	function proses_inventory(){
 		$user_id  = $this->session->userdata('user_id');
-		$tanggal  = date('Y-m-d h:m:s');
+		$tanggal  = date('Y-m-d H:i:s');
 
 		$bulan = $_GET['b'];
 		$tahun = $_GET['t'];
@@ -664,7 +664,7 @@ class GudangRongsok extends CI_Controller{
 
 	function update_palette(){
 		$user_id  = $this->session->userdata('user_id');
-		$tanggal  = date('Y-m-d h:m:s');
+		$tanggal  = date('Y-m-d H:i:s');
 		$tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
 		$this->db->trans_start();
@@ -723,7 +723,7 @@ class GudangRongsok extends CI_Controller{
 
 	function update_laporan(){
 		$user_id  = $this->session->userdata('user_id');
-		$tanggal  = date('Y-m-d h:m:s');
+		$tanggal  = date('Y-m-d H:i:s');
 		$tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 		
 		$this->db->trans_start();

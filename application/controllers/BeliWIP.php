@@ -69,7 +69,7 @@ class BeliWIP extends CI_Controller{
 
     function save(){
         $user_id   = $this->session->userdata('user_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
@@ -251,7 +251,7 @@ class BeliWIP extends CI_Controller{
 
     function update(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
@@ -330,7 +330,7 @@ class BeliWIP extends CI_Controller{
 
     function close_po(){
          $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $user_ppn = $this->session->userdata('user_ppn');
         $this->db->trans_start();
         
@@ -425,7 +425,7 @@ class BeliWIP extends CI_Controller{
 
     function save_dtwip(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_ppn =  $this->session->userdata('user_ppn');
 
@@ -526,7 +526,7 @@ class BeliWIP extends CI_Controller{
 
     function update_dtwip(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
@@ -649,7 +649,7 @@ class BeliWIP extends CI_Controller{
 
     function reject(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                 'status'=> 9,
@@ -669,7 +669,7 @@ class BeliWIP extends CI_Controller{
         $po_id = $this->input->post('po_id');
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         $return_data = array();
         $this->load->model('Model_beli_wip');
@@ -801,7 +801,7 @@ class BeliWIP extends CI_Controller{
         $dtwip_id = $this->input->post('id');
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->load->model('Model_beli_wip');
@@ -866,7 +866,7 @@ class BeliWIP extends CI_Controller{
 
     function reject_dtwip(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                 'status'=> 9,
@@ -910,7 +910,7 @@ class BeliWIP extends CI_Controller{
 
     function save_voucher(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $nilai_po  = str_replace(',', '', $this->input->post('nilai_po'));
         $nilai_dp  = str_replace(',', '', $this->input->post('nilai_dp'));
@@ -959,7 +959,7 @@ class BeliWIP extends CI_Controller{
     function save_voucher_pembayaran(){
         $ppn = $this->session->userdata('user_ppn');
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
         $nilai_po  = str_replace(',', '', $this->input->post('nilai_po'));

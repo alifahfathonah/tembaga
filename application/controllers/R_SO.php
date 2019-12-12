@@ -66,7 +66,7 @@ class R_SO extends CI_Controller{
 
     function save_so(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_code = date('Ym', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
@@ -297,7 +297,7 @@ class R_SO extends CI_Controller{
 
     function save_detail_so(){
         $return_data = array();
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $user_id  = $this->session->userdata('user_id');
 
         if($this->db->insert('r_t_so_detail', array(
@@ -318,7 +318,7 @@ class R_SO extends CI_Controller{
 
     function update_detail_so(){
         $return_data = array();
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $user_id  = $this->session->userdata('user_id');
         
         $this->db->where('id', $this->input->post('detail_id'));
@@ -339,7 +339,7 @@ class R_SO extends CI_Controller{
 
     function update_so(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_po = date('Y-m-d', strtotime($this->input->post('tanggal_po')));
         

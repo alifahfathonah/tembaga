@@ -119,7 +119,7 @@ class VoucherCost extends CI_Controller{
     // function save(){
     //     $user_id  = $this->session->userdata('user_id');
     //     $user_ppn = $this->session->userdata('user_ppn');
-    //     $tanggal  = date('Y-m-d h:m:s');
+    //     $tanggal  = date('Y-m-d H:i:s');
     //     $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
     //     $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
         
@@ -283,7 +283,7 @@ class VoucherCost extends CI_Controller{
     function save_kh(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
 
@@ -382,7 +382,7 @@ class VoucherCost extends CI_Controller{
     function save(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
 
@@ -660,7 +660,7 @@ class VoucherCost extends CI_Controller{
     function save_uk(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_code = date('Y', strtotime($this->input->post('tanggal')));
 
@@ -860,7 +860,7 @@ class VoucherCost extends CI_Controller{
     function update_uk(){
         $user_id  = $this->session->userdata('user_id');
         $user_ppn = $this->session->userdata('user_ppn');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();

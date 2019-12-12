@@ -62,7 +62,7 @@ class BeliRongsok extends CI_Controller{
     
     function save(){
         $user_id   = $this->session->userdata('user_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
         
@@ -116,7 +116,7 @@ class BeliRongsok extends CI_Controller{
     
     function update(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
@@ -377,7 +377,7 @@ class BeliRongsok extends CI_Controller{
     
     function save_voucher(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
@@ -444,7 +444,7 @@ class BeliRongsok extends CI_Controller{
     
     function save_dtr(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
@@ -582,7 +582,7 @@ class BeliRongsok extends CI_Controller{
         $dtr_id = $this->input->post('dtr_id');
         $po_id = $this->input->post('po_id');
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         $return_data = array();
         
@@ -730,7 +730,7 @@ class BeliRongsok extends CI_Controller{
 
     function reject(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                 'status'=> 9,
@@ -747,7 +747,7 @@ class BeliRongsok extends CI_Controller{
     
     function reject_ttr(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                 'ttr_status'=> 9,
@@ -820,7 +820,7 @@ class BeliRongsok extends CI_Controller{
     
     function update_dtr(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $this->db->trans_start();
         $this->db->where('id', $this->input->post('id'));
@@ -877,7 +877,7 @@ class BeliRongsok extends CI_Controller{
     
     function save_ttr(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
@@ -996,7 +996,7 @@ class BeliRongsok extends CI_Controller{
     
     function save_voucher_pelunasan(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
@@ -1046,7 +1046,7 @@ class BeliRongsok extends CI_Controller{
     function close_po(){
         $id = $this->input->post('id');
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $return_data = array();
         $this->db->where('id', $id);

@@ -119,7 +119,7 @@ class Finance extends CI_Controller{
 
     function save(){
         $user_id   = $this->session->userdata('user_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_um = date('Y', strtotime($this->input->post('tanggal')));
         $tgl_cek   = date('Y-m-d', strtotime($this->input->post('tanggal_cek')));
@@ -331,7 +331,7 @@ class Finance extends CI_Controller{
 
     function approve_um(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         $id = $this->input->post('id');
         
@@ -360,7 +360,7 @@ class Finance extends CI_Controller{
         $user_ppn = $this->session->userdata('user_ppn');
         $id = $this->input->post('header_id');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal_baru')));
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $jenis = $this->input->post('jenis1');
 
         $this->db->trans_start();
@@ -460,7 +460,7 @@ class Finance extends CI_Controller{
 
     function reject_um(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         $id = $this->input->post('header_id');
         
@@ -625,7 +625,7 @@ class Finance extends CI_Controller{
 
     function save_pembayaran(){
         $user_id   = $this->session->userdata('user_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_code = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
@@ -742,7 +742,7 @@ class Finance extends CI_Controller{
         $user_id   = $this->session->userdata('user_id');
         $return_data = array();
         $tgl_input = date("Y-m-d");
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         
         $data = array(
             'pembayaran_id'=>$this->input->post('id'),
@@ -763,7 +763,7 @@ class Finance extends CI_Controller{
     function delete_detail_pembayaran(){
         $id = $this->input->post('id');
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $return_data = array();
         $data = array(
                 'pembayaran_id'=>0,
@@ -904,7 +904,7 @@ class Finance extends CI_Controller{
     function delete_detail_um(){
         $id = $this->input->post('id');
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $return_data = array();
 
         $this->db->where('id', $id);
@@ -994,7 +994,7 @@ class Finance extends CI_Controller{
     function delete_detail_uk(){
         $id = $this->input->post('id');
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $return_data = array();
         $this->db->trans_start();
         $data = array(
@@ -1068,7 +1068,7 @@ class Finance extends CI_Controller{
     function approveagain(){
         $return_data = array();
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $data = array(
@@ -1092,7 +1092,7 @@ class Finance extends CI_Controller{
     function save_pmb(){
         $return_data = array();
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
@@ -1119,7 +1119,7 @@ class Finance extends CI_Controller{
     function delete_pmb(){
         $return_data = array();
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->where('id', $this->uri->segment(3));
@@ -1210,7 +1210,7 @@ class Finance extends CI_Controller{
     function approve_pmb(){
         $user_id = $this->session->userdata('user_id');
         $tanggal = date('Y-m-d');
-        $tanggal_input = date('Y-m-d h:m:s');
+        $tanggal_input = date('Y-m-d H:i:s');
 
         $this->db->trans_start();
         
@@ -1276,7 +1276,7 @@ class Finance extends CI_Controller{
 
     function reject_pmb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $id = $this->input->post('header_id');
 
         $this->db->where('id',$id);
@@ -1292,7 +1292,7 @@ class Finance extends CI_Controller{
 
     function reject_all_pmb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $id = $this->input->post('header_id');
 
         $this->load->model('Model_finance');
@@ -1463,7 +1463,7 @@ class Finance extends CI_Controller{
 
     function save_invoice(){
         $user_id   = $this->session->userdata('user_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_inv = date('Ym', strtotime($this->input->post('tanggal')));
         $ppn       = $this->session->userdata('user_ppn');
@@ -1689,7 +1689,7 @@ class Finance extends CI_Controller{
         $return_data = array();
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_jatuh_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jatuh_tempo')));
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $total = $this->input->post('total');
         $diskon = str_replace(',', '', $this->input->post('diskon'));
         $cost = str_replace(',', '', $this->input->post('cost'));
@@ -1841,7 +1841,7 @@ class Finance extends CI_Controller{
     function add_matching(){
         $user_id = $this->session->userdata('user_id');
         $tanggal = date('Y-m-d');
-        $tanggal_input = date('Y-m-d h:m:s');
+        $tanggal_input = date('Y-m-d H:i:s');
 
         $this->db->trans_start();
         
@@ -1951,7 +1951,7 @@ class Finance extends CI_Controller{
 
     function save_match(){
         $user_id   = $this->session->userdata('user_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $ppn       = $this->session->userdata('user_ppn');
 
@@ -1985,7 +1985,7 @@ class Finance extends CI_Controller{
 
     function save_matching(){
         $user_id   = $this->session->userdata('user_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
@@ -2195,7 +2195,7 @@ class Finance extends CI_Controller{
     function add_instant_um_match(){
         $user_id   = $this->session->userdata('user_id');
         $return_data = array();
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         
         $this->db->trans_start();
 
@@ -2258,7 +2258,7 @@ class Finance extends CI_Controller{
     function save_potongan_match(){
         $user_id   = $this->session->userdata('user_id');
         $return_data = array();
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         
         $this->db->trans_start();
         $data = array(
@@ -2306,7 +2306,7 @@ class Finance extends CI_Controller{
     function add_inv_match(){
         $user_id   = $this->session->userdata('user_id');
         $return_data = array();
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $type = $this->input->post('inv_type');
         
         $this->db->trans_start();
@@ -2365,7 +2365,7 @@ class Finance extends CI_Controller{
     function save_inv_match(){
         $user_id   = $this->session->userdata('user_id');
         $return_data = array();
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         
         $this->db->trans_start();
 
@@ -2555,7 +2555,7 @@ class Finance extends CI_Controller{
     function del_um_match(){
         $user_id   = $this->session->userdata('user_id');
         $return_data = array();
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         
         $this->db->trans_start();
 
@@ -2715,7 +2715,7 @@ class Finance extends CI_Controller{
     function save_kas(){
         $user_id   = $this->session->userdata('user_id');
         $user_ppn  = $this->session->userdata('user_ppn');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
@@ -2839,7 +2839,7 @@ class Finance extends CI_Controller{
     function save_slip_setoran(){
         $user_id   = $this->session->userdata('user_id');
         $user_ppn  = $this->session->userdata('user_ppn');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();

@@ -42,7 +42,7 @@ class BeliSparePart extends CI_Controller{
     
     function save(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
 
         $tgl_pengajuan = date('Y-m-d', strtotime($this->input->post('tgl_pengajuan')));
         if($this->input->post('jenis_kebutuhan')==0){
@@ -114,7 +114,7 @@ class BeliSparePart extends CI_Controller{
     
     function update(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $tgl_pengajuan = date('Y-m-d', strtotime($this->input->post('tgl_pengajuan')));
         if($this->input->post('jenis_kebutuhan')==0){
@@ -294,7 +294,7 @@ class BeliSparePart extends CI_Controller{
     
     function approve(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                 'status'=> 1,
@@ -311,7 +311,7 @@ class BeliSparePart extends CI_Controller{
     
     function reject(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $data = array(
                 'status'=> 9,
@@ -362,7 +362,7 @@ class BeliSparePart extends CI_Controller{
     
     function save_po(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $user_ppn  = $this->session->userdata('user_ppn');
 
@@ -488,7 +488,7 @@ class BeliSparePart extends CI_Controller{
     function close_po(){
         $id = $this->input->post('id');
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         
         $return_data = array();
         $this->db->where('id', $id);
@@ -538,7 +538,7 @@ class BeliSparePart extends CI_Controller{
     
     function save_lpb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
 
         $this->db->trans_start();
@@ -674,7 +674,7 @@ class BeliSparePart extends CI_Controller{
     
     function save_voucher_pembayaran(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $nilai_po  = str_replace('.', '', $this->input->post('nilai_po'));
         $jumlah_dibayar  = str_replace('.', '', $this->input->post('jumlah_dibayar'));
@@ -775,7 +775,7 @@ class BeliSparePart extends CI_Controller{
 
     function save_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->load->model('Model_m_numberings');
@@ -918,7 +918,7 @@ class BeliSparePart extends CI_Controller{
 
     function update_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');        
+        $tanggal  = date('Y-m-d H:i:s');        
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $data = array(
@@ -989,7 +989,7 @@ class BeliSparePart extends CI_Controller{
 
     function save_detail_spb_sparepart_keluar(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $id= $this->input->post('t_spb_sparepart_id');
         $inventory_id = $this->input->post('jenis_inventory_id');
         $qty = $this->input->post('qty');
@@ -1019,7 +1019,7 @@ class BeliSparePart extends CI_Controller{
     function delete_spb_sparepart_keluar(){
         $id = $this->input->post('id');
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $return_data = array();
         
         $this->db->where('id', $id);
@@ -1044,7 +1044,7 @@ class BeliSparePart extends CI_Controller{
 
     function approve_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d');
         $id = $this->input->post('id');
         

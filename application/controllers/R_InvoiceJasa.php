@@ -66,7 +66,7 @@ class R_InvoiceJasa extends CI_Controller{
 
     function save(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));       
         $tgl_jth_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jth_tempo')));    
         $tgl_inv = date('Ym', strtotime($this->input->post('tanggal')));
@@ -208,7 +208,7 @@ class R_InvoiceJasa extends CI_Controller{
 
     function update(){
         $user_id   = $this->session->userdata('user_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_jth_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jth_tempo')));
         $diskon = str_replace(',', '', $this->input->post('diskon'));
@@ -311,7 +311,7 @@ class R_InvoiceJasa extends CI_Controller{
     function delete_invoice_jasa(){
         $user_id  = $this->session->userdata('user_id');
         $id = $this->uri->segment(3);
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
 
         // $this->load->model('Model_m_numberings');
         // $code = $this->Model_m_numberings->getNumbering('INV-KMP', $tgl_input);
@@ -389,7 +389,7 @@ class R_InvoiceJasa extends CI_Controller{
     function save_inv_cust(){
         $user_id  = $this->session->userdata('user_id');
         $reff_cv   = $this->session->userdata('cv_id');
-        $tanggal  = date('Y-m-d h:m:s');
+        $tanggal  = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));    
         $tgl_jth_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jth_tempo')));        
         
@@ -532,7 +532,7 @@ class R_InvoiceJasa extends CI_Controller{
     function update_inv_cust(){
         $user_id   = $this->session->userdata('user_id');
         $reff_cv   = $this->session->userdata('cv_id');
-        $tanggal   = date('Y-m-d h:m:s');
+        $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_jth_tempo = date('Y-m-d', strtotime($this->input->post('tgl_jth_tempo')));
         $nilai_invoice = 0;
