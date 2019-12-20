@@ -293,6 +293,11 @@
                                     Surat Jalan </a>
                                 </li>
                             <?php } ?>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/cek_balance">
+                                    <i class="fa fa-balance-scale"></i>
+                                    Cek Balance </a>
+                                </li>
                             </ul>
                         </li>
                         <li <?php if($module_name=="Tolling") echo 'class="start active open"'; ?>>
@@ -346,11 +351,11 @@
                                         Voucher List
                                     </a>
                                 </li>
-                                <!-- <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Tolling/cek_balance">
-                                    <i class="fa fa-truck"></i>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/cek_balance_po">
+                                    <i class="fa fa-balance-scale"></i>
                                     Cek Balance </a>
-                                </li> -->
+                                </li>
                             </ul>
                         </li>
                     </ul>
@@ -747,12 +752,12 @@
                             </a>
                         </li>
                     <?php } if($group_id==1 || (isset($akses_menu['view_retur']) && $akses_menu['view_retur']==1)){ ?>
-                        <li>
+                        <!-- <li>
                             <a href="<?php echo base_url(); ?>index.php/Retur/fulfilment_list">
                                 <i class="fa fa-cubes"></i>
                                 Retur Fulfilment
                             </a>
-                        </li>
+                        </li> -->
                     <?php } if($group_id==1 || (isset($akses_menu['surat_jalan']) && $akses_menu['surat_jalan']==1)){ ?>
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/Retur/surat_jalan">

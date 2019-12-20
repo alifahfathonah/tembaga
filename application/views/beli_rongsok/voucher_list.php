@@ -16,7 +16,14 @@
         <?php
             if( ($group_id==1)||($hak_akses['voucher_list']==1) ){
         ?>
-        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
+                    <button class="close" data-close="alert"></button>
+                    <span id="msg_sukses"><?php echo $this->session->flashdata('flash_msg'); ?></span>
+                </div>
+            </div>
+        </div>
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">

@@ -285,7 +285,7 @@ function numberWithCommas(x) {
 }
 
 function simpanData(){
-    console.log($('#bank_id').val());
+    // console.log($('#bank_id').val());
     if($.trim($("#no_uang_masuk").val()) == ""){
         $('#message').html("Nomor Uang Masuk harus diisi, tidak boleh kosong!");
         $('.alert-danger').show(); 
@@ -327,8 +327,12 @@ function simpanData(){
             // $('#formku').submit();
         }
     }else{
-        formSubmit();
-        // $('#formku').submit(); 
+        if($.trim($("#bank_id").val()) == 0){
+            $('#message').html("Rekening Tujuan harus diisi, tidak boleh kosong!");
+            $('.alert-danger').show(); 
+        }else{
+            formSubmit();
+        }
     };
 };
 

@@ -44,6 +44,8 @@
                     <th>Tanggal</th>
                     <th>Nominal</th>
                     <th>Bank</th>
+                    <th>Nomor</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -59,7 +61,13 @@
                         <td><?php echo number_format($data->nominal,0,',','.'); ?></td>
                     <?php if(!empty($data->nama_bank)){
                         echo '<td style="background-color: green; color: white;">'.$data->nama_bank.'</td>';
+                        echo '<td style="background-color: green; color: white;">'.$data->nomor.'</td>';
+                        echo '<td>
+                            <a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/Finance/view_um/'.$data->id_um.'" 
+                               style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a></td>';
                     }else{
+                        echo '<td></td>';
+                        echo '<td></td>';
                         echo '<td></td>';
                     }?>
                     </tr>

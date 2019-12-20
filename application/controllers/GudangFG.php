@@ -1014,6 +1014,7 @@ class GudangFG extends CI_Controller{
         $data['content']= "gudang_fg/bpb_list";
         $this->load->model('Model_gudang_fg');
         $data['list_data'] = $this->Model_gudang_fg->bpb_list($user_ppn,$bulan,$tahun)->result();
+        $data['jenis_barang'] = $this->Model_gudang_fg->barang_fg_list()->result();
 
         $this->load->view('layout', $data);
     }
@@ -1148,6 +1149,64 @@ class GudangFG extends CI_Controller{
         }else{
             redirect('index.php/bpb_list');
         }
+    }
+
+    function get_bpb(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_gudang_fg');
+        $bpb= $this->Model_gudang_fg->get_bpb($id)->row_array();
+        
+        header('Content-Type: application/json');
+        echo json_encode($bpb); 
+    }
+
+    function update_jb_bpb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $bpb_id = $this->input->post('id');
+        $jb = $this->input->post('jenis_barang');
+        
+        $this->db->trans_start();
+
+        $this->load->model('Model_gudang_fg');
+        $bpb= $this->Model_gudang_fg->get_bpb($this->input->post('id'))->row_array();
+
+        $this->db->where('id', $bpb['produksi_fg_id']);
+        $this->db->update('produksi_fg', array(
+                        'jenis_barang_id'=> $jb,
+                        'tanggal'=>$tgl_input,
+                        'modified_date'=> $tanggal,
+                        'modified_by'=>$user_id
+        ));
+
+        $this->db->where('id', $bpb['id']);
+        $this->db->update('t_bpb_fg', array(
+                        'jenis_barang_id'=> $jb,
+                        'tanggal'=>$tgl_input,
+                        'modified_at'=> $tanggal,
+                        'modified_by'=>$user_id
+        ));
+
+        $this->db->where('t_bpb_fg_id', $bpb['id']);
+        $this->db->update('t_bpb_fg_detail', array(
+                        'jenis_barang_id'=> $jb
+        ));
+
+        if($bpb['status']==1){
+            $this->db->where('t_bpb_fg_id', $bpb['id']);
+            $this->db->update('t_gudang_fg', array(
+                            'jenis_barang_id'=> $jb
+            ));
+        }
+            
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'BPB sudah disimpan');            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat edit BPB, silahkan coba kembali!');
+            }             
+        
+       redirect('index.php/GudangFG/bpb_list');
     }
 
     function input_ulang_spb(){
@@ -2377,21 +2436,26 @@ class GudangFG extends CI_Controller{
         $group_id    = $this->session->userdata('group_id');
         $user_id = $this->session->userdata('user_id');
         $tanggal  = $this->uri->segment(3);
+        $g  = $this->uri->segment(4);
         $this->load->helper('tanggal_indo');
 
             $tgl_arr = explode('-', $tanggal);
             $bulan = $tgl_arr[1];
             $tahun = $tgl_arr[0];
-            $jb = 'RONGSOK';
 
             $start = $tanggal;
             $end = date("Y-m-t", strtotime($start));
 
             $data['start'] = $start;
             $data['end'] = $end;
+            if($g == 5){
+                $data['g'] = 'FINISH GOOD';
+            }elseif($g == 29){
+                $data['g'] = 'ALUMUNIUM';
+            }
 
         $this->load->model('Model_gudang_fg');
-        $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_fg($bulan,$tahun,$start,$end)->result();
+        $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_fg($bulan,$tahun,$start,$end,$g)->result();
         $this->load->view('gudang_fg/print_laporan_fg', $data);
     }
 
@@ -2581,11 +2645,16 @@ class GudangFG extends CI_Controller{
         $data['start'] = $start;
         $data['end'] = $end;
 
+        $s = explode('/', $start);
         $this->load->model('Model_gudang_fg');
 
         if($_GET['bl']==0){
             if($jb_id == 0){
             $query = $this->Model_gudang_fg->jb_sisa_available($start,$end)->result();
+            // $query = $this->db->query('select i.*, jb.jenis_barang ,jb.kode,jb.uom from inventory i
+            //     left join jenis_barang jb on i.jenis_barang_id = jb.id
+            //      where i.jenis_barang = "FG" and bulan = '.$s[1].' and tahun = '.$s[0])->result();
+            // print_r($query);die();
                 foreach ($query as $key => $v) {
                     if(($v->netto_masuk - $v->netto_keluar)>0){
                         $data['loop'][$key]['stok_before'] = get_object_vars($v);

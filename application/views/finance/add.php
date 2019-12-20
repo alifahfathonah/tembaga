@@ -323,7 +323,12 @@ function simpanData(){
             // $('#formku').submit();
         }
     }else{
-        formSubmit();
+        if($.trim($("#bank_id").val()) == 0){
+            $('#message').html("Rekening Tujuan harus diisi, tidak boleh kosong!");
+            $('.alert-danger').show(); 
+        }else{
+            formSubmit();
+        }
         // $('#formku').submit(); 
     };
 };

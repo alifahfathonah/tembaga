@@ -1137,4 +1137,51 @@ class Model_tolling_titipan extends CI_Model{
         $data = $this->db->query("Select * from spb_detail where spb_id=".$id);
         return $data;
     }
+//LAPORAN BALANCE SO
+    function laporan_bahan_so($id,$ppn){
+        return $this->db->query("Select * From ((Select dtwip.id, dtwip.no_dtwip as nomor, dtwip.tanggal, sum(berat) as netto, so.id as id_so, 
+            so.no_sales_order
+                From dtwip_detail dd
+                    Left Join dtwip on dd.dtwip_id = dtwip.id
+                    left join sales_order so on so.id = dtwip.so_id
+                Where dtwip.customer_id = ".$id." and dtwip.so_id > 0 and so.flag_sj = 0 and so.flag_ppn = ".$ppn."
+                group by dd.dtwip_id)
+                UNION ALL
+                (Select dtr.id, dtr.no_dtr as nomor, dtr.tanggal, sum(netto) as netto, so.id as id_so, so.no_sales_order
+                From dtr_detail dtrd
+                    Left Join dtr On (dtrd.dtr_id = dtr.id) 
+                    left join sales_order so on so.id = dtr.so_id
+                Where dtr.customer_id=".$id." and dtr.so_id > 0 and so.flag_sj = 0 and so.flag_ppn = ".$ppn."
+                group by dtrd.dtr_id)) as a order by tanggal");
+    }
+
+    function laporan_kirim_so($id,$ppn){
+        $data = $this->db->query("select tsj.no_surat_jalan as nomor, tsj.tanggal, sum(tsjd.netto) as netto, so.no_sales_order from t_surat_jalan_detail tsjd
+            left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
+            left join sales_order so on tsj.sales_order_id = so.id
+            where so.m_customer_id = ".$id." and so.flag_tolling > 0 and so.flag_sj = 0 and so.flag_ppn = ".$ppn."
+            group by tsj.id
+        ");
+        return $data;
+    }
+
+//LAPORAN BALANCE PO
+    function laporan_terima($id,$ppn){
+        return $this->db->query("Select po.no_po, dtt.id, dtt.no_dtt as nomor, dtt.tanggal, sum(netto) as netto
+                From dtt_detail dd
+                    Left Join dtt on dd.dtt_id = dtt.id
+                    left join po on dtt.po_id = po.id
+                Where po.supplier_id =".$id." and po.flag_tolling > 0 and po.status not in (1,3,4) and po.flag_ppn = ".$ppn."
+                group by dtt.id");
+    }
+
+    function laporan_kirim_bahan($id,$ppn){
+        $data = $this->db->query("select po.no_po, tsj.no_surat_jalan as nomor, tsj.tanggal, sum(tsjd.netto) as netto from t_surat_jalan_detail tsjd
+            left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
+            left join po on tsj.po_id = po.id
+        where po.supplier_id =".$id." and po.flag_tolling > 0 and po.status not in (1,3,4) and po.flag_ppn = ".$ppn."
+            group by tsj.id
+        ");
+        return $data;
+    }
 }

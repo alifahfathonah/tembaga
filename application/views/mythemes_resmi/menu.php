@@ -211,6 +211,11 @@
                                 <i class="fa fa-money"></i>
                                 Sync SO </a>
                             </li>
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/Sinkronisasi/um_sync">
+                                <i class="fa fa-money"></i>
+                                Sync Uang Masuk </a>
+                            </li>
                             <!-- <li>
                                 <a href="<?php echo base_url(); ?>index.php/R_SuratJalan/fg">
                                 <i class="fa fa-file-word-o"></i>

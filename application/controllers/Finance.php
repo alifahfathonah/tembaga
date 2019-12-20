@@ -1176,6 +1176,9 @@ class Finance extends CI_Controller{
             }else{
             $data['detailVC'] = $this->Model_finance->load_detail_vc($id)->result();
             }
+            if($data['header']['status']==1){
+                $data['cek_slip'] = $this->Model_finance->get_slip_setoran($id)->row_array();
+            }
             $data['detailUM'] = $this->Model_finance->load_detail_um($id)->result();
             $data['detailUK'] = $this->Model_finance->load_detail_uk($id)->result();
 
@@ -1324,6 +1327,62 @@ class Finance extends CI_Controller{
         
         $this->session->set_flashdata('flash_msg', 'Semua Data Pembayaran berhasil direject');
         redirect('index.php/Finance/pembayaran');
+    }
+
+    function open_pmb(){
+        $user_id = $this->session->userdata('user_id');
+        $tanggal = date('Y-m-d');
+        $tanggal_input = date('Y-m-d H:i:s');
+
+        $this->db->trans_start();
+        
+        $id = $this->input->post('id');
+        $this->load->model('Model_finance');
+        // $loop_vc = $this->Model_finance->load_detail($id)->result();
+        $loop_um = $this->Model_finance->load_detail_um($id)->result();
+
+        $this->db->where(array('id_pembayaran'=>$id,'voucher_id>'=>0));
+        $this->db->delete('f_pembayaran_detail');
+        // echo $this->db->trans_status(); die();
+        //Update Status UM sudah Cair
+        foreach ($loop_um as $row) {
+            $data = array(
+                'status'=>0,
+                'tgl_cair'=>'0000-00-00',
+                'modified_at'=>$tanggal_input,
+                'modified_by'=>$user_id
+            );
+            $this->db->where('id', $row->um_id);
+            $this->db->update('f_uang_masuk', $data);   
+        }
+
+        //Update Status Pembayaran jadi Approve
+        $this->db->where('id',$id);
+        $this->db->update('f_pembayaran', array(
+            'status'=>0,
+            'modified_at'=>$tanggal,
+            'modified_by'=>$user_id
+        ));
+
+        //Buat Slip Setoran
+        if($this->input->post('nominal_slip')!=0){
+            $this->db->where('id_pembayaran', $id);
+            $this->db->delete('f_slip_setoran');
+        }
+
+        // Update Status Voucher
+        $this->db->where('pembayaran_id', $id);
+        $this->db->update('voucher', array(
+            'status' => 0
+        ));
+            
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'Pembayaran sudah di-approve. Detail Pembayaran sudah disimpan');            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }             
+        
+       redirect('index.php/Finance/matching_pmb/'.$id);
     }
 
     function invoice(){
@@ -2094,13 +2153,13 @@ class Finance extends CI_Controller{
             $data['details'] = $this->Model_finance->load_invoice_print_um_match($idm)->result();
             $row = $this->Model_finance->load_invoice_print_um_match($idm)->num_rows();
 
-            if($row == 0){
+            // if($row == 0){
                 $this->load->view('finance/print_um_only', $data);
-            }elseif($row == 1){
-                $this->load->view('finance/print_um_match_dp', $data);
-            }else{
-                $this->load->view('finance/print_um_match', $data);
-            }
+            // }elseif($row == 1){
+            //     $this->load->view('finance/print_um_match_dp', $data);
+            // }else{
+            //     $this->load->view('finance/print_um_match', $data);
+            // }
         }else{
             redirect('index.php'); 
         }
@@ -2944,23 +3003,23 @@ class Finance extends CI_Controller{
     }
 
     function print_laporan_penjualan(){
-            $module_name = $this->uri->segment(1);
-            $ppn = $this->session->userdata('user_ppn');
-            $this->load->helper('tanggal_indo');
-            $start = date('Y-m-d', strtotime($_GET['ts']));
-            $end = date('Y-m-d', strtotime($_GET['te']));
+        $module_name = $this->uri->segment(1);
+        $ppn = $this->session->userdata('user_ppn');
+        $this->load->helper('tanggal_indo');
+        $start = date('Y-m-d', strtotime($_GET['ts']));
+        $end = date('Y-m-d', strtotime($_GET['te']));
 
-            $group_id    = $this->session->userdata('group_id');        
-            if($group_id != 1){
-                $this->load->model('Model_modules');
-                $roles = $this->Model_modules->get_akses($module_name, $group_id);
-                $data['hak_akses'] = $roles;
-            }
-            $data['group_id']  = $group_id;
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
 
-            $this->load->model('Model_finance');
-            $data['detailLaporan'] = $this->Model_finance->print_laporan_penjualan($start,$end,$ppn)->result();
-            $this->load->view('finance/print_laporan_piutang', $data);
+        $this->load->model('Model_finance');
+        $data['detailLaporan'] = $this->Model_finance->print_laporan_penjualan($start,$end,$ppn)->result();
+        $this->load->view('finance/print_laporan_piutang', $data);
     }
 
     function print_laporan_sj(){
@@ -2990,7 +3049,7 @@ class Finance extends CI_Controller{
             $this->load->view('finance/print_laporan_sj', $data);
         }elseif($j==1){
             $data['detailLaporan'] = $this->Model_finance->print_flag_sj($start,$end,$l)->result();
-            $this->load->view('sales_order/print_laporan_so_by_sj', $data);
+            $this->load->view('finance/print_laporan_sj_bf', $data);
         }
     }
 

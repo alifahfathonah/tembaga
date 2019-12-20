@@ -27,7 +27,7 @@
                                 </div>
                             </div>
                         </div>
-                        <form class="eventInsForm" method="post" target="_self" name="formku" 
+                        <form class="eventInsForm" method="post" target="_self" name="formku"
                               id="formku">
                             <div class="row">
                                 <div class="col-md-5">
@@ -77,6 +77,37 @@
                                         <option value="FG">Finish Good</option>
                                         <option value="WIP">WIP</option>
                                         <option value="ROLLING">ROLLING</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Group <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <select id="group" class="form-control myline" placeholder="pilih group" name="group" style="margin-bottom:5px">
+                                        <optgroup label="WIP">
+                                            <option value="4">WIP TEMBAGA</option>
+                                            <option value="28">WIP ALUMINIUM</option>
+                                        </optgroup>
+                                        <optgroup label="FINISH GOOD">
+                                            <option value="5">FINISH GOOD</option>
+                                            <option value="29">FINISH GOOD ALUMINIUM</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Milik <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <select id="owner" class="form-control myline" placeholder="pilih owner" name="owner" style="margin-bottom:5px">
+                                    <?php
+                                        foreach ($list_owner as $row) {
+                                            echo '<option value="'.$row->id.'" >'.$row->nama_owner.'</option>';
+                                        }
+                                    ?>
                                     </select>
                                 </div>
                             </div>
@@ -141,6 +172,7 @@
                     <th>Kategori</th>
                     <th>UOM</th>
                     <th>Ukuran</th>
+                    <th>Milik</th>
                     <th>Keterangan</th>
                     <th>Actions</th>
                 </tr>
@@ -158,6 +190,7 @@
                         <td><?php echo $data->category;?></td>
                         <td><?php echo $data->uom; ?></td>
                         <td><?php echo $data->ukuran; ?></td>
+                        <td><?php echo $data->nama_owner; ?></td>
                         <td><?php echo $data->keterangan; ?></td>
                         <td style="text-align:center"> 
                             <?php
@@ -203,6 +236,9 @@ var dsState;
 function newData(){
     $('#jenis_barang').val('');
     $('#keterangan').val('');
+    $('#uom').val('');
+    $('#kode_barang').val('');
+    $('#ukuran').val('');
     $('#id').val('');
     dsState = "Input";
     
@@ -260,6 +296,8 @@ function editData(id){
             $('#uom').val(result['uom']);
             $('#ukuran').val(result['ukuran']);
             $('#kode_barang').val(result['kode']);
+            $('#group').val(result['group']);
+            $('#owner').val(result['owner']);
             $('#id').val(result['id']);
             
             $("#myModal").find('.modal-title').text('Edit Jenis Barang');

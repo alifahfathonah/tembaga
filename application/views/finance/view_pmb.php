@@ -296,34 +296,27 @@
             <input type="hidden" id="total_voucher" value="<?=$total_vc;?>">
             <input type="hidden" id="total_um" value="<?=$total_um;?>">
             <div class="row">&nbsp;</div>
-            <?php if($header['status'] == 0){ ?>
             <div class="row">
                 <div class="col-md-12">
+            <?php if($header['status'] == 0){ ?>
                     <a href="javascript:;" class="btn green" onclick="jalankan();"> 
                         <i class="fa fa-check"></i> Jalankan </a>
-                    <a href="<?php echo base_url('index.php/Finance/pembayaran'); ?>" class="btn blue-hoki">
-                        <i class="fa fa-angle-left"></i> Kembali </a>
-                </div>    
-            </div>
             <?php } else if($header['status'] == 2) { ?>
-            <div class="row">
-                <div class="col-md-12">
                     <a href="javascript:;" class="btn green" onclick="approveData();"> 
                         <i class="fa fa-check"></i> Approve </a>
                     <a href="javascript:;" class="btn red" onclick="showRejectBox();">
                         <i class="fa fa-ban"></i> Reject </a>
+            <?php } else if($header['status'] == 1) { 
+                if($cek_slip['id_kas']==0){?>
+                    <a href="javascript:;" class="btn blue" onclick="open_pembayaran();">
+                        <i class="fa fa-refresh"></i> Open Pembayaran </a>
+            <?php 
+                }
+            } ?>
                     <a href="<?php echo base_url('index.php/Finance/pembayaran'); ?>" class="btn blue-hoki">
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
-            <?php } else { ?>
-            <div class="row">
-                <div class="col-md-12">
-                    <a href="<?php echo base_url('index.php/Finance/pembayaran'); ?>" class="btn blue-hoki">
-                        <i class="fa fa-angle-left"></i> Kembali </a>
-                </div>    
-            </div>
-            <?php } ?>
         </form>
         
         <?php
@@ -364,6 +357,14 @@ function approveData(){
     var r=confirm("Anda yakin meng-approve permintaan barang ini?");
     if (r==true){
         $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/approve_pmb");    
+        $('#formku').submit(); 
+    }
+}
+
+function open_pembayaran(){
+    var r=confirm("Anda yakin mem- buka kembali pembayaran ini?");
+    if (r==true){
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/open_pmb");    
         $('#formku').submit(); 
     }
 }

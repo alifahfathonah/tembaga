@@ -398,6 +398,15 @@ class Retur extends CI_Controller{
         header('Content-Type: application/json');
         echo json_encode($barang); 
     }
+
+    function get_retur_jb(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_retur');
+        $barang= $this->Model_retur->get_retur_jb($id)->row_array();
+        
+        header('Content-Type: application/json');
+        echo json_encode($barang); 
+    }
     
     function save_detail(){
         $return_data = array();
@@ -1461,6 +1470,54 @@ class Retur extends CI_Controller{
         redirect('index.php/Retur');
     }
 
+     function close_retur(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d');
+        $spb_id = $this->input->post('spb_id');
+        
+        $this->db->trans_start();
+
+        if($this->input->post('jenis_barang')=='FG'){
+            #Update status SPB
+            $this->db->where('id', $spb_id);
+            $this->db->update('t_spb_fg', array(
+                            'status'=> 1,
+                            'modified_at'=> $tanggal,
+                            'modified_by'=>$user_id
+            ));
+        }elseif ($this->input->post('jenis_barang')=='WIP'){
+            #Update status SPB
+            $this->db->where('id', $spb_id);
+            $this->db->update('t_spb_wip', array(
+                            'status'=> 1,
+                            'modified_date'=> $tanggal,
+                            'modified_by'=>$user_id
+            ));
+        }elseif ($this->input->post('jenis_barang')=='RONGSOK'){
+            #Update status SPB
+            $this->db->where('id', $spb_id);
+            $this->db->update('spb', array(
+                            'status'=> 1,
+                            'approved'=> $tanggal,
+                            'approved_by'=>$user_id
+            ));
+        }
+
+        $this->db->where('id',$this->input->post('id'));
+        $this->db->update('retur', array(
+            'flag_taken'=>1
+        ));
+            
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'SPB sudah disimpan');            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            }             
+        
+       redirect('index.php/Retur/fulfilment_list');
+    }
+
     function surat_jalan(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
@@ -1589,20 +1646,72 @@ class Retur extends CI_Controller{
 
     function save_fulfilment(){
         $module_name = $this->uri->segment(1);
-        // $id = $this->uri->segment(3);
-        // if($id){
-        //     $group_id    = $this->session->userdata('group_id');        
-        //     if($group_id != 1){
-        //         $this->load->model('Model_modules');
-        //         $roles = $this->Model_modules->get_akses($module_name, $group_id);
-        //         $data['hak_akses'] = $roles;
-        //     }
-               
-        // }else{
-        //     redirect('index.php/Retur');
-        // }
-            $retur_id = $this->input->post('retur_id');
-            redirect('index.php/Retur/edit_fulfilment/'.$retur_id);
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tanggal = date("Y-m-d");
+        $user_id = $this->session->userdata('user_id');
+        $jb = $this->input->post('jenis_barang');
+
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+
+            $this->db->trans_start();
+            $this->load->model('Model_m_numberings');
+            if($jb=='FG'){
+                $code = $this->Model_m_numberings->getNumbering('SPB-FG', $tgl_input);
+                $data = array(
+                    'no_spb'=> $code,
+                    'tanggal'=> $tgl_input,
+                    'jenis_spb'=> 7,//JENIS SPB RETUR
+                    'keterangan'=>'RETUR FINISH GOOD No: '.$this->input->post('no_retur'),
+                    'created_at'=> $tanggal,
+                    'created_by'=> $user_id
+                );
+
+                $this->db->insert('t_spb_fg', $data);
+                $spb_id = $this->db->insert_id();
+            }elseif($jb=='WIP'){
+                $code = $this->Model_m_numberings->getNumbering('SPB-WIP', $tgl_input);
+                $data = array(
+                    'no_spb_wip'=> $code,
+                    'tanggal'=> $tgl_input,
+                    'flag_produksi'=> 7,//JENIS SPB RETUR
+                    'keterangan'=>'RETUR WIP No: '.$this->input->post('no_retur'),
+                    'created'=> $tanggal,
+                    'created_by'=> $user_id
+                );
+
+                $this->db->insert('t_spb_wip', $data);
+                $spb_id = $this->db->insert_id();
+            }elseif($jb=='RONGSOK'){
+                $code = $this->Model_m_numberings->getNumbering('SPB-RSK', $tgl_input);
+                $data = array(
+                    'no_spb'=> $code,
+                    'tanggal'=> $tgl_input,
+                    'jenis_spb'=> 7,//JENIS SPB RETUR
+                    'remarks'=>'RETUR RONGSOK No: '.$this->input->post('no_retur'),
+                    'created'=> $tanggal,
+                    'created_by'=> $user_id
+                );
+
+                $this->db->insert('spb', $data);
+                $spb_id = $this->db->insert_id();
+            }
+
+                $this->db->where('id', $this->input->post('retur_id'));
+                $this->db->update('retur', array(
+                    'spb_id' => $spb_id
+                ));
+
+            if($this->db->trans_complete()){
+                $retur_id = $this->input->post('retur_id');
+                redirect('index.php/Retur/edit_fulfilment/'.$retur_id);
+            }else{
+                redirect('index.php/Retur');
+            }
     }
 
     function edit_fulfilment(){
@@ -1618,7 +1727,7 @@ class Retur extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $this->load->model('Model_retur');
-            $data['header'] = $this->Model_retur->show_header_retur($id)->row_array();  
+            $data['header'] = $this->Model_retur->show_header_retur_fulfilment($id)->row_array();  
             if($data['header']['jenis_barang']=='RONGSOK'){
                 $data['content']= "retur/edit_fulfilment_rsk";
                 $data['myDetail'] = $this->Model_retur->load_detail_rsk($id)->result();
@@ -1654,20 +1763,21 @@ class Retur extends CI_Controller{
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
             $tabel .= '<input type="hidden" id="id_jenis_barang" value="'.$row->jenis_barang_id.'" />';
+            $tabel .= '<td>'.date('d-m-Y', strtotime($row->tanggal)).'</td>';
             $tabel .= '<td>'.$row->jenis_barang.'</td>';
             $tabel .= '<td>'.$row->netto.'</td>';
             $tabel .= '<td>'.$row->keterangan.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . 'red" onclick="hapusDetail('.$row->id.','.$row->spb_detail_id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';
             $no++;
         }
         
         $tabel .= '<tr>';
-        $tabel .= '<td style="text-align: right;" colspan="2">Total</td>';
+        $tabel .= '<td style="text-align: right;" colspan="3">Total</td>';
         $tabel .= '<td name="sum_netto" id="sum_netto">'.number_format($netto,2,',','.').'</td>';
-        $tabel .= '<td></td>';
+        $tabel .= '<td colspan="2"></td>';
         $tabel .= '</tr>';       
         
         header('Content-Type: application/json');
@@ -1728,6 +1838,7 @@ class Retur extends CI_Controller{
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
             $tabel .= '<input type="hidden" id="id_jenis_barang" value="'.$row->jenis_barang_id.'" />';
+            $tabel .= '<td>'.date('d-m-Y', strtotime($row->tanggal)).'</td>';
             $tabel .= '<td>'.$row->nama_item.'</td>';
             $tabel .= '<td>'.$row->netto.'</td>';
             $tabel .= '<td>'.$row->keterangan.'</td>';
@@ -1750,10 +1861,46 @@ class Retur extends CI_Controller{
 
     function save_detail_fulfilment(){
         $return_data = array();
-        $tgl_input = date("Y-m-d");
-        
+        $tanggal = date("Y-m-d");
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal_detail')));
+        $spb_id = $this->input->post('id_spb');
+        $jb = $this->input->post('jenis_barang');
+        if($jb == 'FG'){
+            $data_spb_detail = array(
+                'tanggal' => $tgl_input,
+                't_spb_fg_id' => $spb_id,
+                'jenis_barang_id' => $this->input->post('jenis_barang_id'),
+                'uom' => 'KG',
+                'netto' => $this->input->post('netto'),
+                'keterangan' => $this->input->post('line_remarks')
+            );
+            $this->db->insert('t_spb_fg_detail', $data_spb_detail);
+            $insert_id = $this->db->insert_id();
+        }else if($jb == 'WIP'){
+            $data_spb_detail = array(
+                'tanggal' => $tgl_input,
+                't_spb_wip_id' => $spb_id,
+                'jenis_barang_id' => $this->input->post('jenis_barang_id'),
+                'uom' => 'KG',
+                'qty' => $row->qty,
+                'berat' =>  $this->input->post('berat'),
+                'keterangan' =>  $this->input->post('line_remarks')
+            );
+            $this->db->insert('t_spb_wip_detail', $data_spb_detail);
+            $insert_id = $this->db->insert_id();
+        }else if($jb == 'RONGSOK'){
+            $data_spb_detail = array(
+                'spb_id' => $spb_id,
+                'rongsok_id' => $this->input->post('jenis_barang_id'),
+                'qty' => $this->input->post('netto'),
+            );
+            $this->db->insert('spb_detail', $data_spb_detail);
+            $insert_id = $this->db->insert_id();
+        }
+
         if($this->db->insert('retur_fulfilment', array(
             'retur_id'=>$this->input->post('id'),
+            'spb_detail_id'=>$insert_id,
             'tanggal'=>$tgl_input,
             'uom'=>'KG',
             'qty'=>$this->input->post('qty'),
@@ -1772,9 +1919,26 @@ class Retur extends CI_Controller{
 
     function delete_detail_fulfilment(){
         $id = $this->input->post('id');
+        $spb_id = $this->input->post('spb_detail_id');
+        $jb = $this->input->post('jenis_barang');
         $return_data = array();
-        $this->db->where('id', $id);
-        if($this->db->delete('retur_fulfilment')){
+
+        $this->db->trans_start();
+
+        if($jb = 'FG'){
+            $this->db->where('id',$spb_id);
+            $this->db->delete('t_spb_fg_detail');
+        }elseif($jb=='WIP'){
+            $this->db->where('id',$spb_id);
+            $this->db->delete('t_spb_wip_detail');
+        }elseif($jb=='RONGSOK'){
+            $this->db->where('id',$spb_id);
+            $this->db->delete('spb_detail');
+        }
+            $this->db->where('id', $id);
+            $this->db->delete('retur_fulfilment');
+
+        if($this->db->trans_complete()){
             $return_data['message_type']= "sukses";
         }else{
             $return_data['message_type']= "error";
@@ -1787,133 +1951,34 @@ class Retur extends CI_Controller{
     function update_fulfilment(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d H:i:s');
-        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal_spb')));
         $jb = $this->input->post('jenis_barang');
+        $spb = $this->input->post('id_spb');
 
         $this->db->trans_start();
-        $this->load->model('Model_m_numberings');
         if($jb == 'FG'){
-            $code = $this->Model_m_numberings->getNumbering('SPB-FG', $tgl_input); 
-
-            $data = array(
-                'no_spb'=> $code,
-                'tanggal'=> $tgl_input,
-                'jenis_spb'=> 7,//JENIS SPB RETUR
-                'keterangan'=>'RETUR FINISH GOOD No: '.$this->input->post('no_retur'),
-                'created_at'=> $tanggal,
-                'created_by'=> $user_id
-            );
-
-                $this->db->insert('t_spb_fg', $data);
-                $spb_id = $this->db->insert_id();
-
-                $this->db->where('id', $this->input->post('id'));
-                $this->db->update('retur', array(
-                    'spb_id' => $spb_id
-                ));
-
-                $key = $this->db->query("select * from retur_fulfilment where retur_id = ".$this->input->post('id'))->result();
-
-                foreach ($key as $row) {
-                    $data_spb_detail = array(
-                        'tanggal' => date('Y-m-d'),
-                        't_spb_fg_id' => $spb_id,
-                        'jenis_barang_id' => $row->jenis_barang_id,
-                        'uom' => 'KG',
-                        'netto' => $row->netto,
-                        'keterangan' => $row->keterangan
-                    );
-                    $this->db->insert('t_spb_fg_detail', $data_spb_detail);
-                }
-
-
-            if($this->db->trans_complete()){
-                redirect('index.php/GudangFG/spb_list');
-            }else{
-                $this->session->set_flashdata('flash_msg', 'Data SPB gagal disimpan, silahkan dicoba kembali!');
-                redirect('index.php/Retur/edit_fulfilment/'.$this->input->post('id'));  
-            }
-        }else if($jb == 'RONGSOK'){
-
-            $code = $this->Model_m_numberings->getNumbering('SPB-RSK', $tgl_input); 
-            $data = array(
-                'no_spb'=> $code,
-                'tanggal'=> $tgl_input,
-                'jenis_spb'=> 7,//JENIS SPB RETUR
-                'remarks'=>'RETUR RONGSOK No: '.$this->input->post('no_retur'),
-                'created'=> $tanggal,
-                'created_by'=> $user_id
-            );
-
-                $this->db->insert('spb', $data);
-                $spb_id = $this->db->insert_id();
-
-                $this->db->where('id', $this->input->post('id'));
-                $this->db->update('retur', array(
-                    'spb_id' => $spb_id
-                ));
-
-                $key = $this->db->query("select * from retur_fulfilment where retur_id = ".$this->input->post('id'))->result();
-
-                foreach ($key as $row) {
-                    $data_spb_detail = array(
-                        'spb_id' => $spb_id,
-                        'rongsok_id' => $row->jenis_barang_id,
-                        'qty' => $row->netto,
-                    );
-                    $this->db->insert('spb_detail', $data_spb_detail);
-                }
-
-
-            if($this->db->trans_complete()){
-                redirect('index.php/GudangRongsok/spb_list');
-            }else{
-                $this->session->set_flashdata('flash_msg', 'Data SPB gagal disimpan, silahkan dicoba kembali!');
-                redirect('index.php/Retur/edit_fulfilment/'.$this->input->post('id'));  
-            }
-        }else if($jb == 'WIP'){
-            $code = $this->Model_m_numberings->getNumbering('SPB-wIP', $tgl_input); 
-
-            $data = array(
-                'no_spb_wip'=> $code,
-                'flag_produksi'=> 7,//JENIS SPB RETUR
-                'tanggal'=> $tgl_input,
-                'keterangan'=>'RETUR WIP No: '.$this->input->post('no_retur'),
-                'created'=> $tanggal,
-                'created_by'=> $user_id
-            );
-
-                $this->db->insert('t_spb_wip', $data);
-                $spb_id = $this->db->insert_id();
-
-                $this->db->where('id', $this->input->post('id'));
-                $this->db->update('retur', array(
-                    'spb_id' => $spb_id
-                ));
-
-                $key = $this->db->query("select rf.*, jb.uom from retur_fulfilment rf left join jenis_barang jb on jb.id = rf.jenis_barang_id where rf.retur_id = ".$this->input->post('id'))->result();
-
-                foreach ($key as $row) {
-                    $data_spb_detail = array(
-                        'tanggal' => date('Y-m-d'),
-                        't_spb_wip_id' => $spb_id,
-                        'jenis_barang_id' => $row->jenis_barang_id,
-                        'uom' => $row->uom,
-                        'qty' => $row->qty,
-                        'berat' => $row->netto,
-                        'keterangan' => $row->keterangan
-                    );
-                    $this->db->insert('t_spb_wip_detail', $data_spb_detail);
-                }
-
-
-            if($this->db->trans_complete()){
-                redirect('index.php/GudangWIP/spb_list');
-            }else{
-                $this->session->set_flashdata('flash_msg', 'Data SPB gagal disimpan, silahkan dicoba kembali!');
-                redirect('index.php/Retur/edit_fulfilment/'.$this->input->post('id'));  
-            }
+            $this->db->where('id', $spb);
+            $this->db->update('t_spb_fg', array(
+                'tanggal'=>$tgl_input,
+            ));
+        }elseif($jb == 'WIP'){
+            $this->db->where('id', $spb);
+            $this->db->update('t_spb_wip', array(
+                'tanggal'=>$tgl_input,
+            ));
+        }elseif($jb == 'RONGSOK'){
+            $this->db->where('id', $spb);
+            $this->db->update('spb', array(
+                'tanggal'=>$tgl_input,
+            ));
         }
+
+            if($this->db->trans_complete()){
+                redirect('index.php/Retur/fulfilment_list');
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data SPB gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/Retur/edit_fulfilment/'.$this->input->post('id'));  
+            }
     }
 
     function get_jenis_barang(){

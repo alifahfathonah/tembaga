@@ -804,7 +804,13 @@ class Model_gudang_fg extends CI_Model{
         sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
             left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
-            where tgf.jenis_trx = 0 and jb.ukuran <= '0499' and (tbf.produksi_fg_id != 0 or tgf.t_bpb_fg_id = 0) and tgf.keterangan not like '%BARANG PO%' group by tgf.jenis_barang_id, jenis_packing
+            left join dtbj on tbf.dtbj_id > 0 and tbf.dtbj_id = dtbj.id
+            left join dtt on tbf.dtt_id > 0 and tbf.dtt_id = dtt.id
+            where tgf.jenis_trx = 0 and jb.ukuran <= '0499' and 
+                CASE WHEN tbf.dtbj_id > 0 THEN dtbj.po_id = 0 
+                WHEN tbf.dtt_id > 0 THEN dtt.po_id = 0
+                ELSE tbf.retur_id = 0 END 
+                group by tgf.jenis_barang_id, jenis_packing
             order by jb.ukuran, jb.jenis_barang asc");
         return $data;
     }
@@ -822,7 +828,13 @@ class Model_gudang_fg extends CI_Model{
         sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
             left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
-            where tgf.jenis_trx = 0 and jb.ukuran BETWEEN '0500' and '0999' and (tbf.produksi_fg_id != 0 or tgf.t_bpb_fg_id = 0) and tgf.keterangan not like '%BARANG PO%' group by tgf.jenis_barang_id, jenis_packing
+            left join dtbj on tbf.dtbj_id > 0 and tbf.dtbj_id = dtbj.id
+            left join dtt on tbf.dtt_id > 0 and tbf.dtt_id = dtt.id
+            where tgf.jenis_trx = 0 and jb.ukuran BETWEEN '0500' and '0999' and 
+                CASE WHEN tbf.dtbj_id > 0 THEN dtbj.po_id = 0 
+                WHEN tbf.dtt_id > 0 THEN dtt.po_id = 0
+                ELSE tbf.retur_id = 0 END
+              group by tgf.jenis_barang_id, jenis_packing
             order by jb.ukuran, jb.jenis_barang asc");
         return $data;
     }
@@ -841,7 +853,13 @@ class Model_gudang_fg extends CI_Model{
         sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
             left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
-            where tgf.jenis_trx = 0 and jb.ukuran >= '1000' and (tbf.produksi_fg_id != 0 or tgf.t_bpb_fg_id = 0) and tgf.keterangan not like '%BARANG PO%' group by tgf.jenis_barang_id, jenis_packing
+            left join dtbj on tbf.dtbj_id > 0 and tbf.dtbj_id = dtbj.id
+            left join dtt on tbf.dtt_id > 0 and tbf.dtt_id = dtt.id
+            where tgf.jenis_trx = 0 and jb.ukuran >= '1000' and 
+                CASE WHEN tbf.dtbj_id > 0 THEN dtbj.po_id = 0 
+                WHEN tbf.dtt_id > 0 THEN dtt.po_id = 0
+                ELSE tbf.retur_id = 0 END
+              group by tgf.jenis_barang_id, jenis_packing
             order by jb.ukuran, jb.jenis_barang asc");
         return $data;
     }
@@ -897,8 +915,10 @@ class Model_gudang_fg extends CI_Model{
     function stok_fg_beli(){
         return $this->db->query("select sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
             left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+            left join dtbj on tbf.dtbj_id > 0 and tbf.dtbj_id = dtbj.id
+            left join dtt on tbf.dtt_id > 0 and tbf.dtt_id = dtt.id
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-            where tgf.jenis_trx = 0 and tgf.keterangan like '%BARANG%' group by tgf.jenis_barang_id
+            where tgf.jenis_trx = 0 and (dtbj.po_id > 0 or dtt.po_id > 0) group by tgf.jenis_barang_id
             order by jb.ukuran");
     }
 
@@ -962,7 +982,7 @@ class Model_gudang_fg extends CI_Model{
             where d.t_sj_id =".$id);
     }
 
-    function print_laporan_fg($b,$t,$s,$e){
+    function print_laporan_fg($b,$t,$s,$e,$g){
         return $this->db->query("select i.*, jb.jenis_barang,
             (select sum(netto) from t_gudang_fg tgf
                 left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
@@ -1018,7 +1038,11 @@ class Model_gudang_fg extends CI_Model{
                 and sod.jenis_barang_id = i.jenis_barang_id) as fisik
             from inventory i
                 left join jenis_barang jb on i.jenis_barang_id = jb.id
-                where bulan = ".$b." and tahun = ".$t." and i.jenis_barang = 'FG' order by jb.group, jb.jenis_barang");
+                where bulan = ".$b." and tahun = ".$t." and i.jenis_barang = 'FG' and jb.group = ".$g." order by jb.group, jb.jenis_barang");
+    }
+
+    function get_bpb($id){
+        return $this->db->query("select * from t_bpb_fg where id=".$id);
     }
     /*
     cara membuat view stok fg

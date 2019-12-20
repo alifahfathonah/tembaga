@@ -24,6 +24,68 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">&nbsp;</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="eventInsForm" method="post" target="_self" name="formedit" id="formedit"> 
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger display-hide">
+                                        <button class="close" data-close="alert"></button>
+                                        <span id="message">&nbsp;</span>
+                                    </div>
+                                </div>
+                            </div>                           
+                            <div class="row">
+                                <div class="col-md-4">
+                                    No. BPB <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="no_bpb" name="no_bpb" 
+                                        class="form-control myline" style="margin-bottom:5px" readonly>
+
+                                    <input type="hidden" id="id" name="id">
+                                </div>
+                            </div>                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Jenis Barang <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <select  id="jenis_barang" name="jenis_barang" placeholder="Silahkan pilih..."
+                                    class="form-control myline select2me" style="margin-bottom:5px">
+                                        <option value=""></option>
+                                        <?php 
+                                    foreach($jenis_barang as $jb){
+                                    ?>
+                                        <option value="<?=$jb->id;?>"><?='('.$jb->kode.') '.$jb->jenis_barang;?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Tanggal <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="tanggal" name="tanggal" 
+                                        class="form-control input-small myline" style="margin-bottom:5px; float:left;">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">                        
+                        <button type="button" class="btn blue" id="simpandata" onClick="simpandata();">Simpan</button>
+                        <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     <div class="collapse well" id="form_filter" >
         <div class="row">
             <div class="col-md-12">
@@ -113,9 +175,12 @@
                             <?php
                                 if(($group_id==1 || $hak_akses['edit_bpb']==1) && $data->status==0){
                                     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/GudangFG/proses_bpb/'.$data->id.'" 
-                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Tanggapi &nbsp; </a> ';
+                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-book"></i> Tanggapi &nbsp; </a>';
                                 }
-                                
+
+                                if(!empty($data->no_produksi)){
+                                    echo '<a class="btn btn-circle btn-xs blue" style="margin-bottom:4px" href="javascript:;" onclick="editData('.$data->id.')"> <i class="fa fa-pencil"></i> Edit </a>';
+                                }
 
                                 if($group_id==1 || $hak_akses['print_bpb']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangFG/print_bpb/'.$data->id.'"style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
@@ -143,10 +208,44 @@
     </div>
 </div> 
 <script type="text/javascript">
+function editData(id){
+    dsState = "Edit";
+    $.ajax({
+        url: "<?php echo base_url('index.php/GudangFG/get_bpb'); ?>",
+        type: "POST",
+        data : {id: id},
+        success: function (result){
+            $('#id').val(result['id']);
+            $('#no_bpb').val(result['no_bpb_fg']);
+            $('#jenis_barang').select2('val',result['jenis_barang_id']);
+            $('#tanggal').val(result['tanggal']);
+            
+            $("#myModal").find('.modal-title').text('Edit DTR');
+            $("#myModal").modal('show',{backdrop: 'true'});           
+        }
+    });
+}
+
 function searchFilter(){
     var id=$('#tanggal_filter').val();
     window.location = '<?php echo base_url('index.php/GudangFG/bpb_list_filter/');?>'+id;
 }
+
+function simpandata(){
+    if($.trim($("#jenis_barang").val()) == ""){
+        $('#message').html("Jenis Barang harus diisi!");
+        $('.alert-danger').show();
+    }else if($.trim($("#tanggal").val()) == ""){
+        $('#message').html("Tanggal harus diisi!");
+        $('.alert-danger').show();
+    }else{
+        $('#simpandata').text('Please Wait ...').prop("onclick", null).off("click");
+        $('#message').html("");
+        $('.alert-danger').hide();
+        $('#formedit').attr("action", "<?php echo base_url(); ?>index.php/GudangFG/update_jb_bpb");
+        $('#formedit').submit(); 
+    };
+};
 </script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
@@ -154,5 +253,14 @@ function searchFilter(){
 <script>
 $(function(){    
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yy-mm-dd'
+    });
 });
 </script>         

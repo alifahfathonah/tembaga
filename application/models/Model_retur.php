@@ -109,6 +109,18 @@ class Model_retur extends CI_Model{
         return $data;
     }
 
+    function show_header_retur_fulfilment($id){
+        $data = $this->db->query("select r.*, u.realname as penimbang, c.nama_customer, c.pic, c.nama_customer_kh, c.pic_kh, COALESCE(tsf.no_spb, tsw.no_spb_wip, spb.no_spb) as no_spb, COALESCE(tsf.tanggal,tsw.tanggal,spb.tanggal) as tanggal_spb
+            from retur r
+            left join users u on (u.id = r.created_by)
+            left join m_customers c on (c.id = r.customer_id)
+            left join t_spb_fg tsf on r.jenis_barang = 'FG' and r.spb_id = tsf.id
+            left join t_spb_wip tsw on r.jenis_barang = 'WIP' and r.spb_id = tsw.id
+            left join spb on r.jenis_barang = 'RONGSOK' and r.spb_id = spb.id
+            where r.id = ".$id);
+        return $data;
+    }
+
      function show_header_dtr($id){
         $data = $this->db->query("Select dtr.*, 
                     cust.nama_customer, cust.pic,
@@ -235,6 +247,10 @@ class Model_retur extends CI_Model{
     function get_uom($id){
         $data = $this->db->query("select ukuran, uom from jenis_barang where id=".$id);
         return $data;
+    }
+
+    function get_retur_jb($id){
+        return $this->db->query("select * from retur where id=".$id);
     }
 
     function fulfilment_list(){
@@ -452,13 +468,12 @@ class Model_retur extends CI_Model{
 
     function print_laporan_retur($s,$e){
         return $this->db->query("select * from (select r.no_retur, r.tanggal, r.jenis_retur, mc.nama_customer, COALESCE(jb.jenis_barang, rsk.nama_item) as jenis_barang, sum(rd.netto) as netto, r.remarks,
-                COALESCE((select sum(netto) from t_surat_jalan_detail tsjd
-                    left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
-                        where tsj.retur_id = r.id and tsjd.jenis_barang_id = rd.jenis_barang_id and tsj.tanggal < '".$s."' group by tsjd.jenis_barang_id),0) as netto_kirim_b,
-                (CASE WHEN r.jenis_retur = 1 THEN rd.netto ELSE COALESCE((select sum(netto) from t_surat_jalan_detail tsjd
-                    left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
-                        where tsj.retur_id = r.id and tsjd.jenis_barang_id = rd.jenis_barang_id and tsj.tanggal  between '".$s."' and '".$e."'
-                            group by tsjd.jenis_barang_id),0) END) as netto_kirim, COALESCE(fi.tanggal,'".$s."') as tanggal_invoice
+                COALESCE((select sum(rf.netto) from retur_fulfilment rf
+                        where rf.retur_id = r.id and rf.jenis_barang_id = rd.jenis_barang_id and rf.tanggal < '".$s."' group by rf.jenis_barang_id),0) as netto_kirim_b,
+                (CASE WHEN r.jenis_retur = 1 THEN rd.netto ELSE COALESCE((select sum(netto) from retur_fulfilment rf
+                        where rf.retur_id = r.id and rf.jenis_barang_id = rd.jenis_barang_id and rf.tanggal  between '".$s."' and '".$e."'
+                            group by rf.jenis_barang_id),0) END) as netto_kirim, 
+                COALESCE(fi.tanggal,'".$s."') as tanggal_invoice
                     from retur_detail rd
                 left join retur r on rd.retur_id = r.id
                 left join m_customers mc on r.customer_id = mc.id
@@ -467,7 +482,7 @@ class Model_retur extends CI_Model{
                 left join f_invoice fi on r.id = fi.id_retur
                 where r.tanggal <= '".$e."'
                 group by rd.retur_id, jenis_barang_id)as a
-                where CASE WHEN jenis_retur = 1 THEN tanggal_invoice >= '".$s."' ELSE netto >= netto_kirim_b END
+                where CASE WHEN jenis_retur = 1 THEN tanggal_invoice >= '".$s."' ELSE netto > netto_kirim_b END
                 order by nama_customer, tanggal, no_retur");
     }
     /*

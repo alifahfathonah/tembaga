@@ -849,6 +849,8 @@ class VoucherCost extends CI_Controller{
             // $data['list_group_cost'] = $this->Model_voucher_cost->list_group_cost()->result();
             $this->load->model('Model_finance');
             $data['header'] = $this->Model_finance->show_header_voucher_ppn($id)->row_array();
+            $data['customer_list'] = $this->Model_voucher_cost->get_customer()->result();
+            $data['supplier_list'] = $this->Model_voucher_cost->get_supplier()->result();
             $data['list_detail'] = $this->Model_finance->show_detail_voucher_ppn($id)->result();
             $data['bank_list'] = $this->Model_finance->bank_list($ppn)->result();
             $this->load->view('layout', $data);
@@ -868,10 +870,25 @@ class VoucherCost extends CI_Controller{
             $details = $this->input->post('details');
             $total = 0;
             foreach ($details as $v) {
+                if($v['group_cost_id']==1){
+                    $sup=0;
+                    $cust=$v['nm_cost'];
+                    $nm=null;
+                }elseif($v['group_cost_id']==2){
+                    $sup=$v['nm_cost'];
+                    $cust=0;
+                    $nm=null;
+                }elseif($v['group_cost_id']==3){
+                    $sup=0;
+                    $cust=0;
+                    $nm=$v['nm_cost'];
+                }
                 $this->db->where('id', $v['id_detail']);
                 $this->db->update('voucher', array(
                     'tanggal' => $this->input->post('tanggal'),
-                    'nm_cost' => $v['nm_cost'],
+                    'supplier_id'=>$sup,
+                    'customer_id'=>$cust,
+                    'nm_cost' =>$nm,
                     'keterangan' => $v['keterangan'],
                     'amount' => str_replace(',', '', $v['amount'])
                 ));

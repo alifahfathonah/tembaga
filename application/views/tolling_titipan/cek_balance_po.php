@@ -2,13 +2,12 @@
     <div class="col-md-12 alert-warning alert-dismissable">        
         <h5 style="color:navy">
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
-            <i class="fa fa-angle-right"></i> Retur
+            <i class="fa fa-angle-right"></i> Tolling Titipan 
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/Retur/laporan_retur'); ?>">Laporan Retur</a> 
+            <a href="<?php echo base_url('index.php/Tolling/cek_balance'); ?>"> Cek Balance </a> 
         </h5>          
     </div>
 </div>
-
     <div class="row">
         <div class="col-md-12">
             <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
@@ -17,24 +16,28 @@
             </div>
         </div>
     </div>
-
    <div class="col-md-12" style="margin-top: 10px;"> 
-        <h3>Laporan Retur</h3>
+        <h3>Laporan Tolling Supplier</h3>
         <hr class="divider">
         <div class="row">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                           Jenis Laporan <font color="#f00">*</font>
+                           Supplier <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="jenis" name="jenis" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
-                                    <option value="0">Per Nomor Retur</option>
-                                    <option value="1">Per Jenis Barang</option>
-                                </select>
+                            <select id="laporan" name="laporan" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($supplier_list as $row){
+                                        echo '<option value="'.$row->id.'">'.$row->nama_supplier.'</option>';
+                                    }
+                                ?>
+                            </select>
                         </div>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-4">
                             Tanggal Awal <font color="#f00">*</font>
                         </div>
@@ -53,7 +56,7 @@
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
                                 value="<?php echo date('d-m-Y'); ?>">
                         </div>
-                    </div>
+                    </div> -->
                         <div class="row">
                             <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
@@ -66,17 +69,20 @@
     </div>
 <script type="text/javascript">
 function simpanData(){
-    if($.trim($("#tgl_start").val()) == ""){
-        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
+    if($.trim($("#laporan").val()) == ""){
+        $('#message').html("Laporan harus dipilih, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    }else if($.trim($("#tgl_end").val()) == ""){
-        $('#message').html("Silahkan pilih nama supplier!");
-        $('.alert-danger').show();
+    // }else if($.trim($("#tgl_start").val()) == ""){
+    //     $('#message').html("Tanggal Awal harus diisi, tidak boleh kosong!");
+    //     $('.alert-danger').show();
+    // }else if($.trim($("#tgl_end").val()) == ""){
+    //     $('#message').html("Tanggal Akhir harus diisi, tidak boleh kosong!");
+    //     $('.alert-danger').show();
     }else{
-        var j=$('#jenis').val();
-        var s=$('#tgl_start').val();
-        var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/Retur/print_laporan_retur?ts='+s+'&te='+e+'&j='+j,'_blank');
+        var l=$('#laporan').val();
+        // var s=$('#tgl_start').val();
+        // var e=$('#tgl_end').val();
+        window.open('<?php echo base_url();?>index.php/Tolling/print_laporan_tolling_po?l='+l,'_blank');
     };
 };
 </script>

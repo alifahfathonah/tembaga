@@ -279,6 +279,11 @@
                                     Surat Jalan </a>
                                 </li>
                             <?php } ?>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/cek_balance">
+                                    <i class="fa fa-balance-scale"></i>
+                                    Cek Balance </a>
+                                </li>
                             </ul>
                         </li>
                         <li <?php if($module_name=="Tolling") echo 'class="start active open"'; ?>>
@@ -333,11 +338,11 @@
                                     </a>
                                 </li>
                             <?php } ?>
-                                <!-- <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Tolling/cek_balance">
-                                    <i class="fa fa-truck"></i>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/cek_balance_po">
+                                    <i class="fa fa-balance-scale"></i>
                                     Cek Balance </a>
-                                </li> -->
+                                </li>
                             </ul>
                         </li>
                     </ul>

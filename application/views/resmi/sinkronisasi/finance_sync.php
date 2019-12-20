@@ -80,6 +80,27 @@
                     </div>
                 </div>
             </div>
+            <div class="row">                            
+                <div class="col-md-12"> 
+                    <div class="portlet box grey-gallery">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-beer"></i>Sinkronisasi Matching Invoice
+                            </div>
+                            <div class="tools">   
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <p>Klik tombol di bawah ini untuk memulai sinkronisasi.</p>
+                            <form method="post" action="<?php echo base_url('index.php/Sinkronisasi/sync_matching_inv'); ?>" id="formSyncmatching_inv">
+                                <!-- <input type="submit" name="Submit" value="Submit"> -->
+                                <a href="javascript:;" onclick="sync_matching_inv()" id="btnSyncmatching_inv" class="btn blue"><span class="fa fa-upload"></span> Sinkronisasi</a>
+                            </form>
+                            <?= $mtch['count'].' Data Matching Invoice Belum di Kirim'; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
 <script>
     function sync_so(){
         $('#formSync').submit();
@@ -94,6 +115,11 @@
     function sync_inv(){
         $('#formSyncInv').submit();
         $('#btnSyncInv').text('Please Wait ...').prop("onclick", null).off("click");
+    }
+
+    function sync_matching_inv(){
+        $('#formSyncmatching_inv').submit();
+        $('#btnSyncmatching_inv').text('Please Wait ...').prop("onclick", null).off("click");
     }
 </script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>

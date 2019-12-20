@@ -98,7 +98,8 @@
                                 $s = 'GudangWIP';
                             }
                                 if( ($group_id==1 || $hak_akses['view_retur']==1)/* && $data->ready_to_ttr>0*/){
-                                    echo '<a class="btn btn-circle btn-xs green-seagreen" href="'.base_url().'index.php/Retur/view/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> View &nbsp; </a>';
+                                    echo '<a class="btn btn-circle btn-xs green-seagreen" href="'.base_url().'index.php/Retur/view/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-briefcase"></i> View &nbsp; </a>';
+                                    echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/Retur/edit_fulfilment/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil-square-o"></i> Edit &nbsp; </a>';
                                 }
                                 if( $data->jumlah_item == 0 && $data->status_spb !== 1){
                                 echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/GudangFG/edit_spb/'.$data->spb_id.'" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit SPB &nbsp; </a>';

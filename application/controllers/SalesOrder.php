@@ -1106,16 +1106,16 @@ class SalesOrder extends CI_Controller{
         $no_sj = $this->input->post('no_sj');
         $user_ppn = $this->session->userdata('user_ppn');
         if ($user_ppn == 0) {
-            // $code = 'SJ.'.$tgl_sj.'.'.$this->input->post('no_sj');
+            $code = 'SJ.'.$tgl_sj.'.'.$this->input->post('no_sj');
             #cek tahun dan 4 digit terakhir
-            $prefix = 'SJ.'.$tahun_sj;
+            // $prefix = 'SJ.'.$tahun_sj;
             #end
         } else {
-            // $code = 'SJ-KMP.'.$tgl_sj.'.'.$this->input->post('no_sj');
-            $prefix = 'SJ-KMP.'.$tahun_sj;
+            $code = 'SJ-KMP.'.$tgl_sj.'.'.$this->input->post('no_sj');
+            // $prefix = 'SJ-KMP.'.$tahun_sj;
         }
-
-        $count = $this->db->query("Select count(id) as count from t_surat_jalan where no_surat_jalan LIKE '".$prefix."%' AND no_surat_jalan LIKE '%.".$no_sj."'")->row_array();
+// echo $code;die();
+        $count = $this->db->query("Select count(id) as count from t_surat_jalan where no_surat_jalan ='".$code."'")->row_array();
         if($count['count']>0){
             $data['type'] = 'duplicate';
         }else{
@@ -1840,12 +1840,6 @@ class SalesOrder extends CI_Controller{
                     $this->db->update('dtr_detail',array(
                         'bruto'=> $bruto,
                         'berat_palette'=> $v['berat'],
-                        'netto'=>$v['netto_r']
-                    ));
-
-                    $this->db->where('dtr_detail_id', $v['gudang_id']);
-                    $this->db->update('ttr_detail', array(
-                        'bruto'=>$bruto,
                         'netto'=>$v['netto_r']
                     ));
                 }

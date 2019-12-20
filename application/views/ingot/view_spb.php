@@ -125,6 +125,7 @@
 
                             <input type="hidden" id="id" name="id" value="<?php echo $myData['id']; ?>">
                             <input type="hidden" id="id_pi" name="id_pi" value="<?php echo $myData['id_pi']; ?>">
+                            <input type="hidden" id="jenis_spb" name="jenis_spb" value="<?php echo $myData['jenis_spb']; ?>">
                         </div>
                     </div>
                     <div class="row">

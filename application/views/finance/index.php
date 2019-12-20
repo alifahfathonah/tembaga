@@ -59,7 +59,7 @@
                 <?php
                     if( ($group_id==1)||($hak_akses['add_um']==1) ){
                 ?>
-                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Finance/add"> <i class="fa fa-plus"></i> Input Cek Masuk</a>
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/Finance/add"> <i class="fa fa-plus"></i> Input Kas Masuk</a>
                 <?php } ?>
                 </div>               
             </div>

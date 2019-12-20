@@ -67,40 +67,25 @@
                 </div>
 
                 <div class="col-md-6">
-                    <!-- <div class="row">
-                        <div class="col-md-4">
-                            Customer <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
-                                <option value=""></option>
-                                <?php
-                                    foreach ($customer_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_customer.'</option>';
-                                    }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Contact Person
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="contact_person" name="contact_person" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px">
-                        </div>
-                    </div>-->
                     <div class="row">
                         <div class="col-md-4">
                             No. Retur
                         </div>
                         <div class="col-md-8">
                             <select id="retur_id" name="retur_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" onchange="getJB(this.value)">
                                 <option value=""></option>
                             </select>
+                        </div>
+                    </div>
+                    <input type="hidden" id="no_retur" name="no_retur">
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis Barang
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="jenis_barang" name="jenis_barang" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px">
                         </div>
                     </div>
                     <div class="row">
@@ -155,6 +140,19 @@ function get_retur(id){
         dataType: "html",
         success: function(result) {
             $('#retur_id').html(result);
+        }
+    });
+}
+
+function getJB(id){
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url('index.php/Retur/get_retur_jb'); ?>",
+        data: "id="+id,
+        dataType: "json",
+        success: function(result) {
+            $('#jenis_barang').val(result['jenis_barang']);
+            $('#no_retur').val(result['no_retur']);
         }
     });
 }

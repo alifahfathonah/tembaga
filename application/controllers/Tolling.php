@@ -2984,10 +2984,81 @@ class Tolling extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "tolling_titipan/cek_balance";
-        $this->load->model('Model_tolling_titipan');
-        $data['list_data'] = $this->Model_tolling_titipan->cek_balance_list()->result();
+        $this->load->model('Model_sales_order');
+        $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
 
         $this->load->view('layout', $data);
+    }
+
+    function print_laporan_tolling_so(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn = $this->session->userdata('user_ppn');
+
+        $cust_id = $_GET['l'];
+        // $start = date('Y-m-d', strtotime($_GET['ts']));
+        // $end = date('Y-m-d', strtotime($_GET['te']));
+        // echo $start;die();
+
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Gudang WIP";
+            $this->load->helper('tanggal_indo');
+
+        $this->load->model('Model_tolling_titipan');
+        $data['header']  = $this->Model_tolling_titipan->get_contact_name($cust_id)->row_array();
+        $data['header']['jenis'] = 'SO';
+        $data['details_bahan'] = $this->Model_tolling_titipan->laporan_bahan_so($cust_id,$ppn)->result();
+        $data['details_kirim'] = $this->Model_tolling_titipan->laporan_kirim_so($cust_id,$ppn)->result();
+        $this->load->view('tolling_titipan/print_laporan_balance_so', $data);
+    }
+
+    function cek_balance_po(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "tolling_titipan/cek_balance_po";
+        $this->load->model('Model_beli_sparepart');
+        $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();;
+
+        $this->load->view('layout', $data);
+    }
+
+    function print_laporan_tolling_po(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn = $this->session->userdata('user_ppn');
+
+        $cust_id = $_GET['l'];
+        // $start = date('Y-m-d', strtotime($_GET['ts']));
+        // $end = date('Y-m-d', strtotime($_GET['te']));
+        // echo $start;die();
+
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Gudang WIP";
+            $this->load->helper('tanggal_indo');
+
+        $this->load->model('Model_tolling_titipan');
+        $data['header']  = $this->Model_tolling_titipan->get_alamat_supplier($cust_id)->row_array();
+        $data['header']['jenis'] = 'PO';
+        $data['details_bahan'] = $this->Model_tolling_titipan->laporan_kirim_bahan($cust_id,$ppn)->result();
+        $data['details_kirim'] = $this->Model_tolling_titipan->laporan_terima($cust_id,$ppn)->result();
+        $this->load->view('tolling_titipan/print_laporan_balance_po', $data);
     }
 
     function view_balance(){

@@ -31,27 +31,82 @@
          <tbody>
         <?php 
         $no = 1; 
+        $netto_awal = 0;
+        $stok_awal = 0;
+        $kirim_qty = 0;
+        $potong_qty = 0;
+
+        $t_netto_awal = 0;
+        $t_stok_awal = 0;
+        $t_kirim_qty = 0;
+        $t_potong_qty = 0;
+
         $last_series = null;
         $last_series2 = null;
         foreach($detailLaporan as $row){ 
  /*           $total_amount = $row->netto * $row->amount;  */
+            if($last_series != $row->nama_customer && $last_series != null){
+              echo '<tr>
+                  <td colspan="6" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total</strong></td>
+                  <td align="right" style="border-top: 2px solid;border-bottom:4px solid; border-left: 1px solid;">'.number_format($netto_awal,2,',','.').'</td>
+                  <td align="right" style="border-top: 2px solid;border-bottom:4px solid; border-left: 1px solid;">'.number_format($stok_awal,2,',','.').'</td>
+                  <td align="right" style="border-top: 2px solid;border-bottom:4px solid; border-left: 1px solid; border-right: 1px solid;">'.number_format($kirim_qty,2,',','.').'</td>
+                  <td align="right" style="border-top: 2px solid;border-bottom:4px solid; border-left: 1px solid; border-right: 1px solid;">'.number_format($potong_qty,2,',','.').'</td>
+                  <td align="right" style="border-top: 2px solid;border-bottom:4px solid; border-left: 1px solid; border-right: 1px solid;"></td>
+                </tr>';
+              $netto_awal = 0;
+              $stok_awal = 0;
+              $kirim_qty = 0;
+              $potong_qty = 0;
+            }
         ?>
             <tr>
-                <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= $no ?></td>
-                <?php echo ($last_series==$row->nama_customer) ? '<td style="border-left:1px solid #000">' : '<td style="border-top: 1px solid;border-left: 1px solid;">'.$row->nama_customer; ?></td>
-                <?php echo ($last_series2==$row->no_retur) ? '<td style="border-left:1px solid #000">' : '<td style="border-top: 1px solid;border-left: 1px solid;">'.$row->no_retur; ?></td>
-                <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= date('d-m-Y', strtotime($row->tanggal)) ?></td>
-                <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->remarks ?></td>
-                <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->jenis_barang ?></td>
-                <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto,2) ?></td>
-                <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto-$row->netto_kirim_b,2) ?></td>
-                <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?=($row->jenis_retur==0)? number_format($row->netto_kirim,2): '-';?></td>
-                <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?=($row->jenis_retur==1)? number_format($row->netto_kirim,2): '-';?></td>
-                <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid; font-size: 13px"><?=($row->jenis_retur==0)?"Ganti Barang": "Potong Piutang"; ?></td>
+              <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= $no ?></td>
+              <?php echo ($last_series==$row->nama_customer) ? '<td style="border-left:1px solid #000">' : '<td style="border-top: 1px solid;border-left: 1px solid;">'.$row->nama_customer; ?></td>
+              <?php echo ($last_series2==$row->no_retur) ? '<td style="border-left:1px solid #000">' : '<td style="border-top: 1px solid;border-left: 1px solid;">'.$row->no_retur; ?></td>
+              <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= date('d-m-Y', strtotime($row->tanggal)) ?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->remarks ?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->jenis_barang ?></td>
+              <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto,2) ?></td>
+              <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto-$row->netto_kirim_b,2) ?></td>
+              <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?=($row->jenis_retur==0)? number_format($row->netto_kirim,2): '-';?></td>
+              <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?=($row->jenis_retur==1)? number_format($row->netto_kirim,2): '-';?></td>
+              <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid; font-size: 13px"><?=($row->jenis_retur==0)?"Ganti Barang": "Potong Piutang"; ?></td>
+            </tr>
         <?php $no++;
+          $netto_awal += $row->netto;
+          $stok_awal += $row->netto-$row->netto_kirim_b;
+          $t_netto_awal += $row->netto;
+          $t_stok_awal += $row->netto-$row->netto_kirim_b;
+          if($row->jenis_retur==0){
+            $kirim_qty += $row->netto_kirim;
+            $t_kirim_qty += $row->netto_kirim;
+          }
+          if($row->jenis_retur==1){
+            $potong_qty += $row->netto_kirim;
+            $t_potong_qty += $row->netto_kirim;
+          }
+
           $last_series = $row->nama_customer;
           $last_series2 = $row->no_retur;
-          } ?>
+          } 
+            echo '<tr>
+                  <td colspan="6" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total</strong></td>
+                  <td align="right" style="border-top: 2px solid;border-bottom:4px solid; border-left: 1px solid;">'.number_format($netto_awal,2,',','.').'</td>
+                  <td align="right" style="border-top: 2px solid;border-bottom:4px solid; border-left: 1px solid;">'.number_format($stok_awal,2,',','.').'</td>
+                  <td align="right" style="border-top: 2px solid;border-bottom:4px solid; border-left: 1px solid; border-right: 1px solid;">'.number_format($kirim_qty,2,',','.').'</td>
+                  <td align="right" style="border-top: 2px solid;border-bottom:4px solid; border-left: 1px solid; border-right: 1px solid;">'.number_format($potong_qty,2,',','.').'</td>
+                  <td align="right" style="border-top: 2px solid;border-bottom:4px solid; border-left: 1px solid; border-right: 1px solid;"></td>
+                </tr>';
+            echo '<tr>
+                  <td colspan="6" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total</strong></td>
+                  <td align="right" style="border-top: 2px solid;border-bottom:4px solid; border-left: 1px solid;">'.number_format($t_netto_awal,2,',','.').'</td>
+                  <td align="right" style="border-top: 2px solid;border-bottom:4px solid; border-left: 1px solid;">'.number_format($t_stok_awal,2,',','.').'</td>
+                  <td align="right" style="border-top: 2px solid;border-bottom:4px solid; border-left: 1px solid; border-right: 1px solid;">'.number_format($t_kirim_qty,2,',','.').'</td>
+                  <td align="right" style="border-top: 2px solid;border-bottom:4px solid; border-left: 1px solid; border-right: 1px solid;">'.number_format($t_potong_qty,2,',','.').'</td>
+                  <td align="right" style="border-top: 2px solid;border-bottom:4px solid; border-left: 1px solid; border-right: 1px solid;"></td>
+                </tr>';
+          ?>
         </tbody>   
       </table>
     </body>

@@ -140,11 +140,12 @@ class Model_beli_rongsok extends CI_Model{
     }
 
     function voucher_po_rsk($id){
-        $data = $this->db->query("Select po.*,s.nama_supplier, dtr.po_id, Coalesce(sum(dd.netto*pd.amount),0) as nilai_po, 
+        $data = $this->db->query("Select po.*,s.nama_supplier, dtr.po_id, Coalesce(sum(td.netto*pd.amount),0) as nilai_po, 
             (Select Sum(voucher.amount) From voucher Where voucher.po_id = po.id)As nilai_dp
             From po
             inner join dtr on dtr.po_id = po.id
             inner join dtr_detail dd on dd.dtr_id = dtr.id
+            left join ttr_detail td on td.dtr_detail_id = dd.id
             inner join po_detail pd on pd.id = dd.po_detail_id
             inner join supplier s on s.id = po.supplier_id
             Where dtr.po_id =".$id." and dtr.status=1");
@@ -1135,6 +1136,12 @@ class Model_beli_rongsok extends CI_Model{
         return $this->db->query("select dd.id, dd.no_pallete, dd.bruto, dd.netto, dd.berat_palette, r.nama_item, dd.netto_resmi from dtr_detail dd 
             left join rongsok r on dd.rongsok_id = r.id
             where no_pallete =".$id);
+    }
+
+    function show_data_voucher($id){
+        return $this->db->query("select v.* from voucher v
+            left join po on v.po_id = po.id
+            where v.po_id =".$id);
     }
 }
 

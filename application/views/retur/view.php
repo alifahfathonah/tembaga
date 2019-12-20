@@ -68,6 +68,7 @@
                                 value="<?php echo $header['no_retur']; ?>">
                             
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
+                            <input type="hidden" id="spb_id" name="spb_id" value="<?php echo $header['spb_id']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -233,6 +234,11 @@
                             echo '<a href="javascript:;" class="btn blue" onclick="editData();" id="btnEdit">' 
                                 .'<i class="fa fa-pencil"></i> Edit </a>';
                         }
+
+                        if(($group_id==1 || $hak_akses['approve']==1) && $header['spb_id']>0 && $header['flag_taken']==0){
+                            echo '<a href="javascript:;" class="btn red" onclick="closeRETUR();">
+                                    <i class="fa fa-ban"></i> CLOSE RETUR </a>';
+                        }
                     ?>
 
                     <a href="<?php echo base_url('index.php/Retur'); ?>" class="btn blue-hoki"> 
@@ -261,6 +267,13 @@ function editData(){
     $('#btnEdit').hide();
 }
 
+function closeRETUR(){
+    var r=confirm("Anda yakin me-close retur ini?");
+    if (r==true){
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Retur/close_retur");    
+        $('#formku').submit();
+    }
+}
 
 function approveData(){
     var r=confirm("Anda yakin meng-approve permintaan retur barang ini?");

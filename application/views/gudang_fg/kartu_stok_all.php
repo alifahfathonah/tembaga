@@ -32,7 +32,8 @@ foreach ($loop as $key => $value) { ?>
     $masuk = 0;
     $keluar = 0;
     $sisa_now = 0;
-    $sisa = $value['stok_before']['netto_masuk'] - $value['stok_before']['netto_keluar'];
+    // $sisa = $value['stok_before']['stok_awal'];
+    $sisa = $value['stok_before']['netto_masuk']-$value['stok_before']['netto_keluar'];
         echo '<tr>';
         echo '<td style="text-align:center"> - </td>';
         echo '<td></td>';

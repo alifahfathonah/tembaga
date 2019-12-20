@@ -534,25 +534,29 @@ class Model_gudang_wip extends CI_Model{
             $data = $this->db->query("select tgw.jenis_barang_id, tgw.berat as netto, '' as sumber, jb.jenis_barang, jb.kode, tsw.no_spb_wip as nomor, tgw.tanggal, tsw.keterangan from t_gudang_wip tgw
                     left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
                     left join jenis_barang jb on tgw.jenis_barang_id = jb.id
-                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tgw.jenis_barang_id = 2");
+                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tgw.jenis_barang_id = 2
+                    order by kode, tanggal");
         }elseif($j==1){
             $data = $this->db->query("select tgw.jenis_barang_id, tgw.berat as netto, '' as sumber, jb.jenis_barang, jb.kode, tsw.no_spb_wip as nomor, tgw.tanggal, COALESCE(thw.no_produksi_wip,tsw.keterangan) as keterangan from t_gudang_wip tgw
                     left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
                     left join t_hasil_wip thw on thw.t_spb_wip_id = tsw.id
                     left join jenis_barang jb on tgw.jenis_barang_id = jb.id
-                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tgw.jenis_barang_id = 656");
+                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tgw.jenis_barang_id = 656
+                    order by kode, tanggal");
         }elseif($j==2){
             $data = $this->db->query("select tgw.jenis_barang_id, tgw.berat as netto, '' as sumber, jb.jenis_barang, jb.kode, tsw.no_spb_wip as nomor, tgw.tanggal, COALESCE(thw.no_produksi_wip,tsw.keterangan) as keterangan from t_gudang_wip tgw
                     left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
                     left join t_hasil_wip thw on thw.t_spb_wip_id = tsw.id
                     left join jenis_barang jb on tgw.jenis_barang_id = jb.id
-                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tgw.jenis_barang_id = 654");
+                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tgw.jenis_barang_id = 654
+                    order by kode, tanggal");
         }elseif($j==3){
             $data = $this->db->query("select tgw.jenis_barang_id, tgw.berat as netto, '' as sumber, jb.jenis_barang, jb.kode, tsw.no_spb_wip as nomor, tgw.tanggal, COALESCE(thw.no_produksi_wip,tsw.keterangan) as keterangan from t_gudang_wip tgw
                     left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
                     left join t_hasil_wip thw on thw.t_spb_wip_id = tsw.id
                     left join jenis_barang jb on tgw.jenis_barang_id = jb.id
-                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tsw.flag_produksi = 0");
+                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tsw.flag_produksi = 0
+                    order by kode, tanggal");
         }elseif($j==4){
             $data = $this->db->query("select tgw.jenis_barang_id, tgw.berat as netto, case when so.flag_tolling = 0 then 'SO' else 'Tolling' end as sumber, jb.jenis_barang, jb.kode, tsw.no_spb_wip as nomor, tgw.tanggal, mc.nama_customer as keterangan from t_gudang_wip tgw
                     left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
@@ -560,7 +564,8 @@ class Model_gudang_wip extends CI_Model{
                     left join sales_order so on so.id = tso.so_id
                     left join m_customers mc on so.m_customer_id = mc.id
                     left join jenis_barang jb on tgw.jenis_barang_id = jb.id
-                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tsw.flag_produksi = 6 and so.flag_ppn=1");
+                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tsw.flag_produksi = 6 and so.flag_ppn=1
+                    order by kode, tanggal");
         }elseif($j==5){
             $data = $this->db->query("select tgw.jenis_barang_id, tgw.berat as netto, case when so.flag_tolling = 0 then 'SO' else 'Tolling' end as sumber, jb.jenis_barang, jb.kode, tsw.no_spb_wip as nomor, tgw.tanggal, mc.nama_customer as keterangan from t_gudang_wip tgw
                     left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
@@ -568,63 +573,73 @@ class Model_gudang_wip extends CI_Model{
                     left join sales_order so on so.id = tso.so_id
                     left join m_customers mc on so.m_customer_id = mc.id
                     left join jenis_barang jb on tgw.jenis_barang_id = jb.id
-                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tsw.flag_produksi = 6 and so.flag_ppn=0");
+                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tsw.flag_produksi = 6 and so.flag_ppn=0
+                    order by kode, tanggal");
         }elseif($j==6){
             $data = $this->db->query("select tgw.jenis_barang_id, tgw.berat as netto, '' as sumber, jb.jenis_barang, jb.kode, tsw.no_spb_wip as nomor, tgw.tanggal, tsw.keterangan as keterangan from t_gudang_wip tgw
                     left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
                     left join jenis_barang jb on tgw.jenis_barang_id = jb.id
-                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tsw.flag_produksi = 11");
+                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tsw.flag_produksi = 11
+                    order by kode, tanggal");
         }elseif($j==7){
             $data = $this->db->query("select dd.jenis_barang_id, dd.berat as netto, 'PO' as sumber, jb.jenis_barang, jb.kode, dtwip.no_dtwip as nomor, dtwip.tanggal, s.nama_supplier as keterangan from dtwip_detail dd
                     left join dtwip on dd.dtwip_id = dtwip.id
                     left join supplier s on s.id = dtwip.supplier_id
                     left join jenis_barang jb on dd.jenis_barang_id = jb.id
-                    where dtwip.tanggal between '".$s."' and '".$e."' and dtwip.po_id > 0 and dtwip.flag_ppn = 0");
+                    where dtwip.tanggal between '".$s."' and '".$e."' and dtwip.po_id > 0 and dtwip.flag_ppn = 0
+                    order by kode, tanggal");
         }elseif($j==8){
             $data = $this->db->query("select dd.jenis_barang_id, dd.berat as netto, 'PO' as sumber, jb.jenis_barang, jb.kode, dtwip.no_dtwip as nomor, dtwip.tanggal, s.nama_supplier as keterangan from dtwip_detail dd
                     left join dtwip on dd.dtwip_id = dtwip.id
                     left join supplier s on s.id = dtwip.supplier_id
                     left join jenis_barang jb on dd.jenis_barang_id = jb.id
-                    where dtwip.tanggal between '".$s."' and '".$e."' and dtwip.po_id > 0 and dtwip.flag_ppn = 1");
+                    where dtwip.tanggal between '".$s."' and '".$e."' and dtwip.po_id > 0 and dtwip.flag_ppn = 1
+                    order by kode, tanggal");
         }elseif($j==9){
             $data = $this->db->query("select dd.jenis_barang_id, dd.netto, 'Tolling' as sumber, jb.jenis_barang, jb.kode, dtt.no_dtt as nomor, dtt.tanggal, s.nama_supplier as keterangan from dtt_detail dd
                     left join dtt on dd.dtt_id = dtt.id
                     left join supplier s on s.id = dtt.supplier_id
                     left join jenis_barang jb on dd.jenis_barang_id = jb.id
-                    where dtt.jenis_barang = 'WIP' and dtt.tanggal between '".$s."' and '".$e."' and dtt.status = 1 and dtt.flag_ppn = 0");
+                    where dtt.jenis_barang = 'WIP' and dtt.tanggal between '".$s."' and '".$e."' and dtt.status = 1 and dtt.flag_ppn = 0
+                    order by kode, tanggal");
         }elseif($j==10){
             $data = $this->db->query("select dd.jenis_barang_id, dd.netto, 'Tolling' as sumber, jb.jenis_barang, jb.kode, dtt.no_dtt as nomor, dtt.tanggal, s.nama_supplier as keterangan from dtt_detail dd
                     left join dtt on dd.dtt_id = dtt.id
                     left join supplier s on s.id = dtt.supplier_id
                     left join jenis_barang jb on dd.jenis_barang_id = jb.id
-                    where dtt.jenis_barang = 'WIP' and dtt.tanggal between '".$s."' and '".$e."' and dtt.status = 1 and dtt.flag_ppn = 1");
+                    where dtt.jenis_barang = 'WIP' and dtt.tanggal between '".$s."' and '".$e."' and dtt.status = 1 and dtt.flag_ppn = 1
+                    order by kode, tanggal");
         }elseif($j==11){
             $data = $this->db->query("select tgw.jenis_barang_id, tgw.berat as netto, '' as sumber, jb.jenis_barang, jb.kode, tbw.no_bpb as nomor, tgw.tanggal, COALESCE(thw.no_produksi_wip,tbw.keterangan) as keterangan from t_gudang_wip tgw
                     left join t_bpb_wip_detail bwd on bwd.id = tgw.t_bpb_wip_detail_id
                     left join t_bpb_wip tbw on tbw.id = bwd.bpb_wip_id
                     left join t_hasil_wip thw on thw.id = tbw.hasil_wip_id
                     left join jenis_barang jb on tgw.jenis_barang_id = jb.id
-                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 0 and thw.jenis_masak = 'INGOT'");
+                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 0 and thw.jenis_masak = 'INGOT'
+                    order by kode, tanggal");
         }elseif($j==12){
             $data = $this->db->query("select tgw.jenis_barang_id, tgw.berat as netto, '' as sumber, jb.jenis_barang, jb.kode, tbw.no_bpb as nomor, tgw.tanggal, COALESCE(thw.no_produksi_wip,tbw.keterangan) as keterangan from t_gudang_wip tgw
                     left join t_bpb_wip_detail bwd on bwd.id = tgw.t_bpb_wip_detail_id
                     left join t_bpb_wip tbw on tbw.id = bwd.bpb_wip_id
                     left join t_hasil_wip thw on thw.id = tbw.hasil_wip_id
                     left join jenis_barang jb on tgw.jenis_barang_id = jb.id
-                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 0 and thw.jenis_masak = 'ROLLING'");
+                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 0 and thw.jenis_masak = 'ROLLING'
+                    order by kode, tanggal");
         }elseif($j==13){
             $data = $this->db->query("select tgw.jenis_barang_id, tgw.berat as netto, '' as sumber, jb.jenis_barang, jb.kode, tbw.no_bpb as nomor, tgw.tanggal, COALESCE(thw.no_produksi_wip,tbw.keterangan) as keterangan from t_gudang_wip tgw
                     left join t_bpb_wip_detail bwd on bwd.id = tgw.t_bpb_wip_detail_id
                     left join t_bpb_wip tbw on tbw.id = bwd.bpb_wip_id
                     left join t_hasil_wip thw on thw.id = tbw.hasil_wip_id
                     left join jenis_barang jb on tgw.jenis_barang_id = jb.id
-                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 0 and thw.jenis_masak = 'CUCI'");
+                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 0 and thw.jenis_masak = 'CUCI'
+                    order by kode, tanggal");
         }elseif($j==14){
             $data = $this->db->query("select dd.jenis_barang_id, dd.berat as netto, 'PO' as sumber, jb.jenis_barang, jb.kode, dtwip.no_dtwip as nomor, dtwip.tanggal, COALESCE(s.nama_supplier,dtwip.remarks) as keterangan from dtwip_detail dd
                     left join dtwip on dd.dtwip_id = dtwip.id
                     left join supplier s on s.id = dtwip.supplier_id
                     left join jenis_barang jb on dd.jenis_barang_id = jb.id
-                    where dtwip.tanggal between '".$s."' and '".$e."' and dtwip.status = 1 and dtwip.po_id = 0");
+                    where dtwip.tanggal between '".$s."' and '".$e."' and dtwip.status = 1 and dtwip.po_id = 0
+                    order by kode, tanggal");
         }
         return $data;
     }

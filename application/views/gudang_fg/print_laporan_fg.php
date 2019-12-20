@@ -1,5 +1,5 @@
  <h3 style="text-align: center; text-decoration: underline;">PT. KAWAT MAS PRAKASA<br>
-    LAPORAN STOK RONGSOK</h3>
+    LAPORAN STOK <?=$g;?></h3>
  <h3 align="center"><b><?php echo " <i>".tanggal_indo(date('Y-m-d', strtotime($start))).' s/d '.tanggal_indo(date('Y-m-d', strtotime($end)))."</i>";?></b></h3>
 <?php $ex = explode('-',tanggal_indo(date('Y-m-d', strtotime($end))));?>
 <table width="100%" class="table table-striped table-bordered table-hover" id="sample_6">

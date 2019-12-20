@@ -117,11 +117,11 @@
             <tr>
                 <td colspan="3"><hr class="divider"></td>
             </tr>
-                        <?php 
-                            if(empty($details_kirim)){
-                                echo '<tr colspan="3"><td> Belum ada Pengiriman </td></tr>';
-                            }else{
-                                ?>
+        <?php 
+            if(empty($details_kirim)){
+                echo '<tr colspan="3"><td> Belum ada Pengiriman </td></tr>';
+            }else{
+                ?>
             <tr><td colspan="3" align="center"><h3>Detail <?=($header['jenis']=='SO')? 'Kirim':'Terima';?></h3></td></tr>
             <tr>
                 <td colspan="3">
@@ -160,7 +160,18 @@
                     </table>
                 </td>
             </tr>
-                    <?php } ?>
+            <tr>
+                <td colspan="3">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <table border="0" cellpadding="4" cellspacing="0" width="100%" style="font-size: 14px;">
+                        <td colspan="2" style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong><?=($header['jenis']=='SO')? 'Sisa Belum di Kirim' : 'Sisai Belum di Terima';?></strong></td>
+                        <td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;"><strong><?=number_format($total-$nominal,2,',','.');?></strong></td>
+                    </table>
+                </td>
+            </tr>
+        <?php } ?>
             <!-- <tr><td colspan="3">
                     <p>&nbsp;</p>
                     <table border="0" width="100%">

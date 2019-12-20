@@ -28,39 +28,44 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            Customer <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="no_retur" name="no_retur" readonly="readonly" class="form-control myline" style="margin-bottom:5px"  value="<?= (($this->session->userdata('user_ppn') == 1)? $header['nama_customer'] : $header['nama_customer_kh']) ?>">
-                            <!-- <input type="hidden" name="retur_id" id="retur_id"> -->
-                            <!-- <input type="text" id="no_retur" name="no_retur" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="Auto generate"> -->
-                            <input type="hidden" name="id" id="id" value="<?php echo $header['id']; ?>">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            Tanggal <font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="tanggal" name="tanggal" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
-                        </div>
-                    </div>  
-                    <div class="row">&nbsp;</div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-4">
                             No. Retur
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="no_retur" name="no_retur" readonly="readonly" class="form-control myline" style="margin-bottom:5px"  value="<?php echo $header['no_retur']; ?>">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tanggal" name="tanggal" 
+                                class="form-control input-small myline" style="margin-bottom:5px; float:left;" value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Customer
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_retur" name="no_retur" readonly="readonly" class="form-control myline" style="margin-bottom:5px"  value="<?= (($this->session->userdata('user_ppn') == 1)? $header['nama_customer'] : $header['nama_customer_kh']) ?>">
+                            <input type="hidden" name="id" id="id" value="<?php echo $header['id']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            PIC
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $this->session->userdata('realname'); ?>">
+                        </div>
+                    </div>
+                    <div class="row">&nbsp;</div>
+                </div>
+
+                <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
                             Jenis Barang
@@ -73,12 +78,23 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            PIC
+                            No SPB
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                            <input type="text" id="no_spb" name="no_spb" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $this->session->userdata('realname'); ?>">
+                                value="<?php echo $header['no_spb']; ?>">
+
+                            <input type="hidden" id="id_spb" name="id_spb" value="<?=$header['spb_id'];?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal SPB
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tanggal_spb" name="tanggal_spb" 
+                                class="form-control input-small myline" style="margin-bottom:5px; float:left;" value="<?php echo date('d-m-Y', strtotime($header['tanggal_spb'])); ?>">
                         </div>
                     </div>
                 </div>              
@@ -130,6 +146,7 @@
                                 <table class="table table-bordered table-striped table-hover">
                                     <thead>
                                         <th style="width:40px">No</th>
+                                        <th>Tanggal</th>
                                         <th width="25%;">Nama Barang</th>
                                         <th>Netto (kg)</th>
                                         <th>Keterangan</th>
@@ -141,12 +158,15 @@
                                     <tr>
                                         <td style="text-align:center"><i class="fa fa-plus"></i></td>
                                         <td>
-                                        <select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="check(this.value);">
-                                        <option value=""></option>
-                                           <?php foreach ($jenis_barang_list as $value){
-                                                echo "<option value='".$value->id."'>(".$value->kode.') '.$value->jenis_barang."</option>";
-                                            } ?>
-                                        </select>
+                                            <input type="text" id="tanggal_detail" name="tanggal_detail" class="form-control myline input-small" style="margin-bottom:5px;float:left;" value="<?php echo date('d-m-Y'); ?>">
+                                        </td>
+                                        <td>
+                                            <select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="check(this.value);">
+                                            <option value=""></option>
+                                               <?php foreach ($jenis_barang_list as $value){
+                                                    echo "<option value='".$value->id."'>(".$value->kode.') '.$value->jenis_barang."</option>";
+                                                } ?>
+                                            </select>
                                         </td>
                                         <td><input type="text" id="netto" name="netto" class="form-control myline"/></td>
                                         <td><input type="text" id="line_remarks" name="line_remarks" class="form-control myline" onkeyup="this.value = this.value.toUpperCase()"></td>
@@ -166,7 +186,7 @@
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Simpan </a>
                         
-                    <a href="<?php echo base_url('index.php/Retur'); ?>" class="btn blue-hoki"> 
+                    <a href="<?php echo base_url('index.php/Retur/fulfilment_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
                 </div>    
             </div>
@@ -234,12 +254,14 @@ function saveDetail(){
             url:"<?php echo base_url('index.php/Retur/save_detail_fulfilment'); ?>",
             data:{
                 id:$('#id').val(),
+                tanggal_detail:$('#tanggal_detail').val(),
                 jenis_barang_id:$('#jenis_barang_id').val(),
                 netto:$('#netto').val(),
-                line_remarks:$('#line_remarks').val()
+                line_remarks:$('#line_remarks').val(),
+                jenis_barang:$('#jenis_barang').val(),
+                id_spb:$('#id_spb').val()
             },
             success:function(result){
-                console.log(result);
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
                     $('#jenis_barang_id').select2('val','');
@@ -256,13 +278,17 @@ function saveDetail(){
     }
 }
 
-function hapusDetail(id){
+function hapusDetail(id,spb_detail_id){
     var r=confirm("Anda yakin menghapus item ini?");
     if (r==true){
         $.ajax({
             type:"POST",
             url:'<?php echo base_url('index.php/Retur/delete_detail_fulfilment'); ?>',
-            data:"id="+ id,
+            data:{
+                id:id,
+                spb_detail_id:spb_detail_id,
+                jenis_barang:$('#jenis_barang').val()
+            },
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
@@ -291,8 +317,18 @@ function hapusDetail(id){
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-$(function(){        
-    $("#tgl_spare_part").datepicker({
+$(function(){
+    $("#tanggal_spb").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });
+
+    $("#tanggal_detail").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,

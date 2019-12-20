@@ -21,39 +21,6 @@ class Model_sinkronisasi extends CI_Model{
             where so.flag_ppn = 1 and tsj.status = 1 and tsj.api = 1");
     }
 
-    // function sj(){
-    //     return $this->db->query("select tsj.id, tsj.jenis_barang from t_surat_jalan tsj
-    //         left join sales_order so on so.id = tsj.sales_order_id
-    //         where tsj.id in (select id from t_surat_jalan
-    //             where right(no_surat_jalan,4) in
-    //             ('0817',
-    //             '0818',
-    //             '0819',
-    //             '0820',
-    //             '0821',
-    //             '0822',
-    //             '0823',
-    //             '0824',
-    //             '0825',
-    //             '0826',
-    //             '0827',
-    //             '0828',
-    //             '0829',
-    //             '0831',
-    //             '0833',
-    //             '0834',
-    //             '0835',
-    //             '0836',
-    //             '0837',
-    //             '0839',
-    //             '0840',
-    //             '0841',
-    //             '0842',
-    //             '0843',
-    //             '0845',
-    //             '0846'))");
-    // }
-
     function sj_count(){
         return $this->db->querY("select count(tsj.id) as count from t_surat_jalan tsj
             left join sales_order so on so.id = tsj.sales_order_id
@@ -78,5 +45,39 @@ class Model_sinkronisasi extends CI_Model{
 
     function inv_detail_only($id){
         return $this->db->query("select * from f_invoice_detail where id_invoice =".$id);
+    }
+
+    function match_inv_count(){
+        return $this->db->query("select count(id) as count from f_match where flag_ppn = 1 and status = 1 and api = 0");
+    }
+
+    function match_inv(){
+        return $this->db->query("select * from f_match where flag_ppn = 1 and status = 1 and api = 0 limit 100");
+    }
+
+    function match_inv_detail_only($id){
+        return $this->db->query("Select fmd.*,  
+            COALESCE(fi.id,rti.id) as id_header_inv, COALESCE(fi.no_invoice,rti.no_invoice_jasa) as no_invoice, COALESCE(fi.nilai_invoice,rti.nilai_invoice) as nilai_invoice,
+            COALESCE(fi.nilai_bayar, rti.nilai_bayar) as nilai_bayar_inv, COALESCE(fi.nilai_pembulatan, rti.nilai_pembulatan) as nilai_pembulatan_inv, 
+            COALESCE(fi.flag_matching,rti.flag_matching) as flag_matching_inv, COALESCE(fi.term_of_payment,rti.term_of_payment) as term_of_payment,
+            COALESCE(fi.tgl_jatuh_tempo,rti.jatuh_tempo) as tgl_jatuh_tempo, COALESCE(fi.tanggal,rti.tanggal) as tanggal_inv, COALESCE(fi.bank_id,rti.bank_id) as bank_id,
+            COALESCE(fi.nama_direktur,rti.nama_direktur) as nama_direktur, COALESCE(fi.diskon,rti.diskon) as diskon,COALESCE(fi.add_cost, rti.cost) as add_cost,
+            COALESCE(fi.materai,rti.materai) as materai, COALESCE(fi.keterangan,rti.remarks) as keterangan_inv, COALESCE(fi.id_customer,mc.idkmp) as id_customer,
+            COALESCE(fi.currency,'IDR') as currency, COALESCE(fi.kurs,1) as kurs_inv, COALESCE(fi.id_surat_jalan,null) as id_surat_jalan,COALESCE(fi.jenis_trx,1) as jenis_trx, COALESCE(fi.id_sales_order, rti.r_t_so_id) as id_so
+            from f_match_detail fmd
+                left join f_invoice fi on fmd.inv_type = 0 and fi.id = fmd.id_inv
+                left join r_t_inv_jasa rti on fmd.inv_type = 1 and rti.id = fmd.id_inv
+                left join m_cv mc on rti.cv_id = mc.id
+            where fmd.id_match =".$id);
+    }
+
+    function um_count(){
+        return $this->db->querY("select count(id) as count from f_kas
+            where flag_ppn = 1 and jenis_trx = 0 and api = 0");
+    }
+
+    function uk_count(){
+        return $this->db->querY("select count(id) as count from f_kas
+            where flag_ppn = 1 and jenis_trx = 1 and api = 0");
     }
 }

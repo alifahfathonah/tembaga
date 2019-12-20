@@ -22,7 +22,9 @@ class JenisBarang extends CI_Controller{
 
         $data['content']= "jenis_barang/index";
         $this->load->model('Model_jenis_barang');
+        $this->load->model('Model_bobbin');
         $data['list_data'] = $this->Model_jenis_barang->list_data()->result();
+        $data['list_owner'] = $this->Model_bobbin->get_owner_list()->result();
 
         $this->load->view('layout', $data);
     }
@@ -47,6 +49,8 @@ class JenisBarang extends CI_Controller{
                     'uom'=> $this->input->post('uom'),
                     'category'=> $this->input->post('kategori'),
                     'ukuran'=> $this->input->post('ukuran'),
+                    'owner'=> $this->input->post('owner'),
+                    'group'=> $this->input->post('group'),
                     'keterangan'=> $this->input->post('keterangan'),
                     'created'=> $tanggal,
                     'created_by'=> $user_id
@@ -86,6 +90,8 @@ class JenisBarang extends CI_Controller{
                 'uom'=> $this->input->post('uom'),
                 'category'=> $this->input->post('kategori'),
                 'ukuran'=> $this->input->post('ukuran'),
+                'owner'=> $this->input->post('owner'),
+                'group'=> $this->input->post('group'),
                 'keterangan'=> $this->input->post('keterangan'),
                 'modified'=> $tanggal,
                 'modified_by'=> $user_id

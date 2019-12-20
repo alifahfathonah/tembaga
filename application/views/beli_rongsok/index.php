@@ -520,8 +520,8 @@
                             <?php
                                 if( ($group_id==1 || $hak_akses['edit']==1) && $data->status != 1 ){
                             ?>
-                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/BeliRongsok/edit/<?php echo $data->id; ?>" style="margin-bottom:4px">
-                                &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/BeliRongsok/edit/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/BeliRongsok/view_po/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
                             <?php
                                 }
                                 if($group_id==1 || $hak_akses['print_po']==1){

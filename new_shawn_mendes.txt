@@ -50,7 +50,7 @@ bug - cek kenapa kadang uang masuk matching nyangkut (done)
 30- PerSingkat Repacking kayak kirim rongsok. utk selain packing bobbin dan keranjang(done) 
 31- Laporan Status Bobbin loop per 50 row dan 7 column(done)
 32- Tambahin Revisi Surat Jalan Tolling ke Supplier(done)
-//33- Laporan Retur, yang udah diterima dan udah dikirim balik lagi ada berapa. per bulan
+33- Laporan Retur, yang udah diterima dan udah dikirim balik lagi ada berapa. per bulan(done)
 34- Pemasukan Rongsok berdasarkan (done)
 
 -PO dan Tolling ( KH dan KMP) (done)
@@ -101,7 +101,14 @@ bug - cek kenapa kadang uang masuk matching nyangkut (done)
 46- Edit bank di uang masuk. walaupun sudah cair/matching (done)
 47- Matching Pembayaran gabisa upload kalau masih minus atau jumlah cek / voucher masi 0(done)
 48- Input/Edit stok fisik rongsok karena gaada stok opname (done)
-49- Persingkat Repacking Rongsok kayak Finish Good(done)
+49- Persingkat Repacking Rongsok kayak Finish Good(done), scan dan Approve spb dulu baru ke dtr dan ttr(done)
 - flag blebek dan serbuk gamasuk laporan rongsok bulanan
-50,51,52,53,54,55- Retur bisa multiple, tambahin caranya di surat jalan
-	Cek Laporan retur dari spb_detail
+50- Edit jenis barang ff. produksi, bpb, gudang selama belum ada sj(done)
+51- Close retur untuk laporan. biar ga muncul pas buat surat jalan. Laporan retur ngambil dari fulfilmentnya
+52- Laporan Bulanan FG Headernya salah, Laporan Alumunium Sendiri (done)
+53- Laporan Bulanan WIP
+54- Laporan Tolling percustomer dan persupplier(done)
+	- Tolling PO : Sisa Belum Diterima (done)
+	- Tolling SO : Sisa Belum Dikirim (done)
+55,56- Laporan Bulanan. per KMP, TMS, INDOKA
+57- Bukain matching pembayaran yang sudah di approve karena sering salah(done)

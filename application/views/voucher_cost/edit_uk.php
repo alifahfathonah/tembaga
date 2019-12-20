@@ -142,13 +142,38 @@
                             <tr>
                                 <td style="text-align:center"><?php echo $no; ?></td>
                                 <?php 
-                                echo '<input type="hidden" name="details['.$no.'][id_detail]" value="'.$row->id.'">'; 
-                                if($row->nm_cost==null){
-                                    echo '<input type="hidden" name="details['.$no.'][nm_cost]" value="'.$row->nm_cost.'">';
-                                    echo '<td>'.$row->nama.'</td>';
-                                    echo '<td><input type="text" class="form-control myline" name="details['.$no.'][keterangan]" value="'.$row->keterangan.'"></td>';
-                                }else{
+                                echo '<input type="hidden" name="details['.$no.'][id_detail]" value="'.$row->id.'">';
+                                echo '<input type="hidden" name="details['.$no.'][group_cost_id]" value="'.$row->group_cost_id.'">'; 
+                                if($row->group_cost_id==3){
                                     echo '<td><input type="text" class="form-control myline" name="details['.$no.'][nm_cost]" value="'.$row->nama.'"></td>';
+                                    echo '<td><input type="text" class="form-control myline" name="details['.$no.'][keterangan]" value="'.$row->keterangan.'"></td>';
+                                }elseif($row->group_cost_id==2){
+                                    echo '<td>';
+                                    echo '
+                            <select name="details['.$no.'][nm_cost]" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value=""></option>';
+                                    foreach ($supplier_list as $v){
+                                        echo '<option value="'.$v->id.'" ';
+                                        echo (($v->id==$row->supplier_id)? 'selected="selected"':'');
+                                        echo '>'.$v->nama_cost.'</option>';
+                                    };
+                            echo '</select>';
+                                    echo '</td>';
+                                    echo '<td><input type="text" class="form-control myline" name="details['.$no.'][keterangan]" value="'.$row->no_po.$row->keterangan.'"></td>';
+                                }elseif($row->group_cost_id==1){
+                                    echo '<td>';
+                                    echo '
+                            <select name="details['.$no.'][nm_cost]" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value=""></option>';
+                                    foreach ($customer_list as $v){
+                                        echo '<option value="'.$v->id.'" ';
+                                        echo (($v->id==$row->customer_id)? 'selected="selected"':'');
+                                        echo '>'.$v->nama_cost.'</option>';
+                                    };
+                            echo '</select>';
+                                    echo '</td>';
                                     echo '<td><input type="text" class="form-control myline" name="details['.$no.'][keterangan]" value="'.$row->no_po.$row->keterangan.'"></td>';
                                 };?>
                                 <td style="text-align:center"><?='<input text="text" id="amount_'.$no.'" class="form-control myline" onkeyup="getComa(this.value, this.id);" name="details['.$no.'][amount]" value="'.number_format($row->amount,2,'.', ',').'">';?></td>

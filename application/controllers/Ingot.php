@@ -429,7 +429,7 @@ class Ingot extends CI_Controller{
             if($this->db->trans_complete()){    
                 $this->session->set_flashdata('flash_msg', 'SPB berhasil di-create');
                 if($this->input->post('jenis_spb')==8){
-                    redirect('index.php/BeliRongsok/create_dtr');
+                    redirect('index.php/GudangRongsok/view_spb/'.$id);
                 }else{
                     redirect('index.php/GudangRongsok/spb_list');
                 }
@@ -1647,47 +1647,18 @@ class Ingot extends CI_Controller{
                             'tanggal_keluar' => $tanggal_keluar
         					));
         }
-            
-            /*    
-                #Update Stok Rongsok
-                $get_stok = $this->Model_beli_rongsok->cek_stok($row->nama_item, 'RONGSOK')->row_array(); 
-                if($get_stok){
-                    $stok_id  = $get_stok['id'];            
-                    $this->db->where('id', $stok_id);
-                    $this->db->update('t_inventory', array(
-                            'stok_bruto'=>($get_stok['stok_bruto']- $row->qty), 
-                            'stok_netto'=>($get_stok['stok_netto']- $row->qty), 
-                            'modified'=>$tanggal, 
-                            'modified_by'=>$user_id));
-                }else{
-                    $this->db->insert('t_inventory', array(
-                            'nama_produk'=>$row->nama_item,
-                            'jenis_item'=>'RONGSOK',
-                            'stok_bruto'=>$row->qty, 
-                            'stok_netto'=>$row->qty, 
-                            'created'=>$tanggal, 
-                            'created_by'=>$user_id,
-                            'modified'=>$tanggal, 
-                            'modified_by'=>$user_id));
-                    
-                    $stok_id = $this->db->insert_id();
-                }
-                
-                #Save data ke tabel t_inventory_detail
-                $this->db->insert('t_inventory_detail', array(
-                    't_inventory_id'=>$stok_id,
-                    'tanggal'=>$tanggal,
-                    'bruto_masuk'=>$row->qty,
-                    'netto_masuk'=>$row->qty,
-                    'remarks'=>'SKB produksi ingot',
-                ));
-            */
+    
             if($this->db->trans_complete()){    
-                $this->session->set_flashdata('flash_msg', 'SPB sudah di-approve. Detail Pemenuhan SPB sudah disimpan');                 
+                $this->session->set_flashdata('flash_msg', 'SPB sudah di-approve. Detail Pemenuhan SPB sudah disimpan');
+                if($this->input->post('jenis_spb')==8){
+                   redirect('index.php/BeliRongsok/create_dtr');
+                }else{
+                   redirect('index.php/Ingot/spb_list');
+                }                 
             }else{
                 $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+                redirect('index.php/Ingot/spb_list');
             }
-       redirect('index.php/Ingot/spb_list');
     }
     
     function delSPBSudahDipenuhi(){

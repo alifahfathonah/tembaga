@@ -8,99 +8,106 @@
         </h5>          
     </div>
 </div>
-<div class="row">&nbsp;</div>
-<div class="row">                            
-    <div class="col-md-12"> 
-        <?php
-            if( ($group_id==1)||($hak_akses['surat_jalan']==1) ){
-        ?>
-        
-        <div class="row">
-            <div class="col-md-12">
-                <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
-                    <button class="close" data-close="alert"></button>
-                    <span id="msg_sukses"><?php echo $this->session->flashdata('flash_msg'); ?></span>
-                </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
+                <button class="close" data-close="alert"></button>
+                <span id="msg_sukses"><?php echo $this->session->flashdata('flash_msg'); ?></span>
             </div>
         </div>
-        <div class="portlet box yellow-gold">
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class="fa fa-file-word-o"></i>Cek Balance Tolling
-                </div>               
-            </div>
-            <div class="portlet-body">
-                <table class="table table-striped table-bordered table-hover" id="sample_6">
-                <thead>
-                <tr>
-                    <th style="width:50px;">No</th>
-                    <th>Customer</th>
-                    <th>Jumlah Tolling</th>
-                    <th>Jumlah Surat Jalan</th>
-                    <th>Rongsok Netto</th>
-                    <th>Tolling Netto</th>
-                    <th>Selisih Netto</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                    <?php 
-                        $no = 0;
-                        foreach ($list_data as $data){
-                            $no++;
-                    ?>
-                    <tr>
-                        <td style="text-align:center;"><?php echo $no; ?></td>
-                        <td><?php echo $data->nama_customer; ?></td>
-                        <td><?php echo $data->jumlah_tolling; ?></td>
-                        <td><?php echo $data->sj_item; ?></td>
-                        <td><?php echo $data->jumlah_netto; ?></td>
-                        <td><?php echo $data->sj_detail_netto; ?></td>
-                        <td><?php echo $data->jumlah_netto - $data->sj_detail_netto; ?></td>
-                        <td style="text-align:center"> 
-                            <?php
-                                if($group_id==1 || $hak_akses['view_spb']==1){
-                            ?>
-                            <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/Tolling/view_balance/<?php echo $data->m_customer_id; ?>" 
-                               style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
-                               
-                            <?php
-                                }
-                                if($group_id==1 || $hak_akses['print_surat_jalan']==1){
-                            ?>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/Tolling/print_surat_jalan/<?php echo $data->id; ?>" 
-                                style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
-                                
-                            <?php
-                                }
-                            ?>
-                        </td>
-                    </tr>
-                    <?php
-                        }
-                    ?>                                                                                    
-                </tbody>
-                </table>
-            </div>
-        </div>
-        <?php
-            }else{
-        ?>
-        <div class="alert alert-danger">
-            <button class="close" data-close="alert"></button>
-            <span id="message">Anda tidak memiliki hak akses ke halaman ini!</span>
-        </div>
-        <?php
-            }
-        ?>
     </div>
-</div> 
-
+   <div class="col-md-12" style="margin-top: 10px;"> 
+        <h3>Laporan Tolling Customer</h3>
+        <hr class="divider">
+        <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4">
+                           Customer <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="laporan" name="laporan" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
+                                <option value=""></option>
+                                <?php
+                                    foreach ($customer_list as $row){
+                                        echo '<option value="'.$row->id.'">'.(($this->session->userdata('user_ppn') == 1)? $row->nama_customer : $row->nama_customer_kh).'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- <div class="row">
+                        <div class="col-md-4">
+                            Tanggal Awal <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tgl_start" name="tgl_start" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('d-m-Y'); ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Tanggal Akhir <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="tgl_end" name="tgl_end" 
+                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                value="<?php echo date('d-m-Y'); ?>">
+                        </div>
+                    </div> -->
+                        <div class="row">
+                            <div class="col-md-4">&nbsp;</div>
+                        <div class="col-md-8">
+                            <a href="javascript:;" class="btn green" onclick="simpanData();"> 
+                                <i class="fa fa-search"></i> Proses </a>
+                        </div>    
+                    </div>
+                </div>        
+            </div>
+    </div>
+<script type="text/javascript">
+function simpanData(){
+    if($.trim($("#laporan").val()) == ""){
+        $('#message').html("Laporan harus dipilih, tidak boleh kosong!");
+        $('.alert-danger').show(); 
+    // }else if($.trim($("#tgl_start").val()) == ""){
+    //     $('#message').html("Tanggal Awal harus diisi, tidak boleh kosong!");
+    //     $('.alert-danger').show();
+    // }else if($.trim($("#tgl_end").val()) == ""){
+    //     $('#message').html("Tanggal Akhir harus diisi, tidak boleh kosong!");
+    //     $('.alert-danger').show();
+    }else{
+        var l=$('#laporan').val();
+        // var s=$('#tgl_start').val();
+        // var e=$('#tgl_end').val();
+        window.open('<?php echo base_url();?>index.php/Tolling/print_laporan_tolling_so?l='+l,'_blank');
+    };
+};
+</script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-$(function(){       
-    window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
+$(function(){        
+    $("#tgl_start").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });        
+    $("#tgl_end").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });    
 });
-</script>         
+</script>

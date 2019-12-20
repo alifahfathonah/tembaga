@@ -198,7 +198,7 @@
                             <input type="text" id="rekening_pembayaran" name="rekening_pembayaran" class="form-control myline" style="margin-bottom:5px" value="<?php echo $myData['rekening_pembayaran']; ?>" readonly="readonly">
                         </div>
                     </div>
-                <?php } //TUTUP IF GIRO ?>
+                    <?php } //TUTUP IF GIRO ?>
                 <div class="row">&nbsp;</div>
             </div>
                 <div class="col-md-1">&nbsp;</div>
@@ -213,7 +213,7 @@
                                 value="<?php echo $myData['jenis_pembayaran']; ?>">
                         </div>
                     </div>
-                    <?php if($myData['jenis_pembayaran']=='Giro' || $myData['jenis_pembayaran']=='Transfer'){ ?>
+                    <?php if($myData['jenis_pembayaran']=='Giro' || $myData['jenis_pembayaran']=='Transfer' || $myData['jenis_pembayaran']=='Setor Tunai'){ ?>
                     <div class="row">
                         <div class="col-md-4">
                             Bank <font color="#f00">*</font>
@@ -340,7 +340,7 @@
                             echo '<a href="javascript:;" class="btn green" id="editDataCekMundur" onclick="editDataCekMundur();"> 
                         <i class="fa fa-pencil"></i> Edit Cek Mundur </a>';
                         }
-                    if( ($group_id==1 || $hak_akses['edit_um']==1) && ($myData['jenis_pembayaran']!='Cek Mundur' && $myData['flag_matching']==0)){
+                    if( ($group_id==1 || $hak_akses['edit_um']==1) && ($myData['jenis_pembayaran']!='Cek Mundur')){
                             echo '<a href="javascript:;" class="btn green" id="editData" onclick="editData();"> 
                         <i class="fa fa-pencil"></i> Edit </a>';
                         }
@@ -428,12 +428,14 @@ function editDataCekMundur(){
 
 function editData(){
     $("#editData").hide();
+    <?php if($myData['flag_matching']==0){ ?>
     $("#nominal").prop('readonly', false);
     $("#customer_id").prop('disabled', false);
-    $("#no_um").attr('readonly', false);
-    $("#remarks").attr("readonly", false);
-    $("#tanggal").attr("readonly", false);
     $("#id_bank").attr("disabled", false);
+    $("#tanggal").attr("readonly", false);
+    $("#no_um").attr('readonly', false);
+    <?php } ?>
+    $("#remarks").attr("readonly", false);
     $("#tanggal").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",

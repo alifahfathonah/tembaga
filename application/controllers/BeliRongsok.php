@@ -211,6 +211,33 @@ class BeliRongsok extends CI_Controller{
             redirect('index.php/BeliRongsok');
         }
     }
+
+    function view_po(){
+        $module_name = $this->uri->segment(1);
+        $data['user_ppn'] = $this->session->userdata('user_ppn');
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "beli_rongsok/view_po";
+            $this->load->model('Model_beli_rongsok');
+            $data['header'] = $this->Model_beli_rongsok->show_header_po($id)->row_array();
+            $data['list_detail'] = $this->Model_beli_rongsok->show_data_po($id)->result();
+            $data['list_voucher'] = $this->Model_beli_rongsok->show_data_voucher($id)->result();
+
+            $this->load->model('Model_beli_sparepart');
+            $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/BeliRongsok');
+        }
+    }
     
     function update(){
         $user_id  = $this->session->userdata('user_id');
@@ -1247,11 +1274,7 @@ class BeliRongsok extends CI_Controller{
                     'approved_by'=>$user_id));
 
             if($this->db->trans_complete()){
-                if($this->input->post('supplier_id')==822){
-                    redirect('index.php/GudangRongsok/spb_list');  
-                }else{
-                    redirect('index.php/BeliRongsok/ttr_list');  
-                }
+                redirect('index.php/BeliRongsok/ttr_list');
             }else{
                 $this->session->set_flashdata('flash_msg', 'TTR gagal disimpan, silahkan dicoba kembali!');
                 redirect('index.php/BeliRongsok/ttr_list');  

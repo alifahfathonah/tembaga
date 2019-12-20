@@ -38,6 +38,10 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
+    function get_slip_setoran($id){
+        return $this->db->query("Select * from f_slip_setoran where id_pembayaran =".$id);
+    }
+
     function replace_list_detail($id){
         $data = $this->db->query("Select * from f_uang_masuk where id = ".$id);
         return $data;
@@ -74,10 +78,11 @@ class Model_finance extends CI_Model{
     }
 
     function list_data_slip_setoran(){
-        $data = $this->db->query("Select fss.*, fp.no_pembayaran, fp.tanggal, b.nama_bank From f_slip_setoran fss
+        $data = $this->db->query("Select fss.*, fp.no_pembayaran, fp.tanggal, b.nama_bank, fk.nomor, fk.id_um From f_slip_setoran fss
             left join f_pembayaran fp on fp.id = fss.id_pembayaran
             left join f_kas fk on fk.id = fss.id_kas
-            left join bank b on b.id = fk.id_bank");
+            left join bank b on b.id = fk.id_bank
+            order by tanggal desc");
         return $data;
     }
 
@@ -856,7 +861,7 @@ class Model_finance extends CI_Model{
     }
 
     function print_flag_sj($s,$e,$ppn){
-        if($ppn==2){
+        if($ppn==1){
             $data = $this->db->query("Select *,
             COALESCE(r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as jenis_barang, COALESCE(r.uom,r2.uom,sp.uom,jb.uom) as uom from 
             (
@@ -887,7 +892,7 @@ class Model_finance extends CI_Model{
                 left join sparepart sp on (a.jenis_barang_sj = 'LAIN' and sp.id = a.jbid)
                 left join jenis_barang jb on (jb.id = a.jbid)
                         order by tanggal, no_surat_jalan, jenis_barang;");
-        }else{
+        }elseif($ppn==0){
             $data = $this->db->query("select tsjd.t_sj_id, tsj.no_surat_jalan, so.flag_ppn, tsj.tanggal, sum(tsjd.qty) as qty, sum(tsjd.bruto) as bruto, 
             COALESCE(NULLIF(tso.alias,''),(case when tsjd.jenis_barang_alias = 0 then tsjd.jenis_barang_id else tsjd.jenis_barang_alias end)) as jbid, (case when so.flag_ppn = 1 then mc.nama_customer else mc.nama_customer_kh end) as nama_customer,
             round(sum(case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end),3) as netto,
@@ -903,6 +908,24 @@ class Model_finance extends CI_Model{
             left join sparepart sp on (tsj.jenis_barang = 'LAIN' and sp.id = tsjd.jenis_barang_id)
             left join jenis_barang jb on (jb.id = tsjd.jenis_barang_id)
                         where so.flag_ppn=".$ppn." and tsj.tanggal between '".$s."' and '".$e."'
+                        group by jbid, tsj.no_surat_jalan
+                        order by tsj.tanggal, tsj.no_surat_jalan, jenis_barang;");
+        }elseif($ppn==2){
+            $data = $this->db->query("select tsjd.t_sj_id, tsj.no_surat_jalan, so.flag_ppn, tsj.tanggal, sum(tsjd.qty) as qty, sum(tsjd.bruto) as bruto, 
+            COALESCE(NULLIF(tso.alias,''),(case when tsjd.jenis_barang_alias = 0 then tsjd.jenis_barang_id else tsjd.jenis_barang_alias end)) as jbid, (case when so.flag_ppn = 1 then mc.nama_customer else mc.nama_customer_kh end) as nama_customer,
+            round(sum(case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end),3) as netto,
+            COALESCE(r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as jenis_barang, COALESCE(r.uom,r2.uom,sp.uom,jb.uom) as uom,
+            (select tsod.amount from t_sales_order_detail tsod left join t_sales_order tso on tso.id = tsod.t_so_id where tso.so_id = tsj.sales_order_id and tsod.jenis_barang_id = case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)as amount 
+            from t_surat_jalan_detail tsjd 
+            left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id 
+            left join t_sales_order tso on tso.so_id = tsj.sales_order_id
+            left join sales_order so on so.id = tso.so_id
+            left join m_customers mc on mc.id = tsj.m_customer_id
+            left join rongsok r on (tsj.jenis_barang = 'RONGSOK' and r.id = tsjd.jenis_barang_id)
+            left join rongsok r2 on (tsj.jenis_barang = 'AMPAS' and r2.id = tsjd.jenis_barang_id)
+            left join sparepart sp on (tsj.jenis_barang = 'LAIN' and sp.id = tsjd.jenis_barang_id)
+            left join jenis_barang jb on (jb.id = tsjd.jenis_barang_id)
+                        where tsj.tanggal between '".$s."' and '".$e."' and tsj.sales_order_id > 0
                         group by jbid, tsj.no_surat_jalan
                         order by tsj.tanggal, tsj.no_surat_jalan, jenis_barang;");
         }
