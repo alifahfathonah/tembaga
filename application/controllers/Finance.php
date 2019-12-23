@@ -1581,7 +1581,11 @@ class Finance extends CI_Controller{
 
         foreach($loop_detail as $k => $row){
             $total = $row->amount * $row->netto;
-            $total = round($total,0);
+            if($this->input->post('currency')=='IDR'){
+                $total = round($total,0);
+            }else{
+                $total = round($total,2);
+            }
             $fid = array(
                     'id_invoice'=>$id_new,
                     'sj_detail_id'=>$row->t_sj_id,
@@ -1606,8 +1610,12 @@ class Finance extends CI_Controller{
         }else{
             $total_invoice = ($nilai_invoice-str_replace('.', '', $this->input->post('diskon'))-str_replace('.', '', $this->input->post('add_cost'))) + str_replace('.', '', $this->input->post('materai'));
         }
-        
-        $total_invoice = round($total_invoice,0);
+
+        if($this->input->post('currency')=='IDR'){
+            $total_invoice = round($total_invoice,0);
+        }else{
+            $total_invoice = round($total_invoice,2);
+        }
 
         $this->db->where('id',$id_new);
         $this->db->update('f_invoice', array(
@@ -2190,7 +2198,7 @@ class Finance extends CI_Controller{
                     $total_invoice += -$row->total;
                 }
             $tabel .= '<td>'.$row->no_invoice.'</td>';
-            $tabel .= '<td style="text-align:right;">'.number_format($row->total,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:right;">'.number_format($row->total,2,',','.').'</td>';
             $tabel .= '<td style="text-align:center">';
             if($row->count==0){
                 $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="input_inv('.$row->id.','.$row->inv_type.');" style="margin-top:2px; margin-bottom:2px;" id="addInv"><i class="fa fa-plus"></i> Tambah </a>';
@@ -2204,7 +2212,7 @@ class Finance extends CI_Controller{
         $tabel .= '<tr>';
         $tabel .= '<td style="text-align:right;" colspan="3"><strong>Total Harga </strong></td>';
         $tabel .= '<td style="text-align:right;">';
-        $tabel .= '<strong>'.number_format($total_invoice,0,',','.').'</strong>';
+        $tabel .= '<strong>'.number_format($total_invoice,2,',','.').'</strong>';
         $tabel .= '</td>';
         $tabel .= '<td></td>';
         $tabel .= '</tr>';
@@ -2232,7 +2240,7 @@ class Finance extends CI_Controller{
                     $total_invoice += -$row->inv_bayar;
                 }
             $tabel .= '<td>'.$row->no_invoice.'</td>';
-            $tabel .= '<td style="text-align:right;">'.number_format($row->inv_bayar,0,',','.').'</td>';
+            $tabel .= '<td style="text-align:right;">'.number_format($row->inv_bayar,2,',','.').'</td>';
             $tabel .= '<td style="text-align:center">';
             $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle blue" onclick="view_inv('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-floppy-o"></i> View </a>';
             $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle red" onclick="delInv('.$row->id.','.$row->id_inv.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-trash"></i> Delete </a></td>';
@@ -2241,7 +2249,7 @@ class Finance extends CI_Controller{
         $tabel .= '<tr>';
         $tabel .= '<td style="text-align:right;" colspan="3"><strong>Total Harga </strong></td>';
         $tabel .= '<td style="text-align:right;">';
-        $tabel .= '<strong>'.number_format($total_invoice,0,',','.').'</strong>';
+        $tabel .= '<strong>'.number_format($total_invoice,2,',','.').'</strong>';
         $tabel .= '<input type="hidden" id="load_total_invoice" name="total_invoice" value="'.$total_invoice.'">';
         $tabel .= '</td>';
         $tabel .= '<td id="view_total_invoice"></td>';
@@ -2544,7 +2552,7 @@ class Finance extends CI_Controller{
                     $tabel .= '<div style="background-color:orange; color:#fff; padding:3px">Sudah Diganti</div>';
                 }
             $tabel .= '</td>';
-            $tabel .= '<td style="text-align:right;">'.$row->currency.' '.number_format($row->nominal,0,',', '.').'</td>';
+            $tabel .= '<td style="text-align:right;">'.$row->currency.' '.number_format($row->nominal,2,',', '.').'</td>';
             $tabel .= '<td style="text-align:center"><button href="javascript:;" class="btn btn-xs btn-circle yellow-gold addUM" onclick="this.disabled=true; instantADDUM('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="addUM"><i class="fa fa-plus"></i> Tambah</button></td>';
             $tabel .= '</tr>';            
             $no++;
@@ -2553,7 +2561,7 @@ class Finance extends CI_Controller{
         $tabel .= '<tr>';
         $tabel .= '<td style="text-align:right;" colspan="4"><strong>Total Nominal </strong></td>';
         $tabel .= '<td style="text-align:right;">';
-        $tabel .= '<strong>'.number_format($total_nominal,0,',','.').'</strong>';
+        $tabel .= '<strong>'.number_format($total_nominal,2,',','.').'</strong>';
         $tabel .= '</td>';
         $tabel .= '<td></td>';
         $tabel .= '</tr>';
@@ -2588,7 +2596,7 @@ class Finance extends CI_Controller{
                     $tabel .= '<div style="background-color:orange; color:#fff; padding:3px">Sudah Diganti</div>';
                 }
             $tabel .= '</td>';
-            $tabel .= '<td style="text-align:right;">'.$row->currency.' '.number_format($row->total,0,',', '.').'</td>';
+            $tabel .= '<td style="text-align:right;">'.$row->currency.' '.number_format($row->total,2,',', '.').'</td>';
             $tabel .= '<td style="text-align:center">';
             if($row->biaya>0){
                 $tabel .= '<a href="javascript:;" class="btn btn-xs btn-circle blue" onclick="view_um('.$row->id.');" style="margin-top:2px; margin-bottom:2px;" id="delInv"><i class="fa fa-floppy-o"></i> View </a>';
@@ -2601,7 +2609,7 @@ class Finance extends CI_Controller{
         $tabel .= '<tr>';
         $tabel .= '<td style="text-align:right;" colspan="4"><strong>Total Nominal Invoice </strong></td>';
         $tabel .= '<td style="text-align:right;">';
-        $tabel .= '<strong>'.number_format($total_nominal,0,',','.').'</strong>';
+        $tabel .= '<strong>'.number_format($total_nominal,2,',','.').'</strong>';
         $tabel .= '<input type="hidden" id="load_total_nominal" name="total_nominal" value="'.$total_nominal.'">';
         $tabel .= '</td>';
         $tabel .= '<td id="view_total_nominal"></td>';

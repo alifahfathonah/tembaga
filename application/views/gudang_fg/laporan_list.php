@@ -76,13 +76,14 @@
                         <th>Bulan</th>
                         <th>Stok Awal Netto</th>
                         <th>Stok Akhir Netto</th>
-                        <th>Keterangan</th>
+                        <th width="50%">Keterangan</th>
                    </tr>
                  </thead>
                  <tbody>
                 <?php $no=0;
                 $arr = array();
                 foreach ($list as $data){ 
+                            $no++;
                     ?>
                     <tr>
                         <td></td>
@@ -94,11 +95,30 @@
                         ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangFG/view_laporan/<?php echo $data->tanggal; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangFG/print_laporan_bulanan/<?php echo $data->tanggal; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print All &nbsp; </a>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangFG/print_laporan_fg/<?php echo $data->tanggal; ?>/5" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print Laporan FG&nbsp; </a>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangFG/print_laporan_fg/<?php echo $data->tanggal; ?>/29" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print Laporan FG Alumunium&nbsp; </a>
+                            <select id="laporan_<?=$no;?>" data-placeholder="Laporan Bulanan FG ..." class="myline select2me" style="margin-bottom:5px; width:50%; height: 75%;" onchange="show_btn(this.value,<?=$no;?>);">
+                                <option value="0"></option>
+                                <optgroup label="Laporan FG">
+                                    <option value="5">Laporan FG</option>
+                                    <option value="29">Laporan FG Aluminium</option>
+                                </optgroup>
+                                <optgroup label="Laporan KMP">
+                                    <option value="1">Laporan KMP</option>
+                                    <option value="2">Laporan KMP Aluminium</option>
+                                </optgroup>
+                                <optgroup label="Laporan TMS">
+                                    <option value="3">Laporan TMS</option>
+                                    <option value="4">Laporan TMS Aluminium</option>
+                                </optgroup>
+                                <optgroup label="Laporan INDOKA">
+                                    <option value="6">Laporan INDOKA</option>
+                                    <option value="7">Laporan INDOKA Aluminium</option>
+                                </optgroup>
+                            </select>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="javascript:;" style="margin-bottom:4px; display: none;" onclick="print_laporan(<?=$no.',\''.$data->tanggal.'\'';?>);" id="btn_laporan_<?=$no;?>"> &nbsp; <i class="fa  fa-print"></i> Print Laporan&nbsp; </a>
+                            <!-- <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangFG/print_laporan_fg/<?php echo $data->tanggal; ?>/5" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print Laporan FG&nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangFG/print_laporan_fg/<?php echo $data->tanggal; ?>/29" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print Laporan FG Alumunium&nbsp; </a> -->
                         <?php
                             }//if group
-                            $no++;
                 }//foreach?>
                 </tbody>   
                 </table>
@@ -106,6 +126,19 @@
         </div>
     </div>
 <script type="text/javascript">
+function show_btn(id,no){
+    if(id==0){
+        $('#btn_laporan_'+no).hide();
+    }else{
+        $('#btn_laporan_'+no).show();
+    }
+}
+
+function print_laporan(id,tgl){
+        var l = $('#laporan_'+id).val();
+        window.open('<?php echo base_url();?>index.php/GudangFG/print_laporan_fg/'+tgl+'/'+l,'_blank');
+}
+
 function searchFilter(){
     $('#proses_button').text('Please Wait ... ');
     var s=$('#bulan').val();

@@ -104,11 +104,12 @@ bug - cek kenapa kadang uang masuk matching nyangkut (done)
 49- Persingkat Repacking Rongsok kayak Finish Good(done), scan dan Approve spb dulu baru ke dtr dan ttr(done)
 - flag blebek dan serbuk gamasuk laporan rongsok bulanan
 50- Edit jenis barang ff. produksi, bpb, gudang selama belum ada sj(done)
-51- Close retur untuk laporan. biar ga muncul pas buat surat jalan. Laporan retur ngambil dari fulfilmentnya
+51- Close retur untuk laporan. biar ga muncul pas buat surat jalan. Laporan retur ngambil dari fulfilmentnya(done)
 52- Laporan Bulanan FG Headernya salah, Laporan Alumunium Sendiri (done)
 53- Laporan Bulanan WIP
 54- Laporan Tolling percustomer dan persupplier(done)
 	- Tolling PO : Sisa Belum Diterima (done)
 	- Tolling SO : Sisa Belum Dikirim (done)
-55,56- Laporan Bulanan. per KMP, TMS, INDOKA
-57- Bukain matching pembayaran yang sudah di approve karena sering salah(done)
+55- Laporan Bulanan. per KMP, TMS, INDOKA (done)
+56- Bukain matching pembayaran yang sudah di approve karena sering salah(done)
+57- Delete matching LPB yang sudah jadi bk/kk dan sudah dikirim ke pajak (done)

@@ -809,6 +809,7 @@ class Model_gudang_fg extends CI_Model{
             where tgf.jenis_trx = 0 and jb.ukuran <= '0499' and 
                 CASE WHEN tbf.dtbj_id > 0 THEN dtbj.po_id = 0 
                 WHEN tbf.dtt_id > 0 THEN dtt.po_id = 0
+                WHEN tgf.t_bpb_fg_id = 0 THEN tgf.t_bpb_fg_id = 0 
                 ELSE tbf.retur_id = 0 END 
                 group by tgf.jenis_barang_id, jenis_packing
             order by jb.ukuran, jb.jenis_barang asc");
@@ -982,63 +983,122 @@ class Model_gudang_fg extends CI_Model{
             where d.t_sj_id =".$id);
     }
 
-    function print_laporan_fg($b,$t,$s,$e,$g){
-        return $this->db->query("select i.*, jb.jenis_barang,
-            (select sum(netto) from t_gudang_fg tgf
-                left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
-                where tgf.tanggal_masuk between '".$s."' and '".$e."' and tbf.produksi_fg_id > 0 and tgf.jenis_barang_id = i.jenis_barang_id
-                ) as produksi,
-            (select sum(netto) from t_gudang_fg tgf
-                left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
-                left join dtbj on tbf.dtbj_id = dtbj.id
-                where tgf.tanggal_masuk between '".$s."' and '".$e."' and (dtbj.po_id > 0 or tbf.dtt_id > 0) and tgf.jenis_barang_id = i.jenis_barang_id
-                ) as supplier,
-            (select sum(netto) from t_gudang_fg tgf
-                left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
-                where tgf.tanggal_masuk between '".$s."' and '".$e."' and tbf.retur_id > 0 and tgf.jenis_barang_id = i.jenis_barang_id
-                ) as retur,
-            (select sum(netto) from t_gudang_fg tgf
-                left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
-                left join dtbj on tbf.dtbj_id = dtbj.id
-                where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id = 713 and tgf.jenis_barang_id = i.jenis_barang_id
-                ) as sdm,
-            (select sum(netto) from t_gudang_fg tgf
-                left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
-                left join dtbj on tbf.dtbj_id = dtbj.id
-                where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id != 713 and dtbj.po_id = 0 and tgf.jenis_barang_id = i.jenis_barang_id
-                ) as gdrsk,
-            (select sum(netto) from t_gudang_fg tgf
-                left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
-                left join dtbj on tbf.dtbj_id = dtbj.id
-                where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id = 95 and tgf.jenis_barang_id = i.jenis_barang_id) as koreksi,
-            (select sum(netto) from t_gudang_fg tgf
-                where tgf.tanggal_keluar between '".$s."' and '".$e."' and t_sj_id > 0 and tgf.jenis_barang_id = i.jenis_barang_id
-                ) as konsumen,
-            (select sum(netto) from t_gudang_fg tgf
-                left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
-                where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 0 and tgf.jenis_barang_id = i.jenis_barang_id
-                ) as sdm_k,
-            (select sum(netto) from t_gudang_fg tgf
-                left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
-                where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb in (7,9) and tgf.jenis_barang_id = i.jenis_barang_id
-                ) as retur_k,
-            (select sum(netto) from t_gudang_fg tgf
-                left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
-                where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 5 and tgf.jenis_barang_id = i.jenis_barang_id
-                ) as rongsok,
-            (select sum(netto) from spb_detail_fulfilment sdf
-                left join dtr_detail dd on sdf.dtr_detail_id = dd.id
-                left join spb on sdf.spb_id = spb.id
-                where dd.tanggal_keluar between '".$s."' and '".$e."' and spb.jenis_spb = 11 and dd.rongsok_id = i.jenis_barang_id
-                ) as koreksi_k,
-            (select sum(netto) from stok_opname_detail sod
-                where sod.stok_opname_id = 
-                    (select id from stok_opname so
-                        where so.jenis_stok_opname = 'FG' and so.tanggal between '".$s."' and '".$e."' order by tanggal desc limit 1) 
-                and sod.jenis_barang_id = i.jenis_barang_id) as fisik
-            from inventory i
-                left join jenis_barang jb on i.jenis_barang_id = jb.id
-                where bulan = ".$b." and tahun = ".$t." and i.jenis_barang = 'FG' and jb.group = ".$g." order by jb.group, jb.jenis_barang");
+    function print_laporan_fg($b,$t,$s,$e,$g,$j,$o){
+        if($g==5||$g==29){
+            return $this->db->query("select i.*, jb.jenis_barang,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and tbf.produksi_fg_id > 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as produksi,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj on tbf.dtbj_id = dtbj.id
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and (dtbj.po_id > 0 or tbf.dtt_id > 0) and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as supplier,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and tbf.retur_id > 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as retur,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj on tbf.dtbj_id = dtbj.id
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id = 713 and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as sdm,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj on tbf.dtbj_id = dtbj.id
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id != 713 and dtbj.po_id = 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as gdrsk,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj on tbf.dtbj_id = dtbj.id
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id = 95 and tgf.jenis_barang_id = i.jenis_barang_id) as koreksi,
+                (select sum(netto) from t_gudang_fg tgf
+                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and t_sj_id > 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as konsumen,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as sdm_k,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb in (7,9) and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as retur_k,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 5 and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as rongsok,
+                (select sum(netto) from spb_detail_fulfilment sdf
+                    left join dtr_detail dd on sdf.dtr_detail_id = dd.id
+                    left join spb on sdf.spb_id = spb.id
+                    where dd.tanggal_keluar between '".$s."' and '".$e."' and spb.jenis_spb = 11 and dd.rongsok_id = i.jenis_barang_id
+                    ) as koreksi_k,
+                (select sum(netto) from stok_opname_detail sod
+                    where sod.stok_opname_id = 
+                        (select id from stok_opname so
+                            where so.jenis_stok_opname = 'FG' and so.tanggal between '".$s."' and '".$e."' order by tanggal desc limit 1) 
+                    and sod.jenis_barang_id = i.jenis_barang_id) as fisik
+                from inventory i
+                    left join jenis_barang jb on i.jenis_barang_id = jb.id
+                    where bulan = ".$b." and tahun = ".$t." and i.jenis_barang = 'FG' and jb.group = ".$g." order by jb.group, jb.jenis_barang");
+        }else{
+            return $this->db->query("select i.*, jb.jenis_barang,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and tbf.produksi_fg_id > 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as produksi,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj on tbf.dtbj_id = dtbj.id
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and (dtbj.po_id > 0 or tbf.dtt_id > 0) and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as supplier,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and tbf.retur_id > 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as retur,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj on tbf.dtbj_id = dtbj.id
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id = 713 and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as sdm,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj on tbf.dtbj_id = dtbj.id
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id != 713 and dtbj.po_id = 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as gdrsk,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj on tbf.dtbj_id = dtbj.id
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id = 95 and tgf.jenis_barang_id = i.jenis_barang_id) as koreksi,
+                (select sum(netto) from t_gudang_fg tgf
+                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and t_sj_id > 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as konsumen,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as sdm_k,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb in (7,9) and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as retur_k,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 5 and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as rongsok,
+                (select sum(netto) from spb_detail_fulfilment sdf
+                    left join dtr_detail dd on sdf.dtr_detail_id = dd.id
+                    left join spb on sdf.spb_id = spb.id
+                    where dd.tanggal_keluar between '".$s."' and '".$e."' and spb.jenis_spb = 11 and dd.rongsok_id = i.jenis_barang_id
+                    ) as koreksi_k,
+                (select sum(netto) from stok_opname_detail sod
+                    where sod.stok_opname_id = 
+                        (select id from stok_opname so
+                            where so.jenis_stok_opname = 'FG' and so.tanggal between '".$s."' and '".$e."' order by tanggal desc limit 1) 
+                    and sod.jenis_barang_id = i.jenis_barang_id) as fisik
+                from inventory i
+                    left join jenis_barang jb on i.jenis_barang_id = jb.id
+                    where bulan = ".$b." and tahun = ".$t." and i.jenis_barang = 'FG' and jb.owner=".$o." and jb.group = ".$j." order by jb.group, jb.jenis_barang");
+        }
     }
 
     function get_bpb($id){

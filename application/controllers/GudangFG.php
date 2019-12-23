@@ -1298,7 +1298,7 @@ class GudangFG extends CI_Controller{
             $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
         }                 
 
-       redirect('index.php/GudangFG/spb_list');
+       redirect('index.php/GudangFG/view_spb/'.$spb_id);
     }
 
     function reject_fulfilment(){
@@ -1403,9 +1403,10 @@ class GudangFG extends CI_Controller{
 
     function approve_spb(){
         $user_id  = $this->session->userdata('user_id');
-        $tanggal  = date('Y-m-d H:i:s');
+        $user_ppn  = $this->session->userdata('user_ppn');
+        $tgl_input  = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tanggal_keluar = date('Y-m-d', strtotime($this->input->post('tanggal_keluar')));
-        $tgl_input = date('Y-m-d');
+        $tanggal = date('Y-m-d H:i:s');
         $spb_id = $this->input->post('id');
         
         $this->db->trans_start();
@@ -1435,14 +1436,36 @@ class GudangFG extends CI_Controller{
                         'modified_by'=>$user_id,
                         'tanggal_keluar'=>$tanggal_keluar
         ));
+
+        if($status = 1 && $this->input->post('jenis_spb')==8){
+            $this->load->model('Model_m_numberings');
+            $code = $this->Model_m_numberings->getNumbering('DTBJ', $tgl_input);
+            $data = array(
+                'no_dtbj'=> $code,
+                'flag_ppn'=> 0,
+                'tanggal'=> $tanggal_keluar,
+                'supplier_id'=> 822,
+                'spb_id'=> $this->input->post('id'),
+                'jenis_packing'=> $this->input->post('jenis_packing_id'),
+                'remarks'=> 'Repacking : '.$this->input->post('no_spb'),
+                'created'=> $tanggal,
+                'created_by'=> $user_id
+            );
+            $this->db->insert('dtbj', $data);
+            $dtbj_id = $this->db->insert_id();
+        }
             
-            if($this->db->trans_complete()){    
-                $this->session->set_flashdata('flash_msg', 'SPB sudah di-approve. Detail SPB sudah disimpan');            
+            if($this->db->trans_complete()){
+                $this->session->set_flashdata('flash_msg', 'SPB sudah di-approve. Detail SPB sudah disimpan'); 
+                if($this->input->post('jenis_spb')==8){
+                    redirect('index.php/BeliFinishGood/create_dtbj/'.$dtbj_id);
+                }else{
+                    redirect('index.php/GudangFG/spb_list');
+                }       
             }else{
                 $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
-            }             
-        
-       redirect('index.php/GudangFG/spb_list');
+                    redirect('index.php/GudangFG/spb_list');
+            }
     }
 
     function tambah_spb(){
@@ -2026,32 +2049,11 @@ class GudangFG extends CI_Controller{
                             'tanggal_masuk'=> $tgl_input
                         ));
             }
-        }elseif($this->input->post('jenis_spb')==8){
-
-            $this->load->model('Model_m_numberings');
-            $code = $this->Model_m_numberings->getNumbering('DTBJ', $tgl_input);
-            $data = array(
-                'no_dtbj'=> $code,
-                'flag_ppn'=> $user_ppn,
-                'tanggal'=> $tgl_input,
-                'supplier_id'=> 822,
-                'spb_id'=> $this->input->post('id'),
-                'jenis_packing'=> $this->input->post('jenis_packing_id'),
-                'remarks'=> 'Repacking : '.$this->input->post('no_spb'),
-                'created'=> $tanggal,
-                'created_by'=> $user_id
-            );
-            $this->db->insert('dtbj', $data);
-            $dtbj_id = $this->db->insert_id();
         }
         
         if($this->db->trans_complete()){
             $this->session->set_flashdata('flash_msg', 'Data SPB FG berhasil disimpan');
-            if($this->input->post('jenis_spb')==8){
-                redirect('index.php/BeliFinishGood/create_dtbj/'.$dtbj_id);
-            }else{
-                redirect('index.php/GudangFG/spb_list');
-            }
+            redirect('index.php/GudangFG/view_spb/'.$this->input->post('id'));
         }else{
             $this->session->set_flashdata('flash_msg', 'Data SPB FG gagal disimpan');
             redirect('index.php/GudangFG/edit_spb/'.$this->input->post('id'));
@@ -2449,13 +2451,41 @@ class GudangFG extends CI_Controller{
             $data['start'] = $start;
             $data['end'] = $end;
             if($g == 5){
+                $j=5;
+                $o=0;
                 $data['g'] = 'FINISH GOOD';
             }elseif($g == 29){
+                $j=29;
+                $o=0;
                 $data['g'] = 'ALUMUNIUM';
+            }elseif($g == 1){
+                $j=5;
+                $o=2;
+                $data['g'] = 'KMP FINISH GOOD';
+            }elseif($g == 2){
+                $j=29;
+                $o=2;
+                $data['g'] = 'KMP ALUMUNIUM';
+            }elseif($g == 3){
+                $j=5;
+                $o=1;
+                $data['g'] = 'TMS FINISH GOOD';
+            }elseif($g == 4){
+                $j=29;
+                $o=1;
+                $data['g'] = 'TMS ALUMUNIUM';
+            }elseif($g == 6){
+                $j=5;
+                $o= 3;
+                $data['g'] = 'INDOKA FINISH GOOD';
+            }elseif($g == 7){
+                $j=29;
+                $o= 3;
+                $data['g'] = 'INDOKA ALUMUNIUM';
             }
 
         $this->load->model('Model_gudang_fg');
-        $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_fg($bulan,$tahun,$start,$end,$g)->result();
+        $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_fg($bulan,$tahun,$start,$end,$g,$j,$o)->result();
         $this->load->view('gudang_fg/print_laporan_fg', $data);
     }
 

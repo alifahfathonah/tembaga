@@ -129,6 +129,9 @@
                                     echo 'Adjustment';
                                 }
                                ?>">
+
+                            <input type="hidden" id="jenis_spb" name="jenis_spb" value="<?=$myData['jenis_spb'];?>">
+                            <input type="hidden" id="jenis_packing_id" name="jenis_packing_id" value="<?=$myData['jenis_packing_id'];?>">
                         </div>
                     </div>
                     <div class="row">

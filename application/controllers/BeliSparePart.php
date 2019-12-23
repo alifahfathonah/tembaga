@@ -2083,20 +2083,6 @@ class BeliSparePart extends CI_Controller{
         $this->load->model('Model_m_numberings');
         if($user_ppn==1){
                 $this->load->helper('target_url');
-
-                // $url = target_url().'api/BeliSparepartAPI/numbering?id=VK-KMP&tgl='.$tgl_input;
-                // $ch = curl_init();
-                // curl_setopt($ch, CURLOPT_URL, $url);
-                // // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-                // // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
-                // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-                // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                // curl_setopt($ch, CURLOPT_HEADER, 0);
-
-                // $result = curl_exec($ch);
-                // $result = json_decode($result);
-                // curl_close($ch);
-                // $code = $result->code;
             $code = $this->Model_m_numberings->getNumbering('VK-KMP', $tgl_input);
         }else{
             $code = $this->Model_m_numberings->getNumbering('VK', $tgl_input);
@@ -2207,20 +2193,6 @@ class BeliSparePart extends CI_Controller{
         $this->load->model('Model_m_numberings');
         if($user_ppn==1){
                 $this->load->helper('target_url');
-
-                // $url = target_url().'api/BeliSparepartAPI/numbering?id=VSP-KMP&tgl='.$tgl_input;
-                // $ch = curl_init();
-                // curl_setopt($ch, CURLOPT_URL, $url);
-                // // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-                // // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
-                // curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-                // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                // curl_setopt($ch, CURLOPT_HEADER, 0);
-
-                // $result = curl_exec($ch);
-                // $result = json_decode($result);
-                // curl_close($ch);
-                // $code = $result->code;
             $code = $this->Model_m_numberings->getNumbering('VSP-KMP', $tgl_input);
         }else{
             $code = $this->Model_m_numberings->getNumbering('VSP', $tgl_input);
@@ -2320,6 +2292,76 @@ class BeliSparePart extends CI_Controller{
             }
 
         if($this->db->trans_complete()){
+            redirect(base_url('index.php/BeliSparePart/voucher_list'));
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Matching LPB gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/BeliSparePart');
+        } 
+        header('Content-Type: application/json');
+        echo json_encode($return_data); 
+    }
+
+    function delete_vk(){
+        $return_data = array();
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $id       = $this->uri->segment(3);
+
+        $this->db->trans_start();
+
+        $this->load->model('Model_beli_sparepart');
+
+        $po_group = $this->Model_beli_sparepart->get_po_group($id)->result();
+            foreach ($po_group as $key) {
+                $this->db->where('id', $key->po_id);
+                $this->db->update('po', array(
+                    'flag_pelunasan'=>0,
+                    'flag_dp'=>1,
+                    'status'=>3
+                ));
+            }
+
+        $vk = $this->Model_beli_sparepart->get_f_vk($id)->row_array();
+        $this->db->where('id', $id);
+        $this->db->delete('f_vk');
+
+            $this->db->where('id', $vk['id_fk']);
+            $this->db->delete('f_kas');
+
+                $this->db->where('vk_id',$id);
+                $this->db->update('lpb', array(
+                    'vk_id'=>0
+                ));
+
+                //DELETE VOUCHER
+                $detail['v_tambahan'] = $this->Model_beli_sparepart->load_voucher_tambahan($id)->result();
+                $this->db->where('id_fk', $vk['id_fk']);
+                $this->db->delete('voucher');
+
+            if($user_ppn==1){
+                $this->load->helper('target_url');
+
+                $detail_post = $vk;
+                $post = json_encode($detail_post);
+
+                // print_r($post);
+                // die();
+
+                $ch3 = curl_init(target_url().'api/BeliSparepartAPI/delete_vk');
+                curl_setopt($ch3, CURLOPT_POST, true);
+                curl_setopt($ch3, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch3, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch3, CURLOPT_RETURNTRANSFER, true);
+                $response3 = curl_exec($ch3);
+                $result3 = json_decode($response3, true);
+                curl_close($ch3);
+                // print_r($response3);
+                // die();
+            }
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Matching Berhasil di hapus!');
             redirect(base_url('index.php/BeliSparePart/voucher_list'));
         }else{
             $this->session->set_flashdata('flash_msg', 'Matching LPB gagal disimpan, silahkan dicoba kembali!');

@@ -488,6 +488,12 @@ class Model_beli_sparepart extends CI_Model{
         return $data;
     }
 
+    function get_f_vk($id){
+        return $this->db->query("select vk.id, v.id as id_vc, v.id_fk from f_vk vk
+                left join voucher v on v.vk_id = vk.id
+                where vk.id =".$id);
+    }
+
     function list_data_lpb($supp,$ppn){
         $data = $this->db->query("Select lpb.id, lpb.no_bpb, po.ppn from lpb
                 left join po on po.id = lpb.po_id
