@@ -39,10 +39,10 @@
         echo '<td>'.$row->kode.'</td>';
         echo '<td>'.$row->jenis_barang.'</td>';
         echo '<td>'.$row->uom.'</td>';
-        echo '<td>'.number_format($row->stok_awal,2,',','.').'</td>';
-        echo '<td>'.number_format($row->netto_masuk,2,',','.').'</td>';
-        echo '<td>'.number_format($row->netto_keluar,2,',','.').'</td>';
-        echo '<td>'.number_format($row->stok_akhir,2,',','.').'</td>';
+        echo '<td style="text-align:right">'.number_format($row->stok_awal,2,',','.').'</td>';
+        echo '<td style="text-align:right">'.number_format($row->netto_masuk,2,',','.').'</td>';
+        echo '<td style="text-align:right">'.number_format($row->netto_keluar,2,',','.').'</td>';
+        echo '<td style="text-align:right">'.number_format($row->stok_akhir,2,',','.').'</td>';
         echo '</tr>';
         $no++;
         $total_awal += $row->stok_awal;
@@ -53,10 +53,10 @@
     ?>
     <tr>
         <td colspan="4"></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($total_awal,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($masuk,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($keluar,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($total_akhir,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000;text-align:right;"><?=number_format($total_awal,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000;text-align:right;"><?=number_format($masuk,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000;text-align:right;"><?=number_format($keluar,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000;text-align:right;"><?=number_format($total_akhir,2,',','.');?></td>
     </tr>
     </tbody>
     <body onLoad="window.print()">

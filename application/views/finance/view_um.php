@@ -213,7 +213,7 @@
                                 value="<?php echo $myData['jenis_pembayaran']; ?>">
                         </div>
                     </div>
-                    <?php if($myData['jenis_pembayaran']=='Giro' || $myData['jenis_pembayaran']=='Transfer' || $myData['jenis_pembayaran']=='Setor Tunai'){ ?>
+                    <?php if($myData['jenis_pembayaran']=='Giro' || $myData['jenis_pembayaran']=='Transfer' || $myData['jenis_pembayaran']=='Setor Tunai'  || $myData['jenis_pembayaran']=='Lain-Lain'){ ?>
                     <div class="row">
                         <div class="col-md-4">
                             Bank <font color="#f00">*</font>

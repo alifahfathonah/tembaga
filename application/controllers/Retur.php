@@ -811,7 +811,7 @@ class Retur extends CI_Controller{
                     'tanggal'=> $tgl_input,
                     'jenis_barang'=>1,
                     'jenis_spb'=> 9,//JENIS SPB RETUR K
-                    'flag_tolling'=> 1,
+                    'flag_tolling'=> 0,
                     'jumlah'=> $this->input->post('jumlah_rsk'),
                     'remarks'=>$this->input->post('remarks'),
                     'created'=> $tanggal,
@@ -1450,6 +1450,19 @@ class Retur extends CI_Controller{
         
         $this->session->set_flashdata('flash_msg', 'Data permintaan retur barang berhasil diupdate');
         redirect('index.php/Retur/view/'.$this->input->post('id'));
+    }
+
+    function open_sj_retur(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('retur', array(
+            'flag_taken'=>0
+        ));
+        
+        $this->session->set_flashdata('flash_msg', 'Open Surat Jalan');
+        redirect('index.php/Retur/add_surat_jalan');
     }
 
     function reject(){
@@ -2339,6 +2352,22 @@ class Retur extends CI_Controller{
         echo json_encode($sj_detail); 
     }
 
+    function delete_surat_jalan(){
+        $id = $this->uri->segment(3);
+        $this->db->trans_start();
+
+        $this->db->where('id', $id);
+        $this->db->delete('t_surat_jalan');
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Surat Jalan berhasil di hapus');
+            redirect('index.php/Retur/surat_jalan');
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Surat Jalan gagal dihapus');
+            redirect('index.php/Retur/surat_jalan');
+        }
+    }
+
     /*
     function load_detail_surat_jalan(){
         $id = $this->input->post('id');
@@ -2552,7 +2581,9 @@ class Retur extends CI_Controller{
             $list_produksi = $this->Model_retur->get_retur_fulfilment_rsk($spbid)->result();
         }
 
-        if(empty($list_produksi)){
+        $list_check_fulfilment = $this->Model_retur->check_fulfilment($retur_id)->result();
+
+        if(empty($list_produksi) && empty($list_check_fulfilment)){
             $this->db->where('id',$retur_id);
             $this->db->update('retur', array(
                 'flag_taken'=>1
@@ -2812,10 +2843,108 @@ class Retur extends CI_Controller{
 
         $this->load->model('Model_retur');
         if($j == 0){
-            $data['detailLaporan'] = $this->Model_retur->print_laporan_retur($data['start'],$data['end'])->result();
+            $data['detailLaporan'] = $this->Model_retur->print_laporan_retur($data['start'],$data['end'],$j)->result();
             $this->load->view('retur/print_laporan_retur', $data);
         }else{
+            $data['detailLaporan'] = $this->Model_retur->print_laporan_retur($data['start'],$data['end'],$j)->result();
+            $this->load->view('retur/print_laporan_retur2', $data);
+        }
+    }
 
+    function print_laporan_retur_now(){
+        $module_name = $this->uri->segment(1);
+        $this->load->helper('tanggal_indo');
+
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $this->load->model('Model_retur');
+            $data['detailLaporan'] = $this->Model_retur->print_laporan_retur_now(date('Y-m-d'))->result();
+            $this->load->view('retur/print_laporan_retur3', $data);
+    }
+
+    function retur_supplier(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $user_ppn    = $this->session->userdata('user_ppn');
+
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "retur/retur_supplier";
+        $this->load->model('Model_retur');
+        $this->load->model('Model_beli_fg');
+        $this->load->model('Model_beli_rongsok');
+        $this->load->model('Model_gudang_fg');
+        $data['supplier_list'] = $this->Model_beli_rongsok->supplier_list()->result();
+        $data['packing'] = $this->Model_gudang_fg->packing_fg_list()->result();
+        $data['list_data'] = $this->Model_retur->retur_supplier()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function save_header_dtbj(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_dtbj = date('Ym', strtotime($this->input->post('tanggal')));
+        $user_ppn = $this->session->userdata('user_ppn');
+
+        $this->load->model('Model_m_numberings');
+        if($user_ppn==1){
+            $code = 'DTBJ-KMP.'.$tgl_dtbj.'.'.$this->input->post('no_dtbj');
+        }else{
+            $code = $this->Model_m_numberings->getNumbering('DTBJ', $tgl_input); 
+        }
+
+        $data = array(
+                    'no_dtbj'=> $code,
+                    'flag_ppn'=> $user_ppn,
+                    'tanggal'=> $tgl_input,
+                    'supplier_id'=> $this->input->post('supplier_id'),
+                    'jenis_packing'=> $this->input->post('packing'),
+                    'type_retur'=> 1,
+                    'created'=> $tanggal,
+                    'created_by'=> $user_id
+                );
+
+        if($this->db->insert('dtbj', $data)){
+            redirect(base_url('index.php/BeliFinishGood/create_dtbj/'.$this->db->insert_id()));
+        } else {
+            $this->session->set_flashdata('flash_msg', 'Laporan Produksi Finish Good gagal disimpan, silahkan dicoba kembali!');
+            redirect(base_url('index.php/BeliFinishGood/dtbj_list'));
+        }
+    }
+
+    function save_potong_piutang(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal_potong')));
+        $user_ppn = $this->session->userdata('user_ppn');
+
+        $this->db->trans_start();
+
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('retur', array(
+            'tanggal_potong' => $tgl_input,
+            'flag_taken' => 1
+        ));
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Potong Piutang Retur Berhasil disimpan, silahkan dicoba kembali!');
+            redirect(base_url('index.php/Retur'));
+        } else {
+            $this->session->set_flashdata('flash_msg', 'Potong Piutang Retur Gagal disimpan, silahkan dicoba kembali!');
+            redirect(base_url('index.php/Retur'));
         }
     }
 }

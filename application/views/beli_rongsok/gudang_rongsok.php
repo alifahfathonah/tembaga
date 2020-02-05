@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Gudang
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/BeliRongsok/'); ?>"> Gudang Rongsok </a> 
+            <a href="<?php echo base_url('index.php/GudangRongsok/gudang_rongsok'); ?>"> Gudang Rongsok </a> 
         </h5>          
     </div>
 </div>
@@ -43,6 +43,7 @@
             <td><?= number_format($data->stok_bruto,2,',','.'); ?></td>
             <td style="background-color: green; color: white;"><?= number_format($data->stok_netto,2,',','.'); ?></td>
             <td><a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangRongsok/view_gudang_rongsok/<?php echo $data->rongsok_id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
+                <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/GudangRongsok/edit_gudang_rongsok/<?php echo $data->rongsok_id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
                 <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangRongsok/print_gudang_rongsok/<?php echo $data->rongsok_id; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
             </td>
         </tr>    

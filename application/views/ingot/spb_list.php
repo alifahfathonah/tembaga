@@ -109,6 +109,8 @@
                                     echo 'Adjustment';
                                 }elseif ($data->jenis_spb==12){
                                     echo 'Apollo';
+                                }elseif ($data->jenis_spb==13){
+                                    echo 'SJ Lain';
                                 }
                             ?>
                         </td>

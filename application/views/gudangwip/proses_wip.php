@@ -59,7 +59,7 @@
                             <!-- <input id="jenis_masak" name="jenis_masak" readonly="readonly" class="form-control myline" style="margin-bottom:5px" value="<?= $pil_masak ?>" type="text"> -->
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" id="show_jenis_barang">
                         <div class="col-md-4">
                             Jenis Barang <font color="#f00">*</font>
                         </div>
@@ -425,8 +425,34 @@
                 <input type="hidden" name="gas" value="0">
                 <input type="hidden" name="gas_r" value="0">
                 <br>
+
                 <div class="row">
-                    <!-- <div class="col-md-6">
+                    <div class="col-md-6">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label>Jumlah Kawat Cuci Bakar Ulang</label>
+                                <input type="text" id="qty_cbu_in" name="qty_cbu" 
+                                class="form-control myline" size="25" 
+                                value="" placeholder="Jumlah Kawat Merah" onchange="hitung_susut_jumlah();"/>
+                                <!-- <input type="hidden" id="id_jenis_barang" name="id_jenis_barang"> -->
+                                <label> Roll </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label>Berat Kawat Cuci Bakar Ulang</label>
+                                <input type="text" id="berat_cbu_in" name="berat_cbu" 
+                                class="form-control myline" size="25" 
+                                value="" placeholder="Berat Kawat Merah" onchange="hitung_susut_berat();"/>
+                                <label> Kg</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="row">
+                    <div class="col-md-6">
                         <div class="form-inline">
                             <div class="form-group">
                                 <label>Berat Serbuk</label>
@@ -436,8 +462,8 @@
                                 <label> Kg</label>
                             </div>
                         </div>
-                    </div> -->
-                    <!-- <div class="col-md-6">
+                    </div> 
+                    <div class="col-md-6">
                         <div class="form-inline">
                             <div class="form-group">
                                 <label>Berat BS </label>
@@ -447,8 +473,8 @@
                                 <label> Kg</label>
                             </div>
                         </div>
-                    </div> -->
-                </div>
+                    </div>
+                </div> -->
                 <div class="row">
                 <br/><br/>
                 <div class="col-md-4 col-md-offset-4">
@@ -481,7 +507,7 @@ function hitung_susut_jumlah(){
         var susut = Number(Number($('#jml_ingot_keras').val()) - (Number($('#qty_kh_in').val()) + Number($('#jml_keras_in').val())));
         $('#susut_jumlah_keras').val(susut);
     }else if($('#jenis_masak').val()=='CUCI'){
-        var susut = Number(Number($('#jml_kawat_hitam').val()) - (Number($('#qty_km_in').val())));
+        var susut = Number( Number($('#jml_kawat_hitam').val()) - Number($('#qty_km_in').val()) - Number($('#qty_cbu_in').val()) );
         $('#susut_jumlah_kh').val(susut);
     }
 }
@@ -493,7 +519,7 @@ function hitung_susut_berat(){
         var susut = Number(Number($('#jml_berat_keras').val()) - (Number($('#berat_kh_in').val()) + Number($('#berat_keras_in').val()) + Number($('#total_netto').val())));
         $('#susut_berat_keras').val(susut);
     }else if($('#jenis_masak').val()=='CUCI'){
-        var susut = Number(Number($('#berat_kawat_hitam').val()) - Number($('#berat_km_in').val()));
+        var susut = Number(Number($('#berat_kawat_hitam').val()) - Number($('#berat_km_in').val()) - Number($('#berat_cbu_in').val()) );
         $('#susut_berat_kh').val(susut);
     }
 }
@@ -655,6 +681,7 @@ function pilih_data(id){
         $('#div_stok_keras :input').attr('disabled', true);
         $('#dtr').show();
         $('#div_kawat_keras').show();
+        $('#show_jenis_barang').show();
         reset_values();
         $("#id_spb_ingot").select2("val", "");
     }else if(id == 'BAKAR ULANG'){
@@ -675,8 +702,10 @@ function pilih_data(id){
         $('#div_stok_keras :input').attr('disabled', false);
         $('#dtr').show();
         $('#div_kawat_keras').hide();
+        $('#show_jenis_barang').show();
         reset_values();
     }else if(id == 'CUCI'){
+        $('#show_jenis_barang').hide();
         $('#div_spb_rolling').addClass('hidden disabled');
         $('#div_kawat_hitam_masuk').addClass('hidden disabled');
         $('#div_stok_keras').addClass('hidden disabled');
@@ -700,6 +729,8 @@ function pilih_data(id){
         $('#div_data_spb :input').attr('disabled', true);
         $('#div_data_spb_kh :input').attr('disabled', false);
         $('#div_stok_keras :input').attr('disabled', true);
+
+        $('#jenis_barang').select2('val', 654);
     }
 }
 
@@ -742,10 +773,7 @@ function simpanData(){
             $('#formku').submit();
         }
     }else if(id == 'CUCI'){
-        if($.trim($("#jenis_barang").val()) == ""){
-            $('#message').html("Jenis Barang harus dipilih, tidak boleh kosong!");
-            $('.alert-danger').show(); 
-        }else if($.trim($("#id_spb_kh").val()) == ""){
+    if($.trim($("#id_spb_kh").val()) == ""){
             $('#message').html("SPB harus diisi, tidak boleh kosong!");
             $('.alert-danger').show(); 
         }else if($.trim($("#qty_km_in").val()) == ""){

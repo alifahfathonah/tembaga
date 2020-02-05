@@ -40,8 +40,8 @@
         echo '<td></td>';
         echo '<td></td>';
         echo '<td></td>';
-        echo '<td>'.number_format($sisa_qty,2,',','.').'</td>';
-        echo '<td>'.number_format($sisa_berat,2,',','.').'</td>';
+        echo '<td style="text-align: right;">'.number_format($sisa_qty,2,',','.').'</td>';
+        echo '<td style="text-align: right;">'.number_format($sisa_berat,2,',','.').'</td>';
         echo '</tr>';
     foreach ($detailLaporan as $row){
         echo '<tr>';
@@ -49,14 +49,14 @@
         echo '<td>'.$row->tanggal.'</td>';
         echo '<td>'.$row->nomor.'</td>';
         echo '<td>'.$row->keterangan.'</td>';
-        echo '<td>'.number_format($row->qty_in,2,',','.').'</td>';
-        echo '<td>'.number_format($row->berat_in,2,',','.').'</td>';
-        echo '<td>'.number_format($row->qty_out,2,',','.').'</td>';
-        echo '<td>'.number_format($row->berat_out,2,',','.').'</td>';
+        echo '<td style="text-align: right;">'.number_format($row->qty_in,2,',','.').'</td>';
+        echo '<td style="text-align: right;">'.number_format($row->berat_in,2,',','.').'</td>';
+        echo '<td style="text-align: right;">'.number_format($row->qty_out,2,',','.').'</td>';
+        echo '<td style="text-align: right;">'.number_format($row->berat_out,2,',','.').'</td>';
         $qty = $sisa_qty + $row->qty_in - $row->qty_out;    
         $berat = $sisa_berat + $row->berat_in - $row->berat_out;
-        echo '<td>'.number_format($qty,2,',','.').'</td>';
-        echo '<td>'.number_format($berat,2,',','.').'</td>';
+        echo '<td style="text-align: right;">'.number_format($qty,2,',','.').'</td>';
+        echo '<td style="text-align: right;">'.number_format($berat,2,',','.').'</td>';
         echo '</tr>';
         $no++;
         $qty_masuk += $row->qty_in;
@@ -69,12 +69,12 @@
     ?>
     <tr>
         <td colspan="4"></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($qty_masuk,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($berat_masuk,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($qty_keluar,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($berat_keluar,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($sisa_qty,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($sisa_berat,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align: right;"><?=number_format($qty_masuk,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align: right;"><?=number_format($berat_masuk,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align: right;"><?=number_format($qty_keluar,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align: right;"><?=number_format($berat_keluar,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align: right;"><?=number_format($sisa_qty,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align: right;"><?=number_format($sisa_berat,2,',','.');?></td>
     </tr>
     </tbody>
 </table>

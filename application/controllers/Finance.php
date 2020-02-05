@@ -134,7 +134,8 @@ class Finance extends CI_Controller{
                 $num = 'CM-KMP';
             }else{
                 $num = 'CM';
-            }$code = $this->Model_m_numberings->getNumbering($num);
+            }
+            $code = $this->Model_m_numberings->getNumbering($num,$tgl_input);
         }else{
             $status = 1;
             if($user_ppn == 1){
@@ -227,8 +228,7 @@ class Finance extends CI_Controller{
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
-                // print_r($response);
-                // die();
+
                 if($result['status']==true){
                     $this->db->where('id', $f_kas_insert_id);
                     $this->db->update('f_kas', array('api'=>1));
@@ -1508,7 +1508,12 @@ class Finance extends CI_Controller{
 
     function get_no_invoice(){
         $tgl_inv = date('Ym', strtotime($this->input->post('tanggal')));
-        $code = 'INV-KMP.'.$tgl_inv.'.'.$this->input->post('id');
+        $ppn = $this->session->userdata('user_ppn');
+        if($ppn == 1){
+            $code = 'INV-KMP.'.$tgl_inv.'.'.$this->input->post('id');
+        }else{
+            $code = 'INV.'.$tgl_inv.'.'.$this->input->post('id');
+        }
 
         $count = $this->db->query("select count(id) as count from f_invoice where no_invoice ='".$code."'")->row_array();
         if($count['count']>0){

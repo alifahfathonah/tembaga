@@ -37,14 +37,14 @@
                             </select>
                         </div>
                     </div>
-                    <!-- <div class="row">
+                    <div class="row">
                         <div class="col-md-4">
                             Tanggal Awal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <input type="text" id="tgl_start" name="tgl_start" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                                value="<?php echo date('01-m-Y'); ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -56,7 +56,7 @@
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
                                 value="<?php echo date('d-m-Y'); ?>">
                         </div>
-                    </div> -->
+                    </div>
                         <div class="row">
                             <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-8">
@@ -66,23 +66,215 @@
                     </div>
                 </div>        
             </div>
+        <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">&nbsp;</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-danger display-hide" id="box_error_voucher">
+                                    <button class="close" data-close="alert"></button>
+                                    <span id="msg_voucher">&nbsp;</span>
+                                </div>
+                            </div>
+                        </div>
+                        <form class="eventInsForm" method="post" target="_self" name="formku" 
+                              id="formku">                         
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Tanggal <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="tanggal" name="tanggal" 
+                                        class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                        value="<?php echo date('Y-m-01'); ?>">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Jenis Laporan
+                                </div>
+                                <div class="col-md-8">
+                                    <select id="tipe_laporan" name="tipe_laporan" class="form-control myline select2me" 
+                                        data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
+                                        <option></option>
+                                        <option value="0">Stok Awal</option>
+                                        <option value="1">Koreksi</option>
+                                    </select>                        
+                                </div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-4">
+                                   Supplier <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <select id="supplier_id" name="supplier_id" class="form-control myline select2me" 
+                                        data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
+                                        <option value=""></option>
+                                        <?php
+                                            foreach ($supplier_list as $row){
+                                                echo '<option value="'.$row->id.'">'.$row->nama_supplier.'</option>';
+                                            }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="hidden" name="customer_id" value="0">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Jenis Laporan
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="jenis_barang" name="jenis_barang" 
+                                        class="form-control myline" style="margin-bottom:5px" 
+                                        readonly="readonly" value="Tolling Supplier">
+
+                                    <input type="hidden" id="jenis_laporan" name="jenis_laporan" value="2"> 
+                                    <input type="hidden" id="id" name="id">                        
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Netto <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="netto" name="netto" class="form-control myline" style="margin-bottom:5px" placeholder="Netto ...">                                                                       
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">                        
+                        <button type="button" class="btn blue" onClick="prosesStok();">Simpan</button>
+                        <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="divider">
+            <div class="row">
+                <div class="portlet box yellow-gold">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-file-word-o"></i>Stok Awal Laporan List
+                        </div> 
+                        <div class="tools">
+                            <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" onclick="createStokAwal();"> <i class="fa fa-plus"></i> Tambah</a>
+                        </div>               
+                    </div>
+                    <div class="portlet-body">
+                        <table class="table table-striped table-bordered table-hover" id="sample_6">
+                        <thead>
+                        <tr>
+                            <th style="width:50px;">No</th>
+                            <th>Tanggal</th>
+                            <th>Customer</th>
+                            <th>Tipe</th>
+                            <th>Netto</th>
+                            <th>Dibuat Oleh</th> 
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <?php 
+                                $no = 0;
+                                foreach ($list_data as $data){
+                                    $no++;
+                            ?>
+                            <tr>
+                                <td style="text-align:center;"><?php echo $no; ?></td>
+                                <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
+                                <td><?php echo $data->nama; ?></td>
+                                <td><?=($data->tipe==0)? 'Stok Awal' : 'Koreksi';?></td>
+                                <td style="text-align:center"><?php echo number_format($data->netto,2,',','.'); ?></td>
+                                <td><?php echo $data->realname; ?></td>
+                                <td style="text-align:center">
+                                    <a class="btn btn-circle btn-xs blue" onclick="editData(<?=$data->id;?>);" style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit &nbsp; </a>
+                                    <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/Tolling/delete_stok/<?php echo $data->id;?>/2" onclick="return confirm('Anda yakin menghapus transaksi ini?');" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-trash"></i> Hapus &nbsp; </a>
+                                </td>
+                            </tr>
+                            <?php
+                                }
+                            ?>                                                                                    
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
     </div>
 <script type="text/javascript">
+var dsState;
+
+function createStokAwal(){
+    $('#netto').val('');
+    $('#id').val('');
+    dsState = "Input";
+
+    $("#myModal").find('.modal-title').text('Create Stok Awal');
+    $("#myModal").modal('show',{backdrop: 'true'});
+}
+
+function editData(id){
+    dsState = "Edit";
+    $.ajax({
+        url: "<?php echo base_url('index.php/Tolling/edit_stok'); ?>",
+        type: "POST",
+        data : {id: id},
+        success: function (result){
+            $('#tipe_laporan').select2('val',result['tipe']);
+            $('#netto').val(result['netto']);
+            $('#tanggal').val(result['tanggal']);
+            $('#supplier_id').select2('val',result['supplier_id']);
+            $('#id').val(result['id']);
+            
+            $("#myModal").find('.modal-title').text('Edit Rongsok');
+            $("#myModal").modal('show',{backdrop: 'true'});           
+        }
+    });
+}
+
+function prosesStok(){
+    if($.trim($("#tanggal").val()) == ""){
+        $('#msg_voucher').html("Tanggal harus diisi, tidak boleh kosong!");
+        $('#box_error_voucher').show(); 
+    }else if($.trim($("#netto").val()) == "" || $("#netto").val()=="0"){
+        $('#msg_voucher').html("Netto harus diisi, tidak boleh kosong!");
+        $('#box_error_voucher').show();
+    }else if($.trim($("#supplier_id").val()) == ""){
+        $('#msg_voucher').html("Supplier harus diisi, tidak boleh kosong!");
+        $('#box_error_voucher').show(); 
+    }else{
+        if(dsState=="Input"){
+            $('#msg_voucher').html("");
+            $('#box_error_voucher').hide();
+            $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Tolling/save_stok_laporan");
+            $('#formku').submit(); 
+        }else{
+            $('#msg_voucher').html("");
+            $('#box_error_voucher').hide();
+            $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Tolling/update_stok_laporan");
+            $('#formku').submit(); 
+        }
+    };
+}
 function simpanData(){
     if($.trim($("#laporan").val()) == ""){
         $('#message').html("Laporan harus dipilih, tidak boleh kosong!");
         $('.alert-danger').show(); 
-    // }else if($.trim($("#tgl_start").val()) == ""){
-    //     $('#message').html("Tanggal Awal harus diisi, tidak boleh kosong!");
-    //     $('.alert-danger').show();
-    // }else if($.trim($("#tgl_end").val()) == ""){
-    //     $('#message').html("Tanggal Akhir harus diisi, tidak boleh kosong!");
-    //     $('.alert-danger').show();
+    }else if($.trim($("#tgl_start").val()) == ""){
+        $('#message').html("Tanggal Awal harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else if($.trim($("#tgl_end").val()) == ""){
+        $('#message').html("Tanggal Akhir harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
     }else{
         var l=$('#laporan').val();
-        // var s=$('#tgl_start').val();
-        // var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/Tolling/print_laporan_tolling_po?l='+l,'_blank');
+        var s=$('#tgl_start').val();
+        var e=$('#tgl_end').val();
+        window.open('<?php echo base_url();?>index.php/Tolling/print_laporan_tolling_po?l='+l+'&ts='+s+'&te='+e,'_blank');
     };
 };
 </script>
@@ -108,6 +300,15 @@ $(function(){
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd-mm-yy'
-    });    
+    });  
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yy-mm-dd'
+    });  
 });
 </script>

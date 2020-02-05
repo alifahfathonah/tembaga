@@ -32,7 +32,9 @@
                                 <option></option>
                                 <optgroup label="Pengeluaran">
                                     <option value="15">Global</option>
+                                    <option value="17">Penjualan</option>
                                     <option value="8">Retur (Pengganti)</option>
+                                    <option value="18">Retur (Produksi)</option>
                                     <option value="11">Kirim ke Rongsok</option>
                                     <option value="10">SDM</option>
                                     <option value="16">Repacking (-)</option>
@@ -43,6 +45,7 @@
                                     <option value="1">Produksi</option>
                                     <option value="2">Global (Detail)</option>
                                     <option value="3">Produksi (Detail)</option>
+                                    <option value="19">SDM</option>
                                     <?php if($this->session->userdata('user_ppn')==0){ ?>
                                     <option value="4">PO (KH)</option>
                                     <?php } ?>
@@ -51,7 +54,7 @@
                                     <option value="6">Tolling (KH)</option>
                                     <?php } ?>
                                     <option value="7">Tolling (KMP)</option>
-                                    <option value="9">Retur (Terima)</option>
+                                    <option value="9">Retur (Customer)</option>
                                     <option value="12">Repacking (+)</option>
                                     <option value="14">Adjustment (+)</option>
                                 </optgroup>
@@ -63,7 +66,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tgl_start" name="tgl_start" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                                value="<?php echo date('01-m-Y'); ?>">
                         </div>
                     </div>
                     <div class="row">

@@ -80,6 +80,8 @@
                                     echo 'Retur K';
                                 }else if($data->jenis_spb==11){
                                     echo 'Adjustment';
+                                }else if($data->jenis_spb==13){
+                                    echo 'SJ Lain';
                                 }
                             ?>
                         </td>

@@ -78,13 +78,15 @@ table td, table td * {
                     <td>= <?=$jml;?></td>
                 </tr>
             </table>
-        </td>    <?php 
-        if($baris==11){
+        </td>    
+    <?php 
+        if($baris>11){
             echo "</tr>";
             echo "</table>";
             echo "<br><br><br><br>";
             echo '<table width="100%" cellpadding="0" cellspacing="0" style="font-size:12px;">';
             echo "<tr>";
+            $baris=0;
         }
     } ?>
 </tr>

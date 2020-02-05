@@ -216,22 +216,22 @@ function simpanData(){
     };
 };
 
-function check_duplicate(){
-    var valid = true;
-        $.each($("select[name$='[nama_item]']"), function (index1, item1) {
-            $.each($("select[name$='[nama_item]']").not(this), function (index2, item2) {
-                if ($(item1).val() == $(item2).val()) {
-                    valid = false;
-                }
-            });
-        });
-    return valid;
-}
+// function check_duplicate(){
+//     var valid = true;
+//         $.each($("select[name$='[nama_item]']"), function (index1, item1) {
+//             $.each($("select[name$='[nama_item]']").not(this), function (index2, item2) {
+//                 if ($(item1).val() == $(item2).val()) {
+//                     valid = false;
+//                 }
+//             });
+//         });
+//     return valid;
+// }
 
 function get_uom_po(id, nmr){
     if($.trim($('#name_wip_'+nmr).val())!=''){    
-    var check = check_duplicate();
-        if(check){
+    // var check = check_duplicate();
+    //     if(check){
             $.ajax({
                 url: "<?php echo base_url('index.php/BeliWIP/get_uom'); ?>",
                 type: "POST",
@@ -242,11 +242,11 @@ function get_uom_po(id, nmr){
                     $('#wip_id_'+nmr).val(id);
                 }
             });
-        }else{
-            $('#name_wip_'+nmr).select2('val','');
-            $('#message').html("Item tidak boleh sama!");
-            $('.alert-danger').show();
-        }
+        // }else{
+        //     $('#name_wip_'+nmr).select2('val','');
+        //     $('#message').html("Item tidak boleh sama!");
+        //     $('.alert-danger').show();
+        // }
     }
 }
 

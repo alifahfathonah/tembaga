@@ -8,7 +8,7 @@
 <table width="100%" class="table table-striped table-bordered table-hover" id="sample_6">
     <tr>
         <td colspan="3">
-        <table border="0" cellpadding="4" cellspacing="0" width="100%" style="font-size:12px;">
+        <table border="0" cellpadding="2" cellspacing="0" width="100%" style="font-size:12px;">
             <tr>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>WIP<br>Awal</strong></td>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Tanggal</strong></td>
@@ -30,8 +30,8 @@
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>BS 8mm</strong></td>
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>BS Ingot</strong></td>
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Susut</strong></td>
-                <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>WIP Akhir<br></strong></td>
-                <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>GAS(M<sup>3</sup>)</strong></td>
+                <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>WIP<br>Akhir<br></strong></td>
+                <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>GAS<br>(M<sup>3</sup>)</strong></td>
                 <td rowspan="2" style="text-align:center; border:1px solid #000"><strong>Keterangan</strong></td>
             </tr>
             <tr>
@@ -136,7 +136,8 @@
         // $berat_susut += $row->berat_rsk - ($row->berat + $row->bs);
     }
     $berat_keras_akhir = $b_ak + ($b['berat_masuk']-$b['berat_keluar']);
-    $berat_susut = ($berat_rongsok + $tr['netto'] + $b_ak + $ia['netto']) - ($berat + $bs_rolling + $bs_ingot + $bs_8m + $berat_keras_akhir + $ib['netto']);
+    $berat_rongsok_keluar = ($berat_rongsok + $tr['netto'] + $b_ak + $ia['netto']);
+    $berat_susut = $berat_rongsok_keluar - ($berat + $bs_rolling + $bs_ingot + $bs_8m + $berat_keras_akhir + $ib['netto']);
     ?>
     <tr>
         <td style="border-left: 1px solid #000; border-bottom: 1px solid #000;"><?=number_format($b_ak,2,',','.');?></td>
@@ -173,15 +174,15 @@
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_bu,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_ingot,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format(($berat/$berat_rongsok*100),2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format(($berat/$berat_rongsok_keluar*100),2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($bs_rolling,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format(($bs_rolling/$berat_rongsok*100),2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format(($bs_rolling/$berat_rongsok_keluar*100),2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($bs_8m,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format(($bs_8m/$berat_rongsok*100),2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format(($bs_8m/$berat_rongsok_keluar*100),2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($bs_ingot,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format(($bs_ingot/$berat_rongsok*100),2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format(($bs_ingot/$berat_rongsok_keluar*100),2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_susut,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format(($berat_susut/$berat*100),2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format(($berat_susut/$berat_rongsok_keluar*100),2,',','.');?></td>
         <?php $wip_akhir = $berat_keras_akhir + $ib['netto'];?>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($wip_akhir,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_gas,2,',','.');?></td>
@@ -190,6 +191,31 @@
     <tr>
         <td colspan="<?=24+$colspan;?>" style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000;" align="center">
             <?='('.number_format($berat_rongsok,2,',','.').' + '.number_format($tr['netto'],2,',','.').' + '.number_format($b_ak,2,',','.').' + '.number_format($ia['netto'],2,',','.').') - ('.number_format($berat,2,',','.').' + '.number_format($bs_rolling,2,',','.').' + '.number_format($bs_ingot,2,',','.').' + '.number_format($bs_8m,2,',','.').' + '.number_format($berat_keras_akhir,2,',','.').' + '.number_format($ib['netto'],2,',','.').' + '.number_format($berat_susut,2,',','.').')';?>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="<?=24+$colspan;?>" style="border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;">
+            <table border="0" width="100%">
+                <tr>
+                    <td colspan="2"></td>
+                    <td align="center">Tangerang, <?=tanggal_indo(date('Y-m-d'));?></td>
+                </tr>
+                <tr>
+                    <td style="text-align:center">Mengetahui. </td>
+                    <td style="text-align:center">Disetujui, </td>
+                    <td style="text-align:center">Dibuat Oleh, </td>
+                </tr>
+                <tr style="height:35">
+                    <td style="text-align:center">&nbsp;</td>
+                    <td style="text-align:center">&nbsp;</td>
+                    <td style="text-align:center">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center">( Amin. Tj )</td>
+                    <td style="text-align:center">( Tjan Lin Oy )</td>
+                    <td style="text-align:center">( Warsinem )</td>
+                </tr>
+            </table>
         </td>
     </tr>
     </tbody>

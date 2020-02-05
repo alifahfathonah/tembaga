@@ -1743,26 +1743,6 @@ class SalesOrder extends CI_Controller{
                 }else{
                     $this->load->view('sales_order/print_sj', $data);
                 }
-                    // $header = $this->load->view("sales_order/print_sj/headerpdf", $data, true);
-                    // $body = $this->load->view("sales_order/print_sj/bodypdf", $data, true);
-                    // $footer = $this->load->view("sales_order/print_sj/footerpdf", $data, true);
-
-                    // $this->load->library('vendor/autoload');
-                    // $pdf = new \Mpdf\Mpdf(['utf-8','A4']); 
-
-                    // $pdf->SetHTMLHeader($header);
-                    // $pdf->SetHTMLFooter($footer);
-                    // $pdf->AddPage('P', // L - landscape, P - portrait 
-                    //     '', '', '', '',
-                    //     10, // margin_left
-                    //     10, // margin right
-                    //    55, // margin top
-                    //    40, // margin bottom
-                    //     5, // margin header
-                    //     5); // margin footer
-                    // // $pdf->AddPage('P');
-                    // $pdf->writeHTML($body);
-                    // $pdf->Output('sj.pdf', 'I');  
             }else if($jenis=='WIP'){
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_wip($id)->result();
                 $this->load->view('sales_order/print_sj_wip', $data);
@@ -1775,6 +1755,35 @@ class SalesOrder extends CI_Controller{
             }else{
                 $data['details'] = $this->Model_sales_order->load_detail_surat_jalan_rsk($id,$soid)->result();
                 $this->load->view('sales_order/print_sj_rsk', $data);
+            }
+        }else{
+            redirect('index.php'); 
+        }
+    }
+
+    function print_sj_ekspedisi(){
+        $id = $this->uri->segment(3);
+        if($id){        
+            $this->load->model('Model_sales_order');
+            $this->load->helper('tanggal_indo');
+            $data['header']  = $this->Model_sales_order->show_header_sj($id)->row_array();
+            $data['details'] = $this->Model_sales_order->print_sj_ekspedisi($id,$data['header']['m_customer_id'],$data['header']['sales_order_id'])->result();
+            if($data['header']['m_customer_id'] == 128){
+                $this->load->view('sales_order/print_sj_prabha', $data);
+            }elseif($data['header']['m_customer_id'] == 67){
+                $n = 0;
+                $b = 0;
+                $p = 0;
+                foreach($data['details'] as $v){
+                    $n += $v->netto;
+                    $b += $v->bruto;
+                    $p ++;
+                }
+                $data['jenis_barang'] = $v->jenis_barang;
+                $data['netto'] = $n;
+                $data['bruto'] = $b;
+                $data['jumlah'] = $p;
+                $this->load->view('sales_order/print_sj_hanwa', $data);
             }
         }else{
             redirect('index.php'); 

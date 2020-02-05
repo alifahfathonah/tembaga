@@ -628,9 +628,9 @@ class BeliFinishGood extends CI_Controller{
         if($this->db->trans_complete()){    
             $this->session->set_flashdata('flash_msg', 'DTBJ berhasil di-create dengan nomor : '.$this->input->post('no_dtr'));  
             if($this->input->post('spb_id')>0){
-                redirect('index.php/BeliFinishGood/proses_dtbj/'.$this->input->post('id'));               
+                redirect('index.php/BeliFinishGood/proses_dtbj/'.$this->input->post('id'));
             }else{
-                redirect('index.php/BeliFinishGood/dtbj_list');         
+                redirect('index.php/BeliFinishGood/dtbj_list');
             }
         }else{
             $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create DTBJ, silahkan coba kembali!');
@@ -694,6 +694,8 @@ class BeliFinishGood extends CI_Controller{
             }
             if($this->input->post('spb_id')>0){
                 redirect('index.php/BeliFinishGood/proses_dtbj/'.$this->input->post('id'));
+            }elseif($this->input->post('type_retur')==1){
+                redirect('index.php/Retur/retur_supplier');
             }else{
                 redirect('index.php/BeliFinishGood/dtbj_list');
             }
@@ -962,6 +964,8 @@ class BeliFinishGood extends CI_Controller{
             $this->session->set_flashdata('flash_msg', 'DTBJ Berhasil di Approve');  
             if($this->input->post('spb_id')>0){
                 redirect('index.php/GudangFG/view_spb/'.$this->input->post('spb_id'));
+            }elseif($this->input->post('type_retur')==1){
+                redirect('index.php/Retur/retur_supplier');
             }else{
                 redirect('index.php/BeliFinishGood/dtbj_list/');
             }

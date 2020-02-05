@@ -33,7 +33,7 @@
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Times New Roman">
             <tr>
                 <td width="60%">
-                    <table border="0" cellpadding="2" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="2" cellspacing="0" width="100%" style="font-size: 18px;">
                         <tr>
                             <td>No. Surat Jalan</td>
                             <td>: <?php echo $header['no_surat_jalan']; ?></td>
@@ -60,7 +60,7 @@
                 </td>
                 <td>&nbsp;</td>
                 <td width="40%">
-                    <table border="0" cellpadding="2" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="2" cellspacing="0" width="100%" style="font-size: 18px;">
                     <?php if($header['sales_order_id']>0){ ?>
                         <tr>
                             <td>Tanggal SJ</td>
@@ -79,13 +79,13 @@
                             <td><?= $header['alamat'];?></td>
                         </tr>
                         <tr>
-                            <td colspan="2"><?php echo $header['alamat'];?></td>
+                            <td colspan="3"></td>
                         </tr>
                     </table>
                 </td>
             </tr>
             <tr><td colspan="3">
-                    <table border="0" cellpadding="4" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="2" cellspacing="0" width="100%" style="font-size: 18px;">
                         <tr>
                             <td colspan="2">No. Kendaraan: <?php echo $header['no_kendaraan']; ?></td>
                             <td colspan="2">Type Kendaraan: <?php echo $header['type_kendaraan']; ?></td>
@@ -95,7 +95,7 @@
                 </td>
             </tr>
             <tr><td colspan="3">
-                    <table border="0" cellpadding="4" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="2" cellspacing="0" width="100%" style="font-size: 18px;">
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>NO</strong></td>
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>NAMA ITEM</strong></td>
@@ -139,7 +139,7 @@
             </tr>
             <tr><td colspan="3">
                     <p>&nbsp;</p>
-                    <table border="0" width="100%">
+                    <table border="0" cellpadding="2" cellspacing="0" width="100%" style="font-size: 18px;">
                         <tr>
                             <td style="text-align:center">Penerima</td>
                             <td style="text-align:center">Pembawa / Supir</td>

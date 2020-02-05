@@ -159,7 +159,7 @@ class Model_sales_order extends CI_Model{
                 left join t_spb_wip tsw on tso.jenis_barang = 'wip' and tsw.id = tso.no_spb
                 left join spb s on tso.jenis_barang = 'RONGSOK' and s.id = tso.no_spb
                 Left join t_spb_ampas tsa on tso.jenis_barang = 'AMPAS' and tso.no_spb
-                Where so.m_customer_id=".$id." and so.flag_tolling = 0 and so.flag_sj = 0 and COALESCE(tsf.status,tsw.status,s.status,tsa.status,1) != 0 and so.flag_ppn = ".$user_ppn);
+                Where so.m_customer_id=".$id." and so.flag_tolling = 0 and so.flag_sj = 0 and COALESCE(tsf.status,tsw.status,s.status,tsa.status,1) not in (0,3) and so.flag_ppn = ".$user_ppn);
         return $data;
     }
 
@@ -449,7 +449,7 @@ class Model_sales_order extends CI_Model{
     }
 
     function show_header_sj($id){
-        $data = $this->db->query("Select tsj.*, cust.id as id_customer, COALESCE(NULLIF(tso.alias,''), cust.nama_customer) as nama_customer, cust.alamat, COALESCE(NULLIF(tso.alias,''), cust.nama_customer_kh) as nama_customer_kh, cust.alamat_kh, so.tanggal as tanggal_so, 
+        $data = $this->db->query("Select tsj.*, cust.id as id_customer, COALESCE(NULLIF(tso.alias,''), cust.nama_customer) as nama_customer, cust.alamat, cust.pic, COALESCE(NULLIF(tso.alias,''), cust.nama_customer_kh) as nama_customer_kh, cust.alamat_kh, so.tanggal as tanggal_so, 
                     COALESCE(tsf.no_spb, tsw.no_spb_wip, s.no_spb, tsa.no_spb_ampas) as nomor_spb,
                     COALESCE(tsf.status, tsw.status, s.status, tsa.status) as status_spb,
                     tso.no_spb, so.no_sales_order, tso.no_po, 
@@ -500,6 +500,20 @@ class Model_sales_order extends CI_Model{
                 left join jenis_barang jb2 on jb2.id = tsjd.jenis_barang_alias
                 where tsjd.t_sj_id =".$id." order by jenis_barang");
         return $data;
+    }
+
+    function print_sj_ekspedisi($id,$cust_id,$soid){
+        if($cust_id==128){
+            return $this->db->query("select count(tsjd.id) as jumlah, (CASE WHEN tsjd.nomor_bobbin = '' THEN 'DUS' ELSE 'BOBBIN' END) as uom_ekspedisi, jb.jenis_barang, jb.uom, sum(tsjd.bruto) as bruto, sum(tsjd.netto) as netto from t_surat_jalan_detail tsjd
+                left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
+                left join jenis_barang jb on tsj.jenis_barang != 'RONGSOK' and jb.id =(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
+                where tsjd.t_sj_id =".$id." group by tsjd.jenis_barang_id, uom_ekspedisi");
+        }else if($cust_id==67){
+            return $this->db->query("select tsjd.*, 'KG' as uom_ekspedisi, COALESCE((select tsod.nama_barang_alias from t_sales_order_detail tsod left join t_sales_order tso on tso.so_id =".$soid." where tsod.t_so_id = tso.id and tsod.jenis_barang_id = tsjd.jenis_barang_id),r.nama_item) as jenis_barang, r.uom from t_surat_jalan_detail tsjd
+                left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
+                left join rongsok r on tsj.jenis_barang = 'RONGSOK' and r.id =(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
+                where tsjd.t_sj_id =".$id);
+        }
     }
 
     function load_detail_surat_jalan_wip($id){

@@ -65,6 +65,7 @@
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                             <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['po_id']; ?>">
                             <input type="hidden" id="spb_id" name="spb_id" value="<?php echo $header['spb_id']; ?>">
+                            <input type="hidden" id="type_retur" name="type_retur" value="<?php echo $header['type_retur']; ?>">
                         </div>
                     </div>
                     <div class="row">

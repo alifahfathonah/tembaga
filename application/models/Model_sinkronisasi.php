@@ -80,4 +80,9 @@ class Model_sinkronisasi extends CI_Model{
         return $this->db->querY("select count(id) as count from f_kas
             where flag_ppn = 1 and jenis_trx = 1 and api = 0");
     }
+
+    function um(){
+        return $this->db->query("select * from f_kas
+            where jenis_trx = 0 and flag_ppn = 1 and api = 0");
+    }
 }

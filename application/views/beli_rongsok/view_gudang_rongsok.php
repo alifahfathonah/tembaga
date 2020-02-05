@@ -24,7 +24,9 @@
        <tr >
             <th>No</th>
             <th>Item Rongsok</th>
+            <th>Supplier/Customer</th>
             <th>No Palette</th>
+            <th>No Seng</th>
             <th>Bruto</th>
             <th>Berat</th>
             <th>Netto</th>
@@ -36,7 +38,9 @@
         <tr>
             <td><?= $no; ?></td>
             <td><?= $data->nama_item; ?></td>
+            <td><?= $data->nama; ?></td>
             <td><?= $data->no_pallete ;?></td>
+            <td><?= $data->nomor_seng ;?></td>
             <td><?= number_format($data->bruto,2,',','.'); ?></td>
             <td><?= number_format($data->berat_palette,2,',','.'); ?></td>
             <td style="background-color: green; color: white;"><?= number_format($data->netto,2,',','.'); ?></td>

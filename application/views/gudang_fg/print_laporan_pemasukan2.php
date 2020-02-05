@@ -52,7 +52,7 @@
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->jenis_barang;?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->no_packing;?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->uom;?></td>
-                <td style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->bruto,2,',','.');?></td>
+                <td style="border-top: 1px solid; border-left: 1px solid; text-align:right;"><?= number_format($row->bruto,2,',','.');?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?= number_format($row->netto,2,',','.');?></td>
         <?php 
           $no++;

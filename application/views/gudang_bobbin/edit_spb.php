@@ -45,7 +45,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tanggal" name="tanggal" 
                                 class="form-control input-small myline" style="margin-bottom:5px; float:left;" 
-                                value="<?php echo date('d-m-Y', strtotime($header['created_at'])); ?>">
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
                     <div class="row">

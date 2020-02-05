@@ -176,8 +176,13 @@
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
                         <i class="fa fa-floppy-o"></i> Update DTBJ </a>
 
+                <?php if($header['type_retur']==0){ ?>
                     <a href="<?php echo base_url('index.php/BeliFinishGood/dtbj_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>
+                <?php }else{ ?>
+                    <a href="<?php echo base_url('index.php/Retur/retur_supplier'); ?>" class="btn blue-hoki"> 
+                        <i class="fa fa-angle-left"></i> Kembali </a>
+                <?php } ?>
                 </div>    
             </div>
         </form>

@@ -50,6 +50,7 @@
                                         class="form-control myline" style="margin-bottom:5px" readonly>
 
                                     <input type="hidden" id="id" name="id">
+                                    <input type="hidden" id="produksi_fg_id" name="produksi_fg_id">
                                 </div>
                             </div>                            
                             <div class="row">
@@ -177,11 +178,7 @@
                                     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/GudangFG/proses_bpb/'.$data->id.'" 
                                         style="margin-bottom:4px"> &nbsp; <i class="fa fa-book"></i> Tanggapi &nbsp; </a>';
                                 }
-
-                                if(!empty($data->no_produksi)){
                                     echo '<a class="btn btn-circle btn-xs blue" style="margin-bottom:4px" href="javascript:;" onclick="editData('.$data->id.')"> <i class="fa fa-pencil"></i> Edit </a>';
-                                }
-
                                 if($group_id==1 || $hak_akses['print_bpb']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangFG/print_bpb/'.$data->id.'"style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }
@@ -219,6 +216,7 @@ function editData(id){
             $('#no_bpb').val(result['no_bpb_fg']);
             $('#jenis_barang').select2('val',result['jenis_barang_id']);
             $('#tanggal').val(result['tanggal']);
+            $('#produksi_fg_id').val(result['produksi_fg_id']);
             
             $("#myModal").find('.modal-title').text('Edit DTR');
             $("#myModal").modal('show',{backdrop: 'true'});           
@@ -232,18 +230,24 @@ function searchFilter(){
 }
 
 function simpandata(){
-    if($.trim($("#jenis_barang").val()) == ""){
-        $('#message').html("Jenis Barang harus diisi!");
-        $('.alert-danger').show();
-    }else if($.trim($("#tanggal").val()) == ""){
+    if($.trim($("#tanggal").val()) == ""){
         $('#message').html("Tanggal harus diisi!");
         $('.alert-danger').show();
-    }else{
-        $('#simpandata').text('Please Wait ...').prop("onclick", null).off("click");
-        $('#message').html("");
-        $('.alert-danger').hide();
-        $('#formedit').attr("action", "<?php echo base_url(); ?>index.php/GudangFG/update_jb_bpb");
-        $('#formedit').submit(); 
+    }else if($.trim($("#produksi_fg_id").val()) == 0){
+            $('#simpandata').text('Please Wait ...').prop("onclick", null).off("click");
+            $('#message').html("");
+            $('.alert-danger').hide();
+            $('#formedit').attr("action", "<?php echo base_url(); ?>index.php/GudangFG/update_jb_bpb");
+            $('#formedit').submit(); 
+    }else if($.trim($("#jenis_barang").val()) == ""){
+        $('#message').html("Jenis Barang harus diisi!");
+        $('.alert-danger').show();
+    }else {
+            $('#simpandata').text('Please Wait ...').prop("onclick", null).off("click");
+            $('#message').html("");
+            $('.alert-danger').hide();
+            $('#formedit').attr("action", "<?php echo base_url(); ?>index.php/GudangFG/update_jb_bpb");
+            $('#formedit').submit(); 
     };
 };
 </script>

@@ -87,6 +87,8 @@
                                 $flag_produksi = 'Retur K';
                             }else if($data->flag_produksi==11){
                                 $flag_produksi = 'Adjustment';
+                            }else if($data->flag_produksi==13){
+                                $flag_produksi = 'SJ Lain';
                             }else{
                                 $flag_produksi = 'CUCI';
                             } ?>

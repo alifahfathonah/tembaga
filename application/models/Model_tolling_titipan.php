@@ -1137,50 +1137,81 @@ class Model_tolling_titipan extends CI_Model{
         $data = $this->db->query("Select * from spb_detail where spb_id=".$id);
         return $data;
     }
+
+    function stok_awal_laporan($ppn, $id){
+        return $this->db->query("select s.*, u.realname, COALESCE(mc.nama_customer,sup.nama_supplier) as nama from stok_awal_laporan s
+                left join m_customers mc on mc.id = s.customer_id
+                left join supplier sup on sup.id = s.supplier_id
+                left join users u on s.created_by = u.id
+                where flag_ppn =".$ppn." and jenis =".$id." order by s.tanggal desc");
+    }
+
+    function edit_stok($id){
+        return $this->db->query("select * from stok_awal_laporan where id =".$id);
+    }
+
+    function get_stok_awal_laporan($tgl,$c,$s,$id,$flag,$tipe){
+        return $this->db->query("select * from stok_awal_laporan where tanggal ='".$tgl."' and customer_id =".$c." and supplier_id = ".$s." and jenis = ".$id." and flag_ppn =".$flag." and tipe=".$tipe);
+    }
+
 //LAPORAN BALANCE SO
-    function laporan_bahan_so($id,$ppn){
+    function laporan_bahan_so($id,$ppn,$s,$e){
         return $this->db->query("Select * From ((Select dtwip.id, dtwip.no_dtwip as nomor, dtwip.tanggal, sum(berat) as netto, so.id as id_so, 
             so.no_sales_order
                 From dtwip_detail dd
                     Left Join dtwip on dd.dtwip_id = dtwip.id
                     left join sales_order so on so.id = dtwip.so_id
-                Where dtwip.customer_id = ".$id." and dtwip.so_id > 0 and so.flag_sj = 0 and so.flag_ppn = ".$ppn."
+                Where dtwip.customer_id = ".$id." and dtwip.so_id > 0 and so.flag_ppn = ".$ppn."
+                and dtwip.tanggal between '".$s."' and '".$e."'
                 group by dd.dtwip_id)
                 UNION ALL
-                (Select dtr.id, dtr.no_dtr as nomor, dtr.tanggal, sum(netto) as netto, so.id as id_so, so.no_sales_order
+                (Select dtr.id, ttr.no_ttr as nomor, dtr.tanggal, sum(netto) as netto, so.id as id_so, so.no_sales_order
                 From dtr_detail dtrd
-                    Left Join dtr On (dtrd.dtr_id = dtr.id) 
+                    Left Join dtr On (dtrd.dtr_id = dtr.id)
+                    left join ttr on (ttr.dtr_id = dtr.id)
                     left join sales_order so on so.id = dtr.so_id
-                Where dtr.customer_id=".$id." and dtr.so_id > 0 and so.flag_sj = 0 and so.flag_ppn = ".$ppn."
-                group by dtrd.dtr_id)) as a order by tanggal");
+                Where dtr.customer_id=".$id." and dtr.so_id > 0 and so.flag_ppn = ".$ppn."
+                and dtr.tanggal between '".$s."' and '".$e."'
+                group by dtrd.dtr_id)
+                UNION ALL
+                (Select id, 'Koreksi' as nomor, tanggal, netto, 0 as id_so, '' as no_sales_order from stok_awal_laporan where jenis = 1 and tanggal between '".$s."' and '".$e."' and flag_ppn = ".$ppn." and tipe = 1 and customer_id =".$id.")
+            ) as a order by tanggal");
     }
 
-    function laporan_kirim_so($id,$ppn){
-        $data = $this->db->query("select tsj.no_surat_jalan as nomor, tsj.tanggal, sum(tsjd.netto) as netto, so.no_sales_order from t_surat_jalan_detail tsjd
+    function laporan_kirim_so($id,$ppn,$s,$e){
+        $data = $this->db->query("select tsj.no_surat_jalan as nomor, tsj.tanggal, sum((case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end)) as netto, so.no_sales_order from t_surat_jalan_detail tsjd
             left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
             left join sales_order so on tsj.sales_order_id = so.id
-            where so.m_customer_id = ".$id." and so.flag_tolling > 0 and so.flag_sj = 0 and so.flag_ppn = ".$ppn."
+            where so.m_customer_id = ".$id." and so.flag_tolling > 0 and so.flag_ppn = ".$ppn."
+            and tsj.tanggal between '".$s."' and '".$e."'
             group by tsj.id
         ");
         return $data;
     }
 
 //LAPORAN BALANCE PO
-    function laporan_terima($id,$ppn){
+    function laporan_terima($id,$ppn,$s,$e){
         return $this->db->query("Select po.no_po, dtt.id, dtt.no_dtt as nomor, dtt.tanggal, sum(netto) as netto
                 From dtt_detail dd
                     Left Join dtt on dd.dtt_id = dtt.id
                     left join po on dtt.po_id = po.id
-                Where po.supplier_id =".$id." and po.flag_tolling > 0 and po.status not in (1,3,4) and po.flag_ppn = ".$ppn."
-                group by dtt.id");
+                Where po.supplier_id =".$id." and po.flag_tolling > 0 and po.flag_ppn = ".$ppn." and
+                dtt.tanggal between '".$s."' and '".$e."'
+                group by dtt.id order by po.id, dtt.tanggal");
     }
 
-    function laporan_kirim_bahan($id,$ppn){
-        $data = $this->db->query("select po.no_po, tsj.no_surat_jalan as nomor, tsj.tanggal, sum(tsjd.netto) as netto from t_surat_jalan_detail tsjd
-            left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
-            left join po on tsj.po_id = po.id
-        where po.supplier_id =".$id." and po.flag_tolling > 0 and po.status not in (1,3,4) and po.flag_ppn = ".$ppn."
-            group by tsj.id
+    function laporan_kirim_bahan($id,$ppn,$s,$e){
+        $data = $this->db->query("select * from (
+            (select po.no_po, tsj.no_surat_jalan as nomor, tsj.tanggal, sum((case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end)) as netto 
+            from t_surat_jalan_detail tsjd
+                left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
+                left join po on tsj.po_id = po.id
+            where po.supplier_id =".$id." and po.flag_tolling > 0 and po.flag_ppn = ".$ppn."
+            and tsj.tanggal between '".$s."' and '".$e."'
+            group by tsjd.t_sj_id)
+            UNION ALL
+            (select '' as no_po, 'Koreksi' as nomor, tanggal, netto from stok_awal_laporan where jenis = 2 and tanggal between '".$s."' and '".$e."' and flag_ppn = ".$ppn." and tipe = 1 and supplier_id = ".$id.")
+            ) as a order by tanggal asc
         ");
         return $data;
     }

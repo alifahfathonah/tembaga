@@ -145,7 +145,7 @@
                     <div class="col-md-6">
                         <div class="form-inline">
                             <div class="form-group">
-                                <label>Jumlah Kawat Hitam </label>
+                                <label>Jumlah Kawat <?=(($header['jenis_masak']=='CUCI')? 'Cuci Bakar Ulang': 'Hitam');?> </label>
                                 <input type="text" id="qty_kh_in" name="qty_kh" 
                                 class="form-control myline" size="25" 
                                 value="<?=$header['qty_keras'];?>" readonly placeholder="Jumlah Kawat Hitam"/>
@@ -157,7 +157,7 @@
                     <div class="col-md-6">
                         <div class="form-inline">
                             <div class="form-group">
-                                <label>Berat Kawat Hitam </label>
+                                <label>Berat Kawat <?=(($header['jenis_masak']=='CUCI')? 'Cuci Bakar Ulang': 'Hitam');?> </label>
                                 <input type="text" id="berat_kh_in" name="berat_kh" 
                                 class="form-control myline" size="25" 
                                 value="<?=$header['keras'];?>" readonly placeholder="Berat Kawat Hitam"/>

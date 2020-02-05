@@ -31,7 +31,7 @@
                             <p>Klik tombol di bawah ini untuk memulai sinkronisasi.</p>
                             <form method="post" action="<?php echo base_url('index.php/Sinkronisasi/sync_um'); ?>" id="formSync">
                                 <!-- <input type="submit" name="Submit" value="Submit"> -->
-                                <a href="javascript:;" onclick="sync_so();" id="btnSync" class="btn blue"><span class="fa fa-upload"></span> Sinkronisasi</a>
+                                <a href="javascript:;" onclick="sync_um();" id="btnSync" class="btn blue"><span class="fa fa-upload"></span> Sinkronisasi</a>
                             </form>
                             <?= $um['count'].' Data Uang Masuk Belum di Kirim'; ?>
                         </div>
@@ -50,9 +50,9 @@
                         </div>
                         <div class="portlet-body">
                             <p>Klik tombol di bawah ini untuk memulai sinkronisasi.</p>
-                            <form method="post" action="<?php echo base_url('index.php/Sinkronisasi/sync_um'); ?>" id="ukSync">
+                            <form method="post" action="<?php echo base_url('index.php/Sinkronisasi/sync_uk'); ?>" id="ukSync">
                                 <!-- <input type="submit" name="Submit" value="Submit"> -->
-                                <a href="javascript:;" onclick="sync_so();" id="btnukSync" class="btn blue"><span class="fa fa-upload"></span> Sinkronisasi</a>
+                                <a href="javascript:;" onclick="sync_uk();" id="btnukSync" class="btn blue"><span class="fa fa-upload"></span> Sinkronisasi</a>
                             </form>
                             <?= $uk['count'].' Data Uang Keluar Belum di Kirim'; ?>
                         </div>
@@ -60,7 +60,7 @@
                 </div>
             </div>
 <script>
-    function sync_so(){
+    function sync_um(){
         $('#formSync').submit();
         $('#btnSync').text('Please Wait ...').prop("onclick", null).off("click");
     }

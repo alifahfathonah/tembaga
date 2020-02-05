@@ -40,31 +40,6 @@ class Model_retur extends CI_Model{
             where r.customer_id = ".$id." and status = 1 and flag_taken = 0 and jenis_retur = 0 and r.spb_id != 0");
         return $data;
     }
-    
-    function get_retur_fulfilment($spbid){
-        $data = $this->db->query("select tgf.*, jb.jenis_barang
-            from t_gudang_fg tgf
-            left join jenis_barang jb on (jb.id = tgf.jenis_barang_id)
-            where tgf.t_spb_fg_id = ".$spbid. " and flag_taken = 0");
-        return $data;
-    }
-
-    function get_retur_fulfilment_wip($spbid){
-        $data = $this->db->query("select tgw.*, jb.jenis_barang
-            from t_gudang_wip tgw
-            left join jenis_barang jb on (jb.id = tgw.jenis_barang_id)
-            where tgw.t_spb_wip_id = ".$spbid. " and flag_taken = 0");
-        return $data;
-    }
-
-    function get_retur_fulfilment_rsk($spbid){
-        $data = $this->db->query("select dd.id, dd.rongsok_id, r.nama_item, dd.bruto, dd.netto, dd.berat_palette, dd.no_pallete
-            from spb_detail_fulfilment sdf
-            left join dtr_detail dd on dd.id = sdf.dtr_detail_id 
-            left join rongsok r on r.id = dd.rongsok_id 
-            where sdf.spb_id=".$spbid." and dd.retur_id = 0");
-        return $data;
-    }
 
     function list_item_sj_retur_detail($id){
         $data = $this->db->query("select tgf.*, jb.jenis_barang
@@ -301,7 +276,7 @@ class Model_retur extends CI_Model{
         $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.berat, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, jb.jenis_barang, jb.uom 
                 from t_surat_jalan_detail tsjd
                 left join jenis_barang jb on jb.id=(case when tsjd.jenis_barang_alias > 0 then tsjd.jenis_barang_alias else tsjd.jenis_barang_id end)
-                where tsjd.t_sj_id =".$id);
+                where tsjd.t_sj_id =".$id." order by jenis_barang");
         return $data;
     }
 
@@ -309,7 +284,7 @@ class Model_retur extends CI_Model{
         $data = $this->db->query("select tsjd.id, tsjd.t_sj_id, tsjd.jenis_barang_id, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty, tsjd.berat, tsjd.bruto, (case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end) as netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks, COALESCE(tsjd.barang_alias, r.nama_item) as jenis_barang, r.uom 
                 from t_surat_jalan_detail tsjd
                 left join rongsok r on (r.id = tsjd.jenis_barang_id)
-                where tsjd.t_sj_id =".$id);
+                where tsjd.t_sj_id =".$id." order by jenis_barang");
         return $data;
     }
 
@@ -466,24 +441,108 @@ class Model_retur extends CI_Model{
         return $data;
     }
 
-    function print_laporan_retur($s,$e){
+    function print_laporan_retur($s,$e,$j){
+        if($j==0){
+            return $this->db->query("select * from (select r.no_retur, r.tanggal, r.jenis_retur, mc.nama_customer, COALESCE(jb.jenis_barang, rsk.nama_item) as jenis_barang, sum(rd.netto) as netto, r.remarks,
+                    COALESCE((select sum(rf.netto) from retur_fulfilment rf
+                            where rf.retur_id = r.id and rf.jenis_barang_id = rd.jenis_barang_id and rf.tanggal < '".$s."' group by rf.jenis_barang_id),0) as netto_kirim_b,
+                    (CASE WHEN r.jenis_retur = 1 THEN rd.netto ELSE COALESCE((select sum(netto) from retur_fulfilment rf
+                            where rf.retur_id = r.id and rf.jenis_barang_id = rd.jenis_barang_id and rf.tanggal  between '".$s."' and '".$e."'
+                                group by rf.jenis_barang_id),0) END) as netto_kirim, 
+                    COALESCE(r.tanggal_potong,'".$s."') as tanggal_invoice
+                        from retur_detail rd
+                    left join retur r on rd.retur_id = r.id
+                    left join m_customers mc on r.customer_id = mc.id
+                    left join jenis_barang jb on r.jenis_barang != 'RONGSOK' and rd.jenis_barang_id = jb.id
+                    left join rongsok rsk on r.jenis_barang = 'RONGSOK' and rd.jenis_barang_id = rsk.id
+                    where r.tanggal <= '".$e."'
+                    group by rd.retur_id, jenis_barang_id)as a
+                    where CASE WHEN jenis_retur = 1 THEN tanggal_invoice >= '".$s."' ELSE netto > netto_kirim_b END
+                    order by nama_customer, tanggal, no_retur");
+        }else{
+            return $this->db->query("select no_retur, tanggal, jenis_retur, nama_customer, jenis_barang, sum(CASE WHEN tanggal < '".$s."' THEN netto ELSE 0 END) as netto, sum(CASE WHEN tanggal >= '".$s."' THEN netto ELSE 0 END) as netto_terima, remarks, tanggal_invoice, sum(netto_kirim_b) as netto_kirim_b, sum(netto_potong) as netto_potong, sum(netto_kirim) as netto_kirim 
+                from (select r.no_retur, r.tanggal, r.jenis_retur, mc.nama_customer, COALESCE(jb.jenis_barang, rsk.nama_item) as jenis_barang, sum(rd.netto) as netto, r.remarks,
+                    COALESCE((select sum(rf.netto) from retur_fulfilment rf
+                            where rf.retur_id = r.id and rf.jenis_barang_id = rd.jenis_barang_id and rf.tanggal < '".$s."' group by rf.jenis_barang_id),0) as netto_kirim_b,
+                    (CASE WHEN r.jenis_retur = 1 THEN rd.netto ELSE 0 END) as netto_potong, COALESCE((select sum(netto) from retur_fulfilment rf
+                            where rf.retur_id = r.id and rf.jenis_barang_id = rd.jenis_barang_id and rf.tanggal  between '".$s."' and '".$e."'
+                                group by rf.jenis_barang_id),0) as netto_kirim,
+                    COALESCE(r.tanggal_potong,'".$s."') as tanggal_invoice
+                        from retur_detail rd
+                    left join retur r on rd.retur_id = r.id
+                    left join m_customers mc on r.customer_id = mc.id
+                    left join jenis_barang jb on r.jenis_barang != 'RONGSOK' and rd.jenis_barang_id = jb.id
+                    left join rongsok rsk on r.jenis_barang = 'RONGSOK' and rd.jenis_barang_id = rsk.id
+                    where r.tanggal <= '".$e."'
+                    group by rd.retur_id, jenis_barang_id)
+                as a
+                    where CASE WHEN jenis_retur = 1 THEN tanggal_invoice between '".$s."' and '".$e."' ELSE netto > netto_kirim_b END
+                    group by jenis_barang
+                    order by jenis_barang");
+        }
+    }
+
+    function print_laporan_retur_now($t){
         return $this->db->query("select * from (select r.no_retur, r.tanggal, r.jenis_retur, mc.nama_customer, COALESCE(jb.jenis_barang, rsk.nama_item) as jenis_barang, sum(rd.netto) as netto, r.remarks,
-                COALESCE((select sum(rf.netto) from retur_fulfilment rf
-                        where rf.retur_id = r.id and rf.jenis_barang_id = rd.jenis_barang_id and rf.tanggal < '".$s."' group by rf.jenis_barang_id),0) as netto_kirim_b,
-                (CASE WHEN r.jenis_retur = 1 THEN rd.netto ELSE COALESCE((select sum(netto) from retur_fulfilment rf
-                        where rf.retur_id = r.id and rf.jenis_barang_id = rd.jenis_barang_id and rf.tanggal  between '".$s."' and '".$e."'
-                            group by rf.jenis_barang_id),0) END) as netto_kirim, 
-                COALESCE(fi.tanggal,'".$s."') as tanggal_invoice
-                    from retur_detail rd
-                left join retur r on rd.retur_id = r.id
-                left join m_customers mc on r.customer_id = mc.id
-                left join jenis_barang jb on r.jenis_barang != 'RONGSOK' and rd.jenis_barang_id = jb.id
-                left join rongsok rsk on r.jenis_barang = 'RONGSOK' and rd.jenis_barang_id = rsk.id
-                left join f_invoice fi on r.id = fi.id_retur
-                where r.tanggal <= '".$e."'
-                group by rd.retur_id, jenis_barang_id)as a
-                where CASE WHEN jenis_retur = 1 THEN tanggal_invoice >= '".$s."' ELSE netto > netto_kirim_b END
-                order by nama_customer, tanggal, no_retur");
+                    COALESCE((select sum(rf.netto) from retur_fulfilment rf
+                            where rf.retur_id = r.id and rf.jenis_barang_id = rd.jenis_barang_id and rf.tanggal <= '".$t."' group by rf.jenis_barang_id),0) as netto_kirim_b,
+                    COALESCE(r.tanggal_potong,'".$t."') as tanggal_invoice
+                        from retur_detail rd
+                    left join retur r on rd.retur_id = r.id
+                    left join m_customers mc on r.customer_id = mc.id
+                    left join jenis_barang jb on r.jenis_barang != 'RONGSOK' and rd.jenis_barang_id = jb.id
+                    left join rongsok rsk on r.jenis_barang = 'RONGSOK' and rd.jenis_barang_id = rsk.id
+                    where r.tanggal <= '".$t."'
+                    group by rd.retur_id, jenis_barang_id)as a
+                    where CASE WHEN jenis_retur = 1 THEN tanggal_invoice >= '".$t."' ELSE netto > netto_kirim_b END
+                    order by nama_customer, tanggal, no_retur");
+    }
+
+    function check_fulfilment($id){
+        return $this->db->query("select * from 
+            (SELECT COALESCE((select sum(netto) from retur_fulfilment rf where rf.retur_id = rd.retur_id and rf.jenis_barang_id = rd.jenis_barang_id),0) as fulfilment, sum(rd.netto) as netto FROM retur_detail rd 
+            where rd.retur_id = ".$id."
+            group by rd.jenis_barang_id) 
+                as a 
+            where fulfilment < netto");
+    }
+
+    function get_retur_fulfilment($spbid){
+        $data = $this->db->query("select tgf.*, jb.jenis_barang
+            from t_gudang_fg tgf
+            left join jenis_barang jb on (jb.id = tgf.jenis_barang_id)
+            where tgf.t_spb_fg_id = ".$spbid. " and flag_taken = 0");
+        return $data;
+    }
+
+    function get_retur_fulfilment_wip($spbid){
+        $data = $this->db->query("select tgw.*, jb.jenis_barang
+            from t_gudang_wip tgw
+            left join jenis_barang jb on (jb.id = tgw.jenis_barang_id)
+            where tgw.t_spb_wip_id = ".$spbid. " and flag_taken = 0");
+        return $data;
+    }
+
+    function get_retur_fulfilment_rsk($spbid){
+        $data = $this->db->query("select dd.id, dd.rongsok_id, r.nama_item, dd.bruto, dd.netto, dd.berat_palette, dd.no_pallete
+            from spb_detail_fulfilment sdf
+            left join dtr_detail dd on dd.id = sdf.dtr_detail_id 
+            left join rongsok r on r.id = dd.rongsok_id 
+            where sdf.spb_id=".$spbid." and dd.retur_id = 0");
+        return $data;
+    }
+
+    function retur_supplier(){
+        $data = $this->db->query("Select dtbj.*,
+                    spl.nama_supplier, spl.flag_gudang,
+                    usr.realname As penimbang,
+                (Select count(dtbjd.id)As jumlah_item From dtbj_detail dtbjd Where dtbjd.dtbj_id = dtbj.id)As jumlah_item
+                From dtbj
+                    Left Join supplier spl On dtbj.supplier_id = spl.id 
+                    Left Join users usr On (dtbj.created_by = usr.id) 
+                Where type_retur = 1
+                Order By dtbj.id Desc");
+        return $data;
     }
     /*
     function load_detail_surat_jalan($id){

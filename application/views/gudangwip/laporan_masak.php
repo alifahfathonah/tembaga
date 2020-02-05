@@ -25,25 +25,25 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
-                            Nama Item <font color="#f00">*</font>
+                            Jenis Laporan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
                             <select id="rongsok_id" name="rongsok_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
-                                    <option value=""></option>
-                                    <optgroup label="Apollo">
-                                        <option value="1">Apollo</option>
-                                        <option value="5">Bahan Baku Apollo</option>
-                                        <option value="7">Pemakaian Bahan Bakar Apollo</option>
-                                        <option value="8">Bahan Bakar & Hasil Apollo</option>
-                                    </optgroup>
-                                    <optgroup label="Rolling">
-                                        <option value="2">Rolling</option>
-                                        <option value="6">Bahan Bakar Rolling</option>
-                                    </optgroup>
-                                    <optgroup label="Cuci">
-                                        <option value="4">Cuci</option>
-                                    </optgroup>
-                                </select>
+                                <option value=""></option>
+                                <optgroup label="Apollo">
+                                    <option value="1">Apollo</option>
+                                    <option value="5">Bahan Baku Apollo</option>
+                                    <option value="7">Pemakaian Bahan Bakar Apollo</option>
+                                    <option value="8">Bahan Bakar & Hasil Apollo</option>
+                                </optgroup>
+                                <optgroup label="Rolling">
+                                    <option value="2">Rolling</option>
+                                    <option value="6">Bahan Bakar Rolling</option>
+                                </optgroup>
+                                <optgroup label="Cuci">
+                                    <option value="4">Cuci</option>
+                                </optgroup>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -53,7 +53,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tgl_start" name="tgl_start" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                                value="<?php echo date('01-m-Y'); ?>">
                         </div>
                     </div>
                     <div class="row">

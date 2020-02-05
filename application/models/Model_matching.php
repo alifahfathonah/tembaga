@@ -5,11 +5,11 @@ class Model_matching extends CI_Model{
         if ($reff_cv === null) {
             $data = $this->db->query("Select ir.*, (select count(tid.id) from r_t_invoice_detail tid where tid.invoice_resmi_id = ir.id) as jumlah_item
                 from r_t_invoice ir
-                order by no_invoice_resmi desc");
+                order by tanggal desc,no_invoice_resmi desc");
         } else {
             $data = $this->db->query("Select ir.*, (select count(tid.id) from r_t_invoice_detail tid where tid.invoice_resmi_id = ir.id) as jumlah_item
                 from r_t_invoice ir where ir.reff_cv = ".$reff_cv." 
-                order by no_invoice_resmi desc");
+                order by tanggal desc,no_invoice_resmi desc");
         }
         return $data;
     }

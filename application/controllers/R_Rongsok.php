@@ -535,7 +535,7 @@ class R_Rongsok extends CI_Controller{
         $user_ppn  = 1;
         
         $this->db->trans_start();
-        $code = 'PO-KMP.'.$tgl_po.'.'.$this->input->post('no_po');
+        $code = 'PO-RSK.'.$tgl_po.'.'.$this->input->post('no_po');
 
         $data = array(
             'no_po'=> $code,
@@ -626,6 +626,7 @@ class R_Rongsok extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $data = array(
+                'no_po'=> $this->input->post('no_po'),
                 'tanggal'=> $tgl_input,
                 'supplier_id'=>$this->input->post('supplier_id'),
                 'remarks'=> $this->input->post('remarks'),

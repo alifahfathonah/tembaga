@@ -33,8 +33,8 @@
         if($last_series != $row->kode_rongsok && $last_series != null){    
             echo '<tr>
                 <td colspan="6"></td>
-                <td style="border-bottom:1px solid #000; border-top:1px solid #000">'.number_format($bruto,2,',','.').'</td>
-                <td style="border-bottom:1px solid #000; border-top:1px solid #000">'.number_format($netto,2,',','.').'</td>
+                <td style="border-bottom:1px solid #000; border-top:1px solid #000;text-align:right;">'.number_format($bruto,2,',','.').'</td>
+                <td style="border-bottom:1px solid #000; border-top:1px solid #000;text-align:right;">'.number_format($netto,2,',','.').'</td>
             </tr>';
             $bruto=0;
             $netto=0;
@@ -46,8 +46,8 @@
         echo '<td>'.$row->no_spb.'</td>';
         echo '<td>'.$row->remarks.'</td>';
         echo '<td>'.$row->tanggal_keluar.'</td>';
-        echo '<td>'.number_format($row->bruto,2,',','.').'</td>';
-        echo '<td>'.number_format($row->netto,2,',','.').'</td>';
+        echo '<td style="text-align:right;">'.number_format($row->bruto,2,',','.').'</td>';
+        echo '<td style="text-align:right;">'.number_format($row->netto,2,',','.').'</td>';
         echo '</tr>';
         $no++;
         $last_series = $row->kode_rongsok;
@@ -59,13 +59,13 @@
     ?>
     <tr>
         <td colspan="6"></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($bruto,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($netto,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align: right;"><?=number_format($bruto,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align: right;"><?=number_format($netto,2,',','.');?></td>
     </tr>
     <tr>
         <td colspan="6" style="text-align: right;"><strong>TOTAL</strong></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($t_bruto,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($t_netto,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align: right;"><?=number_format($t_bruto,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align: right;"><?=number_format($t_netto,2,',','.');?></td>
     </tr>
     </tbody>
 </table>

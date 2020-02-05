@@ -9,17 +9,17 @@ table td, table td * {
 <table width="100%" cellpadding="0" cellspacing="0" style="border-left: 1px solid #000;">
     <tr>
         <td>
-            <table border="0" cellpadding="4" cellspacing="0" width="100%" style="font-size:12px;">
+            <table border="0" cellpadding="2" cellspacing="0" width="100%" style="font-size:13px;">
                 <tr>
                     <td rowspan="2" style="text-align:center; border-top:1px solid #000;"><br><strong>TANGGAL</strong></td>
                     <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong><br>NO PRODUKSI</strong></td>
                     <td style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>GAS</strong></td>
                     <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>JML<br>KAYU</strong></td>
-                    <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>JUMLAH<br>JAM</strong></td>
+                    <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>JML<br>JAM</strong></td>
                     <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>RONGSOK</strong></td>
                     <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>HASIL PRODUKSI</strong></td>
-                    <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong><br>BS APOLLO</strong></td>
-                    <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong><br>BS INGOT</strong></td>
+                    <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>BS<br>APOLLO</strong></td>
+                    <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>BS<br>INGOT</strong></td>
                     <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-right:1px solid #000; border-top:1px solid #000;"><strong>SUSUT<br>APOLLO</strong></td>
                 </tr>
                 <tr>
@@ -122,7 +122,7 @@ table td, table td * {
     </tr>
     <tr>
         <td colspan="5" style="border-bottom:1px solid #000;border-top:1px solid #000;">
-            <table border="0" width="100%" cellpadding="0" cellspacing="0" style="font-size: 12px;">
+            <table border="0" width="100%" cellpadding="0" cellspacing="0" style="font-size: 13px;">
                 <tr>
                     <td style="text-align:left">PENGGUNAAN BAHAN </td>
                 </tr>
@@ -150,6 +150,10 @@ table td, table td * {
         </td>
         <td colspan="7" style="border-bottom:1px solid #000;border-top:1px solid #000; border-left:1px solid #000; border-right:1px solid #000;">
             <table border="0" width="100%" cellpadding="4" cellspacing="2" >
+                <tr>
+                    <td colspan="2"></td>
+                    <td align="center">Tangerang, <?=tanggal_indo(date('Y-m-d'));?></td>
+                </tr>
                 <tr>
                     <td style="text-align:center">Mengetahui. </td>
                     <td style="text-align:center">Disetujui, </td>

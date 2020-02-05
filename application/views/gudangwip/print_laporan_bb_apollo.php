@@ -4,7 +4,7 @@
 <?php $ex = explode('-',tanggal_indo(date('Y-m-d', strtotime($end))));?>
 <table width="100%" class="table table-striped table-bordered table-hover" id="sample_6">
     <tr>
-        <table border="0" cellpadding="4" cellspacing="0" width="100%" style="font-size:12px;">
+        <table border="0" cellpadding="2" cellspacing="0" width="100%" style="font-size:13px;">
         <td colspan="3">
             <tr>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Tanggal</strong></td>
@@ -26,7 +26,7 @@
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">AFK<br>8MM</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">BS<br>INGOT</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">PIPA</th>
-                <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">D/DBARU</th>
+                <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">D/D<br>BARU</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">TRAVO</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">BS<br>QC</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">DDG</th>
@@ -134,8 +134,8 @@
     </tr>
     </tbody>
     <tr>
-        <td colspan="15" style="border-bottom:1px solid #000;border-left:1px solid #000;">
-            <table border="0" width="100%" cellpadding="0" cellspacing="0" style="font-size: 12px;">
+        <td colspan="14" style="border-bottom:1px solid #000;border-left:1px solid #000;">
+            <table border="0" width="100%" cellpadding="0" cellspacing="0" style="font-size: 14px;">
                 <tr>
                     <td colspan="11"><strong><u>PEMAKAIAN BAHAN BAKU APOLLO :</u> &nbsp; <?='<u>'.strtoupper($ex[1]).'</u> '.$ex[2];?></strong></td>
                 </tr>
@@ -290,7 +290,7 @@
                 </tr>
             </table>
         </td>
-        <td colspan="7" style="border-bottom:1px solid #000;border-right:1px solid #000">
+        <td colspan="8" style="border-bottom:1px solid #000;border-right:1px solid #000">
             <table border="0" width="100%" cellpadding="0" cellspacing="0" >
                 <tr>
                     <td colspan="3" align="center">Tangerang, <?=tanggal_indo(date('Y-m-d'));?></td>

@@ -114,51 +114,6 @@ class GudangRongsok extends CI_Controller{
 		redirect('index.php/GudangRongsok/view_spb/'.$this->input->post('id'));
 	}
 
-	// function laporan_list(){
-	//     $module_name = $this->uri->segment(1);
-	//     $id = $this->uri->segment(3);
-	//     $group_id    = $this->session->userdata('group_id');        
-	//     if($group_id != 1){
-	//         $this->load->model('Model_modules');
-	//         $roles = $this->Model_modules->get_akses($module_name, $group_id);
-	//         $data['hak_akses'] = $roles;
-	//     }
-	//     $data['group_id']  = $group_id;
-
-	//         $data['content']= "beli_rongsok/laporan_list";
-	//         $i=0;
-	//         $this->load->model('Model_beli_rongsok'); 
-	//         //$data['detailTanggal'] = $this->Model_beli_sparepart->show_laporan()->result();
-	//         $comment = $this->Model_beli_rongsok->show_laporan();
-	//         if($comment->num_rows() > 0)
-	//             {
-	//                 foreach ($comment->result() as $r)
-	//                 {
-	//                     //bulan ini
-	//                     $data['reg'][$i]['showdate']=$r->showdate;
-	//                     $data['reg'][$i]['tanggal']=$r->tanggal;
-	//                     $data['reg'][$i]['bruto_masuk']=$r->bruto_masuk;
-	//                     $data['reg'][$i]['netto_masuk']=$r->netto_masuk;
-	//                     $data['reg'][$i]['bruto_keluar']=$r->bruto_keluar;
-	//                     $data['reg'][$i]['netto_keluar']=$r->netto_keluar;
-
-	//                     //convert tanggal
-	//                     $tgl=str_split($r->tanggal,4);
-	//                     $tahun=$tgl[0];
-	//                     $bulan=$tgl[1];
-
-	//                     if($bulan==12){
-	//                       $bulan = 1;
-	//                       $tahun = $tahun+1;
-	//                     } else {
-	//                       $bulan= intval($bulan)+1;
-	//                     }
-	//                     $i++;
-	//                 }
-	//             }
-	//         $this->load->view('layout', $data);   
-	// }
-
 	function laporan_list(){
 		$module_name = $this->uri->segment(1);
 		$id = $this->uri->segment(3);
@@ -379,6 +334,48 @@ class GudangRongsok extends CI_Controller{
 		}
 	}
 
+	function edit_gudang_rongsok(){
+		$module_name = $this->uri->segment(1);
+		$group_id    = $this->session->userdata('group_id');
+		$ppn         = $this->session->userdata('user_ppn');
+		$id          = $this->uri->segment(3);
+		if($group_id != 1){
+			$this->load->model('Model_modules');
+			$roles = $this->Model_modules->get_akses($module_name, $group_id);
+			$data['hak_akses'] = $roles;
+		}
+		$data['group_id']  = $group_id;
+
+		$data['content']= "gudang_rongsok/edit_gudang_rongsok";
+		$this->load->model('Model_beli_rongsok');
+		$data['detailLaporan'] = $this->Model_beli_rongsok->view_gudang_rongsok($id)->result();
+
+		$this->load->view('layout', $data);
+	}
+
+	function update_gudang_rongsok(){
+		$user_id  = $this->session->userdata('user_id');
+		$tanggal  = date('Y-m-d H:i:s');
+		
+		$this->db->trans_start();
+			
+			$myDetails = $this->input->post('myDetails');
+			foreach ($myDetails as $row) {
+				$this->db->where('id',$row['id']);
+				$this->db->update('dtr_detail', array(
+					'nomor_seng'=>$row['nomor_seng']
+				));
+			}
+
+		if($this->db->trans_complete()){
+			$this->session->set_flashdata('flash_msg', 'Data Rongsok berhasil disimpan!');
+			redirect('index.php/GudangRongsok/edit_gudang_rongsok/'.$this->input->post('rongsok_id'));  
+		}else{
+			$this->session->set_flashdata('flash_msg', 'Data Rongsok gagal disimpan, silahkan dicoba kembali!');
+			redirect('index.php/GudangRongsok/edit_gudang_rongsok/'.$this->input->post('rongsok_id'));  
+		}
+	}
+
 	function print_gudang_rongsok(){
 		$module_name = $this->uri->segment(1);
 		$id = $this->uri->segment(3);
@@ -573,6 +570,33 @@ class GudangRongsok extends CI_Controller{
 		}elseif($l==10){
 			$data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok_tolling($start,$end,1)->result();
 			$this->load->view('gudang_rongsok/print_laporan_pemasukan', $data);
+		}elseif($l==11){
+			$data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok($start,$end)->result();//tali rolling
+			$this->load->view('gudang_rongsok/print_permintaan_gudang', $data);
+		}elseif($l==12){
+			$data['header'] = 'Gudang WIP';
+			$data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok_lain($start,$end,5)->result();//SDM
+			$this->load->view('gudang_rongsok/print_pemasukan_rsk', $data);
+		}elseif($l==13){
+			$data['header'] = 'Gudang FG';
+			$data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok_lain($start,$end,6)->result();//SDM
+			$this->load->view('gudang_rongsok/print_pemasukan_rsk', $data);
+		}elseif($l==14){
+			$data['header'] = 'SDM';
+			$data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_sdm($start,$end)->result();//tali rolling
+			$this->load->view('gudang_rongsok/print_permintaan_gudang', $data);
+		}elseif($l==15){
+			$data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok2($start,$end,0)->result();
+			$this->load->view('gudang_rongsok/print_laporan_pemasukan2', $data);
+		}elseif($l==16){
+			$data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok2($start,$end,1)->result();
+			$this->load->view('gudang_rongsok/print_laporan_pemasukan2', $data);
+		}elseif($l==17){
+			$data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok_tolling2($start,$end,0)->result();
+			$this->load->view('gudang_rongsok/print_laporan_pemasukan2', $data);
+		}elseif($l==18){
+			$data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok_tolling2($start,$end,1)->result();
+			$this->load->view('gudang_rongsok/print_laporan_pemasukan2', $data);
 		}
 	}
 
@@ -655,6 +679,8 @@ class GudangRongsok extends CI_Controller{
 			$tabel .= '<td><a href="javascript:;" class="btn btn-xs btn-circle green-seagreen" onclick="timbang_netto(1);"> <i class="fa fa-dashboard"></i> Timbang </a></td>';
 			$tabel .= '<td><input type="text" id="netto_'.$no.'" name="myDetails['.$no.'][netto]" class="form-control myline" value="'.number_format($row->netto,2,'.','').'"></td>';
 			$tabel .= '<td>'.(($row->netto_resmi > 0)?'Sudah dipakai CV':'Belum dipakai CV').'</td>';
+			$tabel .= '<td>'.$row->keterangan.'</td>';
+			$tabel .= '<td>'.$row->tanggal_keluar.'</td>';
 			$tabel .= '</tr>';
 		}
 
@@ -744,6 +770,52 @@ class GudangRongsok extends CI_Controller{
 		}else{
 			$this->session->set_flashdata('flash_msg', 'Data inventory gagal disimpan, silahkan dicoba kembali!');
 			redirect('index.php/GudangRongsok/edit_laporan/'.$this->input->post('tanggal'));  
+		}
+	}
+
+	function laporan_bulanan_palet(){
+		$module_name = $this->uri->segment(1);
+		$group_id    = $this->session->userdata('group_id');        
+		if($group_id != 1){
+			$this->load->model('Model_modules');
+			$roles = $this->Model_modules->get_akses($module_name, $group_id);
+			$data['hak_akses'] = $roles;
+		}
+		$data['group_id']  = $group_id;
+		$data['judul']     = "Gudang Rongsok";
+		$data['content']   = "gudang_rongsok/laporan_bulanan_palet";
+
+		$this->load->model('Model_beli_rongsok'); 
+		$data['list_rongsok'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
+
+		$this->load->view('layout', $data);  
+	}
+
+	function print_transaksi_rongsok(){
+		$module_name = $this->uri->segment(1);
+		$group_id    = $this->session->userdata('group_id');
+		$user_id = $this->session->userdata('user_id');
+		$this->load->helper('tanggal_indo');
+
+			$r = $_GET['r'];
+			$bulan = $_GET['b'];
+			$tahun = $_GET['t'];
+			$tanggal = $tahun.'-'.$bulan.'-01';
+
+			$start = $tanggal;
+			$end = date("Y-m-t", strtotime($start));
+
+			$data['start'] = $start;
+			$data['end'] = $end;
+			// echo $end;die();
+
+		$this->load->model('Model_beli_rongsok');
+		if($r==0){
+			$data['detailLaporan'] = $this->Model_beli_rongsok->print_transaksi_rongsok($bulan,$tahun,$start,$end,$r)->result();
+			$this->load->view('gudang_rongsok/print_transaksi_rongsok', $data);
+		}else{
+			$data['detailLaporan'] = $this->Model_beli_rongsok->print_transaksi_rongsok($bulan,$tahun,$start,$end,$r)->result();
+			$this->load->view('gudang_rongsok/print_transaksi_rongsok', $data);
 		}
 	}
 }

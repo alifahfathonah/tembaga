@@ -128,11 +128,15 @@
                             <td style="border-left:1px solid #000;"><?=$c;?></td>
                             <td style="text-align:right;"><?=number_format($row->harga,2,',', '.');?></td>
                             <td style="border-left:1px solid #000;"><?=$c;?></td>
-                            <td style="text-align:right; border-right:1px solid #000;"><?=number_format($row->total_harga,0,',', '.');?></td>
+                            <td style="text-align:right; border-right:1px solid #000;"><?=number_format($row->total_harga,2,',', '.');?></td>
                         </tr>
                         <?php
                                 $total_netto += $row->netto;
+                            if($header['currency']=='IDR'){
                                 $total += round($row->total_harga,0);
+                            }else{
+                                $total += round($row->total_harga,2);
+                            }
                                 $no++;
                             }
                         if($header['flag_ppn']==1 && $header['currency']=='IDR'){
@@ -152,38 +156,43 @@
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>Jumlah Harga Jual</strong></td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
-                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($total,0,',', '.');?></td>
+                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($total,2,',', '.');?></td>
                         </tr>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>Dikurangi Potongan Harga</strong></td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
-                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($header['diskon'],0,',', '.');?></td>
+                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($header['diskon'],2,',', '.');?></td>
                         </tr>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>Lain Lain</strong></td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
-                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($header['add_cost'],0,',', '.');?></td>
+                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($header['add_cost'],2,',', '.');?></td>
                         </tr>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>Dasar Pengenaan Pajak</strong></td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
-                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format(round($total-$header['diskon']-$header['add_cost'],0),0,',', '.');?></td>
+                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=($header['currency']=='IDR')?number_format(round($total-$header['diskon']-$header['add_cost'],0),2,',', '.'):number_format(round($total-$header['diskon']-$header['add_cost'],2),2,',', '.');?></td>
                         </tr>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>PPN = 10% x Dasar Pengenaan Pajak</strong></td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
-                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format(round($harga_ppn,0),0,',', '.');?></td>
+                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=($header['currency']=='IDR')?number_format(round($harga_ppn,0),2,',', '.'):number_format(round($harga_ppn,2),2,',', '.');?></td>
                         </tr>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>Materai</strong></td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
-                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($header['materai'],0,',', '.');?></td>
+                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($header['materai'],2,',', '.');?></td>
                         </tr>
-                        <?php $total_bersih = round($total-$header['diskon']-$header['add_cost']+$header['materai'],0)+round($harga_ppn,0);?>
+                        <?php 
+                        if($header['currency']=='IDR'){
+                        $total_bersih = round($total-$header['diskon']-$header['add_cost']+$header['materai'],0)+round($harga_ppn,0);
+                        }else{
+                        $total_bersih = round($total-$header['diskon']-$header['add_cost']+$header['materai'],2)+round($harga_ppn,2);
+                        };?>
                         <tr>
                             <td style="text-align:left; border-left:1px solid #000; border-bottom:1px solid #000" colspan="9"><strong>T O T A L</strong></td>
                             <td style="border-left:1px solid #000; border-bottom:1px solid #000"><?=$c;?></td>
-                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($total_bersih,0,',', '.');?></td>
+                            <td style="text-align:right; border-right:1px solid #000; border-bottom:1px solid #000"><?=number_format($total_bersih,2,',', '.');?></td>
                         </tr>
                         <tr>
                             <td colspan="2" style="border-left: 1px solid #000;">Terbilang</td>

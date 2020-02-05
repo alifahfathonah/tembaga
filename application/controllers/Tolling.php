@@ -2973,7 +2973,104 @@ class Tolling extends CI_Controller{
         redirect('index.php/Tolling/po_list');
     }
 
+    function save_stok_laporan(){
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn  = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $id = $this->input->post('jenis_laporan');
+
+        $this->load->model('Model_tolling_titipan');
+        $cek = $this->Model_tolling_titipan->get_stok_awal_laporan($tgl_input,$this->input->post('customer_id'),$this->input->post('supplier_id'),$id,$user_ppn,$this->input->post('tipe_laporan'))->row_array();
+        if(empty($cek)){
+            $this->db->trans_start();
+
+                $this->db->insert('stok_awal_laporan', array(
+                    'flag_ppn'=>$user_ppn,
+                    'jenis'=>$id,
+                    'tipe'=>$this->input->post('tipe_laporan'),
+                    'tanggal'=>$tgl_input,
+                    'customer_id'=>$this->input->post('customer_id'),
+                    'supplier_id'=>$this->input->post('supplier_id'),
+                    'netto'=>$this->input->post('netto'),
+                    'created_by'=> $user_id,
+                    'created_at'=> $tanggal
+                ));
+            
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'Stok Awal Berhasil di Input');                
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create laporan stok, silahkan coba kembali!');
+            }
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Stok Awal Sudah Pernah di Input'); 
+        }
+        if($id==1){
+            redirect('index.php/Tolling/cek_balance');
+        }elseif($id==2){
+            redirect('index.php/Tolling/cek_balance_po');
+        }
+    }
+
+    function update_stok_laporan(){
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn  = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $jenis = $this->input->post('jenis_laporan');
+        $id = $this->input->post('id');
+
+        $this->db->trans_start();
+
+            $this->db->where("id",$id);
+            $this->db->update("stok_awal_laporan", array(
+                'tanggal'=>$tgl_input,
+                'tipe'=>$this->input->post('tipe_laporan'),
+                'customer_id'=>$this->input->post('customer_id'),
+                'supplier_id'=>$this->input->post('supplier_id'),
+                'netto'=>$this->input->post('netto'),
+                'created_by'=> $user_id,
+                'created_at'=> $tanggal
+            ));
+            
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'Stok Awal Berhasil di Input');                 
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create voucher  rongsok, silahkan coba kembali!');
+        }
+        if($jenis==1){
+            redirect('index.php/Tolling/cek_balance');
+        }elseif($jenis==2){
+            redirect('index.php/Tolling/cek_balance_po');
+        }
+    }
+
+    function edit_stok(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_tolling_titipan');
+        $data = $this->Model_tolling_titipan->edit_stok($id)->row_array(); 
+        
+        header('Content-Type: application/json');
+        echo json_encode($data);       
+    }
+
+    function delete_stok(){
+        $id = $this->uri->segment(3);
+        $jenis = $this->uri->segment(4);
+        if(!empty($id)){
+            $this->db->where('id', $id);
+            $this->db->delete('stok_awal_laporan');            
+        }
+        $this->session->set_flashdata('flash_msg', 'Data stok berhasil dihapus');
+        if($jenis==1){
+            redirect('index.php/Tolling/cek_balance');
+        }elseif($jenis==2){
+            redirect('index.php/Tolling/cek_balance_po');
+        }
+    }
+
     function cek_balance(){
+        $user_ppn = $this->session->userdata('user_ppn');
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
         if($group_id != 1){
@@ -2985,7 +3082,9 @@ class Tolling extends CI_Controller{
 
         $data['content']= "tolling_titipan/cek_balance";
         $this->load->model('Model_sales_order');
+        $this->load->model('Model_tolling_titipan');
         $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+        $data['list_data'] = $this->Model_tolling_titipan->stok_awal_laporan($user_ppn,1)->result();
 
         $this->load->view('layout', $data);
     }
@@ -2996,9 +3095,9 @@ class Tolling extends CI_Controller{
         $ppn = $this->session->userdata('user_ppn');
 
         $cust_id = $_GET['l'];
-        // $start = date('Y-m-d', strtotime($_GET['ts']));
-        // $end = date('Y-m-d', strtotime($_GET['te']));
-        // echo $start;die();
+        $data['start'] = date('Y-m-d', strtotime($_GET['ts']));
+        $data['end'] = date('Y-m-d', strtotime($_GET['te']));
+        // echo $data['start'];die();
 
             if($group_id != 1){
                 $this->load->model('Model_modules');
@@ -3012,12 +3111,15 @@ class Tolling extends CI_Controller{
         $this->load->model('Model_tolling_titipan');
         $data['header']  = $this->Model_tolling_titipan->get_contact_name($cust_id)->row_array();
         $data['header']['jenis'] = 'SO';
-        $data['details_bahan'] = $this->Model_tolling_titipan->laporan_bahan_so($cust_id,$ppn)->result();
-        $data['details_kirim'] = $this->Model_tolling_titipan->laporan_kirim_so($cust_id,$ppn)->result();
+        $data['stok_awal'] = $this->Model_tolling_titipan->get_stok_awal_laporan($data['start'],$cust_id,0,1,$ppn,0)->row_array();
+        $data['details_bahan'] = $this->Model_tolling_titipan->laporan_bahan_so($cust_id,$ppn,$data['start'],$data['end'])->result();
+        $data['details_kirim'] = $this->Model_tolling_titipan->laporan_kirim_so($cust_id,$ppn,$data['start'],$data['end'])->result();
+        // print_r($data['details_bahan']);die();
         $this->load->view('tolling_titipan/print_laporan_balance_so', $data);
     }
 
     function cek_balance_po(){
+        $user_ppn = $this->session->userdata('user_ppn');
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');        
         if($group_id != 1){
@@ -3029,7 +3131,9 @@ class Tolling extends CI_Controller{
 
         $data['content']= "tolling_titipan/cek_balance_po";
         $this->load->model('Model_beli_sparepart');
+        $this->load->model('Model_tolling_titipan');
         $data['supplier_list'] = $this->Model_beli_sparepart->supplier_list()->result();;
+        $data['list_data'] = $this->Model_tolling_titipan->stok_awal_laporan($user_ppn,2)->result();
 
         $this->load->view('layout', $data);
     }
@@ -3040,8 +3144,8 @@ class Tolling extends CI_Controller{
         $ppn = $this->session->userdata('user_ppn');
 
         $cust_id = $_GET['l'];
-        // $start = date('Y-m-d', strtotime($_GET['ts']));
-        // $end = date('Y-m-d', strtotime($_GET['te']));
+        $data['start'] = date('Y-m-d', strtotime($_GET['ts']));
+        $data['end'] = date('Y-m-d', strtotime($_GET['te']));
         // echo $start;die();
 
             if($group_id != 1){
@@ -3055,9 +3159,10 @@ class Tolling extends CI_Controller{
 
         $this->load->model('Model_tolling_titipan');
         $data['header']  = $this->Model_tolling_titipan->get_alamat_supplier($cust_id)->row_array();
+        $data['stok_awal'] = $this->Model_tolling_titipan->get_stok_awal_laporan($data['start'],0,$cust_id,2,$ppn,0)->row_array();
         $data['header']['jenis'] = 'PO';
-        $data['details_bahan'] = $this->Model_tolling_titipan->laporan_kirim_bahan($cust_id,$ppn)->result();
-        $data['details_kirim'] = $this->Model_tolling_titipan->laporan_terima($cust_id,$ppn)->result();
+        $data['details_bahan'] = $this->Model_tolling_titipan->laporan_kirim_bahan($cust_id,$ppn,$data['start'],$data['end'])->result();
+        $data['details_kirim'] = $this->Model_tolling_titipan->laporan_terima($cust_id,$ppn,$data['start'],$data['end'])->result();
         $this->load->view('tolling_titipan/print_laporan_balance_po', $data);
     }
 

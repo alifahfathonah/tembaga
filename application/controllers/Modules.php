@@ -36,7 +36,7 @@ class Modules extends CI_Controller{
                 $konten .= "</td>";
                 $konten .= "<td></td>";
                 foreach ($data['groups'] as $row){
-                    $konten .= "<td></td>";
+                    $konten .= "<td style='font-size:8px;'>".$row->group_name."</td>";
                 }
                 $konten .= "</tr>";
                     foreach ($details as $key) {

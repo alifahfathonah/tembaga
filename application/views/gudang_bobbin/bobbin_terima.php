@@ -17,71 +17,6 @@
                 </div>
             </div>
         </div>
-        <!-- <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/Finishgood/save_finishgood'); ?>">                            
-             <div class="row">
-                <div class="col-md-12">
-
-
-                   <div class="row">
-                        <div class="col-md-6">
-
-                        <div class="col-md-12">
-                            Tanggal <font color="#f00">*</font>
-                        </div>
-
-                        <div class="col-md-12">
-                            <input type="text" id="tanggal" name="tanggal" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
-                        </div>
-
-                        <div class="col-md-12">
-                            No Penerimaan <font color="#f00">*</font>
-                        </div>
-
-                        <div class="col-md-12">
-                                   
-                            <input type="text" id="no_permintaan" name="no_penerimaan" 
-                                class="form-control myline" style="margin-bottom:5px;">
-
-                        </div>
-
-
-                    </div> 
-
-
-                      <div class="col-md-6">
-
-                       <div class="col-md-12">
-                            Nama Customer <font color="#f00">*</font>
-                        </div>
-
-                        <div class="col-md-12">
-                            <input type="text" id="nama_customer" name="nama_customer" 
-                                class="form-control myline" style="margin-bottom:5px;">
-                        </div> 
-
-
-                         
-
-
-                </div>    
-
-
-
-                </div>
-
-              
-
-                </div>
-
-             
-
-   </form> -->
-
-
-  
    <div class="col-md-12" style="margin-top: 10px;"> 
     <div class="portlet box yellow-gold">
             <div class="portlet-title">
@@ -101,8 +36,8 @@
     <thead>
        <tr >
             <th style="text-align: center">No</th>
-          
             <th>Nomor Penerimaan</th>
+            <th>Tanggal</th>
             <th>Surat Jalan</th>
             <th>Jumlah Item</th>
             <th>Keterangan</th>
@@ -118,6 +53,7 @@
         <tr>
           <td style="text-align: center"><?php echo $no; ?></td>
           <td><?php echo $row->no_penerimaan ?></td>
+          <td><?php echo $row->tanggal ?></td>
           <td><?php echo $row->surat_jalan ?></td>
           <td><?php echo $row->jumlah_item ?></td>
           <td><?php echo $row->remarks ?></td>
@@ -130,12 +66,12 @@
                            
                             <?php   
                                 }
+                                echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/GudangBobbin/edit_penerimaan_bobbin/'.$row->id.'" style="margin-bottom:4px"> &nbsp;<i class="fa fa-edit"></i> Edit &nbsp;</a> ';
                                 if(($group_id==1 || $hak_akses['print']==1) && $row->jumlah_item > 0){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/GudangBobbin/print_bobbin_terima/'.$row->id.'" 
                                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }
                                 if(($group_id==1 || $hak_akses['edit']==1) && $row->jumlah_item == 0){
-                                  echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/GudangBobbin/edit_penerimaan_bobbin/'.$row->id.'" style="margin-bottom:4px"> &nbsp;<i class="fa fa-edit"></i> Edit &nbsp;</a> ';
                                 }
                                   echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/GudangBobbin/delete_penerimaan_bobbin/'.$row->id.'" style="margin-bottom:4px"> &nbsp;<i class="fa fa-trash"></i> Hapus &nbsp;</a> ';
                             ?>

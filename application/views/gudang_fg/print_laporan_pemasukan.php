@@ -29,7 +29,7 @@
             if($last_series != $row->kode && $last_series != null){    
                 echo '<tr>
                     <td colspan="5"></td>
-                    <td style="border-bottom:1px solid #000; border-top:1px solid #000">'.number_format($netto,2,',','.').'</td>
+                    <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align:right;">'.number_format($netto,2,',','.').'</td>
                 </tr>';
                 $netto=0;
                 echo 
@@ -51,7 +51,7 @@
         echo '<td>'.$row->nomor.'</td>';
         echo '<td>'.$row->tanggal.'</td>';
         echo '<td>'.$row->nama.'</td>';
-        echo '<td>'.number_format($row->netto,2,',','.').'</td>';
+        echo '<td style="text-align:right;">'.number_format($row->netto,2,',','.').'</td>';
         echo '</tr>';
         $last_series = $row->kode;
         $netto += $row->netto;
@@ -60,11 +60,11 @@
     ?>
     <tr>
         <td colspan="5"></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($netto,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align:right;"><?=number_format($netto,2,',','.');?></td>
     </tr>
     <tr>
         <td colspan="5" style="text-align: right;"><strong>TOTAL</strong></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($t_netto,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align:right;"><?=number_format($t_netto,2,',','.');?></td>
     </tr>
     </tbody>
 </table>

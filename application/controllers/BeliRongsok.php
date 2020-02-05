@@ -121,7 +121,7 @@ class BeliRongsok extends CI_Controller{
             $this->load->model('Model_m_numberings');
             $code = $this->Model_m_numberings->getNumbering('PO', $tgl_input); 
         }else{
-            $code = 'PO-KMP.'.$tgl_po.'.'.$this->input->post('no_po');
+            $code = 'PO-RSK.'.$tgl_po.'.'.$this->input->post('no_po');
             $count = $this->db->query("Select count(id) as count from po where no_po = '".$code."'")->row_array();
             if($count['count']){
                 $this->session->set_flashdata('flash_msg', 'Nomor PO sudah Ada. Please try again!');
@@ -622,7 +622,7 @@ class BeliRongsok extends CI_Controller{
     function get_no_po(){
         $tgl_code = date('Ym', strtotime($this->input->post('tanggal')));
 
-        $code_po = 'PO-KMP.'.$tgl_code.'.'.$this->input->post('no_po');
+        $code_po = 'PO-RSK.'.$tgl_code.'.'.$this->input->post('no_po');
         // print_r($code_po);
         // die();
         $count = $this->db->query("select count(id) as count from po where no_po ='".$code_po."'")->row_array();

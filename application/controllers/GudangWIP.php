@@ -66,12 +66,7 @@ class GudangWIP extends CI_Controller{
         
        $this->load->model('Model_gudang_wip');
        $this->load->model('Model_beli_rongsok');
-       // $pilihan_jenis_masak = array(
-       //                  'ROLLING' => 'ROLLING',
-       //                  'BAKAR ULANG' => 'BAKAR ULANG',
-       //                  'CUCI' => 'CUCI'
-       //                  );
-       // $data['pil_masak'] = $pilihan_jenis_masak;
+
        $data['pil_masak'] = [
             $jenis => $jenis
        ];
@@ -120,8 +115,12 @@ class GudangWIP extends CI_Controller{
 
             if($this->input->post('jenis_masak') == 'CUCI'){
                 $susut = (int)$this->input->post('susut_berat_keras');
+                $qty_keras = (int)$this->input->post('qty_cbu');
+                $keras = (int)$this->input->post('berat_cbu');
             }else{
                 $susut = 0;
+                $qty_keras = (int)$this->input->post('jml_keras');
+                $keras = (int)$this->input->post('berat_keras');
             }
             #insert hasil WIP
             $data = array(
@@ -136,8 +135,8 @@ class GudangWIP extends CI_Controller{
                     'gas_r'=> $this->input->post('gas_r'),
                     'berat' => (int)($this->input->post('berat_kh')!=null) ? $this->input->post('berat_kh') : $this->input->post('berat_km'),
                     'susut' => $susut,
-                    'keras' => (int)$this->input->post('berat_keras'),
-                    'qty_keras' => (int)$this->input->post('jml_keras'),
+                    'keras' => $keras,
+                    'qty_keras' => $qty_keras,
                     'bs' => $this->input->post('bs'),
                     'bs_ingot' => 0,
                     'serbuk' => (int)$this->input->post('serbuk'),
@@ -176,6 +175,21 @@ class GudangWIP extends CI_Controller{
                 'created_by' => $user_id
                 );
                 $this->db->insert('t_bpb_wip_detail', $data_bpb_wip_detail);
+
+                if($this->input->post('berat_cbu')!=0 || $this->input->post('berat_cbu') != null){
+                    $data_bpb_wip_detail = array(
+                    'bpb_wip_id' => $insert_id_bpb_wip,
+                    'created' => $tgl_input,
+                    'jenis_barang_id' => 668, //Copper Rod 8 MM Cuci Bakar Ulang
+                    'spb_wip_detail_id' => 0,
+                    'qty' => $this->input->post('qty_cbu'),
+                    'uom' => 'ROLL',
+                    'berat' => $this->input->post('berat_cbu'),
+                    'keterangan' => $this->input->post('keterangan'),
+                    'created_by' => $user_id
+                    );
+                    $this->db->insert('t_bpb_wip_detail', $data_bpb_wip_detail);
+                }
             } else {
                 $data_bpb_wip_detail = array(
                 'bpb_wip_id' => $insert_id_bpb_wip,
@@ -1490,10 +1504,71 @@ class GudangWIP extends CI_Controller{
         }
     }
 
+    // function laporan_list(){
+    //     $module_name = $this->uri->segment(1);
+    //     $id = $this->uri->segment(3);
+    //     $group_id    = $this->session->userdata('group_id');
+    //     if($group_id != 1){
+    //         $this->load->model('Model_modules');
+    //         $roles = $this->Model_modules->get_akses($module_name, $group_id);
+    //         $data['hak_akses'] = $roles;
+    //     }
+    //     $data['group_id']  = $group_id;
+
+    //         $data['content']= "gudangwip/laporan_list";
+    //         $i=0;
+    //         $this->load->model('Model_gudang_wip'); 
+    //         //$data['detailTanggal'] = $this->Model_beli_sparepart->show_laporan()->result();
+    //         $comment = $this->Model_gudang_wip->show_laporan();
+    //         if($comment->num_rows() > 0)
+    //             {
+    //                 foreach ($comment->result() as $r)
+    //                 {
+    //                     //bulan ini
+    //                     $data['reg'][$i]['showdate']=$r->showdate;
+    //                     $data['reg'][$i]['tanggal']=$r->tanggal;
+    //                     $data['reg'][$i]['jumlah']=$r->jumlah;
+    //                     $data['reg'][$i]['qty_masuk']=$r->qty_masuk;
+    //                     $data['reg'][$i]['berat_masuk']=$r->berat_masuk;
+    //                     $data['reg'][$i]['qty_keluar']=$r->qty_keluar;
+    //                     $data['reg'][$i]['berat_keluar']=$r->berat_keluar;
+
+    //                     //convert tanggal
+    //                     $tgl=str_split($r->tanggal,4);
+    //                     $tahun=$tgl[0];
+    //                     $bulan=$tgl[1];
+
+    //                     if($bulan==12){
+    //                       $bulan = 1;
+    //                       $tahun = $tahun+1;
+    //                     } else {
+    //                       $bulan= intval($bulan)+1;
+    //                     }
+
+    //                     // Get user details from user table
+    //                     // $before=$this->Model_beli_rongsok->show_laporan_after($tahun,$bulan);
+    //                     // if($before->num_rows() > 0)
+    //                     // {
+    //                     //     foreach ($before->result() as $row)
+    //                     //     {
+    //                     //         // user details whatever you have in your db.
+    //                     //         $data['reg'][$i]['jumlah_b']=$row->jumlah;
+    //                     //         $data['reg'][$i]['bruto_masuk_b']=$row->bruto_masuk;
+    //                     //         $data['reg'][$i]['netto_masuk_b']=$row->netto_masuk;
+    //                     //         $data['reg'][$i]['bruto_keluar_b']=$row->bruto_keluar;
+    //                     //         $data['reg'][$i]['netto_keluar_b']=$row->netto_keluar;
+    //                     //     }
+    //                     // }
+    //                     $i++;
+    //                 }
+    //             }
+    //         $this->load->view('layout', $data);   
+    // }
+
     function laporan_list(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
-        $group_id    = $this->session->userdata('group_id');
+        $group_id    = $this->session->userdata('group_id');        
         if($group_id != 1){
             $this->load->model('Model_modules');
             $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -1501,55 +1576,157 @@ class GudangWIP extends CI_Controller{
         }
         $data['group_id']  = $group_id;
 
-            $data['content']= "gudangwip/laporan_list";
-            $i=0;
-            $this->load->model('Model_gudang_wip'); 
-            //$data['detailTanggal'] = $this->Model_beli_sparepart->show_laporan()->result();
-            $comment = $this->Model_gudang_wip->show_laporan();
-            if($comment->num_rows() > 0)
-                {
-                    foreach ($comment->result() as $r)
-                    {
-                        //bulan ini
-                        $data['reg'][$i]['showdate']=$r->showdate;
-                        $data['reg'][$i]['tanggal']=$r->tanggal;
-                        $data['reg'][$i]['jumlah']=$r->jumlah;
-                        $data['reg'][$i]['qty_masuk']=$r->qty_masuk;
-                        $data['reg'][$i]['berat_masuk']=$r->berat_masuk;
-                        $data['reg'][$i]['qty_keluar']=$r->qty_keluar;
-                        $data['reg'][$i]['berat_keluar']=$r->berat_keluar;
+        $data['content']= "gudangwip/laporan_list";
+        $this->load->model('Model_gudang_wip'); 
+        //$data['detailTanggal'] = $this->Model_beli_sparepart->show_laporan()->result();
+        $data['list'] = $this->Model_gudang_wip->show_laporan()->result();
+        $this->load->view('layout', $data);   
+    }
 
-                        //convert tanggal
-                        $tgl=str_split($r->tanggal,4);
-                        $tahun=$tgl[0];
-                        $bulan=$tgl[1];
+    function edit_laporan(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+        $id          = $this->uri->segment(3);
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
 
-                        if($bulan==12){
-                          $bulan = 1;
-                          $tahun = $tahun+1;
-                        } else {
-                          $bulan= intval($bulan)+1;
-                        }
+        $data['content']= "gudangwip/edit_laporan";
+        $this->load->model('Model_gudang_wip');
+        $data['detailLaporan'] = $this->Model_gudang_wip->show_laporan_barang('WIP',$id)->result();
 
-                        // Get user details from user table
-                        // $before=$this->Model_beli_rongsok->show_laporan_after($tahun,$bulan);
-                        // if($before->num_rows() > 0)
-                        // {
-                        //     foreach ($before->result() as $row)
-                        //     {
-                        //         // user details whatever you have in your db.
-                        //         $data['reg'][$i]['jumlah_b']=$row->jumlah;
-                        //         $data['reg'][$i]['bruto_masuk_b']=$row->bruto_masuk;
-                        //         $data['reg'][$i]['netto_masuk_b']=$row->netto_masuk;
-                        //         $data['reg'][$i]['bruto_keluar_b']=$row->bruto_keluar;
-                        //         $data['reg'][$i]['netto_keluar_b']=$row->netto_keluar;
-                        //     }
-                        // }
-                        $i++;
+        $this->load->view('layout', $data);
+    }
+
+    function update_laporan(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $this->db->trans_start();
+            
+            $myDetails = $this->input->post('myDetails');
+            // print_r($myDetails);die();
+            foreach ($myDetails as $row) {
+                $this->db->where('id',$row['id']);
+                $this->db->update('inventory', array(
+                    'stok_fisik'=>$row['netto'],
+                    'keterangan'=>$row['keterangan']
+                ));
+            }
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Data inventory berhasil disimpan!');
+            redirect('index.php/GudangWIP/edit_laporan/'.$this->input->post('tanggal'));  
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data inventory gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/GudangWIP/edit_laporan/'.$this->input->post('tanggal'));  
+        }
+    }
+
+    function proses_inventory(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+
+        $bulan = $_GET['b'];
+        $tahun = $_GET['t'];
+        $jb = 'WIP';
+
+        $start = $tahun.'-'.$bulan.'-01';
+        $end = date("Y-m-t", strtotime($start));
+
+        $before = date('Y-m-d', strtotime('first day of last month', strtotime($start)));
+
+        $this->db->trans_start();
+        $this->load->model('Model_gudang_fg');
+        $this->load->model('Model_gudang_wip');
+
+            $jenis_barang = $this->Model_gudang_wip->jenis_barang_list()->result();
+            $this->db->where(array(
+                'tanggal' => $start,
+                'jenis_barang' => $jb
+            ));
+            $this->db->delete('inventory');
+            $no = 0;
+            foreach ($jenis_barang as $key => $value) {
+                $stok_before = $this->Model_gudang_fg->inventory_stok_before($jb,$before,$value->id)->row_array();
+                $t = 1;
+                if(empty($stok_before)){
+                    $stok_before = $this->Model_gudang_wip->show_kartu_stok_before($start,$end,$value->id)->row_array();
+                    $t = 2;
+                }
+                $trx = $this->Model_gudang_wip->show_kartu_stok_detail_inventory($start,$end,$value->id)->row_array();
+                if(!empty($stok_before) || !empty($trx)){
+                    if($t==1){
+                        $stok_awal = $stok_before['stok_akhir'];
+                    }else{
+                        $stok_awal = $stok_before['berat_in']-$stok_before['berat_out'];
+                    }
+
+                    $stok_awal_next_month = $stok_awal + $trx['berat_in'] - $trx['berat_out'];
+                    if($stok_awal > 0 || $trx['berat_in'] > 0 || $trx['berat_out'] > 0){
+                        //stok akhir
+                        $this->db->insert('inventory', array(
+                            'jenis_barang'=>$jb,
+                            'bulan'=>$bulan,
+                            'tahun'=>$tahun,
+                            'tanggal'=>$start,
+                            'jenis_barang_id'=>$value->id,
+                            'qty'=> 0,
+                            'stok_awal'=>$stok_awal,
+                            'netto_masuk'=>((empty($trx['berat_in']))? 0: $trx['berat_in']),
+                            'netto_keluar'=>((empty($trx['berat_out']))? 0: $trx['berat_out']),
+                            'stok_akhir'=>$stok_awal_next_month,
+                            'created_at'=>$tanggal,
+                            'created_by'=>$user_id
+                        ));
                     }
                 }
-            $this->load->view('layout', $data);   
+            }
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Laporan WIP berhasil diproses !');
+            redirect(base_url('index.php/GudangWIP/laporan_list'));
+        } else {
+            $this->session->set_flashdata('flash_msg', 'Laporan WIP gagal diproses, silahkan dicoba kembali!');
+            redirect(base_url('index.php/GudangWIP/laporan_list'));
+        }
     }
+
+    // function print_laporan_bulanan(){
+    //     $module_name = $this->uri->segment(1);
+    //     $id = $this->uri->segment(3);
+    //     if($id){
+    //         $group_id    = $this->session->userdata('group_id');        
+    //         if($group_id != 1){
+    //             $this->load->model('Model_modules');
+    //             $roles = $this->Model_modules->get_akses($module_name, $group_id);
+    //             $data['hak_akses'] = $roles;
+    //         }
+    //         $data['group_id']  = $group_id;
+    //         $this->load->helper('tanggal_indo');            
+    //         $items = strval($id);
+    //         $tgl=str_split($id,4);
+    //         $tahun=$tgl[0];
+    //         $bulan=$tgl[1];
+
+    //         $tgl = $tahun.'-'.$bulan.'-01';
+
+    //         $data['tgl'] = array(
+    //             'tahun' => $tahun,
+    //             'bulan' => $bulan
+    //         );
+
+    //         $this->load->model('Model_gudang_wip');
+    //         $data['detailLaporan'] = $this->Model_gudang_wip->show_view_laporan($bulan,$tahun)->result();
+    //         $this->load->view("gudangwip/print_laporan_bulanan", $data);
+    //     }else{
+    //         redirect('index.php/GudangWIP/laporan_list');
+    //     }
+    // }
 
     function print_laporan_bulanan(){
         $module_name = $this->uri->segment(1);
@@ -1562,9 +1739,9 @@ class GudangWIP extends CI_Controller{
                 $data['hak_akses'] = $roles;
             }
             $data['group_id']  = $group_id;
-            $this->load->helper('tanggal_indo');            
-            $items = strval($id);
-            $tgl=str_split($id,4);
+            $this->load->helper('tanggal_indo');
+
+            $tgl=explode('-', $id);
             $tahun=$tgl[0];
             $bulan=$tgl[1];
 
@@ -1575,9 +1752,11 @@ class GudangWIP extends CI_Controller{
                 'bulan' => $bulan
             );
 
-            $this->load->model('Model_gudang_wip');
-            $data['detailLaporan'] = $this->Model_gudang_wip->show_view_laporan($bulan,$tahun)->result();
-            $this->load->view("gudangwip/print_laporan_bulanan", $data);
+            $data['jb'] = 'WIP';
+
+            $this->load->model('Model_gudang_fg');
+            $data['detailLaporan'] = $this->Model_gudang_fg->show_laporan_barang('WIP',$id)->result();
+            $this->load->view("gudang_fg/print_laporan_bulanan", $data);
         }else{
             redirect('index.php/GudangWIP/laporan_list');
         }
@@ -1604,11 +1783,12 @@ class GudangWIP extends CI_Controller{
                 'tahun' => $tahun,
                 'bulan' => $bulan
             );
+            $data['end'] = date("Y-m-t", strtotime($id));
 
             $data['content']= "gudangwip/view_laporan";
-            $this->load->model('Model_gudang_wip');
+            $this->load->model('Model_gudang_fg');
             // $data['detailLaporan'] = $this->Model_gudang_wip->show_view_laporan_before($bulan,$tahun)->result();
-            $data['detailLaporan'] = $this->Model_gudang_wip->show_view_laporan($bulan,$tahun)->result();
+            $data['detailLaporan'] = $this->Model_gudang_fg->show_view_laporan('WIP',$id)->result();
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/GudangWIP/laporan_list');
@@ -1775,7 +1955,7 @@ class GudangWIP extends CI_Controller{
                 $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();
                 $this->load->view('gudangwip/print_laporan_masak_cuci', $data);
             }elseif($jb_id == 5){
-                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_bb_apollo($start,$end)->result();
+                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_bb_apollo($start,$end,0)->result();
                 $data['addition'] = $this->Model_gudang_wip->get_gas_kayu($start,$end)->row_array();
                 $this->load->view('gudangwip/print_laporan_bb_apollo', $data);
             }elseif($jb_id == 6){
@@ -2152,6 +2332,108 @@ class GudangWIP extends CI_Controller{
             $data['header'] = 'Adjustment Pemasukan';
             $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
             $this->load->view('gudangwip/print_laporan_wip', $data);
+        }elseif($l==15){
+            $data['header'] = 'Pemasukan SDM';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
         }
+    }
+
+    function print_laporan_wip(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $user_id = $this->session->userdata('user_id');
+        $tanggal  = $this->uri->segment(3);
+        $this->load->helper('tanggal_indo');
+
+            $tgl_arr = explode('-', $tanggal);
+            $bulan = $tgl_arr[1];
+            $tahun = $tgl_arr[0];
+            $jb = 'WIP';
+
+            $start = $tanggal;
+            $end = date("Y-m-t", strtotime($start));
+
+            $data['start'] = $start;
+            $data['end'] = $end;
+            $data['g'] = 'WIP';
+
+        $this->load->model('Model_gudang_wip');
+        $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_bulanan_wip($bulan,$tahun,$start,$end,4)->result();
+        $this->load->view('gudangwip/print_laporan_bulanan_wip', $data);
+    }
+
+    function laporan_produksi_tahunan(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Gudang wip";
+        $data['content']   = "gudangwip/laporan_produksi_tahunan";
+
+        $this->load->view('layout', $data);  
+    }
+
+    function print_laporan_produksi_tahunan(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+
+        $l = $_GET['l'];
+        $t = $_GET['t'];
+        // echo $start;die();
+
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Gudang WIP";
+            $this->load->helper('tanggal_indo');
+
+        $data['tahun'] = $t;
+        $data['r'] = $l;
+        // echo $last_day;die();
+
+            $this->load->model('Model_gudang_wip');
+            if($l == 1){
+                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_produksi_tahunan($l,$t)->result();
+                $this->load->view('gudangwip/print_laporan_masak_apollo_t', $data);
+            }elseif($l == 2){
+                // $data['check'] = $this->Model_gudang_wip->cek_rolling_bu($l,$t)->result();
+                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_produksi_tahunan($l,$t)->result();
+                // $data['a'] = $this->Model_gudang_wip->get_wip_awal($start)->row_array();
+                // $data['b'] = $this->Model_gudang_wip->get_wip_akhir($start,$end)->row_array();
+                // $data['ia'] = $this->Model_gudang_wip->get_floor_produksi($last_day)->row_array();
+                // $data['ib'] = $this->Model_gudang_wip->get_floor_produksi($end)->row_array();
+                // $data['tr'] = $this->Model_gudang_wip->get_tali_rolling($start,$end)->row_array();
+                $this->load->view('gudangwip/print_laporan_masak_rolling_t', $data);
+            }elseif($l == 3){
+                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_produksi_tahunan($l,$t)->result();
+                $this->load->view('gudangwip/print_laporan_masak_bu', $data);
+            }elseif($l == 4){
+                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_produksi_tahunan($l,$t)->result();
+                $this->load->view('gudangwip/print_laporan_masak_cuci_t', $data);
+            }elseif($l == 5){
+                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_bb_apollo($t,0,1)->result();
+                $this->load->view('gudangwip/print_laporan_bb_apollo_t', $data);
+            }elseif($l == 6){
+                $data['gas_detail'] = $this->Model_gudang_wip->get_gas($last_day)->result();
+                // print_r($data['gas']);die();
+                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_bb_rolling($start,$end)->result();
+                $this->load->view('gudangwip/print_laporan_bb_rolling', $data);
+            }elseif($l == 7){
+                $data['apollo_detail'] = $this->Model_gudang_wip->get_apollo($last_day)->result();
+                // print_r($data['apollo_detail']);die();
+                $data['detailLaporan'] = $this->Model_gudang_wip->lap_babakar_apollo($start,$end)->result();
+                $this->load->view('gudangwip/print_laporan_bbk_apollo', $data);
+            }elseif($l == 8){
+                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_produksi_tahunan($l,$t)->result();
+                $this->load->view('gudangwip/print_laporan_hasil_apollo', $data);
+            }
     }
 }

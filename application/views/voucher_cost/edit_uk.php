@@ -11,7 +11,7 @@
 <div class="row">                            
     <div class="col-md-12">
         <?php
-            if( ($group_id==1)||($hak_akses['create_dtr']==1) ){
+            if( ($group_id==1)||($hak_akses['edit']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -175,9 +175,18 @@
                             echo '</select>';
                                     echo '</td>';
                                     echo '<td><input type="text" class="form-control myline" name="details['.$no.'][keterangan]" value="'.$row->no_po.$row->keterangan.'"></td>';
-                                };?>
+                                };
+
+                                if($row->group_cost_id==0){
+                                echo '<input type="hidden" class="form-control myline" name="details['.$no.'][nm_cost]" value="'.$row->supplier_id.'">';
+                            ?>
+                                <td style="text-align:center"><?='<input text="text" id="amount_'.$no.'" class="form-control myline" onkeyup="getComa(this.value, this.id);" name="details['.$no.'][amount]" value="'.number_format($row->amount,2,'.', ',').'" readonly>';?></td>
+                            <?php
+                                }else{
+                            ?>
                                 <td style="text-align:center"><?='<input text="text" id="amount_'.$no.'" class="form-control myline" onkeyup="getComa(this.value, this.id);" name="details['.$no.'][amount]" value="'.number_format($row->amount,2,'.', ',').'">';?></td>
                             <?php
+                                }
                                 $total_vc += $row->amount;
                             }
                             if($header['currency']=='USD'){

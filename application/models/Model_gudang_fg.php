@@ -76,7 +76,7 @@ class Model_gudang_fg extends CI_Model{
     // } 
 
     function bpb_list($ppn,$m,$y){
-        $data = $this->db->query("Select bpbfg.*, jb.jenis_barang, COALESCE(pf.no_laporan_produksi,r.no_retur) as no_produksi, COALESCE(pf.jenis_packing_id,r.jenis_packing_id) as jenis_packing_id,
+        $data = $this->db->query("Select bpbfg.*, jb.jenis_barang, COALESCE(pf.no_laporan_produksi,r.no_retur,dtbj.no_dtbj,dtt.no_dtt) as no_produksi, COALESCE(pf.jenis_packing_id,r.jenis_packing_id) as jenis_packing_id,
                     (select count(id) from t_bpb_fg_detail tbfd where tbfd.t_bpb_fg_id = bpbfg.id)as jumlah_item,
                     usr.realname As pengirim
                 From t_bpb_fg bpbfg
@@ -84,6 +84,8 @@ class Model_gudang_fg extends CI_Model{
                     Left join jenis_barang jb on (jb.id = bpbfg.jenis_barang_id)
                     left join produksi_fg pf on (pf.id = bpbfg.produksi_fg_id)
                     left join retur r on (r.id = bpbfg.retur_id)
+                    left join dtbj on (dtbj.id = bpbfg.dtbj_id)
+                    left join dtt on (dtt.id = bpbfg.dtt_id)
                     left join m_jenis_packing jp on (jp.id = pf.jenis_packing_id) or (jp.id = pf.jenis_packing_id)
                 Where bpbfg.flag_ppn =".$ppn." and month(bpbfg.tanggal) = ".$m." and year(bpbfg.tanggal) =".$y."
                 Order By bpbfg.id Desc");
@@ -328,7 +330,7 @@ class Model_gudang_fg extends CI_Model{
     function get_packing($id){
         $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.uom from t_gudang_fg tgf 
                 left JOIN jenis_barang jb on jb.id = tgf.jenis_barang_id
-                WHERE tgf.t_spb_fg_id is NULL and tgf.no_packing='".$id."'");
+                WHERE tgf.no_packing='".$id."'");
         return $data;
     }
 
@@ -640,14 +642,15 @@ class Model_gudang_fg extends CI_Model{
                     left join po on po.id = d.po_id
                     left join po po2 on po2.id = dtt.po_id
                     left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-                where tanggal_masuk between '".$s."' and '".$e."' group by tgf.jenis_barang_id, tgf.tanggal_masuk
+                where tanggal_masuk between '".$s."' and '".$e."' 
+                group by tgf.jenis_barang_id, tgf.t_bpb_fg_id
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
                 ");
         }elseif($l==1){
             $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tbf.no_bpb_fg as nomor, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, 'SDM' as nama, jb.uom from t_gudang_fg tgf
                     left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
                     left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-                where tbf.produksi_fg_id > 0 and tanggal_masuk between '".$s."' and '".$e."' group by tgf.jenis_barang_id, tgf.tanggal_masuk
+                where tbf.produksi_fg_id > 0 and tanggal_masuk between '".$s."' and '".$e."' group by tgf.jenis_barang_id, tgf.t_bpb_fg_id
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
         }elseif($l==2){
             $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
@@ -662,7 +665,7 @@ class Model_gudang_fg extends CI_Model{
                 where tbf.produksi_fg_id > 0 and tanggal_masuk between '".$s."' and '".$e."'
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
         }elseif($l==4){
-            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
                 from t_gudang_fg tgf
                     left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
                     left join dtbj d on tbf.dtbj_id = d.id
@@ -673,7 +676,7 @@ class Model_gudang_fg extends CI_Model{
                 group by tgf.t_bpb_fg_id
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
         }elseif($l==5){
-            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
                 from t_gudang_fg tgf
                     left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
                     left join dtbj d on tbf.dtbj_id = d.id
@@ -684,7 +687,7 @@ class Model_gudang_fg extends CI_Model{
                 group by tgf.t_bpb_fg_id
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
         }elseif($l==6){
-            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
                 from t_gudang_fg tgf
                     left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
                     left join dtt on tbf.dtt_id = dtt.id
@@ -695,7 +698,7 @@ class Model_gudang_fg extends CI_Model{
                 group by tgf.t_bpb_fg_id
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
         }elseif($l==7){
-            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
                 from t_gudang_fg tgf
                     left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
                     left join dtt on tbf.dtt_id = dtt.id
@@ -706,7 +709,7 @@ class Model_gudang_fg extends CI_Model{
                 group by tgf.t_bpb_fg_id
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
         }elseif($l==9){
-            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, mc.nama_customer as nama
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, mc.nama_customer as nama
                 from t_gudang_fg tgf
                     left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
                     left join retur on tbf.retur_id = retur.id
@@ -716,7 +719,7 @@ class Model_gudang_fg extends CI_Model{
                 group by tgf.t_bpb_fg_id
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
         }elseif($l==12){
-            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
                 from t_gudang_fg tgf
                     left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
                     left join dtbj d on tbf.dtbj_id = d.id
@@ -726,13 +729,33 @@ class Model_gudang_fg extends CI_Model{
                 group by tgf.t_bpb_fg_id
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
         }elseif($l==14){
-            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, tgf.bruto, tgf.netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
                 from t_gudang_fg tgf
                     left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
                     left join dtbj d on tbf.dtbj_id = d.id
                     left join supplier s on d.supplier_id = s.id
                     left join jenis_barang jb on jb.id = tgf.jenis_barang_id
                 where d.supplier_id = 95 and tanggal_masuk between '".$s."' and '".$e."'
+                group by tgf.t_bpb_fg_id
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
+        }elseif($l==18){
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
+                from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj d on tbf.dtbj_id = d.id
+                    left join supplier s on d.supplier_id = s.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tanggal_masuk between '".$s."' and '".$e."' and d.supplier_id not in (95,822,255,838,401,542,713) and d.po_id = 0 and d.so_id = 0
+                group by tgf.t_bpb_fg_id
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
+        }elseif($l==19){
+            $data = $this->db->query("select tgf.tanggal_masuk as tanggal, tgf.no_packing, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom, tbf.no_bpb_fg as nomor, s.nama_supplier as nama
+                from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj d on tbf.dtbj_id = d.id
+                    left join supplier s on d.supplier_id = s.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where d.supplier_id = 713 and tanggal_masuk between '".$s."' and '".$e."'
                 group by tgf.t_bpb_fg_id
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk");
         }
@@ -745,7 +768,7 @@ class Model_gudang_fg extends CI_Model{
                     left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
                     left join t_surat_jalan tsj on tgf.t_sj_id = tsj.id
                     left join jenis_barang jb on jb.id = tgf.jenis_barang_id
-                where tanggal_keluar between '".$s."' and '".$e."' group by tgf.jenis_barang_id, tgf.tanggal_keluar
+                where tanggal_keluar between '".$s."' and '".$e."' group by tgf.jenis_barang_id, tgf.tanggal_keluar, tgf.t_spb_fg_id
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
                 ");
         }elseif($l==8) {
@@ -786,6 +809,14 @@ class Model_gudang_fg extends CI_Model{
                     left join t_surat_jalan tsj on tgf.t_sj_id = tsj.id
                     left join jenis_barang jb on jb.id = tgf.jenis_barang_id
                 where tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 8 group by tgf.jenis_barang_id, tgf.tanggal_keluar
+                order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
+                ");
+        }elseif($l==17) {
+            $data = $this->db->query("select tgf.tanggal_keluar as tanggal, tsf.no_spb as nomor, sum(tgf.bruto) as bruto, sum(tgf.netto) as netto, count(tgf.id) as qty, jb.jenis_barang, jb.kode, jb.uom, COALESCE(tsj.no_surat_jalan, tsf.keterangan) as nama from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    left join t_surat_jalan tsj on tgf.t_sj_id = tsj.id
+                    left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb in (4,6) group by tgf.jenis_barang_id, tgf.tanggal_keluar
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
                 ");
         }
@@ -834,7 +865,8 @@ class Model_gudang_fg extends CI_Model{
             where tgf.jenis_trx = 0 and jb.ukuran BETWEEN '0500' and '0999' and 
                 CASE WHEN tbf.dtbj_id > 0 THEN dtbj.po_id = 0 
                 WHEN tbf.dtt_id > 0 THEN dtt.po_id = 0
-                ELSE tbf.retur_id = 0 END
+                WHEN tgf.t_bpb_fg_id = 0 THEN tgf.t_bpb_fg_id = 0 
+                ELSE tbf.retur_id = 0 END 
               group by tgf.jenis_barang_id, jenis_packing
             order by jb.ukuran, jb.jenis_barang asc");
         return $data;
@@ -859,7 +891,8 @@ class Model_gudang_fg extends CI_Model{
             where tgf.jenis_trx = 0 and jb.ukuran >= '1000' and 
                 CASE WHEN tbf.dtbj_id > 0 THEN dtbj.po_id = 0 
                 WHEN tbf.dtt_id > 0 THEN dtt.po_id = 0
-                ELSE tbf.retur_id = 0 END
+                WHEN tgf.t_bpb_fg_id = 0 THEN tgf.t_bpb_fg_id = 0 
+                ELSE tbf.retur_id = 0 END 
               group by tgf.jenis_barang_id, jenis_packing
             order by jb.ukuran, jb.jenis_barang asc");
         return $data;
@@ -961,7 +994,10 @@ class Model_gudang_fg extends CI_Model{
                     cust.nama_customer, cust.alamat
                 From t_surat_jalan tsj
                     Left Join m_customers cust On (tsj.m_customer_id = cust.id)
-                Where sales_order_id = 0 and po_id = 0 and spb_id = 0 and retur_id = 0
+                    Left Join t_spb_fg tsf on (tsj.spb_id > 0 and tsj.jenis_barang = 'FG' and tsj.spb_id = tsf.id)
+                    Left Join t_spb_wip tsw on (tsj.spb_id > 0 and tsj.jenis_barang = 'WIP' and tsj.spb_id = tsw.id)
+                    Left Join spb on (tsj.spb_id > 0 and tsj.jenis_barang = 'RONGSOK' and tsj.spb_id = spb.id)
+                Where (sales_order_id = 0 and po_id = 0 and spb_id = 0 and retur_id = 0) OR ( (tsf.jenis_spb = 13 OR tsw.flag_produksi = 13 OR spb.jenis_spb = 13) )
                 Order By tsj.no_surat_jalan Desc");
         return $data;
     }
@@ -981,6 +1017,16 @@ class Model_gudang_fg extends CI_Model{
             left join sparepart s on h.jenis_barang = 'LAIN' and d.jenis_barang_id = s.id
             left join rongsok r on h.jenis_barang = 'AMPAS' and d.jenis_barang_id = r.id
             where d.t_sj_id =".$id);
+    }
+
+    function note_pengganti_retur($s,$e){
+        return $this->db->query("select sum(tgf.netto) as netto, jb.jenis_barang, tgf.tanggal_keluar, mc.nama_customer from t_gudang_fg tgf
+            left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+            left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+            left join t_surat_jalan tsj on tgf.t_sj_id = tsj.id
+            left join m_customers mc on tsj.m_customer_id = mc.id
+                where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb in (7,9)
+            group by tgf.jenis_barang_id, tgf.tanggal_keluar");
     }
 
     function print_laporan_fg($b,$t,$s,$e,$g,$j,$o){
@@ -1007,14 +1053,19 @@ class Model_gudang_fg extends CI_Model{
                 (select sum(netto) from t_gudang_fg tgf
                     left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
                     left join dtbj on tbf.dtbj_id = dtbj.id
-                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id != 713 and dtbj.po_id = 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id in (255,838,401,542) and dtbj.po_id = 0 and tgf.jenis_barang_id = i.jenis_barang_id
                     ) as gdrsk,
                 (select sum(netto) from t_gudang_fg tgf
                     left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
                     left join dtbj on tbf.dtbj_id = dtbj.id
-                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id = 95 and tgf.jenis_barang_id = i.jenis_barang_id) as koreksi,
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id in (95,822) and tgf.jenis_barang_id = i.jenis_barang_id) as koreksi,
                 (select sum(netto) from t_gudang_fg tgf
-                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and t_sj_id > 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj on tbf.dtbj_id = dtbj.id
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id not in (95,822,255,838,401,542,713) and dtbj.po_id = 0 and dtbj.so_id = 0 and tgf.jenis_barang_id = i.jenis_barang_id) as lain,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_surat_jalan tsj on tsj.id = tgf.t_sj_id
+                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and t_sj_id > 0 and tsj.retur_id = 0 and tgf.jenis_barang_id = i.jenis_barang_id
                     ) as konsumen,
                 (select sum(netto) from t_gudang_fg tgf
                     left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
@@ -1028,10 +1079,9 @@ class Model_gudang_fg extends CI_Model{
                     left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
                     where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 5 and tgf.jenis_barang_id = i.jenis_barang_id
                     ) as rongsok,
-                (select sum(netto) from spb_detail_fulfilment sdf
-                    left join dtr_detail dd on sdf.dtr_detail_id = dd.id
-                    left join spb on sdf.spb_id = spb.id
-                    where dd.tanggal_keluar between '".$s."' and '".$e."' and spb.jenis_spb = 11 and dd.rongsok_id = i.jenis_barang_id
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb in (8,11) and tgf.jenis_barang_id = i.jenis_barang_id
                     ) as koreksi_k,
                 (select sum(netto) from stok_opname_detail sod
                     where sod.stok_opname_id = 
@@ -1069,9 +1119,10 @@ class Model_gudang_fg extends CI_Model{
                 (select sum(netto) from t_gudang_fg tgf
                     left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
                     left join dtbj on tbf.dtbj_id = dtbj.id
-                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id = 95 and tgf.jenis_barang_id = i.jenis_barang_id) as koreksi,
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id in (95,822) and tgf.jenis_barang_id = i.jenis_barang_id) as koreksi,
                 (select sum(netto) from t_gudang_fg tgf
-                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and t_sj_id > 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                    left join t_surat_jalan tsj on tsj.id = tgf.t_sj_id
+                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and t_sj_id > 0 and tsj.retur_id = 0 and tgf.jenis_barang_id = i.jenis_barang_id
                     ) as konsumen,
                 (select sum(netto) from t_gudang_fg tgf
                     left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
@@ -1088,7 +1139,7 @@ class Model_gudang_fg extends CI_Model{
                 (select sum(netto) from spb_detail_fulfilment sdf
                     left join dtr_detail dd on sdf.dtr_detail_id = dd.id
                     left join spb on sdf.spb_id = spb.id
-                    where dd.tanggal_keluar between '".$s."' and '".$e."' and spb.jenis_spb = 11 and dd.rongsok_id = i.jenis_barang_id
+                    where dd.tanggal_keluar between '".$s."' and '".$e."' and spb.jenis_spb in (8,11) and dd.rongsok_id = i.jenis_barang_id
                     ) as koreksi_k,
                 (select sum(netto) from stok_opname_detail sod
                     where sod.stok_opname_id = 
@@ -1103,6 +1154,94 @@ class Model_gudang_fg extends CI_Model{
 
     function get_bpb($id){
         return $this->db->query("select * from t_bpb_fg where id=".$id);
+    }
+
+    function spb_all(){
+        $data = $this->db->query("SELECT * FROM (
+    Select tsf.id, tsf.tanggal, tsf.no_spb, tsf.status, tsf.flag_tolling, tsf.keterangan, usr.realname As pic,
+    aprv.realname As approved_name, rjt.realname As rejected_name, (Select count(tsfd.id)As jumlah_item From t_spb_fg_detail tsfd Where tsfd.t_spb_fg_id = tsf.id)As jumlah_item, 'FG' as jenis_barang
+                From t_spb_fg tsf
+                    Left Join users usr On (tsf.created_by = usr.id) 
+                    Left Join users aprv On (tsf.approved_by = aprv.id) 
+                    Left Join users rjt On (tsf.rejected_by = rjt.id)
+                    where jenis_spb = 13
+    UNION
+    Select tsw.id, tsw.tanggal, tsw.no_spb_wip as no_spb, tsw.status, tsw.flag_tolling, tsw.keterangan,  usr.realname As pic, aprv.realname As approved_name, rjt.realname As rejected_name, (Select count(tswd.id)As jumlah_item From t_spb_wip_detail tswd Where tswd.t_spb_wip_id = tsw.id)As jumlah_item, 'WIP' as jenis_barang
+                From t_spb_wip tsw
+                    Left Join users usr On (tsw.created_by = usr.id) 
+                    Left Join users aprv On (tsw.approved_by = aprv.id) 
+                    Left Join users rjt On (tsw.rejected_by = rjt.id)
+                    where flag_produksi = 13
+    UNION
+    Select spb.id, spb.tanggal, spb.no_spb, spb.status, spb.flag_tolling, spb.remarks as keterangan, usr.realname As pic, aprv.realname As approved_name, rjt.realname As rejected_name, (Select count(sd.id)As jumlah_item From spb_detail sd Where sd.spb_id = spb.id)As jumlah_item, 'RONGSOK' as jenis_barang
+                From spb
+                    Left Join users usr On (spb.created_by = usr.id) 
+                    Left Join users aprv On (spb.approved_by = aprv.id) 
+                    Left Join users rjt On (spb.rejected_by = rjt.id)
+                    where jenis_spb = 13
+    ) a");
+        return $data;
+    }
+
+    function show_data_rongsok(){
+        return $this->db->query("select id, nama_item as jenis_barang, kode_rongsok as kode from rongsok where type_barang = 'Rongsok'");
+    }
+
+    function show_header_sj($id){
+        $data = $this->db->query("Select tsj.*, cust.id as id_customer, cust.nama_customer, cust.alamat, cust.nama_customer_kh, cust.alamat_kh,
+                    COALESCE(tsf.no_spb, tsw.no_spb_wip, s.no_spb, tsa.no_spb_ampas) as nomor_spb,
+                    COALESCE(tsf.status, tsw.status, s.status, tsa.status) as status_spb,
+                    tkdr.type_kendaraan,
+                    usr.realname,
+                    aprv.realname as approved_name,
+                    rjct.realname as rejected_name
+                From t_surat_jalan tsj
+                    Left Join m_customers cust On (tsj.m_customer_id = cust.id)
+                    Left Join t_spb_fg tsf On (tsj.jenis_barang = 'FG' and tsf.id = tsj.spb_id)
+                    Left Join t_spb_wip tsw On (tsj.jenis_barang = 'WIP' and tsw.id = tsj.spb_id)
+                    Left Join spb s On (tsj.jenis_barang = 'RONGSOK' and s.id = tsj.spb_id)
+                    Left Join t_spb_ampas tsa on (tsj.jenis_barang = 'AMPAS' and tsa.id = tsj.spb_id)
+                    Left Join m_type_kendaraan tkdr On (tsj.m_type_kendaraan_id = tkdr.id) 
+                    Left Join users usr On (tsj.created_by = usr.id)
+                    Left Join users aprv On (tsj.approved_by = aprv.id)
+                    Left Join users rjct On (tsj.rejected_by = rjct.id)
+                    Where tsj.id=".$id);
+        return $data;
+    }
+
+    function get_spb_list($id){
+        if($id=='FG'){
+            $data = $this->db->query("Select id, no_spb From t_spb_fg where jenis_spb = 13 and flag_retur = 0");
+        }elseif($id=='WIP'){
+            $data = $this->db->query("Select id, no_spb_wip as no_spb From t_spb_wip where flag_produksi = 13 and flag_retur = 0");
+        }elseif($id=='RONGSOK'){
+            $data = $this->db->query("Select id, no_spb From spb where jenis_spb = 13 and flag_retur = 0");
+        }
+        return $data;
+    }
+
+    function list_item_sj_fg($id){
+        $data = $this->db->query("select tgf.*, jb.jenis_barang, jb.kode, jb.uom, jb.ukuran from t_gudang_fg tgf
+                left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+                where tgf.t_spb_fg_id = ".$id." and jenis_trx = 1 and flag_taken = 0 order by tgf.jenis_barang_id");
+        return $data;
+    }
+
+    function list_item_sj_rsk($id){
+        $data = $this->db->query("select dd.*, r.nama_item as jenis_barang, r.kode_rongsok as kode
+            from spb_detail_fulfilment sdf
+            left join dtr_detail dd on dd.id = sdf.dtr_detail_id 
+            left join rongsok r on r.id = dd.rongsok_id 
+            where sdf.spb_id =".$id);
+        return $data;
+    }
+
+    function list_item_sj_wip($id){
+        $data = $this->db->query("select tgw.*, jb.jenis_barang, jb.kode, jb.uom  from t_spb_wip_detail tswd
+                left join t_gudang_wip tgw on tgw.t_spb_wip_detail_id = tswd.id
+                left join jenis_barang jb on jb.id = tswd.jenis_barang_id
+                where tswd.t_spb_wip_id = ".$id." and tgw.flag_taken = 0");
+        return $data;
     }
     /*
     cara membuat view stok fg

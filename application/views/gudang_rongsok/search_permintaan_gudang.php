@@ -30,22 +30,30 @@
                         <div class="col-md-8">
                             <select id="laporan" name="laporan" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
                                 <optgroup label="Pengeluaran">
-                                    <option value="0">Permintaan Gudang</option>
+                                    <option value="0">Permintaan Produksi</option>
                                     <option value="1">Permintaan External</option>
                                     <option value="2">Permintaan Tali Rolling</option>
+                                    <option value="14">Permintaan SDM</option>
+                                    <option value="11">Permintaan Lain</option>
                                 </optgroup>
                                 <optgroup label="Pemasukan">
                                     <?php if($this->session->userdata('user_ppn')==0){ ?>
                                     <option value="3">Pemasukan dari PO (KH)</option>
+                                    <option value="15">Pemasukan dari PO (KH) per TTR</option>
                                     <?php } ?>
                                     <option value="4">Pemasukan dari PO (KMP)</option>
+                                    <option value="16">Pemasukan dari PO (KMP) per TTR</option>
                                     <?php if($this->session->userdata('user_ppn')==0){ ?>
                                     <option value="9">Pemasukan dari Tolling (KH)</option>
+                                    <option value="17">Pemasukan dari Tolling (KH) per TTR</option>
                                     <?php } ?>
                                     <option value="10">Pemasukan dari Tolling (KMP)</option>
+                                    <option value="18">Pemasukan dari Tolling (KMP) per TTR</option>
                                     <option value="5">Pemasukan dari Apollo</option>
                                     <option value="6">Pemasukan dari Rolling</option>
                                     <option value="7">Pemasukan dari SDM</option>
+                                    <option value="12">Pemasukan dari Gudang WIP</option>
+                                    <option value="13">Pemasukan dari Gudang Barang Jadi</option>
                                     <option value="8">Pemasukan Lain</option>
                                 </optgroup>
                             </select>
@@ -58,7 +66,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tgl_start" name="tgl_start" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                                value="<?php echo date('01-m-Y'); ?>">
                         </div>
                     </div>
                     <div class="row">

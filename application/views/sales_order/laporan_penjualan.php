@@ -57,7 +57,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tgl_start" name="tgl_start" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                                value="<?php echo date('01-m-Y'); ?>">
                         </div>
                     </div>
                     <div class="row">

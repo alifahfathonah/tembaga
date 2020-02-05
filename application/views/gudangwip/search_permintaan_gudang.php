@@ -52,6 +52,7 @@
                                     <option value="11">Pemasukan dari Apollo</option>
                                     <option value="12">Pemasukan dari Rolling</option>
                                     <option value="13">Pemasukan dari Cuci</option>
+                                    <option value="15">SDM</option>
                                     <option value="14">Adjustment</option>
                                 </optgroup>
                             </select>
@@ -64,7 +65,7 @@
                         <div class="col-md-8">
                             <input type="text" id="tgl_start" name="tgl_start" 
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                                value="<?php echo date('01-m-Y'); ?>">
                         </div>
                     </div>
                     <div class="row">

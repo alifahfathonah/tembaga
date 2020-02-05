@@ -268,7 +268,7 @@ class Model_beli_sparepart extends CI_Model{
                     Left Join po On (voucher.po_id = po.id) 
                     Left Join f_kas fk On (fk.id = voucher.id_fk)
                 Where voucher.jenis_barang='SPARE PART' and po.flag_ppn = ".$user_ppn." or v.flag_ppn =".$user_ppn."
-                Order By fk.tanggal desc");
+                Order By v.no_vk desc");
         return $data;
     }
 

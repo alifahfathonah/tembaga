@@ -93,6 +93,9 @@
                                         echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliWIP/print_dtwip_harga/'.$data->id.'" style="margin-bottom:4px" target="_blank">&nbsp;<i class="fa fa-print"></i> Print (Harga)</a> ';
                                     }
                                 }
+                                // if(($group_id==1 || $hak_akses['proses_dtwip']==1) && $data->status == 0){
+                                //     echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/BeliWIP/proses_dtwip/'.$data->id.'" style="margin-bottom:4px"> &nbsp; <i class="fa fa-refresh"></i> Proses &nbsp; </a> ';
+                                // }
                             ?>
                         </td>
                     </tr>

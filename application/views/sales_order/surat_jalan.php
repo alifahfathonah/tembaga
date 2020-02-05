@@ -111,7 +111,10 @@
                             ?>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/SalesOrder/print_surat_jalan/<?php echo $data->id; ?>" 
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
+                            <?php if(($data->m_customer_id == 128)||($data->m_customer_id == 67)){ ?>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/SalesOrder/print_sj_ekspedisi/<?php echo $data->id; ?>"  style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print Ekspedisi &nbsp; </a>
                             <?php
+                                    }
                                 }
                             ?>
                         </td>

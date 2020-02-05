@@ -14,7 +14,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['matching']==1) ){
+            if( ($group_id==1)||($hak_akses['matching_dtwip']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">

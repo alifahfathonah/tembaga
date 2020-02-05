@@ -100,7 +100,7 @@
                             Nama Customer
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                            <input type="text" id="nama_customer" name="nama_customer" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo (($this->session->userdata('user_ppn')==1)? $myData['nama_customer']:$myData['nama_customer_kh']); ?>">
                         </div>
@@ -110,7 +110,7 @@
                             Jenis SPB
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                            <input type="text" id="nama_jenis" name="nama_jenis" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php
                                 if($myData['jenis_spb']==0){
@@ -330,6 +330,20 @@
                                             <th>Action</th>
                                         </thead>
                                         <tbody>
+                                    <?php if(!empty($myDetailSaved)){
+                                        $no = 0;
+                                        foreach ($myDetailSaved as $key => $val) {
+                                        $no++;
+                                                echo '<tr>';
+                                                echo '<td style="text-align:center">'.$no.'</td>';
+                                                echo '<td>'.$val->no_packing.'</td>';
+                                                echo '<td>('.$val->kode.') '.$val->jenis_barang.'</td>';
+                                                echo '<td>'.$val->uom.'</td>';
+                                                echo '<td>'.number_format($val->netto,2,',','.').' '.$val->uom.'</td>';
+                                                echo '<td colspan="2">'.$row->keterangan.' | Sudah discan</td>';
+                                                echo '</tr>';
+                                        }
+                                    } ?>
                                             <tr>
                                                 <td><div id="no_tabel_1">1</div></td>
                                                 <td><input type="text" id="no_packing_1" name="details[1][no_packing]" class="form-control myline" onchange="get_packing(1);"></td>
@@ -562,14 +576,17 @@
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-10">
+                    <a href="<?php echo base_url('index.php/GudangFG/spb_list'); ?>" class="btn blue-hoki"> 
+                        <i class="fa fa-angle-left"></i> Kembali </a>
                     <?php
                         if( ($group_id==1 || $hak_akses['save_spb']==1) && ($myData['status']=='3' || $myData['status']=='1')){
                             echo '<a href="javascript:;" class="btn blue" onclick="tambahData();"> '
                                 .'<i class="fa fa-plus"></i> Tambah </a> ';
                         }
                         if( ($group_id==1 || $hak_akses['save_spb']==1) && ($myData['status']=="0" || $myData['status']=="4")){
-                            echo '<a href="javascript:;" class="btn green" onclick="saveFulfilment();"> '
-                                .'<i class="fa fa-check"></i> Save </a> ';
+                            echo '<a href="javascript:;" class="btn green" id="saveFulfilment" onclick="saveFulfilment();" ';
+                            if(empty($myDetailSaved)){ echo 'style="display:none;"';};
+                            echo '> <i class="fa fa-check"></i> Simpan Hasil Scan </a> ';
                         }
                         if( ($group_id==1 || $hak_akses['approve_spb']==1) && ($myData['status']=='3')){
                             echo '<a href="javascript:;" class="btn green" onclick="approveData();"> '
@@ -588,8 +605,6 @@
                                 .'<i class="fa fa-refresh"></i> Input Ulang </a>';
                         }
                     ?>
-                    <a href="<?php echo base_url('index.php/GudangFG/spb_list'); ?>" class="btn blue-hoki"> 
-                        <i class="fa fa-angle-left"></i> Kembali </a>
                     <?php if($group_id==1 || $hak_akses['print_spb']==1){ ?>
                     <a class="btn btn-circle blue-ebonyclay" href="<?php echo base_url('index.php/GudangFG/print_spb_fulfilment/').$myData['id'];?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                     <?php } ?>
@@ -734,6 +749,7 @@ function check_duplicate(){
 function get_packing(id){
     var no = $("#no_packing_"+id).val();
     const new_id = id + 1;
+    $('#saveFulfilment').show();
     if(no!=''){    
         var check = check_duplicate();
         if(check){
@@ -742,21 +758,26 @@ function get_packing(id){
                 type: "POST",
                 data : {id: no},
                 success: function (result){
-                    if (result!=null){
-                        $("#nama_barang_"+id).val(result['jenis_barang']);
-                        $("#barang_id_"+id).val(result['id']);
-                        $("#uom_"+id).val(result['uom']);
-                        $("#netto_"+id).val(result['netto']);
-                        $("#keterangan_"+id).val(result['keterangan']);
-                        $("#btn_"+id).removeClass('disabled');
-                        const total_old = (parseFloat($('#total_netto').val()) + parseFloat(result['netto']));
-                        const total = total_old.toFixed(2);
-                        $('#total_netto').val(total);
-                        create_new_input(id);
-                        $('#no_packing_'+id).prop('readonly',true);
-                        $('#no_packing_'+new_id).focus();
-                    } else {
-                        alert('No pallete tidak ditemukan, silahkan ulangi kembali');
+                    if(result!=null){
+                        if (result['t_spb_fg_id']==null){
+                            $("#nama_barang_"+id).val(result['jenis_barang']);
+                            $("#barang_id_"+id).val(result['id']);
+                            $("#uom_"+id).val(result['uom']);
+                            $("#netto_"+id).val(result['netto']);
+                            $("#keterangan_"+id).val(result['keterangan']);
+                            $("#btn_"+id).removeClass('disabled');
+                            const total_old = (parseFloat($('#total_netto').val()) + parseFloat(result['netto']));
+                            const total = total_old.toFixed(2);
+                            $('#total_netto').val(total);
+                            create_new_input(id);
+                            $('#no_packing_'+id).prop('readonly',true);
+                            $('#no_packing_'+new_id).focus();
+                        } else if(result['t_spb_fg_id']!=null){
+                            alert('No packing sudah ada di : '+result['nomor_SPB']);
+                            $("#no_packing_"+id).val('');
+                        }
+                    }else{
+                        alert('No packing tidak ditemukan, silahkan ulangi kembali');
                         $("#no_packing_"+id).val('');
                     }
                 }

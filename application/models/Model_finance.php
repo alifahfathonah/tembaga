@@ -832,22 +832,6 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function query_penjualan($s,$e,$c){
-        $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs) as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn = 0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
-            where v.PENJUALAN != '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."')
-            order by v.flag_ppn, v.flag_tolling, v.kode_customer, v.tanggal, v.no_invoice
-            ");
-        return $data;
-    }
-
-    function query_penjualan_jb($s,$e,$c){
-        $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn = 0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
-            where v.PENJUALAN != '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."')
-            order by v.flag_ppn, v.flag_tolling, v.kode_barang, v.tanggal, v.no_invoice
-            ");
-        return $data;
-    }
-
     function print_laporan_sj($s,$e,$ppn){
         $data = $this->db->query("select COALESCE(r.nama_item,r2.nama_item,sp.nama_item,jb.jenis_barang) as jenis_barang, COALESCE(r.kode_rongsok,r2.kode_rongsok,sp.alias,jb.kode) as kode_barang, COALESCE(r.uom,r2.uom,sp.uom,jb.uom) as uom, sum(tsjd.bruto) as bruto, round(sum(case when tsjd.netto_r > 0 then tsjd.netto_r else tsjd.netto end),3) as netto, tsj.tanggal, tsj.no_surat_jalan from t_surat_jalan_detail tsjd 
             left join t_surat_jalan tsj on tsj.id = tsjd.t_sj_id
@@ -940,6 +924,39 @@ class Model_finance extends CI_Model{
             left join sparepart sp on (tsj.jenis_barang = 'LAIN' and sp.id = tsjd.jenis_barang_id)
             left join jenis_barang jb on (jb.id = tsjd.jenis_barang_id)
             where tsj.tanggal between '".$s."' and '".$e."' group by tsjd.jenis_barang_id, tsjd.t_sj_id, tsj.tanggal order by kode_barang, tanggal");
+        return $data;
+    }
+
+
+    // function query_penjualan($s,$e,$c){
+    //     $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs) as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn = 0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
+    //         where v.PENJUALAN != '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."')
+    //         order by v.flag_ppn, v.flag_tolling, v.kode_customer, v.tanggal, v.no_invoice
+    //         ");
+    //     return $data;
+    // }
+
+    function query_penjualan($s,$e,$c){
+        $data = $this->db->query("select v.*, round(((v.total_harga-v.diskon-v.add_cost)*v.kurs),0)+v.materai as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn=1,(((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100),0)) as nilai_ppn from v_data_faktur_all v 
+            where v.PENJUALAN != '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."')
+            order by v.flag_ppn, v.flag_tolling, v.kode_customer, v.tanggal, v.no_invoice
+            ");
+        return $data;
+    }
+
+    // function query_penjualan_jb($s,$e,$c){
+    //     $data = $this->db->query("select v.*, ((v.total_harga-v.diskon-v.add_cost)*v.kurs)+v.materai as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn = 0,0,((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100)) as nilai_ppn from v_data_faktur_all v 
+    //         where v.PENJUALAN != '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."')
+    //         order by v.flag_ppn, v.flag_tolling, v.kode_barang, v.tanggal, v.no_invoice
+    //         ");
+    //     return $data;
+    // }
+
+    function query_penjualan_jb($s,$e,$c){
+        $data = $this->db->query("select v.*, round(((v.total_harga-v.diskon-v.add_cost)*v.kurs),0)+v.materai as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn=1,(((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100),0)) as nilai_ppn from v_data_faktur_all v 
+            where v.PENJUALAN != '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."')
+            order by v.flag_ppn, v.flag_tolling, v.kode_barang, v.tanggal, v.no_invoice
+            ");
         return $data;
     }
 

@@ -39,9 +39,10 @@
                         <thead>
                             <th style="width:40px">No</th>
                             <th>Nama Item</th>
-                            <th>Jumlah Item</th>
+                            <th>Stok Awal</th>
                             <th>Netto Masuk</th>
                             <th>Netto Keluar</th>
+                            <th>Stok Akhir</th>
                             <th>Action</th>
                         </thead>
                         <tbody>
@@ -53,15 +54,17 @@
                             echo '<tr>';
                             echo '<td style="text-align:center">'.$no.'</td>';
                             echo '<td>'.$row->jenis_barang.'</td>';
-                            echo '<td>'.$row->jumlah.'</td>';
+                            echo '<td>'.number_format($row->stok_awal, 2, '.', ',').'</td>';
                             echo '<td>'.number_format($row->netto_masuk, 2, '.', ',').'</td>';
                             echo '<td>'.number_format($row->netto_keluar, 2, '.', ',').'</td>';
+                            echo '<td>'.number_format($row->stok_akhir, 2, '.', ',').'</td>';
                             $no++;
                         ?>
                         <td><?php
                         if($group_id==1 || $group_id==21 || $hak_akses['view_spb']==1){
                         ?>
-                            <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/GudangWIP/view_detail_laporan/<?php echo $tahun.$bulan.'/'.$row->jenis_barang_id;?>" style="margin-bottom:4px"> &nbsp; <i class="fa fa-file-text-o"></i> Detail &nbsp; </a>
+                            <!-- <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/GudangFG/view_detail_laporan/<?php echo $this->uri->segment(3).'/'.$row->jenis_barang_id;?>" style="margin-bottom:4px"> &nbsp; <i class="fa fa-file-text-o"></i> Detail &nbsp; </a> -->
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangWIP/kartu_stok?r=<?=$row->jenis_barang_id.'&ts='.$this->uri->segment(3).'&te='.$end;?>&bl=0>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print &nbsp; </a>
                         <?php
                             }
                         echo '</td>';

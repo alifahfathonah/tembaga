@@ -503,33 +503,36 @@ class VoucherCost extends CI_Controller{
             $get = $this->Model_voucher_cost->get_f_kas($id)->row_array();
             // print_r($get);
             // die();
+            if($get['vk_id'] == 0){
+                $this->db->delete('voucher', ['id_fk' => $id]);
+                $this->db->delete('f_kas', ['id' => $id]);
 
-            $this->db->delete('voucher', ['id_fk' => $id]);
-            $this->db->delete('f_kas', ['id' => $id]);
+                if($get['po_id']>0){
+                    $this->db->where('id', $get['po_id']);
+                    $this->db->update('po', array(
+                        'status'=>3,
+                        'flag_pelunasan'=>0
+                    ));
+                }
 
-            if($get['po_id']>0){
-                $this->db->where('id', $get['po_id']);
-                $this->db->update('po', array(
-                    'status'=>3,
-                    'flag_pelunasan'=>0
-                ));
-            }
-
-            if($user_ppn == 1){
-                $this->load->helper('target_url');
-                $url = target_url().'api/VoucherAPI/vc_del/id/'.$id;
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $url);
-                // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-                // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_HEADER, 0);
-                $result = curl_exec($ch);
-                $response = json_decode($result);
-                curl_close($ch);
-                // print_r($result);
-                // die();
+                if($user_ppn == 1){
+                    $this->load->helper('target_url');
+                    $url = target_url().'api/VoucherAPI/vc_del/id/'.$id;
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $url);
+                    // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                    // curl_setopt($ch, CURLOPT_POSTFIELDS, "group=3&group_2=1");
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_HEADER, 0);
+                    $result = curl_exec($ch);
+                    $response = json_decode($result);
+                    curl_close($ch);
+                    // print_r($result);
+                    // die();
+                }
+            }else{
+                redirect('index.php/BeliSparePart/delete_vk/'.$get['vk_id']);
             }
         }
 
@@ -874,14 +877,22 @@ class VoucherCost extends CI_Controller{
                     $sup=0;
                     $cust=$v['nm_cost'];
                     $nm=null;
+                    $ket=$v['keterangan'];
                 }elseif($v['group_cost_id']==2){
                     $sup=$v['nm_cost'];
                     $cust=0;
                     $nm=null;
+                    $ket=$v['keterangan'];
                 }elseif($v['group_cost_id']==3){
                     $sup=0;
                     $cust=0;
                     $nm=$v['nm_cost'];
+                    $ket=$v['keterangan'];
+                }elseif($v['group_cost_id']==0){
+                    $sup=$v['nm_cost'];
+                    $cust=0;
+                    $nm=null;
+                    $ket='';
                 }
                 $this->db->where('id', $v['id_detail']);
                 $this->db->update('voucher', array(
@@ -889,7 +900,7 @@ class VoucherCost extends CI_Controller{
                     'supplier_id'=>$sup,
                     'customer_id'=>$cust,
                     'nm_cost' =>$nm,
-                    'keterangan' => $v['keterangan'],
+                    'keterangan' => $ket,
                     'amount' => str_replace(',', '', $v['amount'])
                 ));
                 $total += str_replace(',', '', $v['amount']);

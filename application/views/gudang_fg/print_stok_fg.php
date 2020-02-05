@@ -29,7 +29,7 @@
         echo '<td style="border-bottom:1px solid #000;">'.$row->kode.'</td>';
         echo '<td style="border-bottom:1px solid #000;">'.$row->jenis_barang.'</td>';
         echo '<td style="border-bottom:1px solid #000;">'.$row->uom.'</td>';
-        echo '<td style="border-bottom:1px solid #000;">'.number_format($row->netto,2,',','.').'</td>';
+        echo '<td style="border-bottom:1px solid #000; text-align:right;">'.number_format($row->netto,2,',','.').'</td>';
         echo '</tr>';
         $no++;
         $netto += $row->netto;
@@ -37,7 +37,7 @@
     ?>
     <tr>
         <td colspan="4"></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($netto,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align:right;"><?=number_format($netto,2,',','.');?></td>
     </tr>
     </tbody>
 </table>

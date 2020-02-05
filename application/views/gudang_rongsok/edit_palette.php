@@ -68,7 +68,9 @@
                                     <th>Berat</th>
                                     <th></th>
                                     <th>Netto (UOM)</th>
+                                    <th>Status CV</th>
                                     <th>Keterangan</th>
+                                    <th>Tanggal Keluar</th>
                                 </thead>
                                 <tbody id="boxDetail">
                                 </tbody>

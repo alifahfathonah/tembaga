@@ -1038,6 +1038,7 @@ class GudangFG extends CI_Controller{
         $data['content']= "gudang_fg/bpb_list";
         $this->load->model('Model_gudang_fg');
         $data['list_data'] = $this->Model_gudang_fg->bpb_list($user_ppn,$bulan,$tahun)->result();
+        $data['jenis_barang'] = $this->Model_gudang_fg->barang_fg_list()->result();
 
         $this->load->view('layout', $data);
     }
@@ -1172,32 +1173,80 @@ class GudangFG extends CI_Controller{
         $this->load->model('Model_gudang_fg');
         $bpb= $this->Model_gudang_fg->get_bpb($this->input->post('id'))->row_array();
 
-        $this->db->where('id', $bpb['produksi_fg_id']);
-        $this->db->update('produksi_fg', array(
-                        'jenis_barang_id'=> $jb,
-                        'tanggal'=>$tgl_input,
-                        'modified_date'=> $tanggal,
-                        'modified_by'=>$user_id
-        ));
+        if($bpb['produksi_fg_id']>0){
+            $this->db->where('id', $bpb['produksi_fg_id']);
+            $this->db->update('produksi_fg', array(
+                            'jenis_barang_id'=> $jb,
+                            'tanggal'=>$tgl_input,
+                            'modified_date'=> $tanggal,
+                            'modified_by'=>$user_id
+            ));
 
-        $this->db->where('id', $bpb['id']);
-        $this->db->update('t_bpb_fg', array(
-                        'jenis_barang_id'=> $jb,
-                        'tanggal'=>$tgl_input,
-                        'modified_at'=> $tanggal,
-                        'modified_by'=>$user_id
-        ));
+            $this->db->where('id', $bpb['id']);
+            $this->db->update('t_bpb_fg', array(
+                            'jenis_barang_id'=> $jb,
+                            'tanggal'=>$tgl_input,
+                            'modified_at'=> $tanggal,
+                            'modified_by'=>$user_id
+            ));
 
-        $this->db->where('t_bpb_fg_id', $bpb['id']);
-        $this->db->update('t_bpb_fg_detail', array(
-                        'jenis_barang_id'=> $jb
-        ));
-
-        if($bpb['status']==1){
             $this->db->where('t_bpb_fg_id', $bpb['id']);
-            $this->db->update('t_gudang_fg', array(
+            $this->db->update('t_bpb_fg_detail', array(
                             'jenis_barang_id'=> $jb
             ));
+
+            if($bpb['status']==1){
+                $this->db->where('t_bpb_fg_id', $bpb['id']);
+                $this->db->update('t_gudang_fg', array(
+                                'tanggal'=> $tgl_input,
+                                'tanggal_masuk'=> $tgl_input,
+                                'jenis_barang_id'=> $jb
+                ));
+            }
+        }elseif($bpb['dtt_id']>0){
+            $this->db->where('id', $bpb['dtt_id']);
+            $this->db->update('dtt', array(
+                            'tanggal'=>$tgl_input,
+                            'modified'=> $tanggal,
+                            'modified_by'=>$user_id
+            ));
+
+            $this->db->where('id', $bpb['id']);
+            $this->db->update('t_bpb_fg', array(
+                            'tanggal'=>$tgl_input,
+                            'modified_at'=> $tanggal,
+                            'modified_by'=>$user_id
+            ));
+
+            if($bpb['status']==1){
+                $this->db->where('t_bpb_fg_id', $bpb['id']);
+                $this->db->update('t_gudang_fg', array(
+                                'tanggal'=> $tgl_input,
+                                'tanggal_masuk'=> $tgl_input,
+                ));
+            }
+        }elseif($bpb['dtbj_id']>0){
+            $this->db->where('id', $bpb['dtbj_id']);
+            $this->db->update('dtbj', array(
+                            'tanggal'=>$tgl_input,
+                            'modified'=> $tanggal,
+                            'modified_by'=>$user_id
+            ));
+
+            $this->db->where('id', $bpb['id']);
+            $this->db->update('t_bpb_fg', array(
+                            'tanggal'=>$tgl_input,
+                            'modified_at'=> $tanggal,
+                            'modified_by'=>$user_id
+            ));
+
+            if($bpb['status']==1){
+                $this->db->where('t_bpb_fg_id', $bpb['id']);
+                $this->db->update('t_gudang_fg', array(
+                                'tanggal'=> $tgl_input,
+                                'tanggal_masuk'=> $tgl_input,
+                ));
+            }
         }
             
             if($this->db->trans_complete()){    
@@ -1622,12 +1671,29 @@ class GudangFG extends CI_Controller{
         $user_id  = $this->session->userdata('user_id');
         $fg_id = $this->input->post('fg_id');
         $tanggal  = date('Y-m-d H:i:s');
-        
-        $query = $this->db->query('select *from produksi_fg_detail where produksi_fg_id = '.$fg_id)->result();
-        foreach ($query as $row) {
-            $this->db->where('id', $row->bobbin_id);
-            $this->db->update('m_bobbin', array(
-                'status' => 3
+
+        $this->load->model('Model_gudang_fg');
+        $bpb= $this->Model_gudang_fg->get_bpb($this->input->post('header_id'))->row_array();
+        // $query = $this->db->query('select *from produksi_fg_detail where produksi_fg_id = '.$fg_id)->result();
+        // foreach ($query as $row) {
+        //     $this->db->where('id', $row->bobbin_id);
+        //     $this->db->update('m_bobbin', array(
+        //         'status' => 3
+        //     ));
+        // }
+
+        if($bpb['dtt_id']>0){
+            $this->db->where('id', $bpb['dtt_id']);
+            $this->db->update('dtt', array(
+                'status'=>9,
+                'po_id'=>0
+            ));
+        }elseif($bpb['dtbj_id']>0){
+            $this->db->where('id', $bpb['dtbj_id']);
+            $this->db->update('dtbj', array(
+                'status'=>9,
+                'po_id'=>0,
+                'so_id'=>0
             ));
         }
 
@@ -1889,7 +1955,7 @@ class GudangFG extends CI_Controller{
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
         if($id){
-            $group_id    = $this->session->userdata('group_id');        
+            $group_id    = $this->session->userdata('group_id');
             if($group_id != 1){
                 $this->load->model('Model_modules');
                 $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -2209,6 +2275,7 @@ class GudangFG extends CI_Controller{
     }
 
     function proses_inventory(){
+        set_time_limit(1800);
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d H:i:s');
 
@@ -2253,6 +2320,10 @@ class GudangFG extends CI_Controller{
 
                     $stok_awal_next_month = $stok_awal + $trx['netto_masuk'] - $trx['netto_keluar'];
                     if($stok_awal > 0 || $trx['netto_masuk'] > 0 || $trx['netto_keluar'] > 0){
+                    // if($value->id==714){
+                    //     echo $stok_awal.' | '.$trx['netto_masuk'].' | '.$trx['netto_keluar'].' | '.$t;
+                    //     die();
+                    // }
                         //stok akhir
                         $this->db->insert('inventory', array(
                             'jenis_barang'=>$jb,
@@ -2425,6 +2496,8 @@ class GudangFG extends CI_Controller{
                 'bulan' => $bulan
             );
 
+            $data['jb'] = 'Finish Good';
+
             $this->load->model('Model_gudang_fg');
             $data['detailLaporan'] = $this->Model_gudang_fg->show_laporan_barang('FG',$id)->result();
             $this->load->view("gudang_fg/print_laporan_bulanan", $data);
@@ -2450,10 +2523,12 @@ class GudangFG extends CI_Controller{
 
             $data['start'] = $start;
             $data['end'] = $end;
+        $this->load->model('Model_gudang_fg');
             if($g == 5){
                 $j=5;
                 $o=0;
                 $data['g'] = 'FINISH GOOD';
+                $data['note_retur'] = $this->Model_gudang_fg->note_pengganti_retur($start,$end)->result();
             }elseif($g == 29){
                 $j=29;
                 $o=0;
@@ -2484,13 +2559,12 @@ class GudangFG extends CI_Controller{
                 $data['g'] = 'INDOKA ALUMUNIUM';
             }
 
-        $this->load->model('Model_gudang_fg');
         $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_fg($bulan,$tahun,$start,$end,$g,$j,$o)->result();
         $this->load->view('gudang_fg/print_laporan_fg', $data);
     }
 
     function print_stok_fg(){
-        $this->load->helper('tanggal_indo');  
+        $this->load->helper('tanggal_indo');
         $this->load->model('Model_gudang_fg');
         $data['detailLaporan'] = $this->Model_gudang_fg->stok_fg_detail()->result();
 
@@ -2559,11 +2633,11 @@ class GudangFG extends CI_Controller{
             $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
             $this->load->view('gudang_fg/print_laporan_pemasukan2', $data);
         }elseif($l==4){
-            $data['header'] = 'PO';
+            $data['header'] = 'PO KH';
             $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
             $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
         }elseif($l==5){
-            $data['header'] = 'PO';
+            $data['header'] = 'PO KMP';
             $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
             $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
         }elseif($l==6){
@@ -2584,6 +2658,14 @@ class GudangFG extends CI_Controller{
             $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
         }elseif($l==14){
             $data['header'] = 'Adjustment';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
+        }elseif($l==18){
+            $data['header'] = 'Retur (Produksi)';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
+        }elseif($l==19){
+            $data['header'] = 'SDM';
             $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
             $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
     //PENGELUARAN
@@ -2609,6 +2691,10 @@ class GudangFG extends CI_Controller{
             $this->load->view('gudang_fg/print_laporan_pengeluaran', $data);
         }elseif($l==16){
             $data['header'] = 'Repacking';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pengeluaran($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pengeluaran', $data);
+        }elseif($l==17){
+            $data['header'] = 'Penjualan';
             $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pengeluaran($s,$e,$l)->result();
             $this->load->view('gudang_fg/print_laporan_pengeluaran', $data);
         }
@@ -2749,15 +2835,23 @@ class GudangFG extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_sj = date('Ym', strtotime($this->input->post('tanggal')));
         $user_ppn = $this->session->userdata('user_ppn');
-        
+        $jb = $this->input->post('jenis_barang');
+
         $this->load->model('Model_m_numberings');
         $code = $this->Model_m_numberings->getNumbering('SJ-L', $tgl_input); 
         
+        if($jb == 'FG' || $jb == 'WIP' || $jb == 'RONGSOK'){
+            $spb_id = $this->input->post('spb_id');
+        }else{
+            $spb_id = 0;
+        }
+
         if($code){        
             $data = array(
                 'no_surat_jalan'=> $code,
                 'tanggal'=> $tgl_input,
-                'jenis_barang'=>$this->input->post('jenis_barang'),
+                'spb_id'=> $spb_id,
+                'jenis_barang'=>$jb,
                 'm_customer_id'=>$this->input->post('m_customer_id'),
                 'm_type_kendaraan_id'=>$this->input->post('m_type_kendaraan_id'),
                 'no_kendaraan'=>$this->input->post('no_kendaraan'),
@@ -2793,19 +2887,36 @@ class GudangFG extends CI_Controller{
                 $data['hak_akses'] = $roles;
             }
             $data['group_id']  = $group_id;
-            $data['content']= "gudang_fg/edit_surat_jalan";
 
+            $this->load->model('Model_gudang_fg');
             $this->load->model('Model_sales_order');
-            $data['header'] = $this->Model_sales_order->show_header_sj($id)->row_array();  
+            $data['header'] = $this->Model_gudang_fg->show_header_sj($id)->row_array(); 
             $jenis = $data['header']['jenis_barang'];
+            $spb_id = $data['header']['spb_id'];
             $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
             $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
             if($jenis=='LAIN'){
                 $data['jenis_barang'] = $this->Model_sales_order->list_barang_sp()->result();
+            $data['content']= "gudang_fg/edit_surat_jalan";
             }elseif ($jenis=='AMPAS') {
                 $this->load->model('Model_beli_rongsok');
                 $data['jenis_barang'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
+            $data['content']= "gudang_fg/edit_surat_jalan";
                 // print_r($data['jenis_barang']);die();
+            }elseif($jenis == 'FG'){
+                $data['list_produksi'] = $this->Model_gudang_fg->list_item_sj_fg($spb_id)->result();
+                $data['jenis_barang'] = $this->Model_gudang_fg->barang_fg_list($spb_id)->result();
+                $data['content']= "gudang_fg/edit_surat_jalan2";
+            }else if($jenis == 'WIP'){
+                $this->load->model('Model_gudang_wip');
+                $data['list_produksi'] = $this->Model_gudang_fg->list_item_sj_wip($spb_id)->result();
+                $data['jenis_barang'] = $this->Model_gudang_wip->jenis_barang_list($spb_id)->result();
+                $data['content']= "gudang_fg/edit_surat_jalan2";
+            }else if($jenis == 'RONGSOK'){
+                $data['list_produksi'] = $this->Model_gudang_fg->list_item_sj_rsk($spb_id)->result();
+                $this->load->model('Model_beli_rongsok');
+                $data['jenis_barang'] = $this->Model_gudang_fg->show_data_rongsok()->result();
+                $data['content']= "gudang_fg/edit_surat_jalan2";
             }
 
             $jenis = $data['header']['jenis_barang'];
@@ -2828,8 +2939,9 @@ class GudangFG extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $data['content']= "gudang_fg/view_sj";
+            $this->load->model('Model_gudang_fg');
             $this->load->model('Model_sales_order');
-            $data['header'] = $this->Model_sales_order->show_header_sj($id)->row_array();  
+            $data['header'] = $this->Model_gudang_fg->show_header_sj($id)->row_array(); 
             $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
             $data['type_kendaraan_list'] = $this->Model_sales_order->type_kendaraan_list()->result();
 
@@ -2998,6 +3110,61 @@ class GudangFG extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $jenis = $this->input->post('jenis_barang');
 
+        if(!empty($this->input->post('spb_id'))){
+        #Insert Surat Jalan
+        $details = $this->input->post('details');
+
+            foreach ($details as $v) {
+                if($v['id_barang']!=''){
+                    if($jenis=='FG'){// BARANG FINISH GOOD
+                        $this->db->insert('t_surat_jalan_detail', array(
+                            't_sj_id'=>$this->input->post('id'),
+                            'gudang_id'=>$v['id_barang'],
+                            'jenis_barang_id'=>$v['jenis_barang_id'],
+                            'jenis_barang_alias'=>$v['barang_alias_id'],
+                            'no_packing'=>$v['no_packing'],
+                            'qty'=>'1',
+                            'bruto'=>$v['bruto'],
+                            'berat'=>$v['berat'],
+                            'netto'=>$v['netto'],
+                            'nomor_bobbin'=>$v['bobbin'],
+                            'created_by'=>$user_id,
+                            'created_at'=>$tanggal
+                        ));
+                    }else if($jenis=='WIP'){//BARANG WIP
+                        $this->db->insert('t_surat_jalan_detail', array(
+                            't_sj_id'=>$this->input->post('id'),
+                            'gudang_id'=>$v['id_barang'],
+                            'jenis_barang_id'=>$v['jenis_barang_id'],
+                            'no_packing'=>0,
+                            'qty'=>$v['qty'],
+                            'bruto'=>0,
+                            'berat'=>0,
+                            'netto'=>$v['netto'],
+                            'nomor_bobbin'=>0,
+                            'created_by'=>$user_id,
+                            'created_at'=>$tanggal
+                        ));
+                    }else if($jenis=='RONGSOK'){
+                        $this->db->insert('t_surat_jalan_detail', array(
+                            't_sj_id'=>$this->input->post('id'),
+                            'gudang_id'=>$v['id_barang'],
+                            'jenis_barang_id'=>$v['jenis_barang_id'],
+                            'jenis_barang_alias'=>$v['barang_alias_id'],
+                            'no_packing'=>$v['no_palette'],
+                            'qty'=>'1',
+                            'bruto'=>$v['bruto'],
+                            'berat'=>$v['berat_palette'],
+                            'netto'=>$v['netto'],
+                            'nomor_bobbin'=>0,
+                            'created_by'=>$user_id,
+                            'created_at'=>$tanggal
+                        ));
+                    }
+                }
+            }
+        }
+
         $data = array(
                 'tanggal'=> $tgl_input,
                 'status'=> 0,
@@ -3052,6 +3219,31 @@ class GudangFG extends CI_Controller{
 
         $this->db->trans_start();
 
+        $this->load->model('Model_sales_order');
+        #set flag taken
+        $loop = $this->Model_sales_order->tsj_detail_only($sjid)->result();
+        if ($jenis == 'FG') {
+            foreach ($loop as $row) {
+                $this->db->where('id', $row->gudang_id);
+                $this->db->update('t_gudang_fg', array('flag_taken' => 1, 't_sj_id'=> $sjid, 'tanggal_keluar'=>$tgl_input));
+            }
+        } else if ($jenis == 'WIP') {
+            foreach ($loop as $row) {
+                $this->db->where('id', $row->gudang_id);
+                $this->db->update('t_gudang_wip', array('flag_taken' => 1));
+            }
+        } else if ($jenis == 'RONGSOK'){
+            foreach ($loop as $row) {
+                $this->db->where('id', $row->gudang_id);
+                $this->db->update('dtr_detail', array('so_id' => $so_id, 'flag_sj' => $sjid, 'tanggal_keluar'=>$tgl_input));
+            }
+        } else if ($jenis == 'AMPAS'){
+            foreach ($loop as $row) {
+                $this->db->where('id', $row->gudang_id);
+                $this->db->update('t_spb_ampas_fulfilment', array('flag_taken' => 1));
+            }
+        }
+
         $data = array(
                 'status' => 1,
                 'approved_at'=> $tanggal,
@@ -3088,5 +3280,151 @@ class GudangFG extends CI_Controller{
         }else{
             redirect('index.php'); 
         }
+    }
+
+    function spb_all(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "gudang_fg/spb_all";
+        $this->load->model('Model_gudang_fg');
+        $data['list_data'] = $this->Model_gudang_fg->spb_all()->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function add_spb_all(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['content']= "gudang_fg/add_spb_all";
+
+        $this->load->view('layout', $data);
+    }
+    
+    function save_spb_all(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $jenis = $this->input->post('jenis_barang');
+
+        $this->load->model('Model_m_numberings');
+        if($jenis == 'FG'){
+            $code = $this->Model_m_numberings->getNumbering('SPB-FG', $tgl_input); 
+            if($code){        
+                $data = array(
+                    'no_spb'=> $code,
+                    'tanggal'=> $tgl_input,
+                    'jenis_spb'=> 13,
+                    'flag_tolling'=> 0,
+                    'keterangan'=>$this->input->post('remarks'),
+                    'created_at'=> $tanggal,
+                    'created_by'=> $user_id
+                );
+
+                if($this->db->insert('t_spb_fg', $data)){
+                    redirect('index.php/GudangFG/edit_spb/'.$this->db->insert_id());  
+                }else{
+                    $this->session->set_flashdata('flash_msg', 'Data SPB FG gagal disimpan, silahkan dicoba kembali!');
+                    redirect('index.php/Retur/create_request_barang');  
+                }            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data SPB FG gagal disimpan, penomoran belum disetup!');
+                redirect('index.php/Retur/request_barang_list');
+            }
+        }else if($jenis == 'WIP'){
+            $code = $this->Model_m_numberings->getNumbering('SPB-WIP', $tgl_input); 
+            if($code){        
+                $data = array(
+                    'no_spb_wip'=> $code,
+                    'tanggal'=> $tgl_input,
+                    'flag_produksi'=> 13,
+                    'flag_tolling'=> 0,
+                    'keterangan'=>$this->input->post('remarks'),
+                    'created'=> $tanggal,
+                    'created_by'=> $user_id
+                );
+
+                if($this->db->insert('t_spb_wip', $data)){
+                    redirect('index.php/GudangWIP/edit_spb/'.$this->db->insert_id());  
+                }else{
+                    $this->session->set_flashdata('flash_msg', 'Data SPB WIP gagal disimpan, silahkan dicoba kembali!');
+                    redirect('index.php/Retur/create_request_barang');  
+                }            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data SPB FG gagal disimpan, penomoran belum disetup!');
+                redirect('index.php/Retur/request_barang_list');
+            }
+        }else if($jenis == 'RONGSOK'){
+            $code = $this->Model_m_numberings->getNumbering('SPB-RSK', $tgl_input); 
+            if($code){        
+                $data = array(
+                    'no_spb'=> $code,
+                    'tanggal'=> $tgl_input,
+                    'jenis_barang'=>1,
+                    'jenis_spb'=> 13,//JENIS SPB SJ Lain
+                    'flag_tolling'=> 0,
+                    'jumlah'=> $this->input->post('jumlah_rsk'),
+                    'remarks'=>$this->input->post('remarks'),
+                    'created'=> $tanggal,
+                    'created_by'=> $user_id
+                );
+
+                if($this->db->insert('spb', $data)){
+                    redirect('index.php/Ingot/add_spb/'.$this->db->insert_id());  
+                }else{
+                    $this->session->set_flashdata('flash_msg', 'Data SPB Rongsok gagal disimpan, silahkan dicoba kembali!');
+                    redirect('index.php/Retur/create_request_barang');  
+                }            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data SPB Rongsok gagal disimpan, penomoran belum disetup!');
+                redirect('index.php/Retur/request_barang_list');
+            }
+        }else if($jenis == 'AMPAS'){
+            $code = $this->Model_m_numberings->getNumbering('SPB-AMP', $tgl_input); 
+            if($code){        
+                $data = array(
+                    'no_spb_ampas'=> $code,
+                    'tanggal'=> $tgl_input,
+                    'flag_tolling'=> 0,
+                    'keterangan'=>$this->input->post('remarks'),
+                    'created_at'=> $tanggal,
+                    'created_by'=> $user_id
+                );
+
+                if($this->db->insert('t_spb_ampas', $data)){
+                    redirect('index.php/PengirimanAmpas/edit_spb/'.$this->db->insert_id());  
+                }else{
+                    $this->session->set_flashdata('flash_msg', 'Data SPB Rongsok gagal disimpan, silahkan dicoba kembali!');
+                    redirect('index.php/Retur/create_request_barang');  
+                }            
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data SPB Rongsok gagal disimpan, penomoran belum disetup!');
+                redirect('index.php/Retur/request_barang_list');
+            }
+        }
+    }
+
+    function get_spb_list(){ 
+        $id = $this->input->post('id');
+        $this->load->model('Model_gudang_fg');
+        $data = $this->Model_gudang_fg->get_spb_list($id)->result();
+        $arr_so[] = "Silahkan pilih....";
+        foreach ($data as $row) {
+            $arr_so[$row->id] = $row->no_spb;
+        } 
+        print form_dropdown('spb_id', $arr_so);
     }
 }

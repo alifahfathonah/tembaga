@@ -21,6 +21,52 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">&nbsp;</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-danger display-hide">
+                                    <button class="close" data-close="alert"></button>
+                                    <span id="message">&nbsp;</span>
+                                </div>
+                            </div>
+                        </div>
+                        <form class="eventInsForm" method="post" target="_self" name="formku" 
+                              id="formku">                            
+                            <div class="row">
+                                <div class="col-md-5">
+                                    No. Retur <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="no_retur" name="no_retur" readonly="readonly" 
+                                        class="form-control myline" style="margin-bottom:5px">
+                                    
+                                    <input type="hidden" id="id" name="id">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    Tanggal Potong Hutang <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="tanggal_potong" name="tanggal_potong" class="form-control myline input-small" class="form-control myline input-small" style="margin-bottom:5px;float:left;"  value="<?=date('Y-m-d');?>">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">                        
+                        <button type="button" class="btn blue" onClick="simpandata();">Simpan</button>
+                        <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
@@ -90,8 +136,7 @@
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Retur/print/'.$data->id.'" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                                 }
                                 if(($group_id==1 || $hak_akses['create_invoice']==1) && $data->jenis_retur==1 && $data->status==1 && $data->flag_taken==0){
-                                    echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/Retur/add_invoice/'.$data->id.'" 
-                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Create Hutang Invoice &nbsp; </a> ';
+                                    echo '<a class="btn btn-circle btn-xs blue" style="margin-bottom:4px" onclick="editData('.$data->id.')"> &nbsp; <i class="fa fa-pencil"></i> Create Pelunasan Hutang &nbsp; </a>';
                                 }
                                 if(($group_id==1 || $hak_akses['edit']==1) && $data->status==0){
                                      echo '<a class="btn btn-circle btn-xs blue" href="'.base_url().'index.php/Retur/edit/'.$data->id.'" style="margin-bottom:4px"><i class="fa fa-edit"></i> Edit &nbsp;</a> ';
@@ -125,7 +170,45 @@
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-$(function(){    
+function editData(id){
+    dsState = "Edit";
+    $.ajax({
+        url: "<?php echo base_url('index.php/Retur/get_retur_jb'); ?>",
+        type: "POST",
+        data : {id: id},
+        success: function (result){
+            $('#no_retur').val(result['no_retur']);
+            $('#id').val(result['id']);
+            
+            $("#myModal").find('.modal-title').text('Hutang Retur');
+            $("#myModal").modal('show',{backdrop: 'true'});           
+        }
+    });
+}
+
+function simpandata(){
+    if($.trim($("#tanggal_potong").val()) == ""){
+        $('#message').html("Tanggal harus diisi, tidak boleh kosong!");
+        $('.alert-danger').show();
+    }else{    
+        $('#message').html("");
+        $('.alert-danger').hide();
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Retur/save_potong_piutang");
+        $('#formku').submit(); 
+    };
+};
+
+$(function(){
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
+
+    $("#tanggal_potong").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yy-mm-dd'
+    });
 });
 </script>         

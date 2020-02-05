@@ -67,7 +67,7 @@
                             No. PO <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_po" name="no_po" readonly="readonly"
+                            <input type="text" id="no_po" name="no_po"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_po']; ?>">
                             
@@ -79,8 +79,8 @@
                             Tanggal PO <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="tanggal" name="tanggal" readonly="readonly"
-                                class="form-control myline" style="margin-bottom:5px" 
+                            <input type="text" id="tanggal" name="tanggal"
+                                class="form-control myline input-small" style="margin-bottom:5px; float:left;" 
                                 value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
@@ -532,7 +532,7 @@ function rejectData(){
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
 $(function(){        
-    $("#tgl_spare_part").datepicker({
+    $("#tanggal").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,

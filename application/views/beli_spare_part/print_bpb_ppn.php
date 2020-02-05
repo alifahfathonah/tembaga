@@ -63,7 +63,7 @@
                                 echo '<td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000;">'.$no.'</td>';
                                 echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000;">'.$row->nama_item.'</td>';
                                 echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000;">'.$row->uom.'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->qty,0,',', '.').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->qty,2,',', '.').'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->amount,2,',', '.').'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($diskon,2,',', '.').'</td>';
                                 echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($hp,2,',', '.').'</td>';

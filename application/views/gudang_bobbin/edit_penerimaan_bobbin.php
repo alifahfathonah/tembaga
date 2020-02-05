@@ -111,22 +111,20 @@
                                 <th>Actions</th>
                             </thead>
                             <tbody id="boxDetail">
-                                <!-- <tr>
-                                    <td style="text-align: center;"><div id="no_tabel_1">1</div></td>
-                                    <td>
-                                        <select id="barang_id_1" name="details[1][barang_id]" class="form-control myline select2me" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_nomor(1)">
-                                            <option value=""></option>
-                                        <?php foreach ($list_barang as $value){ ?>
-                                            <option value='<?=$value->id;?>'><?=$value->nomor_bobbin;?></option>
-                                        <?php } ?>
-                                        </select>
-                                    </td>
-                                    <input type="hidden" id="nomor_bobbin_1" name="details[1][nomor_bobbin]">
-                                    <td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input(1);" style="margin-top:5px" id="save_1"><i class="fa fa-plus"></i> Tambah </a><a id="delete_1" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail(1);" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Delete </a>
-                                    </td>
-                                </tr> -->
+                                <?php 
+                                $no = 1;
+                                foreach ($list_barang as $value) {
+                                    echo '<tr>';
+                                    echo '<td>'.$no.'</td>';
+                                    echo '<td>'.$value->nomor_bobbin.'</td>';
+                                    echo '<td>'.$value->berat.'</td>';
+                                    echo '<td><a class="btn btn-xs btn-circle red" href="'.base_url().'index.php/GudangBobbin/delete_detail_penerimaan_bobbin/'.$header['id'].'/'.$value->id.'" style="margin-top:5px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash"></i> Delete </a></td>';
+                                    $no++;
+                                }
+                                ?>
+                                </tr>
                                     <tr>
-                                        <td style="text-align:center"><div id="no_tabel_1">1</div></td>
+                                        <td style="text-align:center"><div id="no_tabel_1"><?=$no;?></div></td>
                                         <input type="hidden" id="id_bobbin_1" name="details[1][id_bobbin]">
                                         <td><input type="text" id="nomor_bobbin_1" name="details[1][nomor_bobbin]" class="form-control myline" onchange="getBobbin(1);"  autofocus onfocus="this.value = this.value;" onkeyup="this.value = this.value.toUpperCase()"></td>
                                         <td><input type="text" id="berat_1" name="details[1][berat]" class="form-control myline" readonly="readonly"></td>
@@ -212,9 +210,10 @@ function hapusDetail(id){
 
 function create_new_input(id){
        var new_id = id+1;
+       const nomor = id+<?=$no;?>;
         $("#tabel_bobbin>tbody").append('<tr>'+
             '<tr>'+
-                '<td style="text-align:center"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
+                '<td style="text-align:center"><div id="no_tabel_'+new_id+'">'+nomor+'</div></td>'+
                 '<input type="hidden" id="id_bobbin_'+new_id+'" name="details['+new_id+'][id_bobbin]">'+
                 '<td><input type="text" id="nomor_bobbin_'+new_id+'" name="details['+new_id+'][nomor_bobbin]" class="form-control myline" onchange="getBobbin('+new_id+');"  autofocus onfocus="this.value = this.value;" onkeyup="this.value = this.value.toUpperCase()"></td>'+
                 '<td><input type="text" id="berat_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline" readonly="readonly"></td>'+
@@ -233,102 +232,7 @@ function check_duplicate(){
         });
         return valid;
 }
-
-// function create_new_input(id){
-//     if($.trim($("#barang_id_"+id).val()) == ""){
-//         alert('Barang Belum Di Input !');
-//     }else{  
-//         var check = check_duplicate();
-//         if(check){
-//         $("#barang_id_"+id).attr('readonly','readonly');
-//         $("#save_"+id).attr('disabled','disabled').hide();
-//         $("#delete_"+id).show();
-//         var new_id = id+1;
-//         $("#tabel_barang>tbody").append(
-//         '<tr>'+
-//             '<td style="text-align: center;"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
-//             '<td>'+
-//                 '<select id="barang_id_'+new_id+'" name="details['+new_id+'][barang_id]" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="get_nomor('+new_id+');">'+
-//                     '<option value=""></option>'+
-                    // '<?php //foreach($list_barang as $v){ print('<option value="'.$v->id.'">'.$v->nomor_bobbin.'</option>');}?>'+
-//                 '</select>' +
-//             '</td>'+
-//             '<input type="hidden" id="nomor_bobbin_'+new_id+'" name="details['+new_id+'][nomor_bobbin]">'+
-//             '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle yellow-gold" onclick="create_new_input('+new_id+');" style="margin-top:5px" id="save_'+new_id+'"><i class="fa fa-plus"></i> Tambah </a>'+
-//             '<a id="delete_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red" onclick="hapusDetail('+new_id+');" style="margin-top:5px; display: none;"><i class="fa fa-trash"></i> Delete </a></td>'+
-//         '</tr>');
-//         $('#barang_id_'+new_id).select2();
-//         } else {
-//             alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
-//             $("#barang_id_"+id).select2("val", "");
-//         }
-//     };
-// };
-
-// function get_nomor(id){
-//     $('#nomor_bobbin_'+id).val($("#barang_id_"+id+" option:selected" ).text());
-// }
-// function loadDetail(id){
-//     id_peminjaman = $('#id_peminjaman').val();
-//     $.ajax({
-//         type:"POST",
-//         url:'<?php echo base_url('index.php/GudangBobbin/load_detail_penerimaan'); ?>',
-//         data:{
-//             id: id,
-//             id_peminjaman: id_peminjaman
-//         },
-//         success:function(result){
-//             $('#boxDetail').html(result);     
-//         }
-//     });
-// }
-
-// function saveDetail(){
-//     if($.trim($("#nomor_bobbin").val()) == ""){
-//         $('#message').html("Silahkan pilih nomor bobbin!");
-//         $('.alert-danger').show(); 
-//     }else{
-//         $.ajax({
-//             type:"POST",
-//             url:'<?php echo base_url('index.php/GudangBobbin/save_penerimaan_bobbin_detail'); ?>',
-//             data:{
-//                 id_bobbin_penerimaan:$('#id').val(),
-//                 nomor_bobbin:$('#nomor_bobbin').val()
-//             },
-//             success:function(result){
-//                 if(result['message_type']=="sukses"){
-//                     loadDetail($('#id').val());
-//                     $('#message').html("");
-//                     $('.alert-danger').hide(); 
-//                 }else{
-//                     $('#message').html(result['message']);
-//                     $('.alert-danger').show(); 
-//                 }            
-//             }
-//         });
-//     }
-// }
-
-// function hapusDetail(id){
-//     var r=confirm("Anda yakin menghapus item barang ini?");
-//     if (r==true){
-//         $.ajax({
-//             type:"POST",
-//             url:'<?php echo base_url('index.php/GudangBobbin/delete_penerimaan_bobbin_detail'); ?>',
-//             data:"id="+ id,
-//             success:function(result){
-//                 if(result['message_type']=="sukses"){
-//                     loadDetail($('#id').val());
-//                 }else{
-//                     alert(result['message']);
-//                 }     
-//             }
-//         });
-//     }
-// }
-
 </script>
-
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>

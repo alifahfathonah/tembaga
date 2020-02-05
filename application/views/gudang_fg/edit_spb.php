@@ -75,6 +75,9 @@
                                 <option value="6" <?=(($header['jenis_spb']==6)? 'selected="selected"' : '""');?>>SO</option>
                                 <option value="7" <?=(($header['jenis_spb']==7)? 'selected="selected"' : '""');?>>Retur</option>
                                 <option value="8" <?=(($header['jenis_spb']==8)? 'selected="selected"' : '""');?>>Repacking</option>
+                                <option value="9" <?=(($header['jenis_spb']==9)? 'selected="selected"' : '""');?>>Retur K</option>
+                                <option value="11" <?=(($header['jenis_spb']==11)? 'selected="selected"' : '""');?>>Adjustment</option>
+                                <option value="13" <?=(($header['jenis_spb']==13)? 'selected="selected"' : '""');?>>SJ Lain</option>
                             </select> 
                         </div>
 

@@ -908,8 +908,8 @@ class BeliSparePart extends CI_Controller{
                         'kurs'=>$this->input->post('kurs'),
                         'po_detail_id'=>$row['po_detail_id'],
                         'sparepart_id'=>$row['sparepart_id'],
-                        'qty'=>str_replace('.', '', $row['qty']),
-                        'line_remarks'=>str_replace('.', '', $row['line_remarks'])
+                        'qty'=> $row['qty'],
+                        'line_remarks'=> $row['line_remarks']
                     );
                     $this->db->insert('lpb_detail', $data_lpb_detail);
                     $lpb_detail_id = $this->db->insert_id();
@@ -2371,7 +2371,6 @@ class BeliSparePart extends CI_Controller{
         echo json_encode($return_data); 
     }
 
-//PENDING
     function delete_lpb(){
         $id = $this->uri->segment(3);
         $user_id  = $this->session->userdata('user_id');

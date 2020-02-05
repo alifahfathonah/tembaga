@@ -15,7 +15,8 @@
                 <span id="msg_sukses"><?php echo $this->session->flashdata('flash_msg'); ?></span>
             </div>
         </div>
-    </div><div class="collapse well" id="form_filter" >
+    </div>
+    <div class="collapse well" id="form_filter" >
         <div class="row">
             <div class="col-md-6">
                 <div class="row">
@@ -115,8 +116,6 @@
                                 </optgroup>
                             </select>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="javascript:;" style="margin-bottom:4px; display: none;" onclick="print_laporan(<?=$no.',\''.$data->tanggal.'\'';?>);" id="btn_laporan_<?=$no;?>"> &nbsp; <i class="fa  fa-print"></i> Print Laporan&nbsp; </a>
-                            <!-- <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangFG/print_laporan_fg/<?php echo $data->tanggal; ?>/5" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print Laporan FG&nbsp; </a>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangFG/print_laporan_fg/<?php echo $data->tanggal; ?>/29" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print Laporan FG Alumunium&nbsp; </a> -->
                         <?php
                             }//if group
                 }//foreach?>

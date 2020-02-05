@@ -92,6 +92,7 @@
        <tr >
             <th>No</th>
             <th>No. Surat Peminjaman</th>
+            <th>Tanggal</th>
             <th>No. Surat Jalan</th>
             <th>Nama Customer</th>
             <th>Nama Supplier</th>
@@ -108,6 +109,7 @@
           <tr>
             <td style="text-align:center;"><?php echo $no; ?></td>
             <td><?php echo $row->no_surat_peminjaman; ?></td>
+            <td><?php echo $row->tanggal; ?></td>
             <td><?php echo $row->no_surat_jalan; ?></td>
             <td><?php echo $row->nama_customer; ?></td>
             <td><?php echo $row->nama_supplier; ?></td>

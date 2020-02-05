@@ -57,37 +57,38 @@
 			$grand_total_qty_sisa = 0;
 			$grand_total_amount_sisa = 0;
 			foreach ($detailLaporan as $key => $row) {
+			if($row->saldo_amount!=0 || $row->amount_masuk !=0 || $row->amount_keluar!=0 || $row->amount_sisa!=0){
 				$group = substr($row->kode, 0, 2);
 				if ($last_group != '') {
-				if ($group != $last_group) {
-					echo 
-						"<tr>
-							<td colspan='4' align='right'><b>Total</b></td>
-							<td align='right'><b>"./*number_format($total_saldo_qty_group,2,'.',',').*/"</b></td>
-							<td align='right'><b>".number_format($total_saldo_amount_group,2,'.',',')."</b></td>
-							<td align='right'><b>"./*number_format($total_qty_masuk,2,'.',',').*/"</b></td>
-							<td align='right'><b>".number_format($total_amount_masuk,2,'.',',')."</b></td>
-							<td align='right'><b>"./*number_format($total_qty_keluar,2,'.',',').*/"</b></td>
-							<td align='right'><b>".number_format($total_amount_keluar,2,'.',',')."</b></td>
-							<td align='right'><b>"./*number_format($total_qty_sisa,2,'.',',').*/"</b></td>
-							<td align='right'><b>".number_format($total_amount_sisa,2,'.',',')."</b></td>
-						</tr>
-						<tr>
-							<td colspan='12'>&nbsp;</td>
-						</tr>";
+					if ($group != $last_group) {
+						echo 
+							"<tr>
+								<td colspan='4' align='right'><b>Total</b></td>
+								<td align='right'><b>"./*number_format($total_saldo_qty_group,2,'.',',').*/"</b></td>
+								<td align='right'><b>".number_format($total_saldo_amount_group,2,'.',',')."</b></td>
+								<td align='right'><b>"./*number_format($total_qty_masuk,2,'.',',').*/"</b></td>
+								<td align='right'><b>".number_format($total_amount_masuk,2,'.',',')."</b></td>
+								<td align='right'><b>"./*number_format($total_qty_keluar,2,'.',',').*/"</b></td>
+								<td align='right'><b>".number_format($total_amount_keluar,2,'.',',')."</b></td>
+								<td align='right'><b>"./*number_format($total_qty_sisa,2,'.',',').*/"</b></td>
+								<td align='right'><b>".number_format($total_amount_sisa,2,'.',',')."</b></td>
+							</tr>
+							<tr>
+								<td colspan='12'>&nbsp;</td>
+							</tr>";
 
-					$no = 1;
-					$total_saldo_qty_group = 0;
-					$total_saldo_amount_group = 0;
-					$total_qty_masuk = 0;
-					$total_amount_masuk = 0;
-					$total_qty_keluar = 0;
-					$total_rata2 = 0;
-					$total_amount_keluar = 0;
-					$total_qty_sisa = 0;
-					$total_amount_sisa = 0;
+						$no = 1;
+						$total_saldo_qty_group = 0;
+						$total_saldo_amount_group = 0;
+						$total_qty_masuk = 0;
+						$total_amount_masuk = 0;
+						$total_qty_keluar = 0;
+						$total_rata2 = 0;
+						$total_amount_keluar = 0;
+						$total_qty_sisa = 0;
+						$total_amount_sisa = 0;
+					}
 				}
-			}
 
 				echo 
 					"<tr>
@@ -125,6 +126,7 @@
 				$grand_total_amount_keluar += $row->amount_keluar;
 				$grand_total_qty_sisa += $row->qty_sisa;
 				$grand_total_amount_sisa += $row->amount_sisa;
+			}//if 0
 			}
 
 			echo 

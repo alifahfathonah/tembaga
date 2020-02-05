@@ -213,30 +213,35 @@
                                 <span class="arrow"></span>
                             </a>
                             <ul class="sub-menu">
+                                <?php if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliWIP">
                                         <i class="fa fa-file-word-o"></i>
                                         PO List
                                     </a>
                                 </li>
+                                <?php } if($group_id==1 || (isset($akses_menu['dtwip_list']) && $akses_menu['dtwip_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliWIP/dtwip_list">
                                         <i class="fa fa-file-text-o"></i>
                                         DTWIP List
                                     </a>
                                 </li>
+                                <?php } if($group_id==1 || (isset($akses_menu['matching_dtwip']) && $akses_menu['matching_dtwip']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliWIP/matching">
                                         <i class="fa fa-chain"></i>
                                         Matching PO - DTWIP
                                     </a>
                                 </li>
+                                <?php } if($group_id==1 || (isset($akses_menu['voucher_list']) && $akses_menu['voucher_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliWIP/voucher_list">
                                         <i class="fa fa-usd"></i>
                                         Voucher List
                                     </a>
                                 </li>
+                                <?php } ?>
                             </ul>
                         </li>
                     <?php } ?>

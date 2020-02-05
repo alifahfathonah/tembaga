@@ -83,7 +83,11 @@
                         </td> 
                         <td style="text-align:center"> 
                             <?php
-                                if($group_id==1 || $hak_akses['print_surat_jalan']==1){
+                                if($group_id==1 && $data->status==0){
+                            ?>
+                            <a href="<?php echo base_url(); ?>index.php/Retur/delete_surat_jalan/<?php echo $data->id; ?>" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus surat jalan ini?');"><i class="fa fa-trash-o"></i> Delete</a>
+                            <?php
+                               } if($group_id==1 || $hak_akses['print_surat_jalan']==1){
                             ?>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/Retur/view_surat_jalan/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa fa-file-text-o"></i> View &nbsp; </a>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/Retur/print_surat_jalan/<?php echo $data->id; ?>" 

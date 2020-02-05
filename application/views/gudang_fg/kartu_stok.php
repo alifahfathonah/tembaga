@@ -31,7 +31,7 @@
         echo '<td></td>';
         echo '<td></td>';
         echo '<td></td>';
-        echo '<td>'.number_format($sisa,2,',','.').'</td>';
+        echo '<td style="text-align:right;">'.number_format($sisa,2,',','.').'</td>';
         echo '</tr>';
     foreach ($detailLaporan as $row){
         echo '<tr>';
@@ -39,10 +39,10 @@
         echo '<td>'.$row->tanggal_masuk.$row->tanggal_keluar.'</td>';
         echo '<td>'.$row->nomor.'</td>';
         echo '<td>'.$row->keterangan.'</td>';
-        echo '<td>'.number_format($row->netto_masuk,2,',','.').'</td>';
-        echo '<td>'.number_format($row->netto_keluar,2,',','.').'</td>';
+        echo '<td style="text-align:right;">'.number_format($row->netto_masuk,2,',','.').'</td>';
+        echo '<td style="text-align:right;">'.number_format($row->netto_keluar,2,',','.').'</td>';
         $sisa_now = $sisa + $row->netto_masuk - $row->netto_keluar;
-        echo '<td>'.number_format($sisa_now,2,',','.').'</td>';
+        echo '<td style="text-align:right;">'.number_format($sisa_now,2,',','.').'</td>';
         echo '</tr>';
         $no++;
         $sisa = $sisa_now;
@@ -52,9 +52,9 @@
     ?>
     <tr>
         <td colspan="4"></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($masuk,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($keluar,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($sisa,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align: right;"><?=number_format($masuk,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align: right;"><?=number_format($keluar,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align: right;"><?=number_format($sisa,2,',','.');?></td>
     </tr>
     </tbody>
 </table>

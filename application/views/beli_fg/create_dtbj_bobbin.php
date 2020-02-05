@@ -40,6 +40,7 @@
 
                             <input type="hidden" id="id" name="id" value="<?= $header['id'];?>">
                             <input type="hidden" id="spb_id" name="spb_id" value="<?= $header['spb_id'];?>">
+                            <input type="hidden" id="type_retur" name="type_retur" value="<?= $header['type_retur'];?>">
                         </div>
                     </div>
                     <div class="row">

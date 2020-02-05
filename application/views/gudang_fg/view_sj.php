@@ -69,8 +69,23 @@
                                 value="<?php echo $header['no_surat_jalan']; ?>">
                             
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
+                            <input type="hidden" id="spb_id" name="spb_id" value="<?php echo $header['spb_id']; ?>">
                         </div>
                     </div>
+                    <?php if($header['spb_id']>0){ ?>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No. SPB <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_sales_order" name="no_sales_order" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px" 
+                                value="<?php echo $header['nomor_spb']; ?>">
+
+                            <input type="hidden" id="spb_id" name="spb_id" value="<?php echo $header['spb_id']; ?>">
+                        </div>
+                    </div>
+                    <?php } ?>
                     <div class="row">
                         <div class="col-md-4">
                             Tanggal <font color="#f00">*</font>

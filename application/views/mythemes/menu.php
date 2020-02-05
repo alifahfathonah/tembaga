@@ -74,7 +74,7 @@
                                     <i class="fa fa-cubes"></i>
                                     BPB List </a>
                                 </li> 
-                                <?php } if($group_id==1 || (isset($akses_menu['bpb_list']) && $akses_menu['lpb_list']==1)){ ?>
+                                <?php } if($group_id==1 || (isset($akses_menu['lpb_list']) && $akses_menu['lpb_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliSparePart/lpb_list">
                                     <i class="fa fa-usd"></i>
@@ -193,35 +193,35 @@
                                 <span class="arrow"></span>
                             </a>
                             <ul class="sub-menu">
-                            <?php if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
+                                <?php if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliWIP">
                                         <i class="fa fa-file-word-o"></i>
                                         PO List
                                     </a>
                                 </li>
-                            <?php } if($group_id==1 || (isset($akses_menu['dtwip_list']) && $akses_menu['dtwip_list']==1)){ ?>
+                                <?php } if($group_id==1 || (isset($akses_menu['dtwip_list']) && $akses_menu['dtwip_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliWIP/dtwip_list">
                                         <i class="fa fa-file-text-o"></i>
                                         DTWIP List
                                     </a>
                                 </li>
-                            <?php } if($group_id==1 || (isset($akses_menu['matching']) && $akses_menu['matching']==1)){ ?>
+                                <?php } if($group_id==1 || (isset($akses_menu['matching_dtwip']) && $akses_menu['matching_dtwip']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliWIP/matching">
                                         <i class="fa fa-chain"></i>
                                         Matching PO - DTWIP
                                     </a>
                                 </li>
-                            <?php } if($group_id==1 || (isset($akses_menu['voucher_list']) && $akses_menu['voucher_list']==1)){ ?>
+                                <?php } if($group_id==1 || (isset($akses_menu['voucher_list']) && $akses_menu['voucher_list']==1)){ ?>
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/BeliWIP/voucher_list">
                                         <i class="fa fa-usd"></i>
                                         Voucher List
                                     </a>
                                 </li>
-                            <?php } ?>
+                                <?php } ?>
                             </ul>
                         </li>
                     <?php } ?>
@@ -468,6 +468,11 @@
                                         Laporan Masak </a>
                                     </li>
                                     <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangWIP/laporan_produksi_tahunan">
+                                        <i class="fa fa-briefcase"></i>
+                                        Laporan Produksi Tahunan </a>
+                                    </li>
+                                    <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangWIP/floor_produksi">
                                         <i class="fa fa-briefcase"></i>
                                         Floor Produksi </a>
@@ -537,6 +542,11 @@
                                         <a href="<?php echo base_url(); ?>index.php/GudangRongsok/index">
                                         <i class="fa fa-search"></i>
                                         Kartu Stok Rongsok </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangRongsok/laporan_bulanan_palet">
+                                        <i class="fa fa-search"></i>
+                                        Laporan Bulanan per Palette </a>
                                     </li>
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangRongsok/laporan_list">
@@ -714,26 +724,26 @@
                                         <i class="fa fa-barcode"></i>
                                         Scan FG </a>
                                     </li>
-                                    <li>
+                                    <!-- <li>
                                         <a href="<?php echo base_url(); ?>index.php/StokOpname/adjustment">
                                         <i class="fa fa-tasks"></i>
                                         Adjusment Stok FG </a>
-                                    </li>
+                                    </li> -->
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/StokOpname/report/FG">
                                         <i class="fa fa-briefcase"></i>
                                         Stock FG </a>
                                     </li>
-                                    <li>
+                                    <!-- <li>
                                         <a href="<?php echo base_url(); ?>index.php/StokOpname/filter">
                                         <i class="fa fa-briefcase"></i>
                                         Stok perlu periksa </a>
-                                    </li>
-                                    <li>
+                                    </li> -->
+                                    <!-- <li>
                                         <a href="<?php echo base_url(); ?>index.php/StokOpname/print_stok">
                                         <i class="fa fa-print"></i>
                                         Print Stok Opname </a>
-                                    </li>
+                                    </li> -->
                                 </ul>
                             </li>
                             <li>
@@ -748,30 +758,21 @@
                                         <i class="fa fa-barcode"></i>
                                         Scan Rongsok </a>
                                     </li>
-                                    <!-- <li>
-                                        <a href="<?php echo base_url(); ?>index.php/StokOpname/adjustment">
-                                        <i class="fa fa-tasks"></i>
-                                        Adjusment Stok Rongsok </a>
-                                    </li> -->
                                     <li>
                                         <a href="<?php echo base_url(); ?>index.php/StokOpname/report/rongsok">
                                         <i class="fa fa-briefcase"></i>
                                         Stock Rongsok </a>
                                     </li>
-                                    <!-- <li>
-                                        <a href="<?php echo base_url(); ?>index.php/StokOpname/filter">
-                                        <i class="fa fa-briefcase"></i>
-                                        Stok perlu periksa </a>
-                                    </li> -->
-                                    <!-- <li>
-                                        <a href="<?php echo base_url(); ?>index.php/StokOpname/print_stok_rongsok">
-                                        <i class="fa fa-print"></i>
-                                        Print Stok Opname </a>
-                                    </li> -->
                                 </ul>
                             </li>
                         <?php } ?>
                         </ul>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/GudangFG/spb_all">
+                                <i class="fa fa-file-word-o"></i>
+                                SPB All
+                            </a>
                         </li>
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/GudangFG/surat_jalan">
@@ -898,6 +899,24 @@
                                     Surat Jalan
                                 </a>
                             </li>
+                            <li>
+                            <a href="javascript:;">
+                            <i class="fa fa-book"></i>
+                            <span class="title">Laporan</span>
+                            <span class="arrow "></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Retur/laporan_retur">
+                                    <i class="fa fa-file-text-o"></i>
+                                    Laporan Retur </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Retur/print_laporan_retur_now" target="_blank">
+                                    <i class="fa fa-file-text-o"></i>
+                                    Laporan Retur Saat Ini </a>
+                                </li>
+                            </ul>
                         <?php } ?>
                             </ul>
                         </li>
@@ -908,24 +927,25 @@
                             <span class="arrow "></span>
                             </a>
                             <ul class="sub-menu">
-                        <?php if($group_id==1 || (isset($akses_menu['surat_jalan']) && $akses_menu['surat_jalan']==1)){ ?>
-                            <li>
-                                <a href="<?php echo base_url(); ?>index.php/Retur/request_barang_list">
-                                <i class="fa fa-file-text-o"></i>
-                                SPB Retur </a>
-                            </li>
-                            <li>
-                                <a href="<?php echo base_url(); ?>index.php/Retur/surat_jalan_sp">
-                                <i class="fa fa-truck"></i>
-                                Surat Jalan</a>
-                            </li>
-                        <?php } ?>
+                            <?php if($group_id==1 || (isset($akses_menu['surat_jalan']) && $akses_menu['surat_jalan']==1)){ ?>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Retur/retur_supplier">
+                                        <i class="fa fa-file-text-o"></i>
+                                        Terima Retur
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Retur/request_barang_list">
+                                    <i class="fa fa-file-text-o"></i>
+                                    SPB Retur </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Retur/surat_jalan_sp">
+                                    <i class="fa fa-truck"></i>
+                                    Surat Jalan</a>
+                                </li>
+                            <?php } ?>
                             </ul>
-                        </li>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/Retur/laporan_retur">
-                            <i class="fa fa-file-text-o"></i>
-                            Laporan Retur </a>
                         </li>
                         <!-- <li>
                             <a href="javascript:;">
@@ -1017,13 +1037,17 @@
                             <i class="fa fa-file-word-o"></i>
                             SPB Bobbin </a>
                         </li>
-                        <?php } ?>
+                        <?php } if($group_id==1 || (isset($akses_menu['add']) && $akses_menu['add']==1)){ ?>
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/GudangBobbin/bobbin_request">
                             <i class="fa fa-bullseye"></i>
                             Bobbin Request </a>
                         </li>
-                        <?php if($group_id==1 || (isset($akses_menu['add']) && $akses_menu['add']==1)){ ?>
+                        <!-- <li>
+                            <a href="<?php echo base_url(); ?>index.php/GudangBobbin/bobbin_trx">
+                            <i class="fa fa-bullseye"></i>
+                            Bobbin Trx </a>
+                        </li> -->
                         <li>
                             <a href="<?php echo base_url(); ?>index.php/GudangBobbin/bobbin_terima">
                             <i class="fa fa-bullseye"></i>
@@ -1051,6 +1075,10 @@
                                     <i class="fa fa-search"></i> Laporan Status </a>
                                 </li>
                                 <li>
+                                    <a href="<?php echo base_url(); ?>index.php/GudangBobbin/laporan_harian/">
+                                    <i class="fa fa-search"></i> Laporan Harian </a>
+                                </li>
+                                <li>
                                     <a href="<?php echo base_url(); ?>index.php/GudangBobbin/laporan_bulanan/">
                                     <i class="fa fa-search"></i> Laporan Bulanan </a>
                                 </li>
@@ -1061,6 +1089,10 @@
                                 <li>
                                     <a href="<?php echo base_url(); ?>index.php/GudangBobbin/laporan_langganan/">
                                     <i class="fa fa-search"></i> Laporan Langganan </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/GudangBobbin/laporan_peminjaman/">
+                                    <i class="fa fa-search"></i> Laporan Peminjaman </a>
                                 </li>
                             </ul>
                         </li>

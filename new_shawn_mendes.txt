@@ -56,6 +56,10 @@ bug - cek kenapa kadang uang masuk matching nyangkut (done)
 -PO dan Tolling ( KH dan KMP) (done)
 -Dari Apollo, Rolling, SDM (done)
 -SPB Rongsok tambahin jenis Rolling utk Tali Rolling(done)
+-Pengeluaran Lain(done)
+#Pemasukan Lain tidak include dibawah ini dan dibawah ini buat laporan  baru:
+  #Pemasukan dari Gudang WIP(done)
+  #Pemasukan dari Gudang FG(done)
 
 35- Pemasukan FG (done)
 35- Tambahin pemasukan fg detail no packing (global dan produksi)(done)
@@ -104,12 +108,17 @@ bug - cek kenapa kadang uang masuk matching nyangkut (done)
 49- Persingkat Repacking Rongsok kayak Finish Good(done), scan dan Approve spb dulu baru ke dtr dan ttr(done)
 - flag blebek dan serbuk gamasuk laporan rongsok bulanan
 50- Edit jenis barang ff. produksi, bpb, gudang selama belum ada sj(done)
-51- Close retur untuk laporan. biar ga muncul pas buat surat jalan. Laporan retur ngambil dari fulfilmentnya(done)
+51- Close retur untuk laporan. b	iar ga muncul pas buat surat jalan. Laporan retur ngambil dari fulfilmentnya(done)
 52- Laporan Bulanan FG Headernya salah, Laporan Alumunium Sendiri (done)
-53- Laporan Bulanan WIP
+53- Laporan Bulanan WIP (done, tinggal di cek)
 54- Laporan Tolling percustomer dan persupplier(done)
 	- Tolling PO : Sisa Belum Diterima (done)
 	- Tolling SO : Sisa Belum Dikirim (done)
 55- Laporan Bulanan. per KMP, TMS, INDOKA (done)
 56- Bukain matching pembayaran yang sudah di approve karena sering salah(done)
 57- Delete matching LPB yang sudah jadi bk/kk dan sudah dikirim ke pajak (done)
+58- Ubah matching pembayaran CV jadi bisa parsial (done)
+Laporan Balance cek lagi PO dan SO Tolling(done)
+59- Menu sendiri untuk pemasukan dari Retur Supplier
+60- Surat jalan lain motong stok khusus
+	#Rongsok, FG, WIP [change request]

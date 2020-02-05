@@ -147,6 +147,10 @@
         <td colspan="3" style="border-bottom:1px solid #000; border-right:1px solid #000;">
             <table border="0" width="100%">
                 <tr>
+                    <td colspan="2"></td>
+                    <td align="center">Tangerang, <?=tanggal_indo(date('Y-m-d'));?></td>
+                </tr>
+                <tr>
                     <td style="text-align:center">Mengetahui. </td>
                     <td style="text-align:center">Disetujui, </td>
                     <td style="text-align:center">Dibuat Oleh, </td>

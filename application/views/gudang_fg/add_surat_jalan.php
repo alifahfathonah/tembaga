@@ -98,16 +98,26 @@
                             Jenis Barang <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="jenis_barang" name="jenis_barang" data-placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom:5px" required="required">
+                            <select id="jenis_barang" name="jenis_barang" data-placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom:5px" required="required" onchange="cek_barang(this.value)">
                                 <option value=""></option>
-                                <!-- <option value="FG">FINISH GOOD</option>
+                                <option value="FG">FINISH GOOD</option>
                                 <option value="WIP">WIP</option>
-                                <option value="RONGSOK">RONGSOK</option> -->
+                                <option value="RONGSOK">RONGSOK</option>
                                 <option value="AMPAS">AMPAS</option>
                                 <option value="LAIN">LAIN - LAIN</option>
                             </select>
                         </div>
-                    </div>     
+                    </div> 
+                    <div class="row" id="show_spb" style="display: none;">
+                        <div class="col-md-4">
+                            No. SPB <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="spb_id" name="spb_id" class="form-control myline select2me" data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>    
                     <div class="row">
                         <div class="col-md-4">
                             Type Kendaraan
@@ -182,31 +192,46 @@ function simpanData(){
     }else if($.trim($("#m_customer_id").val()) == ""){
         $('#message').html("Silahkan pilih customer");
         $('.alert-danger').show();
+    }else if($('#jenis_barang').val() == 'AMPAS' || $('#jenis_barang').val() == 'LAIN'){
+        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+        $('#formku').submit();  
+    }else if($.trim($("#spb_id").val()) == ""){
+        $('#message').html("Silahkan pilih SPB!");
+        $('.alert-danger').show();
     }else{
-        // $.ajax({
-        //     type: "POST",
-        //     url: "<?php echo base_url('index.php/GudangFG/get_penomoran_sj'); ?>",
-        //     data: {
-        //         no_sj: $('#no_surat_jalan').val(),
-        //         tanggal: $('#tanggal').val()
-        //     },
-        //     cache: false,
-        //     success: function(result) {
-        //         var res = result['type'];
-        //         if(res=='duplicate'){
-        //             $('#message').html("Nomor Surat Jalan sudah ada, tolong coba lagi!");
-        //             $('.alert-danger').show();
-        //         }else{
-        //             $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
-        //             $('#formku').submit(); 
-        //         }
-        //     }
-        // });
-
-                    $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
-                    $('#formku').submit();  
+        $('#simpanData').text('Please Wait ...').prop("onclick", null).off("click");
+        $('#formku').submit();
     };
 };
+
+function cek_barang(id){
+    if(id=='FG'){
+        $('#show_spb').show();
+        get_spb(id);
+    }else if(id=='WIP'){
+        $('#show_spb').show();
+        get_spb(id);
+    }else if(id=='RONGSOK'){
+        $('#show_spb').show();
+        get_spb(id);
+    }else{
+        $('#show_spb').hide();
+    }
+}
+
+function get_spb(id){
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url('index.php/GudangFG/get_spb_list'); ?>",
+        data: {
+            id: id
+        },
+        cache: false,
+        success: function(result) {
+            $('#spb_id').html(result);
+        }
+    });
+}
 
 function get_type_kendaraan(id){
     $.ajax({

@@ -239,6 +239,11 @@
                             echo '<a href="javascript:;" class="btn red" onclick="closeRETUR();">
                                     <i class="fa fa-ban"></i> CLOSE RETUR </a>';
                         }
+
+                        if(($group_id==1 || $hak_akses['approve']==1) && $header['flag_taken']>0){
+                            echo '<a href="javascript:;" class="btn green" id="OpenSJ" onclick="OpenSJ();"> '
+                                .'<i class="fa fa-refresh"></i> Open SJ </a> ';
+                        }
                     ?>
 
                     <a href="<?php echo base_url('index.php/Retur'); ?>" class="btn blue-hoki"> 
@@ -279,6 +284,14 @@ function approveData(){
     var r=confirm("Anda yakin meng-approve permintaan retur barang ini?");
     if (r==true){
         $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Retur/approve");    
+        $('#formku').submit(); 
+    }
+};
+
+function OpenSJ(){
+    var r=confirm("Anda yakin ingin menambah Surat Jalan ?");
+    if (r==true){
+        $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Retur/open_sj_retur");    
         $('#formku').submit(); 
     }
 };
