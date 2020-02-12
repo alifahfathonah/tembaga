@@ -2058,6 +2058,25 @@ class Model_finance extends CI_Model{
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto  else 0 end),0),null) as LT,
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto  else 0 end),0),null) as SC,
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto  else 0 end),0),null) as SCJ,
+
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0001' then td.netto*pd.amount  else 0 end),0),null) as AB1_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0002' then td.netto*pd.amount  else 0 end),0),null) as AB2_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01AR001' then td.netto*pd.amount  else 0 end),0),null) as AR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0002' then td.netto*pd.amount  else 0 end),0),null) as TR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BB001' then td.netto*pd.amount  else 0 end),0),null) as BB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0001' then td.netto*pd.amount  else 0 end),0),null) as BC_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0003' then td.netto*pd.amount  else 0 end),0),null) as CT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BL001' then td.netto*pd.amount  else 0 end),0),null) as BL_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0003' then td.netto*pd.amount  else 0 end),0),null) as DH_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PB001' then td.netto*pd.amount  else 0 end),0),null) as PB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PR001' then td.netto*pd.amount  else 0 end),0),null) as PRT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01DD001' then td.netto*pd.amount  else 0 end),0),null) as DD_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0002' then td.netto*pd.amount  else 0 end),0),null) as DB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0004' then td.netto*pd.amount  else 0 end),0),null) as DK_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '02I0001' then td.netto*pd.amount  else 0 end),0),null) as IR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto*pd.amount  else 0 end),0),null) as LT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto*pd.amount  else 0 end),0),null) as SC_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto*pd.amount  else 0 end),0),null) as SCJ_h,
                     sum( td.netto ) AS total
                 FROM
                     ttr_detail td
@@ -2106,6 +2125,25 @@ class Model_finance extends CI_Model{
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto  else 0 end),0),null) as LT,
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto  else 0 end),0),null) as SC,
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto  else 0 end),0),null) as SCJ,
+
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0001' then td.netto*pd.amount  else 0 end),0),null) as AB1_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0002' then td.netto*pd.amount  else 0 end),0),null) as AB2_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01AR001' then td.netto*pd.amount  else 0 end),0),null) as AR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0002' then td.netto*pd.amount  else 0 end),0),null) as TR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BB001' then td.netto*pd.amount  else 0 end),0),null) as BB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0001' then td.netto*pd.amount  else 0 end),0),null) as BC_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0003' then td.netto*pd.amount  else 0 end),0),null) as CT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BL001' then td.netto*pd.amount  else 0 end),0),null) as BL_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0003' then td.netto*pd.amount  else 0 end),0),null) as DH_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PB001' then td.netto*pd.amount  else 0 end),0),null) as PB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PR001' then td.netto*pd.amount  else 0 end),0),null) as PRT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01DD001' then td.netto*pd.amount  else 0 end),0),null) as DD_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0002' then td.netto*pd.amount  else 0 end),0),null) as DB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0004' then td.netto*pd.amount  else 0 end),0),null) as DK_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '02I0001' then td.netto*pd.amount  else 0 end),0),null) as IR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto*pd.amount  else 0 end),0),null) as LT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto*pd.amount  else 0 end),0),null) as SC_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto*pd.amount  else 0 end),0),null) as SCJ_h,
                     sum( td.netto ) AS total
                 FROM
                     ttr_detail td
@@ -2154,6 +2192,25 @@ class Model_finance extends CI_Model{
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto  else 0 end),0),null) as LT,
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto  else 0 end),0),null) as SC,
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto  else 0 end),0),null) as SCJ,
+
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0001' then td.netto*pd.amount  else 0 end),0),null) as AB1_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0002' then td.netto*pd.amount  else 0 end),0),null) as AB2_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01AR001' then td.netto*pd.amount  else 0 end),0),null) as AR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0002' then td.netto*pd.amount  else 0 end),0),null) as TR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BB001' then td.netto*pd.amount  else 0 end),0),null) as BB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0001' then td.netto*pd.amount  else 0 end),0),null) as BC_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0003' then td.netto*pd.amount  else 0 end),0),null) as CT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BL001' then td.netto*pd.amount  else 0 end),0),null) as BL_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0003' then td.netto*pd.amount  else 0 end),0),null) as DH_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PB001' then td.netto*pd.amount  else 0 end),0),null) as PB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PR001' then td.netto*pd.amount  else 0 end),0),null) as PRT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01DD001' then td.netto*pd.amount  else 0 end),0),null) as DD_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0002' then td.netto*pd.amount  else 0 end),0),null) as DB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0004' then td.netto*pd.amount  else 0 end),0),null) as DK_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '02I0001' then td.netto*pd.amount  else 0 end),0),null) as IR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto*pd.amount  else 0 end),0),null) as LT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto*pd.amount  else 0 end),0),null) as SC_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto*pd.amount  else 0 end),0),null) as SCJ_h,
                     sum( td.netto ) AS total
                 FROM
                     ttr_detail td
@@ -2208,6 +2265,25 @@ class Model_finance extends CI_Model{
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto  else 0 end),0),null) as LT,
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto  else 0 end),0),null) as SC,
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto  else 0 end),0),null) as SCJ,
+
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0001' then td.netto*pd.amount  else 0 end),0),null) as AB1_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0002' then td.netto*pd.amount  else 0 end),0),null) as AB2_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01AR001' then td.netto*pd.amount  else 0 end),0),null) as AR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0002' then td.netto*pd.amount  else 0 end),0),null) as TR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BB001' then td.netto*pd.amount  else 0 end),0),null) as BB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0001' then td.netto*pd.amount  else 0 end),0),null) as BC_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0003' then td.netto*pd.amount  else 0 end),0),null) as CT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BL001' then td.netto*pd.amount  else 0 end),0),null) as BL_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0003' then td.netto*pd.amount  else 0 end),0),null) as DH_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PB001' then td.netto*pd.amount  else 0 end),0),null) as PB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PR001' then td.netto*pd.amount  else 0 end),0),null) as PRT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01DD001' then td.netto*pd.amount  else 0 end),0),null) as DD_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0002' then td.netto*pd.amount  else 0 end),0),null) as DB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0004' then td.netto*pd.amount  else 0 end),0),null) as DK_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '02I0001' then td.netto*pd.amount  else 0 end),0),null) as IR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto*pd.amount  else 0 end),0),null) as LT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto*pd.amount  else 0 end),0),null) as SC_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto*pd.amount  else 0 end),0),null) as SCJ_h,
                     sum( td.netto ) AS total
                 FROM
                     ttr_detail td
@@ -2245,6 +2321,25 @@ class Model_finance extends CI_Model{
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then rtd.netto  else 0 end),0),null) as LT,
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then rtd.netto  else 0 end),0),null) as SC,
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then rtd.netto  else 0 end),0),null) as SCJ,
+
+                    0 as AB1_h,
+                    0 as AB2_h,
+                    0 as AR_h,
+                    0 as TR_h,
+                    0 as BB_h,
+                    0 as BC_h,
+                    0 as CT_h,
+                    0 as BL_h,
+                    0 as DH_h,
+                    0 as PB_h,
+                    0 as PRT_h,
+                    0 as DD_h,
+                    0 as DB_h,
+                    0 as DK_h,
+                    0 as IR_h,
+                    0 as LT_h,
+                    0 as SC_h,
+                    0 as SCJ_h,
                     sum( rtd.netto ) AS total
                     from r_ttr_detail rtd
                     left join r_ttr rt on rtd.r_ttr_id = rt.id
@@ -2287,6 +2382,25 @@ class Model_finance extends CI_Model{
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto  else 0 end),0),null) as LT,
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto  else 0 end),0),null) as SC,
                     COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto  else 0 end),0),null) as SCJ,
+                    
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0001' then td.netto*pd.amount  else 0 end),0),null) as AB1_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0002' then td.netto*pd.amount  else 0 end),0),null) as AB2_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01AR001' then td.netto*pd.amount  else 0 end),0),null) as AR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0002' then td.netto*pd.amount  else 0 end),0),null) as TR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BB001' then td.netto*pd.amount  else 0 end),0),null) as BB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0001' then td.netto*pd.amount  else 0 end),0),null) as BC_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0003' then td.netto*pd.amount  else 0 end),0),null) as CT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BL001' then td.netto*pd.amount  else 0 end),0),null) as BL_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0003' then td.netto*pd.amount  else 0 end),0),null) as DH_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PB001' then td.netto*pd.amount  else 0 end),0),null) as PB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PR001' then td.netto*pd.amount  else 0 end),0),null) as PRT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01DD001' then td.netto*pd.amount  else 0 end),0),null) as DD_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0002' then td.netto*pd.amount  else 0 end),0),null) as DB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0004' then td.netto*pd.amount  else 0 end),0),null) as DK_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '02I0001' then td.netto*pd.amount  else 0 end),0),null) as IR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto*pd.amount  else 0 end),0),null) as LT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto*pd.amount  else 0 end),0),null) as SC_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto*pd.amount  else 0 end),0),null) as SCJ_h,
                     sum( td.netto ) AS total
                 FROM
                     ttr_detail td
@@ -2818,7 +2932,7 @@ SELECT MONTH
         where s.sparepart_group in (6,7)
         and EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) =  '".$tgl1."'
         union all
-        select  t2.sparepart_id, case when right(t2.bulan,2)=12 then t2.bulan+101 else t2.bulan+1 end , s2.alias, s2.nama_item, t2.qty saldo_qty, t2.total_amount saldo_amount, 0 qty_masuk, 0 amount_masuk, 
+        select  t2.sparepart_id, case when right(t2.bulan,2)=12 then t2.bulan+89 else t2.bulan+1 end , s2.alias, s2.nama_item, t2.qty saldo_qty, t2.total_amount saldo_amount, 0 qty_masuk, 0 amount_masuk, 
                 0 qty_keluar, 0 amount_keluar, s2.uom  
         from t_sparepart_saldo t2
         left join sparepart s2 on s2.id = t2.sparepart_id

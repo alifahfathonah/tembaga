@@ -2715,6 +2715,7 @@ class GudangFG extends CI_Controller{
         $data['header']['penjualan'] = $this->Model_gudang_fg->stok_penjualan_hari($date)->row_array();
         $data['header']['t_penjualan'] = $this->Model_gudang_fg->stok_t_penjualan_hari($date,$m,$y)->row_array();
         $data['header']['8mm'] = $this->Model_gudang_fg->stok_8mm()->row_array();
+        $data['header']['95mm'] = $this->Model_gudang_fg->stok_95mm()->row_array();
         $data['header']['76mm'] = $this->Model_gudang_fg->stok_76mm()->row_array();
         $data['header']['26mm'] = $this->Model_gudang_fg->stok_26mm()->row_array();
         $data['stok_beli'] = $this->Model_gudang_fg->stok_fg_beli()->result();

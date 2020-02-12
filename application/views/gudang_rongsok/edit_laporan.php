@@ -52,6 +52,7 @@
                                     <th style="border-bottom: 1px solid lightgrey;">Netto Keluar</th>
                                     <th style="border-bottom: 1px solid lightgrey;">Stok Akhir</th>
                                     <th style="border-bottom: 1px solid lightgrey;">Stok Fisik</th>
+                                    <th style="border-bottom: 1px solid lightgrey;">Koreksi Timbang</th>
                                     <th>Keterangan</th>
                                 </tr>
                             </thead>
@@ -71,6 +72,7 @@
                                     <td align="right"><?= number_format($row->netto_keluar,2,'.',',') ?></td>
                                     <td align="right"><?= number_format($row->stok_akhir,2,'.',',') ?></td>
                                     <td><input type="text" class="form-control myline" name="myDetails[<?=$no;?>][netto]" value="<?=number_format($row->stok_fisik,2,'.','');?>" placeholder="Silahkan isi Stok Fisik..."></td>
+                                    <td><input type="text" class="form-control myline" name="myDetails[<?=$no;?>][koreksi_timbang]" value="<?=number_format($row->koreksi_timbang,2,'.','');?>" placeholder="Silahkan isi Stok Fisik..."></td>
                                     <td><input type="text" class="form-control myline" name="myDetails[<?=$no;?>][keterangan]" value="<?=$row->keterangan;?>" placeholder="Silahkan isi Keterangan..."></td>
                                 </tr>
                                 <?php

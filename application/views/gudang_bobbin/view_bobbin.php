@@ -11,7 +11,7 @@
 <div class="row">&nbsp;</div>
 <div class="row">                            
     <div class="col-md-12">
-        <h3 align="center"><b> Konfirmasi Permintaan SPB BB</b></h3>
+        <h3 align="center"><b> Detail Bobbin</b></h3>
         <hr class="divider" />
         <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog">
@@ -141,6 +141,16 @@
                             <input type="text" id="nama_penimbang" name="nama_penimbang" 
                                 class="form-control" style="margin-bottom:5px" readonly="readonly" 
                                 value="<?php echo $header['peminjam']; ?>">   
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            No Surat Jalan
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="no_sj" name="no_sj" 
+                                class="form-control" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $header['no_sj']; ?>">   
                         </div>
                     </div>
                 </div>  

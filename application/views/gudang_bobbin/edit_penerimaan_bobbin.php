@@ -62,6 +62,17 @@
                 </div>
                 <div class="col-md-2">&nbsp;</div>
                 <div class="col-md-5">
+                    <?php
+                            if($header['status']==0){
+                                echo '<div style="background-color:green; color:white; padding:4px">Ready</div>';
+                            }else if($header['status']==1){
+                                echo '<div style="background-color:blue; color:white; padding:4px">Used</div>';
+                            }else if($header['status']==2){
+                                echo '<div style="background-color:yellow; color:black; padding:4px">Delivered</div>';
+                            }else if($header['status']==3){
+                                echo '<div style="background-color:orange; color:white; padding:4px">Booked</div>';
+                            }  ?>
+                        <input type="hidden" id="status" name="status" value="<?=$header['status'];?>">
                     <div class="row">
                         <div class="col-md-4">
                             No. Surat Jalan

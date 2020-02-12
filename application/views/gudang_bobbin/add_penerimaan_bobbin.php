@@ -76,6 +76,17 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Status
+                        </div>
+                        <div class="col-md-8">
+                            <select class="form-control myline" name="status_edit" id="status_edit" placeholder="Silahkan pilih" style="margin-bottom:5px" onchange="pilih_status(this.value)">
+                                <option value="0" style="background-color: green; color: white;">Ready</option>
+                                <option value="1" style="background-color: blue; color: white;">Used</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Peminjaman Oleh
                         </div>
                         <div class="col-md-8">

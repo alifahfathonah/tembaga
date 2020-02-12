@@ -37,6 +37,7 @@
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="Auto generate"> -->
                             <input type="hidden" name="id" id="id" value="<?php echo $header['id']; ?>">
+                            <input type="hidden" id="id_spb" name="id_spb" value="<?=$header['spb_id'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -132,6 +133,7 @@
                                 <table class="table table-bordered table-striped table-hover">
                                     <thead>
                                         <th style="width:40px">No</th>
+                                        <th>Tanggal</th>
                                         <th width="25%;">Nama Barang</th>
                                         <th>Quantity</th>
                                         <th>Netto (kg)</th>
@@ -143,6 +145,9 @@
                                     </tbody>                 
                                     <tr>
                                         <td style="text-align:center"><i class="fa fa-plus"></i></td>
+                                        <td>
+                                            <input type="text" id="tanggal_detail" name="tanggal_detail" class="form-control myline input-small" style="margin-bottom:5px;float:left;" value="<?php echo date('d-m-Y'); ?>">
+                                        </td>
                                         <td>
                                         <select id="jenis_barang_id" name="jenis_barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onchange="check(this.value);">
                                         <option value=""></option>
@@ -238,10 +243,13 @@ function saveDetail(){
             url:"<?php echo base_url('index.php/Retur/save_detail_fulfilment'); ?>",
             data:{
                 id:$('#id').val(),
+                tanggal_detail:$('#tanggal_detail').val(),
                 jenis_barang_id:$('#jenis_barang_id').val(),
                 qty:$('#qty').val(),
                 netto:$('#netto').val(),
-                line_remarks:$('#line_remarks').val()
+                jenis_barang:$('#jenis_barang').val(),
+                line_remarks:$('#line_remarks').val(),
+                id_spb:$('#id_spb').val()
             },
             success:function(result){
                 console.log(result);
@@ -262,13 +270,17 @@ function saveDetail(){
     }
 }
 
-function hapusDetail(id){
+function hapusDetail(id,spb_detail_id){
     var r=confirm("Anda yakin menghapus item ini?");
     if (r==true){
         $.ajax({
             type:"POST",
             url:'<?php echo base_url('index.php/Retur/delete_detail_fulfilment'); ?>',
-            data:"id="+ id,
+            data:{
+                id:id,
+                spb_detail_id:spb_detail_id,
+                jenis_barang:$('#jenis_barang').val()
+            },
             success:function(result){
                 if(result['message_type']=="sukses"){
                     loadDetail($('#id').val());
@@ -298,7 +310,16 @@ function hapusDetail(id){
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
 $(function(){        
-    $("#tgl_spare_part").datepicker({
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    }); 
+    $("#tanggal_detail").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,

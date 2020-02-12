@@ -1154,6 +1154,30 @@ class Model_tolling_titipan extends CI_Model{
         return $this->db->query("select * from stok_awal_laporan where tanggal ='".$tgl."' and customer_id =".$c." and supplier_id = ".$s." and jenis = ".$id." and flag_ppn =".$flag." and tipe=".$tipe);
     }
 
+    function print_sisa_tolling_customer(){
+        return $this->db->query("select so.no_sales_order, so.tanggal, tso.no_po, mc.nama_customer,
+            (select sum(tsod.netto) from t_sales_order_detail tsod where tsod.t_so_id = so.id) as netto_awal, 
+                (
+                select sum(netto) from (
+                    (select dd.berat as netto, dtwip.so_id from dtwip_detail dd
+                        left join dtwip on dtwip.id = dd.dtwip_id
+                        where dtwip.so_id > 0)
+                        UNION ALL
+                    (select dd.netto, dtr.so_id from dtr_detail dd
+                        left join dtr on dtr.id = dd.dtr_id
+                        where dtr.so_id > 0)
+                ) as a where so_id = so.id
+            ) as netto_terima,
+            (select sum(tsjd.netto) from t_surat_jalan_detail tsjd 
+                left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
+                where tsj.sales_order_id = so.id) as netto_kirim
+            from sales_order so
+                left join t_sales_order tso on so.id = tso.id
+                left join m_customers mc on so.m_customer_id = mc.id
+                where flag_tolling > 0 and flag_sj = 0
+                order by nama_customer, no_sales_order");
+    }
+
 //LAPORAN BALANCE SO
     function laporan_bahan_so($id,$ppn,$s,$e){
         return $this->db->query("Select * From ((Select dtwip.id, dtwip.no_dtwip as nomor, dtwip.tanggal, sum(berat) as netto, so.id as id_so, 

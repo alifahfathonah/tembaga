@@ -72,7 +72,7 @@
                                     <input type="hidden" name="id_bobbin" id="id_bobbin"><!-- ID GUDANG -->
                                     <td><input type="text" id="netto" name="netto" class="form-control myline" /></td>
                                     <td style="text-align:center">
-                                         <a id="btn_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
+                                         <a id="btn_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(0);" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a>
                                     </td>
                                  </tr>
                             </tfoot>

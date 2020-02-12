@@ -284,6 +284,11 @@
                                     <i class="fa fa-balance-scale"></i>
                                     Cek Balance </a>
                                 </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/print_sisa_tolling_customer" target="_blank">
+                                    <i class="fa fa-print"></i>
+                                    Print Sisa Balance </a>
+                                </li>
                             </ul>
                         </li>
                         <li <?php if($module_name=="Tolling") echo 'class="start active open"'; ?>>

@@ -3,7 +3,7 @@ table td, table td * {
     vertical-align: top;
 }
 </style>
-<h3 style="text-align: center; text-decoration: underline;">PT. KAWAT MAS PRAKASA<br>
+<h3 style="text-align: center; text-decoration: underline;"><!-- PT. KAWAT MAS PRAKASA<br> -->
     LAPORAN HASIL PRODUKSI APOLLO</h3>
 <h3 align="center"><b><?php echo " <i>".tanggal_indo(date('Y-m-d', strtotime($start))).' s/d '.tanggal_indo(date('Y-m-d', strtotime($end)))."</i>";?></b></h3>
 <table width="100%" cellpadding="0" cellspacing="0" style="border-left: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">

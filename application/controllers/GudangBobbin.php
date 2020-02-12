@@ -439,6 +439,7 @@ class GudangBobbin extends CI_Controller{
             'tanggal' => $tgl_input,
             'id_customer' => $this->input->post('m_customer_id'),
             'id_supplier' => $this->input->post('supplier_id'),
+            'status' => $this->input->post('status_edit'),
             // 'id_peminjaman' => $this->input->post('surat_peminjaman_id'),
             'surat_jalan' => $this->input->post('surat_jalan'),
             'remarks' => $this->input->post('remarks'),
@@ -559,7 +560,7 @@ class GudangBobbin extends CI_Controller{
 
                 $this->db->where('nomor_bobbin', $v['nomor_bobbin']);
                 $this->db->update('m_bobbin', array(
-                    'status' => 0,
+                    'status' => $this->input->post('status'),
                     'borrowed_by' => 0,
                     'borrowed_by_supplier' => 0,
                     'modified_at'=>$tanggal,
@@ -567,14 +568,8 @@ class GudangBobbin extends CI_Controller{
                 ));
             }
         }
-        if($no == 0){
-            $status = 1;
-        }else{
-            $status = 0;
-        }
 
         $data = array(
-                'status'=>$status,
                 'remarks'=>$this->input->post('remarks'),
                 'received_at'=> $tanggal,
                 'received_by'=> $user_id
@@ -1417,6 +1412,7 @@ class GudangBobbin extends CI_Controller{
 
     function delete_detail_bobbin_stok(){
         $id = $this->input->post('id');
+        // echo $id;die();
         if($this->db->delete('bobbin_laporan_detail', ['id' => $id])){
             $return_data['response']= "success";
         }else{
@@ -1496,7 +1492,9 @@ class GudangBobbin extends CI_Controller{
         $data['group_id']  = $group_id;
         $data['content']= "gudang_bobbin/laporan_peminjaman";
         $this->load->model('Model_sales_order');
+        $this->load->model('Model_bobbin');
         $data['customer_list'] = $this->Model_sales_order->customer_list()->result();
+        $data['list_data'] = $this->Model_bobbin->bobbin_stok_peminjaman()->result();
 
         $this->load->view('layout', $data);   
     }
@@ -1518,8 +1516,80 @@ class GudangBobbin extends CI_Controller{
             }
             $data['group_id']  = $group_id;
 
+            $this->load->model('Model_finance');
             $this->load->model('Model_bobbin');
+            $data['header'] = $this->Model_finance->customer_detail($l)->row_array();
+            $data['stok_awal'] = $this->Model_bobbin->stok_awal_peminjaman($l,$start)->row_array();
             $data['details'] = $this->Model_bobbin->print_laporan_peminjaman($start,$end,$l)->result();
             $this->load->view('gudang_bobbin/print_laporan_peminjaman', $data);
+    }
+
+    function save_laporan_peminjaman(){
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $jenis = $this->input->post('jenis_status');
+
+            $this->db->insert('bobbin_stok_peminjaman', [
+                'customer_id'=>$this->input->post('customer_id'),
+                'tanggal'=> $tgl_input,
+                'L'=> $this->input->post('l'),
+                'M'=> $this->input->post('m'),
+                'S'=> $this->input->post('s'),
+                'T'=> $this->input->post('t'),
+                'K'=> $this->input->post('k'),
+                'D'=> $this->input->post('d'),
+                'KRJ'=> $this->input->post('krj'),
+                'BP'=> $this->input->post('bp'),
+            ]);
+        // $this->session->set_flashdata('flash_msg', 'Voucher cost berhasil di-create dengan nomor : '.$code);
+
+        redirect('index.php/GudangBobbin/laporan_peminjaman');
+    }
+
+    function delete_laporan_peminjaman(){
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $id = $this->uri->segment(3);
+
+            $this->db->where('id', $id);
+            $this->db->delete('bobbin_stok_peminjaman');
+
+        redirect('index.php/GudangBobbin/laporan_peminjaman');
+    }
+
+    function get_peminjaman_data(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_bobbin');
+        $rongsok= $this->Model_bobbin->get_peminjaman_data($id)->row_array();
+        
+        header('Content-Type: application/json');
+        echo json_encode($rongsok); 
+    }
+
+    function update_laporan_peminjaman(){
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $jenis = $this->input->post('jenis_status');
+
+            $this->db->where('id', $this->input->post('id'));
+            $this->db->update('bobbin_stok_peminjaman', [
+                'customer_id'=>$this->input->post('customer_id'),
+                'tanggal'=> $tgl_input,
+                'L'=> $this->input->post('l'),
+                'M'=> $this->input->post('m'),
+                'S'=> $this->input->post('s'),
+                'T'=> $this->input->post('t'),
+                'K'=> $this->input->post('k'),
+                'D'=> $this->input->post('d'),
+                'KRJ'=> $this->input->post('krj'),
+                'BP'=> $this->input->post('bp'),
+            ]);
+        // $this->session->set_flashdata('flash_msg', 'Voucher cost berhasil di-create dengan nomor : '.$code);
+
+        redirect('index.php/GudangBobbin/laporan_peminjaman');
     }
 }

@@ -57,7 +57,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;" colspan="4"><strong>Grand Total Out</strong></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;" colspan="4"><strong>Grand Total In</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-right: 1px solid #000;">
                                 <strong><?=number_format($grand_total,2,',', '.');?></strong>
                             </td>

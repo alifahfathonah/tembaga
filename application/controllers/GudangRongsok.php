@@ -760,6 +760,7 @@ class GudangRongsok extends CI_Controller{
 				$this->db->where('id',$row['id']);
 				$this->db->update('inventory', array(
 					'stok_fisik'=>$row['netto'],
+					'koreksi_timbang'=>$row['koreksi_timbang'],
 					'keterangan'=>$row['keterangan']
 				));
 			}

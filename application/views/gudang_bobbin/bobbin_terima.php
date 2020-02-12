@@ -39,6 +39,7 @@
             <th>Nomor Penerimaan</th>
             <th>Tanggal</th>
             <th>Surat Jalan</th>
+            <th>Status</th>
             <th>Jumlah Item</th>
             <th>Keterangan</th>
             <th style="text-align: center">Actions</th>
@@ -55,6 +56,17 @@
           <td><?php echo $row->no_penerimaan ?></td>
           <td><?php echo $row->tanggal ?></td>
           <td><?php echo $row->surat_jalan ?></td>
+          <td><?php
+              if($row->status==0){
+                  echo '<div style="background-color:green; color:white; padding:4px">Ready</div>';
+              }else if($row->status==1){
+                  echo '<div style="background-color:blue; color:white; padding:4px">Used</div>';
+              }else if($row->status==2){
+                  echo '<div style="background-color:yellow; color:black; padding:4px">Delivered</div>';
+              }else if($row->status==3){
+                  echo '<div style="background-color:orange; color:white; padding:4px">Booked</div>';
+              }  ?>
+          </td>
           <td><?php echo $row->jumlah_item ?></td>
           <td><?php echo $row->remarks ?></td>
           <td style="text-align:center">

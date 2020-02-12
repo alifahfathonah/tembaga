@@ -1814,12 +1814,13 @@ class Retur extends CI_Controller{
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align:center">'.$no.'</td>';
             $tabel .= '<input type="hidden" id="id_jenis_barang" value="'.$row->jenis_barang_id.'" />';
+            $tabel .= '<td>'.date('d-m-Y', strtotime($row->tanggal)).'</td>';
             $tabel .= '<td>'.$row->jenis_barang.'</td>';
             $tabel .= '<td>'.$row->qty.'</td>';
             $tabel .= '<td>'.$row->netto.'</td>';
             $tabel .= '<td>'.$row->keterangan.'</td>';
             $tabel .= '<td style="text-align:center"><a href="javascript:;" class="btn btn-xs btn-circle '
-                    . 'red" onclick="hapusDetail('.$row->id.');" style="margin-top:5px"> '
+                    . 'red" onclick="hapusDetail('.$row->id.','.$row->spb_detail_id.');" style="margin-top:5px"> '
                     . '<i class="fa fa-trash"></i> Delete </a></td>';
             $tabel .= '</tr>';
             $no++;
@@ -1895,8 +1896,8 @@ class Retur extends CI_Controller{
                 't_spb_wip_id' => $spb_id,
                 'jenis_barang_id' => $this->input->post('jenis_barang_id'),
                 'uom' => 'KG',
-                'qty' => $row->qty,
-                'berat' =>  $this->input->post('berat'),
+                'qty' => $this->input->post('qty'),
+                'berat' =>  $this->input->post('netto'),
                 'keterangan' =>  $this->input->post('line_remarks')
             );
             $this->db->insert('t_spb_wip_detail', $data_spb_detail);

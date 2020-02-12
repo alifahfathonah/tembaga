@@ -59,6 +59,44 @@
 			$LT = 0;
 			$SC = 0;
 			$SCJ = 0;
+
+			$AB1_h = 0;
+			$AB2_h = 0;
+			$AR_h = 0;
+			$TR_h = 0;
+			$BB_h = 0;
+			$BC_h = 0;
+			$CT_h = 0;
+			$BL_h = 0;
+			$DH_h = 0;
+			$PB_h = 0;
+			$PRT_h = 0;
+			$DD_h = 0;
+			$DB_h = 0;
+			$DK_h = 0;
+			$IR_h = 0;
+			$LT_h = 0;
+			$SC_h = 0;
+			$SCJ_h = 0;
+
+			$AB1_count = 0;
+			$AB2_count = 0;
+			$AR_count = 0;
+			$TR_count = 0;
+			$BB_count = 0;
+			$BC_count = 0;
+			$CT_count = 0;
+			$BL_count = 0;
+			$DH_count = 0;
+			$PB_count = 0;
+			$PRT_count = 0;
+			$DD_count = 0;
+			$DB_count = 0;
+			$DK_count = 0;
+			$IR_count = 0;
+			$LT_count = 0;
+			$SC_count = 0;
+			$SCJ_count = 0;
 			foreach ($detailLaporan as $key => $row) {	
 			$no++;			
 		?>
@@ -104,11 +142,31 @@
 				$LT += $row->LT;
 				$SC += $row->SC;
 				$SCJ += $row->SCJ;
+
+				$AB1_h += $row->AB1_h;
+				$AB2_h += $row->AB2_h;
+				$AR_h += $row->AR_h;
+				$TR_h += $row->TR_h;
+				$BB_h += $row->BB_h;
+				$BC_h += $row->BC_h;
+				$CT_h += $row->CT_h;
+				$BL_h += $row->BL_h;
+				$DH_h += $row->DH_h;
+				$PB_h += $row->PB_h;
+				$PRT_h += $row->PRT_h;
+				$DD_h += $row->DD_h;
+				$DB_h += $row->DB_h;
+				$DK_h += $row->DK_h;
+				$IR_h += $row->IR_h;
+				$LT_h += $row->LT_h;
+				$SC_h += $row->SC_h;
+				$SCJ_h += $row->SCJ_h;
+
 				$total += $row->total;
 			}
 		?>
 			<tr>
-				<th colspan="2" style=" border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"></th>
+				<th colspan="2" style="text-align: right;border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Grand Total Berat</th>
                 <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($AB1,2,',','.');?></th>
                 <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($AB2,2,',','.');?></th>
                 <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($AR,2,',','.');?></th>
@@ -128,6 +186,52 @@
                 <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($SC,2,',','.');?></th>
                 <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($SCJ,2,',','.');?></th>
                 <th style="text-align: right; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($total,2,',','.');?></th>
+            </tr>
+			<tr>
+				<th colspan="2" style="text-align: right;border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Grand Total Harga</th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($AB1_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($AB2_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($AR_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($TR_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($BB_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($BC_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($CT_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($BL_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($DH_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($PB_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($PRT_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($DD_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($DB_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($DK_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($IR_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($LT_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($SC_h,2,',','.');?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($SCJ_h,2,',','.');?></th>
+                <?php $total_harga =$AB1_h+$AB2_h+$AR_h+$TR_h+$BB_h+$BC_h+$CT_h+$BL_h+$DH_h+$PB_h+$PRT_h+$DD_h+$DB_h+$DK_h+$IR_h+$LT_h+$SC_h+$SCJ_h;?>
+                <th style="text-align: right; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($total_harga,2,',','.');?></th>
+            </tr>
+
+			<tr>
+				<th colspan="2" style="text-align: right;border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Rata rata</th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($AB1_h>0 && $AB1 > 0)? number_format($AB1_h/$AB1,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($AB2_h>0 && $AB2 > 0)? number_format($AB2_h/$AB2,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($AR_h>0 && $AR > 0)? number_format($AR_h/$AR,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($TR_h>0 && $TR > 0)? number_format($TR_h/$TR,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($BB_h>0 && $BB > 0)? number_format($BB_h/$BB,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($BC_h>0 && $BC > 0)? number_format($BC_h/$BC,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($CT_h>0 && $CT > 0)? number_format($CT_h/$CT,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($BL_h>0 && $BL > 0)? number_format($BL_h/$BL,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($DH_h>0 && $DH > 0)? number_format($DH_h/$DH,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($PB_h>0 && $PB > 0)? number_format($PB_h/$PB,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($PRT_h>0 && $PRT > 0)? number_format($PRT_h/$PRT,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($DD_h>0 && $DD > 0)? number_format($DD_h/$DD,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($DB_h>0 && $DB > 0)? number_format($DB_h/$DB,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($DK_h>0 && $DK > 0)? number_format($DK_h/$DK,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($IR_h>0 && $IR > 0)? number_format($IR_h/$IR,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($LT_h>0 && $LT > 0)? number_format($LT_h/$LT,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($SC_h>0 && $SC > 0)? number_format($SC_h/$SC,2,',','.'): '';?></th>
+                <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($SCJ_h>0 && $SCJ > 0)? number_format($SCJ_h/$SCJ,2,',','.'): '';?></th>
+                <th style="text-align: right; border-top: 1px solid; border-bottom: 1px solid;"></th>
             </tr>
 		</tbody>
 	</table>

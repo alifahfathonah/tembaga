@@ -812,7 +812,7 @@ class Model_sales_order extends CI_Model{
             left join sparepart sp on (tso.jenis_barang = 'LAIN' and sp.id = tsod.jenis_barang_id)
             left join jenis_barang jb on (jb.id = tsod.jenis_barang_id)
             where so.flag_sj = 0
-            order by so.flag_ppn, so.flag_tolling, mc.nama_customer asc, so.tanggal asc, kode_barang asc
+            order by so.flag_ppn, so.flag_tolling, mc.nama_customer asc, so.no_sales_order, so.tanggal asc, kode_barang asc
             ");
     }
 
@@ -918,7 +918,7 @@ class Model_sales_order extends CI_Model{
             left join sparepart sp on (tso.jenis_barang = 'LAIN' and sp.id = tsod.jenis_barang_id)
             left join jenis_barang jb on (jb.id = tsod.jenis_barang_id)
             where so.flag_ppn =".$ppn." and so.flag_sj = 0
-            order by so.flag_tolling, mc.nama_customer asc, so.tanggal asc, kode_barang asc
+            order by so.flag_tolling, mc.nama_customer asc, so.no_sales_order, so.tanggal asc, kode_barang asc
             ");
     }
 

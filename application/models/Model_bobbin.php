@@ -24,7 +24,10 @@ class Model_bobbin extends CI_Model{
     }
 
     function view_bobbin($id){
-        $data = $this->db->query("select mb.*, mjp.jenis_packing, mbs.bobbin_size, COALESCE(mc.nama_customer, s.nama_supplier) as peminjam, o.nama_owner from m_bobbin mb
+        $data = $this->db->query("select mb.*, mjp.jenis_packing, mbs.bobbin_size, COALESCE(mc.nama_customer, s.nama_supplier) as peminjam, o.nama_owner, 
+            (case when mb.status = 2 then (select no_surat_jalan from t_surat_jalan_detail tsjd
+                left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
+                where tsjd.nomor_bobbin = mb.nomor_bobbin order by tsj.id desc limit 1) else '' end) as no_sj from m_bobbin mb
             left join m_jenis_packing mjp on mjp.id = mb.m_jenis_packing_id
             left join m_bobbin_size mbs on mbs.id = mb.m_bobbin_size_id
             left join m_customers mc on mb.borrowed_by != 0 and mc.id = mb.borrowed_by
@@ -234,7 +237,7 @@ class Model_bobbin extends CI_Model{
     }
 
     function show_header_penerimaan($id){
-        $data = $this->db->query("select mbt.id, mbt.tanggal, mbt.surat_jalan, mbt.remarks, mbt.no_penerimaan, COALESCE(mc.nama_customer, s.nama_supplier) as pengirim, u.realname
+        $data = $this->db->query("select mbt.id, mbt.tanggal, mbt.surat_jalan, mbt.remarks, mbt.no_penerimaan, mbt.status, COALESCE(mc.nama_customer, s.nama_supplier) as pengirim, u.realname
             from m_bobbin_penerimaan mbt
             left join m_customers mc on (mbt.id_customer != 0 and mbt.id_customer = mc.id)
             left join supplier s on (mbt.id_supplier != 0 and mbt.id_supplier = s.id)
@@ -378,7 +381,7 @@ class Model_bobbin extends CI_Model{
                 (select count(ped.id) from m_bobbin_penerimaan_detail ped
                     left join m_bobbin_penerimaan pe on ped.id_bobbin_penerimaan = pe.id
                     left join m_bobbin mb2 on ped.nomor_bobbin = mb2.nomor_bobbin
-                    where mb2.m_bobbin_size_id = m.id and pe.tanggal between '".$s."' and '".$e."'
+                    where pe.status = 0 and mb2.m_bobbin_size_id = m.id and pe.tanggal between '".$s."' and '".$e."'
                     ) as pemasukan,
                 (select count(mbsd.id)
                     from bobbin_spb_fulfilment mbsd
@@ -421,7 +424,7 @@ class Model_bobbin extends CI_Model{
                  from m_bobbin_penerimaan_detail ped
                     left join m_bobbin_penerimaan pe on ped.id_bobbin_penerimaan = pe.id
                     left join m_bobbin mb2 on ped.nomor_bobbin = mb2.nomor_bobbin
-                    where pe.tanggal between '".$s."' and '".$e."'
+                    where pe.status = 0 and pe.tanggal between '".$s."' and '".$e."'
             )
             UNION ALL
             (
@@ -441,7 +444,7 @@ class Model_bobbin extends CI_Model{
                  from m_bobbin_penerimaan_detail ped
                     left join m_bobbin_penerimaan pe on ped.id_bobbin_penerimaan = pe.id
                     left join m_bobbin mb2 on ped.nomor_bobbin = mb2.nomor_bobbin
-                    where pe.tanggal between '".$s."' and '".$e."' order by  m_bobbin_size_id, tanggal, nomor, nomor_bobbin");
+                    where pe.status = 0 and pe.tanggal between '".$s."' and '".$e."' order by  m_bobbin_size_id, tanggal, nomor, nomor_bobbin");
         }else{
             return $this->db->query("select bs.no_spb_bobbin as nomor, bs.tanggal, mb.nomor_bobbin, mb.m_jenis_packing_id, mb.m_bobbin_size_id, mb.berat
                 from bobbin_spb_fulfilment mbsd
@@ -505,7 +508,7 @@ class Model_bobbin extends CI_Model{
     }
 
     function list_bobbin_laporan_detail($id){
-        return $this->db->query("select mb.* from bobbin_laporan_detail bld
+        return $this->db->query("select bld.id, mb.nomor_bobbin, mb.berat, mb.m_bobbin_size_id from bobbin_laporan_detail bld
             left join m_bobbin mb on bld.bobbin_id = mb.id
             where bld.bl_id=".$id." order by mb.m_bobbin_size_id desc, bld.id asc");
     }
@@ -522,7 +525,7 @@ class Model_bobbin extends CI_Model{
                     left join m_bobbin_penerimaan pe on ped.id_bobbin_penerimaan = pe.id
                     left join m_bobbin mb on ped.nomor_bobbin = mb.nomor_bobbin
                     left join m_bobbin_size mbs on mbs.id = mb.m_bobbin_size_id
-                    where pe.tanggal = '".$t."' and mbs.jenis_packing_id in (1,2)
+                    where pe.status = 0 and pe.tanggal = '".$t."' and mbs.jenis_packing_id in (1,2)
                     order by mb.m_bobbin_size_id desc");
         }else if($j==1){
             return $this->db->query("select mb.nomor_bobbin, mb.berat, mbs.bobbin_size from t_gudang_fg tgf
@@ -562,7 +565,7 @@ class Model_bobbin extends CI_Model{
             1 as trx, mb.m_bobbin_size_id from m_bobbin_penerimaan_detail bpnd 
             left join m_bobbin mb on mb.nomor_bobbin = bpnd.nomor_bobbin
             left join m_bobbin_penerimaan bpn on bpnd.id_bobbin_penerimaan = bpn.id
-            where bpn.tanggal between '".$s."' and '".$e."' and bpn.id_customer = ".$l." group by bpnd.id_bobbin_penerimaan)
+            where bpn.status =0 and bpn.tanggal between '".$s."' and '".$e."' and bpn.id_customer = ".$l." group by bpnd.id_bobbin_penerimaan)
                 UNION ALL 
             (select bpj.no_surat_peminjaman as nomor, bpj.tanggal,
             sum(CASE WHEN mb.m_bobbin_size_id = 11 THEN 1 ELSE 0 END) as L,
@@ -584,5 +587,18 @@ class Model_bobbin extends CI_Model{
             left join t_surat_jalan tsj on tsp.t_sj_id = tsj.id
             where tsj.tanggal between '".$s."' and '".$e."' and tsj.m_customer_id = ".$l.") ) as a order by tanggal asc, trx asc
             ");
+    }
+
+    function bobbin_stok_peminjaman(){
+        return $this->db->query("select bsp.*, mc.nama_customer from bobbin_stok_peminjaman bsp
+                left join m_customers mc on bsp.customer_id = mc.id");
+    }
+
+    function get_peminjaman_data($id){
+        return $this->db->query("select * from bobbin_stok_peminjaman where id =".$id);
+    }
+
+    function stok_awal_peminjaman($id,$tgl){
+        return $this->db->query("select * from bobbin_stok_peminjaman where customer_id =".$id." and tanggal ='".$tgl."'");
     }
 }

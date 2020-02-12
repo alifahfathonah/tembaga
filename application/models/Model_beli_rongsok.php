@@ -617,6 +617,12 @@ class Model_beli_rongsok extends CI_Model{
                 order by r.nama_item asc");
     }
 
+// (select sum(netto) from ttr_detail dd2
+//                 left join dtr d2 on dd2.dtr_id = d2.id
+//                 left join ttr t on t.dtr_id = d2.id
+//                 where dd2.tanggal_masuk between '".$s."' and '".$e."' and d2.type = 0 and t.ttr_status != 0 and (dd2.po_detail_id > 0 or ( dd2.po_detail_id = 0 and d2.so_id > 0 ) ) and dd2.rongsok_id = i.jenis_barang_id
+//                 ) as supplier,
+
     function print_laporan_bb($b,$t,$s,$e){
         return $this->db->query("select *, r.nama_item as jenis_barang,
             (select sum(netto) from dtr_detail dd 
@@ -624,7 +630,8 @@ class Model_beli_rongsok extends CI_Model{
                 left join ttr t on t.dtr_id = dtr.id
                 where dd.tanggal_masuk between '".$s."' and '".$e."' and t.ttr_status = 1 and (prd_id > 0 or supplier_id in (713,96,255,838,401,542,580)) and dd.rongsok_id = i.jenis_barang_id
                 ) as produksi,
-            (select sum(netto) from dtr_detail dd2
+            (select sum(td.netto) from dtr_detail dd2
+                left join ttr_detail td on td.dtr_detail_id = dd2.id
                 left join dtr d2 on dd2.dtr_id = d2.id
                 left join ttr t on t.dtr_id = d2.id
                 where dd2.tanggal_masuk between '".$s."' and '".$e."' and d2.type = 0 and t.ttr_status != 0 and (dd2.po_detail_id > 0 or ( dd2.po_detail_id = 0 and d2.so_id > 0 ) ) and dd2.rongsok_id = i.jenis_barang_id
@@ -634,7 +641,8 @@ class Model_beli_rongsok extends CI_Model{
                 left join ttr t on t.dtr_id = d2.id
                 where dd2.tanggal_masuk between '".$s."' and '".$e."' and t.ttr_status = 1 and d2.retur_id > 0 and dd2.rongsok_id = i.jenis_barang_id
                 ) as retur,
-            (select sum(netto) from dtr_detail dd3
+            (select sum(td.netto) from dtr_detail dd3
+                left join ttr_detail td on td.dtr_detail_id = dd3.id
                 left join dtr d3 on dd3.dtr_id = d3.id
                 left join ttr t on t.dtr_id = d3.id
                 where dd3.tanggal_masuk between '".$s."' and '".$e."' and t.ttr_status = 1 and d3.supplier_id in (95,822) and dd3.rongsok_id = i.jenis_barang_id ) as koreksi,

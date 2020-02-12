@@ -8,7 +8,7 @@
         <tr>
           <td align="center">
             <!-- <h4>Laporan sisa Sales Order per <?= date("M Y", strtotime($this->uri->segment(3))) ?></h4> -->
-            <h3 align="center"><b> Laporan Sisa Retur per <?php echo " <i>".tanggal_indo(date("Y-m-d"))."</i>";?></b></h3>
+            <h3 align="center"><b> Laporan Peminjaman <?=$header['nama_customer'];?> per <?php echo " <i>".tanggal_indo(date("Y-m-d"))."</i>";?></b></h3>
           </td>
         </tr>
       </table>
@@ -54,6 +54,38 @@
            </tr>
          </thead>
          <tbody>
+            <tr>
+              <td align="center" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="center" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$stok_awal['L'];?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$stok_awal['M'];?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$stok_awal['S'];?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$stok_awal['T'];?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$stok_awal['K'];?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$stok_awal['D'];?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$stok_awal['KRJ'];?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$stok_awal['BP'];?></td>
+
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"></td>
+            </tr>
         <?php 
         $start = date('Y-m-d');
         $no = 1;
@@ -76,16 +108,59 @@
         $krj_k = 0;
         $bp_k = 0;
 
-        $l_s = 0;
-        $m_s = 0;
-        $s_s = 0;
-        $t_s = 0;
-        $k_s = 0;
-        $d_s = 0;
-        $krj_s = 0;
-        $bp_s = 0;
+        $l_s = $stok_awal['L'];
+        $m_s = $stok_awal['M'];
+        $s_s = $stok_awal['S'];
+        $t_s = $stok_awal['T'];
+        $k_s = $stok_awal['K'];
+        $d_s = $stok_awal['D'];
+        $krj_s = $stok_awal['KRJ'];
+        $bp_s = $stok_awal['BP'];
 
         foreach($details as $row){ 
+
+          if($row->trx==0){
+            $l_p += $row->L;
+            $m_p += $row->M;
+            $s_p += $row->S;
+            $t_p += $row->T;
+            $k_p += $row->K;
+            $d_p += $row->D;
+            $krj_p += $row->krj;
+            $bp_p += $row->bp;
+          }
+
+          if($row->trx==1){
+            $l_k += $row->L;
+            $m_k += $row->M;
+            $s_k += $row->S;
+            $t_k += $row->T;
+            $k_k += $row->K;
+            $d_k += $row->D;
+            $krj_k += $row->krj;
+            $bp_k += $row->bp;
+          }
+
+          if($row->trx==0){
+            $l_s += $row->L;
+            $m_s += $row->M;
+            $s_s += $row->S;
+            $t_s += $row->T;
+            $k_s += $row->K;
+            $d_s += $row->D;
+            $krj_s += $row->krj;
+            $bp_s += $row->bp;
+          }else{
+            $l_s -= $row->L;
+            $m_s -= $row->M;
+            $s_s -= $row->S;
+            $t_s -= $row->T;
+            $k_s -= $row->K;
+            $d_s -= $row->D;
+            $krj_s -= $row->krj;
+            $bp_s -= $row->bp;
+          }
+
         ?>
             <tr>
               <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= $no ?></td>
@@ -110,48 +185,16 @@
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=($row->trx==1)? $row->krj:''; ?></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=($row->trx==1)? $row->bp:''; ?></td>
 
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$row->L;?></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$row->M;?></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$row->S;?></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$row->T;?></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$row->K;?></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$row->D;?></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$row->krj;?></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?=$row->bp;?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$l_s;?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$m_s;?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$s_s;?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$t_s;?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$k_s;?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$d_s;?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$krj_s;?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?=$bp_s;?></td>
             </tr>
         <?php $no++;
-
-          if($row->trx==1){
-            $l_p += $row->L;
-            $m_p += $row->M;
-            $s_p += $row->S;
-            $t_p += $row->T;
-            $k_p += $row->K;
-            $d_p += $row->D;
-            $krj_p += $row->krj;
-            $bp_p += $row->bp;
-          }
-
-          if($row->trx==1){
-            $l_k += $row->L;
-            $m_k += $row->M;
-            $s_k += $row->S;
-            $t_k += $row->T;
-            $k_k += $row->K;
-            $d_k += $row->D;
-            $krj_k += $row->krj;
-            $bp_k += $row->bp;
-          }
-
-          $l_s += $row->L;
-          $m_s += $row->M;
-          $s_s += $row->S;
-          $t_s += $row->T;
-          $k_s += $row->K;
-          $d_s += $row->D;
-          $krj_s += $row->krj;
-          $bp_s += $row->bp;
-
           }
           ?>
           <tr>

@@ -56,7 +56,7 @@
             </tr>
         <?php $no++;
           $t_stok_awal += $row->netto-$row->netto_kirim_b;
-          $t_stok_akhir += $stok_akhir+$row->netto_terima;
+          $t_stok_akhir += $stok_akhir;
           $t_netto_terima += $row->netto_terima;
           $t_kirim_qty += $row->netto_kirim;
           $t_potong_qty += $row->netto_potong;

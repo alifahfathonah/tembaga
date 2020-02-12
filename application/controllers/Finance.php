@@ -3783,7 +3783,7 @@ class Finance extends CI_Controller{
         $dt=date_create($datestring);
         $tgl2 = $dt->format('Ym');
 
-        // echo $tgl1.' | '.$tgl2; die();
+        // echo $tgl1.' | '.$tgl2;
 
         $data['periode'] = bulan_indo($bulan).' '.$tahun;
 
@@ -3797,7 +3797,7 @@ class Finance extends CI_Controller{
 
         $this->load->model('Model_finance');
         $data['detailLaporan'] = $this->Model_finance->detail_daftar_bahan_pembantu($tgl1, $tgl2)->result();
-        // echo "<pre>";print_r($data);echo "</pre>"; die();
+        // echo "<pre>";print_r($data['detailLaporan']);echo "</pre>"; die();
         if ($data['detailLaporan'] !== null) {
             $this->db->delete('t_sparepart_saldo', ['bulan' => $tgl1]);
             foreach ($data['detailLaporan'] as $row) {

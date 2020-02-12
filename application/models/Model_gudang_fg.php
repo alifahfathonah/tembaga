@@ -975,6 +975,11 @@ class Model_gudang_fg extends CI_Model{
         return $data;
     }
 
+    function stok_95mm(){
+        $data = $this->db->query("select * from stok_wip where jenis_barang_id=677");
+        return $data;
+    }
+
     function stok_76mm(){
         $data = $this->db->query("select (total_berat_in - total_berat_out) as total_netto from stok_wip where jenis_barang_id=678");
         return $data;

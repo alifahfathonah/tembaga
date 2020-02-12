@@ -7,8 +7,8 @@
         <h3 style="text-align: center; text-decoration: underline;"><?php if($this->session->userdata('user_ppn')==1){ echo 'PT. KAWAT MAS PRAKASA<br>'; }?>TOLLING <?=(($header['jenis']=='SO')? $header['nama_customer']:$header['nama_supplier']).' DAN KMP'?></h3>
         <table border="0" cellpadding="2" cellspacing="0" width="900px" style="font-family:Microsoft Sans Serif">
             <tr>
-                <td align="center"><h3>Kirim BCW / Barang Jadi</h3></td>
-                <td align="center"><h3>Terima Scrap</h3></td>
+                <td align="center"><h3>Kirim Scrap</h3></td>
+                <td align="center"><h3>Terima BCW / Barang Jadi</h3></td>
             </tr>
             <tr>
                 <td style="vertical-align: top;">
@@ -28,7 +28,17 @@
                         <?php
                             $no = 1;
                             $total = 0;
+                            $total_po = 0;
+                            $last_series = null;
                             foreach ($details_bahan as $row){
+
+                                if($last_series !=null && $last_series !=$row->no_po){
+                                    echo '<tr>
+                                        <td colspan="4" style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Sub Total</strong></td>
+                                        <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000; border-top:1px solid #000;"><strong>'.number_format($total_po,2,',','.').'</strong></td>
+                                    </tr>';
+                                    $total_po = 0;
+                                }
                         ?>
                         <tr>
                             <td style="text-align:center; border-left:1px solid #000;"><?=$no;?></td>
@@ -38,10 +48,17 @@
                             <td style="text-align:right; border-left:1px solid #000; border-right: 1px solid #000;"><?=number_format($row->netto,2,',', '.');?></td>
                         </tr>
                         <?php
+                                $last_series=$row->no_po;
                                 $total += $row->netto;
+                                $total_po += $row->netto;
                                 $no++;
                             }
                             $grand_total = $total + $stok_awal['netto'];
+                            
+                                    echo '<tr>
+                                        <td colspan="4" style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Sub Total</strong></td>
+                                        <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000; border-top:1px solid #000;"><strong>'.number_format($total_po,2,',','.').'</strong></td>
+                                    </tr>';
                         ?>
                         <tr style="height:50px">
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>

@@ -1,4 +1,4 @@
- <h3 style="text-align: center; text-decoration: underline;">PT. KAWAT MAS PRAKASA<br>
+ <h3 style="text-align: center; text-decoration: underline;"><!-- PT. KAWAT MAS PRAKASA<br> -->
     LAPORAN HASIL PRODUKSI <?php
     if($_GET['r']==1){ echo 'APOLLO';
     }elseif($_GET['r']==2){ echo 'ROLLING';

@@ -1,4 +1,4 @@
-<h3 style="text-align: center; text-decoration: underline;">PT. KAWAT MAS PRAKASA<br>
+<h3 style="text-align: center; text-decoration: underline;"><!-- PT. KAWAT MAS PRAKASA<br> -->
 LAPORAN PEMAKAIAN BAHAN BAKAR ROLLING</h3>
 <h3 align="center"><b><?php echo " <i>".tanggal_indo(date('Y-m-d', strtotime($start))).' s/d '.tanggal_indo(date('Y-m-d', strtotime($end)))."</i>";?></b></h3>
 <table width="100%" class="table table-striped table-bordered table-hover" id="sample_6">
@@ -56,8 +56,8 @@ LAPORAN PEMAKAIAN BAHAN BAKAR ROLLING</h3>
         echo '<tr>';
         echo '<td style="text-align:center; border-bottom:1px solid #000; border-left:1px solid #000">'.$no.'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.$row->tanggal.'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($v_digital10,2,',','.').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($v_digital9,2,',','.').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->berat_bu==0)? number_format($v_digital10,2,',','.'):'-').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->berat_bu==0)? number_format($v_digital9,2,',','.'):'-').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->gas,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->gas_r,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->berat,2,',','.').'</td>';

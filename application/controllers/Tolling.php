@@ -4613,4 +4613,23 @@ class Tolling extends CI_Controller{
             redirect('index.php'); 
         }
     }
+
+
+    function print_sisa_tolling_customer(){
+        $module_name = $this->uri->segment(1);
+        $ppn = $this->session->userdata('user_ppn');
+        $this->load->helper('tanggal_indo');
+
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $this->load->model('Model_tolling_titipan');
+        $data['detailLaporan'] = $this->Model_tolling_titipan->print_sisa_tolling_customer()->result();
+        $this->load->view('tolling_titipan/print_sisa_tolling_customer', $data);
+    }
 }
