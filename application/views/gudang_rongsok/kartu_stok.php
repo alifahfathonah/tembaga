@@ -24,7 +24,11 @@
     $masuk = 0;
     $keluar = 0;
     $sisa_now = 0;
-    $sisa = $stok_before['netto_masuk'] - $stok_before['netto_keluar'];
+    if($t==1){
+        $sisa = $stok_before['stok_awal'];
+    }else{
+        $sisa = $stok_before['netto_masuk'] - $stok_before['netto_keluar'];
+    }
         echo '<tr>';
         echo '<td style="text-align:center"> - </td>';
         echo '<td></td>';
@@ -51,12 +55,26 @@
         $masuk += $row->netto_masuk;
         $keluar += $row->netto_keluar;
     }
+    if(!empty($stok_before['koreksi_timbang'])){
+        if($stok_before['koreksi_timbang']>0){
+            echo '<tr>';
+            echo '<td style="text-align:center">'.$no.'</td>';
+            echo '<td colspan="4">Koreksi Timbang</td>';
+            echo '<td style="text-align:right">'.(($stok_before['koreksi_timbang']<0)? number_format($stok_before['koreksi_timbang'],2,',','.'):'0').'</td>';
+            echo '<td style="text-align:right">'.(($stok_before['koreksi_timbang']>0)? number_format($stok_before['koreksi_timbang'],2,',','.'):'0').'</td>';
+            echo '<td style="text-align:right">'.number_format($sisa_now-$stok_before['koreksi_timbang'],2,',','.').'</td>';
+            echo '</tr>';
+        }
+        $koreksi = $stok_before['koreksi_timbang'];
+    }else{
+        $koreksi = 0;
+    }
     ?>
     <tr>
         <td colspan="5"></td>
         <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align:right;"><?=number_format($masuk,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align:right;"><?=number_format($keluar,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align:right;"><?=number_format($sisa,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align:right;"><?=number_format($sisa-$koreksi,2,',','.');?></td>
     </tr>
     </tbody>
 </table>

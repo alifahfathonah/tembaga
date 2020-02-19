@@ -125,17 +125,19 @@
             $next_m =  date('Y-m-d', strtotime('first day of next month', strtotime($start)));
             $query = $this->db->query("select * from stok_awal_laporan where tanggal ='".$next_m."' and customer_id =".$_GET['l']." and supplier_id = 0 and jenis= 1 and flag_ppn = ".$ppn." and tipe = 0")->row_array();
             if(empty($query)){
-                $this->db->insert('stok_awal_laporan', array(
-                    'flag_ppn'=>$ppn,
-                    'jenis'=>1,
-                    'tipe'=>0,
-                    'tanggal'=>$next_m,
-                    'customer_id'=>$_GET['l'],
-                    'supplier_id'=>0,
-                    'netto'=>$sisa,
-                    'created_by'=> $this->session->userdata('user_id'),
-                    'created_at'=> date('Y-m-d H:i:s')
-                ));
+                if($sisa > 0){
+                    $this->db->insert('stok_awal_laporan', array(
+                        'flag_ppn'=>$ppn,
+                        'jenis'=>1,
+                        'tipe'=>0,
+                        'tanggal'=>$next_m,
+                        'customer_id'=>$_GET['l'],
+                        'supplier_id'=>0,
+                        'netto'=>$sisa,
+                        'created_by'=> $this->session->userdata('user_id'),
+                        'created_at'=> date('Y-m-d H:i:s')
+                    ));
+                }
             }else{
                 $this->db->where('id', $query['id']);
                 $this->db->update('stok_awal_laporan', array(

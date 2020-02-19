@@ -50,6 +50,7 @@
                                 value="<?php echo $header['no_po']; ?>">
                             
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
+                            <input type="hidden" id="bpb_id" name="bpb_id" value="<?php echo $header['bpb_id']; ?>">
                         </div>
                     </div>      
                     <div class="row">
@@ -159,7 +160,13 @@
                                     echo '<td>'.$row->berat_bobbin.'</td>';
                                     echo '<td>'.number_format($row->netto,0,',','.').'</td>';
                                     echo '<td>'.$row->no_bobbin.'</td>';
+                                    if($row->no_bobbin!=''){
+                                    echo '<td><input type="hidden" name="myDetails['.$no.'][no_packing]" value="'.$row->no_packing.'">
+                                    <input type="text" name="myDetails['.$no.'][no_packing_new]" value="'.$row->no_packing.'" maxlength="16">
+                                    </td>';
+                                    }else{
                                     echo '<td>'.$row->no_packing.'</td>';
+                                    }
                                     echo '<td>'.$row->line_remarks.'</td>';
                                     echo '</tr>';
                                     $no++;

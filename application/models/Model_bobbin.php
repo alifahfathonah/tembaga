@@ -553,7 +553,7 @@ class Model_bobbin extends CI_Model{
 
     function print_laporan_peminjaman($s,$e,$l){
         return $this->db->query("select * from (
-            (select bpn.no_penerimaan as nomor, bpn.tanggal,
+            (select bpn.no_penerimaan as nomor, bpn.tanggal, bpn.surat_jalan as no_surat_jalan,
             sum(CASE WHEN mb.m_bobbin_size_id = 11 THEN 1 ELSE 0 END) as L,
             sum(CASE WHEN mb.m_bobbin_size_id = 12 THEN 1 ELSE 0 END) as M,
             sum(CASE WHEN mb.m_bobbin_size_id = 16 THEN 1 ELSE 0 END) as S,
@@ -567,7 +567,7 @@ class Model_bobbin extends CI_Model{
             left join m_bobbin_penerimaan bpn on bpnd.id_bobbin_penerimaan = bpn.id
             where bpn.status =0 and bpn.tanggal between '".$s."' and '".$e."' and bpn.id_customer = ".$l." group by bpnd.id_bobbin_penerimaan)
                 UNION ALL 
-            (select bpj.no_surat_peminjaman as nomor, bpj.tanggal,
+            (select bpj.no_surat_peminjaman as nomor, bpj.tanggal, tsj.no_surat_jalan,
             sum(CASE WHEN mb.m_bobbin_size_id = 11 THEN 1 ELSE 0 END) as L,
             sum(CASE WHEN mb.m_bobbin_size_id = 12 THEN 1 ELSE 0 END) as M,
             sum(CASE WHEN mb.m_bobbin_size_id = 16 THEN 1 ELSE 0 END) as S,
@@ -579,9 +579,10 @@ class Model_bobbin extends CI_Model{
             0 as trx, mb.m_bobbin_size_id from m_bobbin_peminjaman_detail bpjd 
             left join m_bobbin mb on mb.nomor_bobbin = bpjd.nomor_bobbin
             left join m_bobbin_peminjaman bpj on bpjd.id_peminjaman = bpj.id
+            left join t_surat_jalan tsj on bpj.id_surat_jalan = tsj.id
             where bpj.tanggal between '".$s."' and '".$e."' and bpj.id_customer = ".$l." group by bpjd.id_peminjaman)
                 UNION ALL
-            (select tsj.no_surat_jalan as nomor, tsj.tanggal,
+            (select tsj.no_surat_jalan as nomor, tsj.tanggal, '' as no_surat_jalan,
             0 as L, 0 as M, 0 as S, 0 as T, 0 as K, 0 as D, 0 as krj,
             jumlah*6 as bp, 0 as trx, 0 as m_bobbin_size_id from t_surat_peminjaman tsp
             left join t_surat_jalan tsj on tsp.t_sj_id = tsj.id

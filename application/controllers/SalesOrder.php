@@ -249,13 +249,22 @@ class SalesOrder extends CI_Controller{
             $myDetail = $this->Model_sales_order->load_detail_so_rongsok($id)->result();
         }else{
             $myDetail = $this->Model_sales_order->load_detail_so($id)->result();
+            $list_barang = $this->Model_sales_order->list_barang_so($jenis)->result();
         }
         foreach ($myDetail as $row) {
             $tabel .= '<tr>';
             $tabel .= '<td style="text-align: center;">'.$no.'</td>';
             $tabel .= '<td><label id="lbl_jenis_barang_'.$no.'">('.$row->kode.') '.$row->nama_barang.'</label>';
-            $tabel .= '<input typed="text" id="jenis_barang_id_'.$no.'" name="jenis_barang_id_'.$no.'" class="form-control select2me myline" readonly="readonly" value="('.$row->kode.') '.$row->nama_barang.'"';
-            $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px; display:none">';
+            if($jenis=='FG'){
+            $tabel .= '<select id="jenis_barang_id_'.$no.'" name="jenis_barang_id_'.$no.'" class="form-control select2me myline" data-placeholder="Pilih..." disabled style="margin-bottom:5px; display:none;"><option value=""></option>';
+                    foreach ($list_barang as $value){
+            $tabel .= "<option value='".$value->id."' ".(($row->jenis_barang_id==$value->id)? 'selected':'')."> (".$value->kode.") ".$value->jenis_barang."</option>";
+                    }
+            $tabel .= '</select>';
+            }else{
+                $tabel .= '<input typed="text" id="jenis_barang_id_'.$no.'" name="jenis_barang_id_'.$no.'" class="form-control select2me myline" readonly="readonly" value="('.$row->kode.') '.$row->nama_barang.'"';
+                $tabel .= 'data-placeholder="Pilih..." style="margin-bottom:5px; display:none">';
+            }
             $tabel .= '<input type="hidden" id="detail_id_'.$no.'" name="detail_id_'.$no.'" value="'.$row->id.'">';
             $tabel .= '<input type="hidden" id="spb_detail_id_'.$no.'" name="spb_detail_id_'.$no.'" value="'.$row->no_spb_detail.'">';
             $tabel .= '</td>';
@@ -282,7 +291,7 @@ class SalesOrder extends CI_Controller{
             $netto += $row->netto;
             }
             $tabel .= '<td style="text-align:right;"><label id="lbl_total_amount_'.$no.'">'.number_format($row->total_amount,2,',','.').'</label>';
-            $tabel .= '<input type="text" id="total_amount_'.$no.'" name="total_amount_'.$no.'" class="form-control myline" value="'.number_format($row->total_amount,2,',','.').'" style="display:none;" readonly /></td>';
+            $tabel .= '<input type="text" id="total_amount_'.$no.'" name="total_amount_'.$no.'" class="form-control myline" value="'.number_format($row->total_amount,2,'.',',').'" style="display:none;" readonly /></td>';
             $tabel .= '<td style="text-align:center;"><a id="btnEdit_'.$no.'" href="javascript:;" class="btn btn-xs btn-circle '
                     . 'green" onclick="editDetail('.$no.');" style="margin-top:5px"> '
                     . '<i class="fa fa-pencil"></i> Edit </a>';
@@ -324,6 +333,14 @@ class SalesOrder extends CI_Controller{
                 'amount'=>str_replace(',', '', $this->input->post('amount')),
                 'total_amount'=>str_replace(',', '', $this->input->post('total_amount')),
                 'qty'=>str_replace(',', '', $this->input->post('netto'))
+            );
+        }else if($jenis=='FG'){
+            $data = array(
+                'jenis_barang_id'=>$this->input->post('jenis_barang_id'),
+                'nama_barang_alias'=>$this->input->post('nama_barang_alias'),
+                'amount'=>str_replace(',', '', $this->input->post('amount')),
+                'total_amount'=>str_replace(',', '', $this->input->post('total_amount')),
+                'netto'=>str_replace(',', '', $this->input->post('netto'))
             );
         }else{
             $data = array(

@@ -625,6 +625,18 @@ class BeliFinishGood extends CI_Controller{
             'modified_by'=>$user_id
         ));
 
+
+        $details = $this->input->post('myDetails');
+        if(!empty($details)){
+            foreach ($details as $i => $row){
+                $this->db->where('t_bpb_fg_id', $this->input->post('bpb_id'));
+                $this->db->where('no_packing_barcode', $row['no_packing']);
+                $this->db->update('t_bpb_fg_detail', array(
+                    'no_packing_barcode'=> $row['no_packing_new']
+                ));
+            }
+        }
+
         if($this->db->trans_complete()){    
             $this->session->set_flashdata('flash_msg', 'DTBJ berhasil di-create dengan nomor : '.$this->input->post('no_dtr'));  
             if($this->input->post('spb_id')>0){

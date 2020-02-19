@@ -7,6 +7,7 @@
 	<table width="100%" style="page-break-after: auto;">
 		<tr>
 			<td align="center">
+	<?=($this->session->userdata('user_ppn')==1)? '<h3> PT. KAWAT MAS PRAKASA<br></h3>':'';?>
 				<h4><u>Laporan Bahan Pembantu dan Pelumas</u><br>Peride: <?= $periode ?></h4>
 			</td>
 		</tr>

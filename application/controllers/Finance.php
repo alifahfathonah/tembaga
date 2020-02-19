@@ -3628,9 +3628,9 @@ class Finance extends CI_Controller{
                 // $data['ingotRendah'] = $this->Model_finance->laporan_pembelian_ingot_rendah($start, $end, 0)->result();
             }elseif ($l == 2) {
                 if($user_ppn==1){
-                $data['detailLaporan'] = $this->Model_finance->print_laporan_pembelian($start,$end,2)->result();
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_pembelian($start,$end,2)->result();
                 }else{
-                $data['detailLaporan'] = $this->Model_finance->print_laporan_pembelian($start,$end,3)->result();
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_pembelian($start,$end,3)->result();
                 }
                 // $data['ingotRendah'] = $this->Model_finance->laporan_pembelian_ingot_rendah($start, $end, 2)->result();
             }elseif ($l == 3) {
@@ -3643,6 +3643,7 @@ class Finance extends CI_Controller{
             }
         $this->load->view('finance/print_laporan_pembelian', $data);
         }elseif($j==1){
+            $data['header']='Pembelian';
             if($l == 1){
                 $data['detailLaporan'] = $this->Model_finance->laporan_pembelian_rsk($start,$end,0)->result();
                 // $data['ingotRendah'] = $this->Model_finance->laporan_pembelian_rsk_ingot_rendah($start,$end,0)->result();
@@ -3660,6 +3661,23 @@ class Finance extends CI_Controller{
                 $data['detailLaporan'] = $this->Model_finance->laporan_pembelian_rsk2($start,$end,3,$user_ppn)->result();
             }elseif ($l == 4) {
                 $data['detailLaporan'] = $this->Model_finance->laporan_pembelian_rsk2($start,$end,1,$user_ppn)->result();
+            }
+        $this->load->view('finance/print_laporan_pembelian_rsk', $data);
+        }elseif($j==2){
+            $data['header']='Tolling';
+            if($l == 1){
+                $data['detailLaporan'] = $this->Model_finance->laporan_pembelian_rsk_t($start,$end,0)->result();
+                // $data['ingotRendah'] = $this->Model_finance->laporan_pembelian_rsk_t_ingot_rendah($start,$end,0)->result();
+            }elseif ($l == 2) {
+                if($user_ppn==1){
+                $data['detailLaporan'] = $this->Model_finance->laporan_pembelian_rsk_t($start,$end,2)->result();
+                }else{
+                $data['detailLaporan'] = $this->Model_finance->laporan_pembelian_rsk_t($start,$end,3)->result();
+                }
+                // $data['ingotRendah'] = $this->Model_finance->laporan_pembelian_rsk_t_ingot_rendah($start,$end,2)->result();
+            }elseif ($l == 3) {
+                $data['detailLaporan'] = $this->Model_finance->laporan_pembelian_rsk_t($start,$end,1)->result();
+                // $data['ingotRendah'] = $this->Model_finance->laporan_pembelian_rsk_ingot_rendah($start,$end,1)->result();
             }
         $this->load->view('finance/print_laporan_pembelian_rsk', $data);
         }

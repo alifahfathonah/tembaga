@@ -170,7 +170,7 @@ class GudangRongsok extends CI_Controller{
 					// echo $value->jenis_barang.' | '.$stok_before['netto_masuk'].$stok_before['netto_keluar'].' | ';
 					// echo $trx['netto_masuk'].' - '.$trx['netto_keluar'].'<br>';
 					if($t==1){
-						$stok_awal = $stok_before['stok_akhir'];
+						$stok_awal = $stok_before['stok_akhir']-$stok_before['koreksi_timbang'];
 					}else{
 						$stok_awal = $stok_before['netto_masuk']-$stok_before['netto_keluar'];
 					}
@@ -415,11 +415,21 @@ class GudangRongsok extends CI_Controller{
 			$data['judul']     = "Gudang Rongsok";
 
 		$this->load->model('Model_beli_rongsok');
+		$this->load->model('Model_gudang_fg');
 		$data['rongsok'] = $this->Model_beli_rongsok->show_data_rongsok_detail($rongsok_id)->row_array();
 		$data['start'] = $start;
 		$data['end'] = $end;
-		
-		$data['stok_before'] = $this->Model_beli_rongsok->get_stok_before($start,$rongsok_id)->row_array();
+
+		// $before = date('Y-m-d', strtotime('first day of last month', strtotime($start)));
+
+		$stok_before = $this->Model_gudang_fg->inventory_stok_before('RONGSOK',$start,$rongsok_id)->row_array();
+		// print_r($stok_before);die();
+		$data['t'] = 1;
+		if(empty($stok_before)){
+			$stok_before = $this->Model_beli_rongsok->get_stok_before($start,$rongsok_id)->row_array();
+			$data['t'] = 2;
+		}
+		$data['stok_before'] = $stok_before;
 
 		if($_GET['bl']==0){
 			$data['detailLaporan'] = $this->Model_beli_rongsok->show_kartu_stok($start,$end,$rongsok_id)->result();

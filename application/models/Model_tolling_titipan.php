@@ -1178,6 +1178,47 @@ class Model_tolling_titipan extends CI_Model{
                 order by nama_customer, no_sales_order");
     }
 
+    function print_sisa_tolling_customer2($tgl,$ppn){
+        if($ppn==0){
+            return $this->db->query("select sal.*, mc.nama_customer from stok_awal_laporan sal
+                left join m_customers mc on mc.id = sal.customer_id
+                where sal.tanggal= '".$tgl."' and jenis = 1 and tipe = 0 and netto > 0");
+        }else{
+            return $this->db->query("select sal.*, mc.nama_customer from stok_awal_laporan sal
+                left join m_customers mc on mc.id = sal.customer_id
+                where sal.tanggal= '".$tgl."' and jenis = 1 and tipe = 0 and netto > 0 and flag_ppn=".$ppn);
+        }
+        // stok_awal_laporan
+    }
+
+    function print_sisa_tolling_supplier(){
+        return $this->db->query("select po.no_po, po.tanggal, s.nama_supplier, (select sum(qty) from po_detail pd where pd.po_id = po.id) as netto_awal,
+            (Select sum(netto)
+                From dtt_detail dd
+                    left join dtt on dd.dtt_id = dtt.id
+                    where dtt.po_id = po.id
+            ) as netto_terima,
+            (select sum(tsjd.netto) from t_surat_jalan_detail tsjd
+                left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
+                where tsj.po_id = po.id) as netto_kirim
+            from po
+                left join supplier s on po.supplier_id = s.id 
+                where flag_tolling > 0 and status != 1
+                order by nama_supplier, no_po");
+    }
+
+    function print_sisa_tolling_supplier2($tgl,$ppn){
+        if($ppn==0){
+            return $this->db->query("select sal.*, s.nama_supplier from stok_awal_laporan sal
+                left join supplier s on s.id = sal.supplier_id
+                where sal.tanggal= '".$tgl."' and jenis = 2 and tipe = 0 and netto > 0");
+        }else{
+            return $this->db->query("select sal.*, s.nama_supplier from stok_awal_laporan sal
+                left join supplier s on s.id = sal.supplier_id
+                where sal.tanggal= '".$tgl."' and jenis = 2 and tipe = 0 and netto > 0 and flag_ppn=".$ppn);
+        }
+        // stok_awal_laporan
+    }
 //LAPORAN BALANCE SO
     function laporan_bahan_so($id,$ppn,$s,$e){
         return $this->db->query("Select * From ((Select dtwip.id, dtwip.no_dtwip as nomor, dtwip.tanggal, sum(berat) as netto, so.id as id_so, 
@@ -1235,7 +1276,7 @@ class Model_tolling_titipan extends CI_Model{
             group by tsjd.t_sj_id)
             UNION ALL
             (select '' as no_po, 'Koreksi' as nomor, tanggal, netto from stok_awal_laporan where jenis = 2 and tanggal between '".$s."' and '".$e."' and flag_ppn = ".$ppn." and tipe = 1 and supplier_id = ".$id.")
-            ) as a order by tanggal asc
+            ) as a order by no_po, tanggal asc
         ");
         return $data;
     }

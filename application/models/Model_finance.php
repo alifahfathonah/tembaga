@@ -1470,7 +1470,7 @@ class Model_finance extends CI_Model{
                         t.tanggal AS tgl_ttr,
                         t.no_ttr AS no_ttr,
                     CASE
-                            
+                            WHEN dd.po_detail_id > 0 AND p.flag_tolling > 0 THEN 'Tolling'
                             WHEN dd.po_detail_id > 0 THEN
                             'PO' 
                             WHEN dd.po_detail_id = 0 
@@ -1554,7 +1554,7 @@ class Model_finance extends CI_Model{
                         t.tanggal AS tgl_ttr,
                         t.no_ttr AS no_ttr,
                     CASE
-                            
+                            WHEN dd.po_detail_id > 0 AND p.flag_tolling > 0 THEN 'Tolling'    
                             WHEN dd.po_detail_id > 0 THEN
                             'PO' 
                             WHEN dd.po_detail_id = 0 
@@ -1637,7 +1637,7 @@ class Model_finance extends CI_Model{
                         t.tanggal AS tgl_ttr,
                         t.no_ttr AS no_ttr,
                     CASE
-                            
+                            WHEN dd.po_detail_id > 0 AND p.flag_tolling > 0 THEN 'Tolling'
                             WHEN dd.po_detail_id > 0 THEN
                             'PO' 
                             WHEN dd.po_detail_id = 0 
@@ -1820,7 +1820,7 @@ class Model_finance extends CI_Model{
                         t.tanggal AS tgl_ttr,
                         t.no_ttr AS no_ttr,
                     CASE
-                            
+                            WHEN dd.po_detail_id > 0 AND p.flag_tolling > 0 THEN 'Tolling'
                             WHEN dd.po_detail_id > 0 THEN
                             'PO' 
                             WHEN dd.po_detail_id = 0 
@@ -1904,7 +1904,7 @@ class Model_finance extends CI_Model{
                         t.tanggal AS tgl_ttr,
                         t.no_ttr AS no_ttr,
                     CASE
-                            
+                            WHEN dd.po_detail_id > 0 AND p.flag_tolling > 0 THEN 'Tolling'
                             WHEN dd.po_detail_id > 0 THEN
                             'PO' 
                             WHEN dd.po_detail_id = 0 
@@ -2091,7 +2091,7 @@ class Model_finance extends CI_Model{
                     LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
                 WHERE
                     ( t.ttr_status != 0 ) AND ( d.type = 0)
-                    AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
+                    AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) AND p.flag_tolling = 0
                     AND t.tanggal BETWEEN '".$s."' and '".$e."'
                 GROUP BY
                 nama_sup_cust
@@ -2158,7 +2158,7 @@ class Model_finance extends CI_Model{
                     LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
                 WHERE
                     ( t.ttr_status != 0 ) 
-                    AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
+                    AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) AND p.flag_tolling = 0
                     AND t.tanggal BETWEEN '".$s."' and '".$e."'
                 GROUP BY
                 nama_sup_cust
@@ -2227,7 +2227,214 @@ class Model_finance extends CI_Model{
                     ( t.ttr_status != 0 ) 
                     AND ( dd.po_detail_id > 0 OR ( dd.po_detail_id = 0 AND d.so_id > 0 ) ) 
                     AND t.tanggal BETWEEN '".$s."' and '".$e."'
-                    AND (p.flag_ppn = ".$ppn." OR so.flag_ppn = ".$ppn.") 
+                    AND (p.flag_ppn = ".$ppn." OR so.flag_ppn = ".$ppn.")  AND p.flag_tolling = 0
+                GROUP BY
+                nama_sup_cust
+                    order by total desc");
+        }
+        return $data;
+    }
+
+    function laporan_pembelian_rsk_t($s, $e, $ppn){
+        if ($ppn == 3) {
+            $data = $this->db->query("SELECT
+            CASE
+                WHEN
+                    dd.po_detail_id > 0 THEN
+                        s.nama_supplier 
+                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                        mc.nama_customer_kh 
+                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                        mc.nama_customer ELSE '-' 
+                    END AS nama_sup_cust,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0001' then td.netto  else 0 end),0),null) as AB1,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0002' then td.netto  else 0 end),0),null) as AB2,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01AR001' then td.netto  else 0 end),0),null) as AR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0002' then td.netto  else 0 end),0),null) as TR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BB001' then td.netto  else 0 end),0),null) as BB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0001' then td.netto  else 0 end),0),null) as BC,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0003' then td.netto  else 0 end),0),null) as CT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BL001' then td.netto  else 0 end),0),null) as BL,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0003' then td.netto  else 0 end),0),null) as DH,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PB001' then td.netto  else 0 end),0),null) as PB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PR001' then td.netto  else 0 end),0),null) as PRT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01DD001' then td.netto  else 0 end),0),null) as DD,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0002' then td.netto  else 0 end),0),null) as DB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0004' then td.netto  else 0 end),0),null) as DK,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '02I0001' then td.netto  else 0 end),0),null) as IR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto  else 0 end),0),null) as LT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto  else 0 end),0),null) as SC,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto  else 0 end),0),null) as SCJ,
+
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0001' then td.netto*pd.amount  else 0 end),0),null) as AB1_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0002' then td.netto*pd.amount  else 0 end),0),null) as AB2_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01AR001' then td.netto*pd.amount  else 0 end),0),null) as AR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0002' then td.netto*pd.amount  else 0 end),0),null) as TR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BB001' then td.netto*pd.amount  else 0 end),0),null) as BB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0001' then td.netto*pd.amount  else 0 end),0),null) as BC_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0003' then td.netto*pd.amount  else 0 end),0),null) as CT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BL001' then td.netto*pd.amount  else 0 end),0),null) as BL_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0003' then td.netto*pd.amount  else 0 end),0),null) as DH_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PB001' then td.netto*pd.amount  else 0 end),0),null) as PB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PR001' then td.netto*pd.amount  else 0 end),0),null) as PRT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01DD001' then td.netto*pd.amount  else 0 end),0),null) as DD_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0002' then td.netto*pd.amount  else 0 end),0),null) as DB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0004' then td.netto*pd.amount  else 0 end),0),null) as DK_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '02I0001' then td.netto*pd.amount  else 0 end),0),null) as IR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto*pd.amount  else 0 end),0),null) as LT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto*pd.amount  else 0 end),0),null) as SC_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto*pd.amount  else 0 end),0),null) as SCJ_h,
+                    sum( td.netto ) AS total
+                FROM
+                    ttr_detail td
+                    LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+                    LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+                    LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+                    LEFT JOIN po_detail pd ON ( ( dd.po_detail_id > 0 ) AND ( pd.id = dd.po_detail_id ) )
+                    LEFT JOIN po p ON ( ( p.id = pd.po_id ) AND ( dd.po_detail_id > 0 ) )
+                    LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+                    LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+                    LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
+                    LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
+                WHERE
+                    ( t.ttr_status != 0 ) AND ( d.type = 0)
+                    AND  ( (dd.po_detail_id > 0 AND p.flag_tolling > 0) OR (dd.po_detail_id = 0 AND d.so_id > 0) )
+                    AND t.tanggal BETWEEN '".$s."' and '".$e."'
+                GROUP BY
+                nama_sup_cust
+                    order by total desc");
+        }elseif ($ppn == 2) {
+            $data = $this->db->query("SELECT
+            CASE
+                WHEN
+                    dd.po_detail_id > 0 THEN
+                        s.nama_supplier 
+                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                        mc.nama_customer_kh 
+                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                        mc.nama_customer ELSE '-' 
+                    END AS nama_sup_cust,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0001' then td.netto  else 0 end),0),null) as AB1,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0002' then td.netto  else 0 end),0),null) as AB2,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01AR001' then td.netto  else 0 end),0),null) as AR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0002' then td.netto  else 0 end),0),null) as TR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BB001' then td.netto  else 0 end),0),null) as BB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0001' then td.netto  else 0 end),0),null) as BC,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0003' then td.netto  else 0 end),0),null) as CT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BL001' then td.netto  else 0 end),0),null) as BL,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0003' then td.netto  else 0 end),0),null) as DH,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PB001' then td.netto  else 0 end),0),null) as PB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PR001' then td.netto  else 0 end),0),null) as PRT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01DD001' then td.netto  else 0 end),0),null) as DD,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0002' then td.netto  else 0 end),0),null) as DB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0004' then td.netto  else 0 end),0),null) as DK,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '02I0001' then td.netto  else 0 end),0),null) as IR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto  else 0 end),0),null) as LT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto  else 0 end),0),null) as SC,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto  else 0 end),0),null) as SCJ,
+
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0001' then td.netto*pd.amount  else 0 end),0),null) as AB1_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0002' then td.netto*pd.amount  else 0 end),0),null) as AB2_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01AR001' then td.netto*pd.amount  else 0 end),0),null) as AR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0002' then td.netto*pd.amount  else 0 end),0),null) as TR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BB001' then td.netto*pd.amount  else 0 end),0),null) as BB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0001' then td.netto*pd.amount  else 0 end),0),null) as BC_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0003' then td.netto*pd.amount  else 0 end),0),null) as CT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BL001' then td.netto*pd.amount  else 0 end),0),null) as BL_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0003' then td.netto*pd.amount  else 0 end),0),null) as DH_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PB001' then td.netto*pd.amount  else 0 end),0),null) as PB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PR001' then td.netto*pd.amount  else 0 end),0),null) as PRT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01DD001' then td.netto*pd.amount  else 0 end),0),null) as DD_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0002' then td.netto*pd.amount  else 0 end),0),null) as DB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0004' then td.netto*pd.amount  else 0 end),0),null) as DK_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '02I0001' then td.netto*pd.amount  else 0 end),0),null) as IR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto*pd.amount  else 0 end),0),null) as LT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto*pd.amount  else 0 end),0),null) as SC_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto*pd.amount  else 0 end),0),null) as SCJ_h,
+                    sum( td.netto ) AS total
+                FROM
+                    ttr_detail td
+                    LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+                    LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+                    LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+                    LEFT JOIN po_detail pd ON ( ( dd.po_detail_id > 0 ) AND ( pd.id = dd.po_detail_id ) )
+                    LEFT JOIN po p ON ( ( p.id = pd.po_id ) AND ( dd.po_detail_id > 0 ) )
+                    LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+                    LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+                    LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
+                    LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
+                WHERE
+                    ( t.ttr_status != 0 ) 
+                    AND ( (dd.po_detail_id > 0 AND p.flag_tolling > 0) OR (dd.po_detail_id = 0 AND d.so_id > 0) )
+                    AND t.tanggal BETWEEN '".$s."' and '".$e."'
+                GROUP BY
+                nama_sup_cust
+                    order by total desc");
+        }else{
+        $data = $this->db->query("SELECT
+            CASE
+                WHEN
+                    dd.po_detail_id > 0 THEN
+                        s.nama_supplier 
+                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 0 AND d.so_id > 0 ) THEN
+                        mc.nama_customer_kh 
+                        WHEN ( dd.po_detail_id = 0 AND so.flag_ppn = 1 AND d.so_id > 0 ) THEN
+                        mc.nama_customer ELSE '-' 
+                    END AS nama_sup_cust,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0001' then td.netto  else 0 end),0),null) as AB1,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0002' then td.netto  else 0 end),0),null) as AB2,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01AR001' then td.netto  else 0 end),0),null) as AR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0002' then td.netto  else 0 end),0),null) as TR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BB001' then td.netto  else 0 end),0),null) as BB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0001' then td.netto  else 0 end),0),null) as BC,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0003' then td.netto  else 0 end),0),null) as CT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BL001' then td.netto  else 0 end),0),null) as BL,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0003' then td.netto  else 0 end),0),null) as DH,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PB001' then td.netto  else 0 end),0),null) as PB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PR001' then td.netto  else 0 end),0),null) as PRT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01DD001' then td.netto  else 0 end),0),null) as DD,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0002' then td.netto  else 0 end),0),null) as DB,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0004' then td.netto  else 0 end),0),null) as DK,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '02I0001' then td.netto  else 0 end),0),null) as IR,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto  else 0 end),0),null) as LT,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto  else 0 end),0),null) as SC,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto  else 0 end),0),null) as SCJ,
+
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0001' then td.netto*pd.amount  else 0 end),0),null) as AB1_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01A0002' then td.netto*pd.amount  else 0 end),0),null) as AB2_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01AR001' then td.netto*pd.amount  else 0 end),0),null) as AR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0002' then td.netto*pd.amount  else 0 end),0),null) as TR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BB001' then td.netto*pd.amount  else 0 end),0),null) as BB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0001' then td.netto*pd.amount  else 0 end),0),null) as BC_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01B0003' then td.netto*pd.amount  else 0 end),0),null) as CT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01BL001' then td.netto*pd.amount  else 0 end),0),null) as BL_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0003' then td.netto*pd.amount  else 0 end),0),null) as DH_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PB001' then td.netto*pd.amount  else 0 end),0),null) as PB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01PR001' then td.netto*pd.amount  else 0 end),0),null) as PRT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01DD001' then td.netto*pd.amount  else 0 end),0),null) as DD_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0002' then td.netto*pd.amount  else 0 end),0),null) as DB_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01D0004' then td.netto*pd.amount  else 0 end),0),null) as DK_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '02I0001' then td.netto*pd.amount  else 0 end),0),null) as IR_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '01LP001' then td.netto*pd.amount  else 0 end),0),null) as LT_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0001' then td.netto*pd.amount  else 0 end),0),null) as SC_h,
+                    COALESCE(NULLIF(sum(case when r.kode_rongsok = '03S0003' then td.netto*pd.amount  else 0 end),0),null) as SCJ_h,
+                    sum( td.netto ) AS total
+                FROM
+                    ttr_detail td
+                    LEFT JOIN dtr_detail dd ON ( dd.id = td.dtr_detail_id )
+                    LEFT JOIN dtr d ON ( d.id = dd.dtr_id )
+                    LEFT JOIN ttr t ON ( t.id = td.ttr_id )
+                    LEFT JOIN po_detail pd ON ( ( dd.po_detail_id > 0 ) AND ( pd.id = dd.po_detail_id ) )
+                    LEFT JOIN po p ON ( ( p.id = pd.po_id ) AND ( dd.po_detail_id > 0 ) )
+                    LEFT JOIN sales_order so ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND so.id = d.so_id )
+                    LEFT JOIN rongsok r ON ( r.id = td.rongsok_id )
+                    LEFT JOIN supplier s ON ( dd.po_detail_id > 0 AND ( s.id = p.supplier_id ) )
+                    LEFT JOIN m_customers mc ON ( dd.po_detail_id = 0 AND d.so_id > 0 AND mc.id = d.customer_id ) 
+                WHERE
+                    ( t.ttr_status != 0 ) 
+                    AND ( (dd.po_detail_id > 0 AND p.flag_tolling > 0) OR (dd.po_detail_id = 0 AND d.so_id > 0) )
+                    AND t.tanggal BETWEEN '".$s."' and '".$e."'
+                    AND (p.flag_ppn = ".$ppn." OR so.flag_ppn = ".$ppn.")
                 GROUP BY
                 nama_sup_cust
                     order by total desc");

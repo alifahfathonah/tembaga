@@ -329,7 +329,12 @@ function editDetail(id){
     $('#lbl_nama_barang_alias_'+id).hide();
     
     $('#btnUpdate_'+id).show();
-    $('#jenis_barang_id_'+id).show();
+    if($('#jenis_barang').val()=='FG'){
+        $('#jenis_barang_id_'+id).prop("disabled", false);
+        $('#jenis_barang_id_'+id).show();
+    }else{
+        $('#jenis_barang_id_'+id).show();
+    }
     $('#uom_'+id).show();
     $('#amount_'+id).show();
     $('#netto_'+id).show();
@@ -352,6 +357,7 @@ function updateDetail(id){
             data:{
                 detail_id:$('#detail_id_'+id).val(),
                 spb_detail_id:$('#spb_detail_id_'+id).val(),
+                jenis_barang_id:$('#jenis_barang_id_'+id).val(),
                 jenis: jenis,
                 nama_barang_alias:$('#nama_barang_alias_'+id).val(),
                 netto:$('#netto_'+id).val(),

@@ -75,7 +75,7 @@
                                     Nominal Di Bayar
                                 </div>
                                 <div class="col-md-7">
-                                    <input type="text" id="nominal_bayar" name="nominal_bayar" class="form-control myline" style="margin-bottom:5px" onkeydown="return myCurrency(event);" value="0" onkeyup="getComa(this.value, this.id); hitungSubTotalInv();">
+                                    <input type="text" id="nominal_bayar" name="nominal_bayar" class="form-control myline" style="margin-bottom:5px" value="0" onkeyup="getComa(this.value, this.id); hitungSubTotalInv();">
                                 </div>
                             </div>
                             <div class="row">
@@ -374,6 +374,11 @@
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
+const formatter = new Intl.NumberFormat('en-US', {
+   minimumFractionDigits: 2,      
+   maximumFractionDigits: 2,
+});
+
 function simpanData(){
     var result = confirm("Anda yakin untuk menyimpannya ?");
     if (result) {
@@ -392,6 +397,15 @@ function myCurrency(evt) {
     return true;
 }
 
+function ReplaceNumberWithCommas(yourNumber) {
+    //Seperates the components of the number
+    var n= yourNumber.toString().split(".");
+    //Comma-fies the first part
+    n[0] = n[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    //Combines the two sections
+    return n.join(".");
+}
+
 function getComa(value, id){
     angka = value.toString().replace(/\,/g, "");
     $('#'+id).val(angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -402,7 +416,8 @@ function hitungSubTotalInv(){
     n1 = $('#nominal_sdh_bayar').val().toString().replace(/\,/g, "");
     n2 = $('#nominal_bayar').val().toString().replace(/\,/g, "");
     n3 = $('#nominal_potongan').val().toString().replace(/\,/g, "");
-    total_harga = Number(nominal_inv) - (Number(n1) + Number(n2) + Number(n3));
+    total_harga = formatter.format(Number(nominal_inv) - (Number(n1) + Number(n2) + Number(n3)));
+    console.log(nominal_inv, n1, n2, n3, total_harga);
     // console.log(nominal_inv+' | '+n3+' | '+total_harga);
     $('#sisa_invoice').val(total_harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 }

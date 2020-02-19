@@ -11,7 +11,7 @@
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Jenis Barang</strong></td>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Stock Awal</strong></td>
                 <td colspan="7" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Pemasukan</strong></td>
-                <td colspan="5" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Pengeluaran</strong></td>
+                <td colspan="6" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Pengeluaran</strong></td>
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Stock Akhir</strong></td>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Selisih</strong></td>
                 <td rowspan="2" style="text-align:center; border:1px solid #000"><strong>Keterangan</strong></td>
@@ -30,6 +30,7 @@
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">SDM</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Retur</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Koreksi</th>
+                <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Lain-Lain</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Buku</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Fisik</th>
             </tr>
@@ -52,6 +53,7 @@
     $sdm_k = 0;
     $retur_k = 0;
     $koreksi_k = 0;
+    $lain2 = 0;
     $stok_akhir = 0;
     $fisik= 0;
     foreach ($detailLaporan as $row){
@@ -72,6 +74,7 @@
         echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->sdm_k==0)? '-':number_format($row->sdm_k,2,',','.')).'</td>';
         echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->retur_k==0)? '-':number_format($row->retur_k,2,',','.')).'</td>';
         echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->koreksi_k==0)? '-':number_format($row->koreksi_k,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->lain2==0)? '-':number_format($row->lain2,2,',','.')).'</td>';
         echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->stok_akhir==0)? '-':number_format($row->stok_akhir,2,',','.')).'</td>';
         echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->fisik==0)? '-':number_format($row->fisik,2,',','.')).'</td>';
         $selisih = $row->stok_akhir - $row->fisik;
@@ -94,6 +97,7 @@
     $sdm_k += $row->sdm_k;
     $retur_k += $row->retur_k;
     $koreksi_k += $row->koreksi_k;
+    $lain2 += $row->lain2;
     $stok_akhir += $row->stok_akhir;
     $fisik+= $row->fisik;
     }
@@ -114,6 +118,7 @@
         <td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000"><strong><?=number_format($sdm_k,2,',','.');?></strong></td>
         <td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000"><strong><?=number_format($retur_k,2,',','.');?></strong></td>
         <td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000"><strong><?=number_format($koreksi_k,2,',','.');?></strong></td>
+        <td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000"><strong><?=number_format($lain2,2,',','.');?></strong></td>
         <td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000"><strong><?=number_format($stok_akhir,2,',','.');?></strong></td>
         <td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000"><strong><?=number_format($fisik,2,',','.');?></strong></td>
         <td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000"><strong></strong></td>
@@ -121,7 +126,7 @@
         <!-- <td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000"><strong><?=number_format($total,2,',','.');?></strong></td> -->
     </tr>
     <tr>
-        <td colspan="19" style="border-right:1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000;">
+        <td colspan="20" style="border-right:1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000;">
             <table border="0" width="100%" cellpadding="0" cellspacing="0" >
                 <tr>
                     <td colspan="3" align="right"><span style="margin-right: 5%;">Tangerang, <?=tanggal_indo(date('Y-m-d'));?></span></td>
@@ -156,12 +161,12 @@
                     echo '<td style="border-bottom:1px solid #000; border-right:1px solid #000; border-left:1px solid #000;">'.$v->nama_customer.'</td>';
                     echo '<td style="border-bottom:1px solid #000; border-right:1px solid #000;">'.$v->jenis_barang.'</td>';
                     echo '<td style="border-bottom:1px solid #000; border-right:1px solid #000;">'.number_format($v->netto,2,',','.').'</td>';
-                    echo '<td style="border-bottom:1px solid #000; border-right:1px solid #000;">'.$v->tanggal_keluar.'</td>';
+                    echo '<td style="border-bottom:1px solid #000; border-right:1px solid #000;">'.$v->tanggal.'</td>';
                     echo '</tr>';
                 } ?>
             </table>
         </td>
-        <td colspan="14" style="border-right:1px solid #000; border-bottom:1px solid #000;">
+        <td colspan="15" style="border-right:1px solid #000; border-bottom:1px solid #000;">
             
         </td>
     </tr>

@@ -285,9 +285,9 @@
                                     Cek Balance </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>index.php/Tolling/print_sisa_tolling_customer" target="_blank">
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/laporan_sisa_tolling_customer">
                                     <i class="fa fa-print"></i>
-                                    Print Sisa Balance </a>
+                                    Laporan Sisa Balance </a>
                                 </li>
                             </ul>
                         </li>
@@ -347,6 +347,11 @@
                                     <a href="<?php echo base_url(); ?>index.php/Tolling/cek_balance_po">
                                     <i class="fa fa-balance-scale"></i>
                                     Cek Balance </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/laporan_sisa_tolling_supplier">
+                                    <i class="fa fa-print"></i>
+                                    Laporan Sisa Balance </a>
                                 </li>
                             </ul>
                         </li>

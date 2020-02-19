@@ -4614,11 +4614,30 @@ class Tolling extends CI_Controller{
         }
     }
 
+    function laporan_sisa_tolling_customer(){
+        $user_ppn = $this->session->userdata('user_ppn');
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "tolling_titipan/laporan_sisa_tolling_customer";
+        $this->load->model('Model_sales_order');
+        $this->load->model('Model_tolling_titipan');
+
+        $this->load->view('layout', $data);
+    }
 
     function print_sisa_tolling_customer(){
         $module_name = $this->uri->segment(1);
         $ppn = $this->session->userdata('user_ppn');
         $this->load->helper('tanggal_indo');
+        $b = $_GET['b'];
+        $t = $_GET['t'];
 
         $group_id    = $this->session->userdata('group_id');        
         if($group_id != 1){
@@ -4629,7 +4648,83 @@ class Tolling extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $this->load->model('Model_tolling_titipan');
-        $data['detailLaporan'] = $this->Model_tolling_titipan->print_sisa_tolling_customer()->result();
-        $this->load->view('tolling_titipan/print_sisa_tolling_customer', $data);
+        if($b==0){
+            $data['detailLaporan'] = $this->Model_tolling_titipan->print_sisa_tolling_customer()->result();
+            $this->load->view('tolling_titipan/print_sisa_tolling_customer', $data);   
+        }else{  
+            $data['tgl'] = $t.'-'.$b.'-01';
+            if($b==12){
+                $b='01';
+                $t+=1;
+            }else if($b>9){
+                $b+=1;
+            }else{
+                $b+=1;
+                $b='0'.$b;
+            }
+
+            $tgl = $t.'-'.$b.'-01';
+            // echo $tgl;
+            $data['detailLaporan'] = $this->Model_tolling_titipan->print_sisa_tolling_customer2($tgl,$ppn)->result();
+            // print_r($data['detailLaporan']);
+            $this->load->view('tolling_titipan/print_sisa_tolling_customer2', $data);   
+        }
+    }
+
+    function laporan_sisa_tolling_supplier(){
+        $user_ppn = $this->session->userdata('user_ppn');
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "tolling_titipan/laporan_sisa_tolling_supplier";
+        $this->load->model('Model_sales_order');
+        $this->load->model('Model_tolling_titipan');
+
+        $this->load->view('layout', $data);
+    }
+
+    function print_sisa_tolling_supplier(){
+        $module_name = $this->uri->segment(1);
+        $ppn = $this->session->userdata('user_ppn');
+        $this->load->helper('tanggal_indo');
+        $b = $_GET['b'];
+        $t = $_GET['t'];
+
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $this->load->model('Model_tolling_titipan');
+        if($b==0){
+            $data['detailLaporan'] = $this->Model_tolling_titipan->print_sisa_tolling_supplier()->result();
+            $this->load->view('tolling_titipan/print_sisa_tolling_supplier', $data);   
+        }else{  
+            $data['tgl'] = $t.'-'.$b.'-01';
+            if($b==12){
+                $b='01';
+                $t+=1;
+            }else if($b>9){
+                $b+=1;
+            }else{
+                $b+=1;
+                $b='0'.$b;
+            }
+
+            $tgl = $t.'-'.$b.'-01';
+            // echo $tgl;
+            $data['detailLaporan'] = $this->Model_tolling_titipan->print_sisa_tolling_supplier2($tgl,$ppn)->result();
+            // print_r($data['detailLaporan']);
+            $this->load->view('tolling_titipan/print_sisa_tolling_supplier2', $data);   
+        }
     }
 }

@@ -1025,13 +1025,13 @@ class Model_gudang_fg extends CI_Model{
     }
 
     function note_pengganti_retur($s,$e){
-        return $this->db->query("select sum(tgf.netto) as netto, jb.jenis_barang, tgf.tanggal_keluar, mc.nama_customer from t_gudang_fg tgf
+        return $this->db->query("select sum(tgf.netto) as netto, jb.jenis_barang, tsj.tanggal, mc.nama_customer from t_gudang_fg tgf
             left join jenis_barang jb on jb.id = tgf.jenis_barang_id
             left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
             left join t_surat_jalan tsj on tgf.t_sj_id = tsj.id
             left join m_customers mc on tsj.m_customer_id = mc.id
                 where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb in (7,9)
-            group by tgf.jenis_barang_id, tgf.tanggal_keluar");
+            group by tgf.jenis_barang_id, tsj.tanggal");
     }
 
     function print_laporan_fg($b,$t,$s,$e,$g,$j,$o){
@@ -1088,6 +1088,10 @@ class Model_gudang_fg extends CI_Model{
                     left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
                     where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb in (8,11) and tgf.jenis_barang_id = i.jenis_barang_id
                     ) as koreksi_k,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 13 and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as lain2,
                 (select sum(netto) from stok_opname_detail sod
                     where sod.stok_opname_id = 
                         (select id from stok_opname so
@@ -1146,6 +1150,10 @@ class Model_gudang_fg extends CI_Model{
                     left join spb on sdf.spb_id = spb.id
                     where dd.tanggal_keluar between '".$s."' and '".$e."' and spb.jenis_spb in (8,11) and dd.rongsok_id = i.jenis_barang_id
                     ) as koreksi_k,
+                (select sum(netto) from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 13 and tgf.jenis_barang_id = i.jenis_barang_id
+                    ) as lain2,
                 (select sum(netto) from stok_opname_detail sod
                     where sod.stok_opname_id = 
                         (select id from stok_opname so

@@ -303,6 +303,11 @@
                                     <i class="fa fa-balance-scale"></i>
                                     Cek Balance </a>
                                 </li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>index.php/Tolling/laporan_sisa_tolling_customer">
+                                    <i class="fa fa-print"></i>
+                                    Laporan Sisa Balance </a>
+                                </li>
                             </ul>
                         </li>
                         <li <?php if($module_name=="Tolling") echo 'class="start active open"'; ?>>

@@ -31,6 +31,7 @@
                             <select id="jenis" name="jenis" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
                                     <option value="0">Laporan Detail</option>
                                     <option value="1">Laporan Global per Tipe</option>
+                                    <option value="2">Laporan Global per Tipe (Tolling)</option>
                                 </select>
                         </div>
                     </div>

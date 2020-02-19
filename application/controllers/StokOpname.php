@@ -221,6 +221,21 @@ class StokOpname extends CI_Controller{
         $this->load->view('layout', $data);
     }
 
+    function delete_stok_opname(){
+        $id = $this->uri->segment(3);
+        $jb = $this->uri->segment(4);
+        if(!empty($id)){
+            $this->db->where('id', $id);
+            $this->db->delete('stok_opname');
+
+            $this->db->where('stok_opname_id', $id);
+            $this->db->delete('stok_opname_detail');            
+        }
+        $this->session->set_flashdata('flash_msg', 'Data voucher cost berhasil dihapus');
+        redirect('index.php/StokOpname/report/'.$jb);
+    }
+
+
     function view(){
         $id = $this->uri->segment(3);
         $module_name = $this->uri->segment(1);

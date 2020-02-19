@@ -19,6 +19,7 @@
                 <th rowspan="2" style="border-top: 1px solid; border-left: 1px solid;">Tanggal</th>
                 <th rowspan="2" style="border-top: 1px solid; border-left: 1px solid;">No Peminjaman</th>
                 <th rowspan="2" style="border-top: 1px solid; border-left: 1px solid;">No Pengembalian</th>
+                <th rowspan="2" style="border-top: 1px solid; border-left: 1px solid;">No Surat Jalan</th>
                 <th colspan="8" style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Dipinjamkan</th>
                 <th colspan="8" style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Dikembalikan</th>
                 <th colspan="8" style="text-align: center; border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">Sisa Pinjaman</th>
@@ -57,6 +58,7 @@
             <tr>
               <td align="center" style="border-top: 1px solid; border-left: 1px solid;"></td>
               <td align="center" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$stok_awal['L'];?></td>
@@ -167,6 +169,7 @@
               <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= date('Y-m-d', strtotime($row->tanggal)) ?></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=($row->trx==0)? $row->nomor:''; ?></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=($row->trx==1)? $row->nomor:''; ?></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$row->no_surat_jalan;?></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=($row->trx==0)? $row->L:''; ?></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=($row->trx==0)? $row->M:''; ?></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=($row->trx==0)? $row->S:''; ?></td>

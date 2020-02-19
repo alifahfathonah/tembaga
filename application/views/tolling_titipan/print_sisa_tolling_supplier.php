@@ -17,13 +17,12 @@
            <tr>
                 <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">No</th>
                 <th style="border-top: 1px solid; border-left: 1px solid;">Nama Customer</th>
-                <th style="border-top: 1px solid; border-left: 1px solid;">No Sales Order</th>
+                <th style="border-top: 1px solid; border-left: 1px solid;">No PO</th>
                 <th style="border-top: 1px solid; border-left: 1px solid;">Tanggal</th>
-                <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Netto SO</th>
-                <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Netto Terima</th>
+                <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Netto PO</th>
                 <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Netto Kirim</th>
-                <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Netto Sisa</th>
-                <th width="5%" style="text-align: center; border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">Keterangan</th>
+                <th style="text-align: center; border-top: 1px solid; border-left: 1px solid;">Netto Terima</th>
+                <th width="5%" style="text-align: center; border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">Netto Sisa</th>
            </tr>
          </thead>
          <tbody>
@@ -41,16 +40,15 @@
           $t_netto_sisa = 0;
           $last_series = null;
           foreach ($detailLaporan as $row){
-            if($last_series!=$row->nama_customer && $last_series!= null){
+            if($last_series!=$row->nama_supplier && $last_series!= null){
               $no++;
               echo '
           <tr>
             <td colspan="4" style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; "><strong>Total</strong></td>
-            <td style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>'.number_format($netto_awal_c,2,',','.').'</strong></td>
             <td style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>'.number_format($netto_terima_c,2,',','.').'</strong></td>
+            <td style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>'.number_format($netto_awal_c,2,',','.').'</strong></td>
             <td style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>'.number_format($netto_kirim_c,2,',','.').'</strong></td>
-            <td style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>'.number_format($t_netto_sisa_c,2,',','.').'</strong></td>
-            <td style="border:1px solid #000;"></td>
+            <td style="border:1px solid #000;">'.number_format($t_netto_sisa_c,2,',','.').'</td>
           </tr>';
 
               $netto_awal_c = 0;
@@ -59,18 +57,17 @@
               $t_netto_sisa_c = 0;
             }
               echo '<tr>';
-              echo ($last_series==$row->nama_customer)? '<td align="center" style="border-left: 1px solid;"></td>' : '<td align="center" style="border-top: 1px solid; border-left: 1px solid;">'.$no.'</td>';
-              echo ($last_series==$row->nama_customer)? '<td style="border-left:1px solid #000"></td>' : '<td style="border-top: 1px solid;border-left: 1px solid;">'.$row->nama_customer.'</td>';
-              echo '<td style="text-align:right; border-top: 1px solid;border-left: 1px solid">'.$row->no_sales_order.'</td>';
+              echo ($last_series==$row->nama_supplier)? '<td align="center" style="border-left: 1px solid;"></td>' : '<td align="center" style="border-top: 1px solid; border-left: 1px solid;">'.$no.'</td>';
+              echo ($last_series==$row->nama_supplier)? '<td style="border-left:1px solid #000"></td>' : '<td style="border-top: 1px solid;border-left: 1px solid;">'.$row->nama_supplier.'</td>';
+              echo '<td style="text-align:right; border-top: 1px solid;border-left: 1px solid">'.$row->no_po.'</td>';
               echo '<td style="text-align:right; border-top: 1px solid;border-left: 1px solid">'.$row->tanggal.'</td>';
               echo '<td style="text-align:right; border-top: 1px solid;border-left: 1px solid">'.number_format($row->netto_awal,2,',','.').'</td>';
-              echo '<td style="text-align:right; border-top: 1px solid;border-left: 1px solid">'.number_format($row->netto_terima,2,',','.').'</td>';
               echo '<td style="text-align:right; border-top: 1px solid;border-left: 1px solid">'.number_format($row->netto_kirim,2,',','.').'</td>';
-              $netto_sisa = $row->netto_terima-$row->netto_kirim;
-              echo '<td style="text-align:right; border-top: 1px solid;border-left: 1px solid">'.number_format($netto_sisa,2,',','.').'</td>';
-              echo '<td style="text-align:right; border-top: 1px solid;border-left: 1px solid;border-right: 1px solid">'.$row->no_po.'</td>';
+              echo '<td style="text-align:right; border-top: 1px solid;border-left: 1px solid">'.number_format($row->netto_terima,2,',','.').'</td>';
+              $netto_sisa = $row->netto_kirim-$row->netto_terima;
+              echo '<td style="text-align:right; border-top: 1px solid;border-left: 1px solid;border-right: 1px solid">'.number_format($netto_sisa,2,',','.').'</td>';
               echo '</tr>';
-              $last_series = $row->nama_customer;
+              $last_series = $row->nama_supplier;
 
               $netto_awal_c += $row->netto_awal;
               $netto_terima_c += $row->netto_terima;
@@ -86,19 +83,17 @@
           <tr>
             <td colspan="4" style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; "><strong>Total</strong></td>
             <td style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>'.number_format($netto_awal_c,2,',','.').'</strong></td>
-            <td style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>'.number_format($netto_terima_c,2,',','.').'</strong></td>
             <td style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>'.number_format($netto_kirim_c,2,',','.').'</strong></td>
-            <td style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>'.number_format($t_netto_sisa_c,2,',','.').'</strong></td>
-            <td style="border:1px solid #000;"></td>
+            <td style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>'.number_format($netto_terima_c,2,',','.').'</strong></td>
+            <td style="border:1px solid #000;">'.number_format($t_netto_sisa_c,2,',','.').'</td>
           </tr>';
           ?>
           <tr>
             <td colspan="4" style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; "><strong>Grand Total</strong></td>
             <td style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong><?=number_format($netto_awal,2,',','.');?></strong></td>
-            <td style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong><?=number_format($netto_terima,2,',','.');?></strong></td>
             <td style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong><?=number_format($netto_kirim,2,',','.');?></strong></td>
-            <td style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong><?=number_format($t_netto_sisa,2,',','.');?></strong></td>
-            <td style="border:1px solid #000;"></td>
+            <td style="text-align: right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong><?=number_format($netto_terima,2,',','.');?></strong></td>
+            <td style="border:1px solid #000;"><?=number_format($t_netto_sisa,2,',','.');?></td>
           </tr>
         </tbody>
       </table>

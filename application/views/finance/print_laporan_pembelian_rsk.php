@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Laporan Pembelian</title>
+	<title>Laporan <?=$header;?></title>
 </head>
 <body onload="window.print()">
 	<table width="100%" style="page-break-after: auto;">
 		<tr>
 			<td align="center">
-				<h4>Laporan Detail Pembelian per <?=tanggal_indo(date('Y-m-d', strtotime($_GET['ts']))).' sampai '.tanggal_indo(date('Y-m-d', strtotime($_GET['te'])));?></h4>
+				<h4>Laporan Detail <?=$header;?> per <?=tanggal_indo(date('Y-m-d', strtotime($_GET['ts']))).' sampai '.tanggal_indo(date('Y-m-d', strtotime($_GET['te'])));?></h4>
 			</td>
 		</tr>
 	</table>
@@ -231,7 +231,8 @@
                 <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($LT_h>0 && $LT > 0)? number_format($LT_h/$LT,2,',','.'): '';?></th>
                 <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($SC_h>0 && $SC > 0)? number_format($SC_h/$SC,2,',','.'): '';?></th>
                 <th style="text-align: right; border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid;"><?=($SCJ_h>0 && $SCJ > 0)? number_format($SCJ_h/$SCJ,2,',','.'): '';?></th>
-                <th style="text-align: right; border-top: 1px solid; border-bottom: 1px solid;"></th>
+                <?php $rata2_global = $total_harga/$total;?>
+                <th style="text-align: right; border-top: 1px solid; border-bottom: 1px solid;"><?=number_format($rata2_global,2,',','.');?></th>
             </tr>
 		</tbody>
 	</table>

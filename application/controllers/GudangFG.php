@@ -1144,8 +1144,12 @@ class GudangFG extends CI_Controller{
             $this->load->model('Model_gudang_fg');
             $data['header']  = $this->Model_gudang_fg->show_header_bpb($id)->row_array(); 
             $data['details'] = $this->Model_gudang_fg->show_detail_bpb($id)->result();
-            $data['packing'] = $this->Model_gudang_fg->show_data_packing($data['header']['jenis_packing_id'])->row_array()['packing'];
-            
+            if($data['header']['jenis_packing_id']==0){
+                $data['packing'] = 0;
+            }else{
+                $data['packing'] = $this->Model_gudang_fg->show_data_packing($data['header']['jenis_packing_id'])->row_array()['packing'];
+            }
+
             $this->load->view('layout', $data);   
         }else{
             redirect('index.php/bpb_list');
@@ -2641,11 +2645,11 @@ class GudangFG extends CI_Controller{
             $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
             $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
         }elseif($l==6){
-            $data['header'] = 'Tolling';
+            $data['header'] = 'Tolling KH';
             $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
             $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
         }elseif($l==7){
-            $data['header'] = 'Tolling';
+            $data['header'] = 'Tolling KMP';
             $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
             $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
         }elseif($l==9){
