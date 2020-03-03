@@ -791,6 +791,7 @@ class SalesOrder extends CI_Controller{
         
         $this->db->trans_start();
         $data = array(
+                'no_sales_order' => $this->input->post('no_sales_order'),
                 'tanggal'=> $tgl_input,
                 'm_customer_id'=>$this->input->post('m_customer_id'),
                 'marketing_id'=>$this->input->post('marketing_id'),
@@ -802,6 +803,7 @@ class SalesOrder extends CI_Controller{
         $this->db->update('sales_order', $data);
 
         $t_data = array(
+
                 'term_of_payment'=> $this->input->post('term_of_payment'),
                 'alias'=> $this->input->post('alias'),
                 'no_po'=> $this->input->post('no_po'),
