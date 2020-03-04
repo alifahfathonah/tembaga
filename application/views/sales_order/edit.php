@@ -33,9 +33,9 @@
                             No. Sales Order <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_so" name="no_so" readonly="readonly"
+                            <input type="text" id="no_sales_order" name="no_sales_order"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['no_sales_order']; ?>">
+                                value="<?php echo $header['no_sales_order']; ?>" onkeyup="this.value = this.value.toUpperCase()">
                             
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                             <input type="hidden" id="so_id" name="so_id" value="<?php echo $header['so_id'];?>">
@@ -46,7 +46,7 @@
                             No. SPB <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="no_so" name="no_so" readonly="readonly"
+                            <input type="text" id="no_so" name="no_so"
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_spb_barang']; ?>">
 
@@ -68,8 +68,8 @@
                         </div>
                         <div class="col-md-8">
                         <input type="text" id="nama_marketing" name="nama_marketing"
-                                class="form-control myline" style="margin-bottom:5px" 
-                                value="<?php echo $header['realname']; ?>" onkeyup="this.value = this.value.toUpperCase()" readonly="readonly">
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $header['realname']; ?>" onkeyup="this.value = this.value.toUpperCase()">
                         <input type="hidden" id="marketing_id" name="marketing_id" value="<?php echo $header['marketing_id'];?>">
                         </div>
                     </div>
