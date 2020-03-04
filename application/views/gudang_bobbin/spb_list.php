@@ -97,7 +97,8 @@
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/GudangBobbin/view_spb/<?php echo $data->id; ?>" 
                                style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
                                 <?php if($data->status == 1 || $data->jumlah_item == 0){ ?>
-                                    <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangBobbin/edit_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
+                                    <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangBobbin/edit_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit Permintaan&nbsp; </a>
+                                    <a class="btn btn-circle btn-xs yellow-gold" href="<?php echo base_url(); ?>index.php/GudangBobbin/edit_pemenuhan_spb/<?php echo $data->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit Pemenuhan&nbsp; </a>
                             <?php
                                     }
                                 }

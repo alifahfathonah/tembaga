@@ -1320,10 +1320,12 @@ class Finance extends CI_Controller{
         ));
 
         //MERUBAH VOUCHER MENJADI DEFAULT LAGI
-        $this->db->where('pembayaran_id', $id);
-        $this->db->update('voucher', array(
-            'pembayaran_id'=>0
-        ));
+        if($id != 0){
+            $this->db->where('pembayaran_id', $id);
+            $this->db->update('voucher', array(
+                'pembayaran_id'=>0
+            ));
+        }
         
         $this->session->set_flashdata('flash_msg', 'Semua Data Pembayaran berhasil direject');
         redirect('index.php/Finance/pembayaran');

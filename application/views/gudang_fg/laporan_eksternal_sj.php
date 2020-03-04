@@ -19,7 +19,7 @@
     </div>
   
    <div class="col-md-12" style="margin-top: 10px;"> 
-        <h3>Laporan Pemasukan dan Pengeluaran Gudang FG</h3>
+        <h3>Laporan Eksternal Surat Jalan</h3>
         <hr class="divider">
         <div class="row">
                 <div class="col-md-6">
@@ -29,35 +29,13 @@
                         </div>
                         <div class="col-md-8">
                             <select id="bl" name="bl" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
-                                <option></option>
                                 <optgroup label="Pengeluaran">
-                                    <option value="15">Global</option>
-                                    <option value="17">Penjualan</option>
-                                    <option value="8">Retur (Pengganti)</option>
-                                    <option value="18">Retur (Produksi)</option>
-                                    <option value="11">Kirim ke Rongsok</option>
-                                    <option value="10">SDM</option>
-                                    <option value="16">Repacking (-)</option>
-                                    <option value="13">Adjustment (-)</option>
-                                    <option value="20">Eksternal</option>
-                                </optgroup>
-                                <optgroup label="Pemasukan">
-                                    <option value="0">Global</option>
-                                    <option value="1">Produksi</option>
-                                    <option value="2">Global (Detail)</option>
-                                    <option value="3">Produksi (Detail)</option>
-                                    <option value="19">SDM</option>
-                                    <?php if($this->session->userdata('user_ppn')==0){ ?>
-                                    <option value="4">PO (KH)</option>
-                                    <?php } ?>
-                                    <option value="5">PO (KMP)</option>
-                                    <?php if($this->session->userdata('user_ppn')==0){ ?>
-                                    <option value="6">Tolling (KH)</option>
-                                    <?php } ?>
-                                    <option value="7">Tolling (KMP)</option>
-                                    <option value="9">Retur (Customer)</option>
-                                    <option value="12">Repacking (+)</option>
-                                    <option value="14">Adjustment (+)</option>
+                                    <option value="1">Global</option>
+                                    <option value="2">Finish Good</option>
+                                    <option value="3">WIP</option>
+                                    <option value="4">Rongsok</option>
+                                    <option value="5">Ampas</option>
+                                    <option value="6">Lain Lain</option>
                                 </optgroup>
                             </select>
                         </div>
@@ -102,7 +80,7 @@ function simpanData(){
         var l=$('#bl').val();
         var s=$('#tgl_start').val();
         var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/GudangFG/print_laporan_gudang_fg?ts='+s+'&te='+e+'&l='+l,'_blank');
+        window.open('<?php echo base_url();?>index.php/GudangFG/print_laporan_eksternal_sj?ts='+s+'&te='+e+'&l='+l,'_blank');
     };
 };
 </script>

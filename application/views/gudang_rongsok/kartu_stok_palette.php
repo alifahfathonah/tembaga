@@ -53,21 +53,26 @@
         $masuk += $row->netto_masuk;
         $keluar += $row->netto_keluar;
     }
-    if($stok_before['koreksi_timbang']>0){
-        echo '<tr>';
-        echo '<td style="text-align:center">'.$no.'</td>';
-        echo '<td colspan="4">Koreksi Timbang</td>';
-        echo '<td style="text-align:right">'.(($stok_before['koreksi_timbang']<0)? number_format($stok_before['koreksi_timbang'],2,',','.'):'0').'</td>';
-        echo '<td style="text-align:right">'.(($stok_before['koreksi_timbang']>0)? number_format($stok_before['koreksi_timbang'],2,',','.'):'0').'</td>';
-        echo '<td style="text-align:right">'.number_format($sisa_now-$stok_before['koreksi_timbang'],2,',','.').'</td>';
-        echo '</tr>';
+    if(!empty($stok_before['koreksi_timbang'])){
+        if($stok_before['koreksi_timbang']>0){
+            echo '<tr>';
+            echo '<td style="text-align:center">'.$no.'</td>';
+            echo '<td colspan="4">Koreksi Timbang</td>';
+            echo '<td style="text-align:right">'.(($stok_before['koreksi_timbang']<0)? number_format($stok_before['koreksi_timbang'],2,',','.'):'0').'</td>';
+            echo '<td style="text-align:right">'.(($stok_before['koreksi_timbang']>0)? number_format($stok_before['koreksi_timbang'],2,',','.'):'0').'</td>';
+            echo '<td style="text-align:right">'.number_format($sisa_now-$stok_before['koreksi_timbang'],2,',','.').'</td>';
+            echo '</tr>';
+        }
+        $koreksi = $stok_before['koreksi_timbang'];
+    }else{
+        $koreksi = 0;
     }
     ?>
     <tr>
         <td colspan="5"></td>
         <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align:right;"><?=number_format($masuk,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align:right;"><?=number_format($keluar,2,',','.');?></td>
-        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align:right;"><?=number_format($sisa-$stok_before['koreksi_timbang'],2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-top:1px solid #000; text-align:right;"><?=number_format($sisa-$koreksi,2,',','.');?></td>
     </tr>
     </tbody>
 </table>

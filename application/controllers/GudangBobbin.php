@@ -745,6 +745,43 @@ class GudangBobbin extends CI_Controller{
         }
     }
 
+    function edit_pemenuhan_spb(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "gudang_bobbin/edit_pemenuhan_spb";
+            $this->load->model('Model_bobbin');
+            $data['header'] = $this->Model_bobbin->show_header_spb($id)->row_array();
+            $jp = $data['header']['jenis_packing'];
+            $data['list_barang'] = $this->Model_bobbin->bobbin_detail_spb_fulfilment($id)->result();
+    
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/GudangBobbin/spb_list');
+        }
+    }
+
+    function delete_detail_pemenuhan_spb(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        $id_detail = $this->uri->segment(4);
+        if($id_detail){
+            $this->db->where('id', $id_detail);
+            $this->db->delete('bobbin_spb_fulfilment');
+            redirect('index.php/GudangBobbin/edit_pemenuhan_spb/'.$id);
+        }else{
+            redirect('index.php/GudangBobbin/bobbin_terima');
+        }
+    }
+
     // function get_bobbin(){ 
     //     $this->load->model('Model_bobbin');
     //     $id = $this->input->post('id');
@@ -833,6 +870,26 @@ class GudangBobbin extends CI_Controller{
         
         $this->session->set_flashdata('flash_msg', 'Data SPB BB berhasil disimpan');
         redirect('index.php/GudangBobbin/spb_list');
+    }
+
+    function update_pemenuhan_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');        
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        #Create SPB fulfilment
+        $details = $this->input->post('details');
+        foreach ($details as $v) {
+            if($v['id_bobbin']!=''){   
+                $this->db->insert('bobbin_spb_fulfilment', array(
+                        'id_spb_bobbin'=>$this->input->post('id'),
+                        'bobbin_id'=>$v['id_bobbin'],
+                            ));
+            }   
+        }
+        
+        $this->session->set_flashdata('flash_msg', 'Data SPB BB berhasil disimpan');
+        redirect('index.php/GudangBobbin/edit_pemenuhan_spb/'.$this->input->post('id'));
     }
 
     function view_spb(){

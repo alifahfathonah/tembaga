@@ -11,7 +11,7 @@
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Jenis Barang</strong></td>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Stock Awal</strong></td>
                 <td colspan="6" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Pemasukan</strong></td>
-                <td colspan="5" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Pengeluaran</strong></td>
+                <td colspan="6" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Pengeluaran</strong></td>
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Stock Akhir</strong></td>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Selisih</strong></td>
                 <td rowspan="2" style="text-align:center; border:1px solid #000"><strong>Keterangan</strong></td>
@@ -28,6 +28,7 @@
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Cuci Bakar Ulang</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">GD/RSK</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Konsumen</th>
+                <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Retur</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Koreksi</th>
 
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Buku</th>
@@ -50,6 +51,7 @@
     $bu_k = 0;
     $gdrsk = 0;
     $konsumen = 0;
+    $retur_k = 0;
     $koreksi = 0;
     $stok_akhir = 0;
     $stok_fisik = 0;
@@ -69,6 +71,7 @@
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; text-align:right;">'.(($row->bakar_ulang_k==0)? '-':number_format($row->bakar_ulang_k,2,',','.')).'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; text-align:right;">'.(($row->gdrsk==0)? '-':number_format($row->gdrsk,2,',','.')).'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; text-align:right;">'.(($row->konsumen==0)? '-':number_format($row->konsumen,2,',','.')).'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; text-align:right;">'.(($row->retur_k==0)? '-':number_format($row->retur_k,2,',','.')).'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; text-align:right;">'.(($row->koreksi==0)? '-':number_format($row->koreksi,2,',','.')).'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; text-align:right;">'.(($row->stok_akhir==0)? '-':number_format($row->stok_akhir,2,',','.')).'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; text-align:right;">'.(($row->stok_fisik==0)? '-':number_format($row->stok_fisik,2,',','.')).'</td>';
@@ -90,6 +93,7 @@
     $bu_k += $row->bakar_ulang_k;
     $gdrsk += $row->gdrsk;
     $konsumen += $row->konsumen;
+    $retur_k += $row->retur_k;
     $koreksi += $row->koreksi;
     $stok_akhir += $row->stok_akhir;
     $stok_fisik+= $row->stok_fisik;
@@ -109,6 +113,7 @@
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;text-align: right;"><strong><?=number_format($bu_k,2,',','.');?></strong></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;text-align: right;"><strong><?=number_format($gdrsk,2,',','.');?></strong></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;text-align: right;"><strong><?=number_format($konsumen,2,',','.');?></strong></td>
+        <td style="border-bottom:1px solid #000; border-left:1px solid #000;text-align: right;"><strong><?=number_format($retur_k,2,',','.');?></strong></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;text-align: right;"><strong><?=number_format($koreksi,2,',','.');?></strong></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;text-align: right;"><strong><?=number_format($stok_akhir,2,',','.');?></strong></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;text-align: right;"><strong><?=number_format($stok_fisik,2,',','.');?></strong></td>

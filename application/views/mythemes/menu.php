@@ -779,16 +779,31 @@
                         </ul>
                         </li>
                         <li>
-                            <a href="<?php echo base_url(); ?>index.php/GudangFG/spb_all">
-                                <i class="fa fa-file-word-o"></i>
-                                SPB All
-                            </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/GudangFG/surat_jalan">
-                                <i class="fa fa-truck"></i>
-                                Surat Jalan
-                            </a>
+                        <a href="#">
+                        <i class="fa fa-circle"></i>
+                        <span class="title">SJ Keluar</span>
+                        <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/GudangFG/spb_all">
+                                    <i class="fa fa-file-word-o"></i>
+                                    SPB All
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/GudangFG/surat_jalan">
+                                    <i class="fa fa-truck"></i>
+                                    Surat Jalan
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo base_url(); ?>index.php/GudangFG/laporan_eksternal_sj">
+                                    <i class="fa fa-search"></i>
+                                    Laporan Pengeluaran
+                                </a>
+                            </li>
+                        </ul>
                         </li>
                     <?php } ?>
                     </ul>

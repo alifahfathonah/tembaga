@@ -547,7 +547,7 @@ class GudangRongsok extends CI_Controller{
 			$data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_dari_produksi($start,$end,0)->result();//produksi
 			$this->load->view('gudang_rongsok/print_permintaan_gudang', $data);
 		}elseif($l==1){
-			$data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_external($start,$end)->result();
+			$data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_external($start,$end,$l)->result();
 			$this->load->view('gudang_rongsok/print_permintaan_external', $data);
 		}elseif($l==2){
 			$data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_dari_produksi($start,$end,1)->result();//tali rolling
@@ -606,6 +606,9 @@ class GudangRongsok extends CI_Controller{
 			$this->load->view('gudang_rongsok/print_laporan_pemasukan2', $data);
 		}elseif($l==18){
 			$data['detailLaporan'] = $this->Model_beli_rongsok->pemasukan_rongsok_tolling2($start,$end,1)->result();
+			$this->load->view('gudang_rongsok/print_laporan_pemasukan2', $data);
+		}elseif($l==19){
+			$data['detailLaporan'] = $this->Model_beli_rongsok->permintaan_rongsok_external($start,$end,$l)->result();//Eksternal di SPB ALL
 			$this->load->view('gudang_rongsok/print_laporan_pemasukan2', $data);
 		}
 	}
@@ -771,6 +774,7 @@ class GudangRongsok extends CI_Controller{
 				$this->db->update('inventory', array(
 					'stok_fisik'=>$row['netto'],
 					'koreksi_timbang'=>$row['koreksi_timbang'],
+					'koreksi_buku'=>$row['koreksi_buku'],
 					'keterangan'=>$row['keterangan']
 				));
 			}

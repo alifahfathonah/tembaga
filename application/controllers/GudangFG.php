@@ -2701,6 +2701,10 @@ class GudangFG extends CI_Controller{
             $data['header'] = 'Penjualan';
             $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pengeluaran($s,$e,$l)->result();
             $this->load->view('gudang_fg/print_laporan_pengeluaran', $data);
+        }elseif($l==20){
+            $data['header'] = 'Eksternal';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pengeluaran($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pengeluaran', $data);
         }
     }
 
@@ -3431,5 +3435,53 @@ class GudangFG extends CI_Controller{
             $arr_so[$row->id] = $row->no_spb;
         } 
         print form_dropdown('spb_id', $arr_so);
+    }
+
+    function laporan_eksternal_sj(){
+        $module_name = $this->uri->segment(1);
+            $group_id    = $this->session->userdata('group_id');
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['content']= "gudang_fg/laporan_eksternal_sj";
+
+            $this->load->view('layout', $data);
+    }
+
+    function print_laporan_eksternal_sj(){
+        $l = $_GET['l'];
+        $s = date('Y-m-d', strtotime($_GET['ts']));
+        $e = date('Y-m-d', strtotime($_GET['te']));
+        $this->load->helper('tanggal_indo');  
+        $this->load->model('Model_gudang_fg');
+
+        if($l==1){
+            $data['header'] = 'Global';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_eksternal_sj($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_eksternal_sj', $data);
+        }elseif($l==2){
+            $data['header'] = 'Finish Good';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_eksternal_sj($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_eksternal_sj', $data);
+        }elseif($l==3){
+            $data['header'] = 'WIP';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_eksternal_sj($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_eksternal_sj', $data);
+        }elseif($l==4){
+            $data['header'] = 'Rongsok';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_eksternal_sj($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_eksternal_sj', $data);
+        }elseif($l==5){
+            $data['header'] = 'Ampas';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_eksternal_sj($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_eksternal_sj', $data);
+        }elseif($l==6){
+            $data['header'] = 'Lain-Lain';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_eksternal_sj($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_eksternal_sj', $data);
+        }
     }
 }

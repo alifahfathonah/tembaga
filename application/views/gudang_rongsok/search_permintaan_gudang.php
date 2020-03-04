@@ -35,6 +35,7 @@
                                     <option value="2">Permintaan Tali Rolling</option>
                                     <option value="14">Permintaan SDM</option>
                                     <option value="11">Permintaan Lain</option>
+                                    <option value="19">Permintaan External SPB Lain2</option>
                                 </optgroup>
                                 <optgroup label="Pemasukan">
                                     <?php if($this->session->userdata('user_ppn')==0){ ?>

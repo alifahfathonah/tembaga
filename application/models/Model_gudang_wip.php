@@ -804,7 +804,11 @@ class Model_gudang_wip extends CI_Model{
                 (select sum(tgw.berat) from t_gudang_wip tgw
                     left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
                     left join t_hasil_wip thw on thw.t_spb_wip_id = tsw.id
-                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tsw.flag_produksi in (4,6,7,9) and tgw.jenis_barang_id = i.jenis_barang_id) as konsumen,
+                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tsw.flag_produksi in (4,6) and tgw.jenis_barang_id = i.jenis_barang_id) as konsumen,
+                (select sum(tgw.berat) from t_gudang_wip tgw
+                    left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
+                    left join t_hasil_wip thw on thw.t_spb_wip_id = tsw.id
+                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tsw.flag_produksi in (7,9) and tgw.jenis_barang_id = i.jenis_barang_id) as retur_k,
                 (select sum(tgw.berat) from t_gudang_wip tgw
                     left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
                     left join t_hasil_wip thw on thw.t_spb_wip_id = tsw.id

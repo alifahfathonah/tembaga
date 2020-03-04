@@ -34,6 +34,7 @@
                                 <option value="3">Ready -> Booked</option>
                                 <option value="1">Booked -> Used</option>
                                 <option value="2">Used -> Delivered</option>
+                                <option value="4">Used -> Booked</option>
                             </select>
                         </div>
                     </div>
