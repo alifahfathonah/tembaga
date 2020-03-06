@@ -492,6 +492,11 @@
                                         <i class="fa fa-briefcase"></i>
                                         Gudang Keras </a>
                                     </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangFG/laporan_produksi_fg">
+                                        <i class="fa fa-briefcase"></i>
+                                        Laporan Produksi FG </a>
+                                    </li>
                                     <!-- <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangFG/print_stok_fg" target="_blank">
                                         <i class="fa fa-print"></i>

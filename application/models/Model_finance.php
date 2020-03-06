@@ -2712,6 +2712,7 @@ class Model_finance extends CI_Model{
                 SELECT MONTH
                     ( t.tanggal ) AS bulan,
                 CASE
+                        WHEN dd.po_detail_id > 0 AND p.flag_tolling > 0 THEN 'Tolling'
                         WHEN dd.po_detail_id > 0 THEN
                         'PO' 
                         WHEN dd.po_detail_id = 0 
@@ -2764,6 +2765,7 @@ class Model_finance extends CI_Model{
 SELECT MONTH
                     ( t.tanggal ) AS bulan,
                 CASE
+                        WHEN dd.po_detail_id > 0 AND p.flag_tolling > 0 THEN 'Tolling'
                         WHEN dd.po_detail_id > 0 THEN
                         'PO' 
                         WHEN dd.po_detail_id = 0 
@@ -2832,6 +2834,7 @@ SELECT MONTH
                 SELECT MONTH
                     ( t.tanggal ) AS bulan,
                 CASE
+                        WHEN dd.po_detail_id > 0 AND p.flag_tolling > 0 THEN 'Tolling'
                         WHEN dd.po_detail_id > 0 THEN
                         'PO' 
                         WHEN dd.po_detail_id = 0 

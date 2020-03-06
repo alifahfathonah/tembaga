@@ -452,8 +452,8 @@ class Model_gudang_wip extends CI_Model{
                     ( sum(CASE WHEN jenis_trx = 0 THEN berat ELSE 0 END) - sum(CASE WHEN jenis_trx = 1 THEN berat ELSE 0 END) )
                     from t_gudang_keras
                     where MONTH(tanggal) = MONTH(thw.tanggal) and YEAR(tanggal) = YEAR(thw.tanggal) ) as wip_akhir,
-                (select netto from t_gudang_produksi where jenis_barang_id = 2 and MONTH(tanggal) = MONTH(thw.tanggal - INTERVAL 1 MONTH) and YEAR(tanggal) = YEAR(thw.tanggal)) as produksi_awal,
-                (select netto from t_gudang_produksi where jenis_barang_id = 2 and MONTH(tanggal) = MONTH(thw.tanggal) and YEAR(tanggal) = YEAR(thw.tanggal)) as produksi_akhir,
+                (select netto from t_gudang_produksi where jenis = 0 and jenis_barang_id = 2 and MONTH(tanggal) = MONTH(thw.tanggal - INTERVAL 1 MONTH) and YEAR(tanggal) = YEAR(thw.tanggal)) as produksi_awal,
+                (select netto from t_gudang_produksi where jenis = 0 and jenis_barang_id = 2 and MONTH(tanggal) = MONTH(thw.tanggal) and YEAR(tanggal) = YEAR(thw.tanggal)) as produksi_akhir,
                 (select sum(dd.netto) from spb_detail_fulfilment sdf
                     left join spb on sdf.spb_id = spb.id
                     left join dtr_detail dd on sdf.dtr_detail_id = dd.id
@@ -592,11 +592,12 @@ class Model_gudang_wip extends CI_Model{
     function gudang_floor_produksi(){
         return $this->db->query("select tgp.*, jb.jenis_barang, u.realname from t_gudang_produksi tgp 
                 left join jenis_barang jb on tgp.jenis_barang_id = jb.id
-                left join users u on tgp.created_by = u.id order by tgp.tanggal desc");
+                left join users u on tgp.created_by = u.id
+                where jenis = 0 order by tgp.tanggal desc");
     }
 
     function get_floor_produksi($a){
-        return $this->db->query("select * from t_gudang_produksi where jenis_barang_id = 2 and tanggal ='".$a."'");
+        return $this->db->query("select * from t_gudang_produksi where jenis = 0 and jenis_barang_id = 2 and tanggal ='".$a."'");
     }
 
     function get_tali_rolling($s,$e){
@@ -622,11 +623,11 @@ class Model_gudang_wip extends CI_Model{
     }
 
     function get_gas($tgl){
-        return $this->db->query("select * from t_gudang_produksi where jenis_barang_id in (9,10) and tanggal = '".$tgl."'");
+        return $this->db->query("select * from t_gudang_produksi where jenis = 0 and jenis_barang_id in (9,10) and tanggal = '".$tgl."'");
     }
 
     function get_apollo($tgl){
-        return $this->db->query("select * from t_gudang_produksi where jenis_barang_id in (11,12) and tanggal = '".$tgl."'");
+        return $this->db->query("select * from t_gudang_produksi where jenis = 0 and jenis_barang_id in (11,12) and tanggal = '".$tgl."'");
     }
 
     function print_laporan_wip($s,$e,$j){

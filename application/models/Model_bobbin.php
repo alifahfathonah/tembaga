@@ -463,17 +463,26 @@ class Model_bobbin extends CI_Model{
 
     function print_laporan_langganan($l,$j){
         if($l==0){
-            return $this->db->query("select mb.nomor_bobbin, mb.berat, mb.m_bobbin_size_id, COALESCE(s.nama_supplier,mc.nama_customer) as nama from m_bobbin mb
+            return $this->db->query("select mb.nomor_bobbin, mb.berat, mb.m_bobbin_size_id, COALESCE(s.nama_supplier,mc.nama_customer) as nama, 
+                (select no_surat_jalan from t_surat_jalan_detail tsjd
+                    left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
+                    where tsjd.nomor_bobbin = mb.nomor_bobbin order by tsjd.id desc limit 1) as no_surat_jalan from m_bobbin mb
                 left join supplier s on s.id = mb.borrowed_by_supplier
                 left join m_customers mc on mc.id = mb.borrowed_by
                 where mb.borrowed_by_supplier > 0 or mb.borrowed_by > 0 order by nama, nomor_bobbin
              ");
         }else if($l==1){
-            return $this->db->query("select mb.nomor_bobbin, mb.berat, mb.m_bobbin_size_id, s.nama_supplier as nama from m_bobbin mb
+            return $this->db->query("select mb.nomor_bobbin, mb.berat, mb.m_bobbin_size_id, s.nama_supplier as nama, 
+                (select no_surat_jalan from t_surat_jalan_detail tsjd
+                    left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
+                    where tsjd.nomor_bobbin = mb.nomor_bobbin order by tsjd.id desc limit 1) as no_surat_jalan from m_bobbin mb
                 left join supplier s on s.id = mb.borrowed_by_supplier
                 where mb.borrowed_by_supplier =".$j." order by mb.nomor_bobbin");
         }elseif($l==2){
-            return $this->db->query("select mb.nomor_bobbin, mb.berat, mb.m_bobbin_size_id, mc.nama_customer as nama from m_bobbin mb
+            return $this->db->query("select mb.nomor_bobbin, mb.berat, mb.m_bobbin_size_id, mc.nama_customer as nama, 
+                (select no_surat_jalan from t_surat_jalan_detail tsjd
+                    left join t_surat_jalan tsj on tsjd.t_sj_id = tsj.id
+                    where tsjd.nomor_bobbin = mb.nomor_bobbin order by tsjd.id desc limit 1) as no_surat_jalan from m_bobbin mb
                 left join m_customers mc on mc.id = mb.borrowed_by
                 where mb.borrowed_by=".$j." order by mb.nomor_bobbin");
         }

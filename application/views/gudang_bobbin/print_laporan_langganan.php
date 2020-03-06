@@ -15,6 +15,7 @@ table td, table td * {
     <thead>
         <th style="width:40px">No</th>
         <th>Nama</th>
+        <th>Nomor SJ</th>
         <th>Nomor</th>
         <th>Berat</th>
     </thead>
@@ -31,7 +32,7 @@ table td, table td * {
     foreach ($details as $row){
         if($last_qty != null && $last_qty != $row->m_bobbin_size_id){
             echo '<tr>
-                <td colspan="2"></td>
+                <td colspan="3"></td>
                 <td style="border-bottom:1px solid #000; border-top:1px solid #000">'.$qty_j.'</td>
                 <td style="border-bottom:1px solid #000; border-top:1px solid #000">'.$berat_j.'</td>
             </tr>';
@@ -40,7 +41,7 @@ table td, table td * {
         }
         if($last_series != null && $last_series != $row->nama){
             echo '<tr>
-                <td colspan="2" style="border-bottom:1px solid #000; border-top:1px solid #000"><strong>TOTAL '.$last_series.'</strong></td>
+                <td colspan="3" style="border-bottom:1px solid #000; border-top:1px solid #000"><strong>TOTAL '.$last_series.'</strong></td>
                 <td style="border-bottom:1px solid #000; border-top:1px solid #000">'.$qty_n.'</td>
                 <td style="border-bottom:1px solid #000; border-top:1px solid #000">'.number_format($berat_n,2,',','.').'</td>
             </tr>';
@@ -51,6 +52,7 @@ table td, table td * {
         echo '<tr>';
         echo '<td style="text-align:center">'.$no.'</td>';
         echo '<td>'.$row->nama.'</td>';
+        echo '<td>'.$row->no_surat_jalan.'</td>';
         echo '<td>'.$row->nomor_bobbin.'</td>';
         echo '<td>'.number_format($row->berat,2,',','.').'</td>';
         echo '</tr>';
@@ -63,18 +65,18 @@ table td, table td * {
         $last_qty = $row->m_bobbin_size_id;
     }
     echo '<tr>
-        <td colspan="2"></td>
+        <td colspan="3"></td>
         <td style="border-bottom:1px solid #000; border-top:1px solid #000">'.$qty_j.'</td>
         <td style="border-bottom:1px solid #000; border-top:1px solid #000">'.$berat_j.'</td>
     </tr>';
     ?>
     <tr>
-        <td colspan="2" style="border-bottom:1px solid #000; border-top:1px solid #000"><strong>TOTAL <?=$last_series;?></strong></td>
+        <td colspan="3" style="border-bottom:1px solid #000; border-top:1px solid #000"><strong>TOTAL <?=$last_series;?></strong></td>
         <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=$qty_n;?></td>
         <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($berat_n,2,',','.');?></td>
     </tr>
     <tr>
-        <td colspan="2"></td>
+        <td colspan="3"></td>
         <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=$no;?></td>
         <td style="border-bottom:1px solid #000; border-top:1px solid #000"><?=number_format($berat,2,',','.');?></td>
     </tr>

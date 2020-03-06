@@ -1139,6 +1139,10 @@ class Model_gudang_fg extends CI_Model{
                     left join dtbj on tbf.dtbj_id = dtbj.id
                     where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id in (95,822) and tgf.jenis_barang_id = i.jenis_barang_id) as koreksi,
                 (select sum(netto) from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                    left join dtbj on tbf.dtbj_id = dtbj.id
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id not in (95,822,255,838,401,542,713) and dtbj.po_id = 0 and dtbj.so_id = 0 and tgf.jenis_barang_id = i.jenis_barang_id) as lain,
+                (select sum(netto) from t_gudang_fg tgf
                     left join t_surat_jalan tsj on tsj.id = tgf.t_sj_id
                     where tgf.tanggal_keluar between '".$s."' and '".$e."' and t_sj_id > 0 and tsj.retur_id = 0 and tgf.jenis_barang_id = i.jenis_barang_id
                     ) as konsumen,
@@ -1318,6 +1322,46 @@ class Model_gudang_fg extends CI_Model{
                 ");
         }
         return $data;
+    }
+
+    function gudang_floor_produksi(){
+        return $this->db->query("select tgp.*, jb.jenis_barang, u.realname from t_gudang_produksi tgp 
+                left join jenis_barang jb on tgp.jenis_barang_id = jb.id
+                left join users u on tgp.created_by = u.id
+                where jenis = 1 order by tgp.tanggal desc");
+    }
+
+    function print_laporan_produksi_fg($s,$e){
+        return $this->db->query("select jb.jenis_barang, sum(wip_awal) as wip_awal, sum(bahan_baku) as bahan_baku, sum(retur) as retur, sum(hasil_produksi) as hasil_produksi, sum(bs_sdm) as bs_sdm, sum(afkir) as afkir, sum(wip_akhir) as wip_akhir from 
+            (
+                (select tgw.jenis_barang_id, 0 as wip_awal, sum(tgw.berat) as bahan_baku, 0 as retur, 0 as hasil_produksi, 0 as bs_sdm, 0 as afkir, 0 as wip_akhir from t_gudang_wip tgw
+                    left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
+                        where tgw.jenis_trx = 1 and tsw.flag_produksi = 0 and tgw.tanggal between '".$s."' and '".$e."'
+                            group by tgw.jenis_barang_id)
+                UNION ALL
+                (select tgf.jenis_barang_id, 0 as wip_awal, sum(tgf.netto) as bahan_baku, 0 as retur, 0 as hasil_produksi, 0 as bs_sdm, 0 as afkir, 0 as wip_akhir from t_gudang_fg tgf
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                        where tsf.jenis_spb = 0 and tgf.tanggal_masuk between '".$s."' and '".$e."'
+                            group by tgf.jenis_barang_id)
+                UNION ALL
+                (select tgf.jenis_barang_id, 0 as wip_awal, 0 as bahan_baku, 0 as retur, sum(tgf.netto) as hasil_produksi, 0 as bs_sdm, 0 as afkir, 0 as wip_akhir from t_gudang_fg tgf
+                    left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
+                        where tbf.produksi_fg_id > 0 and tgf.tanggal_masuk between '".$s."' and '".$e."'
+                            group by tgf.jenis_barang_id)
+                UNION ALL
+                (select 
+                    CASE WHEN dd.line_remarks = 'UK/2.90' THEN 156
+                    WHEN dd.line_remarks = 'UK/8.00' THEN 654
+                    ELSE 16 END as jenis_barang_id, 0 as wip_awal, 0 as bahan_baku, 0 as retur, 0 as hasil_produksi, sum(dd.netto) as bs_sdm, 0 as afkir, 0 as wip_akhir from dtr_detail dd
+                    left join dtr on dd.dtr_id = dtr.id
+                    left join rongsok r on r.id = dd.rongsok_id
+                        where dtr.supplier_id = 713 and dd.rongsok_id = 19 and dtr.tanggal between '".$s."' and '".$e."' group by line_remarks)
+            ) as a
+                left join jenis_barang jb on a.jenis_barang_id = jb.id
+                where jb.group in (0,4,5)
+                group by jenis_barang
+                    order by jb.group asc, jb.ukuran desc, jb.jenis_barang
+            ");
     }
     /*
     cara membuat view stok fg

@@ -98,7 +98,8 @@
                         ?>
                             <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangWIP/view_laporan/<?php echo $data->tanggal; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-file-text-o"></i> View &nbsp; </a>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangWIP/print_laporan_bulanan/<?php echo $data->tanggal; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print All &nbsp;</a>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangWIP/print_laporan_wip/<?php echo $data->tanggal; ?>" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print Laporan &nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangWIP/print_laporan_wip/<?php echo $data->tanggal; ?>/0" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print Laporan &nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/GudangWIP/print_laporan_wip/<?php echo $data->tanggal; ?>/1" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa  fa-print"></i> Print Laporan AL &nbsp; </a>
                             <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/GudangWIP/edit_laporan/<?php echo $data->tanggal; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
                         <?php
                             }//if group

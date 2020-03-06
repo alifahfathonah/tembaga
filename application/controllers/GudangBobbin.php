@@ -850,14 +850,33 @@ class GudangBobbin extends CI_Controller{
         
         #Create SPB fulfilment
         $details = $this->input->post('details');
-        foreach ($details as $v) {
-            if($v['id_size']!=''){   
-                $this->db->insert('bobbin_spb_detail', array(
-                        'id_spb_bobbin'=>$this->input->post('id'),
-                        'jenis_size'=>$v['id_size'],
+        if($this->input->post('status')==0){
+            foreach ($details as $v) {
+                if($v['id_size']!=''){   
+                    $this->db->insert('bobbin_spb_detail', array(
+                            'id_spb_bobbin'=>$this->input->post('id'),
+                            'jenis_size'=>$v['id_size'],
+                            'jumlah'=>$v['qty']
+                                ));
+                }   
+            }
+        }else{
+            foreach ($details as $v) {
+                if($v['tipe']==1){
+                    $this->db->where('id', $v['id_size']);
+                    $this->db->update('bobbin_spb_detail', array(
                         'jumlah'=>$v['qty']
-                            ));
-            }   
+                    ));
+                }else{
+                    if($v['id_size']!=''){   
+                        $this->db->insert('bobbin_spb_detail', array(
+                                'id_spb_bobbin'=>$this->input->post('id'),
+                                'jenis_size'=>$v['id_size'],
+                                'jumlah'=>$v['qty']
+                                    ));
+                    }
+                }
+            }
         }
 
         $data = array(
@@ -870,6 +889,18 @@ class GudangBobbin extends CI_Controller{
         
         $this->session->set_flashdata('flash_msg', 'Data SPB BB berhasil disimpan');
         redirect('index.php/GudangBobbin/spb_list');
+    }
+
+    function delete_pemenuhan_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn = $this->session->userdata('user_ppn');
+        $id = $this->uri->segment(3);
+        $header_id = $this->uri->segment(4);
+
+            $this->db->where('id', $id);
+            $this->db->delete('bobbin_spb_detail');
+
+        redirect('index.php/GudangBobbin/edit_spb/'.$header_id);
     }
 
     function update_pemenuhan_spb(){

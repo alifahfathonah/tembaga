@@ -3484,4 +3484,61 @@ class GudangFG extends CI_Controller{
             $this->load->view('gudang_fg/print_laporan_eksternal_sj', $data);
         }
     }
+
+    function laporan_produksi_fg(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $data['judul']     = "Gudang FG";
+        $data['content']   = "gudang_fg/laporan_produksi_fg";
+        $this->load->model('Model_gudang_fg');
+        $data['list_data'] = $this->Model_gudang_fg->gudang_floor_produksi()->result();
+        $data['jb'] = $this->Model_gudang_fg->barang_fg_all()->result();
+
+        $this->load->view('layout', $data);  
+    }
+
+    function print_laporan_produksi_fg(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+
+        $jb_id = $_GET['l'];
+        $start = date('Y-m-d', strtotime($_GET['ts']));
+        $end = date('Y-m-d', strtotime($_GET['te']));
+        // echo $start;die();
+
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+            $data['judul']     = "Gudang FG";
+            $this->load->helper('tanggal_indo');
+
+        $data['start'] = $start;
+        $data['end'] = $end;
+        $last_day =date("Y-m-t", strtotime('-1 day', strtotime($start)));
+        // echo $last_day;die();
+
+            $this->load->model('Model_gudang_fg');
+            if($jb_id == 0){
+                $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_produksi_fg($start,$end)->result();
+                $this->load->view('gudang_fg/print_laporan_produksi_fg', $data);
+            }elseif($jb_id == 2){
+                $data['check'] = $this->Model_gudang_wip->cek_rolling_bu($start,$end,$jb_id)->result();
+                $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_masak($start,$end,$jb_id)->result();
+                $data['a'] = $this->Model_gudang_wip->get_wip_awal($start)->row_array();
+                $data['b'] = $this->Model_gudang_wip->get_wip_akhir($start,$end)->row_array();
+                $data['ia'] = $this->Model_gudang_wip->get_floor_produksi($last_day)->row_array();
+                $data['ib'] = $this->Model_gudang_wip->get_floor_produksi($end)->row_array();
+                $data['tr'] = $this->Model_gudang_wip->get_tali_rolling($start,$end)->row_array();
+                $this->load->view('gudangwip/print_laporan_masak_rolling', $data);
+            }
+    }
 }
