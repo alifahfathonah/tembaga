@@ -57,7 +57,7 @@ $module_name = $this->uri->segment(1);
         <!-- LOGO -->
         <div class="page-logo">
             <a href="<?php echo base_url(); ?>">
-                <img src="<?php echo base_url(); ?>img/logo.png" alt="logo" class="logo-default" width="98px"/>
+                <!-- <img src="<?php echo base_url(); ?>img/logo.png" alt="logo" class="logo-default" width="98px"/> -->
             </a>
             <div class="menu-toggler sidebar-toggler"></div>
         </div>

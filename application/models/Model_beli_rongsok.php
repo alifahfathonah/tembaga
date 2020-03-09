@@ -623,6 +623,21 @@ class Model_beli_rongsok extends CI_Model{
 //                 where dd2.tanggal_masuk between '".$s."' and '".$e."' and d2.type = 0 and t.ttr_status != 0 and (dd2.po_detail_id > 0 or ( dd2.po_detail_id = 0 and d2.so_id > 0 ) ) and dd2.rongsok_id = i.jenis_barang_id
 //                 ) as supplier,
 
+
+                // CASE WHEN i.jenis_barang_id = 81 THEN
+                // (select sum(td.netto) from dtr_detail dd2
+                //     left join ttr_detail td on td.dtr_detail_id = dd2.id
+                //     left join dtr d2 on dd2.dtr_id = d2.id
+                //     left join ttr t on t.dtr_id = d2.id
+                //     where dd2.tanggal_masuk between '".$s."' and '".$e."' and d2.type = 0 and t.ttr_status = 1 and d2.supplier_id = 302 and d2.po_id = 0)
+                // ELSE
+                // (select sum(td.netto) from dtr_detail dd2
+                //     left join ttr_detail td on td.dtr_detail_id = dd2.id
+                //     left join dtr d2 on dd2.dtr_id = d2.id
+                //     left join ttr t on t.dtr_id = d2.id
+                //     where dd2.tanggal_masuk between '".$s."' and '".$e."' and d2.type = 0 and t.ttr_status != 0 and (dd2.po_detail_id > 0 or ( dd2.po_detail_id = 0 and d2.so_id > 0 ) ) and dd2.rongsok_id = i.jenis_barang_id
+                //     ) 
+                // END as supplier,
     function print_laporan_bb($b,$t,$s,$e){
         return $this->db->query("select *, r.nama_item as jenis_barang,
             (select sum(td.netto) from dtr_detail dd 
@@ -631,20 +646,12 @@ class Model_beli_rongsok extends CI_Model{
                 left join ttr t on t.dtr_id = dtr.id
                 where dd.tanggal_masuk between '".$s."' and '".$e."' and t.ttr_status = 1 and (prd_id > 0 or supplier_id in (713,96,255,838,401,542,580)) and dd.rongsok_id = i.jenis_barang_id
                 ) as produksi,
-                CASE WHEN i.jenis_barang_id = 81 THEN
-                (select sum(td.netto) from dtr_detail dd2
-                    left join ttr_detail td on td.dtr_detail_id = dd2.id
-                    left join dtr d2 on dd2.dtr_id = d2.id
-                    left join ttr t on t.dtr_id = d2.id
-                    where dd2.tanggal_masuk between '".$s."' and '".$e."' and d2.type = 0 and t.ttr_status = 1 and d2.supplier_id = 302 and d2.po_id = 0)
-                ELSE
                 (select sum(td.netto) from dtr_detail dd2
                     left join ttr_detail td on td.dtr_detail_id = dd2.id
                     left join dtr d2 on dd2.dtr_id = d2.id
                     left join ttr t on t.dtr_id = d2.id
                     where dd2.tanggal_masuk between '".$s."' and '".$e."' and d2.type = 0 and t.ttr_status != 0 and (dd2.po_detail_id > 0 or ( dd2.po_detail_id = 0 and d2.so_id > 0 ) ) and dd2.rongsok_id = i.jenis_barang_id
-                    ) 
-                END as supplier,
+                    ) as supplier,
             (select sum(td.netto) from dtr_detail dd2
                 left join ttr_detail td on td.dtr_detail_id = dd2.id
                 left join dtr d2 on dd2.dtr_id = d2.id
@@ -1016,16 +1023,28 @@ class Model_beli_rongsok extends CI_Model{
     //     return $data;
     // }
 
-    function permintaan_rongsok_external($s,$e){
-        return $this->db->query("select r.nama_item,r.kode_rongsok, spb.no_spb, dd.id, sum(dd.bruto) as bruto, sum(dd.netto) as netto, dd.tanggal_keluar, sj.no_surat_jalan as nomor from dtr_detail dd
-            left join spb_detail_fulfilment sdf on sdf.dtr_detail_id = dd.id
-            left join spb on spb.id = sdf.spb_id
-            left join t_surat_jalan sj on sj.id = dd.flag_sj
-            left join rongsok r on r.id = dd.rongsok_id
-            where dd.flag_sj > 0 and sdf.id is not null and dd.tanggal_keluar between '".$s."' and '".$e."'
-            group by dd.rongsok_id, nomor
-            order by dd.rongsok_id, dd.tanggal_keluar asc
-            ");
+    function permintaan_rongsok_external($s,$e,$l){
+        if($l==1){
+            return $this->db->query("select r.nama_item,r.kode_rongsok, spb.no_spb, dd.id, sum(dd.bruto) as bruto, sum(dd.netto) as netto, dd.tanggal_keluar, sj.no_surat_jalan as nomor from dtr_detail dd
+                left join spb_detail_fulfilment sdf on sdf.dtr_detail_id = dd.id
+                left join spb on spb.id = sdf.spb_id
+                left join t_surat_jalan sj on sj.id = dd.flag_sj
+                left join rongsok r on r.id = dd.rongsok_id
+                where dd.flag_sj > 0 and sdf.id is not null and dd.tanggal_keluar between '".$s."' and '".$e."'
+                group by dd.rongsok_id, nomor
+                order by dd.rongsok_id, dd.tanggal_keluar asc
+                ");
+        }elseif($l==19){
+            return $this->db->query("select r.nama_item,r.kode_rongsok, spb.no_spb, dd.id, sum(dd.bruto) as bruto, sum(dd.netto) as netto, dd.tanggal_keluar, sj.no_surat_jalan as nomor from dtr_detail dd
+                left join spb_detail_fulfilment sdf on sdf.dtr_detail_id = dd.id
+                left join spb on spb.id = sdf.spb_id
+                left join t_surat_jalan sj on sj.id = dd.flag_sj
+                left join rongsok r on r.id = dd.rongsok_id
+                where spb.jenis_spb = 13 and dd.tanggal_keluar between '".$s."' and '".$e."'
+                group by dd.rongsok_id, nomor
+                order by dd.rongsok_id, dd.tanggal_keluar asc
+                ");
+        }
     }
 
     function pemasukan_rongsok($s,$e,$ppn){

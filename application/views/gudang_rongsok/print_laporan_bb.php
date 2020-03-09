@@ -59,10 +59,10 @@
         echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->sdm==0)? '-':number_format($row->sdm,2,',','.')).'</td>';
         echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->konsumen==0)? '-':number_format($row->konsumen,2,',','.')).'</td>';
         echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->koreksi_k==0)? '-':number_format($row->koreksi_k,2,',','.')).'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->stok_akhir==0)? '-':number_format($row->stok_akhir,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->stok_akhir==0)? '-':number_format($row->stok_akhir-$row->koreksi_buku,2,',','.')).'</td>';
         echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->stok_fisik==0)? '-':number_format($row->stok_fisik,2,',','.')).'</td>';
         // $selisih = $row->stok_fisik-($row->stok_akhir-$row->koreksi_timbang);
-        $selisih = $row->stok_fisik-($row->stok_akhir);
+        $selisih = $row->stok_fisik-($row->stok_akhir-$row->koreksi_buku);
         echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($selisih==0)? '-':number_format($selisih,2,',','.')).'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000 ; border-right:1px solid #000">'.$row->keterangan.'</td>';
         echo '</tr>';
@@ -76,7 +76,7 @@
     $sdm += $row->sdm;
     $konsumen += $row->konsumen;
     $koreksi_k += $row->koreksi_k;
-    $stok_akhir += $row->stok_akhir;
+    $stok_akhir += $row->stok_akhir-$row->koreksi_buku;
     $stok_fisik += $row->stok_fisik;
     $koreksi_timbang += $row->koreksi_timbang;
     $total_selisih += $selisih;

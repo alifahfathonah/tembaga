@@ -39,6 +39,7 @@
             <th>Nomor Penerimaan</th>
             <th>Tanggal</th>
             <th>Surat Jalan</th>
+            <th>Nama</th>
             <th>Status</th>
             <th>Jumlah Item</th>
             <th>Keterangan</th>
@@ -56,6 +57,7 @@
           <td><?php echo $row->no_penerimaan ?></td>
           <td><?php echo $row->tanggal ?></td>
           <td><?php echo $row->surat_jalan ?></td>
+          <td><?php echo $row->nama ?></td>
           <td><?php
               if($row->status==0){
                   echo '<div style="background-color:green; color:white; padding:4px">Ready</div>';

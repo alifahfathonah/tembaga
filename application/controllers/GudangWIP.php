@@ -2015,6 +2015,7 @@ class GudangWIP extends CI_Controller{
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
             $data = array(
+                'jenis'=>0,
                 'tanggal'=> $tgl_input,
                 'jenis_barang_id'=> $this->input->post('barang_id'),
                 'netto'=> $this->input->post('netto'),
@@ -2344,12 +2345,17 @@ class GudangWIP extends CI_Controller{
         $group_id    = $this->session->userdata('group_id');
         $user_id = $this->session->userdata('user_id');
         $tanggal  = $this->uri->segment(3);
+        $jenis = $this->uri->segment(4);
         $this->load->helper('tanggal_indo');
 
             $tgl_arr = explode('-', $tanggal);
             $bulan = $tgl_arr[1];
             $tahun = $tgl_arr[0];
-            $jb = 'WIP';
+            if($jenis==0){
+                $data['jb'] = 'WIP';
+            }else{
+                $data['jb'] = 'WIP Aluminium';
+            }
 
             $start = $tanggal;
             $end = date("Y-m-t", strtotime($start));
@@ -2359,7 +2365,11 @@ class GudangWIP extends CI_Controller{
             $data['g'] = 'WIP';
 
         $this->load->model('Model_gudang_wip');
-        $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_bulanan_wip($bulan,$tahun,$start,$end,4)->result();
+        if($jenis==0){
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_bulanan_wip($bulan,$tahun,$start,$end,4)->result();
+        }else{
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_bulanan_wip($bulan,$tahun,$start,$end,28)->result();
+        }
         $this->load->view('gudangwip/print_laporan_bulanan_wip', $data);
     }
 

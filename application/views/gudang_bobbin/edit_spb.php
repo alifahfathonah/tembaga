@@ -36,6 +36,7 @@
                                 value="<?php echo $header['no_spb_bobbin']; ?>">
                             
                             <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
+                            <input type="hidden" id="status" name="status" value="<?php echo $header['status']; ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -106,6 +107,7 @@
                         <?php if($header['status']==0) { ?>
                             <tr>
                                 <td style="text-align:center"><div id="no_tabel_1">1</div></td>
+                                <input type="hidden" id="tipe_1" name="details[1][tipe]" value="0">
                                 <input type="hidden" id="id_size_1" name="details[1][id_size]">
                                 <td>
                                     <select id="jenis_size_1" name="details[1][jenis_size]" placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom: 5px;" onchange="check(1);">
@@ -122,15 +124,39 @@
                                     <a id="del_1" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(1);" style="margin-top:5px"><i class="fa fa-trash"></i> Hapus </a>
                                 </td>
                             </tr>
-                        <?php }else{ $no=0; foreach ($myDetail as $row) { $no++;
+                        <?php }else{ $no=1; 
+                            foreach ($myDetail as $row) {
                                     echo '<tr>';
                                     echo '<td>'.$no.'</td>';
                                     echo '<td>'.$row->bobbin_size.'</td>';
-                                    echo '<td>'.$row->jumlah.'</td>';
-                                    echo '<td>'.$row->keterangan.'</td>';
+                                    echo '<td>
+                                    <input type="hidden" id="tipe_'.$no.'" name="details['.$no.'][tipe]" value="1">
+                                    <input type="hidden" id="id_size_'.$no.'" name="details['.$no.'][id_size]" value="'.$row->id.'">
+                                    <input type="text" id="qty_'.$no.'" name="details['.$no.'][qty]" class="form-control myline" value="'.$row->jumlah.'"></td>';
+                                    echo '<td><a href="'.base_url().'index.php/GudangBobbin/delete_pemenuhan_spb/'.$row->id.'/'.$header['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus permintaan ini?\');"> <i class="fa fa-trash-o"></i> Delete </a></td>';
                                     echo '<tr>';
-                            }
-                        } ?>
+                                    $no++;
+                            } ?>
+                            <tr>
+                                <td style="text-align:center"><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
+                                <input type="hidden" id="tipe_<?=$no;?>" name="details[<?=$no;?>][tipe]" value="0">
+                                <input type="hidden" id="id_size_<?=$no;?>" name="details[<?=$no;?>][id_size]">
+                                <td>
+                                    <select id="jenis_size_<?=$no;?>" name="details[<?=$no;?>][jenis_size]" placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom: 5px;" onchange="check(<?=$no;?>);">
+                                        <option value=""></option>
+                                        <?php foreach ($jenis_size as $row) {
+                                            echo '<option value="'.$row->id.'">('.$row->bobbin_size.") ".$row->keterangan."</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </td>
+                                <td><input type="text" id="qty_<?=$no;?>" name="details[<?=$no;?>][qty]" class="form-control myline"></td>
+                                <td style="text-align:center">
+                                    <a id="add_<?=$no;?>" href="javascript:;" class="btn btn-xs btn-circle green" onclick="create_new_input(<?=$no;?>);" style="margin-top:5px"><i class="fa fa-plus"></i> Tambah </a>
+                                    <a id="del_<?=$no;?>" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail(<?=$no;?>);" style="margin-top:5px"><i class="fa fa-trash"></i> Hapus </a>
+                                </td>
+                            </tr>
+                        <?php } ?>
                             </tbody>
                         </table>
                     </div>
@@ -215,6 +241,7 @@ function create_new_input(id){
         $("#tabel_bobbin>tbody").append(
             '<tr>'+
                 '<td style="text-align:center"><div id="no_tabel_'+new_id+'">'+new_id+'</div></td>'+
+                '<input type="hidden" id="tipe_'+new_id+'" name="details['+new_id+'][tipe]" value="0">'+
                 '<input type="hidden" id="id_size_'+new_id+'" name="details['+new_id+'][id_size]">'+
                 '<td>'+
                     '<select id="jenis_size_'+new_id+'" name="details['+new_id+'][jenis_size]" placeholder="Silahkan pilih..." class="form-control myline select2me" style="margin-bottom: 5px;" onchange="check('+new_id+');">'+

@@ -60,7 +60,7 @@ $cv = $this->db->query("SELECT cv.nama_cv FROM m_cv cv JOIN users u ON cv.id = u
                 <?php if (isset($cv['nama_cv'])) { ?>
                     <h5><?= $cv['nama_cv']; ?></h5>
                 <?php } else { ?>
-                    <img src="<?php echo base_url(); ?>img/logo.png" alt="logo" class="logo-default" width="98px"/>
+                    <!-- <img src="<?php echo base_url(); ?>img/logo.png" alt="logo" class="logo-default" width="98px"/> -->
                 <?php } ?>
                 
             </a>
