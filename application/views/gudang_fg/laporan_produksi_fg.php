@@ -16,6 +16,7 @@
             </div>
         </div>
     </div>
+<div class="row">
    <div class="col-md-12" style="margin-top: 10px;"> 
         <h3>Laporan Produksi FG</h3>
         <hr class="divider">
@@ -90,6 +91,8 @@
                                     <input type="text" id="tanggal" name="tanggal" 
                                         class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
                                         value="<?php echo date('Y-m-01'); ?>">
+
+                                    <input type="hidden" id="id" name="id">
                                 </div>
                             </div>
                             <div class="row">
@@ -142,8 +145,7 @@
                         <tr>
                             <th style="width:50px;">No</th>
                             <th>Tanggal</th>
-                            <th>Customer</th>
-                            <th>Tipe</th>
+                            <th>Jenis Barang</th>
                             <th>Netto</th>
                             <th>Dibuat Oleh</th> 
                             <th>Actions</th>
@@ -158,13 +160,12 @@
                             <tr>
                                 <td style="text-align:center;"><?php echo $no; ?></td>
                                 <td><?php echo date('d-m-Y', strtotime($data->tanggal)); ?></td>
-                                <td><?php echo $data->nama; ?></td>
-                                <td><?=($data->tipe==0)? 'Stok Awal' : 'Koreksi';?></td>
+                                <td><?php echo $data->jenis_barang; ?></td>
                                 <td style="text-align:center"><?php echo number_format($data->netto,2,',','.'); ?></td>
                                 <td><?php echo $data->realname; ?></td>
                                 <td style="text-align:center">
                                     <a class="btn btn-circle btn-xs blue" onclick="editData(<?=$data->id;?>);" style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit &nbsp; </a>
-                                    <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/GudangFG/delete_stok/<?php echo $data->id;?>/1" onclick="return confirm('Anda yakin menghapus transaksi ini?');" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-trash"></i> Hapus &nbsp; </a>
+                                    <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/GudangFG/delete_stok/<?php echo $data->id;?>" onclick="return confirm('Anda yakin menghapus transaksi ini?');" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-trash"></i> Hapus &nbsp; </a>
                                 </td>
                             </tr>
                             <?php
@@ -176,6 +177,7 @@
                 </div>
             </div>
     </div>
+</div>
 <script type="text/javascript">
 var dsState;
 
@@ -196,10 +198,9 @@ function editData(id){
         type: "POST",
         data : {id: id},
         success: function (result){
-            $('#tipe_laporan').select2('val',result['tipe']);
             $('#netto').val(result['netto']);
             $('#tanggal').val(result['tanggal']);
-            $('#customer_id').select2('val',result['customer_id']);
+            $('#jenis_barang_id').select2('val',result['jenis_barang_id']);
             $('#id').val(result['id']);
             
             $("#myModal").find('.modal-title').text('Edit Rongsok');

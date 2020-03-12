@@ -229,24 +229,27 @@ class R_TollingResmi extends CI_Controller{
                 );
 
                 $post = json_encode($data);
-
-                // print_r($post);
-                // die();
-                $ch = curl_init(target_url().'api/ReffAPI/dtr_view');
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                $response = curl_exec($ch);
-                $result = json_decode($response, true);
-                curl_close($ch);
-                // print_r($response);
-                // die();
+                if(!empty($post)){
+                    print_r($post);
+                    die();
+                    $ch = curl_init(target_url().'api/ReffAPI/dtr_view');
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    $response = curl_exec($ch);
+                    $result = json_decode($response, true);
+                    curl_close($ch);
+                    // print_r($response);
+                    // die();
+                    $this->session->set_flashdata('flash_msg', 'DTR dan TTR berhasil disimpan!');
+                }else{
+                    $this->session->set_flashdata('flash_msg', 'DTR dan TTR gagal disimpan, silahkan dicoba kembali!');
+                }
 
                 //API END//
 
         if($this->db->trans_complete()){
-            $this->session->set_flashdata('flash_msg', 'DTR dan TTR berhasil disimpan!');
             redirect('index.php/R_TollingResmi/view_tolling/'.$r_dtr_id);  
         }else{
             $this->session->set_flashdata('flash_msg', 'DTR dan TTR gagal disimpan, silahkan dicoba kembali!');

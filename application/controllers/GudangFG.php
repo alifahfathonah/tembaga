@@ -3523,12 +3523,13 @@ class GudangFG extends CI_Controller{
 
         $data['start'] = $start;
         $data['end'] = $end;
+        $first_day = date('Y-m-01', strtotime('+1 month', strtotime($start)));
         $last_day =date("Y-m-t", strtotime('-1 day', strtotime($start)));
         // echo $last_day;die();
 
             $this->load->model('Model_gudang_fg');
             if($jb_id == 0){
-                $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_produksi_fg($start,$end)->result();
+                $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_produksi_fg($start,$end,$first_day)->result();
                 $this->load->view('gudang_fg/print_laporan_produksi_fg', $data);
             }elseif($jb_id == 2){
                 $data['check'] = $this->Model_gudang_wip->cek_rolling_bu($start,$end,$jb_id)->result();
@@ -3539,6 +3540,93 @@ class GudangFG extends CI_Controller{
                 $data['ib'] = $this->Model_gudang_wip->get_floor_produksi($end)->row_array();
                 $data['tr'] = $this->Model_gudang_wip->get_tali_rolling($start,$end)->row_array();
                 $this->load->view('gudangwip/print_laporan_masak_rolling', $data);
+            }
+    }
+
+    function save_stok_laporan(){
+        $user_id  = $this->session->userdata('user_id');
+        $user_ppn  = $this->session->userdata('user_ppn');
+        $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $id = $this->input->post('jenis_barang_id');
+
+        $this->load->model('Model_gudang_fg');
+        $cek = $this->Model_gudang_fg->get_gudang_produksi($tgl_input,$this->input->post('jenis_barang_id'),1)->row_array();
+        if(empty($cek)){
+            $this->db->trans_start();
+
+                $this->db->insert('t_gudang_produksi', array(
+                    'jenis'=>1,
+                    'tanggal'=>$tgl_input,
+                    'jenis_barang_id'=>$id,
+                    'netto'=>$this->input->post('netto'),
+                    'created_by'=> $user_id,
+                    'created_at'=> $tanggal
+                ));
+            
+            if($this->db->trans_complete()){    
+                $this->session->set_flashdata('flash_msg', 'Stok Awal Berhasil di Input');                
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat create laporan stok, silahkan coba kembali!');
+            }
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Stok Awal Sudah Pernah di Input'); 
+        }
+            redirect('index.php/GudangFG/laporan_produksi_fg');
+    }
+
+    function edit_stok(){
+        $id = $this->input->post('id');
+        $this->load->model('Model_gudang_fg');
+        $data = $this->Model_gudang_fg->edit_stok($id)->row_array(); 
+        
+        header('Content-Type: application/json');
+        echo json_encode($data);       
+    }
+
+    function delete_stok(){
+        $user_id  = $this->session->userdata('user_id');
+        $id = $this->uri->segment(3);
+
+        $this->db->trans_start();
+        if($id){
+            $this->db->where('id', $id);
+            $this->db->delete('t_gudang_produksi');
+
+            if($this->db->trans_complete()){
+                redirect('index.php/GudangFG/laporan_produksi_fg');  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data Floor Produksi berhasil dihapus, silahkan dicoba kembali!');
+                redirect('index.php/GudangFG/laporan_produksi_fg');  
+            }            
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data Floor Produksi gagal disimpan, penomoran belum disetup!');
+            redirect('index.php/GudangFG/laporan_produksi_fg');
+        }
+    }
+
+    function update_stok_laporan(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $id = $this->input->post('id');
+
+            $this->db->trans_start();
+            $this->db->where('id', $id);
+            $this->db->update('t_gudang_produksi', array(
+                'tanggal'=>$tgl_input,
+                'jenis_barang_id'=>$this->input->post('jenis_barang_id'),
+                'netto'=>$this->input->post('netto'),
+                'created_by'=> $user_id,
+                'created_at'=> $tanggal
+            ));
+
+            if($this->db->trans_complete()){
+                $this->session->set_flashdata('flash_msg', 'Data Floor Produksi berhasil disimpan!');
+                redirect('index.php/GudangFG/laporan_produksi_fg');  
+            }else{
+                $this->session->set_flashdata('flash_msg', 'Data Floor Produksi gagal disimpan, silahkan dicoba kembali!');
+                redirect('index.php/GudangFG/laporan_produksi_fg');  
             }
     }
 }

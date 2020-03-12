@@ -89,7 +89,7 @@ LAPORAN PEMAKAIAN BAHAN BAKAR ROLLING</h3>
     </tr>
     </tbody>
     <tr>
-        <td colspan="5" style="text-align: left; border-bottom:1px solid #000; border-left:1px solid #000;">
+        <td colspan="4" style="text-align: left; border-bottom:1px solid #000; border-left:1px solid #000;">
             <table border="0" width="100%" style="text-align:left">
                 <tr>
                     <td>TOTAL PEMAKAIAN BAHAN BAKAR ROLLING (GAS)</td>
@@ -108,7 +108,7 @@ LAPORAN PEMAKAIAN BAHAN BAKAR ROLLING</h3>
                 </tr>
             </table>
         </td>
-        <td colspan="5" style="border-bottom:1px solid #000; border-right:1px solid #000;">
+        <td colspan="6" style="border-bottom:1px solid #000; border-right:1px solid #000;">
             <table border="0" width="100%">
                 <tr>
                     <td colspan="2"></td>

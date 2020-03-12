@@ -208,7 +208,24 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join supplier spl On (po.supplier_id = spl.id) or (dtr.supplier_id = spl.id) 
                     Left Join users usr On (dtr.created_by = usr.id) 
                     Left Join retur r On (r.id = dtr.retur_id)
-                    Where (dtr.customer_id = 0 or retur_id > 0) and dtr.flag_ppn =".$user_ppn."
+                    Where dtr.tanggal >= now()-interval 2 month and (dtr.customer_id = 0 or retur_id > 0) and dtr.flag_ppn =".$user_ppn."
+                Order By dtr.id Desc");
+        return $data;
+    }
+
+    function filter_dtr($user_ppn,$s,$e){
+        $data = $this->db->query("Select dtr.*, 
+                    COALESCE(po.no_po,r.no_retur) as no_po,
+                    spl.nama_supplier,
+                    spl.kode_supplier,
+                    usr.realname As penimbang,
+                (Select count(dtrd.id)As jumlah_item From dtr_detail dtrd Where dtrd.dtr_id = dtr.id)As jumlah_item
+                From dtr
+                    Left Join po On (dtr.po_id > 0 and po.id = dtr.po_id)
+                    Left Join supplier spl On (po.supplier_id = spl.id) or (dtr.supplier_id = spl.id) 
+                    Left Join users usr On (dtr.created_by = usr.id) 
+                    Left Join retur r On (r.id = dtr.retur_id)
+                    Where dtr.tanggal between '".$s."' and '".$e."' and (dtr.customer_id = 0 or retur_id > 0) and dtr.flag_ppn =".$user_ppn."
                 Order By dtr.id Desc");
         return $data;
     }
@@ -333,7 +350,7 @@ class Model_beli_rongsok extends CI_Model{
     //     return $data;
     // }
 
-    function ttr_list($user_ppn){
+    function ttr_list($user_ppn,$s,$e){
         $data = $this->db->query("Select ttr.*, 
                     dtr.no_dtr,
                     dtr.tanggal as tgl_dtr,
@@ -346,12 +363,12 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join dtr On (dtr.id = ttr.dtr_id) 
                     Left Join po On (po.id = dtr.po_id) 
                     Left Join supplier spl On (po.supplier_id = spl.id)
-                Where dtr.flag_ppn=".$user_ppn." and (dtr.po_id > 0 or so_id > 0)
+                Where ttr.tanggal between '".$s."' and '".$e."' and dtr.flag_ppn=".$user_ppn." and (dtr.po_id > 0 or so_id > 0)
                 Order By ttr.id Desc");
         return $data;
     }
 
-    function bpb_list($user_ppn){
+    function bpb_list($user_ppn,$s,$e){
         $data = $this->db->query("Select ttr.*, 
                     dtr.no_dtr,
                     dtr.tanggal as tgl_dtr,
@@ -364,7 +381,7 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join dtr On (dtr.id = ttr.dtr_id) 
                     Left Join po On (po.id = dtr.po_id) 
                     Left Join supplier spl On (po.supplier_id = spl.id)
-                Where dtr.flag_ppn=".$user_ppn." and dtr.po_id = 0 and dtr.so_id = 0
+                Where dtr.tanggal between '".$s."' and '".$e."' and  dtr.flag_ppn=".$user_ppn." and dtr.po_id = 0 and dtr.so_id = 0
                 Order By ttr.id Desc");
         return $data;
     }

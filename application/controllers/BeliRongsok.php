@@ -967,6 +967,26 @@ class BeliRongsok extends CI_Controller{
         $this->load->view('layout', $data);
     }
     
+    function filter_dtr(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $user_ppn    = $this->session->userdata('user_ppn');
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        $s = $this->uri->segment(3);
+        $e = $this->uri->segment(4);
+
+        $data['content']= "beli_rongsok/dtr_list";
+        $this->load->model('Model_beli_rongsok');
+        $data['list_data'] = $this->Model_beli_rongsok->filter_dtr($user_ppn,$s,$e)->result();
+
+        $this->load->view('layout', $data);
+    }
+    
     function print_dtr(){
         $id = $this->uri->segment(3);
         if($id){        
@@ -1663,10 +1683,16 @@ class BeliRongsok extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
-
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
         $data['content']= "beli_rongsok/ttr_list";
         $this->load->model('Model_beli_rongsok');
-        $data['list_data'] = $this->Model_beli_rongsok->ttr_list($user_ppn)->result();
+        $data['list_data'] = $this->Model_beli_rongsok->ttr_list($user_ppn,$s,$e)->result();
 
         $this->load->view('layout', $data);
     }
@@ -1681,14 +1707,21 @@ class BeliRongsok extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "beli_rongsok/ttr_list";
         $this->load->model('Model_beli_rongsok');
-        $data['list_data'] = $this->Model_beli_rongsok->bpb_list($user_ppn)->result();
+        $data['list_data'] = $this->Model_beli_rongsok->bpb_list($user_ppn,$s,$e)->result();
 
         $this->load->view('layout', $data);
     }
-    
+
     function review_ttr(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);

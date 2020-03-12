@@ -838,7 +838,7 @@ class Model_gudang_fg extends CI_Model{
         WHEN substr(tgf.no_packing,7,2) IN ('BP') THEN 'B.P' 
         WHEN substr(tgf.no_packing,7,2) IN ('BV') THEN 'B.V' 
         WHEN substr(tgf.no_packing,7,2) IN ('BH') THEN 'B.H' 
-        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ' 
+        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q','Z') THEN 'KRJ' 
         WHEN substr(tgf.no_packing,7,2) IN ('RB','RK','R0','R1') THEN 'R'
         ELSE 'B' END AS jenis_packing,
         sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
@@ -862,8 +862,7 @@ class Model_gudang_fg extends CI_Model{
         WHEN substr(tgf.no_packing,7,2) IN ('BP') THEN 'B.P' 
         WHEN substr(tgf.no_packing,7,2) IN ('BV') THEN 'B.V' 
         WHEN substr(tgf.no_packing,7,2) IN ('BH') THEN 'B.H' 
-        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ' 
-        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ' 
+        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q','Z') THEN 'KRJ' 
         WHEN substr(tgf.no_packing,7,2) IN ('RB','RK','R0','R1') THEN 'R'
         ELSE 'B' END AS jenis_packing,
         sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
@@ -887,7 +886,7 @@ class Model_gudang_fg extends CI_Model{
         WHEN substr(tgf.no_packing,7,2) IN ('BP') THEN 'B.P' 
         WHEN substr(tgf.no_packing,7,2) IN ('BV') THEN 'B.V' 
         WHEN substr(tgf.no_packing,7,2) IN ('BH') THEN 'B.H' 
-        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ'
+        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q','Z') THEN 'KRJ'
         WHEN substr(tgf.no_packing,7,2) IN ('RB') THEN 'RB'
         WHEN substr(tgf.no_packing,7,2) IN ('RK') THEN 'RK'
         WHEN substr(tgf.no_packing,7,2) IN ('R0','R1') THEN 'R'
@@ -911,7 +910,7 @@ class Model_gudang_fg extends CI_Model{
         $data = $this->db->query("select CASE 
         WHEN substr(tgf.no_packing,7,2) IN ('A0','B0','C0', 'A1','B1','C1') THEN 'K' 
         WHEN substr(tgf.no_packing,7,2) IN ('BP','BV','BH') THEN 'B.P' 
-        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ' 
+        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q','Z') THEN 'KRJ' 
         WHEN substr(tgf.no_packing,7,2) IN ('RB','RK','R0','R1') THEN 'R'
         ELSE 'B' END AS jenis_packing,
         sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
@@ -926,8 +925,7 @@ class Model_gudang_fg extends CI_Model{
         $data = $this->db->query("select CASE 
         WHEN substr(tgf.no_packing,7,2) IN ('A0','B0','C0', 'A1','B1','C1') THEN 'K' 
         WHEN substr(tgf.no_packing,7,2) IN ('BP','BV','BH') THEN 'B.P' 
-        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ' 
-        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ' 
+        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q','Z') THEN 'KRJ' 
         WHEN substr(tgf.no_packing,7,2) IN ('RB','RK','R0','R1') THEN 'R'
         ELSE 'B' END AS jenis_packing,
         sum(tgf.netto) as netto, jb.jenis_barang, jb.kode, jb.uom from t_gudang_fg tgf
@@ -942,7 +940,7 @@ class Model_gudang_fg extends CI_Model{
         $data = $this->db->query("select CASE 
         WHEN substr(tgf.no_packing,7,2) IN ('A0','B0','C0', 'A1','B1','C1') THEN 'K' 
         WHEN substr(tgf.no_packing,7,2) IN ('BP','BV','BH') THEN 'B.P' 
-        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q') THEN 'KRJ'
+        WHEN substr(tgf.no_packing,7,1) IN ('J','P','Q','Z') THEN 'KRJ'
         WHEN substr(tgf.no_packing,7,2) IN ('RB') THEN 'RB'
         WHEN substr(tgf.no_packing,7,2) IN ('RK') THEN 'RK'
         WHEN substr(tgf.no_packing,7,2) IN ('R0','R1') THEN 'R'
@@ -1331,7 +1329,7 @@ class Model_gudang_fg extends CI_Model{
                 where jenis = 1 order by tgp.tanggal desc");
     }
 
-    function print_laporan_produksi_fg($s,$e){
+    function print_laporan_produksi_fg($s,$e,$f){
         return $this->db->query("select jb.jenis_barang, sum(wip_awal) as wip_awal, sum(bahan_baku) as bahan_baku, sum(retur) as retur, sum(hasil_produksi) as hasil_produksi, sum(bs_sdm) as bs_sdm, sum(afkir) as afkir, sum(wip_akhir) as wip_akhir from 
             (
                 (select tgw.jenis_barang_id, 0 as wip_awal, sum(tgw.berat) as bahan_baku, 0 as retur, 0 as hasil_produksi, 0 as bs_sdm, 0 as afkir, 0 as wip_akhir from t_gudang_wip tgw
@@ -1341,7 +1339,7 @@ class Model_gudang_fg extends CI_Model{
                 UNION ALL
                 (select tgf.jenis_barang_id, 0 as wip_awal, sum(tgf.netto) as bahan_baku, 0 as retur, 0 as hasil_produksi, 0 as bs_sdm, 0 as afkir, 0 as wip_akhir from t_gudang_fg tgf
                     left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
-                        where tsf.jenis_spb = 0 and tgf.tanggal_masuk between '".$s."' and '".$e."'
+                        where tsf.jenis_spb = 0 and tgf.tanggal_keluar between '".$s."' and '".$e."'
                             group by tgf.jenis_barang_id)
                 UNION ALL
                 (select tgf.jenis_barang_id, 0 as wip_awal, 0 as bahan_baku, 0 as retur, sum(tgf.netto) as hasil_produksi, 0 as bs_sdm, 0 as afkir, 0 as wip_akhir from t_gudang_fg tgf
@@ -1356,12 +1354,32 @@ class Model_gudang_fg extends CI_Model{
                     left join dtr on dd.dtr_id = dtr.id
                     left join rongsok r on r.id = dd.rongsok_id
                         where dtr.supplier_id = 713 and dd.rongsok_id = 19 and dtr.tanggal between '".$s."' and '".$e."' group by line_remarks)
+                UNION ALL
+                (select jenis_barang_id, netto as wip_awal, 0 as bahan_baku, 0 as retur, 0 as hasil_produksi, 0 as bs_sdm, 0 as afkir, 0 as wip_akhir from t_gudang_produksi
+                    where jenis = 1 and tanggal = '".$s."')
+                UNION ALL
+                (select jenis_barang_id, 0 as wip_awal, 0 as bahan_baku, 0 as retur, 0 as hasil_produksi, 0 as bs_sdm, 0 as afkir, netto as wip_akhir from t_gudang_produksi
+                    where jenis = 1 and tanggal = '".$f."')
+                UNION ALL
+                (select tgw.jenis_barang_id, 0 as wip_awal, 0 as bahan_baku, 0 as retur, 0 as hasil_produksi, 0 as bs_sdm, sum(tgw.berat) as afkir, 0 as wip_akhir from t_gudang_wip tgw
+                    left join t_bpb_wip_detail tbwd on tgw.t_bpb_wip_detail_id = tbwd.id
+                    left join t_bpb_wip tbw on tbwd.bpb_wip_id = tbw.id
+                    left join dtwip on tbw.dtwip_id = dtwip.id
+                    where dtwip.supplier_id = 713 and tgw.tanggal between '".$s."' and '".$e."' group by tgw.jenis_barang_id)
             ) as a
                 left join jenis_barang jb on a.jenis_barang_id = jb.id
                 where jb.group in (0,4,5)
                 group by jenis_barang
                     order by jb.group asc, jb.ukuran desc, jb.jenis_barang
             ");
+    }
+
+    function get_gudang_produksi($tgl,$id,$tipe){
+        return $this->db->query("select * from t_gudang_produksi where tanggal ='".$tgl."' and jenis_barang_id = ".$id." and jenis=".$tipe);
+    }
+
+    function edit_stok($id){
+        return $this->db->query("Select * From t_gudang_produksi where id =".$id);
     }
     /*
     cara membuat view stok fg

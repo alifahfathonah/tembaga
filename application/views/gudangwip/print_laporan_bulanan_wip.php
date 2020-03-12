@@ -22,14 +22,14 @@
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">SDM</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Supplier</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Retur</th>
-                <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Koreksi</th>
+                <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Repacking</th>
 
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Produksi</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Cuci Bakar Ulang</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">GD/RSK</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Konsumen</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Retur</th>
-                <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Koreksi</th>
+                <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Repacking</th>
 
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Buku</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Fisik</th>

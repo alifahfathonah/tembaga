@@ -136,10 +136,10 @@
     </tr>
     </tbody>
     <tr>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000; text-align: center;" colspan="20"><?=number_format($berat,2,',','.').' + '.number_format($berat_susut,2,',','.').' = '.number_format($berat+$berat_susut,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000; text-align: center;" colspan="22"><?=number_format($berat,2,',','.').' + '.number_format($berat_susut,2,',','.').' = '.number_format($berat+$berat_susut,2,',','.');?></td>
     </tr>
     <tr>
-        <td colspan="20" style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000;">
+        <td colspan="22" style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000;">
             <table border="0" width="100%">
                 <tr>
                     <td colspan="2"></td>

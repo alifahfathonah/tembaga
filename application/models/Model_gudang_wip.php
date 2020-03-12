@@ -447,13 +447,14 @@ class Model_gudang_wip extends CI_Model{
                 (select 
                     ( sum(CASE WHEN jenis_trx = 0 THEN berat ELSE 0 END) - sum(CASE WHEN jenis_trx = 1 THEN berat ELSE 0 END) )
                     from t_gudang_keras
-                    where MONTH(tanggal) < MONTH(thw.tanggal) and YEAR(tanggal) = YEAR(thw.tanggal) ) as wip_awal,
+                    where 
+                        tanggal < DATE_FORMAT(thw.tanggal, '%Y-%m-01') ) as wip_awal,
                 (select 
                     ( sum(CASE WHEN jenis_trx = 0 THEN berat ELSE 0 END) - sum(CASE WHEN jenis_trx = 1 THEN berat ELSE 0 END) )
                     from t_gudang_keras
                     where MONTH(tanggal) = MONTH(thw.tanggal) and YEAR(tanggal) = YEAR(thw.tanggal) ) as wip_akhir,
-                (select netto from t_gudang_produksi where jenis = 0 and jenis_barang_id = 2 and MONTH(tanggal) = MONTH(thw.tanggal - INTERVAL 1 MONTH) and YEAR(tanggal) = YEAR(thw.tanggal)) as produksi_awal,
-                (select netto from t_gudang_produksi where jenis = 0 and jenis_barang_id = 2 and MONTH(tanggal) = MONTH(thw.tanggal) and YEAR(tanggal) = YEAR(thw.tanggal)) as produksi_akhir,
+                (select netto from t_gudang_produksi where jenis = 0 and jenis_barang_id = 2 and tanggal = LAST_DAY(thw.tanggal - INTERVAL 1 MONTH) ) as produksi_awal,
+                (select netto from t_gudang_produksi where jenis = 0 and jenis_barang_id = 2 and tanggal = LAST_DAY(thw.tanggal) ) as produksi_akhir,
                 (select sum(dd.netto) from spb_detail_fulfilment sdf
                     left join spb on sdf.spb_id = spb.id
                     left join dtr_detail dd on sdf.dtr_detail_id = dd.id
@@ -463,7 +464,7 @@ class Model_gudang_wip extends CI_Model{
                     left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
                     where tsw.flag_produksi = 2
                     group by tsw.id) a on thw.jenis_masak = 'ROLLING' and a.tanggal = thw.tanggal
-            where thw.jenis_masak in ('ROLLING', 'BAKAR ULANG') and YEAR(thw.tanggal) = '".$s."' group by MONTH(thw.tanggal)");
+            where thw.jenis_masak in ('ROLLING', 'BAKAR ULANG') and YEAR(thw.tanggal) = '".$s."' group by DATE_FORMAT(thw.tanggal, '%Y-%m')");
         }elseif($j == 3){
             return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, (select sum(qty) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as qty_rsk, (select sum(berat) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as berat_rsk, thw.tanggal, qty, uom, berat, susut, bs from t_hasil_wip thw
             where thw.jenis_masak = 'BAKAR ULANG' and thw.tanggal between '".$s."' and '".$e."'");
@@ -770,7 +771,7 @@ class Model_gudang_wip extends CI_Model{
                     left join t_bpb_wip_detail bwd on bwd.id = tgw.t_bpb_wip_detail_id
                     left join t_bpb_wip tbw on tbw.id = bwd.bpb_wip_id
                     left join dtwip d on d.id = tbw.dtwip_id
-                    where tbw.hasil_wip_id > 0  and jenis_trx = 0 and tgw.tanggal between '".$s."' and '".$e."' and tgw.jenis_barang_id = i.jenis_barang_id and d.supplier_id = 713
+                    where jenis_trx = 0 and tgw.tanggal between '".$s."' and '".$e."' and tgw.jenis_barang_id = i.jenis_barang_id and d.supplier_id = 713
                 ) as sdm,
                 (select sum(tgw.berat) from t_gudang_wip tgw
                     left join t_bpb_wip_detail bwd on bwd.id = tgw.t_bpb_wip_detail_id
