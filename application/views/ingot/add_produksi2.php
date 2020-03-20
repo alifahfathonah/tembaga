@@ -52,6 +52,7 @@
                                 <option value="A">A</option>
                                 <option value="B">B</option>
                                 <option value="D">D</option>
+                                <option value="Ampas">Ampas</option>
                             </select>
                         </div>
                     </div>

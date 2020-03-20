@@ -13,7 +13,7 @@ table td, table td * {
                 <tr>
                     <td rowspan="2" style="text-align:center; border-bottom:1px solid #000; border-top:1px solid #000;"><br><strong>NO</strong></td>
                     <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong><br>TANGGAL</strong></td>
-                    <td colspan="3" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>RONGSOK</strong></td>
+                    <td colspan="4" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>RONGSOK</strong></td>
                     <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong><br>TOTAL</strong></td>
                     <td colspan="3" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>HASIL INGOT</strong></td>
                     <td colspan="3" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>BS INGOT</strong></td>
@@ -27,6 +27,7 @@ table td, table td * {
                     <td style="text-align:center; border-bottom:1px solid #000; border-top:1px solid #000; border-left: 1px solid #000"><strong>A</strong></td>
                     <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>B</strong></td>
                     <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>D</strong></td>
+                    <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Ampas</strong></td>
                     <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>BTG</strong></td>
                     <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>KG</strong></td>
                     <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>%</strong></td>
@@ -43,6 +44,7 @@ table td, table td * {
     $berat_rongsok_a = 0;
     $berat_rongsok_b = 0;
     $berat_rongsok_d = 0;
+    $berat_rongsok_ampas = 0;
     $berat_ingot = 0;
     $berat = 0;
     $berat_susut = 0;
@@ -55,9 +57,10 @@ table td, table td * {
         echo '<tr>';
         echo '<td style="text-align:center; border-bottom:1px solid #000;">'.$no.'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.$row->tanggal.'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->tipe=='A')?number_format($row->total_rongsok,2,',','.') : '-').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->tipe=='B')?number_format($row->total_rongsok,2,',','.') : '-').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->tipe=='D')?number_format($row->total_rongsok,2,',','.') : '-').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->total_rongsok_a!=0)?number_format($row->total_rongsok_a,2,',','.') : '-').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->total_rongsok_b!=0)?number_format($row->total_rongsok_b,2,',','.') : '-').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->total_rongsok_d!=0)?number_format($row->total_rongsok_d,2,',','.') : '-').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->total_rongsok_ampas!=0)?number_format($row->total_rongsok_ampas,2,',','.') : '-').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->total_rongsok,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->ingot,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->berat_ingot,2,',','.').'</td>';
@@ -73,13 +76,10 @@ table td, table td * {
         echo '<td style="border-bottom:1px solid #000; border-right:1px solid #000; border-left:1px solid #000">'.number_format($row->gas+$row->gas_r,2,',','.').'</td>';
         echo '</tr>';
         $berat_rongsok += $row->total_rongsok;
-        if($row->tipe=='A'){
-            $berat_rongsok_a += $row->total_rongsok;
-        }elseif($row->tipe=='B'){
-            $berat_rongsok_b += $row->total_rongsok;
-        }else{
-            $berat_rongsok_d += $row->total_rongsok;
-        }
+        $berat_rongsok_a += $row->total_rongsok_a;
+        $berat_rongsok_b += $row->total_rongsok_b;
+        $berat_rongsok_d += $row->total_rongsok_d;
+        $berat_rongsok_ampas += $row->total_rongsok_ampas;
 
         $berat_ingot += $row->ingot;
         $berat += $row->berat_ingot;
@@ -107,6 +107,9 @@ table td, table td * {
                         </td>
                         <td style="border-bottom:1px solid #000; border-left:1px solid #000;">
                             <?=number_format($berat_rongsok_d,2,',','.');?>
+                        </td>
+                        <td style="border-bottom:1px solid #000; border-left:1px solid #000;">
+                            <?=number_format($berat_rongsok_ampas,2,',','.');?>
                         </td>
                         <td style="border-bottom:1px solid #000; border-left:1px solid #000;">
                             <?=number_format($berat_rongsok,2,',','.');?>

@@ -143,8 +143,12 @@
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 <script>
-
-$(function(){       
+$(function(){
+    $('#example').DataTable( {
+        "processing": true,
+        "serverSide": true,
+        "ajax": "../server_side/scripts/server_processing.php"
+    } );
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });
 </script>         

@@ -390,9 +390,24 @@ class Model_gudang_wip extends CI_Model{
 
     function print_laporan_masak($s,$e,$j){
         if($j == 1){
-            return $this->db->query("select thm.tanggal, pi.no_produksi as nomor, thm.tipe, count(thm.id) as count, sum(kayu) as kayu, sum(gas) as gas,  sum(gas_r) as gas_r, sum(bs_service) as bs_service, sum(total_rongsok) as total_rongsok, sum(ingot) as ingot, sum(berat_ingot) as berat_ingot, sum(bs) as bs, sum(susut) as susut, sum(ampas) as ampas, sum(serbuk) as serbuk, sum(bs_service) as bs_service from t_hasil_masak thm
+            // return $this->db->query("select thm.tanggal, pi.no_produksi as nomor, thm.tipe, count(thm.id) as count, sum(kayu) as kayu, sum(gas) as gas,  sum(gas_r) as gas_r, sum(total_rongsok) as total_rongsok, sum(ingot) as ingot, sum(berat_ingot) as berat_ingot, sum(bs) as bs, sum(susut) as susut, sum(ampas) as ampas, sum(serbuk) as serbuk, sum(bs_service) as bs_service from t_hasil_masak thm
+            // left join produksi_ingot pi on thm.id_produksi = pi.id
+            // where thm.tanggal between '".$s."' and '".$e."' group by thm.tanggal");
+
+
+            return $this->db->query("select thm.tanggal, pi.no_produksi as nomor, thm.tipe, count(thm.id) as count, sum(kayu) as kayu, sum(gas) as gas,  sum(gas_r) as gas_r, 
+                sum(CASE WHEN tipe = 'A' THEN total_rongsok ELSE 0 END)as total_rongsok_a, 
+                sum(CASE WHEN tipe = 'B' THEN total_rongsok ELSE 0 END)as total_rongsok_b, 
+                sum(CASE WHEN tipe = 'D' THEN total_rongsok ELSE 0 END)as total_rongsok_d, 
+                sum(CASE WHEN tipe = 'Ampas' THEN total_rongsok ELSE 0 END)as total_rongsok_ampas, 
+                sum(total_rongsok) as total_rongsok,
+                sum(ingot) as ingot, sum(berat_ingot) as berat_ingot, sum(bs) as bs, sum(susut) as susut, sum(ampas) as ampas, sum(serbuk) as serbuk, sum(bs_service) as bs_service from t_hasil_masak thm
             left join produksi_ingot pi on thm.id_produksi = pi.id
             where thm.tanggal between '".$s."' and '".$e."' group by thm.tanggal");
+
+            return $this->db->query("select thm.tanggal, pi.no_produksi as nomor, thm.tipe, 1 as count, kayu, gas, gas_r, bs_service, total_rongsok, ingot, berat_ingot, bs, susut, ampas, serbuk from t_hasil_masak thm
+            left join produksi_ingot pi on thm.id_produksi = pi.id
+            where thm.tanggal between '".$s."' and '".$e."'");
         }elseif($j == 2){
             return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, thw.gas+thw.gas_r as gas, a.qty as qty_rsk, a.netto as berat_rsk, thw.tanggal, thw.qty, thw.berat,  uom, susut, bs, qty_keras, keras,
                 (select sum(netto) from dtr_detail dd 
@@ -506,6 +521,7 @@ class Model_gudang_wip extends CI_Model{
                 COALESCE(NULLIF(sum(case when dd.rongsok_id = 24 then dd.netto else 0 end),0),null) as BSQC,
                 COALESCE(NULLIF(sum(case when dd.rongsok_id = 66 then dd.netto else 0 end),0),null) as DDG,
                 COALESCE(NULLIF(sum(case when dd.rongsok_id = 57 then dd.netto else 0 end),0),null) as BS,
+                COALESCE(NULLIF(sum(case when dd.rongsok_id = 53 then dd.netto else 0 end),0),null) as KR,
                 COALESCE(NULLIF(sum(case when dd.rongsok_id IN (59,61,15) then dd.netto else 0 end),0),null) as COPER from produksi_ingot pi
                 left join spb on spb.produksi_ingot_id = pi.id
                 left join spb_detail_fulfilment sdf on sdf.spb_id = spb.id

@@ -1290,6 +1290,16 @@ class Model_gudang_fg extends CI_Model{
                 order by jb.ukuran, jb.jenis_barang, tgf.tanggal_masuk
                 ");
             return $data;
+        }elseif($l==3){
+            $data = $this->db->query("select jb.jenis_barang,jb.kode, tsw.no_spb_wip as nomor, tgw.id, sum(tgw.qty) as bruto, sum(tgw.berat) as netto, tgw.tanggal, COALESCE(sj.no_surat_jalan, tsw.keterangan) as nama from t_surat_jalan_detail tsjd
+                left join t_gudang_wip tgw on tgw.id = tsjd.gudang_id
+                left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
+                left join t_surat_jalan sj on sj.id = tsjd.t_sj_id
+                left join jenis_barang jb on jb.id = tsjd.jenis_barang_id
+                where tgw.tanggal between '".$s."' and '".$e."'
+                group by tgw.jenis_barang_id, nomor
+                order by tgw.jenis_barang_id, tgw.tanggal asc
+                ");
         }elseif($l==4){
             $data = $this->db->query("select r.nama_item as jenis_barang,r.kode_rongsok as kode, spb.no_spb, dd.id, sum(dd.bruto) as bruto, sum(dd.netto) as netto, dd.tanggal_keluar, sj.no_surat_jalan as nomor from dtr_detail dd
                 left join spb_detail_fulfilment sdf on sdf.dtr_detail_id = dd.id

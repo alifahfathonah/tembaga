@@ -8,7 +8,7 @@
         <td colspan="3">
             <tr>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Tanggal</strong></td>
-                <td colspan="20" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>RONGSOK</strong></td>
+                <td colspan="21" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>RONGSOK</strong></td>
                 <td rowspan="2" style="text-align:center; border:1px solid #000"><strong>TOTAL</strong></td>
             </tr>
             <tr>
@@ -32,6 +32,7 @@
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">DDG</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">BS 13,5<br>&15,5</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">COPER<br>SCRAP</th>
+                <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">KRSN<br>ROLL</th>
             </tr>
         </td>
     </tr>
@@ -58,6 +59,7 @@
     $DDG = 0;
     $BS = 0;
     $COPER= 0;
+    $KR= 0;
     $total= 0;
     foreach ($detailLaporan as $row){
         echo '<tr>';
@@ -82,6 +84,7 @@
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->DDG,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->BS,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->COPER,2,',','.').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->KR,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000">'.number_format($row->total,2,',','.').'</td>';
         echo '</tr>';
         $no++;
@@ -105,6 +108,7 @@
     $DDG += $row->DDG;
     $BS += $row->BS;
     $COPER+= $row->COPER;
+    $KR+= $row->KR;
     $total+= $row->total;
     }
     ?>
@@ -130,11 +134,12 @@
         <td style="border-bottom:1px solid #000; border-left:1px solid #000"><strong><?=number_format($DDG,2,',','.');?></strong></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000"><strong><?=number_format($BS,2,',','.');?></strong></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000"><strong><?=number_format($COPER,2,',','.');?></strong></td>
+        <td style="border-bottom:1px solid #000; border-left:1px solid #000"><strong><?=number_format($KR,2,',','.');?></strong></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000"><strong><?=number_format($total,2,',','.');?></strong></td>
     </tr>
     </tbody>
     <tr>
-        <td colspan="14" style="border-bottom:1px solid #000;border-left:1px solid #000;">
+        <td colspan="15" style="border-bottom:1px solid #000;border-left:1px solid #000;">
             <table border="0" width="100%" cellpadding="0" cellspacing="0" style="font-size: 14px;">
                 <tr>
                     <td colspan="11"><strong><u>PEMAKAIAN BAHAN BAKU APOLLO :</u> &nbsp; <?='<u>'.strtoupper($ex[1]).'</u> '.$ex[2];?></strong></td>
@@ -149,7 +154,7 @@
                     <td align="right"><?=number_format($ABCW,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
                     <td align="right"><?=number_format($ABCW/$total*100,3,',','.');?> %</td>
                     <td width="7%"></td>
-                    <td>11</td>
+                    <td>12</td>
                     <td>AFKIR 8 MM </td>
                     <td>=</td>
                     <td align="right"><?=number_format($AFK8MM,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
@@ -162,7 +167,7 @@
                     <td align="right"><?=number_format($BC,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
                     <td align="right"><?=number_format($BC/$total*100,3,',','.');?> %</td>
                     <td width="7%"></td>
-                    <td>12</td>
+                    <td>13</td>
                     <td>BS INGOT</td>
                     <td>=</td>
                     <td align="right"><?=number_format($BSINGOT,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
@@ -175,7 +180,7 @@
                     <td align="right"><?=number_format($COVERTAPE,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
                     <td align="right"><?=number_format($COVERTAPE/$total*100,3,',','.');?> %</td>
                     <td width="7%"></td>
-                    <td>13</td>
+                    <td>14</td>
                     <td>PIPA</td>
                     <td>=</td>
                     <td align="right"><?=number_format($PIPA,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
@@ -188,7 +193,7 @@
                     <td align="right"><?=number_format($BBAKAR,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
                     <td align="right"><?=number_format($BBAKAR/$total*100,3,',','.');?> %</td>
                     <td width="7%"></td>
-                    <td>14</td>
+                    <td>15</td>
                     <td>DINAMO</td>
                     <td>=</td>
                     <td align="right"><?=number_format($DDBARU,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
@@ -201,7 +206,7 @@
                     <td align="right"><?=number_format($BTELP,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
                     <td align="right"><?=number_format($BTELP/$total*100,3,',','.');?> %</td>
                     <td width="7%"></td>
-                    <td>15</td>
+                    <td>16</td>
                     <td>TRAVO</td>
                     <td>=</td>
                     <td align="right"><?=number_format($TRAVO,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
@@ -214,7 +219,7 @@
                     <td align="right"><?=number_format($DK,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
                     <td align="right"><?=number_format($DK/$total*100,3,',','.');?> %</td>
                     <td width="7%"></td>
-                    <td>16</td>
+                    <td>17</td>
                     <td>SCRAP</td>
                     <td>=</td>
                     <td align="right"><?=number_format($COPER,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
@@ -227,7 +232,7 @@
                     <td align="right"><?=number_format($DH,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
                     <td align="right"><?=number_format($DH/$total*100,3,',','.');?> %</td>
                     <td width="7%"></td>
-                    <td>17</td>
+                    <td>18</td>
                     <td>BS QC</td>
                     <td>=</td>
                     <td align="right"><?=number_format($BSQC,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
@@ -240,7 +245,7 @@
                     <td align="right"><?=number_format($ARMBT,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
                     <td align="right"><?=number_format($ARMBT/$total*100,3,',','.');?> %</td>
                     <td width="7%"></td>
-                    <td>18</td>
+                    <td>19</td>
                     <td>BS 13,5 & 15,4 mm</td>
                     <td>=</td>
                     <td align="right"><?=number_format($BS,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
@@ -253,7 +258,7 @@
                     <td align="right"><?=number_format($BSAPL,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
                     <td align="right"><?=number_format($BSAPL/$total*100,3,',','.');?> %</td>
                     <td width="7%"></td>
-                    <td>19</td>
+                    <td>20</td>
                     <td>BS TALI ROLLING</td>
                     <td>=</td>
                     <td align="right"><?=number_format($COPER,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
@@ -266,14 +271,19 @@
                     <td align="right"><?=number_format($BSROLL,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
                     <td align="right"><?=number_format($BSROLL/$total*100,3,',','.');?> %</td>
                     <td width="7%"></td>
-                    <td>20</td>
+                    <td>21</td>
                     <td>BS SDM</td>
                     <td>=</td>
                     <td align="right"><?=number_format($BSSDM,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
                     <td align="right"><?=number_format($BSSDM/$total*100,3,',','.');?> %</td>
                 </tr>
                 <tr>
-                    <td colspan="7">&nbsp;</td>
+                    <td>11</td>
+                    <td>KURASAN ROLLING</td>
+                    <td>=</td>
+                    <td align="right"><?=number_format($KR,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </td>
+                    <td align="right"><?=number_format($KR/$total*100,3,',','.');?> %</td>
+                    <td width="7%" colspan="2"></td>
                     <td><strong>TOTAL</strong></td>
                     <td><strong>=</strong></td>
                     <td align="right"><strong><?=number_format($total,2,',','.');?> &nbsp; KG &nbsp; = &nbsp; </strong></td>
