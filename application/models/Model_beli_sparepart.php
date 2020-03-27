@@ -1,6 +1,6 @@
 <?php
 class Model_beli_sparepart extends CI_Model{
-    function list_data($ppn){
+    function list_data($ppn,$s,$e){
         $data = $this->db->query("Select bsp.*, 
                 usr.realname,
                 aprv.realname As approve_name,
@@ -10,7 +10,7 @@ class Model_beli_sparepart extends CI_Model{
                 From beli_sparepart bsp
                     Left Join users usr On (bsp.created_by = usr.id) 
                     Left Join users aprv On (bsp.approved_by = aprv.id) 
-                Where bsp.flag_ppn=".$ppn."
+                Where bsp.flag_ppn=".$ppn." and bsp.tgl_pengajuan between '".$s."' and '".$e."'
                 Order By no_pengajuan Desc");
         return $data;
     }

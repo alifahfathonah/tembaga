@@ -22,8 +22,15 @@ class BeliSparePart extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "beli_spare_part/index";
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
         $this->load->model('Model_beli_sparepart');
-        $data['list_data'] = $this->Model_beli_sparepart->list_data($user_ppn)->result();
+        $data['list_data'] = $this->Model_beli_sparepart->list_data($user_ppn,$s,$e)->result();
 
         $this->load->view('layout', $data);
     }
