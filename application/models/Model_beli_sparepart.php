@@ -74,7 +74,7 @@ class Model_beli_sparepart extends CI_Model{
         return $data;
     }
 
-    function po_list($user_ppn){
+    function po_list($user_ppn,$s,$e){
         $data = $this->db->query("Select po.*, 
                     bsp.no_pengajuan, bsp.tgl_pengajuan,
                     usr.realname As created_name,
@@ -87,7 +87,7 @@ class Model_beli_sparepart extends CI_Model{
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='Sparepart' and po.flag_ppn = ".$user_ppn."
+                Where po.jenis_po='Sparepart' and po.flag_ppn = ".$user_ppn." and po.tanggal between '".$s."' and '".$e."'
                 Order By po.no_po Desc");
         return $data;
     }
@@ -174,7 +174,7 @@ class Model_beli_sparepart extends CI_Model{
         return $data;
     }
     
-    function bpb_list($ppn){
+    function bpb_list($ppn,$s,$e){
         $data = $this->db->query("Select lpb.*, 
                     po.no_po, 
                     spl.nama_supplier,
@@ -184,12 +184,12 @@ class Model_beli_sparepart extends CI_Model{
                     Left Join po On (lpb.po_id = po.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (lpb.created_by = usr.id)
-                Where po.flag_ppn =".$ppn."
+                Where po.flag_ppn =".$ppn." and lpb.tanggal between '".$s."' and '".$e."'
                 Order By lpb.no_bpb Desc");
         return $data;
     }
 
-    function lpb_list($ppn){
+    function lpb_list($ppn,$s,$e){
         $data = $this->db->query("Select lpb.*, 
                     po.no_po, po.currency,
                     spl.nama_supplier,
@@ -201,7 +201,7 @@ class Model_beli_sparepart extends CI_Model{
                     Left Join supplier spl On (po.supplier_id = spl.id)
                     Left Join f_vk vk On (vk.id = lpb.vk_id) 
                     Left Join users usr On (lpb.created_by = usr.id)
-                Where po.flag_ppn =".$ppn."
+                Where po.flag_ppn =".$ppn." and lpb.tanggal between '".$s."' and '".$e."'
                 Order By lpb.id Desc");
         return $data;
     }
@@ -260,14 +260,14 @@ class Model_beli_sparepart extends CI_Model{
     //     return $data;
     // }
 
-    function voucher_list_ppn($user_ppn){
+    function voucher_list_ppn($user_ppn,$s,$e){
         $data = $this->db->query("Select voucher.no_voucher, voucher.tanggal, voucher.jenis_voucher, voucher.keterangan, v.no_vk, s.nama_supplier, fk.nomor, v.id, fk.id as id_fk
                 From f_vk v 
                     Left Join supplier s On (s.id = v.supplier_id)
                     Left Join voucher On (voucher.vk_id = v.id)
                     Left Join po On (voucher.po_id = po.id) 
                     Left Join f_kas fk On (fk.id = voucher.id_fk)
-                Where voucher.jenis_barang='SPARE PART' and po.flag_ppn = ".$user_ppn." or v.flag_ppn =".$user_ppn."
+                Where voucher.jenis_barang='SPARE PART' and po.flag_ppn = ".$user_ppn." or v.flag_ppn =".$user_ppn." and v.tanggal between '".$s."' and '".$e."'
                 Order By v.no_vk desc");
         return $data;
     }
@@ -284,18 +284,18 @@ class Model_beli_sparepart extends CI_Model{
     //     return $data;
     // }
 
-    function voucher_list($user_ppn){
+    function voucher_list($user_ppn,$s,$e){
         $data = $this->db->query("Select voucher.*, v.no_vk, s.nama_supplier
                 From voucher 
                     Left Join po On (voucher.po_id = po.id) 
                     Left Join f_vk v On (voucher.vk_id = v.id)
                     Left Join supplier s On (s.id = voucher.supplier_id)
-                Where voucher.jenis_barang='SPARE PART' and po.flag_ppn = ".$user_ppn." or v.flag_ppn =".$user_ppn."
+                Where voucher.jenis_barang='SPARE PART' and po.flag_ppn = ".$user_ppn." or v.flag_ppn =".$user_ppn." and v.tanggal between '".$s."' and '".$e."'
                 Order By voucher.no_voucher");
         return $data;
     }
 
-    function spb_list(){
+    function spb_list($s,$e){
         $data = $this->db->query("Select tss.*,
                     usr.realname As pic,
                     aprv.realname As approved_name,
@@ -306,7 +306,8 @@ class Model_beli_sparepart extends CI_Model{
                     Left Join users usr On (tss.created_by = usr.id)
                     Left Join users aprv On (tss.approved_by = aprv.id)
                     Left Join users rjt On (tss.rejected_by = rjt.id)
-                    Left join users rcv on (tss.received_by = rcv.id) 
+                    Left join users rcv on (tss.received_by = rcv.id)
+                    where tss.tanggal between '".$s."' and '".$e."' 
                 Order By tss.id Desc");
         return $data;
     }

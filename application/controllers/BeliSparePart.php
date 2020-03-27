@@ -600,8 +600,15 @@ class BeliSparePart extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "beli_spare_part/po_list";
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
         $this->load->model('Model_beli_sparepart');
-        $data['list_data'] = $this->Model_beli_sparepart->po_list($user_ppn)->result();
+        $data['list_data'] = $this->Model_beli_sparepart->po_list($user_ppn,$s,$e)->result();
         $data['bank_list'] = $this->Model_beli_sparepart->bank($user_ppn)->result();
 
         $this->load->view('layout', $data);
@@ -1109,8 +1116,15 @@ class BeliSparePart extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "beli_spare_part/bpb_list";
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
         $this->load->model('Model_beli_sparepart');
-        $data['list_data'] = $this->Model_beli_sparepart->bpb_list($user_ppn)->result();
+        $data['list_data'] = $this->Model_beli_sparepart->bpb_list($user_ppn,$s,$e)->result();
 
         $this->load->view('layout', $data);
     }
@@ -1315,14 +1329,23 @@ class BeliSparePart extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
-        $this->load->model('Model_beli_sparepart');
-        if($user_ppn==1){
-            $data['list_data'] = $this->Model_beli_sparepart->voucher_list_ppn($user_ppn)->result();
-        }else{
-            $data['list_data'] = $this->Model_beli_sparepart->voucher_list($user_ppn)->result();
-        }
 
         $data['content']= "beli_spare_part/voucher_list";
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
+
+        $this->load->model('Model_beli_sparepart');
+        if($user_ppn==1){
+            $data['list_data'] = $this->Model_beli_sparepart->voucher_list_ppn($user_ppn,$s,$e)->result();
+        }else{
+            $data['list_data'] = $this->Model_beli_sparepart->voucher_list($user_ppn,$s,$e)->result();
+        }
+
 
         $this->load->view('layout', $data);
     }
@@ -1396,8 +1419,15 @@ class BeliSparePart extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "beli_spare_part/spb_list";
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
         $this->load->model('Model_beli_sparepart');
-        $data['list_data'] = $this->Model_beli_sparepart->spb_list()->result();
+        $data['list_data'] = $this->Model_beli_sparepart->spb_list($s,$e)->result();
 
         $this->load->view('layout', $data);
     }
@@ -2443,8 +2473,15 @@ class BeliSparePart extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "beli_spare_part/lpb_list";
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
         $this->load->model('Model_beli_sparepart');
-        $data['list_data'] = $this->Model_beli_sparepart->lpb_list($user_ppn)->result();
+        $data['list_data'] = $this->Model_beli_sparepart->lpb_list($user_ppn,$s,$e)->result();
 
         $this->load->view('layout', $data);
     }
