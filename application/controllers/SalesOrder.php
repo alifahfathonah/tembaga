@@ -104,7 +104,7 @@ class SalesOrder extends CI_Controller{
             // $data['detailSJ'] = $this->Model_sales_order->load_detail_view_sj_rsk($id)->result();
             }else if($data['header']['jenis_barang'] == 'LAIN'){
             $data['details'] = $this->Model_sales_order->show_detail_so_sp($id)->result();
-            // $data['detailSJ'] = $this->Model_sales_order->load_detail_view_sj_sp($id)->result();
+            $data['detailSJ'] = $this->Model_sales_order->load_detail_view_sj_sp($id)->result();
             }else{
             $data['detailSPB'] = $this->Model_sales_order->show_detail_spb_fulfilment($id)->result();
             $data['details'] = $this->Model_sales_order->show_detail_so($id)->result();

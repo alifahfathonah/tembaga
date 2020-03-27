@@ -408,6 +408,13 @@ class Model_gudang_fg extends CI_Model{
         return $data;
     }
 
+    function get_gudang_id($id){
+        return $this->db->query("Select tg.*, mb.nomor_bobbin, jb.kode, jb.jenis_barang from t_gudang_fg tg
+            left join m_bobbin mb on mb.id = tg.bobbin_id
+            left join jenis_barang jb on jb.id = tg.jenis_barang_id
+                    where tg.id=".$id);
+    }
+
     // function show_view_laporan($bulan, $tahun){
     //     $data = $this->db->query("select tg.jenis_barang_id, jb.jenis_barang, count(tg.id) as jumlah, 
     //             (select sum(bruto) from t_gudang_fg tgf where month(tgf.tanggal_masuk) = ".$bulan." and year(tgf.tanggal_masuk) =".$tahun." and tgf.jenis_barang_id=jb.id) as bruto_masuk,

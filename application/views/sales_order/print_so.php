@@ -93,7 +93,7 @@
                                     }else{
                                         echo number_format($row->qty,2,',', '.');
                                     }
-                                echo ' KG</td>';
+                                echo ' '.$row->uom.'</td>';
                                 echo '<td style="text-align:left; border-left:1px solid #000; ">'.$c.'</td>';
                                 echo '<td style="text-align:right;">'.number_format($row->amount,3,',', '.').'</td>';
                                 echo '<td style="text-align:left; border-left:1px solid #000; ">'.$c.'</td>';

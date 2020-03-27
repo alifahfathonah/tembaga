@@ -64,10 +64,17 @@ class VoucherCost extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "voucher_cost/kas_keluar";
         $this->load->model('Model_voucher_cost');
-        $data['list_data'] = $this->Model_voucher_cost->list_data_kk($ppn)->result();
+        $data['list_data'] = $this->Model_voucher_cost->list_data_kk($ppn,$s,$e)->result();
         // }else{
         // $data['list_data'] = $this->Model_voucher_cost->list_data_kh($ppn)->result();
         // }
@@ -90,8 +97,15 @@ class VoucherCost extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "voucher_cost/bank_keluar";
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
         $this->load->model('Model_voucher_cost');
-        $data['list_data'] = $this->Model_voucher_cost->list_data_bk($ppn)->result();
+        $data['list_data'] = $this->Model_voucher_cost->list_data_bk($ppn,$s,$e)->result();
         $data['list_group_cost'] = $this->Model_voucher_cost->list_group_cost()->result();
         $this->load->model('Model_finance');
         $data['bank_list'] = $this->Model_finance->bank_list($ppn)->result();
@@ -653,7 +667,7 @@ class VoucherCost extends CI_Controller{
 
         $data['content']= "voucher_cost/add_uk";
         $this->load->model('Model_voucher_cost');
-        $data['list_data'] = $this->Model_voucher_cost->list_data_kk($ppn)->result();
+        // $data['list_data'] = $this->Model_voucher_cost->list_data_kk($ppn)->result();
         $data['list_group_cost'] = $this->Model_voucher_cost->list_group_cost()->result();
         $this->load->model('Model_finance');
         $data['bank_list'] = $this->Model_finance->bank_list($ppn)->result();
@@ -848,7 +862,7 @@ class VoucherCost extends CI_Controller{
 
             $data['content']= "voucher_cost/edit_uk";
             $this->load->model('Model_voucher_cost');
-            $data['list_data'] = $this->Model_voucher_cost->list_data_kk($ppn)->result();
+            // $data['list_data'] = $this->Model_voucher_cost->list_data_kk($ppn)->result();
             // $data['list_group_cost'] = $this->Model_voucher_cost->list_group_cost()->result();
             $this->load->model('Model_finance');
             $data['header'] = $this->Model_finance->show_header_voucher_ppn($id)->row_array();

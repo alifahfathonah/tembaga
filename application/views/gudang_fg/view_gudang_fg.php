@@ -30,6 +30,7 @@
             <th>Bruto</th>
             <th>Berat</th>
             <th>Netto</th>
+            <th>Action</th>
        </tr>
      </thead>
      <tbody>
@@ -44,6 +45,7 @@
             <td><?= number_format($data->bruto,2,',','.'); ?></td>
             <td><?= number_format($data->berat_bobbin,2,',','.'); ?></td>
             <td style="background-color: green; color: white;"><?= number_format($data->netto,2,',','.'); ?></td>
+            <td><a href="javascript:;" class="btn btn-circle btn-xs blue-ebonyclay" onclick="printBarcode(<?=$data->id;?>);" style="margin-top:5px;"><i class="fa fa-print"></i> Print </a></td>
         </tr>    
     <?php $no++; } ?>
      </tbody>   
@@ -56,3 +58,10 @@
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+
+<script>
+function printBarcode(id){
+    console.log(id);
+    window.open('<?php echo base_url();?>index.php/GudangFG/print_barcode_gudangfg?id='+id,'_blank');
+}
+</script>

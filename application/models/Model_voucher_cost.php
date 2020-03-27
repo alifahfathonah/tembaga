@@ -36,7 +36,7 @@ class Model_voucher_cost extends CI_Model{
         return $data;
     }
 
-    function list_data_kk($ppn){
+    function list_data_kk($ppn,$s,$e){
         $data = $this->db->query("Select fk.*, 
                 gc.nama_group_cost,
                 cost.nama_cost,
@@ -49,13 +49,13 @@ class Model_voucher_cost extends CI_Model{
                     Left Join cost On (voucher.cost_id = cost.id)
                     Left Join m_customers mc ON (voucher.customer_id = mc.id)
                     Left join supplier supp on (voucher.supplier_id = supp.id)
-                Where fk.id_bank <= 3 and fk.flag_ppn =".$ppn." and fk.jenis_trx = 1
+                Where fk.id_bank <= 3 and fk.flag_ppn =".$ppn." and fk.tanggal between '".$s."' and '".$e."' and fk.jenis_trx = 1
                 group by fk.id
                 Order By fk.nomor desc");
         return $data;
     }
 
-    function list_data_bk($ppn){
+    function list_data_bk($ppn,$s,$e){
         $data = $this->db->query("Select fk.*, 
                 gc.nama_group_cost,
                 cost.nama_cost,
@@ -68,7 +68,7 @@ class Model_voucher_cost extends CI_Model{
                     Left Join cost On (voucher.cost_id = cost.id)
                     Left Join m_customers mc ON (voucher.customer_id = mc.id)
                     Left join supplier supp on (voucher.supplier_id = supp.id)
-                Where fk.id_bank > 3 and fk.flag_ppn =".$ppn." and fk.jenis_trx = 1
+                Where fk.id_bank > 3 and fk.flag_ppn =".$ppn." and fk.tanggal between '".$s."' and '".$e."' and fk.jenis_trx = 1
                 group by fk.id
                 Order By fk.nomor desc");
         return $data;
