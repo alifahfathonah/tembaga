@@ -112,7 +112,7 @@ class Model_gudang_wip extends CI_Model{
     }
 
     function jenis_barang_list_by_spb($id){
-        $data = $this->db->query("select jb.jenis_barang, jb.id, jb.kode
+        $data = $this->db->query("select jb.jenis_barang, jb.id, tswd.id as id_spb_wip_detail, jb.kode, jb.uom
                 from t_spb_wip_detail tswd
                 left join jenis_barang jb on (jb.id = tswd.jenis_barang_id )
                 where t_spb_wip_id =".$id

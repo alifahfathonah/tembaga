@@ -773,13 +773,14 @@ class Ingot extends CI_Controller{
                 'hasil_masak_id'=> $id_masak,
                 'qty'=> $this->input->post('ingot'),
                 'berat'=> $this->input->post('berat_ingot'),
+                'bs'=> $this->input->post('bs'),
                 'created_by'=> $user_id,
             );
 
         $this->db->insert('t_hasil_wip', $data_wip);
         $id_hasil_wip = $this->db->insert_id();
 
-        if($this->input->post('bs') != 0){
+        if($this->input->post('bs') > 0){
             //CREATE DTR
         $this->load->model('Model_m_numberings');
         $code_dtr = $this->Model_m_numberings->getNumbering('DTR', $tgl_input); 
@@ -799,7 +800,7 @@ class Ingot extends CI_Controller{
             $dtr_id = $this->db->insert_id();
 
             //CREATE DTR_DETAIL
-            if($this->input->post('bs')!=0){
+            if($this->input->post('bs')>0){
 
                 $details = $this->input->post('myDetails');
                 // print_r($details);die();
@@ -831,6 +832,11 @@ class Ingot extends CI_Controller{
                     $this->db->update('t_hasil_masak', array(
                         'bs'=> $new_bs,
                         'bs_service'=>$bs_ingot
+                    ));
+                    $this->db->where('id', $id_hasil_wip);
+                    $this->db->update('t_hasil_wip', array(
+                        'bs'=> $new_bs,
+                        'bs_ingot'=>$bs_ingot
                     ));
                 }
             }

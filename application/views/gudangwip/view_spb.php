@@ -227,7 +227,6 @@
                         </div>
                     </div>
                     <hr class="divider"/>
-                    <?php if ($myData['status']==0 || $myData['status']==4) { ?>
                     <div class="row">
                         <div class="col-md-12">
                             <h4 align="center">SPB WIP yang Sudah Di Penuhi</h4>
@@ -263,7 +262,7 @@
                                                     echo '<td><a href="'.base_url().'index.php/GudangWIP/delSPBSudahDipenuhi/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete</a>';
                                                     echo '<input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
                                                             onclick="check();" class="form-control checklist">';
-                                                    echo '<input type="hidden" value="'.$v->id.'" id="check_'.$no.'" name="myDetails['.$no.'][id_detail]" class="form-control checklist"></td>';
+                                                    echo '<input type="hidden" value="'.$v->id.'" id="check_id_'.$no.'" name="myDetails['.$no.'][id_detail]" class="form-control checklist"></td>';
                                                 } ?>
                                             </tr>
                                             <?php 
@@ -282,6 +281,7 @@
                         </div>
                     </div>
                     <hr class="divider"/>
+                    <?php if ($myData['status']==0 || $myData['status']==4) { ?>
                     <div class="row">
                         <div class="col-md-12">
                             <h4 align="center">Pemenuhan SPB WIP</h4>
@@ -302,7 +302,7 @@
                                                 <td><select id="barang_1" class="form-control select2me myline" placeholder="pilih jenis barang" name="details[1][jenis_barang]" onchange="getBarang(1)">
                                                     <option value=""></option>
                                                     <?php foreach($list_barang as $v){
-                                                        echo '<option value="'.$v->id.'">'.$v->kode.' | '.$v->jenis_barang.'</option>';
+                                                        echo '<option value="'.$v->id.'" data-id="'.$v->id_spb_wip_detail.'" data-uom="'.$v->uom.'">'.$v->kode.' | '.$v->jenis_barang.'</option>';
                                                     } ?>
                                                 </select>
                                                 <input type="hidden" name="details[1][id_barang]" id="barang_id_1">
@@ -329,45 +329,6 @@
                         </div>
                     </div>
                 <?php }else if($myData['status']==3){ ?>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h4 align="center">SPB WIP yang Sudah Di Penuhi</h4>
-                                <div class="table-scrollable">
-                                    <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
-                                        <thead>
-                                            <th style="width:40px">No</th>
-                                            <th>Nama Barang</th>
-                                            <th>UOM</th>
-                                            <th>Quantity</th>
-                                            <th>Berat (kg)</th>
-                                            <th>Keterangan</th>
-                                            <th>Status</th>
-                                        </thead>
-                                        <tbody>
-                                            <?php $no=1; foreach($detailSPB as $v) { ?>
-                                            <tr>
-                                                <td><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
-                                                <td><?=$v->kode.' | '.$v->jenis_barang;?></td>
-                                                <td><?=$v->uom;?></td>
-                                                <td><?=$v->qty;?></td>
-                                                <td><?=$v->berat;?></td>
-                                                <td><?=$v->keterangan;?></td>
-                                                <?php 
-                                                if($v->flag_taken==1){
-                                                echo '<td style="background-color: green; color: white">Sudah di Kirim</td>';
-                                                echo '<td></td>';
-                                                }else{
-                                                    echo '<td>Belum Dikirim</td>';
-                                                    echo '<td><a href="'.base_url().'index.php/GudangWIP/delSPBSudahDipenuhi/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete</a></td>';
-                                                } ?>
-                                            </tr>
-                                            <?php $no++; } ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                        </div>
-                    </div>
-                    <hr class="divider"/>
                     <div class="row">
                         <div class="col-md-12">
                             <h4 align="center">Pemenuhan SPB WIP</h4>
@@ -406,61 +367,6 @@
                                                 <td><?=$qty;?></td>
                                                 <td><?=number_format($berat,2,',','.');?></td>
                                                 <td></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                        </div>
-                    </div>
-                <?php }else if($myData['status']==1){ ?>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h4 align="center">SPB WIP yang Di Penuhi</h4>
-                                <div class="table-scrollable">
-                                    <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
-                                        <thead>
-                                            <th style="width:40px">No</th>
-                                            <th>Nama Barang</th>
-                                            <th>UOM</th>
-                                            <th>Quantity</th>
-                                            <th>Berat (kg)</th>
-                                            <th>Keterangan</th>
-                                            <th>Tanggal Keluar</th>
-                                            <th>Status</th>
-                                            <th>Action <input type="checkbox" id="check_all" name="check_all" onclick="checkAll()" class="form-control checklist"></th>
-                                        </thead>
-                                        <tbody>
-                                            <?php $no=1; $qty = 0; $berat = 0; foreach($detailSPB as $v) { ?>
-                                            <tr>
-                                                <td><div id="no_tabel_<?=$no;?>"><?=$no;?></div></td>
-                                                <td><?=$v->kode.' | '.$v->jenis_barang;?></td>
-                                                <td><?=$v->uom;?></td>
-                                                <td><?=$v->qty;?></td>
-                                                <td><?=$v->berat;?></td>
-                                                <td><?=$v->keterangan;?></td>
-                                                <td><?=$v->tanggal;?></td>
-                                                <?php 
-                                                if($v->flag_taken==1){
-                                                echo '<td style="background-color: green; color: white">Sudah di Kirim</td>';
-                                                echo '<td></td>';
-                                                }else{
-                                                    echo '<td>Belum Dikirim</td>';
-                                                    echo '<td><a href="'.base_url().'index.php/GudangWIP/delSPBSudahDipenuhi/'.$v->id.'/'.$myData['id'].'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"><i class="fa fa-trash-o"></i> Delete</a>';
-                                                    echo '<input type="checkbox" value="1" id="check_'.$no.'" name="myDetails['.$no.'][check]" 
-                                                            onclick="check();" class="form-control checklist">';
-                                                    echo '<input type="hidden" value="'.$v->id.'" id="check_'.$no.'" name="myDetails['.$no.'][id_detail]" class="form-control checklist"></td>';
-                                                } ?>
-                                            </tr>
-                                            <?php 
-                                            $no++; 
-                                            $qty += $v->qty;
-                                            $berat += $v->berat;
-                                            } ?>
-                                            <tr>
-                                                <td colspan="3" style="text-align: right;"><strong>Total</strong></td>
-                                                <td><?=number_format($qty,0,',', '.');?></td>
-                                                <td><?=number_format($berat,0,',', '.');?></td>
-                                                <td colspan="4"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -661,35 +567,32 @@ function getBarang(id){
     $("#barang_id_"+id).val($("#barang_"+id).val());
     var id_barang = $("#barang_"+id).val();
     var spb = $("#id").val();
-    if(id_barang!=''){    
-        // var check = check_duplicate();
-        // if(check){
-            $.ajax({
-                url: "<?php echo base_url('index.php/GudangWIP/get_uom_view_spb'); ?>",
-                type: "POST",
-                data : {
-                    id: id_barang,
-                    spb_id: spb
-                },
-                success: function (result){
-                    if (result!=null){
-                        $("#spb_id_"+id).val(result['id']);
-                        // console.log(result['id']);
-                        $("#uom_"+id).val(result['uom']);
-                        // $("#btn_"+id).removeClass('disabled');
-                        // $("#barang_"+id).attr('disabled','disabled');
+    if(id_barang!=''){
+        $("#spb_id_"+id).val($('#barang_'+id).find(':selected').data('id'));
+        $("#uom_"+id).val($('#barang_'+id).find(':selected').data('uom'));
+            // $.ajax({
+            //     url: "<?php echo base_url('index.php/GudangWIP/get_uom_view_spb'); ?>",
+            //     type: "POST",
+            //     data : {
+            //         id: id_barang,
+            //         spb_id: spb
+            //     },
+            //     success: function (result){
+            //         if (result!=null){
+            //             $("#spb_id_"+id).val(result['id']);
+            //             // console.log(result['id']);
+            //             $("#uom_"+id).val(result['uom']);
+            //             // $("#btn_"+id).removeClass('disabled');
+            //             // $("#barang_"+id).attr('disabled','disabled');
     
-                        // create_new_input(id);
-                    } else {
-                        alert('Gagal menambahkan, silahkan ulangi kembali');
-                        $("#barang_"+id).val('');
-                    }
-                }
-            });
-        // } else {
-        //     alert('Inputan barang tidak boleh sama dengan inputan sebelumnya!');
-        //     $("#barang_"+id).val('');
-        // }
+            //             // create_new_input(id);
+            //         } else {
+            //             alert('Gagal menambahkan, silahkan ulangi kembali');
+            //             $("#barang_"+id).val('');
+            //         }
+            //     }
+            // });
+
     }
 }
 
@@ -706,7 +609,7 @@ function create_new_input(id){
        $("#berat_"+id).attr("readonly", true);
        $('#btn_'+id).removeClass('disabled');
        $('#btn_add_'+id).attr('disabled','disabled').hide();
-        $("#tabel_barang>tbody").append('<tr><td><div id="no_tabel_'+new_id+'">'+new_id+'</div><input id="spb_id_'+new_id+'" name="details['+new_id+'][spb_detail_id]" type="hidden"></td><td><select id="barang_'+new_id+'" class="form-control" placeholder="pilih jenis barang" name="details['+new_id+'][jenis_barang]" onchange="getBarang('+new_id+')"><option value=""></option><?php foreach($list_barang as $v){ print('<option value="'.$v->id.'">'.$v->kode.' | '.$v->jenis_barang.'</option>');}?></select><input name="details['+new_id+'][id_barang]" id="barang_id_'+new_id+'" type="hidden"></td><td><input id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly" type="text"></td><td><input id="qty_'+new_id+'" name="details['+new_id+'][qty]" class="form-control myline" type="text"></td><td><input id="berat_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline" type="text"></td><td><input id="keterangan_'+new_id+'" name="details['+new_id+'][keterangan]" class="form-control myline" type="text" onkeyup="this.value = this.value.toUpperCase()"></td><td style="text-align:center"><a id="btn_add_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle green" onclick="create_new_input('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Add </a><a id="btn_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td></tr>');
+        $("#tabel_barang>tbody").append('<tr><td><div id="no_tabel_'+new_id+'">'+new_id+'</div><input id="spb_id_'+new_id+'" name="details['+new_id+'][spb_detail_id]" type="hidden"></td><td><select id="barang_'+new_id+'" class="form-control" placeholder="pilih jenis barang" name="details['+new_id+'][jenis_barang]" onchange="getBarang('+new_id+')"><option value=""></option><?php foreach($list_barang as $v){ print('<option value="'.$v->id.'" data-id="'.$v->id_spb_wip_detail.'" data-uom="'.$v->uom.'">'.$v->kode.' | '.$v->jenis_barang.'</option>');}?></select><input name="details['+new_id+'][id_barang]" id="barang_id_'+new_id+'" type="hidden"></td><td><input id="uom_'+new_id+'" name="details['+new_id+'][uom]" class="form-control myline" readonly="readonly" type="text"></td><td><input id="qty_'+new_id+'" name="details['+new_id+'][qty]" class="form-control myline" type="text"></td><td><input id="berat_'+new_id+'" name="details['+new_id+'][berat]" class="form-control myline" type="text"></td><td><input id="keterangan_'+new_id+'" name="details['+new_id+'][keterangan]" class="form-control myline" type="text" onkeyup="this.value = this.value.toUpperCase()"></td><td style="text-align:center"><a id="btn_add_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle green" onclick="create_new_input('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Add </a><a id="btn_'+new_id+'" href="javascript:;" class="btn btn-xs btn-circle red disabled" onclick="hapusDetail('+new_id+');" style="margin-top:5px"><i class="fa fa-trash"></i> Delete </a></td></tr>');
         $('#barang_'+new_id).select2();
     }
 }

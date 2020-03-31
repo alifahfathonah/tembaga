@@ -224,7 +224,7 @@ class Model_ingot extends CI_Model{
     }    
         
     function hasil_produksi(){
-        $data = $this->db->query("Select thm.*,  pi.no_produksi, tbw.id as id_bpb, dtr.id as id_dtr, tba.id as id_ampas,
+        $data = $this->db->query("Select thm.*,  thw.no_produksi_wip as no_produksi, tbw.id as id_bpb, dtr.id as id_dtr, tba.id as id_ampas,
                     usr.realname As pic, tbw.status as status_bpb_wip
                 From t_hasil_masak thm
                     Left Join users usr On (thm.created_by = usr.id)
