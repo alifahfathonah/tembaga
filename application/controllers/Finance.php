@@ -20,10 +20,17 @@ class Finance extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-6 months'));
+        }
 
         $data['content']= "finance/index";
         $this->load->model('Model_finance');
-        $data['list_data'] = $this->Model_finance->list_data($ppn)->result();
+        $data['list_data'] = $this->Model_finance->list_data($ppn,$s,$e)->result();
         $data['list_customer'] = $this->Model_finance->customer_list()->result();
 
         $this->load->view('layout', $data);
@@ -368,7 +375,6 @@ class Finance extends CI_Controller{
             $data = array(
                 'tanggal'=>$tgl_input,
                 'nominal'=>str_replace(',', '', $this->input->post('nominal_baru')),
-                'status'=>0,
                 'm_customer_id'=>$this->input->post('customer_id_baru'),
                 'bank_pembayaran'=>$this->input->post('nama_bank'),
                 'nomor_cek'=>$this->input->post('nomor_cek'),
@@ -386,7 +392,6 @@ class Finance extends CI_Controller{
             $data = array(
                 'tanggal'=>$tgl_input,
                 'nominal'=>str_replace(',', '', $this->input->post('nominal_baru')),
-                'status'=>0,
                 'm_customer_id'=>$this->input->post('customer_id_baru'),
                 'nomor_cek'=>$this->input->post('nomor'),
                 'modified_at'=>$tanggal,
@@ -530,10 +535,17 @@ class Finance extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "finance/voucher_list";
         $this->load->model('Model_finance');
-        $data['list_data'] = $this->Model_finance->voucher_list($ppn)->result();
+        $data['list_data'] = $this->Model_finance->voucher_list($ppn,$s,$e)->result();
 
         $this->load->view('layout', $data);
     }
@@ -1399,8 +1411,15 @@ class Finance extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "finance/invoice";
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
         $this->load->model('Model_finance');
-        $data['list_data'] = $this->Model_finance->list_invoice($ppn)->result();
+        $data['list_data'] = $this->Model_finance->list_invoice($ppn,$s,$e)->result();
 
         $this->load->view('layout', $data);
     }
@@ -2092,20 +2111,16 @@ class Finance extends CI_Controller{
         $this->db->trans_start();
         if(!empty($id)){
 
-            $this->db->where('id_match',$id);
-            $this->db->delete('f_match_detail');
+            $get = $this->db->query("select count(id) as jml from f_match_detail where id_match =".$id)->row_array();
+            if($get['jml']>0){
+                $this->session->set_flashdata('flash_msg', 'Data Matching gagal dihapus, delete semua detail terlebih dahulu');
+                redirect('index.php/Finance/matching');
+            }else{
+                $this->db->where('id_match',$id);
+                $this->db->delete('f_match_detail');
 
-            $this->db->where('flag_matching',$id);
-            $this->db->update('f_invoice', array(
-                'flag_matching'=>0
-            ));
-
-            $this->db->where('flag_matching',$id);
-            $this->db->update('f_uang_masuk', array(
-                'flag_matching'=>0
-            ));
-
-            $this->db->delete('f_match', ['id' => $id]);
+                $this->db->delete('f_match', ['id' => $id]);
+            }
         }
 
         if($this->db->trans_complete()) {
@@ -2166,7 +2181,7 @@ class Finance extends CI_Controller{
             $data['header'] = $this->Model_finance->matching_header_um_print($id)->row_array();
             $idm = $data['header']['flag_matching'];
             $data['details'] = $this->Model_finance->load_invoice_print_um_match($idm)->result();
-            $row = $this->Model_finance->load_invoice_print_um_match($idm)->num_rows();
+            // $row = $this->Model_finance->load_invoice_print_um_match($idm)->num_rows();
 
             // if($row == 0){
                 $this->load->view('finance/print_um_only', $data);
@@ -2753,10 +2768,17 @@ class Finance extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "finance/list_kas";
         $this->load->model('Model_finance');
-        $data['list_data'] = $this->Model_finance->list_kas($ppn)->result();
+        $data['list_data'] = $this->Model_finance->list_kas($ppn,$s,$e)->result();
         if($ppn==1){
             $data['saldo'] = $this->Model_finance->saldo_ppn()->result();
         }else{
@@ -3244,8 +3266,6 @@ class Finance extends CI_Controller{
         }
         $data['group_id']  = $group_id;
         $data['content']= "finance/laporan_penjualan_piutang";
-        $this->load->model('Model_sales_order');
-
         $this->load->view('layout', $data);   
     }
 
@@ -3520,10 +3540,17 @@ class Finance extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "finance/cm";
         $this->load->model('Model_finance');
-        $data['list_data'] = $this->Model_finance->list_data_cm($ppn)->result();
+        $data['list_data'] = $this->Model_finance->list_data_cm($ppn,$s,$e)->result();
         $data['list_customer'] = $this->Model_finance->customer_list()->result();
 
         $this->load->view('layout', $data);
@@ -3560,10 +3587,17 @@ class Finance extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-4 months'));
+        }
 
         $data['content']= "finance/bm";
         $this->load->model('Model_finance');
-        $data['list_data'] = $this->Model_finance->list_data_bm($ppn)->result();
+        $data['list_data'] = $this->Model_finance->list_data_bm($ppn,$s,$e)->result();
         $data['list_customer'] = $this->Model_finance->customer_list()->result();
 
         $this->load->view('layout', $data);

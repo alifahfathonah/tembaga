@@ -1,10 +1,10 @@
 <?php
 class Model_finance extends CI_Model{
-    function list_data($ppn){
+    function list_data($ppn,$s,$e){
         $data = $this->db->query("Select fum.*, mc.nama_customer, fk.id_slip_setoran From f_uang_masuk fum
             left join f_kas fk on fk.id_um = fum.id
             left join m_customers mc on mc.id = fum.m_customer_id
-            where fum.flag_ppn =".$ppn." and fum.rekening_tujuan < 4 and (fum.jenis_pembayaran != 'Cek' and fum.jenis_pembayaran != 'Cek Mundur')
+            where fum.flag_ppn =".$ppn." and fum.tanggal between '".$s."' and '".$e."' and fum.rekening_tujuan < 4 and (fum.jenis_pembayaran != 'Cek' and fum.jenis_pembayaran != 'Cek Mundur')
             Order By id desc");
         return $data;
     }
@@ -16,19 +16,19 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function list_data_cm($ppn){
+    function list_data_cm($ppn,$s,$e){
         $data = $this->db->query("Select fum.*, mc.nama_customer From f_uang_masuk fum
             left join m_customers mc on mc.id = fum.m_customer_id
-            where fum.flag_ppn =".$ppn." and (fum.jenis_pembayaran = 'Cek' or fum.jenis_pembayaran = 'Cek Mundur')
+            where fum.flag_ppn =".$ppn." and fum.tanggal between '".$s."' and '".$e."' and (fum.jenis_pembayaran = 'Cek' or fum.jenis_pembayaran = 'Cek Mundur')
             Order By id desc");
         return $data;
     }
 
-    function list_data_bm($ppn){
+    function list_data_bm($ppn,$s,$e){
         $data = $this->db->query("Select fum.*, mc.nama_customer, fk.id_slip_setoran From f_uang_masuk fum
             left join f_kas fk on fk.id_um = fum.id
             left join m_customers mc on mc.id = fum.m_customer_id
-            where fum.flag_ppn =".$ppn." and fum.rekening_tujuan > 4 and (fum.jenis_pembayaran != 'Cek' and fum.jenis_pembayaran != 'Cek Mundur')
+            where fum.flag_ppn =".$ppn." and fum.tanggal between '".$s."' and '".$e."' and fum.rekening_tujuan > 4 and (fum.jenis_pembayaran != 'Cek' and fum.jenis_pembayaran != 'Cek Mundur')
             Order By id desc");
         return $data;
     }
@@ -36,6 +36,10 @@ class Model_finance extends CI_Model{
     function replace_list($id, $jenis){
         $data = $this->db->query("Select * from f_uang_masuk where status = 9 and replace_id = 0 and m_customer_id =".$id." and jenis_pembayaran = '".$jenis."'");
         return $data;
+    }
+
+    function get_vk_voucher($id){
+        return $this->db->query("Select * from voucher where id_fk =".$id);
     }
 
     function get_slip_setoran($id){
@@ -108,13 +112,13 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function voucher_list($ppn){
+    function voucher_list($ppn,$s,$e){
         $data = $this->db->query("Select voucher.*, supplier.nama_supplier, 
                 po.no_po, coalesce(po.tanggal,0) As tanggal_po
                 From voucher 
                     Left Join po On (voucher.po_id = po.id)
                     left join supplier on (supplier.id = po.supplier_id)
-                Where voucher.flag_ppn =".$ppn."
+                Where voucher.flag_ppn =".$ppn." and voucher.tanggal between '".$s."' and '".$e."'
                 Order By voucher.no_voucher");
         return $data;
     }
@@ -255,7 +259,7 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function list_invoice($ppn){
+    function list_invoice($ppn,$s,$e){
         $data = $this->db->query("Select fi.*, mc.nama_customer, so.no_sales_order, tsj.no_surat_jalan, so.flag_ppn,
             (select count(fid.id) from f_invoice_detail fid where fid.id_invoice = fi.id) as jumlah 
             From f_invoice fi
@@ -263,7 +267,7 @@ class Model_finance extends CI_Model{
             left join t_surat_jalan tsj on tsj.id = fi.id_surat_jalan
             left join m_customers mc on mc.id = fi.id_customer
             left join retur r on r.id = fi.id_retur
-            where fi.flag_ppn = ".$ppn."
+            where fi.flag_ppn = ".$ppn." and fi.tanggal between '".$s."' and '".$e."'
             Order By id desc");
         return $data;
     }
@@ -727,7 +731,7 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function list_kas($ppn){
+    function list_kas($ppn,$s,$e){
         $data = $this->db->query("select fk.*, b.kode_bank, fum.no_uang_masuk, fp.no_pembayaran, mc.nama_customer, COALESCE(NULLIF(v.nm_cost,''), NULLIF(CONCAT('PEMB. ',s.nama_supplier),''), NULLIF(CONCAT('PEMB. ',c.nama_customer),''), '') as keterangan
             from f_kas fk
             left join voucher v on v.id = fk.id_vc
@@ -740,7 +744,7 @@ class Model_finance extends CI_Model{
             left join m_customers mc on mc.id=fum.m_customer_id
             left join f_slip_setoran fss on fss.id=fk.id_slip_setoran
             left join f_pembayaran fp on fp.id = fss.id_pembayaran
-            where fk.flag_ppn = ".$ppn."
+            where fk.flag_ppn = ".$ppn." and fk.tanggal between '".$s."' and '".$e."'
             order by id desc");
         return $data;
     }
@@ -768,7 +772,8 @@ class Model_finance extends CI_Model{
     function slip_setoran_list(){
         $data = $this->db->query("select fss.*, fp.no_pembayaran from f_slip_setoran fss
             left join f_pembayaran fp on fp.id = fss.id_pembayaran 
-            where id_kas = 0");
+            where id_kas = 0
+            order by fss.id desc");
         return $data;
     }
 

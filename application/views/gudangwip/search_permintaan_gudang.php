@@ -39,6 +39,7 @@
                                     <option value="5">Penjualan (KH)</option>
                                     <?php } ?>
                                     <option value="6">Adjustment</option>
+                                    <option value="16">GD/RSK</option>
                                 </optgroup>
                                 <optgroup label="Pemasukan">
                                     <?php if($this->session->userdata('user_ppn')==0){ ?>

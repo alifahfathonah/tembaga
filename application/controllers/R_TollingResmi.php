@@ -21,7 +21,14 @@ class R_TollingResmi extends CI_Controller{
         }
         $this->load->model('Model_matching');
         $data['group_id']  = $group_id;
-        $data['list_data'] = $this->Model_tolling_resmi->list_tolling()->result();
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
+        $data['list_data'] = $this->Model_tolling_resmi->list_tolling($s,$e)->result();
         $data['content']= "resmi/tolling_resmi/index";
 
         $this->load->view('layout', $data);
@@ -230,8 +237,8 @@ class R_TollingResmi extends CI_Controller{
 
                 $post = json_encode($data);
                 if(!empty($post)){
-                    print_r($post);
-                    die();
+                    // print_r($post);
+                    // die();
                     $ch = curl_init(target_url().'api/ReffAPI/dtr_view');
                     curl_setopt($ch, CURLOPT_POST, true);
                     curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));

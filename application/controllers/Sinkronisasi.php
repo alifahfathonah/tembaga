@@ -107,8 +107,7 @@ class Sinkronisasi extends CI_Controller{
                 $response = curl_exec($ch);
                 $result = json_decode($response, true);
                 curl_close($ch);
-                print_r($response);
-                die();
+
                 if($result['status']==true){
                     foreach ($loop as $v) {
                         $this->db->where('id', $v->id);
@@ -274,44 +273,44 @@ class Sinkronisasi extends CI_Controller{
     }
 
     function sync_uk(){
-        // try {
-        //     $this->db->trans_start();
-        //     $data_post = $this->Model_sinkronisasi->sales_order_fg()->result_array();
-        //     $this->load->model('Model_sales_order');
-        //     foreach ($data_post as $key => $value) {
-        //         $post[$key]['detail'] = $this->Model_sales_order->load_detail_only($value['id'])->result();
-        //         $data_api[$key] = array_merge($data_post[$key], array('details'=>$post[$key]['detail']));
-        //     }
-        //     $post = json_encode($data_api);
+        try {
+            $this->db->trans_start();
+            $data_post = $this->Model_sinkronisasi->uk()->result_array();
+            $this->load->model('Model_finance');
+            foreach ($data_post as $key => $value) {
+                $post['uk'] = $this->Model_finance->get_vk_voucher($value['id'])->result();
+                $data_api[$key] = array_merge(array('data_fk'=>$data_post[$key]), array('data_voucher'=>$post['uk']));
+            }
+            $post = json_encode($data_api);
 
-        //         // print_r($post);
-        //         // die();
-        //         $ch = curl_init(target_url().'api/SinkronisasiAPI/so');
-        //         curl_setopt($ch, CURLOPT_POST, true);
-        //         curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
-        //         curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-        //         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        //         $response = curl_exec($ch);
-        //         $result = json_decode($response, true);
-        //         curl_close($ch);
-        //         // print_r($response);
-        //         // die();
-        //         if($result['status']==true){
-        //             foreach ($data_post as $v) {
-        //                 $this->db->where('id', $v['id']);
-        //                 $this->db->update('sales_order', array(
-        //                     'api'=>1
-        //                 ));
-        //             }
-        //         }
-        //     if($this->db->trans_complete()){
-        //         $this->session->set_flashdata('flash_msg', 'Uang Keluar berhasil disinkronisasi, silahkan dicoba kembali!');
-        //         redirect('index.php/Sinkronisasi/finance_sync');
-        //     }
-        // } catch (\Exception $e) {
-        //     print_r($e->getMessage());
-        //     // return;
-        // }
+                    // print_r($post);
+                    // die();
+                $ch = curl_init(target_url().'api/SinkronisasiAPI/uk');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                $result = json_decode($response, true);
+                curl_close($ch);
+                // print_r($response);
+                // die();
+                if($result['status']==true){
+                    foreach ($data_post as $v) {
+                        $this->db->where('id', $v['id']);
+                        $this->db->update('f_kas', array(
+                            'api'=>1
+                        ));
+                    }
+                }
+            if($this->db->trans_complete()){
+                $this->session->set_flashdata('flash_msg', 'Uang Keluar berhasil disinkronisasi');
+                redirect('index.php/Sinkronisasi/um_sync');
+            }
+        } catch (\Exception $e) {
+            print_r($e->getMessage());
+            // return;
+        }
     }
 }
 

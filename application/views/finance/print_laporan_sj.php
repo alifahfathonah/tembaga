@@ -43,7 +43,7 @@
                 <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->tanggal;?></td>
                 <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->kode_barang;?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->nama_barang;?></td>
-                <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto,2,',','.');?></td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto,2,',','.');?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?=number_format($row->total_harga,2,',','.');?></td>
         <?php 
           $last_series = $row->no_surat_jalan;

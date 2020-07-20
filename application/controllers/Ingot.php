@@ -19,10 +19,17 @@ class Ingot extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "ingot/index";
         $this->load->model('Model_ingot');
-        $data['list_data'] = $this->Model_ingot->list_data()->result();
+        $data['list_data'] = $this->Model_ingot->list_data($s,$e)->result();
 
         $this->load->view('layout', $data);
     }
@@ -448,10 +455,17 @@ class Ingot extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "ingot/spb_list";
         $this->load->model('Model_ingot');
-        $data['list_data'] = $this->Model_ingot->spb_list()->result();
+        $data['list_data'] = $this->Model_ingot->spb_list($s,$e)->result();
 
         $this->load->view('layout', $data);
     }
@@ -469,11 +483,18 @@ class Ingot extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $data['content']= "ingot/spb_list";
+            if(null!==$this->uri->segment(4) && null!==$this->uri->segment(5)){
+                $s = $this->uri->segment(4);
+                $e = $this->uri->segment(5);
+            }else{
+                $e = date('Y-m-d');
+                $s = date('Y-m-d', strtotime('-2 months'));
+            }
             $this->load->model('Model_ingot');
             if($id == 0){
-                $data['list_data'] = $this->Model_ingot->spb_list_filter_0()->result();
+                $data['list_data'] = $this->Model_ingot->spb_list_filter_0($s,$e)->result();
             }else if($id == 1){
-                $data['list_data'] = $this->Model_ingot->spb_list_filter_1()->result();
+                $data['list_data'] = $this->Model_ingot->spb_list_filter_1($s,$e)->result();
             }
 
             $this->load->view('layout', $data);
@@ -651,10 +672,17 @@ class Ingot extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "ingot/hasil_produksi";
         $this->load->model('Model_ingot');
-        $data['list_data'] = $this->Model_ingot->hasil_produksi()->result();
+        $data['list_data'] = $this->Model_ingot->hasil_produksi($s,$e)->result();
 
         $this->load->view('layout', $data);
     }
@@ -1171,12 +1199,10 @@ class Ingot extends CI_Controller{
                 #Create BPB Detail Ampas ke gudang ampas
                 $data_bpb_detail_ampas = array(
                         'bpb_ampas_id' => $this->db->insert_id(),
-                        'created' => $tgl_input,
                         'jenis_barang_id' => 3,
                         'uom' => 'KG',
                         'berat' => $this->input->post('ampas'),
-                        'keterangan' => 'SISA PRODUKSI INGOT',
-                        'created_by' => $user_id
+                        'keterangan' => 'SISA PRODUKSI INGOT'
                         );
                 $this->db->insert('t_bpb_ampas_detail',$data_bpb_detail_ampas);
             }

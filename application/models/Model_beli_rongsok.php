@@ -1,6 +1,6 @@
 <?php
 class Model_beli_rongsok extends CI_Model{
-    function po_list($ppn){
+    function po_list($ppn,$s,$e){
         $data = $this->db->query("Select po.*, 
                     bsp.no_pengajuan, bsp.tgl_pengajuan,
                     usr.realname As created_name,
@@ -14,7 +14,7 @@ class Model_beli_rongsok extends CI_Model{
                     Left Join beli_sparepart bsp On (po.beli_sparepart_id = bsp.id) 
                     Left Join supplier spl On (po.supplier_id = spl.id) 
                     Left Join users usr On (bsp.created_by = usr.id) 
-                Where po.jenis_po='Rongsok' and po.flag_ppn = ".$ppn." and po.flag_tolling = 0
+                Where po.jenis_po='Rongsok' and po.flag_ppn = ".$ppn." and po.flag_tolling = 0  and po.tanggal between '".$s."' and '".$e."'
                 Order By po.id Desc");
         return $data;
     }
@@ -458,34 +458,34 @@ class Model_beli_rongsok extends CI_Model{
         return $data;
     }
     
-    function voucher_list($user_ppn){
+    function voucher_list($user_ppn,$s,$e){
         $data = $this->db->query("Select voucher.*, 
                 po.no_po, po.tanggal As tanggal_po
                 From voucher 
                     Left Join po On (voucher.po_id = po.id) 
-                Where voucher.jenis_barang='RONGSOK' And po.flag_ppn = ".$user_ppn."
+                Where voucher.jenis_barang='RONGSOK' And po.flag_ppn = ".$user_ppn." and voucher.tanggal between '".$s."' and '".$e."'
                 Order By voucher.no_voucher desc");
         return $data;
     }
 
-    // function voucher_list_ppn($user_ppn){
+    // function voucher_list_ppn($user_ppn,$s,$e){
     //     $data = $this->db->query("Select voucher.*, fk.nomor, 
     //             po.no_po, po.tanggal As tanggal_po
     //             From voucher 
     //                 Left Join po On (voucher.po_id = po.id)
     //                 Left Join f_kas fk on (fk.id_vc =  voucher.id) 
-    //             Where voucher.jenis_barang='RONGSOK' And po.flag_ppn = ".$user_ppn."
+    //             Where voucher.jenis_barang='RONGSOK' And po.flag_ppn = ".$user_ppn." and voucher.tanggal between '".$s."' and '".$e."'
     //             Order By voucher.no_voucher");
     //     return $data;
     // }
 
-    function voucher_list_ppn($user_ppn){
+    function voucher_list_ppn($user_ppn,$s,$e){
         $data = $this->db->query("Select fk.*,voucher.status, voucher.jenis_voucher, fk.nomor, 
                 po.no_po, po.tanggal As tanggal_po
                 From f_kas fk
                     Left Join voucher voucher on (voucher.id_fk = fk.id) 
                     Left Join po On (voucher.po_id = po.id)
-                Where voucher.jenis_barang='RONGSOK' And po.flag_ppn = ".$user_ppn."
+                Where voucher.jenis_barang='RONGSOK' And po.flag_ppn = ".$user_ppn." and fk.tanggal between '".$s."' and '".$e."'
                 Order By fk.nomor");
         return $data;
     }
@@ -688,7 +688,7 @@ class Model_beli_rongsok extends CI_Model{
             (select sum(netto) from spb_detail_fulfilment sdf
                 left join dtr_detail dd on sdf.dtr_detail_id = dd.id
                 left join spb on sdf.spb_id = spb.id
-                where dd.tanggal_keluar between '".$s."' and '".$e."' and spb.jenis_spb not in (12,6,4,8) and dd.rongsok_id = i.jenis_barang_id
+                where dd.tanggal_keluar between '".$s."' and '".$e."' and spb.jenis_spb not in (12,11,6,4,8) and dd.rongsok_id = i.jenis_barang_id
                 ) as sdm,
             (select sum(netto) from spb_detail_fulfilment sdf
                 left join dtr_detail dd on sdf.dtr_detail_id = dd.id
@@ -1333,7 +1333,7 @@ class Model_beli_rongsok extends CI_Model{
             left join t_hasil_wip thw on dtr.prd_id = thw.id
             left join rongsok r on dd.rongsok_id = r.id
             left join supplier s on s.id = dtr.supplier_id
-            where dtr.prd_id > 0 and ttr.ttr_status = 1 and thw.jenis_masak = 'ROLLING' and dtr.tanggal between '".$s."' and '".$e."'
+            where dtr.prd_id > 0 and ttr.ttr_status = 1 and (thw.jenis_masak = 'ROLLING' or thw.jenis_masak = 'BAKAR ULANG') and dtr.tanggal between '".$s."' and '".$e."'
             order by kode_rongsok, tanggal_masuk, no_ttr");
         }elseif($j==3){
             $data = $this->db->query("select dd.*, r.nama_item, r.kode_rongsok, ttr.no_ttr, dtr.remarks, s.nama_supplier as nama from dtr_detail dd
@@ -1403,6 +1403,30 @@ class Model_beli_rongsok extends CI_Model{
         return $this->db->query("select v.* from voucher v
             left join po on v.po_id = po.id
             where v.po_id =".$id);
+    }
+
+    function gdrsk_per_tanggal($id,$tgl){
+        return $this->db->query("SELECT dd.*
+            FROM dtr_detail dd
+                LEFT JOIN dtr ON ( dtr.id = dd.dtr_id )
+                LEFT JOIN ttr t ON ( t.dtr_id = dd.dtr_id )
+                LEFT JOIN rongsok rsk ON ( rsk.id = dd.rongsok_id ) 
+            WHERE
+                dd.rongsok_id = ".$id."
+                AND dd.tanggal_masuk <= '".$tgl."' and (dd.tanggal_keluar > '".$tgl."' or dd.tanggal_keluar is null)
+                AND t.ttr_status = 1");
+    }
+
+    function gdrsk_global_per_tanggal($tgl){
+        return $this->db->query("SELECT rsk.nama_item, sum(dd.netto) as netto
+            FROM dtr_detail dd
+                LEFT JOIN dtr ON ( dtr.id = dd.dtr_id )
+                LEFT JOIN ttr t ON ( t.dtr_id = dd.dtr_id )
+                LEFT JOIN rongsok rsk ON ( rsk.id = dd.rongsok_id ) 
+            WHERE
+                dd.tanggal_masuk <= '".$tgl."' and (dd.tanggal_keluar > '".$tgl."' or dd.tanggal_keluar is null)
+                AND t.ttr_status = 1
+            GROUP BY dd.rongsok_id order by nama_item");
     }
 }
 

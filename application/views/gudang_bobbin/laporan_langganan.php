@@ -25,6 +25,17 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
+                           Jenis <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis" name="jenis" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                    <option value="0">Global</option>
+                                    <option value="1">Detail</option>
+                                </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                            Laporan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -41,7 +52,7 @@
                            Nama <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <select id="jenis" name="jenis" class="form-control myline select2me" 
+                            <select id="nama" name="nama" class="form-control myline select2me" 
                                 data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
                                 <option value=""></option>
                             </select>
@@ -65,14 +76,13 @@ function simpanData(){
     }else{
         var l=$('#laporan').val();
         var j=$('#jenis').val();
-        var s=$('#tgl_start').val();
-        var e=$('#tgl_end').val();
-        window.open('<?php echo base_url();?>index.php/GudangBobbin/print_laporan_langganan?l='+l+'&j='+j,'_blank');
+        var n=$('#nama').val();
+        window.open('<?php echo base_url();?>index.php/GudangBobbin/print_laporan_langganan?l='+l+'&j='+j+'&n='+n,'_blank');
     };
 };
 
 function get_cost(id){
-    $('#jenis').select2('val','');
+    $('#nama').select2('val','');
     if(id==0){
         $('#show_nama').hide();
     }else{
@@ -83,7 +93,7 @@ function get_cost(id){
             data: "id="+id,
             dataType: "html",
             success: function(result) {
-                $('#jenis').html(result);
+                $('#nama').html(result);
             }
         });
     }

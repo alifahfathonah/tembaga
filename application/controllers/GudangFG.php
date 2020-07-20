@@ -1042,14 +1042,17 @@ class GudangFG extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
-
-            $tgl=explode("-",$tanggal);
-            $tahun=$tgl[1];
-            $bulan=$tgl[0];
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-15 days'));
+        }
 
         $data['content']= "gudang_fg/bpb_list";
         $this->load->model('Model_gudang_fg');
-        $data['list_data'] = $this->Model_gudang_fg->bpb_list($user_ppn,$bulan,$tahun)->result();
+        $data['list_data'] = $this->Model_gudang_fg->bpb_list($user_ppn,$s,$e)->result();
         $data['jenis_barang'] = $this->Model_gudang_fg->barang_fg_list()->result();
 
         $this->load->view('layout', $data);
@@ -1899,10 +1902,17 @@ class GudangFG extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "gudang_fg/spb_list";
         $this->load->model('Model_gudang_fg');
-        $data['list_data'] = $this->Model_gudang_fg->spb_list()->result();
+        $data['list_data'] = $this->Model_gudang_fg->spb_list($s,$e)->result();
 
         $this->load->view('layout', $data);
     }
@@ -2423,6 +2433,52 @@ class GudangFG extends CI_Controller{
         }
     }
 
+    function edit_laporan_bulanan(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+        $id          = $this->uri->segment(3);
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "gudang_fg/edit_laporan";
+        $this->load->model('Model_gudang_fg');
+        $data['detailLaporan'] = $this->Model_gudang_fg->show_laporan_barang_bulanan('FG',$id)->result();
+
+        $this->load->view('layout', $data);
+    }
+
+
+    function update_laporan_bulanan(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $this->db->trans_start();
+            
+            $myDetails = $this->input->post('myDetails');
+            // print_r($myDetails);die();
+            foreach ($myDetails as $row) {
+                $this->db->where('id',$row['id']);
+                $this->db->update('inventory', array(
+                    'keterangan'=>$row['keterangan']
+                ));
+            }
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Data inventory berhasil disimpan!');
+            redirect('index.php/GudangFG/edit_laporan_bulanan/'.$this->input->post('tanggal'));  
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data inventory gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/GudangFG/edit_laporan_bulanan/'.$this->input->post('tanggal'));  
+        }
+    }
+
+
     function view_detail_laporan(){
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
@@ -2848,8 +2904,15 @@ class GudangFG extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "gudang_fg/surat_jalan";
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
         $this->load->model('Model_gudang_fg');
-        $data['list_data'] = $this->Model_gudang_fg->surat_jalan($user_ppn)->result();
+        $data['list_data'] = $this->Model_gudang_fg->surat_jalan($user_ppn,$s,$e)->result();
 
         $this->load->view('layout', $data);
     }

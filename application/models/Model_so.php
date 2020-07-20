@@ -1,33 +1,34 @@
 <?php
 class Model_so extends CI_Model{
 	
-	function so_list(){
+	function so_list($s,$e){
 		$data = $this->db->query("select rso.*, 
 			coalesce(c.nama_cv, cs.nama_customer) as nama_customer, c.pic,
 			(select count(rsod.id) from r_t_so_detail rsod where rsod.so_id = rso.id) as jumlah_item
 			from r_t_so rso
 			left join m_cv c on(rso.cv_id = c.id)
             left join m_customers_cv cs on (rso.customer_id = cs.id)
+            where rso.tanggal between '".$s."' and '".$e."' 
             order by rso.tanggal desc, rso.no_so desc");
 		return $data;
 	}
 
-	function so_list_for_cv($reff_cv){
+	function so_list_for_cv($reff_cv,$s,$e){
 		$data = $this->db->query("select rso.*, 
 			c.nama_customer, c.pic,
 			(select count(rsod.id) from r_t_so_detail rsod where rsod.so_id = rso.id) as jumlah_item
 			from r_t_so rso
-			left join m_customers_cv c on(rso.customer_id = c.id) where rso.jenis_so = 'SO CV' and rso.reff_cv = ".$reff_cv." 
+			left join m_customers_cv c on(rso.customer_id = c.id) where rso.jenis_so = 'SO CV' and rso.reff_cv = ".$reff_cv." and rso.tanggal between '".$s."' and '".$e."'
 			order by rso.tanggal desc, rso.no_so desc");
 		return $data;
 	}
 
-	function so_list_for_kmp(){
+	function so_list_for_kmp($s,$e){
 		$data = $this->db->query("select rso.*, 
 			c.nama_cv as nama_customer, c.pic,
 			(select count(rsod.id) from r_t_so_detail rsod where rsod.so_id = rso.id) as jumlah_item
 			from r_t_so rso
-			left join m_cv c on(rso.cv_id = c.id) where rso.jenis_so = 'SO KMP' 
+			left join m_cv c on(rso.cv_id = c.id) where rso.jenis_so = 'SO KMP' and rso.tanggal between '".$s."' and '".$e."'
 			order by rso.tanggal desc, rso.no_so desc");
 		return $data;
 	}

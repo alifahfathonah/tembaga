@@ -141,7 +141,7 @@ $(function(){
     });    
   window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });
-    function filterData(){
+function filterData(){
     var s=$('#tgl_start').val();
     var e=$('#tgl_end').val();
     window.location = '<?=base_url();?>index.php/BeliSparePart/voucher_list/'+s+'/'+e;

@@ -83,6 +83,13 @@
                                 if($group_id==1 || $hak_akses['print_dtr']==1){
                                     echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/BeliRongsok/print_dtr/'.$data->id.'" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>';
                                 }
+                                if(($group_id==1 || $hak_akses['edit_dtr']==1) && $data->status!=1){
+                                    echo '<a class="btn btn-circle btn-xs green" href="'.base_url().'index.php/Tolling/edit_dtr/'.$data->id.'" 
+                                        style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit &nbsp; </a> ';
+                                }
+                                if(($group_id==1 || $hak_akses['revisi_dtr']==1) && $data->status==1){
+                                    echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/BeliRongsok/revisi_dtr/'.$data->id.'" \style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Revisi &nbsp; </a> ';
+                                }
                             ?>
                         </td>
                     </tr>

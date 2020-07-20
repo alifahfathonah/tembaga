@@ -42,9 +42,17 @@ class BeliRongsok extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "beli_rongsok/index";
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-6 months'));
+        }
+
         $this->load->model('Model_beli_rongsok');
         $this->load->model('Model_beli_sparepart');
-        $data['list_data'] = $this->Model_beli_rongsok->po_list($ppn)->result();
+        $data['list_data'] = $this->Model_beli_rongsok->po_list($ppn,$s,$e)->result();
         $data['bank_list'] = $this->Model_beli_sparepart->bank($ppn)->result();
 
         $this->load->view('layout', $data);
@@ -1356,7 +1364,7 @@ class BeliRongsok extends CI_Controller{
             }
             $data['group_id']  = $group_id;
 
-            $data['content']= "beli_rongsok/revisi_dtr";
+            $data['content']= "tolling_titipan/revisi_dtr";
             $this->load->model('Model_beli_rongsok');
             $data['header']  = $this->Model_beli_rongsok->show_header_dtr($id)->row_array(); 
             $data['details'] = $this->Model_beli_rongsok->show_detail_dtr($id)->result();
@@ -1947,14 +1955,21 @@ class BeliRongsok extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-3 months'));
+        }
 
         $this->load->model('Model_beli_rongsok');
         if($user_ppn==1){
             $data['content']= "beli_rongsok/voucher_list_ppn";
-            $data['list_data'] = $this->Model_beli_rongsok->voucher_list_ppn($user_ppn)->result();
+            $data['list_data'] = $this->Model_beli_rongsok->voucher_list_ppn($user_ppn,$s,$e)->result();
         }else{
             $data['content']= "beli_rongsok/voucher_list";
-            $data['list_data'] = $this->Model_beli_rongsok->voucher_list($user_ppn)->result();
+            $data['list_data'] = $this->Model_beli_rongsok->voucher_list($user_ppn,$s,$e)->result();
         }
 
         $this->load->view('layout', $data);

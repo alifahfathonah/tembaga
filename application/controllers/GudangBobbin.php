@@ -227,9 +227,16 @@ class GudangBobbin extends CI_Controller{
         $data['group_id']  = $group_id;
         $data['judul']     = "Gudang Bobbin Request";
         $data['content']   = "gudang_bobbin/bobbin_request";
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
         
         $this->load->model('Model_bobbin');
-        $data['list_peminjam'] = $this->Model_bobbin->list_peminjam()->result();
+        $data['list_peminjam'] = $this->Model_bobbin->list_peminjam($s,$e)->result();
         $data['list_supplier'] = $this->Model_bobbin->list_supplier()->result();
         $data['list_spb'] = $this->Model_bobbin->list_spb()->result();
         
@@ -399,9 +406,16 @@ class GudangBobbin extends CI_Controller{
         $data['group_id']  = $group_id;
         $data['judul']     = "Gudang Bobbin Terima Barang";
         $data['content']   = "gudang_bobbin/bobbin_terima";
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
         
         $this->load->model('Model_bobbin');
-        $data['list_bobbin'] = $this->Model_bobbin->list_bobbin()->result();
+        $data['list_bobbin'] = $this->Model_bobbin->list_bobbin($s,$e)->result();
         
         
         $this->load->view('layout', $data);  
@@ -656,10 +670,17 @@ class GudangBobbin extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "gudang_bobbin/spb_list";
         $this->load->model('Model_bobbin');
-        $data['list_data'] = $this->Model_bobbin->spb_list()->result();
+        $data['list_data'] = $this->Model_bobbin->spb_list($s,$e)->result();
 
         $this->load->view('layout', $data);
     }   
@@ -1277,6 +1298,7 @@ class GudangBobbin extends CI_Controller{
             $date=date('Y-m-d');
             $l = $_GET['l'];
             $j = $_GET['j'];
+            $n = $_GET['n'];
 
             $group_id    = $this->session->userdata('group_id');        
             if($group_id != 1){
@@ -1287,18 +1309,34 @@ class GudangBobbin extends CI_Controller{
             $data['group_id']  = $group_id;
 
             $this->load->model('Model_bobbin');
-            if($l==0){
-                $data['nama'] = array('nama'=> 'GLOBAL');
-                $data['details'] = $this->Model_bobbin->print_laporan_langganan($l,0)->result();
-                $this->load->view('gudang_bobbin/print_laporan_langganan', $data);
-            }elseif($l==1){
-                $data['nama'] = $this->Model_bobbin->get_supplier($j)->row_array();
-                $data['details'] = $this->Model_bobbin->print_laporan_langganan($l,$j)->result();
-                $this->load->view('gudang_bobbin/print_laporan_langganan', $data);
-            }elseif($l==2){
-                $data['nama'] = $this->Model_bobbin->get_customer($j)->row_array();
-                $data['details'] = $this->Model_bobbin->print_laporan_langganan($l,$j)->result();
-                $this->load->view('gudang_bobbin/print_laporan_langganan', $data);
+            if($j==0){
+                if($l==0){
+                    $data['nama'] = array('nama'=> 'GLOBAL');
+                    $data['details'] = $this->Model_bobbin->print_laporan_langganan_g($l,0)->result();
+                    $this->load->view('gudang_bobbin/print_laporan_langganan_g', $data);
+                }elseif($l==1){
+                    $data['nama'] = $this->Model_bobbin->get_supplier($n)->row_array();
+                    $data['details'] = $this->Model_bobbin->print_laporan_langganan_g($l,$n)->result();
+                    $this->load->view('gudang_bobbin/print_laporan_langganan_g', $data);
+                }elseif($l==2){
+                    $data['nama'] = $this->Model_bobbin->get_customer($n)->row_array();
+                    $data['details'] = $this->Model_bobbin->print_laporan_langganan_g($l,$n)->result();
+                    $this->load->view('gudang_bobbin/print_laporan_langganan_g', $data);
+                }
+            }else{
+                if($l==0){
+                    $data['nama'] = array('nama'=> 'GLOBAL');
+                    $data['details'] = $this->Model_bobbin->print_laporan_langganan($l,0)->result();
+                    $this->load->view('gudang_bobbin/print_laporan_langganan', $data);
+                }elseif($l==1){
+                    $data['nama'] = $this->Model_bobbin->get_supplier($n)->row_array();
+                    $data['details'] = $this->Model_bobbin->print_laporan_langganan($l,$n)->result();
+                    $this->load->view('gudang_bobbin/print_laporan_langganan', $data);
+                }elseif($l==2){
+                    $data['nama'] = $this->Model_bobbin->get_customer($n)->row_array();
+                    $data['details'] = $this->Model_bobbin->print_laporan_langganan($l,$n)->result();
+                    $this->load->view('gudang_bobbin/print_laporan_langganan', $data);
+                }
             }
     }
 
@@ -1328,9 +1366,16 @@ class GudangBobbin extends CI_Controller{
         $data['group_id']  = $group_id;
         $data['judul']     = "Gudang Bobbin Terima Barang";
         $data['content']   = "gudang_bobbin/bpk_list";
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
         
         $this->load->model('Model_bobbin');
-        $data['list_peminjam'] = $this->Model_bobbin->bpk_list()->result();
+        $data['list_peminjam'] = $this->Model_bobbin->bpk_list($s,$e)->result();
 
         $this->load->view('layout', $data);  
     }

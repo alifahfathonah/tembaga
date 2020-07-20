@@ -23,14 +23,21 @@ class R_SuratJalan extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "resmi/surat_jalan/index";
         if($group_id == 14 || $group_id == 15){
-            $data['list_sj']= $this->Model_surat_jalan->list_sj_cv($reff_cv,'RONGSOK')->result();
+            $data['list_sj']= $this->Model_surat_jalan->list_sj_cv($reff_cv,'RONGSOK',$s,$e)->result();
         }else if($group_id == 16){
-            $data['list_sj']= $this->Model_surat_jalan->list_sj_so('RONGSOK')->result();
+            $data['list_sj']= $this->Model_surat_jalan->list_sj_so('RONGSOK',$s,$e)->result();
         }else{
-            $data['list_sj']= $this->Model_surat_jalan->list_sj()->result();
+            $data['list_sj']= $this->Model_surat_jalan->list_sj($s,$e)->result();
         }
         $this->load->view('layout', $data);
     }
@@ -46,14 +53,21 @@ class R_SuratJalan extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d', strtotime('+1 day'));
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "resmi/surat_jalan/index";
         if($group_id == 14 || $group_id == 15){
-            $data['list_sj']= $this->Model_surat_jalan->list_sj_cv($reff_cv,'FG')->result();
+            $data['list_sj']= $this->Model_surat_jalan->list_sj_cv($reff_cv,'FG',$s,$e)->result();
         }else if($group_id == 16){
-            $data['list_sj']= $this->Model_surat_jalan->list_sj_so('FG')->result();
+            $data['list_sj']= $this->Model_surat_jalan->list_sj_so('FG',$s,$e)->result();
         }else{
-            $data['list_sj']= $this->Model_surat_jalan->list_sj()->result();
+            $data['list_sj']= $this->Model_surat_jalan->list_sj($s,$e)->result();
         }
         $this->load->view('layout', $data);
     }

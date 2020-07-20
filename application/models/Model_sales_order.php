@@ -361,7 +361,7 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
-    function spb_list($user_ppn){
+    function spb_list($user_ppn,$s,$e){
         $data = $this->db->query("select tso.*, mc.nama_customer, so.no_sales_order, so.tanggal, coalesce(tsf.no_spb, tsw.no_spb_wip, spb.no_spb) as no_spb_detail , 
             coalesce(tsf.status, tsw.status, spb.status) as status, coalesce(tsf.keterangan, tsw.keterangan, spb.remarks) as keterangan,
             (Select count(tsod.id)As jumlah_item From t_sales_order_detail tsod Where tsod.t_so_id = tso.id)As jumlah_item from t_sales_order tso 
@@ -370,7 +370,7 @@ class Model_sales_order extends CI_Model{
             left join t_spb_wip tsw on tso.jenis_barang='WIP' and tsw.id = tso.no_spb
             left join spb on tso.jenis_barang='RONGSOK' and spb.id = tso.no_spb
             left join m_customers mc on mc.id = so.m_customer_id
-            Where so.flag_tolling = 0 And so.flag_ppn = ".$user_ppn." And tso.no_spb > 0
+            Where so.flag_tolling = 0 and so.tanggal between '".$s."' and '".$e."' And so.flag_ppn = ".$user_ppn." And tso.no_spb > 0
             order by so.no_sales_order desc");
         return $data;
     }
@@ -435,7 +435,7 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
-    function surat_jalan($user_ppn){
+    function surat_jalan($user_ppn,$s,$e){
         $data = $this->db->query("Select tsj.*, (select count(tsjd.id) from t_surat_jalan_detail tsjd where tsjd.t_sj_id = tsj.id) as jumlah_item,
                     cust.nama_customer, cust.alamat,
                     so.no_sales_order, fi.id as inv
@@ -443,7 +443,7 @@ class Model_sales_order extends CI_Model{
                     Left Join m_customers cust On (tsj.m_customer_id = cust.id)
                     Left Join sales_order so On (tsj.sales_order_id = so.id) 
                     Left Join f_invoice fi on (fi.id_surat_jalan = tsj.id)
-                Where so.flag_tolling = 0  And so.flag_ppn = ".$user_ppn."
+                Where so.flag_tolling = 0  And so.flag_ppn = ".$user_ppn." and tsj.tanggal between '".$s."' and '".$e."'
                 Order By tsj.no_surat_jalan Desc");
         return $data;
     }

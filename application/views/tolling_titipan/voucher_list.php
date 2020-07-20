@@ -13,7 +13,7 @@
 <div class="row">                            
     <div class="col-md-12">
         <?php
-            if( ($group_id==1)||($hak_akses['voucher_list']==1) ){
+            if( ($group_id==1)||($hak_akses['po_list']==1) ){
         ?>
         
         <div class="portlet box yellow-gold">

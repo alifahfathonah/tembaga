@@ -85,10 +85,11 @@ class Model_bobbin extends CI_Model{
         return $data;
     }
 
-    function spb_list(){
+    function spb_list($s,$e){
         $data = $this->db->query("select mbs.*, aprv.realname as approved_name, rjct.realname as rejected_name, (select count(mbsd.id) from bobbin_spb_detail mbsd where mbsd.id_spb_bobbin = mbs.id) as jumlah_item from bobbin_spb mbs
             left join users aprv on (aprv.id = mbs.approved_by)
             left join users rjct on (rjct.id = mbs.rejected_by)
+            where mbs.tanggal between '".$s."' and '".$e."'
             order by id desc
             ");
         return $data;
@@ -172,11 +173,12 @@ class Model_bobbin extends CI_Model{
         return $data;
     }
 
-    function list_peminjam(){
+    function list_peminjam($s,$e){
         $data = $this->db->query("select mbp.*, tsj.no_surat_jalan, mc.nama_customer, supp.nama_supplier, (select count(mbpd.id) as jumlah_item from m_bobbin_peminjaman_detail mbpd where mbpd.id_peminjaman = mbp.id) as jumlah_item
             from m_bobbin_peminjaman mbp left join t_surat_jalan tsj on (mbp.id_surat_jalan = tsj.id)
             left join m_customers mc on (mbp.id_customer = mc.id)
             left join supplier supp on (mbp.supplier_id = supp.id)
+            where mbp.tanggal between '".$s."' and '".$e."'
             order by id desc
             ");
         return $data;
@@ -210,11 +212,12 @@ class Model_bobbin extends CI_Model{
         return $data;
     }
 
-    function list_bobbin(){
+    function list_bobbin($s,$e){
         $data = $this->db->query("select mbt.*, (select count(mbtd.id) as jumlah_item from m_bobbin_penerimaan_detail mbtd where mbtd.id_bobbin_penerimaan = mbt.id) as jumlah_item, COALESCE(mc.nama_customer,s.nama_supplier,'') as nama
             from m_bobbin_penerimaan mbt
             left join m_customers mc on mbt.id_customer = mc.id
             left join supplier s on mbt.id_supplier = s.id
+            where mbt.tanggal between '".$s."' and '".$e."'
             order by mbt.no_penerimaan desc");
         return $data;
     }
@@ -461,6 +464,63 @@ class Model_bobbin extends CI_Model{
         }
     }
 
+    function print_laporan_langganan_g($l,$j){
+        if($l==0){
+            return $this->db->query("select count(mb.id) as total,
+            sum(CASE WHEN mb.m_bobbin_size_id = 9 THEN 1 ELSE 0 END) as J,
+            sum(CASE WHEN mb.m_bobbin_size_id = 10 THEN 1 ELSE 0 END) as K,
+            sum(CASE WHEN mb.m_bobbin_size_id = 11 THEN 1 ELSE 0 END) as L,
+            sum(CASE WHEN mb.m_bobbin_size_id = 12 THEN 1 ELSE 0 END) as M,
+            sum(CASE WHEN mb.m_bobbin_size_id = 13 THEN 1 ELSE 0 END) as P,
+            sum(CASE WHEN mb.m_bobbin_size_id = 14 THEN 1 ELSE 0 END) as Q,
+            sum(CASE WHEN mb.m_bobbin_size_id = 16 THEN 1 ELSE 0 END) as S,
+            sum(CASE WHEN mb.m_bobbin_size_id = 17 THEN 1 ELSE 0 END) as T,
+            0 as D,
+            COALESCE(s.nama_supplier,mc.nama_customer) as nama
+                from m_bobbin mb
+                left join supplier s on s.id = mb.borrowed_by_supplier
+                left join m_customers mc on mc.id = mb.borrowed_by
+                where mb.borrowed_by_supplier > 0 or mb.borrowed_by > 0 
+                group by nama
+                order by nama, nomor_bobbin
+             ");
+        }else if($l==1){
+            return $this->db->query("select count(mb.id) as total,
+            sum(CASE WHEN mb.m_bobbin_size_id = 9 THEN 1 ELSE 0 END) as J,
+            sum(CASE WHEN mb.m_bobbin_size_id = 10 THEN 1 ELSE 0 END) as K,
+            sum(CASE WHEN mb.m_bobbin_size_id = 11 THEN 1 ELSE 0 END) as L,
+            sum(CASE WHEN mb.m_bobbin_size_id = 12 THEN 1 ELSE 0 END) as M,
+            sum(CASE WHEN mb.m_bobbin_size_id = 13 THEN 1 ELSE 0 END) as P,
+            sum(CASE WHEN mb.m_bobbin_size_id = 14 THEN 1 ELSE 0 END) as Q,
+            sum(CASE WHEN mb.m_bobbin_size_id = 16 THEN 1 ELSE 0 END) as S,
+            sum(CASE WHEN mb.m_bobbin_size_id = 17 THEN 1 ELSE 0 END) as T,
+            0 as D,
+            s.nama_supplier as nama
+                from m_bobbin mb
+                left join supplier s on s.id = mb.borrowed_by_supplier
+                where mb.borrowed_by_supplier =".$j."
+                group by nama
+                order by nama");
+        }elseif($l==2){
+            return $this->db->query("select count(mb.id) as total,
+            sum(CASE WHEN mb.m_bobbin_size_id = 9 THEN 1 ELSE 0 END) as J,
+            sum(CASE WHEN mb.m_bobbin_size_id = 10 THEN 1 ELSE 0 END) as K,
+            sum(CASE WHEN mb.m_bobbin_size_id = 11 THEN 1 ELSE 0 END) as L,
+            sum(CASE WHEN mb.m_bobbin_size_id = 12 THEN 1 ELSE 0 END) as M,
+            sum(CASE WHEN mb.m_bobbin_size_id = 13 THEN 1 ELSE 0 END) as P,
+            sum(CASE WHEN mb.m_bobbin_size_id = 14 THEN 1 ELSE 0 END) as Q,
+            sum(CASE WHEN mb.m_bobbin_size_id = 16 THEN 1 ELSE 0 END) as S,
+            sum(CASE WHEN mb.m_bobbin_size_id = 17 THEN 1 ELSE 0 END) as T,
+            0 as D,
+            mc.nama_customer as nama
+                from m_bobbin mb
+                left join m_customers mc on mc.id = mb.borrowed_by
+                where mb.borrowed_by=".$j."
+                group by nama
+                order by nama");
+        }
+    }
+
     function print_laporan_langganan($l,$j){
         if($l==0){
             return $this->db->query("select mb.nomor_bobbin, mb.berat, mb.m_bobbin_size_id, COALESCE(s.nama_supplier,mc.nama_customer) as nama, 
@@ -496,11 +556,12 @@ class Model_bobbin extends CI_Model{
         return $this->db->query("select nama_customer as nama from m_customers where id=".$j);
     }
 
-    function bpk_list(){
+    function bpk_list($s,$e){
         return $this->db->query("select tsj.id, tsp.jumlah, tsj.no_surat_jalan, tsj.tanggal, COALESCE(mc.nama_customer, s.nama_supplier, '') as nama, count(tsp.id) as jumlah from t_surat_peminjaman tsp 
             left join t_surat_jalan tsj on tsp.t_sj_id = tsj.id
             left join m_customers mc on tsj.m_customer_id = mc.id
             left join supplier s on tsj.supplier_id = s.id
+            where tsj.tanggal between '".$s."' and '".$e."'
             group by tsp.t_sj_id
             order by tanggal desc ");
     }
@@ -588,7 +649,7 @@ class Model_bobbin extends CI_Model{
             1 as trx, mb.m_bobbin_size_id from m_bobbin_penerimaan_detail bpnd 
             left join m_bobbin mb on mb.nomor_bobbin = bpnd.nomor_bobbin
             left join m_bobbin_penerimaan bpn on bpnd.id_bobbin_penerimaan = bpn.id
-            where bpn.status =0 and bpn.tanggal between '".$s."' and '".$e."' and bpn.id_customer = ".$l." group by bpnd.id_bobbin_penerimaan)
+            where bpn.status in (0,1) and bpn.tanggal between '".$s."' and '".$e."' and bpn.id_customer = ".$l." group by bpnd.id_bobbin_penerimaan)
                 UNION ALL 
             (select bpj.no_surat_peminjaman as nomor, bpj.tanggal, tsj.no_surat_jalan,
             sum(CASE WHEN mb.m_bobbin_size_id = 11 THEN 1 ELSE 0 END) as L,

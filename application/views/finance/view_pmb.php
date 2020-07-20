@@ -294,7 +294,7 @@
                 </div>
             </div>
             <input type="hidden" id="total_voucher" value="<?=$total_vc;?>">
-            <input type="hidden" id="total_um" value="<?=$total_um;?>">
+            <input type="hidden" id="total_um" value="<?=$total_um+$total_uk;?>">
             <div class="row">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
@@ -302,7 +302,7 @@
                     <a href="javascript:;" class="btn green" onclick="jalankan();"> 
                         <i class="fa fa-check"></i> Jalankan </a>
             <?php } else if($header['status'] == 2) { ?>
-                    <a href="javascript:;" class="btn green" onclick="approveData();"> 
+                    <a href="javascript:;" class="btn green" id="approve" onclick="approveData();"> 
                         <i class="fa fa-check"></i> Approve </a>
                     <a href="javascript:;" class="btn red" onclick="showRejectBox();">
                         <i class="fa fa-ban"></i> Reject </a>
@@ -356,6 +356,8 @@ function edit(){
 function approveData(){
     var r=confirm("Anda yakin meng-approve permintaan barang ini?");
     if (r==true){
+        $('#approve').text('Please Wait...');
+        $('#approve').prop('disabled', true);
         $('#formku').attr("action", "<?php echo base_url(); ?>index.php/Finance/approve_pmb");    
         $('#formku').submit(); 
     }
@@ -373,7 +375,7 @@ function jalankan(){
     if($('#total_voucher').val() == 0){
         $('#message').html("Voucher tidak Boleh Kosong");
         $('.alert-danger').show();
-    }else if($('#total_um').val() == 0){
+    }else if($('#total_um').val() == 0 && $('')){
         $('#message').html("Cek Masuk tidak Boleh Kosong");
         $('.alert-danger').show();
     }else if($('#nominal_slip').val() < 0){

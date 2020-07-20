@@ -14,6 +14,35 @@
         <?php
             if( ($group_id==1 || $group_id == 21)||($hak_akses['spb_list']==1) ){
         ?>
+    <div class="collapse well" id="form_tanggal" >
+        <form class="eventInsForm" method="post" target="_self" name="form_tanggal" 
+        id="form_tanggal">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-3">
+                                <input type="text" id="tgl_start" name="tgl_start" 
+                                    class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                    value="<?php echo date('Y-m-01'); ?>">
+                            </div>
+                            <div class="col-md-1">
+                                S/D
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" id="tgl_end" name="tgl_end" 
+                                    class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
+                                    value="<?php echo date('Y-m-d'); ?>">
+                            </div>
+                            <div class="col-md-2">
+                                &nbsp; &nbsp; <a href="javascript:;" onclick="filterData()" class="btn green"><i class="fa fa-search-plus"></i> Filter</a>        
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div> 
         <div class="row">
             <div class="col-md-12">
                 <div class="alert alert-success <?php echo (empty($this->session->flashdata('flash_msg'))? "display-hide": ""); ?>" id="box_msg_sukses">
@@ -53,7 +82,8 @@
                     <i class="fa fa-beer"></i>SPB List
                 </div>
                 <div class="tools">
-                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter"><i class="fa fa-search"></i> Filter Cek</a>
+                <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_tanggal" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter"><i class="fa fa-search"></i> Filter Tanggal</a>    
+                    <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter"><i class="fa fa-search"></i> Filter Data</a>
                     <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?php echo base_url('index.php/Ingot/add_spb_keluar');?>"><i class="fa fa-plus"></i> Create SPB Rongsok </a>
                 </div>
             </div>
@@ -185,7 +215,35 @@ function filterData(){
     }
 }
 
-$(function(){    
+function filterData(){
+    var s=$('#tgl_start').val();
+    var e=$('#tgl_end').val();
+    <?php if($this->uri->segment(1)=='Ingot'){
+        echo "window.location = '".base_url()."index.php/Ingot/filter_spb/1/'+s+'/'+e;";
+    }else{
+        echo "window.location = '".base_url()."index.php/GudangRongsok/spb_list/'+s+'/'+e;";
+    }?>
+}
+
+$(function(){  
+    $("#tgl_start").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yy-mm-dd'
+    });        
+    $("#tgl_end").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yy-mm-dd'
+    });      
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });
 </script>         

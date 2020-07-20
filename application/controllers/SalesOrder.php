@@ -990,10 +990,17 @@ class SalesOrder extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "sales_order/spb_list";
         $this->load->model('Model_sales_order');
-        $data['list_data'] = $this->Model_sales_order->spb_list($user_ppn)->result();
+        $data['list_data'] = $this->Model_sales_order->spb_list($user_ppn,$s,$e)->result();
 
         $this->load->view('layout', $data);
     }
@@ -1051,10 +1058,17 @@ class SalesOrder extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "sales_order/surat_jalan";
         $this->load->model('Model_sales_order');
-        $data['list_data'] = $this->Model_sales_order->surat_jalan($user_ppn)->result();
+        $data['list_data'] = $this->Model_sales_order->surat_jalan($user_ppn,$s,$e)->result();
 
         $this->load->view('layout', $data);
     }

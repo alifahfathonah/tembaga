@@ -72,9 +72,9 @@
                 }
                 $total_harga = $ni + $ppn + $nm;
                 echo '
-                <td style="border-top: 1px solid; border-left: 1px solid;">'.number_format($ni,2,',','.').'</td>
-                <td align="center" style="border-top: 1px solid; border-left: 1px solid;">'.number_format($ppn,2,',','.').'</td>
-                <td style="border-top: 1px solid; border-left: 1px solid;">'.number_format($nm,2,',','.').'</td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;">'.number_format($ni,2,',','.').'</td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;">'.number_format($ppn,2,',','.').'</td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;">'.number_format($nm,2,',','.').'</td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">'.number_format($total_harga,2,',','.').'</td>';
                 $nilai_netto += $netto;
                 $nilai_invoice += $ni;
@@ -107,16 +107,16 @@
                 $nettoc += $netto;
                 $nettot += $netto;
                 echo '
-                <td style="border-top: 1px solid; border-left: 1px solid;"></td>
-                <td align="center" style="border-top: 1px solid; border-left: 1px solid;"></td>
-                <td style="border-top: 1px solid; border-left: 1px solid;"></td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;"></td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;"></td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;"></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"></td>';
               }
               if($last_series != $row->kode_customer && $last_series != null){
                 echo '<tr>
                     <td colspan="7" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total</strong></td>
                     <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;">'.number_format($nettoc,2,',','.').'</td>
-                    <td style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;"></td>
+                    <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;"></td>
                     <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;">'.number_format($nic,2,',','.').'</td>
                     <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;">'.number_format($npc,2,',','.').'</td>
                     <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;">'.number_format($nmc,2,',','.').'</td>
@@ -156,7 +156,7 @@
                 <?php echo ($last_series2==$row->no_surat_jalan) ? '<td align="center" style="border-left: 1px solid;">': '<td align="center" style="border-top: 1px solid; border-left: 1px solid;">'.date('d-m-Y', strtotime($row->tanggal))?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->kode_barang ?></td>
                 <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->nama_barang ?></td>
-                <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto,2,',','.');?></td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto,2,',','.');?></td>
                 <td style="border-top: 1px solid; border-left: 1px solid;"><?=($row->currency=='IDR')?'Rp.': '$ -> Rp.';?></td>
         <?php 
             if($last_series==$row->no_surat_jalan){
@@ -186,9 +186,9 @@
                 }
                 $total_harga = $ni + $ppn + $nm;
                 echo '
-                <td style="border-top: 1px solid; border-left: 1px solid;">'.number_format($ni,2,',','.').'</td>
-                <td align="center" style="border-top: 1px solid; border-left: 1px solid;">'.number_format($ppn,2,',','.').'</td>
-                <td style="border-top: 1px solid; border-left: 1px solid;">'.number_format($nm,2,',','.').'</td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;">'.number_format($ni,2,',','.').'</td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;">'.number_format($ppn,2,',','.').'</td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;">'.number_format($nm,2,',','.').'</td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">'.number_format($total_harga,2,',','.').'</td>';
                 $nilai_netto += $netto;
                 $nilai_invoice += $ni;

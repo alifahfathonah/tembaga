@@ -567,7 +567,7 @@
                             </li>
                         <?php } if($group_id==1 || $group_id == 21 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                             <li>
-                                <a href="<?php echo base_url(); ?>index.php/GudangWIP">
+                                <a href="<?php echo base_url(); ?>index.php/GudangWIP/stok_wip">
                                 <i class="fa fa-cubes"></i>
                                 Gudang WIP </a>
                             </li>
@@ -591,11 +591,11 @@
                                         Laporan WIP </a>
                                     </li>
                                 <?php } if($group_id==1 || $group_id == 21 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
-                                    <li>
+                                    <!-- <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangWIP/stok_wip">
                                         <i class="fa fa-inbox"></i>
                                         Stok WIP </a>
-                                    </li>
+                                    </li> -->
                                 <?php } ?>
                                 </ul>
                             </li>

@@ -11,7 +11,7 @@
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Jenis Barang</strong></td>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Stock Awal</strong></td>
                 <td colspan="6" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Pemasukan</strong></td>
-                <td colspan="6" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Pengeluaran</strong></td>
+                <td colspan="5" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Pengeluaran</strong></td>
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Stock Akhir</strong></td>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Selisih</strong></td>
                 <td rowspan="2" style="text-align:center; border:1px solid #000"><strong>Keterangan</strong></td>
@@ -25,7 +25,7 @@
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Repacking</th>
 
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Produksi</th>
-                <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Cuci Bakar Ulang</th>
+                <!-- <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Cuci Bakar Ulang</th> -->
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">GD/RSK</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Konsumen</th>
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Retur</th>
@@ -48,7 +48,7 @@
     $koreksi_m = 0;
 
     $produksi_k = 0;
-    $bu_k = 0;
+    // $bu_k = 0;
     $gdrsk = 0;
     $konsumen = 0;
     $retur_k = 0;
@@ -68,7 +68,7 @@
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; text-align:right;">'.(($row->koreksi_m==0)? '-':number_format($row->koreksi_m,2,',','.')).'</td>';
 
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; text-align:right;">'.(($row->produksi_k==0)? '-':number_format($row->produksi_k,2,',','.')).'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; text-align:right;">'.(($row->bakar_ulang_k==0)? '-':number_format($row->bakar_ulang_k,2,',','.')).'</td>';
+        // echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; text-align:right;">'.(($row->bakar_ulang_k==0)? '-':number_format($row->bakar_ulang_k,2,',','.')).'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; text-align:right;">'.(($row->gdrsk==0)? '-':number_format($row->gdrsk,2,',','.')).'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; text-align:right;">'.(($row->konsumen==0)? '-':number_format($row->konsumen,2,',','.')).'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; text-align:right;">'.(($row->retur_k==0)? '-':number_format($row->retur_k,2,',','.')).'</td>';
@@ -90,7 +90,7 @@
     $koreksi_m += $row->koreksi_m;
 
     $produksi_k += $row->produksi_k;
-    $bu_k += $row->bakar_ulang_k;
+    // $bu_k += $row->bakar_ulang_k;
     $gdrsk += $row->gdrsk;
     $konsumen += $row->konsumen;
     $retur_k += $row->retur_k;
@@ -110,7 +110,7 @@
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;text-align: right;"><strong><?=number_format($koreksi_m,2,',','.');?></strong></td>
 
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;text-align: right;"><strong><?=number_format($produksi_k,2,',','.');?></strong></td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000;text-align: right;"><strong><?=number_format($bu_k,2,',','.');?></strong></td>
+        <!-- <td style="border-bottom:1px solid #000; border-left:1px solid #000;text-align: right;"><strong><?=number_format($bu_k,2,',','.');?></strong></td> -->
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;text-align: right;"><strong><?=number_format($gdrsk,2,',','.');?></strong></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;text-align: right;"><strong><?=number_format($konsumen,2,',','.');?></strong></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;text-align: right;"><strong><?=number_format($retur_k,2,',','.');?></strong></td>
@@ -122,7 +122,7 @@
         <!-- <td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000"><strong><?=number_format($total,2,',','.');?></strong></td> -->
     </tr>
     <tr>
-        <td colspan="19" style="border-right:1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000;">
+        <td colspan="18" style="border-right:1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000;">
             <table border="0" width="100%" cellpadding="0" cellspacing="0" >
                 <tr>
                     <td colspan="3" align="right"><span style="margin-right: 5%;">Tangerang, <?=tanggal_indo(date('Y-m-d'));?></span></td>

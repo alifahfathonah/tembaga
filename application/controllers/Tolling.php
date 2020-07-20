@@ -1565,6 +1565,7 @@ class Tolling extends CI_Controller{
 
             $data['content']= "tolling_titipan/edit_dtr";
             $this->load->model('Model_tolling_titipan');
+            $data['customer_list'] = $this->Model_tolling_titipan->customer_list()->result();
             $data['header']  = $this->Model_tolling_titipan->show_header_dtr($id)->row_array(); 
             $data['details'] = $this->Model_tolling_titipan->show_detail_dtr($id)->result();
             
@@ -1573,14 +1574,88 @@ class Tolling extends CI_Controller{
             redirect('index.php/Tolling');
         }
     }
-    
-    function update_dtr(){
+
+    function revisi_dtr(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "tolling_titipan/revisi_dtr";
+            $this->load->model('Model_beli_rongsok');
+            $data['header']  = $this->Model_beli_rongsok->show_header_dtr($id)->row_array(); 
+            $data['details'] = $this->Model_beli_rongsok->show_detail_dtr($id)->result();
+            $this->load->model('Model_rongsok');
+            $data['list_rongsok'] = $this->Model_beli_rongsok->all_rsk()->result();
+            
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/Tolling');
+        }
+    }
+
+    function proses_revisi(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         
         $this->db->trans_start();
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('dtr', array(
+                    'tanggal'=> $tgl_input,
+                    'remarks'=>$this->input->post('remarks'),
+                    'modified'=>$tanggal,
+                    'modified_by'=>$user_id
+        ));
+        
+        $this->db->where('dtr_id', $this->input->post('id'));
+        $this->db->update('ttr', array(
+            'tanggal'=> $tgl_input
+        ));
+
+        $details = $this->input->post('myDetails');
+        foreach($details as $row){
+            $this->db->where('id', $row['id_dtr']);
+            $this->db->update('dtr_detail', array(
+                'rongsok_id'=>$row['rongsok_id'],
+                'line_remarks'=>$row['line_remarks'],
+                'tanggal_masuk'=>$tgl_input,
+                'modified'=>$tanggal,
+                'modified_by'=>$user_id
+            ));
+
+            $this->db->where('dtr_detail_id', $row['id_dtr']);
+            $this->db->update('ttr_detail', array(
+                'rongsok_id'=>$row['rongsok_id'],
+                'modified'=>$tanggal,
+                'modified_by'=>$user_id
+            ));
+        }
+        
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'DTR dengan nomor : '.$this->input->post('no_dtr').' berhasil diupdate...');                 
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat updates DTR, silahkan coba kembali!');
+        }
+        redirect('index.php/Tolling/dtr_list');
+    }
+
+    function update_dtr(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $this->db->trans_start();
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('dtr', array(
+                    'tanggal'=>$tgl_input,
+                    'customer_id'=>$this->input->post('customer_id'),
                     'status'=>0,
                     'remarks'=>$this->input->post('remarks'),
                     'modified'=>$tanggal,

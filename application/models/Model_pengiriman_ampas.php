@@ -184,7 +184,7 @@ class Model_pengiriman_ampas extends CI_Model{
     function show_spb_fulfilment($id){
         $data = $this->db->query("Select saf.*, r.nama_item, r.uom from t_spb_ampas_fulfilment saf
                     left join rongsok r on r.id = saf.jenis_barang_id
-                    where saf.approved_by = 1 and saf.t_spb_ampas_id=".$id);
+                    where saf.approved_by > 0 and saf.t_spb_ampas_id=".$id);
         return $data;
     }
 

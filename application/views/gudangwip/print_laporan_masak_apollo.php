@@ -20,7 +20,6 @@ table td, table td * {
                     <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>BS APOLLO</strong></td>
                     <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>SUSUT<br>APOLLO</strong></td>
                     <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong><br>%</strong></td>
-                    <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong><br>Minyak<strong></td>
                     <td style="text-align:center; border-left:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;"><strong>GAS</strong></td>
                 </tr>
                 <tr>
@@ -71,7 +70,6 @@ table td, table td * {
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->bs,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->total_rongsok-$row->berat_ingot-$row->bs-$row->bs_service,2,',','.').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
         echo '<td style="border-bottom:1px solid #000; border-right:1px solid #000; border-left:1px solid #000">'.number_format($row->gas+$row->gas_r,2,',','.').'</td>';
         echo '</tr>';
@@ -125,7 +123,7 @@ table td, table td * {
                         </td>
                         <td style="border-bottom:1px solid #000; border-left:1px solid #000;">-</td>
                         <td style="border-bottom:1px solid #000; border-left:1px solid #000;">
-                            <?=number_format($hasil_bss,2,',','.');?>
+                            <?=number_format($bs_service,2,',','.');?>
                         </td>
                         <td style="border-bottom:1px solid #000; border-left:1px solid #000;">
                             <?=number_format($hasil_bss,2,',','.');?>
@@ -142,7 +140,6 @@ table td, table td * {
                         <td style="border-bottom:1px solid #000; border-left:1px solid #000;">
                             <?=number_format($hasil_susut,2,',','.');?>
                         </td>
-                        <td style="border-bottom:1px solid #000; border-left:1px solid #000;">-</td>
                         <td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000;">
                             <?=number_format($gas,2,',','.');?>
                         </td>

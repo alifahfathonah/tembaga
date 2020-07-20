@@ -77,6 +77,11 @@
                                 <span class="title">Pindah Packing</span>
                             </a>
                         </li>
+                        <li>
+                            <a href="<?php echo base_url(); ?>index.php/R_Rongsok/kirim_matching">
+                            <i class="fa fa-paper-plane"></i>
+                            Kirim Matching KMP </a>
+                        </li>
                     </ul>
                 </li>
                 <?php } if($group_id==9 || (isset($akses_menu['R_SuratJalan']) && $akses_menu['R_SuratJalan']==1)){ ?>
@@ -86,7 +91,7 @@
                         <span class="title">SURAT JALAN</span>
                     </a>
                 </li> -->
-                <li <?php if ($module_name=="SuratJalan") echo 'class="start active open"'; ?>>
+                <li <?php if ($module_name=="R_SuratJalan") echo 'class="start active open"'; ?>>
                     <a href="javascript:;">
                         <i class="fa fa-truck"></i>
                         <span class="title">SURAT JALAN</span>

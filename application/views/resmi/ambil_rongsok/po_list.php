@@ -32,11 +32,11 @@
                                 Dari Tanggal
                             </div>
                             <div class="col-md-3">
-                                <input type="text" id="tgl_start" name="tgl_start" class="form-control myline input-small" style="margin-bottom:5px;float:left;" value="<?= date('d-m-Y');?>">  
+                                <input type="text" id="tgl_start" name="tgl_start" class="form-control myline input-small" style="margin-bottom:5px;float:left;" value="<?= date('Y-m-d');?>">  
                             </div>
                             <div class="col-md-1" style="margin-bottom: 5px;">S/D</div>
                             <div class="col-md-3">
-                                <input type="text" id="tgl_end" name="tgl_end" class="form-control myline input-small" style="margin-bottom:5px;float:left;" value="<?= date('d-m-Y');?>">  
+                                <input type="text" id="tgl_end" name="tgl_end" class="form-control myline input-small" style="margin-bottom:5px;float:left;" value="<?= date('Y-m-d');?>">  
                             </div>
                             <div class="col-md-3">
                                 &nbsp; &nbsp; <a href="javascript:;" onclick="filterData()" class="btn green"><i class="fa fa-search-plus"></i> Filter</a>        
@@ -152,7 +152,7 @@
 function filterData(){
     const start=$('#tgl_start').val();
     const end=$('#tgl_end').val()
-    window.location = '<?php echo base_url('index.php/BeliRongsok/filter_po/');?>'+start+'&'+end;
+    window.location = '<?php echo base_url('index.php/R_Rongsok/po_list/');?>'+start+'/'+end;
 }
 </script>
 <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
@@ -161,6 +161,24 @@ function filterData(){
 <script>
 $(function(){   
     $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yy-mm-dd'
+    }); 
+    $("#tgl_start").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'yy-mm-dd'
+    }); 
+    $("#tgl_end").datepicker({
         showOn: "button",
         buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
         buttonImageOnly: true,

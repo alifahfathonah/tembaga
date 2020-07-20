@@ -21,7 +21,15 @@ class R_Rongsok extends CI_Controller{
         }
         $this->load->model('Model_matching');
         $data['group_id']  = $group_id;
-        $data['list_data'] = $this->Model_r_rongsok->dtr_list()->result();
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-4 months'));
+        }
+
+        $data['list_data'] = $this->Model_r_rongsok->dtr_list($s,$e)->result();
         $data['content']= "resmi/ambil_rongsok/index";
 
         $this->load->view('layout', $data);
@@ -501,10 +509,17 @@ class R_Rongsok extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "resmi/ambil_rongsok/po_list";
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-6 months'));
+        }
         $this->load->model('Model_beli_rongsok');
         $this->load->model('Model_beli_sparepart');
-        $data['list_data'] = $this->Model_beli_rongsok->po_list(1)->result();
-        $data['bank_list'] = $this->Model_beli_sparepart->bank(1)->result();
+        $data['list_data'] = $this->Model_beli_rongsok->po_list(1,$s,$e)->result();
+        // $data['bank_list'] = $this->Model_beli_sparepart->bank(1)->result();
 
         $this->load->view('layout', $data);
     }
@@ -901,7 +916,14 @@ class R_Rongsok extends CI_Controller{
         }
         $this->load->model('Model_matching');
         $data['group_id']  = $group_id;
-        $data['list_data'] = $this->Model_r_rongsok->ttr_list()->result();
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-4 months'));
+        }
+        $data['list_data'] = $this->Model_r_rongsok->ttr_list($s,$e)->result();
         $data['content']= "resmi/ambil_rongsok/ttr_list";
 
         $this->load->view('layout', $data);
@@ -1154,5 +1176,69 @@ class R_Rongsok extends CI_Controller{
 
         header('Content-Type: application/json');
         echo json_encode($return_data);
+    }
+
+    function kirim_matching(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');        
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+            $data['list_data'] = $this->Model_r_rongsok->match_inv_t($s,$e)->result();
+        }else{
+            $data['list_data'] = $this->Model_r_rongsok->match_inv()->result();
+        }
+
+        $data['content']= "resmi/kirim_matching/index";
+
+        $this->load->view('layout', $data);
+    }
+
+    function kirim_matching_data(){
+        $this->db->trans_start();
+        $this->load->helper('target_url');
+
+        $this->load->model('Model_sinkronisasi');
+        $loop = $this->input->post('data');
+        foreach ($loop as $key => $v) {
+            $v['id'] = $v['value'];
+            $get = $this->db->query("select no_matching, id_customer, status, tanggal, keterangan from f_match where id =".$v['value'])->row_array();
+            $details= $this->Model_sinkronisasi->match_inv_detail_only($v['value'])->result();
+            $post[$key] = array_merge((array)$v, $get, array('details'=>$details));
+        }
+
+        $post = json_encode($post);
+
+            // print_r($post);
+            // die();
+            $ch = curl_init(target_url().'api/SinkronisasiAPI/matching_inv');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $result = json_decode($response, true);
+            curl_close($ch);
+            // print_r($response);
+            // die();
+            if($result['status']==true){
+                foreach ($loop as $v) {
+                    $this->db->where('id', $v['value']);
+                    $this->db->update('f_match', array(
+                        'api'=>1
+                    ));
+                }
+            }else{
+                echo json_encode($response);
+            }
+        if($this->db->trans_complete()){
+            echo json_encode($result);
+        }
     }
 }

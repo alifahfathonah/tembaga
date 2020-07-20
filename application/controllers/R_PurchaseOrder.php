@@ -25,11 +25,32 @@ class R_PurchaseOrder extends CI_Controller{
 
         $data['content']= "resmi/purchase_order/index";
         if($group_id == 9){
-            $data['list_data'] = $this->Model_purchase_order->po_list()->result();
+            if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+                $s = $this->uri->segment(3);
+                $e = $this->uri->segment(4);
+            }else{
+                $e = date('Y-m-d');
+                $s = date('Y-m-d', strtotime('-2 months'));
+            }
+            $data['list_data'] = $this->Model_purchase_order->po_list($s,$e)->result();
         } else if($group_id == 14) {
-            $data['list_data'] = $this->Model_purchase_order->po_list_for_cv_new($reff_cv, $jenis)->result();
+            if(null!==$this->uri->segment(4) && null!==$this->uri->segment(5)){
+                $s = $this->uri->segment(4);
+                $e = $this->uri->segment(5);
+            }else{
+                $e = date('Y-m-d');
+                $s = date('Y-m-d', strtotime('-2 months'));
+            }
+            $data['list_data'] = $this->Model_purchase_order->po_list_for_cv_new($reff_cv, $jenis,$s,$e)->result();
         } else if($group_id == 16) {
-            $data['list_data'] = $this->Model_purchase_order->po_list_for_kmp()->result();
+            if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+                $s = $this->uri->segment(3);
+                $e = $this->uri->segment(4);
+            }else{
+                $e = date('Y-m-d');
+                $s = date('Y-m-d', strtotime('-2 months'));
+            }
+            $data['list_data'] = $this->Model_purchase_order->po_list_for_kmp($s,$e)->result();
         }
         $this->load->view('layout', $data);
     }

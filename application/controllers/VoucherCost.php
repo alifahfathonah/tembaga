@@ -922,6 +922,7 @@ class VoucherCost extends CI_Controller{
 
             $data_fk = array(
                 'nomor' => $this->input->post('no_uk'),
+                'id_bank' => $this->input->post('bank_id'),
                 'tanggal' => $this->input->post('tanggal'),
                 'no_giro' => $this->input->post('nomor_giro'),
                 'tgl_jatuh_tempo' => $this->input->post('tgl_jatuh'),

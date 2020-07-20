@@ -18,7 +18,7 @@ class Model_sinkronisasi extends CI_Model{
     function sj(){
         return $this->db->query("select tsj.id, tsj.jenis_barang from t_surat_jalan tsj
             left join sales_order so on so.id = tsj.sales_order_id
-            where so.flag_ppn = 1 and tsj.status = 1 and tsj.api = 1");
+            where so.flag_ppn = 1 and tsj.status = 1 and tsj.api = 0");
     }
 
     function sj_count(){
@@ -83,6 +83,11 @@ class Model_sinkronisasi extends CI_Model{
 
     function um(){
         return $this->db->query("select * from f_kas
-            where jenis_trx = 0 and flag_ppn = 1 and api = 0");
+            where flag_ppn = 1 and jenis_trx = 0 and api = 0");
+    }
+
+    function uk(){
+        return $this->db->query("select * from f_kas
+            where flag_ppn = 1 and jenis_trx = 1 and api = 0");
     }
 }

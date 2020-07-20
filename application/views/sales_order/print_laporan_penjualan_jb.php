@@ -68,10 +68,10 @@
                 <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->no_surat_jalan ?></td>
                 <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?= $row->customer ?></td>
                 <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= date('d-m-Y', strtotime($row->tanggal)) ?></td>
-                <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto,2,',','.');?></td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->netto,2,',','.');?></td>
                 <td style="border-top: 1px solid; border-left: 1px solid;"><?=($row->currency=='IDR')?'Rp.': '$ -> Rp.';?></td>
-                <td style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->total_harga-$row->materai,2,',','.');?></td>
-                <td align="center" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->nilai_ppn,2,',','.');?></td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->total_harga-$row->materai,2,',','.');?></td>
+                <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($row->nilai_ppn,2,',','.');?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid;"><?= number_format($total_harga,2,',','.');?></td>
                 <td align="right" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"><?= ($row->flag_tolling==0) ? 'SO Biasa' : 'SO Tolling'; ?></td>
         <?php 

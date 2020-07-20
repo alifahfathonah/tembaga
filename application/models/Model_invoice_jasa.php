@@ -1,46 +1,47 @@
 <?php
 class Model_invoice_jasa extends CI_Model{
 
-	function list_inv(){
+	function list_inv($s,$e){
 		$data = $this->db->query("select tij.*, tsj.id as sjr_id, tsj.no_sj_resmi, ts.no_so, tp.no_po, coalesce(mc.nama_customer, cv.nama_cv) as nama_customer, coalesce(mc.pic, cv.pic) as pic from r_t_inv_jasa tij
 		left join r_t_surat_jalan tsj on tsj.id = tij.sjr_id
 	    left join r_t_so ts on ts.id = tij.r_t_so_id
 	    left join r_t_po tp on tp.id = tij.r_t_po_id
 	    left join m_customers_cv mc on mc.id = tij.customer_id
 	    left join m_cv cv on cv.id = tij.cv_id
+	    where tij.tanggal between '".$s."' and '".$e."'
 	    order by tij.tanggal desc, tij.no_invoice_jasa desc");
 		return $data;
 	}
 
-	function list_inv_for_cv($reff_cv){
+	function list_inv_for_cv($reff_cv,$s,$e){
 		$data = $this->db->query("select tij.*, tsj.id as sjr_id, tsj.no_sj_resmi, ts.no_so, tp.no_po, mc.nama_customer, mc.pic from r_t_inv_jasa tij
 		left join r_t_surat_jalan tsj on tsj.id = tij.sjr_id
 	    left join r_t_so ts on ts.id = tij.r_t_so_id
 	    left join r_t_po tp on tp.id = tij.r_t_po_id
 	    left join m_customers_cv mc on mc.id = tij.customer_id
-	    where tij.cv_id = ".$reff_cv." and tij.jenis_invoice = 'INVOICE KMP KE CV'
+	    where tij.cv_id = ".$reff_cv." and tij.jenis_invoice = 'INVOICE KMP KE CV' and tij.tanggal between '".$s."' and '".$e."'
 	    order by tij.tanggal desc, tij.no_invoice_jasa desc");
 		return $data;
 	}
 
-	function list_inv_for_cv2($reff_cv){
+	function list_inv_for_cv2($reff_cv,$s,$e){
 		$data = $this->db->query("select tij.*, tsj.id as sjr_id, tsj.no_sj_resmi, ts.no_so, tp.no_po, mc.nama_customer, mc.pic from r_t_inv_jasa tij
 		left join r_t_surat_jalan tsj on tsj.id = tij.sjr_id
 	    left join r_t_so ts on ts.id = tij.r_t_so_id
 	    left join r_t_po tp on tp.id = tij.r_t_po_id
 	    left join m_customers_cv mc on mc.id = tij.customer_id
-	    where tij.cv_id = ".$reff_cv." and tij.jenis_invoice = 'INVOICE CV KE CUSTOMER'
+	    where tij.cv_id = ".$reff_cv." and tij.jenis_invoice = 'INVOICE CV KE CUSTOMER' and tij.tanggal between '".$s."' and '".$e."'
 	    order by tij.tanggal desc, tij.no_invoice_jasa desc");
 		return $data;
 	}
 
-	function list_inv_for_kmp(){
+	function list_inv_for_kmp($s,$e){
 		$data = $this->db->query("select tij.*, tsj.id as sjr_id, tsj.no_sj_resmi, ts.no_so, tp.no_po, mc.nama_cv as nama_customer, mc.pic from r_t_inv_jasa tij
 		left join r_t_surat_jalan tsj on tsj.id = tij.sjr_id
 	    left join r_t_so ts on ts.id = tij.r_t_so_id
 	    left join r_t_po tp on tp.id = tij.r_t_po_id
 	    left join m_cv mc on mc.id = tij.cv_id
-	    where tij.jenis_invoice = 'INVOICE KMP KE CV'
+	    where tij.jenis_invoice = 'INVOICE KMP KE CV' and tij.tanggal between '".$s."' and '".$e."'
 	    order by tij.tanggal desc, tij.no_invoice_jasa desc");
 		return $data;
 	}

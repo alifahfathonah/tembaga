@@ -116,6 +116,7 @@
                                 </optgroup>
                             </select>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="javascript:;" style="margin-bottom:4px; display: none;" onclick="print_laporan(<?=$no.',\''.$data->tanggal.'\'';?>);" id="btn_laporan_<?=$no;?>"> &nbsp; <i class="fa  fa-print"></i> Print Laporan&nbsp; </a>
+                            <a class="btn btn-circle btn-xs green" href="<?php echo base_url(); ?>index.php/GudangFG/edit_laporan_bulanan/<?php echo $data->tanggal; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Edit &nbsp; </a>
                         <?php
                             }//if group
                 }//foreach?>

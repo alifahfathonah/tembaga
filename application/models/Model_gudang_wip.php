@@ -13,7 +13,7 @@ class Model_gudang_wip extends CI_Model{
         return $data;
     }
 
-    function gudang_wip_produksi_list($jenis){
+    function gudang_wip_produksi_list($jenis,$s,$e){
         $data = $this->db->query("Select thw.id, COALESCE(NULLIF(thw.no_produksi_wip,''), pi.no_produksi) as no_produksi_wip,thw.jenis_masak, thw.tanggal, thw.qty, thw.uom, thw.berat, thw.susut, thw.keras, thw.bs, jb.jenis_barang, usr.realname As pembuat, dtr.id as id_dtr, tbw.id as id_bpb, tbw.status
                 From t_hasil_wip thw
                     left join t_hasil_masak thm On (thm.id = thw.hasil_masak_id)
@@ -22,12 +22,12 @@ class Model_gudang_wip extends CI_Model{
                     left join jenis_barang jb on (jb.id = thw.jenis_barang_id)   
                     left join dtr On (dtr.prd_id = thw.id)
                     left join t_bpb_wip tbw on (tbw.hasil_wip_id = thw.id)
-                    where thw.jenis_masak = '".$jenis."' 
+                    where thw.jenis_masak = '".$jenis."' and thw.tanggal between '".$s."' and '".$e."'
                 Order By thw.id Desc");
         return $data;
     } 
 
-    function bpb_list(){
+    function bpb_list($ppn, $s,$e){
         $data = $this->db->query("Select bpbwip.*,
                     (select count(id) from t_bpb_wip_detail bpbwipd where bpbwip.id = bpbwipd.bpb_wip_id)as jumlah_item,
                     usr.realname As pengirim, a.tipe_apolo
@@ -37,7 +37,8 @@ class Model_gudang_wip extends CI_Model{
                     Left join t_hasil_masak thm On (thm.id = thw.hasil_masak_id)
                     Left join produksi_ingot pi On (pi.id = thm.id_produksi)
                     Left join apolo a On (a.id = pi.id_apolo)
-                Order By bpbwip.id Desc");
+                    where bpbwip.flag_ppn = ".$ppn." and bpbwip.tanggal between '".$s."' and '".$e."'
+                Order By bpbwip.tanggal Desc");
         return $data;
     }
     
@@ -64,7 +65,7 @@ class Model_gudang_wip extends CI_Model{
         return $data;
     }
 
-    function spb_list($flag_produksi=null){
+    function spb_list($flag_produksi=null,$s,$e){
         if ($flag_produksi == 3 || $flag_produksi == 1) {
             $data = $this->db->query("Select tsw.*,
                     usr.realname As pic,
@@ -78,7 +79,7 @@ class Model_gudang_wip extends CI_Model{
                     Left Join users aprv On (tsw.approved_by = aprv.id)
                     Left Join users rjt On (tsw.rejected_by = rjt.id)
                     Left join users rcv on (tsw.received_by = rcv.id) 
-                    where tsw.flag_produksi IN (1,3) 
+                    where tsw.flag_produksi IN (1,3) and tsw.tanggal between '".$s."' and '".$e."'
                 Order By tsw.id Desc");
         } else {
             $data = $this->db->query("Select tsw.*,
@@ -93,7 +94,7 @@ class Model_gudang_wip extends CI_Model{
                     Left Join users aprv On (tsw.approved_by = aprv.id)
                     Left Join users rjt On (tsw.rejected_by = rjt.id)
                     Left join users rcv on (tsw.received_by = rcv.id) 
-                    where tsw.flag_produksi NOT IN (1,3) 
+                    where tsw.flag_produksi NOT IN (1,3) and tsw.tanggal between '".$s."' and '".$e."'
                 Order By tsw.id Desc");
         }
         
@@ -182,6 +183,13 @@ class Model_gudang_wip extends CI_Model{
         $data = $this->db->query("select tswf.*, jb.jenis_barang, jb.kode, jb.uom from t_spb_wip_fulfilment tswf
                 left join jenis_barang jb on jb.id = tswf.jenis_barang_id
                 where tswf.approved_by = 0 and tswf.t_spb_wip_id =".$id);
+        return $data;
+    }
+
+    function show_detail_spb_fulfilment_appv($id){
+        $data = $this->db->query("select tswf.*, jb.jenis_barang, jb.kode, jb.uom from t_spb_wip_fulfilment tswf
+                left join jenis_barang jb on jb.id = tswf.jenis_barang_id
+                where tswf.approved_by != 0 and tswf.t_spb_wip_id =".$id);
         return $data;
     }
 
@@ -763,8 +771,14 @@ class Model_gudang_wip extends CI_Model{
                     left join dtwip on dd.dtwip_id = dtwip.id
                     left join supplier s on s.id = dtwip.supplier_id
                     left join jenis_barang jb on dd.jenis_barang_id = jb.id
-                    where dtwip.tanggal between '".$s."' and '".$e."' and dtwip.status = 1 and dtwip.po_id = 0 and dtwip.supplier_id = 714
+                    where dtwip.tanggal between '".$s."' and '".$e."' and dtwip.status = 1 and dtwip.po_id = 0 and dtwip.supplier_id = 713
                     order by kode, tanggal");
+        }elseif($j==16){
+            $data = $this->db->query("select tgw.jenis_barang_id, tgw.berat as netto, '' as sumber, jb.jenis_barang, jb.kode, tsw.no_spb_wip as nomor, tgw.tanggal, tsw.keterangan as keterangan  from t_gudang_wip tgw
+                    left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
+                    left join t_hasil_wip thw on thw.t_spb_wip_id = tsw.id
+                    left join jenis_barang jb on tgw.jenis_barang_id = jb.id
+                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tsw.flag_produksi = 5");
         }
         return $data;
     }
@@ -810,11 +824,7 @@ class Model_gudang_wip extends CI_Model{
                 (select sum(tgw.berat) from t_gudang_wip tgw
                     left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
                     left join t_hasil_wip thw on thw.t_spb_wip_id = tsw.id
-                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tsw.flag_produksi in (0,2) and tgw.jenis_barang_id = i.jenis_barang_id) as produksi_k,
-                (select sum(tgw.berat) from t_gudang_wip tgw
-                    left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
-                    left join t_hasil_wip thw on thw.t_spb_wip_id = tsw.id
-                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tsw.flag_produksi in (1,3) and tgw.jenis_barang_id = i.jenis_barang_id) as bakar_ulang_k,
+                    where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tsw.flag_produksi in (0,2,1,3) and tgw.jenis_barang_id = i.jenis_barang_id) as produksi_k,
                 (select sum(tgw.berat) from t_gudang_wip tgw
                     left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
                     left join t_hasil_wip thw on thw.t_spb_wip_id = tsw.id
@@ -835,7 +845,11 @@ class Model_gudang_wip extends CI_Model{
                     left join jenis_barang jb on i.jenis_barang_id = jb.id
                     where bulan = ".$b." and tahun = ".$t." and i.jenis_barang = 'WIP' and jb.group = ".$g." order by jb.group, jb.kode desc");
     }
-
+    //kolom bakar ulang dihapus
+// (select sum(tgw.berat) from t_gudang_wip tgw
+//                     left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
+//                     left join t_hasil_wip thw on thw.t_spb_wip_id = tsw.id
+//                     where tgw.tanggal between '".$s."' and '".$e."' and jenis_trx = 1 and tsw.flag_produksi in (1,3) and tgw.jenis_barang_id = i.jenis_barang_id) as bakar_ulang_k,
     function show_laporan_barang($jb,$tgl){
         return $this->db->query("
                 Select i.*, jb.jenis_barang, jb.uom, jb.kode from inventory i

@@ -21,11 +21,19 @@ class R_Matching extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $this->load->model('Model_matching');
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
+
         $data['group_id']  = $group_id;
         if($group_id == 9){
-            $data['list_data'] = $this->Model_matching->list_invoice()->result();
+            $data['list_data'] = $this->Model_matching->list_invoice($s,$e)->result();
         } else {
-            $data['list_data'] = $this->Model_matching->list_invoice($reff_cv)->result();    
+            $data['list_data'] = $this->Model_matching->list_invoice($reff_cv,$s,$e)->result();    
         }
         
         $data['content']= "resmi/matching/index";

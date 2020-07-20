@@ -180,6 +180,6 @@ $(function(){
 function filterData(){
     var s=$('#tgl_start').val();
     var e=$('#tgl_end').val();
-    window.location = '<?=base_url();?>index.php/BeliRongsok/ttr_list/'+s+'/'+e;
+    window.location = '<?=base_url();?>index.php/BeliRongsok/filter_dtr/'+s+'/'+e;
 }
 </script>         

@@ -76,7 +76,7 @@ class StokOpname extends CI_Controller{
         $data['content']= "stok_opname/detail_fg";
         $this->load->model('Model_stok_opname');
         $data['header'] = $this->Model_stok_opname->header_stok_opname_fg($id)->row_array();
-        $data['details'] = $this->Model_stok_opname->list_stok_opname_fg($id)->result();
+        // $data['details'] = $this->Model_stok_opname->list_stok_opname_fg($id)->result();
 
         $this->load->view('layout', $data);
     }
@@ -251,7 +251,7 @@ class StokOpname extends CI_Controller{
         $data['content']= "stok_opname/view";
         $this->load->model('Model_stok_opname');
         $data['header'] = $this->Model_stok_opname->header_stok_opname_fg($id)->row_array();
-        $data['details'] = $this->Model_stok_opname->list_stok_opname_fg($id)->result();
+        // $data['details'] = $this->Model_stok_opname->list_stok_opname_fg($id)->result();
 
         $this->load->view('layout', $data);
     }

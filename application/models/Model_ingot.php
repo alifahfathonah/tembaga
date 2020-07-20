@@ -15,7 +15,7 @@ class Model_ingot extends CI_Model{
     //     return $data;
     // }
 
-    function list_data(){
+    function list_data($s,$e){
         $data = $this->db->query("Select pi.*, jb.jenis_barang,
                     usr.realname As pic, a.tipe_apolo, s.status, s.jumlah,
                     (Select Count(pid.id)As ready_to_spb From produksi_ingot_detail pid Where 
@@ -25,6 +25,7 @@ class Model_ingot extends CI_Model{
                     Left Join jenis_barang jb On (pi.jenis_barang_id = jb.id)
                     Left Join apolo a On (a.id = pi.id_apolo)
                     Left Join spb s On (s.produksi_ingot_id = pi.id)
+                    where pi.tanggal between '".$s."' and '".$e."'
                 Order By pi.id Desc");
         return $data;
     }
@@ -85,7 +86,7 @@ class Model_ingot extends CI_Model{
         return $data;
     }
 
-    function spb_list(){
+    function spb_list($s,$e){
         $data = $this->db->query("Select spb.*, 
                     pi.no_produksi, 
                     usr.realname As pic, a.tipe_apolo
@@ -93,11 +94,12 @@ class Model_ingot extends CI_Model{
                     Left Join produksi_ingot pi On (spb.produksi_ingot_id = pi.id) 
                     Left Join users usr On (spb.created_by = usr.id) 
                     Left Join apolo a On (a.id = pi.id_apolo)
+                    where spb.tanggal between '".$s."' and '".$e."'
                 Order By spb.tanggal Desc");
         return $data;
     }
 
-    function spb_list_filter_0(){
+    function spb_list_filter_0($s,$e){
         $data = $this->db->query("Select spb.*, 
                     pi.no_produksi, 
                     usr.realname As pic, a.tipe_apolo
@@ -105,12 +107,12 @@ class Model_ingot extends CI_Model{
                     Left Join produksi_ingot pi On (spb.produksi_ingot_id = pi.id) 
                     Left Join users usr On (spb.created_by = usr.id) 
                     Left Join apolo a On (a.id = pi.id_apolo)
-                where produksi_ingot_id = 0
+                where produksi_ingot_id = 0 and spb.tanggal between '".$s."' and '".$e."'
                 Order By spb.id Desc");
         return $data;
     }
 
-    function spb_list_filter_1(){
+    function spb_list_filter_1($s,$e){
         $data = $this->db->query("Select spb.*, 
                     pi.no_produksi, 
                     usr.realname As pic, a.tipe_apolo
@@ -118,7 +120,7 @@ class Model_ingot extends CI_Model{
                     Left Join produksi_ingot pi On (spb.produksi_ingot_id = pi.id) 
                     Left Join users usr On (spb.created_by = usr.id) 
                     Left Join apolo a On (a.id = pi.id_apolo)
-                where produksi_ingot_id != 0
+                where produksi_ingot_id != 0 and spb.tanggal between '".$s."' and '".$e."'
                 Order By spb.id Desc");
         return $data;
     }
@@ -223,7 +225,7 @@ class Model_ingot extends CI_Model{
         return $data;
     }    
         
-    function hasil_produksi(){
+    function hasil_produksi($s,$e){
         $data = $this->db->query("Select thm.*,  thw.no_produksi_wip as no_produksi, tbw.id as id_bpb, dtr.id as id_dtr, tba.id as id_ampas,
                     usr.realname As pic, tbw.status as status_bpb_wip
                 From t_hasil_masak thm
@@ -233,6 +235,7 @@ class Model_ingot extends CI_Model{
                     Left Join t_bpb_wip tbw On (tbw.hasil_wip_id = thw.id)
                     Left Join dtr on (dtr.prd_id = thw.id)
                     Left Join t_bpb_ampas tba on (tba.hasil_masak_id = thw.id)
+                    where thm.tanggal between '".$s."' and '".$e."'
                 Order By thm.id Desc");
         return $data;
     }

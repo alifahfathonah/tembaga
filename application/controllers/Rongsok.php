@@ -77,7 +77,7 @@ class Rongsok extends CI_Controller{
         $data = $this->Model_rongsok->show_data($id)->row_array(); 
         
         header('Content-Type: application/json');
-        echo json_encode($data);       
+        echo json_encode($data);
     }
     
     function update(){

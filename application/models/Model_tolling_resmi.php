@@ -1,12 +1,13 @@
 <?php
 class Model_tolling_resmi extends CI_Model{
 
-	function list_tolling(){
+	function list_tolling($s,$e){
 		$data = $this->db->query("select rd.id, rd.no_dtr_resmi, rd.tanggal, mc.nama_cv,t.no_ttr_resmi, tsj.no_sj_resmi, ti.no_invoice_resmi from r_dtr rd
 		left join r_t_surat_jalan tsj on tsj.id = rd.sj_id
         left join r_ttr t on t.r_dtr_id = rd.id
         left join r_t_invoice ti on ti.id = tsj.r_invoice_id
         left join m_cv mc on mc.id = rd.customer_id
+        where rd.tanggal between '".$s."' and '".$e."'
         order by id asc");
 		return $data;
 	}

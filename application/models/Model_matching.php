@@ -1,14 +1,16 @@
 <?php
 class Model_matching extends CI_Model{
 
-    function list_invoice($reff_cv = null){
+    function list_invoice($reff_cv = null,$s,$e){
         if ($reff_cv === null) {
             $data = $this->db->query("Select ir.*, (select count(tid.id) from r_t_invoice_detail tid where tid.invoice_resmi_id = ir.id) as jumlah_item
                 from r_t_invoice ir
+                where ir.tanggal between '".$s."' and '".$e."' 
                 order by tanggal desc,no_invoice_resmi desc");
         } else {
             $data = $this->db->query("Select ir.*, (select count(tid.id) from r_t_invoice_detail tid where tid.invoice_resmi_id = ir.id) as jumlah_item
-                from r_t_invoice ir where ir.reff_cv = ".$reff_cv." 
+                from r_t_invoice ir
+                where ir.reff_cv = ".$reff_cv." and ir.tanggal between '".$s."' and '".$e."'
                 order by tanggal desc,no_invoice_resmi desc");
         }
         return $data;

@@ -528,7 +528,7 @@
                                 &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
                             <?php
                                 }
-                                if(($group_id==1 || $hak_akses['delete']==1) && $data->status == 0){
+                                if(($group_id==1 || $hak_akses['delete_so']==1) && $data->status == 0){
                             ?>
                             <a class="btn btn-circle btn-xs red" href="<?php echo base_url(); ?>index.php/Tolling/delete_po/<?php echo $data->id; ?>" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus transaksi ini?');">&nbsp; <i class="fa fa-trash"></i> Delete &nbsp; </a>
                             <?php

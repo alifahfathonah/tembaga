@@ -343,6 +343,7 @@
                                         <tbody>
                                         <?php
                                             $no = 1;
+                                            $total_fulfilment = 0;
                                             foreach ($myDetail as $row){
                                                 echo '<tr>';
                                                 echo '<td style="text-align:center">'.$no.'</td>';
@@ -351,8 +352,16 @@
                                                 echo '<td>'.$row->netto.' '.$row->uom.'</td>';
                                                 echo '<td>'.$row->keterangan.'</td>';
                                                 $no++;
+                                                $total_fulfilment += $row->netto;
                                             }
                                         ?>
+                                        <tr>
+                                            <td colspan="3">
+                                                Total Netto (KG)
+                                            </td>
+                                            <td style="text-align:left; background-color:green; color:white"><strong><?php echo $total_fulfilment;?></strong></td>
+                                            <td></td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -413,12 +422,13 @@
                                 .'<i class="fa fa-check"></i> Save </a> ';
                         }
                         if( ($group_id==1 || $hak_akses['approve_spb']==1) && $myData['status']=="3"){
+                            echo '<a href="javascript:;" class="btn blue" onclick="tambah_spb();"> '
+                                .'<i class="fa fa-plus"></i> Tambah </a> ';
                             echo '<a href="javascript:;" class="btn green" onclick="approveData();"> '
                                 .'<i class="fa fa-check"></i> Approve </a> ';
-                        }
-                        if( ($group_id==1 || $hak_akses['reject_spb']==1) && $myData['status']=="3"){
                             echo '<a href="javascript:;" class="btn red" onclick="showRejectBox();"> '
                                 .'<i class="fa fa-ban"></i> Reject </a>';
+                            echo ' <a class="btn btn-circle blue-ebonyclay" href="'.base_url().'index.php/PengirimanAmpas/print_spb_fulfilment/'.$myData['id'].'" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>';
                         }
                     ?>
                     <a href="<?php echo base_url('index.php/PengirimanAmpas/spb_list'); ?>" class="btn blue-hoki"> 
@@ -485,6 +495,11 @@ function approveData(){
     }
 };
 
+function tambah_spb(){
+    $('#formku').attr("action", "<?php echo base_url(); ?>index.php/PengirimanAmpas/tambah_spb");    
+    $('#formku').submit(); 
+};
+
 function showRejectBox(){
     var r=confirm("Anda yakin me-reject permintaan barang ini?");
     if (r==true){
@@ -504,7 +519,7 @@ function rejectData(){
     }else{
         $('#message').html("");
         $('.alert-danger').hide();
-        $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/GudangFG/reject_spb");
+        $('#frmReject').attr("action", "<?php echo base_url(); ?>index.php/PengirimanAmpas/reject_spb");
         $('#frmReject').submit(); 
     }
 }

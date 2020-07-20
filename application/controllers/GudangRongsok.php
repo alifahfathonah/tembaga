@@ -37,10 +37,17 @@ class GudangRongsok extends CI_Controller{
 			$data['hak_akses'] = $roles;
 		}
 		$data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
 		$data['content']= "ingot/spb_list";
 		$this->load->model('Model_ingot');
-		$data['list_data'] = $this->Model_ingot->spb_list()->result();
+		$data['list_data'] = $this->Model_ingot->spb_list($s,$e)->result();
 
 		$this->load->view('layout', $data);
 	}
@@ -390,6 +397,7 @@ class GudangRongsok extends CI_Controller{
 			$this->load->helper('tanggal_indo');
 
 			$this->load->model('Model_beli_rongsok');
+			$data['tgl'] = date("Y-m-d");
 			$data['rongsok'] = $this->Model_beli_rongsok->show_data_rongsok_detail($id)->row_array();
 			$data['detailLaporan'] = $this->Model_beli_rongsok->view_gudang_rongsok($id)->result();
 			$this->load->view("gudang_rongsok/print_gudang_rongsok", $data);
@@ -427,6 +435,10 @@ class GudangRongsok extends CI_Controller{
 		$data['t'] = 1;
 		if(empty($stok_before)){
 			$stok_before = $this->Model_beli_rongsok->get_stok_before($start,$rongsok_id)->row_array();
+			// $stok_before['netto_awal'] = 0;
+			// $stok_before['netto_masuk'] = 0;
+			// $stok_before['netto_keluar'] = 0;
+			// $stok_before['koreksi_timbang'] = 0;
 			$data['t'] = 2;
 		}
 		$data['stok_before'] = $stok_before;
@@ -832,5 +844,52 @@ class GudangRongsok extends CI_Controller{
 			$data['detailLaporan'] = $this->Model_beli_rongsok->print_transaksi_rongsok($bulan,$tahun,$start,$end,$r)->result();
 			$this->load->view('gudang_rongsok/print_transaksi_rongsok', $data);
 		}
+	}
+
+	function search_gdrsk_per_tanggal(){
+		$module_name = $this->uri->segment(1);
+		$group_id    = $this->session->userdata('group_id');
+		if($group_id != 1){
+			$this->load->model('Model_modules');
+			$roles = $this->Model_modules->get_akses($module_name, $group_id);
+			$data['hak_akses'] = $roles;
+		}
+		$data['group_id']  = $group_id;
+		$data['judul']     = "Gudang Rongsok";
+		$data['content']   = "gudang_rongsok/search_gdrsk_per_tanggal";
+
+		$this->load->model('Model_beli_rongsok');
+		$data['list_rongsok'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
+
+		$this->load->view('layout', $data);
+	}
+
+	function print_gdrsk_per_tanggal(){
+		$module_name = $this->uri->segment(1);
+		$group_id    = $this->session->userdata('group_id');
+
+		$this->load->helper('tanggal_indo');
+		$tgl = date('Y-m-d', strtotime($_GET['t']));
+		$r = $_GET['r'];
+
+			if($group_id != 1){
+				$this->load->model('Model_modules');
+				$roles = $this->Model_modules->get_akses($module_name, $group_id);
+				$data['hak_akses'] = $roles;
+			}
+			$data['group_id']  = $group_id;
+			$data['judul']     = "Gudang Rongsok";
+
+		$this->load->model('Model_beli_rongsok');
+		$data['tgl'] = $tgl;
+
+			if($r==0){
+				$data['detailLaporan'] = $this->Model_beli_rongsok->gdrsk_global_per_tanggal($tgl)->result();//produksi
+				$this->load->view('gudang_rongsok/print_gudang_rongsok_global', $data);
+			}else{
+			$data['rongsok'] = $this->Model_beli_rongsok->show_data_rongsok_detail($r)->row_array();
+				$data['detailLaporan'] = $this->Model_beli_rongsok->gdrsk_per_tanggal($r,$tgl)->result();//produksi
+				$this->load->view('gudang_rongsok/print_gudang_rongsok', $data);
+			}
 	}
 }

@@ -42,9 +42,16 @@ class GudangWIP extends CI_Controller{
         $data['group_id']  = $group_id;
         $data['judul']     = "Gudang WIP";
         $data['content']   = "gudangwip/hasil_produksi";
+        if(null!==$this->uri->segment(4) && null!==$this->uri->segment(5)){
+            $s = $this->uri->segment(4);
+            $e = $this->uri->segment(5);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
         
        $this->load->model('Model_gudang_wip');
-       $data['gudang_wip'] = $this->Model_gudang_wip->gudang_wip_produksi_list($jenis)->result();
+       $data['gudang_wip'] = $this->Model_gudang_wip->gudang_wip_produksi_list($jenis,$s,$e)->result();
         
         $this->load->view('layout', $data);  
     }
@@ -243,7 +250,7 @@ class GudangWIP extends CI_Controller{
                         'prd_id'=> $insert_id,
                         'supplier_id'=>580,//ROLLING
                         'jenis_barang'=> 'RONGSOK',
-                        'remarks'=> 'SISA PRODUKSI',
+                        'remarks'=> 'SISA PRODUKSI '.$this->input->post('jenis_masak'),
                         'created'=> $tanggal,
                         'created_by'=> $user_id
                     );
@@ -371,7 +378,7 @@ class GudangWIP extends CI_Controller{
                             'supplier_id'=>580,//ROLLING
                             'prd_id'=> $id_thw,
                             'jenis_barang'=> 'RONGSOK',
-                            'remarks'=> 'SISA PRODUKSI ROLLING',
+                            'remarks'=> 'SISA PRODUKSI',
                             'created'=> $tanggal,
                             'created_by'=> $user_id
                         );
@@ -585,10 +592,17 @@ class GudangWIP extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "gudangwip/bpb_list";
         $this->load->model('Model_gudang_wip');
-        $data['list_data'] = $this->Model_gudang_wip->bpb_list($user_ppn)->result();
+        $data['list_data'] = $this->Model_gudang_wip->bpb_list($user_ppn,$s,$e)->result();
 
         $this->load->view('layout', $data);
     }
@@ -722,8 +736,12 @@ class GudangWIP extends CI_Controller{
         $jenis = $this->uri->segment(3);
         if ($jenis == "CUCI") {
             $flag_produksi = 3;
+            $a= $this->uri->segment(4);
+            $b= $this->uri->segment(5);
         } else {
             $flag_produksi = null;
+            $a= $this->uri->segment(3);
+            $b= $this->uri->segment(4);
         }
 
         if($group_id != 1){
@@ -732,10 +750,17 @@ class GudangWIP extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$a && null!==$b){
+            $s = $a;
+            $e = $b;
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "gudangwip/spb_list";
         $this->load->model('Model_gudang_wip');
-        $data['list_data'] = $this->Model_gudang_wip->spb_list($flag_produksi)->result();
+        $data['list_data'] = $this->Model_gudang_wip->spb_list($flag_produksi,$s,$e)->result();
 
         $this->load->view('layout', $data);
     }
@@ -2299,7 +2324,10 @@ class GudangWIP extends CI_Controller{
             $data['header'] = 'Adjustment Pengeluaran';
             $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
             $this->load->view('gudangwip/print_laporan_wip', $data);
-
+        }elseif($l==16){
+            $data['header'] = 'Pengeluaran GD/RSK';
+            $data['detailLaporan'] = $this->Model_gudang_wip->print_laporan_wip($start,$end,$l)->result();//produksi
+            $this->load->view('gudangwip/print_laporan_wip', $data);
 //PEMASUKAN WIP
         }elseif($l==7){
             $data['header'] = 'Pemasukan PO(KH)';

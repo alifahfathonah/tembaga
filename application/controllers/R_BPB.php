@@ -24,15 +24,29 @@ class R_BPB extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "resmi/bpb/index";
+            if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+                $s = $this->uri->segment(3);
+                $e = $this->uri->segment(4);
+            }else{
+                $e = date('Y-m-d');
+                $s = date('Y-m-d', strtotime('-2 months'));
+            }
         // if($group_id == 14 || $group_id == 15){
         //     $data['list_sj']= $this->Model_surat_jalan->list_sj_cv()->result();
         // }else if($group_id == 17){
         //     $data['list_sj']= $this->Model_surat_jalan->list_sj_so()->result();
         // }else{
         if ($group_id == 9) {
-            $data['list_bpb']= $this->Model_bpb->list_bpb()->result();
+            $data['list_bpb']= $this->Model_bpb->list_bpb($s,$e)->result();
         } else {
-            $data['list_bpb']= $this->Model_bpb->list_bpb_new($reff_cv, $jenis)->result();
+            if(null!==$this->uri->segment(4) && null!==$this->uri->segment(5)){
+                $s = $this->uri->segment(4);
+                $e = $this->uri->segment(5);
+            }else{
+                $e = date('Y-m-d');
+                $s = date('Y-m-d', strtotime('-2 months'));
+            }
+            $data['list_bpb']= $this->Model_bpb->list_bpb_new($reff_cv,$jenis,$s,$e)->result();
         }
         // }
         $this->load->view('layout', $data);

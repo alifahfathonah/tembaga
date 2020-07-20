@@ -1,58 +1,59 @@
 <?php
 class Model_purchase_order extends CI_Model{
 	
-	function po_list(){
+	function po_list($s,$e){
 		$data = $this->db->query("select rpo.*, coalesce(cs.nama_customer,c.nama_cv) as nama_cv, coalesce(cs.pic, c.pic) as pic, (select count(tpd.id) from r_t_po_detail tpd where tpd.po_id = rpo.id)as jumlah_item
 			from r_t_po rpo
 			left join m_customers_cv cs on (rpo.customer_id = cs.id)
 			left join m_cv c on (rpo.cv_id = c.id)
+			where rpo.tanggal between '".$s."' and '".$e."'
 			order by rpo.tanggal desc, rpo.no_po desc");
 		return $data;
 	}
 
-	function po_list_for_cv($reff_cv){
+	function po_list_for_cv($reff_cv,$s,$e){
 		$data = $this->db->query("select rpo.*, coalesce(cs.nama_customer,c.nama_cv) as nama_cv, coalesce(cs.pic, c.pic) as pic, (select count(tpd.id) from r_t_po_detail tpd where tpd.po_id = rpo.id)as jumlah_item
 			from r_t_po rpo
 			left join m_customers_cv cs on (rpo.customer_id = cs.id)
 			left join m_cv c on (rpo.cv_id = c.id)
-			where rpo.reff_cv = ".$reff_cv." 
+			where rpo.tanggal between '".$s."' and '".$e."' and rpo.reff_cv = ".$reff_cv." 
 			order by rpo.tanggal desc, rpo.no_po desc");
 		return $data;
 	}
 
-	function po_list_for_cv_new($reff_cv, $jenis){
+	function po_list_for_cv_new($reff_cv, $jenis,$s,$e){
 		if ($jenis == 'Supplier') {
 			$data = $this->db->query("select rpo.*, coalesce(cs.nama_customer,c.nama_cv) as nama_cv, coalesce(cs.pic, c.pic) as pic, (select count(tpd.id) from r_t_po_detail tpd where tpd.po_id = rpo.id)as jumlah_item
 			from r_t_po rpo
 			left join m_customers_cv cs on (rpo.customer_id = cs.id)
 			left join m_cv c on (rpo.cv_id = c.id)
-			where rpo.reff_cv = ".$reff_cv." and rpo.jenis_po = 'PO CV KE KMP'
+			where rpo.tanggal between '".$s."' and '".$e."' and rpo.reff_cv = ".$reff_cv." and rpo.jenis_po = 'PO CV KE KMP'
 			order by rpo.tanggal desc, rpo.no_po desc");
 		} else if ($jenis == 'Customer') {
 			$data = $this->db->query("select rpo.*, coalesce(cs.nama_customer,c.nama_cv) as nama_cv, coalesce(cs.pic, c.pic) as pic, (select count(tpd.id) from r_t_po_detail tpd where tpd.po_id = rpo.id)as jumlah_item
 			from r_t_po rpo
 			left join m_customers_cv cs on (rpo.customer_id = cs.id)
 			left join m_cv c on (rpo.cv_id = c.id)
-			where rpo.reff_cv = ".$reff_cv." and rpo.jenis_po = 'PO CUSTOMER KE CV'
+			where rpo.tanggal between '".$s."' and '".$e."' and rpo.reff_cv = ".$reff_cv." and rpo.jenis_po = 'PO CUSTOMER KE CV'
 			order by rpo.tanggal desc, rpo.no_po desc");
 		} else {
 			$data = $this->db->query("select rpo.*, coalesce(cs.nama_customer,c.nama_cv) as nama_cv, coalesce(cs.pic, c.pic) as pic, (select count(tpd.id) from r_t_po_detail tpd where tpd.po_id = rpo.id)as jumlah_item
 			from r_t_po rpo
 			left join m_customers_cv cs on (rpo.customer_id = cs.id)
 			left join m_cv c on (rpo.cv_id = c.id)
-			where rpo.reff_cv = ".$reff_cv." 
+			where rpo.reff_cv = ".$reff_cv." and rpo.tanggal between '".$s."' and '".$e."' 
 			order by rpo.tanggal desc, rpo.no_po desc");
 		}
 		
 		return $data;
 	}
 
-	function po_list_for_kmp(){
+	function po_list_for_kmp($s,$e){
 		$data = $this->db->query("select rpo.*, coalesce(cs.nama_customer,c.nama_cv) as nama_cv, coalesce(cs.pic, c.pic) as pic, (select count(tpd.id) from r_t_po_detail tpd where tpd.po_id = rpo.id)as jumlah_item
 			from r_t_po rpo
 			left join m_customers_cv cs on (rpo.customer_id = cs.id)
 			left join m_cv c on (rpo.cv_id = c.id)
-			where rpo.cv_id != 0
+			where rpo.cv_id != 0 and rpo.tanggal between '".$s."' and '".$e."'
 			order by rpo.tanggal desc");
 		return $data;
 	}

@@ -21,14 +21,21 @@ class R_SO extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-2 months'));
+        }
 
         $data['content']= "resmi/salesorder/index";
         if ($group_id == 9) {
-            $data['list_data'] = $this->Model_so->so_list()->result();
+            $data['list_data'] = $this->Model_so->so_list($s,$e)->result();
         } else if ($group_id == 14) {
-            $data['list_data'] = $this->Model_so->so_list_for_cv($reff_cv)->result();
+            $data['list_data'] = $this->Model_so->so_list_for_cv($reff_cv,$s,$e)->result();
         } else if ($group_id == 16) {
-            $data['list_data'] = $this->Model_so->so_list_for_kmp()->result();
+            $data['list_data'] = $this->Model_so->so_list_for_kmp($s,$e)->result();
         }
 
         $this->load->view('layout', $data);

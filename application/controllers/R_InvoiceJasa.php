@@ -25,16 +25,37 @@ class R_InvoiceJasa extends CI_Controller{
 
         $data['content']= "resmi/invoice_jasa/index";
         if ($group_id == 9) {
-            $data['list_data']= $this->Model_invoice_jasa->list_inv()->result();    
+            if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+                $s = $this->uri->segment(3);
+                $e = $this->uri->segment(4);
+            }else{
+                $e = date('Y-m-d');
+                $s = date('Y-m-d', strtotime('-2 months'));
+            }
+            $data['list_data']= $this->Model_invoice_jasa->list_inv($s,$e)->result();    
         } elseif ($group_id == 14) {
             $jenis = $this->uri->segment(3);
-            if($jenis == 'Customer'){
-                $data['list_data']= $this->Model_invoice_jasa->list_inv_for_cv2($reff_cv)->result(); 
+            if(null!==$this->uri->segment(4) && null!==$this->uri->segment(5)){
+                $s = $this->uri->segment(4);
+                $e = $this->uri->segment(5);
             }else{
-                $data['list_data']= $this->Model_invoice_jasa->list_inv_for_cv($reff_cv)->result();
+                $e = date('Y-m-d');
+                $s = date('Y-m-d', strtotime('-2 months'));
+            }
+            if($jenis == 'Customer'){
+                $data['list_data']= $this->Model_invoice_jasa->list_inv_for_cv2($reff_cv,$s,$e)->result(); 
+            }else{
+                $data['list_data']= $this->Model_invoice_jasa->list_inv_for_cv($reff_cv,$s,$e)->result();
             }
         } elseif ($group_id == 16) {
-            $data['list_data']= $this->Model_invoice_jasa->list_inv_for_kmp()->result();
+            if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+                $s = $this->uri->segment(3);
+                $e = $this->uri->segment(4);
+            }else{
+                $e = date('Y-m-d');
+                $s = date('Y-m-d', strtotime('-2 months'));
+            }
+            $data['list_data']= $this->Model_invoice_jasa->list_inv_for_kmp($s,$e)->result();
         }
         
 
@@ -492,7 +513,7 @@ class R_InvoiceJasa extends CI_Controller{
 
             log_message('debug', print_r($result2,1));
 
-            if($result2 == 1){
+            if($result2['status']==true){
                 $this->db->where('id', $inv_jasa_id);
                 $this->db->update('r_t_inv_jasa', array('api'=>1));
             }

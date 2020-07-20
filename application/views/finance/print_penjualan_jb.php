@@ -32,6 +32,8 @@
         $last_series_kode = null;
         $ni = 0;
         $nt = 0;
+        $ni5 = 0;
+        $nt5 = 0;
         $nik = 0;
         $ntk = 0;
         $nilai_netto = 0;
@@ -53,11 +55,20 @@
           if($last_series!=$row->flag_tolling && $last_series != null){
             echo '
           <tr>
-            <td colspan="3" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total</strong></td>
+            <td colspan="3" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total BCW Tipe SO</strong></td>
+            <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;">'.number_format($nt5,2,',','.').'</td>
+            <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;">'.number_format($ni5,2,',','.').'</td>
+            <td colspan="2" align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid; border-right: 1px solid;"></td>
+          </tr>';
+            echo '
+          <tr>
+            <td colspan="3" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total Tipe SO</strong></td>
             <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;">'.number_format($nt,2,',','.').'</td>
             <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;">'.number_format($ni,2,',','.').'</td>
             <td colspan="2" align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid; border-right: 1px solid;"></td>
           </tr>';
+        $ni5 = 0;
+        $nt5 = 0;
         $ni = 0;
         $nt = 0;
           }
@@ -77,11 +88,25 @@
           $nik += $row->total_harga;
           $ntk += $row->netto;
           $last_series = $row->flag_tolling;
+          if($last_series_kode == 05){
+            $ni5 +=$row->total_harga;
+            $nt5 += $row->netto;
+          }
           $ni +=$row->total_harga;
           $nt += $row->netto;
           $nilai_invoice +=$row->total_harga;
           $nilai_netto += $row->netto;
-          } ?>
+          } 
+
+            echo '
+          <tr>
+            <td colspan="3" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total BCW Tipe Tolling</strong></td>
+            <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;">'.number_format($nt5,2,',','.').'</td>
+            <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;">'.number_format($ni5,2,',','.').'</td>
+            <td colspan="2" align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid; border-right: 1px solid;"></td>
+          </tr>';
+
+          ?>
           <tr>
             <td colspan="3" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total Kode</strong></td>
             <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;"><?=number_format($ntk,2,',','.');?></td>
@@ -89,7 +114,7 @@
             <td colspan="2" align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid; border-right: 1px solid;"></td>
           </tr>
           <tr>
-            <td colspan="3" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total</strong></td>
+            <td colspan="3" style="text-align: right; border-top: 2px solid;border-bottom:1px solid;border-left: 1px solid;"><strong>Total Tipe Tolling</strong></td>
             <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;"><?=number_format($nt,2,',','.');?></td>
             <td align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid;"><?=number_format($ni,2,',','.');?></td>
             <td colspan="2" align="right" style="border-top: 2px solid;border-bottom:1px solid; border-left: 1px solid; border-right: 1px solid;"></td>

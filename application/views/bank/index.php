@@ -63,6 +63,15 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-5">
+                                    Nomor Account <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="no_acc" name="no_acc" 
+                                        class="form-control myline" style="margin-bottom:5px">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
                                     Atas Nama A/N
                                 </div>
                                 <div class="col-md-7">
@@ -275,6 +284,7 @@ function editData(id){
             $('#kode_bank').val(result['kode_bank']);
             $('#nama_bank').val(result['nama_bank']);
             $('#no_rek').val(result['nomor_rekening']);
+            $('#no_acc').val(result['no_acc']);
             $('#an').val(result['atas_nama']);
             $('#currency').select2('val', result['currency']);
             $('#kc').val(result['kantor_cabang']);

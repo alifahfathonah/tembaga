@@ -787,6 +787,34 @@ class PengirimanAmpas extends CI_Controller{
         }
     }
 
+    function print_spb_fulfilment(){
+        $id = $this->uri->segment(3);
+        if($id){
+            $this->load->helper('tanggal_indo_helper');
+            $this->load->model('Model_pengiriman_ampas');
+            $data['header']  = $this->Model_pengiriman_ampas->show_header_spb($id)->row_array();
+            $data['details'] = $this->Model_pengiriman_ampas->show_detail_spb_fulfilment($id)->result();
+
+            $this->load->view('pengiriman_ampas/print_spb_fulfilment', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
+
+    function print_spb(){
+        $id = $this->uri->segment(3);
+        if($id){
+            $this->load->helper('tanggal_indo_helper');
+            $this->load->model('Model_pengiriman_ampas');
+            $data['header']  = $this->Model_pengiriman_ampas->show_header_spb($id)->row_array();
+            $data['details'] = $this->Model_pengiriman_ampas->show_detail_spb($id)->result();
+
+            $this->load->view('pengiriman_ampas/print_spb', $data);
+        }else{
+            redirect('index.php'); 
+        }
+    }
+
     function save_detail_spb_fulfilment(){
         $return_data = array();
         
@@ -1055,6 +1083,67 @@ class PengirimanAmpas extends CI_Controller{
             $this->session->set_flashdata("message", "Reject Ampas sudah dibuat dan masuk gudang");
       
       redirect("index.php/PengirimanAmpas/bpb_list");   
+    }
+
+    function reject_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+        $id_spb = $this->input->post('header_id');
+        
+        #Update status t_spb_fg
+        $data = array(
+                'status'=> 0,
+                'rejected_at'=> $tanggal,
+                'rejected_by'=>$user_id,
+                'reject_remarks'=>$this->input->post('reject_remarks')
+            );
+        
+        $this->db->where('id', $id_spb);
+        $this->db->update('t_spb_ampas', $data);
+
+        #Update NULL di t_gudang_fg
+        // $this->db->where('t_spb_fg_id', $id_spb);
+        // $this->db->update('t_gudang_fg', array(
+        //                 'jenis_trx'=>0,
+        //                 't_spb_fg_id'=> NULL,
+        //                 't_spb_fg_detail_id'=> NULL,
+        //                 'nomor_SPB'=> NULL,
+        //                 'keterangan'=> NULL,
+        //                 'modified_date'=> $tanggal,
+        //                 'modified_by'=>$user_id
+        // ));
+        
+        $this->session->set_flashdata('flash_msg', 'Data SPB FG berhasil direject');
+        redirect('index.php/PengirimanAmpas/spb_list');
+    }
+
+    function tambah_spb(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+        $id_spb = $this->input->post('id');
+        
+        #Update status t_spb_fg
+        $data = array(
+                'status'=> 0
+            );
+        
+        $this->db->where('id', $id_spb);
+        $this->db->update('t_spb_ampas', $data);
+
+        #Update NULL di t_gudang_fg
+        // $this->db->where('t_spb_fg_id', $id_spb);
+        // $this->db->update('t_gudang_fg', array(
+        //                 'jenis_trx'=>0,
+        //                 't_spb_fg_id'=> NULL,
+        //                 't_spb_fg_detail_id'=> NULL,
+        //                 'nomor_SPB'=> NULL,
+        //                 'keterangan'=> NULL,
+        //                 'modified_date'=> $tanggal,
+        //                 'modified_by'=>$user_id
+        // ));
+        
+        $this->session->set_flashdata('flash_msg', 'Data SPB FG berhasil direject');
+        redirect('index.php/PengirimanAmpas/view_spb/'.$id_spb);
     }
 
     function gudang_ampas(){

@@ -54,11 +54,11 @@
         $keluar += $row->netto_keluar;
     }
     if(!empty($stok_before['koreksi_timbang'])){
-        if($stok_before['koreksi_timbang']>0){
+        if($stok_before['koreksi_timbang']!=0){
             echo '<tr>';
             echo '<td style="text-align:center">'.$no.'</td>';
             echo '<td colspan="4">Koreksi Timbang</td>';
-            echo '<td style="text-align:right">'.(($stok_before['koreksi_timbang']<0)? number_format($stok_before['koreksi_timbang'],2,',','.'):'0').'</td>';
+            echo '<td style="text-align:right">'.(($stok_before['koreksi_timbang']<0)? number_format($stok_before['koreksi_timbang']*-1,2,',','.'):'0').'</td>';
             echo '<td style="text-align:right">'.(($stok_before['koreksi_timbang']>0)? number_format($stok_before['koreksi_timbang'],2,',','.'):'0').'</td>';
             echo '<td style="text-align:right">'.number_format($sisa_now-$stok_before['koreksi_timbang'],2,',','.').'</td>';
             echo '</tr>';

@@ -65,23 +65,36 @@
                         <td>
                             <?= $data->jenis_barang;?>
                         </td>
-                        <td>
-                            <?= $data->total_qty_in;?>
+                        <td align="right">
+                            <?= number_format($data->total_qty_in,0,',','.');?>
                         </td>
-                        <td>
-                            <?= $data->total_qty_out;?>
+                        <td align="right">
+                            <?= number_format($data->total_qty_out,0,',','.')?>
                         </td>
-                        <td>
-                            <?= $data->total_berat_in;?>
+                        <td align="right">
+                            <?= number_format($data->total_berat_in,2,',','.');?>
                         </td>
-                        <td>
-                            <?= $data->total_berat_out; ?>
+                        <td align="right">
+                            <?= number_format($data->total_berat_out,2,',','.'); ?>
                         </td>
-                        <td style="background-color: green; color: white;">
-                            <?= ($data->total_qty_in - $data->total_qty_out); ?>
+                        <?php 
+                        $total_qty = $data->total_qty_in - $data->total_qty_out;
+                        $total_berat =$data->total_berat_in - $data->total_berat_out;
+                        if($total_qty<0){
+                            $warna='red';
+                        }else{
+                            $warna='green';
+                        }
+                        if($total_berat<0){
+                            $warna='red';
+                        }else{
+                            $warna='green';
+                        } ?>
+                        <td align="right" style="background-color: <?=$warna;?>; color: white;">
+                            <?= number_format($total_qty,0,',','.'); ?>
                         </td>
-                        <td style="background-color: green; color: white;">
-                            <?= ($data->total_berat_in - $data->total_berat_out); ?>
+                        <td align="right" style="background-color: <?=$warna;?>; color: white;">
+                            <?= number_format($total_berat,2,',','.'); ?>
                         </td>
                     </tr>
                     <?php } ?>

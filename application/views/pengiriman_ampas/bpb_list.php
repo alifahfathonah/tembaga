@@ -12,7 +12,7 @@
 <div class="row">                            
     <div class="col-md-12"> 
         <?php
-            if( ($group_id==1)||($hak_akses['dtr_list']==1) ){
+            if( ($group_id==1)||($hak_akses['bpb_list']==1) ){
         ?>
         <div class="row">
             <div class="col-md-12">
@@ -29,7 +29,7 @@
                 </div>                
                 <div class="tools"> 
                 <?php
-                    if( ($group_id==1)||($hak_akses['create_dtr']==1) ){
+                    if( ($group_id==1)||($hak_akses['add']==1) ){
                 ?>
                 <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="<?=base_url();?>index.php/PengirimanAmpas/create_dta"> <i class="fa fa-plus"></i> Tambah DTA</a>
                 <?php

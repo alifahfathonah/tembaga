@@ -316,7 +316,7 @@
                                             . 'readonly="readonly">';
                                     
                                     echo '<input type="hidden" name="myDetails['.$no.'][id]" value="'.$row->id.'">';
-                                    echo '<input type="hidden" id="rongsok_id_'.$no.'" value="'.$row->rongsok_id.'";?>';                                    
+                                    echo '<input type="hidden" id="rongsok_id_'.$no.'" name="myDetails['.$no.'][rongsok_id]"value="'.$row->rongsok_id.'";?>';                                    
                                     echo '</td>';
                                     echo '<td><input type="number" id="bruto_'.$no.'" id="bruto_'.$no.'" name="myDetails['.$no.'][bruto]" '
                                             . 'class="form-control myline" maxlength="10" value="'.$row->bruto.'"></td>';

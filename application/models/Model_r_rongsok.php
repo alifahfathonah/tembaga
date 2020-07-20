@@ -1,7 +1,7 @@
 <?php
 class Model_r_rongsok extends CI_Model{
 
-	function dtr_list(){
+	function dtr_list($s,$e){
         $data = $this->db->query("Select dtr.*, 
                     COALESCE(po.no_po,r.no_retur) as no_po,
                     spl.nama_supplier,
@@ -13,7 +13,7 @@ class Model_r_rongsok extends CI_Model{
                     Left Join supplier spl On (po.supplier_id = spl.id) or (dtr.supplier_id = spl.id) 
                     Left Join users usr On (dtr.created_by = usr.id) 
                     Left Join retur r On (r.id = dtr.retur_id)
-                    Where (dtr.customer_id = 0 or retur_id > 0) and dtr.type = 1
+                    Where (dtr.customer_id = 0 or retur_id > 0) and dtr.type = 1 and dtr.tanggal between '".$s."' and '".$e."'
                 Order By dtr.id Desc");
         return $data;
     }
@@ -27,7 +27,7 @@ class Model_r_rongsok extends CI_Model{
         return $data;
     }
 
-    function ttr_list(){
+    function ttr_list($s,$e){
         $data = $this->db->query("Select ttr.*, 
                     dtr.no_dtr,
                     dtr.tanggal as tgl_dtr,
@@ -40,7 +40,7 @@ class Model_r_rongsok extends CI_Model{
                     Left Join dtr On (dtr.id = ttr.dtr_id) 
                     Left Join po On (po.id = dtr.po_id) 
                     Left Join supplier spl On (po.supplier_id = spl.id)
-                Where dtr.flag_ppn=1 and (dtr.po_id > 0 or so_id > 0)
+                Where dtr.flag_ppn=1 and (dtr.po_id > 0 or so_id > 0) and ttr.tanggal between '".$s."' and '".$e."'
                 Order By ttr.id Desc");
         return $data;
     }
@@ -71,5 +71,22 @@ class Model_r_rongsok extends CI_Model{
                 LEFT JOIN t_gudang_fg tgf ON tgf.id = tph.gudang_id
                 WHERE tph.pindah_id = ".$id." order by tph.id asc");
         return $data;
+    }
+
+    /** KIRIM MATCHING **/
+    function match_inv(){
+        return $this->db->query("select fm.*, mc.nama_customer, u.realname as pic from f_match fm
+            left join m_customers mc on fm.id_customer = mc.id
+            left join users u on fm.created_by = u.id
+            where flag_ppn = 1 and status = 1 and api = 0
+            order by tanggal asc");
+    }
+
+    function match_inv_t($s,$e){
+        return $this->db->query("select fm.*, mc.nama_customer, u.realname as pic from f_match fm
+            left join m_customers mc on fm.id_customer = mc.id
+            left join users u on fm.created_by = u.id
+            where flag_ppn = 1 and status = 1 and api = 0 and tanggal between '".$s."' and '".$e."'
+            order by tanggal asc");
     }
 }

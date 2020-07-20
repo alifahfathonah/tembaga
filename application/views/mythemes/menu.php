@@ -573,6 +573,11 @@
                                         <i class="fa fa-arrows-h"></i>
                                         Laporan Keluar Masuk</a>
                                     </li>
+                                    <li>
+                                        <a href="<?php echo base_url(); ?>index.php/GudangRongsok/search_gdrsk_per_tanggal">
+                                        <i class="fa fa-briefcase"></i>
+                                        Gudang Rongsok per Tanggal</a>
+                                    </li>
                                     <!-- <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangRongsok/search_permintaan_gudang">
                                         <i class="fa fa-print"></i>
@@ -610,7 +615,7 @@
                             </li>
                         <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
                             <li>
-                                <a href="<?php echo base_url(); ?>index.php/GudangWIP">
+                                <a href="<?php echo base_url(); ?>index.php/GudangWIP/stok_wip">
                                 <i class="fa fa-cubes"></i>
                                 Gudang WIP </a>
                             </li>
@@ -639,11 +644,11 @@
                                         Laporan Keluar Masuk</a>
                                     </li>
                                 <?php } if($group_id==1 || (isset($akses_menu['index']) && $akses_menu['index']==1)){ ?>
-                                    <li>
+                                    <!-- <li>
                                         <a href="<?php echo base_url(); ?>index.php/GudangWIP/stok_wip">
                                         <i class="fa fa-inbox"></i>
                                         Stok WIP </a>
-                                    </li>
+                                    </li> -->
                                 <?php } ?>
                                 </ul>
                             </li>

@@ -75,7 +75,7 @@
                         <?php 
                             echo '<a class="btn btn-circle btn-xs blue-ebonyclay" href="'.base_url().'index.php/Finance/print_matching_invoice/'.$data->id.'" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> ';
                         }
-                            if( (($group_id==1)||($hak_akses['delete']==1)) && $data->status == 0 ){
+                            if( (($group_id==1)||($hak_akses['delete']==1)) && $data->status == 0 && $data->jumlah_inv == 0 && $data->jumlah_um == 0){
                             ?>
                             <a href="<?php echo base_url(); ?>index.php/Finance/delete_matching_invoice/<?php echo $data->id; ?>" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus transaksi ini?');">
                                 <i class="fa fa-trash-o"></i> Delete 

@@ -1,7 +1,7 @@
 <?php
 class Model_surat_jalan extends CI_Model{
 
-	function list_sj(){
+	function list_sj($s,$e){
 		$data = $this->db->query("select tsj.*, mc.nama_customer, '-' as no_reff, ts.no_so, tp.no_po,
 		(select count(tsjd.id) from r_t_surat_jalan_detail tsjd where tsjd.sj_resmi_id = tsj.id) as jumlah_item
     	from r_t_surat_jalan tsj
@@ -9,30 +9,30 @@ class Model_surat_jalan extends CI_Model{
         left join r_t_so ts on ts.id = tsj.r_so_id
         left join r_t_po tp on tp.id = tsj.r_po_id
     	left join m_customers_cv mc on mc.id = tsj.m_customer_id
-    	where tsj.jenis_surat_jalan != 'SURAT JALAN CUSTOMER KE CV'
+    	where tsj.jenis_surat_jalan != 'SURAT JALAN CUSTOMER KE CV' and tjs.tanggal between '".$s."' and '".$e."'
     	order by tsj.tanggal desc, tsj.no_sj_resmi desc");
 		return $data;
 	}
 
-	function list_sj_cv($reff_cv,$jb){
+	function list_sj_cv($reff_cv,$jb,$s,$e){
 		$data = $this->db->query("select tsj.*, cs.nama_customer, ti.no_invoice_resmi as no_reff, 
 			(select count(tsjd.id) from r_t_surat_jalan_detail tsjd where tsjd.sj_resmi_id = tsj.id) as jumlah_item
 			from r_t_surat_jalan tsj
 			left join r_t_invoice ti on ti.id = tsj.r_invoice_id
 			left join m_customers_cv cs on cs.id = tsj.m_customer_id
-			where tsj.reff_cv = ".$reff_cv." and tsj.jenis_barang = '".$jb."'
+			where tsj.reff_cv = ".$reff_cv." and tsj.jenis_barang = '".$jb."' and tsj.tanggal between '".$s."' and '".$e."'
 			order by tsj.tanggal desc, tsj.no_sj_resmi desc");
     	return $data;
 	}
 
-	function list_sj_so($jb){
+	function list_sj_so($jb,$s,$e){
 		$data = $this->db->query("select tsj.*, mc.nama_cv as nama_customer, coalesce(ts.no_so,rtp.no_po) as no_reff, 
 			(select count(tsjd.id) from r_t_surat_jalan_detail tsjd where tsjd.sj_resmi_id = tsj.id) as jumlah_item, (select id from r_t_so where jenis_so = 'SO KMP' and po_id = tsj.r_po_id) as check_so_kmp
 			from r_t_surat_jalan tsj
             left join r_t_po rtp on rtp.id = tsj.r_po_id
         	left join r_t_so ts on ts.id = tsj.r_so_id
     		left join m_cv mc on mc.id = tsj.m_cv_id
-			where tsj.jenis_surat_jalan NOT LIKE '%CUSTOMER%' and tsj.jenis_barang = '".$jb."'
+			where tsj.jenis_surat_jalan NOT LIKE '%CUSTOMER%' and tsj.jenis_barang = '".$jb."' and tsj.tanggal between '".$s."' and '".$e."'
 			order by tsj.tanggal desc,tsj.no_sj_resmi desc");
 		return $data;
 	}

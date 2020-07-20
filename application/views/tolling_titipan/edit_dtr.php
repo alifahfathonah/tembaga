@@ -64,12 +64,19 @@
                 <div class="col-md-5"> 
                     <div class="row">
                         <div class="col-md-4">
-                            Customer
+                            Customer <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="nama_customer" name="nama_customer" 
-                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $header['nama_customer']; ?>">
+                            <select id="customer_id" name="customer_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
+                                <option value=""></option>
+                                <option value="0" <?=((0==$header['customer_id'])? 'selected="selected"': '');?>>**TIDAK ADA SUPPLIER**</option>
+                                <?php
+                                    foreach ($customer_list as $row){
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['customer_id'])? 'selected="selected"': '').'>'.$row->nama_customer.'</option>';
+                                    }
+                                ?>
+                            </select>
                         </div>
                     </div> 
                     <div class="row">
@@ -209,5 +216,21 @@ function getComa(value, id){
 function simpanData(){
     $('#formku').submit(); 
 };
+</script>
+<link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+<script>
+$(function(){        
+    $("#tanggal").datepicker({
+        showOn: "button",
+        buttonImage: "<?php echo base_url(); ?>img/Kalender.png",
+        buttonImageOnly: true,
+        buttonText: "Select date",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    });
+});
 </script>
       
