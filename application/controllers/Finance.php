@@ -393,6 +393,7 @@ class Finance extends CI_Controller{
                 'tanggal'=>$tgl_input,
                 'nominal'=>str_replace(',', '', $this->input->post('nominal_baru')),
                 'm_customer_id'=>$this->input->post('customer_id_baru'),
+                'bank_pembayaran'=>$this->input->post('nama_bank'),
                 'nomor_cek'=>$this->input->post('nomor'),
                 'modified_at'=>$tanggal,
                 'modified_by'=>$user_id,
@@ -3266,6 +3267,8 @@ class Finance extends CI_Controller{
         }
         $data['group_id']  = $group_id;
         $data['content']= "finance/laporan_penjualan_piutang";
+        $this->load->model('Model_finance');
+        $data['customer_list'] = $this->Model_finance->customer_list()->result();
         $this->load->view('layout', $data);   
     }
 
@@ -3276,6 +3279,7 @@ class Finance extends CI_Controller{
         $tanggal = date('Y-m-d');
         $l = $_GET['laporan'];
         $j = $_GET['j'];
+        $c = $_GET['c'];
         $tgl = date('Y-m-d', strtotime($_GET['t']));
         $group_id    = $this->session->userdata('group_id');        
         if($group_id != 1){
@@ -3287,25 +3291,41 @@ class Finance extends CI_Controller{
         // echo $t;die();
 
         $this->load->model('Model_finance');
-        if($j==0){
-            if($l==0){
-                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang($l)->result();
-            }elseif($l==1){
-                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang($l)->result();
-            }elseif($l==2){
-                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_all()->result();
-            }elseif($l==3){
-                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_kmp(1)->result();
+        if($c==0){
+            if($j==0){
+                if($l==0 || $l==1){
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang($l)->result();
+                }elseif($l==2){
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_all()->result();
+                }elseif($l==3){
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_kmp(1)->result();
+                }
+            }else{
+                if($l==0 || $l==1){
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang2($l,$tgl)->result();
+                }elseif($l==2){
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_all2($tgl)->result();
+                }elseif($l==3){
+                    $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_kmp2(1,$tgl)->result();
+                }
             }
         }else{
-            if($l==0){
-                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang2($l,$tgl)->result();
-            }elseif($l==1){
-                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang2($l,$tgl)->result();
-            }elseif($l==2){
-                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_all2($tgl)->result();
-            }elseif($l==3){
-                $data['detailLaporan'] = $this->Model_finance->print_laporan_piutang_kmp2(1,$tgl)->result();
+            if($j==0){
+                if($l==0 || $l==1){
+                    $data['detailLaporan'] = $this->Model_finance->c_print_laporan_piutang($l,$c)->result();
+                }elseif($l==2){
+                    $data['detailLaporan'] = $this->Model_finance->c_print_laporan_piutang_all($c)->result();
+                }elseif($l==3){
+                    $data['detailLaporan'] = $this->Model_finance->c_print_laporan_piutang_kmp(1,$c)->result();
+                }
+            }else{
+                if($l==0 || $l==1){
+                    $data['detailLaporan'] = $this->Model_finance->c_print_laporan_piutang2($l,$tgl,$c)->result();
+                }elseif($l==2){
+                    $data['detailLaporan'] = $this->Model_finance->c_print_laporan_piutang_all2($tgl,$c)->result();
+                }elseif($l==3){
+                    $data['detailLaporan'] = $this->Model_finance->c_print_laporan_piutang_kmp2(1,$tgl,$c)->result();
+                }
             }
         }
         $this->load->view('finance/print_laporan_piutang', $data);

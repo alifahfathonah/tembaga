@@ -83,23 +83,23 @@
         // echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000">'.number_format($row->fisik,2,',','.').'</td>';
         echo '</tr>';
         $no++;
-    $stok_awal += $row->stok_awal;
-    $produksi += $row->produksi;
-    $retur += $row->retur;
-    $sdm += $row->sdm;
-    $gdrsk += $row->gdrsk;
-    $supplier += $row->supplier;
-    $koreksi += $row->koreksi;
-    $lain += $row->lain;
+    $stok_awal += round($row->stok_awal,2);
+    $produksi += round($row->produksi,2);
+    $retur += round($row->retur,2);
+    $sdm += round($row->sdm,2);
+    $gdrsk += round($row->gdrsk,2);
+    $supplier += round($row->supplier,2);
+    $koreksi += round($row->koreksi,2);
+    $lain += round($row->lain,2);
 
-    $konsumen += $row->konsumen;
-    $rongsok += $row->rongsok;
-    $sdm_k += $row->sdm_k;
-    $retur_k += $row->retur_k;
-    $koreksi_k += $row->koreksi_k;
-    $lain2 += $row->lain2;
-    $stok_akhir += $row->stok_akhir;
-    $fisik+= $row->fisik;
+    $konsumen += round($row->konsumen,2);
+    $rongsok += round($row->rongsok,2);
+    $sdm_k += round($row->sdm_k,2);
+    $retur_k += round($row->retur_k,2);
+    $koreksi_k += round($row->koreksi_k,2);
+    $lain2 += round($row->lain2,2);
+    $stok_akhir += round($row->stok_akhir,2);
+    $fisik+= round($row->fisik,2);
     }
     ?>
     <tr>

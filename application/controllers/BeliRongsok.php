@@ -72,6 +72,7 @@ class BeliRongsok extends CI_Controller{
         $data['content']= "beli_rongsok/po_outdated";
         $this->load->model('Model_beli_rongsok');
         $data['list_data'] = $this->Model_beli_rongsok->po_list_outdated($user_ppn)->result();
+        $data['bank_list'] = $this->Model_beli_sparepart->bank($ppn)->result();
 
         $this->load->view('layout', $data);
     }
@@ -80,7 +81,8 @@ class BeliRongsok extends CI_Controller{
         $module_name = $this->uri->segment(1);
         $id = $this->uri->segment(3);
         if($id){
-            $group_id    = $this->session->userdata('group_id');        
+            $group_id    = $this->session->userdata('group_id'); 
+            $ppn = $this->session->userdata('user_ppn');            
             if($group_id != 1){
                 $this->load->model('Model_modules');
                 $roles = $this->Model_modules->get_akses($module_name, $group_id);
@@ -92,6 +94,8 @@ class BeliRongsok extends CI_Controller{
             $data['content']= "beli_rongsok/index";
             $this->load->model('Model_beli_rongsok');
             $data['list_data'] = $this->Model_beli_rongsok->po_list_filter(date("Y-m-d", strtotime($arr[0])),date("Y-m-d", strtotime($arr[1])))->result();
+            $this->load->model('Model_beli_sparepart');
+            $data['bank_list'] = $this->Model_beli_sparepart->bank($ppn)->result();
 
             $this->load->view('layout', $data);
         }else{

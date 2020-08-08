@@ -668,7 +668,7 @@ class GudangWIP extends CI_Controller{
                         't_bpb_wip_detail_id'=>$v['id'],
                         'qty' =>$v['qty'],
                         'uom' =>$v['uom'],
-                        'berat' =>str_replace('.', '', $v['berat']),
+                        'berat' =>str_replace(',', '', $v['berat']),
                         'keterangan' =>null,
                         'created_by'=> $user_id
                 );

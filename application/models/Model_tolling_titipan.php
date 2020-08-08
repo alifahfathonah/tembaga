@@ -1236,7 +1236,7 @@ class Model_tolling_titipan extends CI_Model{
                     left join ttr on (ttr.dtr_id = dtr.id)
                     left join sales_order so on so.id = dtr.so_id
                 Where dtr.customer_id=".$id." and dtr.so_id > 0 and so.flag_ppn = ".$ppn."
-                and dtr.tanggal between '".$s."' and '".$e."'
+                and ttr.tanggal between '".$s."' and '".$e."'
                 group by dtrd.dtr_id)
                 UNION ALL
                 (Select id, 'Koreksi' as nomor, tanggal, netto, 0 as id_so, '' as no_sales_order from stok_awal_laporan where jenis = 1 and tanggal between '".$s."' and '".$e."' and flag_ppn = ".$ppn." and tipe = 1 and customer_id =".$id.")

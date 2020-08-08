@@ -3068,6 +3068,7 @@ class Tolling extends CI_Controller{
                     'customer_id'=>$this->input->post('customer_id'),
                     'supplier_id'=>$this->input->post('supplier_id'),
                     'netto'=>$this->input->post('netto'),
+                    'susut'=>$this->input->post('susut'),
                     'created_by'=> $user_id,
                     'created_at'=> $tanggal
                 ));
@@ -3104,6 +3105,7 @@ class Tolling extends CI_Controller{
                 'customer_id'=>$this->input->post('customer_id'),
                 'supplier_id'=>$this->input->post('supplier_id'),
                 'netto'=>$this->input->post('netto'),
+                'susut'=>$this->input->post('susut'),
                 'created_by'=> $user_id,
                 'created_at'=> $tanggal
             ));

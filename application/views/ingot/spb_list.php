@@ -121,6 +121,8 @@
                             <?php
                                 if($data->jenis_spb==0){
                                     echo 'SDM';
+                                }elseif ($data->jenis_spb==2){
+                                    echo 'Rolling';
                                 }else if($data->jenis_spb==4){
                                     echo 'Tolling';
                                 }else if($data->jenis_spb==5){

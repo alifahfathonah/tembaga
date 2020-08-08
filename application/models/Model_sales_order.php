@@ -408,6 +408,29 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
+    function show_detail_spb_fulfilment_fg($id){
+        $data = $this->db->query("select  jb.jenis_barang as nama_barang,jb.uom,jb.kode, 
+            COALESCE(tsj.no_surat_jalan,'Belum ada SJ') as no_surat_jalan, COALESCE(tsj.tanggal, '-') as tgl_sj,
+        tgf.no_packing, tgf.bruto, tgf.netto as berat, 1 as qty, '' as uom, tgf.keterangan, tgf.flag_taken
+        from t_sales_order tso
+        left join t_gudang_fg tgf on tso.jenis_barang = 'FG' and tgf.t_spb_fg_id = tso.no_spb
+        left join t_surat_jalan tsj on tgf.t_sj_id = tsj.id
+        left join jenis_barang jb on jb.id = tgf.jenis_barang_id
+        where tso.id =".$id." order by t_sj_id");
+        return $data;
+    }
+
+    // function show_detail_spb_fulfilment_wip($id){
+    //     $data = $this->db->query("select  jb.jenis_barang as nama_barang,jb.uom,jb.kode,
+    //     0 as no_packing, 0 as bruto, tgw.berat, 1 as qty, tgw.uom as uom, tgw.keterangan, tgw.flag_taken,
+    //         COALESCE(tsj.no_surat_jalan,'Belum ada SJ') as no_surat_jalan, COALESCE(tsj.tanggal, '-') as tgl_sj,
+    //     from t_sales_order tso
+    //     left join t_gudang_wip tgw on tso.jenis_barang = 'WIP' and tgw.t_spb_wip_id = tso.no_spb
+    //     left join jenis_barang jb on jb.id = tgw.jenis_barang_id
+    //     where tso.id =".$id);
+    //     return $data;
+    // }
+
     function show_detail_spb_fulfilment($id){
         $data = $this->db->query("select  jb.jenis_barang as nama_barang,jb.uom,jb.kode,
         coalesce(tgf.no_packing, 0) as no_packing,
@@ -425,6 +448,16 @@ class Model_sales_order extends CI_Model{
         return $data;
     }
 
+    function total_so($id){
+        $data = $this->db->query("select jb.jenis_barang as nama_barang, sum(coalesce(tgf.netto, tgw.berat)) as netto
+        from t_sales_order tso
+        left join t_gudang_fg tgf on tso.jenis_barang = 'FG' and tgf.t_spb_fg_id = tso.no_spb
+        left join t_gudang_wip tgw on tso.jenis_barang = 'WIP' and tgw.t_spb_wip_id = tso.no_spb
+        left join jenis_barang jb on jb.id = (case when tso.jenis_barang='FG' then tgf.jenis_barang_id else tgw.jenis_barang_id end)
+        where tso.id =".$id." group by jb.id");
+        return $data;
+    }
+
     function show_detail_spb_fulfilment_rsk($id){
         $data = $this->db->query("Select rsk.nama_item as nama_barang, rsk.uom, rsk.kode_rongsok as kode, dtrd.no_pallete as no_packing,dtrd.bruto, dtrd.netto as berat, dtrd.qty, dtrd.line_remarks as keterangan, dtrd.so_id, dtrd.flag_taken
             From spb_detail_fulfilment spdf 
@@ -432,6 +465,26 @@ class Model_sales_order extends CI_Model{
             Left Join rongsok rsk On (dtrd.rongsok_id = rsk.id)
             Left Join t_sales_order tso on (tso.no_spb = spdf.spb_id)
             Where tso.id=".$id);
+        return $data;
+    }
+
+    function total_so_rsk($id){
+        return $this->db->query("Select rsk.nama_item as nama_barang, sum(dtrd.netto) as netto From spb_detail_fulfilment spdf 
+            Left Join dtr_detail dtrd on (dtrd.id = spdf.dtr_detail_id) 
+            Left Join rongsok rsk On (dtrd.rongsok_id = rsk.id)
+            Left Join t_sales_order tso on (tso.no_spb = spdf.spb_id)
+            Where tso.id=".$id." group by dtrd.rongsok_id");
+    }
+
+    function show_detail_spb_fulfilment_rsk2($id){
+        $data = $this->db->query("Select rsk.nama_item as nama_barang, rsk.uom, rsk.kode_rongsok as kode, dtrd.no_pallete as no_packing,dtrd.bruto, dtrd.netto as berat, dtrd.qty, dtrd.line_remarks as keterangan, dtrd.so_id, dtrd.flag_taken,
+            COALESCE(tsj.no_surat_jalan,'Belum ada SJ') as no_surat_jalan, COALESCE(tsj.tanggal, '-') as tgl_sj
+            From spb_detail_fulfilment spdf 
+            Left Join dtr_detail dtrd on (dtrd.id = spdf.dtr_detail_id) 
+            Left Join rongsok rsk On (dtrd.rongsok_id = rsk.id)
+            Left Join t_sales_order tso on (tso.no_spb = spdf.spb_id)
+            Left Join t_surat_jalan tsj on (dtrd.flag_sj = tsj.id)
+            Where tso.id=".$id." order by tsj.id");
         return $data;
     }
 

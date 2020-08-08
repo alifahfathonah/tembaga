@@ -139,7 +139,7 @@
                             <td height="50px" width="50%" style="text-align:center"></td>
                         </tr>
                         <tr>
-                            <td style="text-align:center">(Gunawan) </td>
+                            <td style="text-align:center">(Namin) </td>
                             <td style="text-align:center">(Amin)</td>
                         </tr>
                     </table>

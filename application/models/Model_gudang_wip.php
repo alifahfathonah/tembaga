@@ -417,7 +417,10 @@ class Model_gudang_wip extends CI_Model{
             left join produksi_ingot pi on thm.id_produksi = pi.id
             where thm.tanggal between '".$s."' and '".$e."'");
         }elseif($j == 2){
-            return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, thw.gas+thw.gas_r as gas, a.qty as qty_rsk, a.netto as berat_rsk, thw.tanggal, thw.qty, thw.berat,  uom, susut, bs, qty_keras, keras,
+            return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, thw.gas+thw.gas_r as gas, 
+                ( coalesce(a.qty,0) + coalesce(b.qty,0) ) as qty_rsk, ( coalesce(a.netto,0) + coalesce(b.netto,0) ) as berat_rsk, 
+                b.qty_8mm, b.berat_8mm,
+                thw.tanggal, thw.qty, thw.berat,  uom, susut, bs, qty_keras, keras,
                 (select sum(netto) from dtr_detail dd 
                     left join dtr on dd.dtr_id = dtr.id
                     where dtr.prd_id = thw.id and rongsok_id = 20) as bs_rolling,
@@ -432,6 +435,15 @@ class Model_gudang_wip extends CI_Model{
                     left join t_spb_wip tsw on tgw.t_spb_wip_id = tsw.id
                     where tsw.flag_produksi = 2
                     group by tsw.id) a on thw.jenis_masak = 'ROLLING' and a.tanggal = thw.tanggal
+                left join (select spb.tanggal, 
+                    sum(CASE WHEN dd.rongsok_id != 52 THEN dd.qty ELSE 0 END) as qty, 
+                    sum(CASE WHEN dd.rongsok_id = 52 THEN dd.qty ELSE 0 END) as qty_8mm, 
+                    sum(CASE WHEN dd.rongsok_id != 52 THEN dd.netto ELSE 0 END) as netto, 
+                    sum(CASE WHEN dd.rongsok_id = 52 THEN dd.netto ELSE 0 END) as berat_8mm
+                    from spb_detail_fulfilment sdf
+                    left join spb on spb.id = sdf.spb_id
+                    left join dtr_detail dd on sdf.dtr_detail_id = dd.id
+                    where spb.jenis_spb = 2 group by spb.tanggal) b on thw.jenis_masak = 'ROLLING' and b.tanggal = thw.tanggal
             where thw.jenis_masak in ('ROLLING', 'BAKAR ULANG') and thw.tanggal between '".$s."' and '".$e."'");
         }elseif($j == 3){
             return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, (select sum(qty) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as qty_rsk, (select sum(berat) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as berat_rsk, thw.tanggal, qty, uom, berat, susut, bs from t_hasil_wip thw
@@ -622,14 +634,20 @@ class Model_gudang_wip extends CI_Model{
     }
 
     function get_floor_produksi($a){
-        return $this->db->query("select * from t_gudang_produksi where jenis = 0 and jenis_barang_id = 2 and tanggal ='".$a."'");
+        return $this->db->query("select coalesce(sum(netto),0) as netto from t_gudang_produksi where jenis = 0 and jenis_barang_id = 2 and tanggal ='".$a."'");
     }
 
     function get_tali_rolling($s,$e){
-        return $this->db->query("select sum(dd.netto) as netto from spb_detail_fulfilment sdf
-                left join spb on sdf.spb_id = spb.id
-                left join dtr_detail dd on sdf.dtr_detail_id = dd.id
-                where spb.jenis_spb = 10 and spb.tanggal between '".$s."' and '".$e."'");
+        return $this->db->query("select sum(netto)as netto from (
+                (select sum(dd.netto) as netto from spb_detail_fulfilment sdf
+                    left join spb on sdf.spb_id = spb.id
+                    left join dtr_detail dd on sdf.dtr_detail_id = dd.id
+                    where spb.jenis_spb = 10 and spb.tanggal between '".$s."' and '".$e."')
+                UNION ALL
+                (select sum(tgf.netto) as netto from t_spb_fg tsf
+                    left join t_gudang_fg tgf on tgf.t_spb_fg_id = tsf.id
+                    where tsf.jenis_spb = 10 and tsf.tanggal between '".$s."' and '".$e."')
+                ) as a");
     }
 
     function header_gudang_produksi($id){

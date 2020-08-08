@@ -129,35 +129,57 @@
                 </div>
             </div>
             <div class="portlet-body">
-                <table class="table table-striped table-bordered table-hover" id="example">
-                    <thead>
-                        <tr>
-                            <!-- <th style="width:35px;">No</th> -->
-                            <th>ID DB</th>
-                            <th>Kode Supplier</th>
-                            <th>Nama Supplier</th>                     
-                            <th>PIC</th>
-                            <th>Telepon</th>
-                            <th>No. HP</th>
-                            <th>NPWP</th>
-                            <th>Alamat</th> 
-                            <th style="width:60px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <tr>
-                            <!-- <th style="width:35px;">No</th> -->
-                            <th>ID DB</th>
-                            <th>Kode Supplier</th>
-                            <th>Nama Supplier</th>                     
-                            <th>PIC</th>
-                            <th>Telepon</th>
-                            <th>No. HP</th>
-                            <th>NPWP</th>
-                            <th>Alamat</th> 
-                            <th style="width:60px;">Actions</th>
-                        </tr>
-                    </tfoot>
+                <table class="table table-striped table-bordered table-hover" id="sample_6">
+                <thead>
+                <tr>
+                    <th style="width:35px;">No</th>
+                    <th>ID DB</th>
+                    <th>Kode Supplier</th>
+                    <th>Nama Supplier</th>                     
+                    <th>PIC</th>
+                    <th>Telepon</th>
+                    <th>No. HP</th>
+                    <th>NPWP</th>
+                    <th>Alamat</th> 
+                    <th style="width:60px;">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                        $no = 0;
+                        foreach ($list_data as $data){
+                            $no++;
+                    ?>
+                    <tr>
+                        <td style="text-align:center"><?php echo $no; ?></td>
+                        <td><?php echo $data->id; ?></td>
+                        <td><?php echo $data->kode_supplier; ?></td>
+                        <td><?php echo $data->nama_supplier; ?></td>
+                        <td><?php echo $data->pic; ?></td>
+                        <td><?php echo $data->telepon; ?></td>
+                        <td><?php echo $data->hp; ?></td>
+                        <td><?php echo $data->npwp; ?></td>
+                        <td><?php echo substr($data->alamat, 0, 30).'...'; ?></td>
+                        <td style="text-align:center"> 
+                            <?php
+                                if( ($group_id==1)||($hak_akses['edit']==1) ){
+                            ?>
+                            <a class="btn btn-circle btn-xs green" onclick="editData(<?php echo $data->id; ?>)" style="margin-bottom:4px">
+                                &nbsp; <i class="fa fa-edit"></i> Edit &nbsp; </a>
+                            <?php 
+                                }
+                                if( ($group_id==1)||($hak_akses['delete']==1) ){
+                            ?>
+                            <a href="<?php echo base_url(); ?>index.php/Supplier/delete/<?php echo $data->id; ?>" 
+                               class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm('Anda yakin menghapus data ini?');">
+                                <i class="fa fa-trash-o"></i> Hapus </a>
+                            <?php }?>
+                        </td>
+                    </tr>
+                    <?php
+                        }
+                    ?>                                                                                    
+                </tbody>
                 </table>
             </div>
         </div>
@@ -246,31 +268,7 @@ function myCurrency(evt) {
     return true;
 }
 
-$(function(){
-    $('#example').dataTable( {
-        processing: true,
-        serverSide: true,
-        ajax: "<?php echo base_url('index.php/Supplier/get_tables'); ?>",
-        columns: [
-            { data: "id" },
-            { data: "kode_supplier" },
-            { data: "nama_supplier" },
-            { data: "pic" },
-            { data: "telepon" },
-            { data: "hp" },
-            { data: "npwp" },
-            { data: "alamat" },
-            {
-                data: null,
-                render: function ( data, type, row ) {
-                    // Combine the first and last names into a single table field
-                    return '<a class="btn btn-circle btn-xs green" onclick="editData('+data.id+')" style="margin-bottom:4px"> <i class="fa fa-edit"></i> Edit &nbsp; </a> <a href="<?php echo base_url(); ?>index.php/Supplier/delete/'+data.id+'" class="btn btn-circle btn-xs red" style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus data ini?\');"> <i class="fa fa-trash-o"></i> Hapus </a>';
-                }
-            }
-        ],
-        colReorder: true
-    } );
-
+$(function(){    
     window.setTimeout(function() { $(".alert-success").hide(); }, 4000);
 });
 </script>         

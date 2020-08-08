@@ -446,6 +446,7 @@ function editData(){
         dateFormat: 'dd-mm-yy'
     });      
     if($("#jenis").val()=="Cek"){
+        $("#nama_bank").attr("readonly", false);
         $("#nomor_cek").prop('readonly', false);
     }else if($("jenis").val()=="Giro"){
         $("#no_rek").prop('readonly', false);
@@ -470,10 +471,10 @@ function showUpdateBox(){
             $('#bank_id_baru').val($('#id_bank').val());
             if($("#jenis").val()=="Cek Mundur"){
                 $('#tanggal_cek_baru').val($('#tanggal_cek').val());
-                $('#nama_bank_baru').val($('#nama_bank').val());
                 $('#nomor_cek_baru').val($('#nomor_cek').val());
             }else if($("#jenis").val()=="Cek"){
                 $('#nomor').val($('#nomor_cek').val());
+                $('#nama_bank_baru').val($('#nama_bank').val());
             }else if($("#jenis").val()=="Giro"){
                 $('#nomor').val($('#no_rek').val());
             }

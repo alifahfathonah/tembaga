@@ -190,7 +190,76 @@
                         </div>
                     </div>
                 </div>
-                <?php if($header['jenis_barang'] != 'LAIN'){ ?>
+                <?php if($header['jenis_barang'] == 'LAIN'){ ?>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 align="center"><strong>Detail Surat Jalan</strong></h4>
+                                <div class="table-scrollable">
+                                    <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
+                                        <thead>
+                                            <th style="width:40px">No</th>
+                                            <th>Jenis Barang</th>
+                                            <th>No Packing</th>
+                                            <th>Bruto</th>
+                                            <th>Netto</th>
+                                            <th>Jumlah</th>
+                                            <th>Nomor Bobbin</th>
+                                            <th>Keterangan</th>
+                                        </thead>
+                                        <tbody>
+                                        <?php
+                                        $netto_sj=0;
+                                        $no=1; foreach ($detailSJ as $row) {
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $no;?></td>
+                                            <td><?php echo '('.$row->kode.') '.$row->jenis_barang;?></td>
+                                            <td><?php 
+                                            if($row->no_packing == 0){
+                                                echo ' - ';
+                                            }else{
+                                                echo $row->no_packing;
+                                            }
+                                            ?>
+                                            </td>
+                                            <td><?php 
+                                            if($row->bruto == 0){
+                                                echo ' - ';
+                                            }else{
+                                                echo $row->bruto;
+                                            }
+                                            ?>
+                                            </td>
+                                            <td><?php echo $row->netto;?></td>
+                                            <td><?php echo $row->qty;?></td>
+                                            <td><?php 
+                                            if(is_null($row->nomor_bobbin)){
+                                                echo 'Tidak ada Nomor Bobbin';
+                                            }else{
+                                                echo $row->nomor_bobbin;
+                                            }
+                                            ?>
+                                            </td>
+                                            <td><?php echo $row->line_remarks;?></td>
+                                        </tr>
+                                        <?php
+                                        $no++;
+                                        $netto_sj += $row->netto;
+                                        }
+                                        ?>
+                                        <tr>
+                                            <td colspan="5" style="text-align: right;"><strong>Total :</strong></td>
+                                            <td style="background-color: green; color: white;"><?=number_format($netto_sj,2,',','.');?></td>
+                                            <td colspan="3"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                <?php }else if($header['jenis_barang'] == 'WIP' || $header['jenis_barang'] == 'AMPAS'){ ?>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12">
@@ -267,7 +336,7 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <h4 align="center"><strong>Detail Surat Jalan</strong></h4>
+                            <h4 align="center"><strong>Detail SPB Fullfilment</strong></h4>
                                 <div class="table-scrollable">
                                     <table class="table table-bordered table-striped table-hover" id="tabel_pallete">
                                         <thead>
@@ -275,58 +344,102 @@
                                             <th>Jenis Barang</th>
                                             <th>No Packing</th>
                                             <th>Bruto</th>
-                                            <th>Netto</th>
+                                            <th>Berat</th>
                                             <th>Jumlah</th>
-                                            <th>Nomor Bobbin</th>
                                             <th>Keterangan</th>
+                                            <th>Status</th>
                                         </thead>
                                         <tbody>
                                         <?php
-                                        $netto_sj=0;
-                                        $no=1; foreach ($detailSJ as $row) {
+                                        $total_berat=0;
+                                        $total_sj=0;
+
+                                        $last_series = null;
+                                        $no=1; foreach ($detailSPB as $row) {
+                                            if($last_series==null){
+                                                echo '<tr>
+                                                    <td colspan="8" style="border-left: 1px solid;">'.$row->no_surat_jalan.' | '.$row->tgl_sj.'</td>
+                                                </tr>';
+                                            }else if($last_series!=$row->no_surat_jalan){
+                                                echo '<tr>
+                                                    <td colspan="4" style="text-align: right; font-weight: bold;">Total Surat Jalan</td>
+                                                    <td style="background-color: green; color: white;">'.number_format($total_sj,2,',','.').'</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="8" style="border-left: 1px solid;">'.$row->no_surat_jalan.' | '.$row->tgl_sj.'</td>
+                                                </tr>';
+                                                $no=1;
+                                                $total_sj=0;
+                                            } else {
+                                                // echo '<td style="border-top: 1px solid;border-left: 1px solid;">'.$no.'</td>';
+                                            }
                                         ?>
                                         <tr>
                                             <td><?php echo $no;?></td>
-                                            <td><?php echo '('.$row->kode.') '.$row->jenis_barang;?></td>
+                                            <td><?php echo '('.$row->kode.') '.$row->nama_barang;?></td>
                                             <td><?php 
                                             if($row->no_packing == 0){
-                                                echo ' - ';
+                                            echo ' - ';
                                             }else{
-                                                echo $row->no_packing;
+                                            echo $row->no_packing;
                                             }
                                             ?>
                                             </td>
                                             <td><?php 
                                             if($row->bruto == 0){
-                                                echo ' - ';
+                                            echo ' -  ';
                                             }else{
-                                                echo $row->bruto;
+                                            echo $row->bruto;
                                             }
                                             ?>
                                             </td>
-                                            <td><?php echo $row->netto;?></td>
-                                            <td><?php echo $row->qty;?></td>
-                                            <td><?php 
-                                            if(is_null($row->nomor_bobbin)){
-                                                echo 'Tidak ada Nomor Bobbin';
+                                            <td><?php echo $row->berat;?></td>
+                                            <td><?php echo $row->qty?></td>
+                                            <?php
+                                            if($row->berat == 0){
+                                                echo '<td style="background-color: red; color: white;">SPB Belum Dipenuhi</td>';
                                             }else{
-                                                echo $row->nomor_bobbin;
+                                                echo '<td>'.$row->keterangan.'</td>';
+                                            }
+                                            if($header['jenis_barang']=='FG'||$header['jenis_barang']=='WIP'){
+                                            echo (($row->flag_taken==1)? '<td style="background-color: green; color: white">Sudah di Kirim</td>':'<td>Belum Dikirim</td>');
+                                            }elseif($header['jenis_barang']=='RONGSOK'){
+                                            echo (($row->so_id>0)?'<td style="background-color: green; color: white">Sudah di Kirim</td>':'<td>Belum Dikirim</td>');
                                             }
                                             ?>
-                                            </td>
-                                            <td><?php echo $row->line_remarks;?></td>
                                         </tr>
                                         <?php
+                                        $last_series = $row->no_surat_jalan;
+                                        $total_sj += $row->berat;
+                                        $total_berat += $row->berat;
                                         $no++;
-                                        $netto_sj += $row->netto;
                                         }
+
+                                                echo '<tr>
+                                                    <td colspan="4" style="text-align: right; font-weight: bold;">Total Surat Jalan</td>
+                                                    <td style="background-color: green; color: white;">'.number_format($total_sj,2,',','.').'</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>';
                                         ?>
-                                        <tr>
-                                            <td colspan="5" style="text-align: right;"><strong>Total :</strong></td>
-                                            <td style="background-color: green; color: white;"><?=number_format($netto_sj,2,',','.');?></td>
-                                            <td colspan="3"></td>
-                                        </tr>
                                         </tbody>
+                                        <tr>
+                                            <td colspan="4" style="text-align: right; font-weight: bold;">Total Jumlah</td>
+                                            <td style="background-color: green; color: white;"><?php echo number_format($total_berat,2,',','.');?></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <?php 
+                                            $no=1; foreach ($total_so as $v) {
+                                            echo '
+                                                <tr>
+                                                    <td colspan="4">'.$v->nama_barang.'</td>
+                                                    <td>'.number_format($v->netto,2,',','.').'</td>
+                                                    <td colspan="3"></td>
+                                                </tr>';
+                                            } ?>
                                     </table>
                                 </div>
                         </div>

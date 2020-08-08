@@ -111,7 +111,7 @@
                                             . 'readonly="readonly"></td>';
                                     
                                     echo '<td><input type="text" id="berat_'.$no.'" name="details['.$no.'][berat]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->berat,0,',','.').'" readonly="readonly"></td>';
+                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->berat,2,'.',',').'" readonly="readonly"></td>';
                                     echo '</tr>';
                                     $no++;
                                 }

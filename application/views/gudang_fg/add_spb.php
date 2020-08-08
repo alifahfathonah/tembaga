@@ -76,6 +76,7 @@
                                 class="form-control myline select2me" style="margin-bottom:5px;" onchange="get_cek(this.value);">
                                 <option></option>
                                 <option value="0">SDM</option>
+                                <option value="2">Rolling</option>
                                 <option value="5">Kirim Rongsok</option>
                                 <option value="6">SO</option>
                                 <option value="7">Retur</option>

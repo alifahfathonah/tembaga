@@ -102,7 +102,7 @@
                                     <select id="tipe_laporan" name="tipe_laporan" class="form-control myline select2me" 
                                         data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px">
                                         <option></option>
-                                        <option value="0">Stok Awal</option>
+                                        <option value="0">Stok Awal & Susut</option>
                                         <option value="1">Koreksi</option>
                                     </select>                        
                                 </div>
@@ -145,6 +145,15 @@
                                     <input type="text" id="netto" name="netto" class="form-control myline" style="margin-bottom:5px" placeholder="Netto ...">                                                                       
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Susut <font color="#f00">*</font>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" id="susut" name="susut" class="form-control myline" style="margin-bottom:5px" placeholder="susut ...">                                                                       
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">                        
@@ -174,6 +183,7 @@
                             <th>Customer</th>
                             <th>Tipe</th>
                             <th>Netto</th>
+                            <th>Susut</th>
                             <th>Dibuat Oleh</th> 
                             <th>Actions</th>
                         </tr>
@@ -190,6 +200,7 @@
                                 <td><?php echo $data->nama; ?></td>
                                 <td><?=($data->tipe==0)? 'Stok Awal' : 'Koreksi';?></td>
                                 <td style="text-align:center"><?php echo number_format($data->netto,2,',','.'); ?></td>
+                                <td style="text-align:center"><?php echo number_format($data->susut,2,',','.'); ?></td>
                                 <td><?php echo $data->realname; ?></td>
                                 <td style="text-align:center">
                                     <a class="btn btn-circle btn-xs blue" onclick="editData(<?=$data->id;?>);" style="margin-bottom:4px"> &nbsp; <i class="fa fa-pencil"></i> Edit &nbsp; </a>
@@ -227,6 +238,7 @@ function editData(id){
         success: function (result){
             $('#tipe_laporan').select2('val',result['tipe']);
             $('#netto').val(result['netto']);
+            $('#susut').val(result['susut']);
             $('#tanggal').val(result['tanggal']);
             $('#customer_id').select2('val',result['customer_id']);
             $('#id').val(result['id']);

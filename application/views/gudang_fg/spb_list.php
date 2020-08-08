@@ -96,6 +96,8 @@
                             <?php
                                 if($data->jenis_spb==0){
                                     echo 'SDM';
+                                }elseif ($data->jenis_spb==2){
+                                    echo 'Rolling';
                                 }else if($data->jenis_spb==4){
                                     echo 'Tolling';
                                 }else if($data->jenis_spb==5){
@@ -108,6 +110,8 @@
                                     echo 'Repacking';
                                 }else if($data->jenis_spb==9){
                                     echo 'Retur K';
+                                }else if($data->jenis_spb==10){
+                                    echo 'Tali Rolling';
                                 }else if($data->jenis_spb==11){
                                     echo 'Adjustment';
                                 }else if($data->jenis_spb==13){

@@ -92,7 +92,7 @@
                         </tr>
                         <?php $nominal += $row->netto; $no++;
                     } 
-                    $sisa = $grand_total-$nominal;
+                    $sisa = $grand_total-$nominal-$stok_awal['susut'];
                     ?>
                         <tr style="height:50px">
                             <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000">&nbsp;</td>
@@ -104,6 +104,10 @@
                         <tr>
                             <td colspan="4" style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000;"><strong>Grand Total Out</strong></td>
                             <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;"><strong><?=number_format($nominal,2,',','.');?></strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: right; border-left:1px solid #000; border-bottom:1px solid #000;"><strong>Susut</strong></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;"><strong><?=number_format($stok_awal['susut'],2,',','.');?></strong></td>
                         </tr>
                     </table>
                 </td>

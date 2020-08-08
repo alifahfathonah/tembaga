@@ -179,7 +179,7 @@
                                             . 'class="form-control myline" maxlength="10" value="'.number_format($row->qty,0,',','.').'" '
                                             . ' readonly="readonly" size="5"></td>';
                                     echo '<td><input type="text" id="berat_'.$no.'" name="myDetails['.$no.'][berat]" '
-                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->berat,0,',','.').'" '
+                                            . 'class="form-control myline" maxlength="10" value="'.number_format($row->berat,2,',','.').'" '
                                             . ' readonly="readonly" size="5"></td>';
                                     echo '<td><textarea type="text" name="myDetails['.$no.'][line_remarks]" class="form-control myline" readonly="readonly" rows="1">'.$row->line_remarks.'</textarea></td>';
                                     echo '</tr>';

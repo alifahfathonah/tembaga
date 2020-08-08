@@ -25,6 +25,23 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4">
+                            Customer <font color="#f00">*</font>
+                        </div>
+                        <div class="col-md-8">
+                            <select id="m_customer_id" name="m_customer_id" class="form-control myline select2me" 
+                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px" 
+                                onclick="get_no_so(this.value);">
+                                <option value="0">Global</option>
+                                <?php
+                                    foreach ($customer_list as $row){
+                                        echo '<option value="'.$row->id.'">'.(($this->session->userdata('user_ppn') == 1)? $row->nama_customer : $row->nama_customer_kh).'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                            Laporan <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
@@ -86,10 +103,11 @@ function simpanData(){
         $('#message').html("Laporan harus dipilih, tidak boleh kosong!");
         $('.alert-danger').show();
     }else{
+        var c=$('#m_customer_id').val();
         var l=$('#laporan').val();
         var j=$('#jenis').val();
         var t=$('#tanggal').val();
-        window.open('<?php echo base_url();?>index.php/Finance/print_penjualan_piutang?laporan='+l+'&t='+t+'&j='+j,'_blank');
+        window.open('<?php echo base_url();?>index.php/Finance/print_penjualan_piutang?laporan='+l+'&t='+t+'&j='+j+'&c='+c,'_blank');
     };
 };
 </script>

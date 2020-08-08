@@ -1045,7 +1045,7 @@ class Model_gudang_fg extends CI_Model{
             left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
             left join t_surat_jalan tsj on tgf.t_sj_id = tsj.id
             left join m_customers mc on tsj.m_customer_id = mc.id
-                where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb in (7,9)
+                where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 7
             group by tgf.jenis_barang_id, tsj.tanggal");
     }
 
@@ -1078,14 +1078,15 @@ class Model_gudang_fg extends CI_Model{
                 (select sum(netto) from t_gudang_fg tgf
                     left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
                     left join dtbj on tbf.dtbj_id = dtbj.id
-                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id in (95,822) and tgf.jenis_barang_id = i.jenis_barang_id) as koreksi,
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id = 822 and tgf.jenis_barang_id = i.jenis_barang_id) as koreksi,
                 (select sum(netto) from t_gudang_fg tgf
                     left join t_bpb_fg tbf on tgf.t_bpb_fg_id = tbf.id
                     left join dtbj on tbf.dtbj_id = dtbj.id
-                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id not in (95,822,255,838,401,542,713) and dtbj.po_id = 0 and dtbj.so_id = 0 and tgf.jenis_barang_id = i.jenis_barang_id) as lain,
+                    where tgf.tanggal_masuk between '".$s."' and '".$e."' and dtbj.supplier_id not in (822,255,838,401,542,713) and dtbj.po_id = 0 and dtbj.so_id = 0 and tgf.jenis_barang_id = i.jenis_barang_id) as lain,
                 (select sum(netto) from t_gudang_fg tgf
                     left join t_surat_jalan tsj on tsj.id = tgf.t_sj_id
-                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and t_sj_id > 0 and tsj.retur_id = 0 and tgf.jenis_barang_id = i.jenis_barang_id
+                    left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
+                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and t_sj_id > 0 and tsj.retur_id = 0 and tsf.jenis_spb != 9 and tgf.jenis_barang_id = i.jenis_barang_id
                     ) as konsumen,
                 (select sum(netto) from t_gudang_fg tgf
                     left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
@@ -1105,7 +1106,7 @@ class Model_gudang_fg extends CI_Model{
                     ) as koreksi_k,
                 (select sum(netto) from t_gudang_fg tgf
                     left join t_spb_fg tsf on tgf.t_spb_fg_id = tsf.id
-                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb = 13 and tgf.jenis_barang_id = i.jenis_barang_id
+                    where tgf.tanggal_keluar between '".$s."' and '".$e."' and tsf.jenis_spb in (10,13) and tgf.jenis_barang_id = i.jenis_barang_id
                     ) as lain2,
                 (select sum(netto) from stok_opname_detail sod
                     where sod.stok_opname_id = 

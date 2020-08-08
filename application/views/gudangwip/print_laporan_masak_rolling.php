@@ -13,7 +13,7 @@
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>WIP<br>Awal</strong></td>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Tanggal</strong></td>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Nomor</strong></td>
-                <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Penerimaan Bahan Baku</strong></td>
+                <td colspan="4" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Penerimaan Bahan Baku</strong></td>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>Tali<br>Rolling</strong></td>
                 <td colspan="2" style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;"><strong>Rod Lunak</strong></td>
             <?php 
@@ -37,6 +37,8 @@
             <tr>
                 <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>BATANG</strong></td>
                 <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>KG</strong></td>
+                <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>BATANG 8mm</strong></td>
+                <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>KG 8mm</strong></td>
             <?php for ($i=0; $i <= $test ; $i++) { 
                 echo '<td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>ROLL</strong></td>
                 <td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>KG</strong></td>';
@@ -62,7 +64,9 @@
     $b_ak = $a['berat_masuk']-$a['berat_keluar'];
     $no = 1;
     $berat_qty = 0;
+    $berat_qty_8mm = 0;
     $berat_rongsok = 0;
+    $berat_rongsok_8mm = 0;
     $berat_ingot = 0;
     $berat = 0;
     $bs_rolling = 0;
@@ -84,6 +88,8 @@
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.$row->nomor.'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->qty_rsk,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->berat_rsk,2,',','.').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->qty_8mm,2,',','.').'</td>';
+        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->berat_8mm,2,',','.').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 656)?number_format($row->qty,2,',','.'):'-').'</td>';
         echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 656)?number_format($row->berat,2,',','.'):'-').'</td>';
@@ -127,6 +133,8 @@
 
         $berat_qty += $row->qty_rsk;
         $berat_rongsok += $row->berat_rsk;
+        $berat_qty_8mm += $row->qty_8mm;
+        $berat_rongsok_8mm += $row->berat_8mm;
         $berat_ingot += $row->qty;
         $berat += $row->berat;
         $bs_rolling += $row->bs_rolling;
@@ -141,14 +149,14 @@
     ?>
     <tr>
         <td style="border-left: 1px solid #000; border-bottom: 1px solid #000;"><?=number_format($b_ak,2,',','.');?></td>
-        <td colspan="<?=19+$colspan;?>" style="border-bottom:1px solid #000; border-left:1px solid #000;"></td>
+        <td colspan="<?=21+$colspan;?>" style="border-bottom:1px solid #000; border-left:1px solid #000;"></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_keras_akhir,2,',','.');?></td>
         <td colspan="2" style="border-bottom:1px solid #000; border-left:1px solid #000;">8mm Keras</td>
         <td style="border-left:1px solid #000; border-right:1px solid #000;"></td>
     </tr>
     <tr>
         <td style="border-left: 1px solid #000; border-bottom: 1px solid #000;"><?=number_format($ia['netto'],2,',','.');?></td>
-        <td colspan="<?=19+$colspan;?>" style="border-bottom:1px solid #000; border-left:1px solid #000;"></td>
+        <td colspan="<?=21+$colspan;?>" style="border-bottom:1px solid #000; border-left:1px solid #000;"></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($ib['netto'],2,',','.');?></td>
         <td colspan="2" style="border-bottom:1px solid #000; border-left:1px solid #000;">WIP di Produksi</td>
         <td style="border-left:1px solid #000; border-right:1px solid #000;"></td>
@@ -159,6 +167,8 @@
         <td colspan="2" style="border-left: 1px solid #000; border-bottom: 1px solid #000;"></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_qty,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_rongsok,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_qty_8mm,2,',','.');?></td>
+        <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat_rongsok_8mm,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($tr['netto'],2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($qty8,2,',','.');?></td>
         <td style="border-bottom:1px solid #000; border-left:1px solid #000;"><?=number_format($berat8,2,',','.');?></td>
@@ -189,12 +199,12 @@
         <td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right: 1px solid #000;"></td>
     </tr>
     <tr>
-        <td colspan="<?=24+$colspan;?>" style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000;" align="center">
+        <td colspan="<?=26+$colspan;?>" style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000;" align="center">
             <?='('.number_format($berat_rongsok,2,',','.').' + '.number_format($tr['netto'],2,',','.').' + '.number_format($b_ak,2,',','.').' + '.number_format($ia['netto'],2,',','.').') - ('.number_format($berat,2,',','.').' + '.number_format($bs_rolling,2,',','.').' + '.number_format($bs_ingot,2,',','.').' + '.number_format($bs_8m,2,',','.').' + '.number_format($berat_keras_akhir,2,',','.').' + '.number_format($ib['netto'],2,',','.').' + '.number_format($berat_susut,2,',','.').')';?>
         </td>
     </tr>
     <tr>
-        <td colspan="<?=24+$colspan;?>" style="border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;">
+        <td colspan="<?=26+$colspan;?>" style="border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;">
             <table border="0" width="100%">
                 <tr>
                     <td colspan="2"></td>
