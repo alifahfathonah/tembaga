@@ -61,6 +61,24 @@
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
+
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$stok_awal['L'];?></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$stok_awal['M'];?></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$stok_awal['S'];?></td>
@@ -68,25 +86,7 @@
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$stok_awal['K'];?></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$stok_awal['D'];?></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$stok_awal['KRJ'];?></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"><?=$stok_awal['BP'];?></td>
-
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
-
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid;"></td>
-              <td align="left" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;"></td>
+              <td align="left" style="border-top: 1px solid; border-left: 1px solid;border-right: 1px solid;"><?=$stok_awal['BP'];?></td>
             </tr>
         <?php 
         $start = date('Y-m-d');
@@ -201,7 +201,7 @@
           }
           ?>
           <tr>
-              <td colspan="4" align="center" style="border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid;"><b>Total</b></td>
+              <td colspan="5" align="center" style="border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid;"><b>Total</b></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid;"><?=$l_p;?></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid;"><?=$m_p;?></td>
               <td align="left" style="border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid;"><?=$s_p;?></td>

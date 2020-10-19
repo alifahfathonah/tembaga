@@ -219,6 +219,8 @@
                 <?php if($header['status']!=(1 || 9)){ ?>
                     <a href="javascript:;" class="btn red" onclick="showRejectBox();"> 
                         <i class="fa fa-ban"></i> Reject DTR </a>
+                    <a href="<?=base_url('index.php/BeliRongsok/tambah_dtr/').$this->uri->segment(3);?>" class="btn blue"> 
+                        <i class="fa fa-plus"></i> Tambah Detail DTR </a>
                 <?php } ?>
                     <a href="<?php echo base_url('index.php/BeliRongsok/dtr_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>

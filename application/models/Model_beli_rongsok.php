@@ -279,7 +279,7 @@ class Model_beli_rongsok extends CI_Model{
     function get_po_list($user_ppn){
         $data = $this->db->query("Select po.id, po.no_po, po.jenis_po, nama_supplier From po 
             left join supplier s on s.id = po.supplier_id
-            Where jenis_po= 'Rongsok' And status != 1 And po.flag_ppn = ".$user_ppn);
+            Where jenis_po= 'Rongsok' And status != 1 And po.flag_ppn = ".$user_ppn." order by tanggal desc limit 100");
         return $data;
     }
     
@@ -588,7 +588,7 @@ class Model_beli_rongsok extends CI_Model{
 
     function show_laporan(){
         $data = $this->db->query("select i.tanggal, DATE_FORMAT(tanggal,'%M %Y') as showdate, sum(stok_awal) as stok_awal, sum(stok_akhir) as stok_akhir from inventory i where jenis_barang = 'RONGSOK' 
-            group by tanggal");
+            group by tanggal order by tanggal desc");
         return $data;
     }
 

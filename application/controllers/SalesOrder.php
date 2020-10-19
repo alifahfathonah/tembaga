@@ -423,7 +423,7 @@ class SalesOrder extends CI_Controller{
 
         if($code){
             $category = $this->input->post('jenis_barang');
-            
+
             if($category == 'FG'){
                 if($user_ppn==1){
                     $num = 'SPB-SO.'.$tgl_so.'.'.$this->input->post('no_so');
@@ -1635,6 +1635,8 @@ class SalesOrder extends CI_Controller{
                     $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang_wip($sjid)->result();
                 }elseif($jenis == 'RONGSOK'){
                     $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang_rsk($sjid)->result();
+                }elseif($jenis == 'AMPAS'){
+                    $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang_ampas($sjid)->result();
                 }elseif ($jenis == 'LAIN'){
                     $data_post['gudang'] = $this->Model_sales_order->tsjd_get_gudang_lain($sjid)->result();
                 }

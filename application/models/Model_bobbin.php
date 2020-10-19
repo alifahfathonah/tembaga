@@ -563,7 +563,7 @@ class Model_bobbin extends CI_Model{
             left join supplier s on tsj.supplier_id = s.id
             where tsj.tanggal between '".$s."' and '".$e."'
             group by tsp.t_sj_id
-            order by tanggal desc ");
+            order by tanggal desc, no_surat_jalan desc ");
     }
 
     function show_detail_bpk($id){
@@ -576,7 +576,7 @@ class Model_bobbin extends CI_Model{
         return $this->db->query("select bl.*, count(bld.id) as jumlah, u.realname from bobbin_laporan bl
             left join bobbin_laporan_detail bld on bld.bl_id = bl.id
             left join users u on bl.created_by = u.id
-            group by bl.id
+            group by bl.id order by tanggal desc
             ");
     }
 
@@ -676,7 +676,8 @@ class Model_bobbin extends CI_Model{
 
     function bobbin_stok_peminjaman(){
         return $this->db->query("select bsp.*, mc.nama_customer from bobbin_stok_peminjaman bsp
-                left join m_customers mc on bsp.customer_id = mc.id");
+                left join m_customers mc on bsp.customer_id = mc.id
+                order by tanggal desc");
     }
 
     function get_peminjaman_data($id){

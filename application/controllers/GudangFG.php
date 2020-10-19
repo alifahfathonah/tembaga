@@ -2764,6 +2764,14 @@ class GudangFG extends CI_Controller{
             $data['header'] = 'SDM';
             $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
             $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
+        }elseif($l==21){
+            $data['header'] = 'Gudang/Rongsok';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
+        }elseif($l==22){
+            $data['header'] = 'Lain-Lain';
+            $data['detailLaporan'] = $this->Model_gudang_fg->print_laporan_pemasukan($s,$e,$l)->result();
+            $this->load->view('gudang_fg/print_laporan_pemasukan', $data);
     //PENGELUARAN
         }elseif($l==8){
             $data['header'] = 'Retur';

@@ -635,6 +635,60 @@ class R_Rongsok extends CI_Controller{
         }
     }
 
+    function delete_po(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+        $user_ppn = $this->session->userdata('user_ppn');
+
+        $this->db->trans_start();
+        $po_id = $this->uri->segment(3);
+
+        if($po_id!=0 || $po_id!=null || $po_id != ''){
+            //delete po
+            $this->db->where('id', $po_id);
+            $this->db->delete('po');
+
+            $dtr = $this->db->query("Select id from dtr where po_id = ".$po_id)->result();
+            foreach ($dtr as $v) {
+                $this->db->where('id', $v->id);
+                $this->db->delete('dtr');
+
+                $this->db->where('dtr_id', $v->id);
+                $this->db->delete('dtr_detail');
+
+                $ttr = $this->db->query("Select id from ttr where dtr_id =".$v->id)->row_array();
+                $this->db->where('id', $ttr['id']);
+                $this->db->delete('ttr');
+
+                $this->db->where('ttr_id', $ttr['id']);
+                $this->db->delete('ttr_detail');
+            }
+
+            $this->load->helper('target_url');
+
+            $data_post['po_id'] = $po_id;
+
+            $data_post = http_build_query($data_post);
+
+            $ch = curl_init(target_url().'api/BeliRongsokAPI/delete_po');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-API-KEY: 34a75f5a9c54076036e7ca27807208b8'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $result = json_decode($response, true);
+            curl_close($ch);
+        }else{
+            echo "INVALID";die();
+        }
+        if($this->db->trans_complete()){
+            redirect('index.php/R_Rongsok/po_list');  
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/R_Rongsok/po_list');
+        } 
+    }
+
     function update(){
         $tanggal  = date('Y-m-d H:i:s');
         $user_id  = $this->session->userdata('user_id');
@@ -690,10 +744,9 @@ class R_Rongsok extends CI_Controller{
         $data['content']= "resmi/ambil_rongsok/matching";
         $this->load->model('Model_beli_rongsok');
         $data['po_list'] = $this->Model_beli_rongsok->get_po_list(1)->result();
-
         $this->load->view('layout', $data);
     }
-    
+
     function proses_matching(){
         $module_name = $this->uri->segment(1);
         $group_id    = $this->session->userdata('group_id');  

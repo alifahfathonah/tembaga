@@ -2,9 +2,8 @@
     LAPORAN STOK <?=$g;?></h3>
  <h3 align="center"><b><?php echo " <i>".tanggal_indo(date('Y-m-d', strtotime($start))).' s/d '.tanggal_indo(date('Y-m-d', strtotime($end)))."</i>";?></b></h3>
 <?php $ex = explode('-',tanggal_indo(date('Y-m-d', strtotime($end))));?>
-<table width="100%" class="table table-striped table-bordered table-hover" id="sample_6">
-    <tr>
-        <table border="0" cellpadding="4" cellspacing="0" width="100%" style="font-size:12px;">
+<table border="0" cellpadding="4" cellspacing="0" width="100%" style="font-size:12px;">
+    <thead>
         <td colspan="3">
             <tr>
                 <td rowspan="2" style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;"><strong>No</strong></td>
@@ -35,7 +34,7 @@
                 <th style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid;">Fisik</th>
             </tr>
         </td>
-    </tr>
+    </thead>
     <tbody>
     <?php
     $no = 1;
@@ -58,28 +57,28 @@
     $fisik= 0;
     foreach ($detailLaporan as $row){
         echo '<tr>';
-        echo '<td style="text-align:center; border-bottom:1px solid #000; border-left:1px solid #000">'.$no.'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.$row->jenis_barang.'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->stok_awal==0)? '-':number_format($row->stok_awal,2,',','.')).'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->produksi==0)? '-':number_format($row->produksi,2,',','.')).'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->retur==0)? '-':number_format($row->retur,2,',','.')).'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->sdm==0)? '-':number_format($row->sdm,2,',','.')).'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->gdrsk==0)? '-':number_format($row->gdrsk,2,',','.')).'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->supplier==0)? '-':number_format($row->supplier,2,',','.')).'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->koreksi==0)? '-':number_format($row->koreksi,2,',','.')).'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->lain==0)? '-':number_format($row->lain,2,',','.')).'</td>';
+        echo '<td style="text-align:center; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.$no.'</td>';
+        echo '<td style="border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.$row->jenis_barang.'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->stok_awal==0)? '-':number_format($row->stok_awal,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->produksi==0)? '-':number_format($row->produksi,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->retur==0)? '-':number_format($row->retur,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->sdm==0)? '-':number_format($row->sdm,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->gdrsk==0)? '-':number_format($row->gdrsk,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->supplier==0)? '-':number_format($row->supplier,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->koreksi==0)? '-':number_format($row->koreksi,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->lain==0)? '-':number_format($row->lain,2,',','.')).'</td>';
 
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->konsumen==0)? '-':number_format($row->konsumen,2,',','.')).'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->rongsok==0)? '-':number_format($row->rongsok,2,',','.')).'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->sdm_k==0)? '-':number_format($row->sdm_k,2,',','.')).'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->retur_k==0)? '-':number_format($row->retur_k,2,',','.')).'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->koreksi_k==0)? '-':number_format($row->koreksi_k,2,',','.')).'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->lain2==0)? '-':number_format($row->lain2,2,',','.')).'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->stok_akhir==0)? '-':number_format($row->stok_akhir,2,',','.')).'</td>';
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->fisik==0)? '-':number_format($row->fisik,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->konsumen==0)? '-':number_format($row->konsumen,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->rongsok==0)? '-':number_format($row->rongsok,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->sdm_k==0)? '-':number_format($row->sdm_k,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->retur_k==0)? '-':number_format($row->retur_k,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->koreksi_k==0)? '-':number_format($row->koreksi_k,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->lain2==0)? '-':number_format($row->lain2,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->stok_akhir==0)? '-':number_format($row->stok_akhir,2,',','.')).'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->fisik==0)? '-':number_format($row->fisik,2,',','.')).'</td>';
         $selisih = $row->stok_akhir - $row->fisik;
-        echo '<td style="text-align:right; border-bottom:1px solid #000; border-left:1px solid #000">'.(($selisih==0)? '-':number_format($selisih,2,',','.')).'</td>
-        <td style="border-bottom:1px solid #000; border-left:1px solid #000 ; border-right:1px solid #000">'.$row->keterangan.'</td>';
+        echo '<td style="text-align:right; border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000">'.(($selisih==0)? '-':number_format($selisih,2,',','.')).'</td>
+        <td style="border-top: 1px solid #000; border-bottom:1px solid #000; border-left:1px solid #000 ; border-right:1px solid #000">'.$row->keterangan.'</td>';
         // echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000; border-right:1px solid #000">'.number_format($row->fisik,2,',','.').'</td>';
         echo '</tr>';
         $no++;

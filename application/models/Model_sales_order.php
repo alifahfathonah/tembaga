@@ -677,6 +677,11 @@ class Model_sales_order extends CI_Model{
             where tsjd.t_sj_id=".$id);
     }
 
+    function tsjd_get_gudang_ampas($id){
+        return $this->db->query("select tsjd.id as id_sj_d, tsjd.t_sj_id, tsjd.jenis_barang_id as sj_jb, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty as jb_qty, tsjd.bruto, tsjd.berat, tsjd.netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks from t_surat_jalan_detail tsjd
+            where tsjd.t_sj_id=".$id);
+    }
+
     function tsjd_get_gudang_lain($id){
         return $this->db->query("select tsjd.id as id_sj_d, tsjd.t_sj_id, tsjd.jenis_barang_id as sj_jb, tsjd.jenis_barang_alias, tsjd.no_packing, tsjd.qty as jb_qty, tsjd.bruto, tsjd.berat, tsjd.netto, tsjd.netto_r, tsjd.nomor_bobbin, tsjd.line_remarks from t_surat_jalan_detail tsjd
             where tsjd.t_sj_id=".$id);

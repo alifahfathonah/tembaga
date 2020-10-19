@@ -130,7 +130,7 @@
                             Currency
                         </div>
                         <div class="col-md-4">
-                            <input type="text" id="currency" name="currency" class="form-control myline" readonly="readonly">
+                            <input type="text" id="currency" name="currency" class="form-control myline" readonly="readonly" value="<?=($this->session->userdata('user_ppn')==0)? 'IDR':'';?>">
                         </div>
                         <div id="show_kurs">
                         <div class="col-md-2">

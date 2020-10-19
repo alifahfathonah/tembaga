@@ -136,6 +136,13 @@ class Model_gudang_wip extends CI_Model{
         return $data;
     }
 
+    function jenis_barang_spb_rolling(){
+        $data = $this->db->query("select jb.jenis_barang, jb.id
+                from jenis_barang jb
+                where id in (2, 656, 654)");
+        return $data;
+    }
+
     function jenis_barang_spb_cuci(){
         $data = $this->db->query("select jb.jenis_barang, jb.id
                 from jenis_barang jb
@@ -288,7 +295,7 @@ class Model_gudang_wip extends CI_Model{
 
     function show_laporan(){
         $data = $this->db->query("select i.tanggal, DATE_FORMAT(tanggal,'%M %Y') as showdate, sum(stok_awal) as stok_awal, sum(stok_akhir) as stok_akhir from inventory i where jenis_barang = 'WIP' 
-            group by tanggal");
+            group by tanggal order by tanggal desc");
         return $data;
     }
 
@@ -417,7 +424,8 @@ class Model_gudang_wip extends CI_Model{
             left join produksi_ingot pi on thm.id_produksi = pi.id
             where thm.tanggal between '".$s."' and '".$e."'");
         }elseif($j == 2){
-            return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, thw.gas+thw.gas_r as gas, 
+            return $this->db->query("select * from (
+                (select no_produksi_wip as nomor, thw.jenis_barang_id, thw.gas+thw.gas_r as gas, 
                 ( coalesce(a.qty,0) + coalesce(b.qty,0) ) as qty_rsk, ( coalesce(a.netto,0) + coalesce(b.netto,0) ) as berat_rsk, 
                 b.qty_8mm, b.berat_8mm,
                 thw.tanggal, thw.qty, thw.berat,  uom, susut, bs, qty_keras, keras,
@@ -444,7 +452,17 @@ class Model_gudang_wip extends CI_Model{
                     left join spb on spb.id = sdf.spb_id
                     left join dtr_detail dd on sdf.dtr_detail_id = dd.id
                     where spb.jenis_spb = 2 group by spb.tanggal) b on thw.jenis_masak = 'ROLLING' and b.tanggal = thw.tanggal
-            where thw.jenis_masak in ('ROLLING', 'BAKAR ULANG') and thw.tanggal between '".$s."' and '".$e."'");
+                    where thw.jenis_masak in ('ROLLING', 'BAKAR ULANG') and thw.tanggal between '".$s."' and '".$e."'
+                ) UNION ALL 
+                (
+                    select dtr.no_dtr as nomor, dd.rongsok_id as jenis_barang_id, 0 as gas, 0 as qty_rsk, 0 as berat_rsk, 0 as qty_8mm, 0 as berat_8mm, dtr.tanggal, 0 as qty, 0 as berat, '' as uom, 0 as susut, 0 as bs, 0 as qty_keras, 0 as keras,
+                        sum(CASE WHEN dd.rongsok_id = 20 THEN dd.netto ELSE 0 END) as bs_rolling,
+                        sum(CASE WHEN dd.rongsok_id = 52 THEN dd.netto ELSE 0 END) as bs_8m,
+                        sum(CASE WHEN dd.rongsok_id = 22 THEN dd.netto ELSE 0 END) as bs_ingot
+                        from dtr
+                    left join dtr_detail dd on dtr.id = dd.dtr_id
+                    where dtr.prd_id = 0 and supplier_id = 580 and dtr.tanggal between '".$s."' and '".$e."'
+                ) )as a order by tanggal");
         }elseif($j == 3){
             return $this->db->query("select no_produksi_wip as nomor, thw.jenis_barang_id, (select sum(qty) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as qty_rsk, (select sum(berat) from t_gudang_wip tgw where tgw.t_spb_wip_id = thw.t_spb_wip_id) as berat_rsk, thw.tanggal, qty, uom, berat, susut, bs from t_hasil_wip thw
             where thw.jenis_masak = 'BAKAR ULANG' and thw.tanggal between '".$s."' and '".$e."'");

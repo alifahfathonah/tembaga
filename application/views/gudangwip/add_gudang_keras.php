@@ -41,8 +41,19 @@
                             Jenis Barang
                         </div>
                         <div class="col-md-8">
-                            <select id="barang_id" name="barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px" onclick="get_uom(this.value);">
+                            <select id="barang_id" name="barang_id" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
                                 <option value="15">KAWAT HITAM KERAS</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Jenis
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis_trx" name="jenis_trx" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                <option value="0">Pemasukan</option>
+                                <option value="1">Pengeluaran</option>
                             </select>
                         </div>
                     </div>

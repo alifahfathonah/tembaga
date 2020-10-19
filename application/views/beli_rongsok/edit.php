@@ -355,7 +355,7 @@
                             echo '<a href="javascript:;" class="btn red-sunglo" onclick="showRejectBox();"> 
                                 <i class="fa fa-lock"></i> Close PO </a> ';
                         }
-                        if( ($group_id==1 || $hak_akses['edit_sj']==1) && $header['status']!=1){
+                        if( ($group_id==1 || $hak_akses['edit']==1) && $header['status']!=1){
                             echo '<a href="javascript:;" class="btn blue" onclick="editData();" id="btnEdit">' 
                                 .'<i class="fa fa-pencil"></i> Edit </a>';
 

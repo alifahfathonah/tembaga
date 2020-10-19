@@ -442,12 +442,9 @@ class BeliRongsok extends CI_Controller{
     }
 
     function get_uom_po(){
-        // $idpo = $this->input->post('idpo');
         $iditem = $this->input->post('iditem');
         $this->load->model('Model_beli_rongsok');
         $rongsok= $this->Model_beli_rongsok->show_data_rongsok_detail($iditem)->row_array();
-        // $this->load->model('Model_rongsok');
-        // $rongsok= $this->Model_rongsok->show_data_po($idpo,$iditem)->row_array();
         
         header('Content-Type: application/json');
         echo json_encode($rongsok); 
@@ -825,7 +822,26 @@ class BeliRongsok extends CI_Controller{
             $data['supplier_list'] = $this->Model_beli_rongsok->supplier_list()->result();
             $this->load->view('layout', $data);
     }
-    
+
+    function tambah_dtr(){
+            $module_name = $this->uri->segment(1);
+            $id = $this->uri->segment(3);
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "beli_rongsok/tambah_dtr";
+            $this->load->model('Model_beli_rongsok');
+            $data['list_rongsok_on_po'] = $this->Model_beli_rongsok->show_data_rongsok()->result();
+            $data['supplier_list'] = $this->Model_beli_rongsok->supplier_list()->result();
+            $data['header']  = $this->Model_beli_rongsok->show_header_dtr($id)->row_array();
+            $this->load->view('layout', $data);
+    }
+
     function generate_palette(){
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_code = date('ymd', strtotime($this->input->post('tanggal')));
@@ -908,7 +924,49 @@ class BeliRongsok extends CI_Controller{
             redirect('index.php/BeliRongsok/dtr_list');
         }
     }
-    
+
+    function save_tambah_dtr(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        $tgl_po = date('Ym', strtotime($this->input->post('tanggal')));
+        $user_ppn = $this->session->userdata('user_ppn');
+
+        $this->db->trans_start();
+        $this->load->model('Model_m_numberings');
+        $dtr_id = $this->input->post('id');
+        $details = $this->input->post('myDetails');
+        foreach ($details as $i => $row){
+            if($row['rongsok_id']!=''){
+                $this->db->insert('dtr_detail', array(
+                    'dtr_id'=>$dtr_id,
+                    //'po_detail_id'=>$row['po_detail_id'],
+                    'rongsok_id'=>$row['rongsok_id'],
+                    'bruto'=>$row['bruto'],
+                    'berat_palette'=>$row['berat_palette'],
+                    'netto'=>$row['netto'],
+                    'no_pallete'=>$row['no_pallete'],
+                    'line_remarks'=>$row['line_remarks'],
+                    'created'=>$tanggal,
+                    'created_by'=>$user_id,
+                    'tanggal_masuk'=>$tgl_input
+                ));
+            }
+        }
+        
+        // #Update status PO
+        // $this->db->where('id', $this->input->post('po_id'));
+        // $this->db->update('po', array('status'=>2, 'modified'=>$tanggal, 'modified_by'=>$user_id));
+                
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'data DTR berhasil di-tambah');
+            redirect('index.php/BeliRongsok/edit_dtr/'.$dtr_id);
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat tambah DTR, silahkan coba kembali!');
+        }
+        redirect('index.php/BeliRongsok/edit_dtr/'.$dtr_id);
+    }
+
     function re_dtr(){
         $user_id  = $this->session->userdata('user_id');
         $tanggal  = date('Y-m-d H:i:s');
@@ -1396,7 +1454,7 @@ class BeliRongsok extends CI_Controller{
             $data['content']= "beli_rongsok/edit_dtr";
             $this->load->model('Model_beli_rongsok');
             $data['supplier_list'] = $this->Model_beli_rongsok->supplier_list()->result();
-            $data['header']  = $this->Model_beli_rongsok->show_header_dtr($id)->row_array(); 
+            $data['header']  = $this->Model_beli_rongsok->show_header_dtr($id)->row_array();
             $data['details'] = $this->Model_beli_rongsok->show_detail_dtr($id)->result();
             
             $this->load->view('layout', $data);   
@@ -2203,7 +2261,7 @@ class BeliRongsok extends CI_Controller{
         $data = $this->Model_beli_rongsok->show_data_rongsok_detail($rongsok_id)->row_array();
 
         $current = '';
-        $data_printer = $this->db->query("select * from m_print_barcode_line where m_print_barcode_id = 1")->result_array();
+        $data_printer = $this->db->query("select * from m_print_barcode_line where m_print_barcode_id = 6")->result_array();
         $data_printer[17]['string1'] = 'BARCODE 488,335,"39",41,0,180,2,6,"'.$data['kode_rongsok'].'"';
         $data_printer[18]['string1'] = 'TEXT 386,289,"ROMAN.TTF",180,1,8,"'.$data['kode_rongsok'].'"';
         $data_printer[22]['string1'] = 'BARCODE 612,101,"39",41,0,180,2,6,"'.$no_pallete.'"';

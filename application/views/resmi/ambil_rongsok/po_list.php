@@ -126,6 +126,10 @@
                                 style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
                             <?php
                                 }
+                                if($group_id==16 && ($data->status!=1 && $data->status!= 4)){
+                                    echo '<a class="btn btn-circle btn-xs red" href="'.base_url().'index.php/R_Rongsok/delete_po/'.$data->id.'" 
+                                        style="margin-bottom:4px" onclick="return confirm(\'Anda yakin menghapus transaksi ini?\');"> &nbsp; <i class="fa fa-trash"></i> Delete &nbsp; </a> ';
+                                }
                             ?>
                         </td>
                     </tr>

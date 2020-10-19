@@ -85,6 +85,7 @@
                         style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>';
                 }
               ?>
+                <a class="btn btn-circle btn-xs blue" href="<?php echo base_url(); ?>index.php/GudangBobbin/edit_bpk/<?php echo $row->id; ?>" style="margin-bottom:4px"> &nbsp; <i class="fa  fa-pencil"></i> Adjustment &nbsp; </a>
             </td>
           </tr>
         <?php   

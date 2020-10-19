@@ -932,7 +932,7 @@ class GudangWIP extends CI_Controller{
             $data['header'] = $this->Model_gudang_wip->show_header_spb($id)->row_array();
             $jenis = $data['header']['flag_produksi'];
                 if($jenis==2){
-                    $data['list_barang'] = $this->Model_gudang_wip->jenis_barang_spb(2)->result();
+                    $data['list_barang'] = $this->Model_gudang_wip->jenis_barang_spb_rolling()->result();
                 }else if($jenis==3){
                     $data['list_barang'] = $this->Model_gudang_wip->jenis_barang_spb_cuci()->result();
                 }else if($jenis==5){
@@ -2170,6 +2170,7 @@ class GudangWIP extends CI_Controller{
         
             $data = array(
                 'tanggal'=> $tgl_input,
+                'jenis_trx'=> $this->input->post('jenis_trx'),
                 't_hasil_wip_id' => 0,
                 'jenis_barang_id'=> $this->input->post('barang_id'),
                 'qty'=> $this->input->post('qty'),
@@ -2241,6 +2242,7 @@ class GudangWIP extends CI_Controller{
             $this->db->where('id',$this->input->post('id'));
             $data = array(
                 'tanggal'=> $tgl_input,
+                'jenis_trx'=> $this->input->post('jenis_trx'),
                 'qty'=> $this->input->post('qty'),
                 'berat'=> $this->input->post('netto'),
                 'keterangan'=>$this->input->post('remarks'),

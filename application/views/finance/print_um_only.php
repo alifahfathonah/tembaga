@@ -52,7 +52,12 @@
                         </tr>          
                         <tr>
                             <td>Tgl Jatuh Tempo</td>
-                            <td>: <?php if($header['tgl_cair'] == '0000-00-00'){ echo '-';}else{echo tanggal_indo($header['tgl_cair']);}?></td>
+                            <td>: 
+                                <?php if(in_array($header['jenis_pembayaran'], ['Cek', 'Cek Mundur'], true)){ 
+                                    echo tanggal_indo($header['tgl_cair']);
+                                }else{
+                                    echo '-';
+                                }?></td>
                         </tr>
                         <tr>
                             <td>Cek / Giro</td>

@@ -129,7 +129,11 @@ class Finance extends CI_Controller{
         $tanggal   = date('Y-m-d H:i:s');
         $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
         $tgl_um = date('Y', strtotime($this->input->post('tanggal')));
-        $tgl_cek   = date('Y-m-d', strtotime($this->input->post('tanggal_cek')));
+        if(!empty($this->input->post('tanggal_cek'))){
+            $tgl_cek   = date('Y-m-d', strtotime($this->input->post('tanggal_cek')));
+        }else{
+            $tgl_cek   = '0000-00-00';
+        }
         $user_ppn  = $this->session->userdata('user_ppn');
         $tglurut = date('ymd', strtotime($this->input->post('tanggal')));
 
@@ -356,7 +360,7 @@ class Finance extends CI_Controller{
         if($this->db->trans_complete()){    
             $this->session->set_flashdata('flash_msg', 'Uang Masuk sudah di-approve');            
         }else{
-            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat pembuatan Balasan SPB, silahkan coba kembali!');
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat approve UM, silahkan coba kembali!');
         }
         
        redirect('index.php/Finance');
@@ -613,8 +617,15 @@ class Finance extends CI_Controller{
         $data['group_id']  = $group_id;
 
         $data['content']= "finance/pembayaran";
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-3 months'));
+        }
         $this->load->model('Model_finance');
-        $data['list_data'] = $this->Model_finance->list_data_pembayaran()->result();
+        $data['list_data'] = $this->Model_finance->list_data_pembayaran($s,$e)->result();
 
         $this->load->view('layout', $data);
     }
@@ -2017,10 +2028,17 @@ class Finance extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
+        if(null!==$this->uri->segment(3) && null!==$this->uri->segment(4)){
+            $s = $this->uri->segment(3);
+            $e = $this->uri->segment(4);
+        }else{
+            $e = date('Y-m-d');
+            $s = date('Y-m-d', strtotime('-3 months'));
+        }
 
         $data['content']= "finance/matching";
         $this->load->model('Model_finance');
-        $data['list_data'] = $this->Model_finance->list_matching($ppn)->result();
+        $data['list_data'] = $this->Model_finance->list_matching($ppn,$s,$e)->result();
 
         $this->load->view('layout', $data);
     }
@@ -2289,18 +2307,16 @@ class Finance extends CI_Controller{
         
         $this->db->trans_start();
 
-        $data = array(
-            'flag_matching'=>$this->input->post('id_modal')
-        );
         $this->db->where('id',$this->input->post('um_id'));
-        if($this->db->update('f_uang_masuk',$data)){
-            $data = array(
-                'id_match'=>$this->input->post('id_modal'),
-                'id_um'=>$this->input->post('um_id'),
-                'id_inv'=>0
-            );
-            $this->db->insert('f_match_detail', $data);
-        }
+        $this->db->update('f_uang_masuk',[
+            'flag_matching'=>$this->input->post('id_modal')
+        ]);
+        $data = array(
+            'id_match'=>$this->input->post('id_modal'),
+            'id_um'=>$this->input->post('um_id'),
+            'id_inv'=>0
+        );
+        $this->db->insert('f_match_detail', $data);
 
         if($this->db->trans_complete()){
             $return_data['message_type']= "sukses";
@@ -3840,17 +3856,19 @@ class Finance extends CI_Controller{
             $data['hak_akses'] = $roles;
         }
         $data['group_id']  = $group_id;
-        $data['content']= "finance/laporan_bahan_pembantu";
-        $this->load->model('Model_sales_order');
 
-        $this->load->view('layout', $data);  
+        $data['content']= "finance/list_bahan_pembantu";
+        $this->load->model('Model_finance'); 
+        //$data['detailTanggal'] = $this->Model_beli_sparepart->show_laporan()->result();
+        $data['list'] = $this->Model_finance->laporan_bahan_pembantu()->result();
+        $this->load->view('layout', $data);   
     }
 
     function print_laporan_bahan_pembantu(){
         $module_name = $this->uri->segment(1);
         $this->load->helper('tanggal_indo');
-        $bulan = $_GET['b'];
-        $tahun = $_GET['t'];
+        $bulan = substr($_GET['b'],4,6);
+        $tahun = substr($_GET['b'],0,4);
         $tgl1 = date('Ym', strtotime($tahun.'-'.$bulan));
         $tgl = date('Y-m', strtotime($tahun.'-'.$bulan));
         $datestring=$tgl.' first day of last month';
@@ -3872,9 +3890,34 @@ class Finance extends CI_Controller{
         $this->load->model('Model_finance');
         $data['detailLaporan'] = $this->Model_finance->detail_daftar_bahan_pembantu($tgl1, $tgl2)->result();
         // echo "<pre>";print_r($data['detailLaporan']);echo "</pre>"; die();
-        if ($data['detailLaporan'] !== null) {
+
+        if($_GET['l']==1){
+            $this->load->view('finance/print_laporan_bahan_pembantu', $data);
+        }else{
+            $this->load->view('finance/print_laporan_bahan_pembantu2', $data);
+        }
+    }
+
+    function proses_bahan_pembantu(){
+        $module_name = $this->uri->segment(1);
+        $this->load->helper('tanggal_indo');
+        $bulan = $_GET['b'];
+        $tahun = $_GET['t'];
+        $tgl1 = date('Ym', strtotime($tahun.'-'.$bulan));
+        $tgl = date('Y-m', strtotime($tahun.'-'.$bulan));
+        $datestring=$tgl.' first day of last month';
+        $dt=date_create($datestring);
+        $tgl2 = $dt->format('Ym');
+
+        // echo $tgl1.' | '.$tgl2;
+
+        $this->db->trans_start();
+        $this->load->model('Model_finance');
+        $detailLaporan = $this->Model_finance->detail_daftar_bahan_pembantu($tgl1, $tgl2)->result();
+        // echo "<pre>";print_r($detailLaporan);echo "</pre>"; die();
+        if ($detailLaporan !== null) {
             $this->db->delete('t_sparepart_saldo', ['bulan' => $tgl1]);
-            foreach ($data['detailLaporan'] as $row) {
+            foreach ($detailLaporan as $row) {
                 $this->db->insert('t_sparepart_saldo', [
                     'bulan' => $tgl1,
                     'sparepart_id' => $row->sparepart_id,
@@ -3885,10 +3928,117 @@ class Finance extends CI_Controller{
             }
         }
 
-        if($_GET['l']==1){
-            $this->load->view('finance/print_laporan_bahan_pembantu', $data);
-        }else{
-            $this->load->view('finance/print_laporan_bahan_pembantu2', $data);
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Laporan Bahan Pembantu berhasil diproses !');
+            redirect(base_url('index.php/Finance/laporan_bahan_pembantu'));
+        } else {
+            $this->session->set_flashdata('flash_msg', 'Laporan Bahan Pembantu gagal diproses, silahkan dicoba kembali!');
+            redirect(base_url('index.php/Finance/laporan_bahan_pembantu'));
         }
     }
+
+    function edit_bahan_pembantu(){
+        $module_name = $this->uri->segment(1);
+        $group_id    = $this->session->userdata('group_id');
+        $ppn         = $this->session->userdata('user_ppn');
+        $id          = $this->uri->segment(3);
+        if($group_id != 1){
+            $this->load->model('Model_modules');
+            $roles = $this->Model_modules->get_akses($module_name, $group_id);
+            $data['hak_akses'] = $roles;
+        }
+        $data['group_id']  = $group_id;
+
+        $data['content']= "finance/edit_laporan_bahan_pembantu";
+        $this->load->model('Model_finance');
+        $data['detailLaporan'] = $this->Model_finance->get_saldo_sparepart($id)->result();
+
+        $this->load->view('layout', $data);
+    }
+
+    function update_laporan_bahan_pembantu(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+        $tgl_input = date('Y-m-d', strtotime($this->input->post('tanggal')));
+        
+        $this->db->trans_start();
+            
+            $myDetails = $this->input->post('myDetails');
+            // print_r($myDetails);die();
+            foreach ($myDetails as $row) {
+                $this->db->where('id',$row['id']);
+                $this->db->update('t_sparepart_saldo', array(
+                    'adjustment'=>$row['adjustment']
+                ));
+            }
+
+        if($this->db->trans_complete()){
+            $this->session->set_flashdata('flash_msg', 'Data inventory berhasil disimpan!');
+            redirect('index.php/Finance/edit_bahan_pembantu/'.$this->input->post('tanggal'));  
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Data inventory gagal disimpan, silahkan dicoba kembali!');
+            redirect('index.php/Finance/edit_bahan_pembantu/'.$this->input->post('tanggal'));  
+        }
+    }
+    // function laporan_bahan_pembantu(){
+    //     $module_name = $this->uri->segment(1);
+    //     $id = $this->uri->segment(3);
+    //     $group_id    = $this->session->userdata('group_id');        
+    //     if($group_id != 1){
+    //         $this->load->model('Model_modules');
+    //         $roles = $this->Model_modules->get_akses($module_name, $group_id);
+    //         $data['hak_akses'] = $roles;
+    //     }
+    //     $data['group_id']  = $group_id;
+    //     $data['content']= "finance/laporan_bahan_pembantu";
+    //     $this->load->model('Model_sales_order');
+
+    //     $this->load->view('layout', $data);  
+    // }
+
+    // function print_laporan_bahan_pembantu(){
+    //     $module_name = $this->uri->segment(1);
+    //     $this->load->helper('tanggal_indo');
+        // $bulan = $_GET['b'];
+        // $tahun = $_GET['t'];
+    //     $tgl1 = date('Ym', strtotime($tahun.'-'.$bulan));
+    //     $tgl = date('Y-m', strtotime($tahun.'-'.$bulan));
+    //     $datestring=$tgl.' first day of last month';
+    //     $dt=date_create($datestring);
+    //     $tgl2 = $dt->format('Ym');
+
+    //     // echo $tgl1.' | '.$tgl2;
+
+    //     $data['periode'] = bulan_indo($bulan).' '.$tahun;
+
+    //     $group_id    = $this->session->userdata('group_id');        
+    //     if($group_id != 1){
+    //         $this->load->model('Model_modules');
+    //         $roles = $this->Model_modules->get_akses($module_name, $group_id);
+    //         $data['hak_akses'] = $roles;
+    //     }
+    //     $data['group_id']  = $group_id;
+
+    //     $this->load->model('Model_finance');
+    //     $data['detailLaporan'] = $this->Model_finance->detail_daftar_bahan_pembantu($tgl1, $tgl2)->result();
+    //     // echo "<pre>";print_r($data['detailLaporan']);echo "</pre>"; die();
+    //     if ($data['detailLaporan'] !== null) {
+    //         $this->db->delete('t_sparepart_saldo', ['bulan' => $tgl1]);
+    //         foreach ($data['detailLaporan'] as $row) {
+    //             $this->db->insert('t_sparepart_saldo', [
+    //                 'bulan' => $tgl1,
+    //                 'sparepart_id' => $row->sparepart_id,
+    //                 'qty' => $row->qty_sisa,
+    //                 'amount' => $row->rata2,
+    //                 'total_amount' => $row->amount_sisa
+    //             ]);
+    //         }
+    //     }
+
+    //     if($_GET['l']==1){
+    //         $this->load->view('finance/print_laporan_bahan_pembantu', $data);
+    //     }else{
+    //         $this->load->view('finance/print_laporan_bahan_pembantu2', $data);
+    //     }
+    // }
 }

@@ -49,6 +49,17 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
+                            Jenis
+                        </div>
+                        <div class="col-md-8">
+                            <select id="jenis_trx" name="jenis_trx" class="form-control select2me myline" data-placeholder="Pilih..." style="margin-bottom:5px">
+                                <option value="0" <?=($header['jenis_trx']==0)? 'selected':'';?>>Pemasukan</option>
+                                <option value="1" <?=($header['jenis_trx']==1)? 'selected':'';?>>Pengeluaran</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
                             Qty
                         </div>
                         <div class="col-md-8">

@@ -58,6 +58,7 @@
                                 }else{
                                     $jumlah = $row->jumlah;
                                 }
+                                $jumlah = $jumlah+$row->adjustment;
                                 echo '<td style="text-align:center; border-left:1px solid #000; border-right:1px solid #000;">'.$jumlah.'</td>';
                                 echo '<td style="text-align:center; border-right:1px solid #000;">'.(($row->ket==1)? 'U/ DIPINJAMKAN': 'U/ DIKEMBALIKAN').'</td>';
                                 echo '</tr>';

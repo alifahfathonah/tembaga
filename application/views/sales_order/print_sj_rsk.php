@@ -82,7 +82,7 @@
                 </td>
             </tr>
             <tr><td colspan="3">
-                    <table border="0" cellpadding="4" cellspacing="0" width="100%" style="font-size: 18px;">
+                    <table border="0" cellpadding="4" cellspacing="0" width="100%" style="font-size: <?=$this->uri->segment(4);?>px;">
                         <tr>
                             <td colspan="2">No. Kendaraan: <?php echo $header['no_kendaraan']; ?></td>
                             <td colspan="2">Type Kendaraan: <?php echo $header['type_kendaraan']; ?></td>
@@ -109,13 +109,13 @@
                             foreach ($details as $row){
                                 $berat_palette = $row->bruto-$row->netto;
                                 echo '<tr>';
-                                echo '<td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000;">'.$no.'</td>';
-                                echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000;">'.(($row->nama_barang_alias==NULL)? $row->jenis_barang: $row->nama_barang_alias).'</td>';
-                                echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000;">'.$row->uom.'</td>';
-                                echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000;">'.$row->no_packing.'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->bruto, 2, '.', ',').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($berat_palette, 2, '.', ',').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;">'.number_format($row->netto, 2, '.', ',').'</td>';
+                                echo '<td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;">'.$no.'</td>';
+                                echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;">'.(($row->nama_barang_alias==NULL)? $row->jenis_barang: $row->nama_barang_alias).'</td>';
+                                echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;">'.$row->uom.'</td>';
+                                echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;">'.$row->no_packing.'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;">'.number_format($row->bruto, 2, '.', ',').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;">'.number_format($berat_palette, 2, '.', ',').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000; border-right:1px solid #000;">'.number_format($row->netto, 2, '.', ',').'</td>';
                                 echo '</tr>';
                                 $bruto += $row->bruto;
                                 $berat += $row->bruto-$row->netto;

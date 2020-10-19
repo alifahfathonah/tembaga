@@ -51,7 +51,41 @@
                 </div>
             </div>
         </form>
-    </div> 
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="basic" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">&nbsp;</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-danger display-hide">
+                                <button class="close" data-close="alert"></button>
+                                <span id="message">&nbsp;</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            Ukuran Font <small>(*langsung klik print jika tidak ingin di perkecil )</small>
+                        </div>
+                        <div class="col-md-7">
+                            <input type="number" id="ukuran" name="ukuran" value="16" 
+                                class="form-control myline" style="margin-bottom:5px">
+                        </div>
+                    </div>
+                    <input type="hidden" id="id" name="id">
+                </div>
+                <div class="modal-footer">                        
+                    <button type="button" class="btn blue" onClick="print();">Print</button>
+                    <button type="button" class="btn default" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
         <div class="portlet box yellow-gold">
             <div class="portlet-title">
                 <div class="caption">
@@ -61,8 +95,7 @@
                 <a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="#form_filter" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="form_filter"><i class="fa fa-search"></i> Filter Tanggal</a>   
                 <?php
                     if( ($group_id==1)||($hak_akses['add_surat_jalan']==1) ){
-                        echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/SalesOrder/add_surat_jalan').'"> '
-                        .'<i class="fa fa-plus"></i> Input Surat Jalan </a>';
+                        echo '<a style="height:28px" class="btn btn-circle btn-sm blue-ebonyclay" href="'.base_url('index.php/SalesOrder/add_surat_jalan').'"> <i class="fa fa-plus"></i> Input Surat Jalan </a>';
                     }
                 ?>                    
                 </div>
@@ -139,8 +172,8 @@
                             } 
                             if($group_id==1 || $hak_akses['print_surat_jalan']==1){
                             ?>
-                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/SalesOrder/print_surat_jalan/<?php echo $data->id; ?>" 
-                                style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
+                            <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/SalesOrder/print_surat_jalan/<?php echo $data->id; ?>"style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a>
+                            <!-- <a class="btn btn-circle btn-xs blue-ebonyclay" onclick="printData(<?php echo $data->id; ?>)" style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print &nbsp; </a> -->
                             <?php if(($data->m_customer_id == 128)||($data->m_customer_id == 67)){ ?>
                             <a class="btn btn-circle btn-xs blue-ebonyclay" href="<?php echo base_url(); ?>index.php/SalesOrder/print_sj_ekspedisi/<?php echo $data->id; ?>"  style="margin-bottom:4px" target="_blank"> &nbsp; <i class="fa fa-print"></i> Print Ekspedisi &nbsp; </a>
                             <?php
@@ -173,6 +206,18 @@
 <script src="<?php echo base_url(); ?>assets/js/jquery-1.12.4.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script> 
 <script>
+function printData(id){
+    $('#id').val(id);
+    $("#myModal").find('.modal-title').text('Print SJ');
+    $("#myModal").modal('show',{backdrop: 'true'});
+}
+
+function print(){
+    const id = $('#id').val();
+    const uk = $('#ukuran').val();
+    window.open('<?php echo base_url(); ?>index.php/SalesOrder/print_surat_jalan/'+id+'/'+uk,'_blank');
+}
+
 $(function(){
     $("#tgl_start").datepicker({
         showOn: "button",

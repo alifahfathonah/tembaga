@@ -82,66 +82,68 @@
             ${'berat'.$jb->jenis_barang_id} = 0;
         }
     foreach ($detailLaporan as $row){
-        echo '<tr>';
-        echo '<td style="text-align:center; border-bottom:1px solid #000; border-left:1px solid #000"></td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.$row->tanggal.'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.$row->nomor.'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->qty_rsk,2,',','.').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->berat_rsk,2,',','.').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->qty_8mm,2,',','.').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->berat_8mm,2,',','.').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 656)?number_format($row->qty,2,',','.'):'-').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 656)?number_format($row->berat,2,',','.'):'-').'</td>';
-        foreach ($check as $jb) {
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == $jb->jenis_barang_id)?number_format($row->qty,2,',','.'):'-').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == $jb->jenis_barang_id)?number_format($row->berat,2,',','.'):'-').'</td>';
-        }
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 667)?number_format($row->qty,2,',','.'):'-').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 667)?number_format($row->berat,2,',','.'):'-').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->qty,2,',','.').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->berat,2,',','.').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->bs_rolling,2,',','.').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->bs_8m,2,',','.').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->bs_ingot,2,',','.').'</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
-        echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->gas,2,',','.').'</td>';
-        echo '<td style="border-left:1px solid #000; border-right:1px solid #000"></td>';
-        echo '</tr>';
-        $no++;
-        if($row->jenis_barang_id == 656){
-            $qty8 += $row->qty;
-            $berat8 += $row->berat;
-        }
-        if($row->jenis_barang_id == 667){
-            $qty_bu += $row->qty;
-            $berat_bu += $row->berat;
-        }
-
-        foreach ($check as $jb) {
-            if($row->jenis_barang_id == $jb->jenis_barang_id){
-                ${'qty'.$jb->jenis_barang_id} += $row->qty;
-                ${'berat'.$jb->jenis_barang_id} += $row->berat;
+        if(!empty($row->nomor)){
+            echo '<tr>';
+            echo '<td style="text-align:center; border-bottom:1px solid #000; border-left:1px solid #000"></td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.$row->tanggal.'</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.$row->nomor.'</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->qty_rsk,2,',','.').'</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->berat_rsk,2,',','.').'</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->qty_8mm,2,',','.').'</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->berat_8mm,2,',','.').'</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 656)?number_format($row->qty,2,',','.'):'-').'</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 656)?number_format($row->berat,2,',','.'):'-').'</td>';
+            foreach ($check as $jb) {
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == $jb->jenis_barang_id)?number_format($row->qty,2,',','.'):'-').'</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == $jb->jenis_barang_id)?number_format($row->berat,2,',','.'):'-').'</td>';
             }
-        }
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 667)?number_format($row->qty,2,',','.'):'-').'</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.(($row->jenis_barang_id == 667)?number_format($row->berat,2,',','.'):'-').'</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->qty,2,',','.').'</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->berat,2,',','.').'</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->bs_rolling,2,',','.').'</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->bs_8m,2,',','.').'</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->bs_ingot,2,',','.').'</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">-</td>';
+            echo '<td style="border-bottom:1px solid #000; border-left:1px solid #000">'.number_format($row->gas,2,',','.').'</td>';
+            echo '<td style="border-left:1px solid #000; border-right:1px solid #000"></td>';
+            echo '</tr>';
+            $no++;
+            if($row->jenis_barang_id == 656){
+                $qty8 += $row->qty;
+                $berat8 += $row->berat;
+            }
+            if($row->jenis_barang_id == 667){
+                $qty_bu += $row->qty;
+                $berat_bu += $row->berat;
+            }
 
-        $berat_qty += $row->qty_rsk;
-        $berat_rongsok += $row->berat_rsk;
-        $berat_qty_8mm += $row->qty_8mm;
-        $berat_rongsok_8mm += $row->berat_8mm;
-        $berat_ingot += $row->qty;
-        $berat += $row->berat;
-        $bs_rolling += $row->bs_rolling;
-        $bs_8m += $row->bs_8m;
-        $bs_ingot += $row->bs_ingot;
-        $berat_gas += $row->gas;
-        // $berat_susut += $row->berat_rsk - ($row->berat + $row->bs);
+            foreach ($check as $jb) {
+                if($row->jenis_barang_id == $jb->jenis_barang_id){
+                    ${'qty'.$jb->jenis_barang_id} += $row->qty;
+                    ${'berat'.$jb->jenis_barang_id} += $row->berat;
+                }
+            }
+
+            $berat_qty += $row->qty_rsk;
+            $berat_rongsok += $row->berat_rsk;
+            $berat_qty_8mm += $row->qty_8mm;
+            $berat_rongsok_8mm += $row->berat_8mm;
+            $berat_ingot += $row->qty;
+            $berat += $row->berat;
+            $bs_rolling += $row->bs_rolling;
+            $bs_8m += $row->bs_8m;
+            $bs_ingot += $row->bs_ingot;
+            $berat_gas += $row->gas;
+            // $berat_susut += $row->berat_rsk - ($row->berat + $row->bs);
+        }//if
     }
     $berat_keras_akhir = $b_ak + ($b['berat_masuk']-$b['berat_keluar']);
     $berat_rongsok_keluar = ($berat_rongsok + $tr['netto'] + $b_ak + $ia['netto']);

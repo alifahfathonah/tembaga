@@ -58,6 +58,8 @@
                                     <option value="9">Retur (Customer)</option>
                                     <option value="12">Repacking (+)</option>
                                     <option value="14">Adjustment (+)</option>
+                                    <option value="21">Gudang/Rongsok</option>
+                                    <option value="22">Lain-Lain</option>
                                 </optgroup>
                             </select>
                         </div>

@@ -121,15 +121,6 @@
                             </select>
                         </div>
                     </div> -->
-                    <div class="row" id="show_cek_mu">
-                        <div class="col-md-4">
-                            Tanggal Cek Mundur<font color="#f00">*</font>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="tanggal_cek" name="tanggal_cek" 
-                                class="form-control myline input-small" style="margin-bottom:5px;float:left;" value="<?php echo date('d-m-Y'); ?>">
-                        </div>
-                    </div> 
                     <div class="row" id="show_bank">
                         <div class="col-md-4">
                             Bank Pengirim

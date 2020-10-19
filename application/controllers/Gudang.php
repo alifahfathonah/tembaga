@@ -9,8 +9,6 @@ class Gudang extends CI_Controller{
             redirect(base_url("index.php/Login"));
         }
     }
-    
-
 
     function index(){
         $module_name = $this->uri->segment(1);

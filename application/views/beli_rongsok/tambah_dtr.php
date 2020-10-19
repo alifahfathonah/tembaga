@@ -25,7 +25,7 @@
             </div>
         </div>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
-              id="formku" action="<?php echo base_url('index.php/BeliRongsok/save_dtr'); ?>">  
+              id="formku" action="<?php echo base_url('index.php/BeliRongsok/save_tambah_dtr'); ?>">  
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
@@ -33,13 +33,11 @@
                             No. DTR <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                        <?php if($this->session->userdata('user_ppn')==1){?>
-                            <input type="text" id="no_dtr" name="no_dtr" class="form-control myline" style="margin-bottom:5px" placeholder="Nomor DTR...">
-                        <?php }else{ ?>
                             <input type="text" id="no_dtr" name="no_dtr" readonly="readonly"
                                 class="form-control myline" style="margin-bottom:5px" 
-                                value="Auto Generate">
-                        <?php } ?>
+                                value="<?php echo $header['no_dtr']; ?>">
+
+                            <input type="hidden" name="id" value="<?php echo $header['id'];?>">
                         </div>
                     </div>
                     <div class="row">
@@ -47,12 +45,12 @@
                             Tanggal <font color="#f00">*</font>
                         </div>
                         <div class="col-md-8">
-                            <input type="text" id="tanggal" name="tanggal" 
+                            <input type="text" id="tanggal" name="tanggal" readonly="readonly"
                                 class="form-control myline input-small" style="margin-bottom:5px;float:left;" 
-                                value="<?php echo date('d-m-Y'); ?>">
+                                value="<?php echo date('d-m-Y', strtotime($header['tanggal'])); ?>">
                         </div>
                     </div>
-                    <!-- <div class="row">
+                    <div class="row">
                         <div class="col-md-4">
                             No. PO 
                         </div>
@@ -61,16 +59,16 @@
                                 class="form-control myline" style="margin-bottom:5px" 
                                 value="<?php echo $header['no_po']; ?>">
                             
-                            <input type="hidden" id="po_id" name="po_id" value="<?php echo $header['id']; ?>">
+                            <input type="hidden" id="id" name="id" value="<?php echo $header['id']; ?>">
                         </div>
-                    </div>  -->                   
+                    </div>                    
                     <div class="row">
                         <div class="col-md-4">
                             Catatan
                         </div>
                         <div class="col-md-8">
                             <textarea id="remarks" name="remarks" rows="2" onkeyup="this.value = this.value.toUpperCase()"
-                                class="form-control myline" style="margin-bottom:5px"></textarea>                           
+                                class="form-control myline" style="margin-bottom:5px"><?php echo $header['remarks']; ?></textarea>                           
                         </div>
                     </div>
                 </div>
@@ -82,11 +80,12 @@
                         </div>
                         <div class="col-md-8">
                             <select id="supplier_id" name="supplier_id" class="form-control myline select2me" 
-                                data-placeholder="Silahkan pilih..." style="margin-bottom:5px">
+                                data-placeholder="Silahkan pilih..." onclick="get_contact(this.value);" style="margin-bottom:5px" disabled>
                                 <option value=""></option>
+                                <option value="0" <?=((0==$header['supplier_id'])? 'selected="selected"': '');?>>**TIDAK ADA SUPPLIER**</option>
                                 <?php
                                     foreach ($supplier_list as $row){
-                                        echo '<option value="'.$row->id.'">'.$row->nama_supplier.'</option>';
+                                        echo '<option value="'.$row->id.'" '.(($row->id==$header['supplier_id'])? 'selected="selected"': '').'>'.$row->nama_supplier.'</option>';
                                     }
                                 ?>
                             </select>
@@ -99,7 +98,7 @@
                         <div class="col-md-8">
                             <input type="text" id="jenis_barang" name="jenis_barang" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="RONGSOK">
+                                value="<?php echo $header['jenis_barang']; ?>">
                         </div>
                     </div> 
                     <div class="row">
@@ -109,7 +108,26 @@
                         <div class="col-md-8">
                             <input type="text" id="nama_penimbang" name="nama_penimbang" 
                                 class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
-                                value="<?php echo $this->session->userdata('realname'); ?>">
+                                value="<?php echo $header['penimbang']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Rejected By
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="nama_penimbang" name="nama_penimbang" 
+                                class="form-control myline" style="margin-bottom:5px" readonly="readonly" 
+                                value="<?php echo $header['rejected_name']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Reject Remarks
+                        </div>
+                        <div class="col-md-8">
+                            <textarea id="reject_remarks" name="reject_remarks" rows="2" readonly="readonly"
+                                class="form-control myline" style="margin-bottom:5px"><?php echo $header['reject_remarks']; ?></textarea>                           
                         </div>
                     </div>
                 </div>              
@@ -180,7 +198,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <a href="javascript:;" class="btn green" onclick="simpanData();"> 
-                        <i class="fa fa-floppy-o"></i> Create DTR </a>
+                        <i class="fa fa-floppy-o"></i> Tambah DTR </a>
 
                     <a href="<?php echo base_url('index.php/BeliRongsok/dtr_list'); ?>" class="btn blue-hoki"> 
                         <i class="fa fa-angle-left"></i> Kembali </a>

@@ -3,8 +3,9 @@
         <title></title>
         <meta charset="utf-8" />
     </head>
-    <body class="margin-left:40px;">
-        <table border="0" cellpadding="0" width="900px" cellspacing="0" style="font-family:Microsoft Sans Serif">
+    <body class="margin-left:40px;" onLoad="window.print()">
+    <div class="scale">
+        <table border="0" cellpadding="0" width="890px" cellspacing="0" style="font-family:Microsoft Sans Serif">
             <?php if($this->session->userdata('user_ppn')==1){?>
             <tr>
                 <td align="left" colspan="3">
@@ -86,7 +87,7 @@
                 </td>
             </tr>
             <tr><td colspan="3">
-                    <table border="0" cellpadding="5" cellspacing="0" width="100%" style="font-size: 18px;">
+                    <table border="0" cellpadding="5" cellspacing="0" width="100%" style="font-size: <?=$this->uri->segment(4);?>px;">
                         <tr>
                             <td colspan="3">No. Kendaraan: <?php echo $header['no_kendaraan']; ?></td>
                             <td colspan="3">Type Kendaraan: <?php echo $header['type_kendaraan']; ?></td>
@@ -118,14 +119,14 @@
                             $total_netto = 0;
                             foreach ($details as $row){
                                 if($row->jenis_barang!=$last_series && $last_series!=null){
-                                    echo '<tr><td colspan="5" style="text-align:right; border-left:1px solid #000; border-bottom:3px solid #000;"><strong>Total :</strong></td>';
-                                    echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:3px solid #000">
+                                    echo '<tr><td colspan="5" style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:3px solid #000;"><strong>Total :</strong></td>';
+                                    echo '<td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:3px solid #000">
                                             <strong>'.number_format($bruto, 2, '.', ',').'</strong>
                                         </td>
-                                        <td style="text-align:right; border-left:1px solid #000; border-bottom:3px solid #000">
+                                        <td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:3px solid #000">
                                             <strong>'.number_format($bobin, 2, '.', ',').'</strong>
                                         </td>
-                                        <td style="text-align:right; border-left:1px solid #000; border-bottom:3px solid #000; border-right:1px solid #000;">
+                                        <td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:3px solid #000; border-right:1px solid #000;">
                                             <strong>'.number_format($netto, 2, '.', ',').'</strong>
                                         </td></tr>';
                                     $bruto = 0;
@@ -135,14 +136,14 @@
                                 }else{
                                     echo '<tr>';
                                 }
-                                echo '<td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000;">'.$no.'</td>';
-                                echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000;">'.$row->jenis_barang.'</td>';
-                                echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000;">'.$row->no_produksi.'</td>';
-                                echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000;">'.$row->no_packing.'</td>';
-                                echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000;">'.$row->nomor_bobbin.'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->bruto, 2, '.', ',').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->berat, 2, '.', ',').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000;">'.number_format($row->netto, 2, '.', ',').'</td>';
+                                echo '<td style="text-align:center; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;">'.$no.'</td>';
+                                echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;">'.$row->jenis_barang.'</td>';
+                                echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;">'.$row->no_produksi.'</td>';
+                                echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;">'.$row->no_packing.'</td>';
+                                echo '<td style="border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;">'.$row->nomor_bobbin.'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;">'.number_format($row->bruto, 2, '.', ',').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;">'.number_format($row->berat, 2, '.', ',').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000; border-bottom:1px solid #000; border-top:1px solid #000;">'.number_format($row->netto, 2, '.', ',').'</td>';
                                 // echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->line_remarks.'</td>';
                                 if($row->jenis_barang==$last_series){
                                     echo '<tr>';
@@ -179,26 +180,26 @@
                             // }
                         ?>
                         <tr>
-                            <td colspan="5" style="text-align:right; border-left:1px solid #000; border-bottom:5px solid #000;"><strong>Total :</strong></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:5px solid #000">
+                            <td colspan="5" style="text-align:right; border-left:1px solid #000;border-top:1px solid #000; border-bottom:5px solid #000;"><strong>Total :</strong></td>
+                            <td style="text-align:right; border-left:1px solid #000;border-top:1px solid #000; border-bottom:5px solid #000">
                                 <strong><?php echo number_format($bruto, 2, '.', ','); ?></strong>
                             </td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:5px solid #000">
+                            <td style="text-align:right; border-left:1px solid #000;border-top:1px solid #000; border-bottom:5px solid #000">
                                 <strong><?php echo number_format($bobin, 2, '.', ','); ?></strong>
                             </td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:5px solid #000; border-right:1px solid #000;">
+                            <td style="text-align:right; border-left:1px solid #000;border-top:1px solid #000; border-bottom:5px solid #000; border-right:1px solid #000;">
                                 <strong><?php echo number_format($netto, 2, '.', ','); ?></strong>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="5" style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000;"><strong>Grand Total :</strong></td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
+                            <td colspan="5" style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000;"><strong>Grand Total :</strong></td>
+                            <td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000">
                                 <strong><?php echo number_format($total_bruto, 2, '.', ','); ?></strong>
                             </td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000">
+                            <td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000">
                                 <strong><?php echo number_format($total_bobin, 2, '.', ','); ?></strong>
                             </td>
-                            <td style="text-align:right; border-left:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;">
+                            <td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-bottom:1px solid #000; border-right:1px solid #000;">
                                 <strong><?php echo number_format($total_netto, 2, '.', ','); ?></strong>
                             </td>
                         </tr>
@@ -240,8 +241,21 @@
                 </td>
             </tr>
         </table>
-        <p>&nbsp;</p>
-	<body onLoad="window.print()">
+<!--     <h3 class="first"></h3>
+    <div class="insert"></div> -->
+    </div>
+    <script type="text/javascript">
+        var bottom = 0;
+        // $(document).ready(function() {
+        //   $("tr:nth-child(10n)").each(function() {
+        //     bottom -= 100;
+        //     botString = bottom.toString();
+        //     var $counter = $('h3.first').clone().removeClass('first');
+        //     $counter.css("bottom", botString + "vh");
+        //     ($counter).insertBefore('.insert');
+        //   });
+        // });
+    </script>
     </body>
 </html>
         

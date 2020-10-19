@@ -999,59 +999,6 @@
                     </ul>
                 </li>
             <?php } ?>
-                <!-- <li <?php if($module_name=="RollingKawatHitam") echo 'class="start active open"'; ?>>
-                    <a href="javascript:;">
-                    <i class="fa fa-life-ring"></i>
-                    <span class="title">ROLLING KAWAT HITAM</span>
-                    <span class="arrow "></span>
-                    </a>
-                    <ul class="sub-menu">
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/RollingKawatHitam">
-                            <i class="fa fa-file-word-o"></i>
-                            Permintaan Barang (SPB) </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/RollingKawatHitam/skb_list">
-                            <i class="fa fa-file-powerpoint-o"></i>
-                            SKB List </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/RollingKawatHitam/hasil_produksi">
-                            <i class="fa fa-life-ring"></i>
-                            Hasil Produksi </a>
-                        </li>
-                    </ul>
-                </li>
-                <li <?php if($module_name=="CuciKawatHitam") echo 'class="start active open"'; ?>>
-                    <a href="javascript:;">
-                    <i class="fa fa-ge"></i>
-                    <span class="title">CUCI KAWAT HITAM</span>
-                    <span class="arrow "></span>
-                    </a>
-                    <ul class="sub-menu">
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/CuciKawatHitam">
-                            <i class="fa fa-file-word-o"></i>
-                            Permintaan Barang (SPB) </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/CuciKawatHitam/skb_list">
-                            <i class="fa fa-file-powerpoint-o"></i>
-                            SKB List </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/CuciKawatHitam/dtr_list">
-                            <i class="fa fa-file-text-o"></i>
-                            DTR List </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo base_url(); ?>index.php/CuciKawatHitam/ttr_list">
-                            <i class="fa fa-file"></i>
-                            TTR List </a>
-                        </li>
-                    </ul>
-                </li> -->
                 <?php if($group_id==1 || (isset($akses_menu['GudangBobbin']) && $akses_menu['GudangBobbin']==1)){ ?>
                 <li <?php if($module_name=="GudangBobbin") echo 'class="start active open"'; ?> >
                     <a href="javascript:;">

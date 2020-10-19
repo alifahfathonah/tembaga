@@ -88,6 +88,38 @@ LAPORAN PEMAKAIAN BAHAN BAKAR ROLLING</h3>
     </tr>
     </tr>
     </tbody>
+    <?php
+        $tanggal = date("Y-m-t", strtotime($start));
+        // echo $tanggal;die();
+        $cek = $this->db->query("select * from t_gudang_produksi where jenis_barang_id in (9,10) and tanggal='".$tanggal."' limit 2")->result();
+        if(empty($cek)){
+            //APOLLO 3
+            $this->db->insert('t_gudang_produksi', array(
+                'tanggal'=>$tanggal,
+                'jenis_barang_id'=>9,
+                'netto'=>$v_digital9,
+                'keterangan'=>'GAS(kanan) Stok Generate',
+                'created_at'=>date('Y-m-d H:i:s')
+            ));
+            //APOLLO 4
+            $this->db->insert('t_gudang_produksi', array(
+                'tanggal'=>$tanggal,
+                'jenis_barang_id'=>10,
+                'netto'=>$v_digital10,
+                'keterangan'=>'GAS(kiri) Stok Generate',
+                'created_at'=>date('Y-m-d H:i:s')
+            ));
+        }else{
+            foreach ($cek as $v) {
+                if($v->created_by == 0){
+                    $this->db->where('id', $v->id);
+                    $this->db->update('t_gudang_produksi', array(
+                        'netto'=>${'v_digital'.$v->jenis_barang_id}
+                    ));
+                }
+            }
+        }
+    ?>
     <tr>
         <td colspan="4" style="text-align: left; border-bottom:1px solid #000; border-left:1px solid #000;">
             <table border="0" width="100%" style="text-align:left">

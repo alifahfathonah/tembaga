@@ -1380,6 +1380,49 @@ class GudangBobbin extends CI_Controller{
         $this->load->view('layout', $data);  
     }
 
+    function edit_bpk(){
+        $module_name = $this->uri->segment(1);
+        $id = $this->uri->segment(3);
+        if($id){
+            $group_id    = $this->session->userdata('group_id');        
+            if($group_id != 1){
+                $this->load->model('Model_modules');
+                $roles = $this->Model_modules->get_akses($module_name, $group_id);
+                $data['hak_akses'] = $roles;
+            }
+            $data['group_id']  = $group_id;
+
+            $data['content']= "gudang_bobbin/edit_bpk";
+            $this->load->model('Model_sales_order');
+            $this->load->model('Model_bobbin');
+            $data['header']  = $this->Model_sales_order->show_header_sj($id)->row_array();
+            $data['details'] = $this->Model_bobbin->show_detail_bpk($id)->result();
+            $this->load->view('layout', $data);   
+        }else{
+            redirect('index.php/GudangBobbin/bpk_list');
+        }
+    }
+
+    function update_bpk(){
+        $user_id  = $this->session->userdata('user_id');
+        $tanggal  = date('Y-m-d H:i:s');
+
+        $details = $this->input->post('myDetails');
+        foreach($details as $row){
+            $this->db->where('id', $row['id_details']);
+            $this->db->update('t_surat_peminjaman', array(
+                'adjustment'=>$row['adjustment'],
+            ));
+        }
+        
+        if($this->db->trans_complete()){    
+            $this->session->set_flashdata('flash_msg', 'DTR dengan nomor : '.$this->input->post('no_dtr').' berhasil diupdate...');                 
+        }else{
+            $this->session->set_flashdata('flash_msg', 'Terjadi kesalahan saat updates DTR, silahkan coba kembali!');
+        }
+        redirect('index.php/GudangBobbin/bpk_list');
+    }
+
     function print_bpk(){
         $id = $this->uri->segment(3);
         if($id){        

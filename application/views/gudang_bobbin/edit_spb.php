@@ -4,7 +4,7 @@
             <a href="<?php echo base_url(); ?>"> <i class="fa fa-home"></i> Home </a> 
             <i class="fa fa-angle-right"></i> Gudang Bobbin
             <i class="fa fa-angle-right"></i> 
-            <a href="<?php echo base_url('index.php/GudangFG'); ?>"> Create SPB Bobbin </a> 
+            <a href="<?php echo base_url('index.php/GudangBobbin'); ?>"> Create SPB Bobbin </a> 
         </h5>          
     </div>
 </div>

@@ -1371,6 +1371,7 @@ class Retur extends CI_Controller{
                 $code = $this->Model_m_numberings->getNumbering('BPB-WIPR',$tgl_input);
                 $data_bpb = array(
                         'no_bpb' => $code,
+                        'tanggal' => $tgl_input,
                         'retur_id' => $this->input->post('id'),
                         'flag_ppn' => $user_ppn,
                         'created' => $tanggal,

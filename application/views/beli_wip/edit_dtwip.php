@@ -14,7 +14,7 @@
 <div class="row">                            
     <div class="col-md-12">
         <?php
-            if( ($group_id==1)||($hak_akses['edit_dtwip']==1) ){
+            if( ($group_id==1)||($hak_akses['edit']==1) ){
         ?>
         <form class="eventInsForm" method="post" target="_self" name="formku" 
               id="formku" action="<?php echo base_url('index.php/BeliWIP/update_dtwip'); ?>">  

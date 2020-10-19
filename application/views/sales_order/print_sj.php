@@ -86,7 +86,7 @@
                 </td>
             </tr>
             <tr><td colspan="3">
-                    <table border="0" cellpadding="4" cellspacing="0" width="100%">
+                    <table border="0" cellpadding="4" cellspacing="0" width="100%" style="font-size: <?=$this->uri->segment(4);?>px;">
                         <tr>
                             <td colspan="3">No. Kendaraan: <?php echo $header['no_kendaraan']; ?></td>
                             <td colspan="3">Type Kendaraan: <?php echo $header['type_kendaraan']; ?></td>
@@ -138,16 +138,16 @@
                                 }else{
                                     echo '<tr>';
                                 }
-                                echo '<td style="text-align:center; border-left:1px solid #000">'.$no.'</td>';
-                                echo '<td style="border-left:1px solid #000">'.$row->kode_lama.'</td>';
-                                echo '<td style="border-left:1px solid #000">'.$row->kode_baru.'</td>';
-                                echo '<td style="border-left:1px solid #000">'.$row->jenis_barang.'</td>';
-                                echo '<td style="border-left:1px solid #000">'.$row->no_produksi.'</td>';
-                                echo '<td style="border-left:1px solid #000">'.$row->no_packing.'</td>';
-                                echo '<td style="border-left:1px solid #000">'.$row->nomor_bobbin.'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->bruto, 2, '.', ',').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000">'.number_format($row->berat, 2, '.', ',').'</td>';
-                                echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.number_format($row->netto, 2, '.', ',').'</td>';
+                                echo '<td style="text-align:center; border-left:1px solid #000; border-top:1px solid #000;">'.$no.'</td>';
+                                echo '<td style="border-left:1px solid #000; border-top:1px solid #000;">'.$row->kode_lama.'</td>';
+                                echo '<td style="border-left:1px solid #000; border-top:1px solid #000;">'.$row->kode_baru.'</td>';
+                                echo '<td style="border-left:1px solid #000; border-top:1px solid #000;">'.$row->jenis_barang.'</td>';
+                                echo '<td style="border-left:1px solid #000; border-top:1px solid #000;">'.$row->no_produksi.'</td>';
+                                echo '<td style="border-left:1px solid #000; border-top:1px solid #000;">'.$row->no_packing.'</td>';
+                                echo '<td style="border-left:1px solid #000; border-top:1px solid #000;">'.$row->nomor_bobbin.'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000;">'.number_format($row->bruto, 2, '.', ',').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000;">'.number_format($row->berat, 2, '.', ',').'</td>';
+                                echo '<td style="text-align:right; border-left:1px solid #000; border-top:1px solid #000; border-right:1px solid #000">'.number_format($row->netto, 2, '.', ',').'</td>';
                                 // echo '<td style="text-align:right; border-left:1px solid #000; border-right:1px solid #000">'.$row->line_remarks.'</td>';
                                 if($row->jenis_barang==$last_series){
                                     echo '<tr>';

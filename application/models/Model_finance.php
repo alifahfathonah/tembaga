@@ -152,8 +152,11 @@ class Model_finance extends CI_Model{
         return $data;
     }
 
-    function list_data_pembayaran(){
-        $data = $this->db->query("select fp.*, COALESCE((select count(id) from voucher where pembayaran_id = fp.id),0) as jumlah_voucher, COALESCE((select count(id) from f_pembayaran_detail where id_pembayaran = fp.id and voucher_id = 0),0) as jumlah_um from f_pembayaran fp order by fp.no_pembayaran desc");
+    function list_data_pembayaran($s,$e){
+        $data = $this->db->query("select fp.*, COALESCE((select count(id) from voucher where pembayaran_id = fp.id),0) as jumlah_voucher, COALESCE((select count(id) from f_pembayaran_detail where id_pembayaran = fp.id and voucher_id = 0),0) as jumlah_um 
+            from f_pembayaran fp 
+            where fp.tanggal between '".$s."' and '".$e."'
+            order by fp.no_pembayaran desc");
         return $data;
     }
 
@@ -446,10 +449,10 @@ class Model_finance extends CI_Model{
     //     return $data;
     // }
 
-    function list_matching($ppn){
+    function list_matching($ppn,$s,$e){
         $data = $this->db->query("select fm.*, mc.nama_customer, mc.pic, (select count(id) from f_match_detail fmd where fmd.id_match = fm.id and fmd.id_um = 0) as jumlah_inv, (select count(id) from f_match_detail fmd where fmd.id_match = fm.id and fmd.id_inv = 0) as jumlah_um from f_match fm 
             left join m_customers mc on mc.id = fm.id_customer
-            where flag_ppn=".$ppn."
+            where flag_ppn=".$ppn." and fm.tanggal between '".$s."' and '".$e."'
             order by fm.no_matching desc
             ");
         return $data;
@@ -942,7 +945,7 @@ class Model_finance extends CI_Model{
     // }
 
     function query_penjualan($s,$e,$c){
-        $data = $this->db->query("select v.*, round(((v.total_harga-v.diskon-v.add_cost)*v.kurs),0)+v.materai as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn=1,(((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100),0)) as nilai_ppn from v_data_faktur_all v 
+        $data = $this->db->query("select v.*, round(((v.total_harga-v.diskon-v.add_cost)*v.kurs),0) as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn=1,(((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100),0)) as nilai_ppn from v_data_faktur_all v 
             where v.PENJUALAN != '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."')
             order by v.flag_ppn, v.flag_tolling, v.kode_customer, v.tanggal, v.no_invoice
             ");
@@ -958,7 +961,7 @@ class Model_finance extends CI_Model{
     // }
 
     function query_penjualan_jb($s,$e,$c){
-        $data = $this->db->query("select v.*, round(((v.total_harga-v.diskon-v.add_cost)*v.kurs),0)+v.materai as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn=1,(((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100),0)) as nilai_ppn from v_data_faktur_all v 
+        $data = $this->db->query("select v.*, round(((v.total_harga-v.diskon-v.add_cost)*v.kurs),0) as total_harga, IF(v.currency='USD',0,IF(v.flag_ppn=1,(((v.total_harga-v.diskon-v.add_cost)*v.kurs)*10/100),0)) as nilai_ppn from v_data_faktur_all v 
             where v.PENJUALAN != '".$c."' and (v.tanggal BETWEEN '".$s."' AND '".$e."')
             order by v.flag_ppn, v.flag_tolling, v.kode_barang, v.tanggal, v.no_invoice
             ");
@@ -1140,7 +1143,7 @@ class Model_finance extends CI_Model{
             tsj.no_surat_jalan, 
             mc.kode_customer, mc.nama_customer, mc.nama_customer_kh
             from f_invoice fi
-            left join f_match_detail fmd on fmd.id_inv = fi.id
+            left join f_match_detail fmd on fmd.id_inv = fi.id and fmd.inv_type = 0
             left join t_surat_jalan tsj on tsj.inv_id =  fi.id
             left join m_customers mc on mc.id = fi.id_customer
             where fi.flag_ppn = ".$ppn."
@@ -1160,7 +1163,7 @@ class Model_finance extends CI_Model{
             tsj.no_surat_jalan, 
             mc.kode_customer, mc.nama_customer, mc.nama_customer_kh
             from f_invoice fi
-            left join f_match_detail fmd on fmd.id_inv = fi.id
+            left join f_match_detail fmd on fmd.id_inv = fi.id and fmd.inv_type = 0
             left join t_surat_jalan tsj on tsj.inv_id =  fi.id
             left join m_customers mc on mc.id = fi.id_customer
             where fi.flag_ppn = ".$ppn." and fi.id_customer = ".$id."
@@ -1217,7 +1220,7 @@ class Model_finance extends CI_Model{
             tsj.no_surat_jalan, 
             mc.kode_customer, mc.nama_customer, mc.nama_customer_kh
             from f_invoice fi
-            left join f_match_detail fmd on fmd.id_inv = fi.id
+            left join f_match_detail fmd on fmd.id_inv = fi.id and fmd.inv_type = 0
             left join t_surat_jalan tsj on tsj.inv_id =  fi.id
             left join m_customers mc on mc.id = fi.id_customer
              group by fi.id
@@ -1235,7 +1238,7 @@ class Model_finance extends CI_Model{
             tsj.no_surat_jalan, 
             mc.kode_customer, mc.nama_customer, mc.nama_customer_kh
             from f_invoice fi
-            left join f_match_detail fmd on fmd.id_inv = fi.id
+            left join f_match_detail fmd on fmd.id_inv = fi.id and fmd.inv_type = 0
             left join t_surat_jalan tsj on tsj.inv_id =  fi.id
             left join m_customers mc on mc.id = fi.id_customer
             where fi.id_customer = ".$id."
@@ -3197,6 +3200,12 @@ SELECT MONTH
         return $data;
     }
 
+    function get_saldo_sparepart($id){
+        return $this->db->query("Select ts.*, s.nama_item, s.alias as kode from t_sparepart_saldo ts
+                left join sparepart s on ts.sparepart_id = s.id
+                where bulan =".$id);
+    }
+
     // function detail_daftar_bahan_pembantu($tgl1, $tgl2) {
     //     $data = $this->db->query("
     //         select
@@ -3248,10 +3257,10 @@ SELECT MONTH
                 round(sum(x.amount_masuk),2) amount_masuk,
                 sum(x.qty_keluar) qty_keluar,
         round((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk)),2) rata2,
-         round(sum(x.qty_keluar)* ((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk))),2)  amount_keluar,
+         round(sum(x.qty_keluar)* ((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk))),2) + ts.adjustment amount_keluar,
          (sum(x.saldo_qty)+sum(x.qty_masuk)-sum(x.qty_keluar)) qty_sisa,
          (round(sum(x.saldo_amount),2) +  round(sum(x.amount_masuk),2)-
-          round(sum(x.qty_keluar)* ((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk))),2))  amount_sisa,
+          round(sum(x.qty_keluar)* ((sum(x.saldo_amount)+sum(x.amount_masuk)) /(sum(x.saldo_qty)+ sum(x.qty_masuk))),2)) -ts.adjustment amount_sisa,
          x.uom
         from
         (
@@ -3274,18 +3283,23 @@ SELECT MONTH
         where s.sparepart_group in (6,7)
         and EXTRACT( YEAR_MONTH FROM ( t.tanggal ) ) =  '".$tgl1."'
         union all
-        select  t2.sparepart_id, case when right(t2.bulan,2)=12 then t2.bulan+89 else t2.bulan+1 end , s2.alias, s2.nama_item, t2.qty saldo_qty, t2.total_amount saldo_amount, 0 qty_masuk, 0 amount_masuk, 
-                0 qty_keluar, 0 amount_keluar, s2.uom  
+        select  t2.sparepart_id, case when right(t2.bulan,2)=12 then t2.bulan+89 else t2.bulan+1 end , s2.alias, s2.nama_item, t2.qty saldo_qty, t2.total_amount-t2.adjustment saldo_amount, 0 qty_masuk, 0 amount_masuk, 
+                0 qty_keluar, 0 amount_keluar, s2.uom
         from t_sparepart_saldo t2
         left join sparepart s2 on s2.id = t2.sparepart_id
         where t2.bulan=  '".$tgl2."'
         )
         x
+        left join t_sparepart_saldo ts on ts.bulan = x.bulan and x.sparepart_id = ts.sparepart_id
        where x.alias  not in ('06KB002')
         group by bulan, kode, nama_item
         order by 3
             ");
         return $data;
+    }
+
+    function laporan_bahan_pembantu(){
+        return $this->db->query("Select bulan from t_sparepart_saldo group by bulan order by bulan desc");
     }
 
     // VIEW MATCHING PEMBAYARAN
